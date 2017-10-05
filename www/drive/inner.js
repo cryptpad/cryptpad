@@ -2522,6 +2522,8 @@ define([
             var paths = $(this).data('paths');
             //var path = $(this).data('path');
             //var $element = $(this).data('element');
+
+            var el;
             if (paths.length === 0) {
                 log(Messages.fm_forbidden);
                 debug("Directory context menu on a forbidden or unexisting element. ", paths);
@@ -2562,7 +2564,7 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.find(paths[0].path);
+                el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
                     Cryptpad.alert($prop[0], undefined, true);
@@ -2570,7 +2572,7 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.find(paths[0].path);
+                el = filesOp.find(paths[0].path);
                 var data = filesOp.getFileData(el);
                 if (!data) { return void console.error("Expected to find a file"); }
                 var href = data.href;
@@ -2582,6 +2584,7 @@ define([
         $defaultContextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $(this).data('paths');
+            var el;
             if (paths.length === 0) {
                 log(Messages.fm_forbidden);
                 debug("Context menu on a forbidden or unexisting element. ", paths);
@@ -2621,7 +2624,7 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.find(paths[0].path);
+                el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
                     Cryptpad.alert($prop[0], undefined, true);
@@ -2629,7 +2632,7 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.find(paths[0].path);
+                el = filesOp.find(paths[0].path);
                 var data = filesOp.getFileData(el);
                 if (!data) { return void console.error("Expected to find a file"); }
                 var href = data.href;
