@@ -93,7 +93,7 @@ define([
             $previewContainer.toggle();
             if ($previewContainer.is(':visible')) {
                 forceDrawPreview();
-                $codeMirror.removeClass('cp-ap-code-fullpage');
+                $codeMirror.removeClass('cp-app-code-fullpage');
                 $previewButton.addClass('cp-toolbar-button-active');
                 framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
                     if (e) { return console.log(e); }
@@ -154,15 +154,16 @@ define([
                 e.preventDefault();
                 var x = e.pageX;
                 var w = $target.width();
-
-                $(window).on('mouseup mousemove', function handler(evt) {
+                var handler = function (evt) {
                     if (evt.type === 'mouseup') {
                         $(window).off('mouseup mousemove', handler);
                         return;
                     }
                     $target.css('width', (w - x + evt.pageX) + 'px');
                     editor.refresh();
-                });
+                };
+                $(window).off('mouseup mousemove', handler);
+                $(window).on('mouseup mousemove', handler);
             });
         });
 
@@ -335,7 +336,6 @@ define([
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
-            console.log('hi');
             andThen2(editor, CodeMirror, framework);
         });
     };
