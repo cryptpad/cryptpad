@@ -1265,7 +1265,7 @@ define([
                 $element.contextmenu(openTrashContextMenu);
                 $element.data('context', $trashContextMenu);
             }
-            var isNewFolder = APP.newFolder && filesOp.comparePath(newPath, module.newFolder);
+            var isNewFolder = APP.newFolder && filesOp.comparePath(newPath, APP.newFolder);
             if (isNewFolder) {
                 appStatus.onReady(function () {
                     window.setTimeout(function () { displayRenameInput($element, newPath); }, 0);
