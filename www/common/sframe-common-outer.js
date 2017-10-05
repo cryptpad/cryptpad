@@ -401,7 +401,7 @@ define([
             });
 
             sframeChan.on('Q_TAGS_GET', function (data, cb) {
-                Cryptpad.getPadTags(null, function (err, data) {
+                Cryptpad.getPadTags(data, function (err, data) {
                     cb({
                         error: err,
                         data: data
@@ -410,8 +410,7 @@ define([
             });
 
             sframeChan.on('EV_TAGS_SET', function (data) {
-                console.log(data);
-                Cryptpad.resetTags(null, data);
+                Cryptpad.resetTags(data.href, data.tags);
             });
 
             sframeChan.on('Q_PIN_GET_USAGE', function (data, cb) {

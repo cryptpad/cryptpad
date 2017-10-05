@@ -78,6 +78,7 @@ define([
     funcs.displayAvatar = callWithCommon(UI.displayAvatar);
     funcs.createButton = callWithCommon(UI.createButton);
     funcs.createUsageBar = callWithCommon(UI.createUsageBar);
+    funcs.updateTags = callWithCommon(UI.updateTags);
 
     // History
     funcs.getHistory = callWithCommon(History.create);

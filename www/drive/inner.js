@@ -663,6 +663,7 @@ define([
                     hasFolder = true;
                     hide.push($menu.find('a.cp-app-drive-context-openro'));
                     hide.push($menu.find('a.cp-app-drive-context-properties'));
+                    hide.push($menu.find('a.cp-app-drive-context-hashtag'));
                 }
                 // If we're in the trash, hide restore and properties for non-root elements
                 if ($menu.find('a.cp-app-drive-context-restore').length && path && path.length > 4) {
@@ -2567,6 +2568,14 @@ define([
                     Cryptpad.alert($prop[0], undefined, true);
                 });
             }
+            else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
+                if (paths.length !== 1) { return; }
+                var el = filesOp.find(paths[0].path);
+                var data = filesOp.getFileData(el);
+                if (!data) { return void console.error("Expected to find a file"); }
+                var href = data.href;
+                common.updateTags(href);
+            }
             APP.hideMenu();
         });
 
@@ -2617,6 +2626,14 @@ define([
                     if (e) { return void logError(e); }
                     Cryptpad.alert($prop[0], undefined, true);
                 });
+            }
+            else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
+                if (paths.length !== 1) { return; }
+                var el = filesOp.find(paths[0].path);
+                var data = filesOp.getFileData(el);
+                if (!data) { return void console.error("Expected to find a file"); }
+                var href = data.href;
+                common.updateTags(href);
             }
             APP.hideMenu();
         });
