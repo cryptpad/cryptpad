@@ -263,7 +263,7 @@ define([
 
         var $slideOptions = $('<button>', {
             title: Messages.slideOptionsTitle,
-            'class': 'cp-toolbar-rightside-button fa fa-cog',
+            'class': 'cp-toolbar-rightside-button fa fa-cog cp-hidden-if-readonly',
             style: 'font-size: 17px'
         }).click(function () {
             $('body').append(createPrintDialog());
@@ -307,13 +307,13 @@ define([
 
         var $back = $('<button>', {
             id: SLIDE_BACKCOLOR_ID,
-            'class': 'fa fa-square cp-toolbar-rightside-button',
+            'class': 'fa fa-square cp-toolbar-rightside-button cp-hidden-if-readonly',
             'style': 'font-family: FontAwesome; color: #000;',
             title: Messages.backgroundButtonTitle
         });
         var $text = $('<button>', {
             id: SLIDE_COLOR_ID,
-            'class': 'fa fa-i-cursor cp-toolbar-rightside-button',
+            'class': 'fa fa-i-cursor cp-toolbar-rightside-button cp-hidden-if-readonly',
             'style': 'font-family: FontAwesome; font-weight: bold; color: #fff;',
             title: Messages.colorButtonTitle
         });

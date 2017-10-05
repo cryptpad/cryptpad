@@ -397,6 +397,8 @@ define([
             });
         }).nThen(function (waitFor) {
 
+            if (readOnly) { $('body').addClass('cp-readonly'); }
+
             var done = waitFor();
             var intr;
             var check = function () {
@@ -443,6 +445,7 @@ define([
                 $toolbar: $(toolbarContainer)
             };
             var $hist = common.createButton('history', true, {histConfig: histConfig});
+            $hist.addClass('cp-hidden-if-readonly');
             toolbar.$drawer.append($hist);
 
             if (!cpNfInner.metadataMgr.getPrivateData().isTemplate) {
