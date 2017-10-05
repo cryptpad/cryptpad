@@ -2640,7 +2640,7 @@ define([
             else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
                 var type = $(this).data('type') || 'pad';
                 sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                window.open('/' + type + '/');
+                window.open(APP.origin + '/' + type + '/');
             }
             APP.hideMenu();
         });
