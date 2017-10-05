@@ -554,15 +554,12 @@ define([
         });
         toLock.forEach(lockColumn);
 
-        toLockR = [];
+        toLock = [];
         APP.unlocked.row.forEach(function (id) {
             if (keepRowUnlocked.indexOf(id) !== -1) { return; }
-            toLockR.push(id);
+            toLock.push(id);
         });
-        toLockR.forEach(lockRow);
-        /*APP.unlocked.col = Cryptpad.deduplicateString([APP.userid].concat(APP.uncommitted.content.colsOrder).slice());
-        APP.unlocked.row = APP.uncommitted.content.rowsOrder.slice();
-        change();*/
+        toLock.forEach(lockRow);
     };
 
     /*  Called whenever an event is fired on a span */
