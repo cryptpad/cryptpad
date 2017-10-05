@@ -1118,7 +1118,7 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
                 counter++;
-                $element.addClass('droppable');
+                $element.addClass('cp-app-drive-element-droppable');
             });
             $element.on('dragleave', function (e) {
                 e.preventDefault();
@@ -1126,7 +1126,7 @@ define([
                 counter--;
                 if (counter <= 0) {
                     counter = 0;
-                    $element.removeClass('droppable');
+                    $element.removeClass('cp-app-drive-element-droppable');
                 }
             });
         };
