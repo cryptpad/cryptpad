@@ -210,6 +210,8 @@ define([
                     return true;
                 }
 
+                cursor.update();
+
                 // no use trying to recover the cursor if it doesn't exist
                 if (!cursor.exists()) { return; }
 
