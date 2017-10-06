@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     'json.sortify',
@@ -12,7 +11,6 @@ define([
     '/common/common-realtime.js',
     '/common/userObject.js',
     '/customize/application_config.js',
-    '/common/mergeDrive.js',
     '/common/sframe-chainpad-listmap.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -20,7 +18,6 @@ define([
     'less!/customize/src/less2/main.less',
 ], function (
     $,
-    Crypto,
     TextPatcher,
     Toolbar,
     JSONSortify,
@@ -32,7 +29,6 @@ define([
     CommonRealtime,
     FO,
     AppConfig,
-    Merge,
     Listmap)
 {
     var Messages = Cryptpad.Messages;
@@ -663,6 +659,7 @@ define([
                     hasFolder = true;
                     hide.push($menu.find('a.cp-app-drive-context-openro'));
                     hide.push($menu.find('a.cp-app-drive-context-properties'));
+                    hide.push($menu.find('a.cp-app-drive-context-hashtag'));
                 }
                 // If we're in the trash, hide restore and properties for non-root elements
                 if ($menu.find('a.cp-app-drive-context-restore').length && path && path.length > 4) {
@@ -1121,7 +1118,7 @@ define([
                 e.preventDefault();
                 e.stopPropagation();
                 counter++;
-                $element.addClass('droppable');
+                $element.addClass('cp-app-drive-element-droppable');
             });
             $element.on('dragleave', function (e) {
                 e.preventDefault();
@@ -1129,7 +1126,7 @@ define([
                 counter--;
                 if (counter <= 0) {
                     counter = 0;
-                    $element.removeClass('droppable');
+                    $element.removeClass('cp-app-drive-element-droppable');
                 }
             });
         };
@@ -1838,7 +1835,7 @@ define([
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass,
+                    'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                     draggable: draggable
                 });
                 if (Array.isArray(APP.selectedFiles)) {
@@ -2014,7 +2011,7 @@ define([
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass,
+                    'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                 });
                 addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
@@ -2521,6 +2518,8 @@ define([
             var paths = $(this).data('paths');
             //var path = $(this).data('path');
             //var $element = $(this).data('element');
+
+            var el;
             if (paths.length === 0) {
                 log(Messages.fm_forbidden);
                 debug("Directory context menu on a forbidden or unexisting element. ", paths);
@@ -2561,11 +2560,19 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.find(paths[0].path);
+                el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
                     Cryptpad.alert($prop[0], undefined, true);
                 });
+            }
+            else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
+                if (paths.length !== 1) { return; }
+                el = filesOp.find(paths[0].path);
+                var data = filesOp.getFileData(el);
+                if (!data) { return void console.error("Expected to find a file"); }
+                var href = data.href;
+                common.updateTags(href);
             }
             APP.hideMenu();
         });
@@ -2573,6 +2580,7 @@ define([
         $defaultContextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $(this).data('paths');
+            var el;
             if (paths.length === 0) {
                 log(Messages.fm_forbidden);
                 debug("Context menu on a forbidden or unexisting element. ", paths);
@@ -2612,11 +2620,19 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-properties")) {
                 if (paths.length !== 1) { return; }
-                var el = filesOp.find(paths[0].path);
+                el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
                     Cryptpad.alert($prop[0], undefined, true);
                 });
+            }
+            else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
+                if (paths.length !== 1) { return; }
+                el = filesOp.find(paths[0].path);
+                var data = filesOp.getFileData(el);
+                if (!data) { return void console.error("Expected to find a file"); }
+                var href = data.href;
+                common.updateTags(href);
             }
             APP.hideMenu();
         });
@@ -2640,7 +2656,7 @@ define([
             else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
                 var type = $(this).data('type') || 'pad';
                 sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                window.open('/' + type + '/');
+                window.open(APP.origin + '/' + type + '/');
             }
             APP.hideMenu();
         });

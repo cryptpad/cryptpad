@@ -6,11 +6,13 @@
 @import (once) '../../customize/src/less2/include/leftside-menu.less';
 @import (once) "../../customize/src/less2/include/tools.less";
 @import (once) "../../customize/src/less2/include/limit-bar.less";
+@import (once) "../../customize/src/less2/include/tokenfield.less";
 
 .toolbar_main();
 .fileupload_main();
 .alertify_main();
 .limit-bar_main();
+.tokenfield_main();
 
 @drive_hover: #eee;
 @drive_hover-light: lighten(@drive_hover, 20%);
@@ -590,7 +592,7 @@ span {
                         margin-right: 5px;
                     }
                 }
-                &.cp-app-drive-content-icon, &.cp-app-drive-element-state {
+                &.cp-app-drive-content-icon, &.cp-app-drive-element-state, &.cp-icon {
                     width: 30px;
                 }
                 &.cp-app-drive-element-type, &.cp-app-drive-element-atime, &.cp-app-drive-element-ctime {

@@ -341,6 +341,7 @@ function isDataSchema(url) {
   return url.substr(i, 5).toLowerCase() === 'data:';
 }
 function getPDFFileNameFromURL(url) {
+  url = document.location.href;
   var query;
   var title;
   if (/\#/.test(url)) {

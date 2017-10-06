@@ -21,6 +21,7 @@ define([
         var $title;
         exp.setToolbar = function (toolbar) {
             $title = toolbar && (toolbar.title || toolbar.pageTitle);
+            console.log('SET TOOLBAR');
         };
 
         exp.getTitle = function () { return exp.title; };

@@ -28,6 +28,20 @@ define([
      *  - createDropdown
     */
 
+    UI.updateTags = function (common, href) {
+        var sframeChan = common.getSframeChannel();
+        sframeChan.query('Q_TAGS_GET', href || null, function (err, res) {
+            if (err || res.error) { return void console.error(err || res.error); }
+            Cryptpad.dialog.tagPrompt(res.data, function (tags) {
+                if (!Array.isArray(tags)) { return; }
+                sframeChan.event('EV_TAGS_SET', {
+                    tags: tags,
+                    href: href,
+                });
+            });
+        });
+    };
+
     UI.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;
@@ -202,16 +216,7 @@ define([
                     title: Messages.tags_title,
                 })
                 .click(common.prepareFeedback(type))
-                .click(function () {
-                    sframeChan.query('Q_TAGS_GET', null, function (err, res) {
-                        if (err || res.error) { return void console.error(err || res.error); }
-                        Cryptpad.dialog.tagPrompt(res.data, function (tags) {
-                            if (!Array.isArray(tags)) { return; }
-                            console.error(tags);
-                            sframeChan.event('EV_TAGS_SET', tags);
-                        });
-                    });
-                });
+                .click(function () { UI.updateTags(null); });
                 break;
             default:
                 button = $('<button>', {

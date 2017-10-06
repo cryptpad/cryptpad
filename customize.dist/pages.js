@@ -570,15 +570,12 @@ define([
     };
 
     var appToolbar = function () {
-        return h('div#toolbar.cryptpad-toolbar');
-    };
-    var appToolbar3 = function () {
         return h('div#cp-toolbar.cp-toolbar-container');
     };
 
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
-            appToolbar3(),
+            appToolbar(),
             h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
                 width: 600,
                 height: 600
@@ -639,47 +636,49 @@ define([
     Pages['/poll/'] = Pages['/poll/index.html'] = function () {
         return [
             appToolbar(),
-            h('div#content', [
-                h('div#poll', [
-                    h('div#howItWorks', [
+            h('div#cp-app-poll-content', [
+                h('div#cp-app-poll-form', [
+                    h('div#cp-app-poll-help', [
                         h('h1', 'CryptPoll'),
                         setHTML(h('h2'), Msg.poll_subtitle),
                         h('p', Msg.poll_p_save),
                         h('p', Msg.poll_p_encryption)
                     ]),
-                    h('div.upper', [
-                        h('button#publish.btn.btn-success', {
-                            style: { display: 'none' }
-                        }, Msg.poll_publish_button),
-                        h('button#admin.btn.btn-primary', {
-                            style: { display: 'none' },
-                            title: Msg.poll_admin_button
-                        }, Msg.poll_admin_button),
-                        h('button#help.btn.btn-secondary', {
-                            title: Msg.poll_show_help_button
-                        }, Msg.poll_show_help_button)
-                    ]),
-                    h('div.realtime', [
+                    h('div.cp-app-poll-realtime', [
                         h('br'),
-                        h('center', [
-                            h('textarea#description', {
+                        h('div', [
+                            h('textarea#cp-app-poll-description', {
                                 rows: "5",
                                 cols: "50",
+                                placeholder: Msg.poll_descriptionHint,
                                 disabled: true
                             }),
+                            h('div#cp-app-poll-description-published'),
                             h('br')
                         ]),
-                        h('div#tableContainer', [
-                            h('div#tableScroll'),
-                            h('button#create-user.btn.btn-secondary', {
+                        h('div#cp-app-poll-table-container', [
+                            h('div#cp-app-poll-table-scroll'),
+                            h('button#cp-app-poll-create-user.btn.btn-secondary', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),
-                            h('button#create-option.btn.btn-secondary', {
+                            h('button#cp-app-poll-create-option.btn.btn-secondary', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
-                            h('button#commit.btn.btn-secondary', {
-                                title: Msg.poll_commit
-                            }, h('span.fa.fa-check'))
+                        ]),
+                        h('div#cp-app-poll-comments', [
+                            h('h2#cp-app-poll-comments-add-title', Msg.poll_comment_add),
+                            h('div#cp-app-poll-comments-add', [
+                                h('input.cp-app-poll-comments-add-name', {
+                                    type: 'text'
+                                }),
+                                h('textarea.cp-app-poll-comments-add-msg'),
+                                h('button.cp-app-poll-comments-add-submit.btn.btn-secondary',
+                                    Msg.poll_comment_submit),
+                                h('button.cp-app-poll-comments-add-cancel.btn.btn-secondary',
+                                    Msg.cancel)
+                            ]),
+                            h('h2#cp-app-poll-comments-list-title', Msg.poll_comment_list),
+                            h('div#cp-app-poll-comments-list')
                         ])
                     ])
                 ])
