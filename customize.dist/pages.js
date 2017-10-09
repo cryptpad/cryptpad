@@ -679,7 +679,8 @@ define([
                             ]),
                             h('h2#cp-app-poll-comments-list-title', Msg.poll_comment_list),
                             h('div#cp-app-poll-comments-list')
-                        ])
+                        ]),
+                        h('div#cp-app-poll-nocomments', Msg.poll_comment_disabled)
                     ])
                 ])
             ])

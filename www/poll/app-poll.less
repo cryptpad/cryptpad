@@ -125,6 +125,7 @@ table#cp-app-poll-table {
         min-width: 80%;
         width: 80%;
         min-height: 200px;
+        height: 200px;
         border: 1px solid black;
         .CodeMirror-placeholder {
             color: #777;
@@ -149,17 +150,25 @@ table#cp-app-poll-table {
         max-height: 20em;
     }
 }
-.cp-app-poll-published {
-    #cp-app-poll-description {
-        display: none;
-        &~ .CodeMirror {
+div.cp-app-poll-published {
+    div.cp-app-poll-realtime {
+        #cp-app-poll-description {
+            display: none;
+            &~ .CodeMirror {
+                display: none;
+            }
+        }
+        #cp-app-poll-description-published {
+            display: block;
+            &:empty {
+                display: none;
+            }
+        }
+        #cp-app-poll-nocomments {
             display: none;
         }
-    }
-    #cp-app-poll-description-published {
-        display: block;
-        &:empty {
-            display: none;
+        #cp-app-poll-comments {
+            display: block;
         }
     }
 }
@@ -490,11 +499,18 @@ div.cp-app-poll-realtime {
             display: none;
         }
     }
+    #cp-app-poll-nocomments {
+        color: #999;
+        text-align: center;
+        margin: 20px;
+        font: @colortheme_app-font;
+    }
     #cp-app-poll-comments {
         width: 50%;
         margin: 20px auto;
         min-width: 400px;
         padding-bottom: 5px;
+        display: none;
         button {
             border-radius: 0;
         }

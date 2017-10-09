@@ -271,6 +271,8 @@ define(function () {
     out.poll_comment_submit = "Send";
     out.poll_comment_remove = "Delete this comment";
 
+    out.poll_comment_disabled = "Publish this poll using the ✓ button to enable the comments.";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";
