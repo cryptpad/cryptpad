@@ -489,8 +489,8 @@ define([
     };
 
     // STORAGE
-    common.setPadAttribute = function (attr, value, cb) {
-        var href = getRelativeHref(window.location.href);
+    common.setPadAttribute = function (attr, value, cb, href) {
+        href = getRelativeHref(href || window.location.href);
         getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setDisplayName = function (value, cb) {

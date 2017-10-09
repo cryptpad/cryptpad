@@ -77,7 +77,7 @@ define([
             sfCommon: common,
         };
         if (uploadMode) {
-            displayed.push('pageTitle'); //TODO in toolbar
+            displayed.push('pageTitle');
             configTb.pageTitle = Messages.upload_title;
         }
         var toolbar = APP.toolbar = Toolbar.create(configTb);

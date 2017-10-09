@@ -76,6 +76,7 @@ define([
                 common.renamePad(title || "", href, function (err) {
                     if (err) { return void console.error(err); }
                     onComplete(href);
+                    common.setPadAttribute('fileType', metadata.type, null, href);
                 });
             });
         };
