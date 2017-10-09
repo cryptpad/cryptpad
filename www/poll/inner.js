@@ -464,11 +464,13 @@ define([
             Render.updateTable(table, displayedObj, conf);
             // Fix autocomplete bug:
             displayedObj.content.rowsOrder.forEach(function (rowId) {
+                if (f.id === rowId) { return; }
                 $('input[data-rt-id="' + rowId +'"]').val(displayedObj.content.rows[rowId] || '');
             });
-            displayedObj.content.colsOrder.forEach(function (rowId) {
-                $('input[data-rt-id="' + rowId +'"]')
-                    .val(displayedObj.content.cols[rowId] || '');
+            displayedObj.content.colsOrder.forEach(function (colId) {
+                if (f.id === colId) { return; }
+                $('input[data-rt-id="' + colId +'"]')
+                    .val(displayedObj.content.cols[colId] || '');
             });
             updateDisplayedTable();
             setFocus(f);
@@ -512,7 +514,7 @@ define([
             case 'text':
                 debug("text[rt-id='%s'] [%s]", id, input.value);
                 Render.setValue(object, id, input.value);
-                change(null, null, null, 250);
+                change(null, null, null, 1000);
                 break;
             case 'number':
                 debug("checkbox[tr-id='%s'] %s", id, input.value);
@@ -630,6 +632,7 @@ define([
 
         switch (nodeName) {
             case 'INPUT':
+                if ($(target).is('[type="text"]') && !isKeyup) { return; }
                 if (isKeyup && (e.keyCode === 13 || e.keyCode === 27)) {
                     var id = target.getAttribute('data-rt-id');
                     if ($(target).parents('.cp-app-poll-table-uncommitted').length
