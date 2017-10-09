@@ -657,9 +657,10 @@ define([
         // We need to override the "a" tag action here because it is inside the iframe!
         var inDrive = /^\/drive/;
 
-        var origin = config.metadataMgr.getPrivateData().origin;
-
-        var href = inDrive.test(origin) ? origin+'/index.html' : origin+'/drive/';
+        var privateData = config.metadataMgr.getPrivateData();
+        var origin = privateData.origin;
+        var pathname = privateData.pathname;
+        var href = inDrive.test(pathname) ? origin+'/index.html' : origin+'/drive/';
         var buttonTitle = inDrive ? Messages.header_homeTitle : Messages.header_logoTitle;
 
         var $aTag = $('<a>', {
