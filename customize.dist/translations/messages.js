@@ -162,6 +162,7 @@ define(function () {
     out.tags_title = "Tags (for you only)";
     out.tags_add = "Update this page's tags";
     out.tags_searchHint = "Find files by their tags by searching in your CryptDrive";
+    out.tags_searchHint = "Start a search with # in your CryptDrive to find your tagged pads.";
     out.tags_notShared = "Your tags are not shared with other users";
 
     out.tags_duplicate = "Duplicate tag: {0}";
