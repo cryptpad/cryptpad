@@ -178,6 +178,7 @@ define([
 
         APP.draw = true;
         var toggleDrawMode = function () {
+            canvas.deactivateAll().renderAll();
             APP.draw = !APP.draw;
             canvas.isDrawingMode = APP.draw;
             $toggle.text(APP.draw ? Messages.canvas_disable : Messages.canvas_enable);
@@ -353,6 +354,7 @@ define([
         var onLocal = config.onLocal = function () {
             if (initializing) { return; }
             if (readOnly) { return; }
+            console.error('local');
 
             var content = stringifyInner(canvas.toDatalessJSON());
 
@@ -413,6 +415,58 @@ define([
 
             if (!readOnly) {
                 makeColorButton($rightside);
+
+                // Embed image
+                var onUpload = function (e) {
+                    var file = e.target.files[0];
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        var img = new Image();
+                        img.onload = function () {
+                            var w = img.width;
+                            var h = img.height;
+                            if (w<h) {
+                                img.width = img.width * (300/img.height);
+                                img.height = 300;
+                            } else {
+                                img.height = img.height * (300/img.width);
+                                img.width = 300;
+                            }
+                            var cImg = new Fabric.Image(img, { left:0, top:0, angle:0, });
+                            APP.canvas.add(cImg);
+                            onLocal();
+                        };
+                        img.src = reader.result;
+                    };
+                    reader.readAsDataURL(file);
+                };
+                common.createButton('', true)
+                    .attr('title', 'Embed an image')
+                    .click(function () {
+                        $('<input>', {type:'file'}).on('change', onUpload).click();
+                    }).appendTo($rightside);
+                var fileDialogCfg = {
+                    onSelect: function (data) {
+                        if (data.type === 'file') {
+                            var $block = $('#cp-app-whiteboard-media-hidden');
+                            var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                            $block.append(mt);
+                            return;
+                        }
+                    }
+                };
+                common.initFilePicker(fileDialogCfg);
+                APP.$mediaTagButton = $('<button>', {
+                    title: Messages.filePickerButton,
+                    'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                    style: 'font-size: 17px'
+                }).click(function () {
+                    var pickerCfg = {
+                        types: ['file'],
+                        where: ['root']
+                    };
+                    common.openFilePicker(pickerCfg);
+                }).appendTo($rightside);
             }
 
             metadataMgr.onChange(function () {
@@ -454,19 +508,26 @@ define([
             } else {
                 Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
             }
-            if (newDoc) {
-                canvas.loadFromJSON(newDoc);
-                canvas.renderAll();
-            }
 
-            setEditable(!readOnly);
-            initializing = false;
-            config.onLocal();
-            Cryptpad.removeLoadingScreen();
-            if (readOnly) { return; }
-            if (isNew) {
-                common.openTemplatePicker();
-            }
+
+            nThen(function (waitFor) {
+                if (newDoc) {
+                    canvas.loadFromJSON(newDoc, waitFor(function () {
+                        console.log('loaded');
+                        canvas.renderAll();
+                    }));
+                }
+            }).nThen(function () {
+                setEditable(!readOnly);
+                initializing = false;
+                config.onLocal();
+                Cryptpad.removeLoadingScreen();
+                if (readOnly) { return; }
+                if (isNew) {
+                    common.openTemplatePicker();
+                }
+            });
+
         };
 
         config.onRemote = function () {
@@ -476,14 +537,12 @@ define([
             var json = JSON.parse(userDoc);
             var remoteDoc = json.content;
 
-            if (json.metadata) {
-                metadataMgr.updateMetadata(json.metadata);
-            }
-
-            // TODO update palette if it has changed
-
-            canvas.loadFromJSON(remoteDoc);
-            canvas.renderAll();
+            canvas.loadFromJSON(remoteDoc, function () {
+                canvas.renderAll();
+                if (json.metadata) {
+                    metadataMgr.updateMetadata(json.metadata);
+                }
+            });
 
             var content = canvas.toDatalessJSON();
             if (content !== remoteDoc) { common.notify(); }

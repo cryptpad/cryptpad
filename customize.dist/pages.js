@@ -630,6 +630,7 @@ define([
                 }
             }),
             h('div#cp-app-whiteboard-pickers'),
+            h('div#cp-app-whiteboard-media-hidden')
         ];
     };
 
