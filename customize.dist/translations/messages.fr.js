@@ -160,6 +160,7 @@ define(function () {
     out.tags_title = "Mots-clés du pad (pour vous uniquement)";
     out.tags_add = "Modifier les mots-clés du pad";
     out.tags_searchHint = "Commencez une recherche par # dans votre CryptDrive pour retrouver vos pads par mot-clé.";
+    out.tags_notShared = "Vos mots-clés ne sont pas partagés avec les autres utilisateurs.";
     out.tags_duplicate = "Mot-clé déjà présent : {0}";
 
     out.slideOptionsText = "Options";
