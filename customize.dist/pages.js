@@ -524,8 +524,8 @@ define([
                 h('div.row.cp-register-test',[
                     h('hr'),
                     h('div.col-12', [
-                        setHTML(h('p.test-details'), Msg.register_testimonial),
-                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, Msg.register_testimonial_name)
+                        setHTML(h('p.test-details'), " \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\" "),
+                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, "Cory Doctorow")
                     ])
                 ])
             ]),

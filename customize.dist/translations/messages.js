@@ -451,8 +451,6 @@ define(function () {
             "<li><i class='fa fa-info-circle'> </i> If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
     ].join('');
-    out.register_testimonial =" \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\"  ";
-    out.register_testimonial_name = "Cory Doctorow";
 
     out.register_writtenPassword = "I have written down my username and password, proceed";
     out.register_cancel = "Go back";
