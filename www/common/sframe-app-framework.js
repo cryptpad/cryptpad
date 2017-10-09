@@ -157,7 +157,7 @@ define([
 
                 if (newContent2StrNoMeta !== newContentStrNoMeta) {
                     console.error("shjson2 !== shjson");
-                    textPatcher(newContent2StrNoMeta);
+                    onLocal();
 
                     /*  pushing back over the wire is necessary, but it can
                         result in a feedback loop, which we call a browser
@@ -346,7 +346,7 @@ define([
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform
-                transformFunction: options.transformFunction || JsonOT.validate,
+                transformFunction: options.transformFunction || JsonOT.transform,
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,
                 validateContent: options.validateContent || function (content) {
