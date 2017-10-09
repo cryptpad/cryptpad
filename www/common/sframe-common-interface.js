@@ -216,7 +216,7 @@ define([
                     title: Messages.tags_title,
                 })
                 .click(common.prepareFeedback(type))
-                .click(function () { UI.updateTags(null); });
+                .click(function () { UI.updateTags(common, null); });
                 break;
             default:
                 button = $('<button>', {
