@@ -393,6 +393,11 @@ define([
                 inner.getAttribute('contenteditable'));
 
             restoreMediaTags(userDocStateDom, mediaTagMap);
+
+            // Deal with adjasent text nodes
+            userDocStateDom.normalize();
+            inner.normalize();
+
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
             displayMediaTags(framework, inner, mediaTagMap);
