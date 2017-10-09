@@ -157,8 +157,9 @@ define(function () {
     out.filePicker_filter = "Filtrez les fichiers par leur nom";
     out.or = 'ou';
 
-    out.tags_title = "Mots-clés du pad";
+    out.tags_title = "Mots-clés du pad (pour vous uniquement)";
     out.tags_add = "Modifier les mots-clés du pad";
+    out.tags_searchHint = "Commencez une recherche par # dans votre CryptDrive pour retrouver vos pads par mot-clé.";
     out.tags_duplicate = "Mot-clé déjà présent : {0}";
 
     out.slideOptionsText = "Options";
@@ -700,6 +701,7 @@ define(function () {
     out.tips.drive = "Les utilisateurs enregistrés peuvent organiser leurs fichiers dans leur CryptDrive, accessible depuis l'icône CryptPad dans le coin supérieur gauche des pads.";
     out.tips.profile = "Les utilisateurs enregistrés peuvent créer un profil depuis le menu utilisateur, dans le coin supérieur droit.";
     out.tips.avatars = "Vous pouvez uploader un avatar dans votre profil. Les autres personnes le verront dans la liste d'utilisateurs des pads.";
+    out.tips.tags = "Ajoutez des mots-clés aux pads et effectuer une recherche commençant par # dans votre CryptDrive pour les retrouver.";
 
     out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
     out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
