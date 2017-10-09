@@ -558,8 +558,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.extra', [
-                            h('button.login.first.btn', Msg.login_login),
-                            h('button#register.btn.register.cp-login-register', Msg.login_register)
+                            h('button.login.first.btn', Msg.login_login)
                         ])
                     ])
                 ]),
