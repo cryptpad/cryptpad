@@ -160,6 +160,7 @@ define(function () {
     out.tags_title = "Mots-clés du pad (pour vous uniquement)";
     out.tags_add = "Modifier les mots-clés du pad";
     out.tags_searchHint = "Commencez une recherche par # dans votre CryptDrive pour retrouver vos pads par mot-clé.";
+    out.tags_notShared = "Vos mots-clés ne sont pas partagés avec les autres utilisateurs";
     out.tags_duplicate = "Mot-clé déjà présent : {0}";
 
     out.slideOptionsText = "Options";
@@ -396,6 +397,9 @@ define(function () {
     out.fc_remove = "Supprimer définitivement";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
+    out.fc_hashtag = "Mots-clés";
+    // File - Context menu
+
     out.fc_sizeInKilobytes = "Taille en kilo-octets";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
