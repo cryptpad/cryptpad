@@ -46,9 +46,7 @@ define([
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
 
-    var Render = Renderer(Cryptpad);
     var APP = window.APP = {
-        Render: Render,
         unlocked: {
             row: [],
             col: []
@@ -57,6 +55,7 @@ define([
         Cryptpad: Cryptpad,
         mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
     };
+    var Render = Renderer(Cryptpad, APP);
 
     var debug = $.noop; //console.log;
 
@@ -221,11 +220,12 @@ define([
         return newObj;
     };
 
-    var enableColumn = function (id) {
-        var $input = $('input[disabled="disabled"][data-rt-id^="' + id + '"]')
+    var enableColumn  = APP.enableColumn = function (id, table) {
+        table = table || $('body');
+        var $input = $(table).find('input[disabled="disabled"][data-rt-id^="' + id + '"]')
             .removeAttr('disabled');
         $input.closest('td').addClass('cp-app-poll-table-editing');
-        $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock')
+        $(table).find('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-unlock')
             .removeClass('fa-lock').attr('title', Messages.poll_unlocked);
     };
     var disableColumn = function (id) {
@@ -235,10 +235,13 @@ define([
         $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').addClass('fa-lock')
             .removeClass('fa-unlock').attr('title', Messages.poll_locked);
     };
-    var enableRow = function (id) {
-        var $input = $('input[type="text"][disabled="disabled"][data-rt-id="' + id + '"]').removeAttr('disabled');
+    var enableRow = APP.enableRow = function (id, table) {
+        table = table || $('body');
+        var $input = $(table).find('input[disabled="disabled"][data-rt-id="' + id + '"]')
+            .removeAttr('disabled');
         $input.closest('td').addClass('cp-app-poll-table-editing');
-        $('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]').css('visibility', 'hidden');
+        $(table).find('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]')
+            .css('visibility', 'hidden');
     };
     var disableRow = function (id) {
         var $input = $('input[type="text"][data-rt-id="' + id + '"]')
@@ -247,76 +250,9 @@ define([
         $('span.cp-app-poll-table-edit[data-rt-id="' + id + '"]').css('visibility', 'visible');
     };
 
-    var styleUserColumn = function () {
-        var userid = APP.userid;
-        if (!userid) { return; }
-
-        // Enable input for the userid column
-        enableColumn(userid);
-        $('input[disabled="disabled"][data-rt-id^="' + userid + '"]')
-            .attr('placeholder', Messages.poll_userPlaceholder);
-        $('.cp-app-poll-table-lock[data-rt-id="' + userid + '"]').remove();
-        $('[data-rt-id^="' + userid + '"]').closest('td')
-            .addClass("cp-app-poll-table-own");
-        $('.cp-app-poll-table-bookmark[data-rt-id="' + userid + '"]').css('visibility', '')
-            .addClass('cp-app-poll-table-bookmark-full')
-            .attr('title', Messages.poll_bookmarked_col);
-    };
-    var styleUncommittedColumn = function () {
-        var $scroll = $('#cp-app-poll-table-scroll');
-        var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
-        APP.uncommitted.content.colsOrder.forEach(function(id) {
-            // Enable the checkboxes for the uncommitted column
-            enableColumn(id);
-            $('.cp-app-poll-table-lock[data-rt-id="' + id + '"]').remove();
-            $('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
-            $('.cp-app-poll-table-bookmark[data-rt-id="' + id + '"]').remove();
-
-            $('td.cp-app-poll-table-uncommitted .cover').addClass("cp-app-poll-table-uncommitted");
-            var $uncommittedCol = $('[data-rt-id^="' + id + '"]').closest('td');
-            $uncommittedCol.addClass("cp-app-poll-table-uncommitted");
-
-            if (hasScroll) {
-                $uncommittedCol.css('right', '100px');
-            }
-        });
-        APP.uncommitted.content.rowsOrder.forEach(function(id) {
-            // Enable the checkboxes for the uncommitted column
-            enableRow(id);
-            $('.cp-app-poll-table-edit[data-rt-id="' + id + '"]').remove();
-            $('.cp-app-poll-table-remove[data-rt-id="' + id + '"]').remove();
-
-            $('[data-rt-id="' + id + '"]').closest('tr').addClass("cp-app-poll-table-uncommitted");
-        });
-    };
     var unlockElements = function () {
         APP.unlocked.row.forEach(enableRow);
         APP.unlocked.col.forEach(enableColumn);
-    };
-    var updateTableButtons = function () {
-        var uncomColId = APP.uncommitted.content.colsOrder[0];
-        var uncomRowId = APP.uncommitted.content.rowsOrder[0];
-        var $createOption = APP.$table.find('tbody input[data-rt-id="' + uncomRowId+'"]')
-                                .closest('td').find('> div');
-        $createOption.append(APP.$createRow);
-        var $createUser = APP.$table.find('thead input[data-rt-id="' + uncomColId + '"]')
-                                .closest('td');
-        $createUser.prepend(APP.$createCol);
-
-        if (APP.proxy.content.colsOrder.indexOf(APP.userid) === -1) {
-            APP.$table.find('.cp-app-poll-table-bookmark').css('visibility', '');
-        }
-
-        //$('#cp-app-poll-create-user, #cp-app-poll-create-option').css('display', 'inline-flex');
-        if (!APP.proxy ||
-            !APP.proxy.content.rowsOrder ||
-            APP.proxy.content.rowsOrder.length === 0) {
-            //$('#create-user').hide();
-        }
-        var width = $('#cp-app-poll-table').outerWidth();
-        if (width) {
-            //$('#create-user').css('left', width + 30 + 'px');
-        }
     };
     var setTablePublished = function (bool) {
         if (bool) {
@@ -329,59 +265,19 @@ define([
             $('#cp-app-poll-form').removeClass('cp-app-poll-published');
         }
     };
-    var addCount = function () {
+    var addScrollClass = function () {
         var $scroll = $('#cp-app-poll-table-scroll');
         var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
-        var $countCol = $('tr td:last-child');
         if (hasScroll) {
-            $countCol.css('right', '0');
+            $scroll.addClass('cp-app-poll-table-scrolled');
+            return;
         }
-        var $thead = APP.$table.find('thead');
-        var $tr = APP.$table.find('tbody tr').first();
-        $thead.find('tr td').last()
-            .css({
-                'height': $thead.height()+'px',
-                'text-align': 'center',
-                'line-height': $thead.height()+'px'
-            })
-            .text(Messages.poll_total);
-        var winner = {
-            v: 0,
-            ids: []
-        };
-        APP.count = {};
-        APP.proxy.content.rowsOrder.forEach(function (rId) {
-            var count = Object.keys(APP.proxy.content.cells)
-                .filter(function (k) {
-                    return k.indexOf(rId) !== -1 && APP.proxy.content.cells[k] === 1;
-                }).length;
-            if (count > winner.v) {
-                winner.v = count;
-                winner.ids = [rId];
-            } else if (count && count === winner.v) {
-                winner.ids.push(rId);
-            }
-            APP.count[rId] = count;
-            APP.$table.find('[data-rt-count-id="' + rId + '"]')
-                .text(count)
-                .css({
-                    'height': $tr.height()+'px',
-                    'line-height': $tr.height()+'px'
-                });
-        });
-        winner.ids.forEach(function (rId) {
-            $('[data-rt-id="' + rId + '"]').closest('td').addClass('cp-app-poll-table-winner');
-            $('[data-rt-count-id="' + rId + '"]').addClass('cp-app-poll-table-winner');
-        });
+        $scroll.removeClass('cp-app-poll-table-scrolled');
     };
 
     var updateDisplayedTable = function () {
-        styleUserColumn();
-        styleUncommittedColumn();
-        unlockElements();
-        updateTableButtons();
         setTablePublished(APP.proxy.published);
-        addCount();
+        addScrollClass();
     };
 
     var unlockColumn = function (id, cb) {
@@ -941,12 +837,6 @@ define([
             unlockRow(rowuid);
         }
 
-        var displayedObj = mergeUncommitted(proxy, uncommitted, false);
-
-        var colsOrder = sortColumns(displayedObj.content.colsOrder, userid);
-
-        var $table = APP.$table = $(Render.asHTML(displayedObj, null, colsOrder, APP.readOnly));
-
         /*
             Extract uncommitted data (row or column) and create a new uncommitted row or column
         */
@@ -1007,6 +897,15 @@ define([
             });
         });
 
+        var displayedObj = mergeUncommitted(proxy, uncommitted, false);
+
+        var colsOrder = sortColumns(displayedObj.content.colsOrder, userid);
+
+        Render.updateTable($('#cp-app-poll-table-scroll').find('table')[0], displayedObj, {
+            cols: colsOrder,
+            readOnly: APP.readOnly
+        });
+
         // Description
         APP.editor.on('change', function () {
             var val = APP.editor.getValue();
@@ -1015,7 +914,7 @@ define([
         APP.$addComment.find('.cp-app-poll-comments-add-submit').click(addComment);
         APP.$addComment.find('.cp-app-poll-comments-add-cancel').click(resetComment);
 
-        $('#cp-app-poll-table-scroll').html('').prepend($table);
+        var $table = APP.$table = $('#cp-app-poll-table-scroll').find('table');
         updateDisplayedTable();
         updateDescription(null, APP.proxy.description || '');
 

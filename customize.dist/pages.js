@@ -656,7 +656,7 @@ define([
                             h('br')
                         ]),
                         h('div#cp-app-poll-table-container', [
-                            h('div#cp-app-poll-table-scroll'),
+                            h('div#cp-app-poll-table-scroll', [h('table')]),
                             h('button#cp-app-poll-create-user.btn.btn-secondary', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),

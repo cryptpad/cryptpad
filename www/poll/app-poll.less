@@ -224,6 +224,15 @@ div.cp-app-poll-realtime {
     padding: 0px;
     margin: 0px;
 
+    .cp-app-poll-table-scrolled {
+        tr td:last-child {
+            right: 0;
+        }
+        tr td:nth-last-child(2) {
+            right: 100px;
+        }
+    }
+
     table {
         border-collapse: collapse;
         width: ~"calc(100% - 1px)";
@@ -400,6 +409,11 @@ div.cp-app-poll-realtime {
                 color: @poll-th-fg;
                 &:not(:last-child) {
                     border-right: 1px solid rgba(255,255,255,0.2);
+                }
+                &:last-child {
+                    height: 52px;
+                    line-height: 52px;
+                    text-align: center;
                 }
                 &:nth-last-child(2) {
                     border-right: 1px solid @poll-border-color;
