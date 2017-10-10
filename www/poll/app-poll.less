@@ -63,10 +63,6 @@ overflow-x: hidden;
     }
 }
 
-.cp-app-poll-table-text-cell input[type="text"] {
-    width: 400px;
-}
-
 input[type="text"], textarea {
     background-color: white;
     color: black;
@@ -238,11 +234,21 @@ div.cp-app-poll-realtime {
                 background-color: @poll-uncommitted-cell !important;
             }
             div.cp-app-poll-table-text-cell {
+                display: flex;
+                align-items: center;
                 background-color: @poll-uncommitted-bg !important;
                 color: @poll-uncommitted-text !important;
                 input {
-                    width: ~"calc(100% - 80px)" !important;
-                    vertical-align: middle;
+                    order: 2;
+                    flex: 1;
+                    //width: ~"calc(100% - 80px)" !important;
+                    //vertical-align: middle;
+                }
+                .cp-app-poll-table-remove {
+                    order: 1;
+                }
+                .cp-app-poll-table-edit {
+                    order: 3;
                 }
             }
             text-align: center;
@@ -384,6 +390,9 @@ div.cp-app-poll-realtime {
         }
         thead {
             height: 52px;
+            tr {
+                height: 52px;
+            }
             td {
                 padding: 0px 5px;
                 background: @poll-th-bg;
