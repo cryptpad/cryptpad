@@ -268,9 +268,9 @@ define([
     };
     var addScrollClass = function () {
         var $scroll = $('#cp-app-poll-table-scroll');
-        var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
-        var noColumn = $scroll.width() < 100;
-        if (hasScroll && !noColumn) {
+        var hasScroll = $scroll.width() < $scroll[0].scrollWidth && $scroll.width() > 100;
+        var $countCol = $('tr td:last-child');
+        if (hasScroll) {
             $scroll.addClass('cp-app-poll-table-scrolled');
             return;
         }
