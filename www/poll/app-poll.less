@@ -83,6 +83,7 @@ input[type="text"][disabled]::placeholder {
 
 table#cp-app-poll-table {
     margin: 0px;
+    overflow: hidden;
 }
 #cp-app-poll-table-container {
     position: relative;
@@ -244,22 +245,8 @@ div.cp-app-poll-realtime {
                 background-color: @poll-uncommitted-cell !important;
             }
             div.cp-app-poll-table-text-cell {
-                display: flex;
-                align-items: center;
                 background-color: @poll-uncommitted-bg !important;
                 color: @poll-uncommitted-text !important;
-                input {
-                    order: 2;
-                    flex: 1;
-                    //width: ~"calc(100% - 80px)" !important;
-                    //vertical-align: middle;
-                }
-                .cp-app-poll-table-remove {
-                    order: 1;
-                }
-                .cp-app-poll-table-edit {
-                    order: 3;
-                }
             }
             text-align: center;
             background-color: @poll-uncommitted-bg !important;
@@ -301,9 +288,17 @@ div.cp-app-poll-realtime {
                     margin: 0px;
                     height: 100%;
 
+                    display: flex;
+                    align-items: center;
+                    .cp-app-poll-table-remove {
+                        order: 1;
+                    }
+                    .cp-app-poll-table-edit {
+                        order: 3;
+                    }
                     input {
-                        width: 80%;
-                        width: 90%;
+                        order: 2;
+                        flex: 1;
                         height: 100%;
                         border: 0px;
                         margin: 2px;
