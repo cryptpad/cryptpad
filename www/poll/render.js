@@ -503,11 +503,6 @@ var Renderer = function (Cryptpad, APP) {
         if (APP.proxy.content.colsOrder.indexOf(APP.userid) === -1) {
             $(table).find('.cp-app-poll-table-bookmark').css('visibility', '');
         }
-
-        if (!APP.proxy ||
-            !APP.proxy.content.rowsOrder ||
-            APP.proxy.content.rowsOrder.length === 0) {
-        }
     };
     var addCount = function (table) {
         var $tr = $(table).find('tbody tr').first();

@@ -254,6 +254,7 @@ define([
         APP.unlocked.row.forEach(enableRow);
         APP.unlocked.col.forEach(enableColumn);
     };
+
     var setTablePublished = function (bool) {
         if (bool) {
             if (APP.$publish) { APP.$publish.hide(); }
@@ -268,16 +269,30 @@ define([
     var addScrollClass = function () {
         var $scroll = $('#cp-app-poll-table-scroll');
         var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
-        if (hasScroll) {
+        var noColumn = $scroll.width() < 100;
+        if (hasScroll && !noColumn) {
             $scroll.addClass('cp-app-poll-table-scrolled');
             return;
         }
         $scroll.removeClass('cp-app-poll-table-scrolled');
     };
+    var updateTableButtons = function () {
+        var uncomColId = APP.uncommitted.content.colsOrder[0];
+        var uncomRowId = APP.uncommitted.content.rowsOrder[0];
+        var $createOption = $('tbody input[data-rt-id="' + uncomRowId+'"]')
+                                .closest('td').find('> div');
+        $createOption.find('#cp-app-poll-create-option').remove();
+        $createOption.append(APP.$createRow);
+        var $createUser = $('thead input[data-rt-id="' + uncomColId + '"]')
+                                .closest('td');
+        $createUser.find('#cp-app-poll-create-user').remove();
+        $createUser.prepend(APP.$createCol);
+    };
 
     var updateDisplayedTable = function () {
         setTablePublished(APP.proxy.published);
         addScrollClass();
+        updateTableButtons();
     };
 
     var unlockColumn = function (id, cb) {
