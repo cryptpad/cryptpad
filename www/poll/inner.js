@@ -264,7 +264,7 @@ define([
     };
     var styleUncommittedColumn = function () {
         var $scroll = $('#cp-app-poll-table-scroll');
-        var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
+        var hasScroll = $scroll.width() < $scroll[0].scrollWidth && $scroll.width() > 100;
         APP.uncommitted.content.colsOrder.forEach(function(id) {
             // Enable the checkboxes for the uncommitted column
             enableColumn(id);
@@ -331,7 +331,7 @@ define([
     };
     var addCount = function () {
         var $scroll = $('#cp-app-poll-table-scroll');
-        var hasScroll = $scroll.width() < $scroll[0].scrollWidth;
+        var hasScroll = $scroll.width() < $scroll[0].scrollWidth && $scroll.width() > 100;
         var $countCol = $('tr td:last-child');
         if (hasScroll) {
             $countCol.css('right', '0');
