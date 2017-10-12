@@ -216,6 +216,12 @@ define([
             });
 
             sframeChan.on('Q_MOVE_TO_TRASH', function (data, cb) {
+                cb = cb || $.noop;
+                if (readOnly && hashes.editHash) {
+                    var appPath = window.location.pathname;
+                    Cryptpad.moveToTrash(cb, appPath + '#' + hashes.editHash);
+                    return;
+                }
                 Cryptpad.moveToTrash(cb);
             });
 

@@ -150,9 +150,6 @@ define([
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
-                if (!common.isStrongestStored()) {
-                    button.addClass('cp-toolbar-hidden');
-                }
                 if (callback) {
                     button
                     .click(common.prepareFeedback(type))
