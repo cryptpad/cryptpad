@@ -998,6 +998,11 @@ define([
         Cryptpad.findOKButton().click();
     };
 
+    var getHeadingText = function () {
+        if (!APP.editor) { return; }
+        return SframeCM.getHeadingText(APP.editor);
+    };
+
     var onCreate = function (info) {
         APP.myID = info.myID;
 
@@ -1011,7 +1016,8 @@ define([
 
         metadataMgr = common.getMetadataMgr();
 
-        Title = common.createTitle();
+        var titleCfg = { getHeadingText: getHeadingText };
+        Title = common.createTitle(titleCfg);
 
         var configTb = {
             displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],

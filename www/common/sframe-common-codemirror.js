@@ -61,6 +61,46 @@ define([
         editor.scrollTo(scroll.left, scroll.top);
     };
 
+    module.getHeadingText = function (editor) {
+        var lines = editor.getValue().split(/\n/);
+
+        var text = '';
+        lines.some(function (line) {
+            // lines including a c-style comment are also valuable
+            var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
+            if (clike.test(line)) {
+                line.replace(clike, function (a, one, two) {
+                    if (!(two && two.replace)) { return; }
+                    text = two.replace(/\*\/\s*$/, '').trim();
+                });
+                return true;
+            }
+
+            // lisps?
+            var lispy = /^\s*(;|#\|)+(.*?)$/;
+            if (lispy.test(line)) {
+                line.replace(lispy, function (a, one, two) {
+                    text = two;
+                });
+                return true;
+            }
+
+            // lines beginning with a hash are potentially valuable
+            // works for markdown, python, bash, etc.
+            var hash = /^#+(.*?)$/;
+            if (hash.test(line)) {
+                line.replace(hash, function (a, one) {
+                    text = one;
+                });
+                return true;
+            }
+
+            // TODO make one more pass for multiline comments
+        });
+
+        return text.trim();
+    };
+
     module.create = function (Common, defaultMode, CMeditor) {
         var exp = {};
         var Messages = Cryptpad.Messages;
@@ -151,43 +191,7 @@ define([
         }());
 
         exp.getHeadingText = function () {
-            var lines = editor.getValue().split(/\n/);
-
-            var text = '';
-            lines.some(function (line) {
-                // lines including a c-style comment are also valuable
-                var clike = /^\s*(\/\*|\/\/)(.*)?(\*\/)*$/;
-                if (clike.test(line)) {
-                    line.replace(clike, function (a, one, two) {
-                        if (!(two && two.replace)) { return; }
-                        text = two.replace(/\*\/\s*$/, '').trim();
-                    });
-                    return true;
-                }
-
-                // lisps?
-                var lispy = /^\s*(;|#\|)+(.*?)$/;
-                if (lispy.test(line)) {
-                    line.replace(lispy, function (a, one, two) {
-                        text = two;
-                    });
-                    return true;
-                }
-
-                // lines beginning with a hash are potentially valuable
-                // works for markdown, python, bash, etc.
-                var hash = /^#+(.*?)$/;
-                if (hash.test(line)) {
-                    line.replace(hash, function (a, one) {
-                        text = one;
-                    });
-                    return true;
-                }
-
-                // TODO make one more pass for multiline comments
-            });
-
-            return text.trim();
+            return module.getHeadingText(editor);
         };
 
         exp.configureLanguage = function (cb, onModeChanged) {
