@@ -410,6 +410,7 @@ define([
 
         framework.setContentGetter(function () {
             displayMediaTags(framework, inner, mediaTagMap);
+            inner.normalize();
             return Hyperjson.fromDOM(inner, isNotMagicLine, hjsonFilters);
         });
 

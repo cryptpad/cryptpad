@@ -236,21 +236,6 @@ define([
                 cpNfInner.metadataMgr.updateMetadata(extractMetadata(newContent));
                 newContent = normalize(newContent);
                 contentUpdate(newContent);
-
-                if (!readOnly) {
-                    var newContent2NoMeta = normalize(contentGetter());
-                    var newContent2StrNoMeta = JSONSortify(newContent2NoMeta);
-                    var newContentStrNoMeta = JSONSortify(newContent);
-
-                    if (newContent2StrNoMeta !== newContentStrNoMeta) {
-                        console.log('err');
-                        console.error("shjson2 !== shjson");
-                        console.log(newContent2StrNoMeta);
-                        console.log(newContentStrNoMeta);
-                        Cryptpad.errorLoadingScreen(Messages.wrongApp);
-                        throw new Error();
-                    }
-                }
             } else {
                 title.updateTitle(Cryptpad.initialName || title.defaultTitle);
                 evOnDefaultContentNeeded.fire();
@@ -346,7 +331,8 @@ define([
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform
-                transformFunction: options.transformFunction || JsonOT.transform,
+                //transformFunction: options.transformFunction || JsonOT.validate,
+                patchTransformer: options.patchTransformer || JsonOT.patchTransformer,
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,
                 validateContent: options.validateContent || function (content) {
@@ -355,6 +341,8 @@ define([
                         return true;
                     } catch (e) {
                         console.log("Failed to parse, rejecting patch");
+                        console.log(e.stack);
+                        console.log(content);
                         return false;
                     }
                 },
