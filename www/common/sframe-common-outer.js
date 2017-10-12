@@ -262,7 +262,7 @@ define([
                     msg = parsed[1][4];
                     if (msg) {
                         msg = msg.replace(/^cp\|/, '');
-                        var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
+                        var decryptedMsg = crypto.decrypt(msg, true);
                         msgs.push(decryptedMsg);
                     }
                 };
