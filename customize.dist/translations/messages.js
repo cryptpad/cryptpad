@@ -164,8 +164,8 @@ define(function () {
     out.tags_searchHint = "Find files by their tags by searching in your CryptDrive";
     out.tags_searchHint = "Start a search with # in your CryptDrive to find your tagged pads.";
     out.tags_notShared = "Your tags are not shared with other users";
-
     out.tags_duplicate = "Duplicate tag: {0}";
+    out.tags_noentry = "You can't tag a deleted pad!";
 
     out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Customize your slides";

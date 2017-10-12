@@ -31,7 +31,12 @@ define([
     UI.updateTags = function (common, href) {
         var sframeChan = common.getSframeChannel();
         sframeChan.query('Q_TAGS_GET', href || null, function (err, res) {
-            if (err || res.error) { return void console.error(err || res.error); }
+            if (err || res.error) {
+                if (res.error === 'NO_ENTRY') {
+                    Cryptpad.alert(Messages.tags_noentry);
+                }
+                return void console.error(err || res.error);
+            }
             Cryptpad.dialog.tagPrompt(res.data, function (tags) {
                 if (!Array.isArray(tags)) { return; }
                 sframeChan.event('EV_TAGS_SET', {
