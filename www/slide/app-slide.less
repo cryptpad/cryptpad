@@ -277,11 +277,13 @@ div#cp-app-slide-modal #cp-app-slide-modal-content, #cp-app-slide-print {
         // fixes image overflowing
         media-tag {
             height: 100%;
+            flex-flow: row;
+            justify-content: center;
 
             & + * {
                 margin-top: 1rem;
             }
-            img { margin: unset; }
+            img { flex: unset; }
         }
 
         img {
