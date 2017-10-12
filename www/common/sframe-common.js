@@ -190,6 +190,7 @@ define([
         });
     };
     funcs.setPadAttribute = function (key, value, cb) {
+        cb = cb || $.noop;
         ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
             key: key,
             value: value
