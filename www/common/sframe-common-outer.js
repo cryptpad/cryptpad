@@ -362,22 +362,26 @@ define([
 
             // File picker
             var FP = {};
-            var initFilePicker = function (types) {
-                var config = {};
-                config.onFilePicked = function (data) {
-                    sframeChan.event('EV_FILE_PICKED', data);
-                };
-                config.onClose = function () {
-                    FP.$iframe.hide();
-                };
-                config.onFileUpload = onFileUpload;
-                config.types = types;
+            var initFilePicker = function (cfg) {
                 if (!FP.$iframe) {
+                    var config = {};
+                    config.onFilePicked = function (data) {
+                        sframeChan.event('EV_FILE_PICKED', data);
+                    };
+                    config.onClose = function () {
+                        FP.$iframe.hide();
+                    };
+                    config.onFileUpload = onFileUpload;
+                    config.types = cfg;
                     FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
                     FP.picker = FilePicker.create(config);
                 } else {
                     FP.$iframe.show();
-                    FP.picker.refresh(types);
+                    FP.picker.refresh(cfg);
+                }
+                if (cfg.hidden) {
+                    FP.$iframe.hide();
+                    return;
                 }
                 FP.$iframe.focus();
             };

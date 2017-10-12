@@ -587,11 +587,18 @@ define([
         var sframeChan = common.getSframeChannel();
         var focus;
 
+        var pickerCfg = {
+            types: [type],
+            where: ['template'],
+            hidden: true
+        };
         var onConfirm = function (yes) {
             if (!yes) {
                 if (focus) { focus.focus(); }
                 return;
             }
+            delete pickerCfg.hidden;
+            common.openFilePicker(pickerCfg);
             var first = true; // We can only pick a template once (for a new document)
             var fileDialogCfg = {
                 onSelect: function (data) {
@@ -608,15 +615,11 @@ define([
                 }
             };
             common.initFilePicker(fileDialogCfg);
-            var pickerCfg = {
-                types: [type],
-                where: ['template']
-            };
-            common.openFilePicker(pickerCfg);
         };
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
             if (data) {
+                common.openFilePicker(pickerCfg);
                 focus = document.activeElement;
                 Cryptpad.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,
