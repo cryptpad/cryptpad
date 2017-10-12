@@ -98,6 +98,7 @@ define([
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
+                if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     title: Messages.saveTemplateButton,
                 }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));

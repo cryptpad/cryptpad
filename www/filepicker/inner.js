@@ -109,7 +109,7 @@ define([
             });
 
             //If file, display the upload button
-            if (types.indexOf('file') !== -1) {
+            if (types.indexOf('file') !== -1 && common.isLoggedIn()) {
                 $filter.append(common.createButton('upload', false, data));
             }
 
