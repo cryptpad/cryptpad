@@ -1038,7 +1038,11 @@ define([
         };
 
         var onFileDrop = APP.onFileDrop = function (file, e) {
-            APP.FM.onFileDrop(file, e);
+            var ev = {
+                target: e.target,
+                path: findDropPath(e.target)
+            };
+            APP.FM.onFileDrop(file, ev);
         };
         var findDropPath = function (target) {
             var $target = $(target);
@@ -1474,7 +1478,8 @@ define([
                     }).on('change', function (e) {
                         var file = e.target.files[0];
                         var ev = {
-                            target: $content[0]
+                            target: $content[0],
+                            path: findDropPath($content[0])
                         };
                         APP.FM.handleFile(file, ev);
                     });
@@ -2847,24 +2852,7 @@ define([
         var fmConfig = {
             noHandlers: true,
             onUploaded: function (ev, data) {
-                try {
-                    // Get the folder path
-                    console.log(ev.target);
-                    console.log(data);
-                    var newPath = findDropPath(ev.target);
-                    if (!newPath) { return void refresh(); }
-                    var href = data.url;
-                    // Get the current file location in ROOT
-                    var id = filesOp.getIdFromHref(href);
-                    var paths = filesOp.findFile(id);
-                    if (paths.length !== 1) { return; }
-                    // Try to move and refresh
-                    moveElements([paths[0]], newPath, true);
-                    refresh();
-                } catch (e) {
-                    console.error(e);
-                    refresh();
-                }
+                refresh();
             },
             body: $('body')
         };
