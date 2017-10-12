@@ -1037,13 +1037,6 @@ define([
             ev.dataTransfer.setData("text", stringify(data));
         };
 
-        var onFileDrop = APP.onFileDrop = function (file, e) {
-            var ev = {
-                target: e.target,
-                path: findDropPath(e.target)
-            };
-            APP.FM.onFileDrop(file, ev);
-        };
         var findDropPath = function (target) {
             var $target = $(target);
             var $el = findDataHolder($target);
@@ -1053,6 +1046,13 @@ define([
                 newPath = currentPath;
             }
             return newPath;
+        };
+        var onFileDrop = APP.onFileDrop = function (file, e) {
+            var ev = {
+                target: e.target,
+                path: findDropPath(e.target)
+            };
+            APP.FM.onFileDrop(file, ev);
         };
         var onDrop = function (ev) {
             ev.preventDefault();
@@ -2851,7 +2851,7 @@ define([
 
         var fmConfig = {
             noHandlers: true,
-            onUploaded: function (ev, data) {
+            onUploaded: function () {
                 refresh();
             },
             body: $('body')
