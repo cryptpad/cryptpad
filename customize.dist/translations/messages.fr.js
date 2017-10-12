@@ -268,6 +268,7 @@ define(function () {
     out.poll_comment_add = "Ajouter un commentaire";
     out.poll_comment_submit = "Envoyer";
     out.poll_comment_remove = "Supprimer ce commentaire";
+    out.poll_comment_placeholder = "Votre commentaire";
 
     out.poll_comment_disabled = "Publiez ce sondage en utilisant le bouton ✓ afin d'activer les commentaires.";
 

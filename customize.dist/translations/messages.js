@@ -272,6 +272,7 @@ define(function () {
     out.poll_comment_add = "Add a comment";
     out.poll_comment_submit = "Send";
     out.poll_comment_remove = "Delete this comment";
+    out.poll_comment_placeholder = "Your comment";
 
     out.poll_comment_disabled = "Publish this poll using the ✓ button to enable the comments.";
 

@@ -668,9 +668,12 @@ define([
                             h('h2#cp-app-poll-comments-add-title', Msg.poll_comment_add),
                             h('div#cp-app-poll-comments-add', [
                                 h('input.cp-app-poll-comments-add-name', {
-                                    type: 'text'
+                                    type: 'text',
+                                    placeholder: Msg.anonymous
                                 }),
-                                h('textarea.cp-app-poll-comments-add-msg'),
+                                h('textarea.cp-app-poll-comments-add-msg', {
+                                    placeholder: Msg.poll_comment_placeholder
+                                }),
                                 h('button.cp-app-poll-comments-add-submit.btn.btn-secondary',
                                     Msg.poll_comment_submit),
                                 h('button.cp-app-poll-comments-add-cancel.btn.btn-secondary',

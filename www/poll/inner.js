@@ -697,6 +697,7 @@ define([
             return comments[a].time > comments[b].time;
         }).forEach(function (k) {
             var c = comments[k];
+            var name = c.name || Messages.anonymous;
             var $c = $('<div>', {
                 'class': 'cp-app-poll-comments-list-el'
             }).prependTo($comments);
@@ -708,7 +709,7 @@ define([
             if (c.avatar && avatars[c.avatar]) {
                 $avatar.append(avatars[c.avatar]);
             } else {
-                common.displayAvatar($avatar, c.avatar, c.name, function ($img) {
+                common.displayAvatar($avatar, c.avatar, name, function ($img) {
                     if (c.avatar && $img.length) { avatars[c.avatar] = $img[0].outerHTML; }
                 });
             }
@@ -717,11 +718,11 @@ define([
                     'href': APP.origin + '/profile/#' + c.profile,
                     'target': '_blank',
                     'class': 'cp-app-poll-comments-list-data-name'
-                }).appendTo($data).text(c.name);
+                }).appendTo($data).text(name);
             } else {
                 $('<span>', {
                     'class': 'cp-app-poll-comments-list-data-name'
-                }).appendTo($data).text(c.name);
+                }).appendTo($data).text(name);
             }
             $('<span>', {
                 'class': 'cp-app-poll-comments-list-data-time'
@@ -759,9 +760,11 @@ define([
     };
     var addComment = function () {
         if (!APP.proxy.comments) { APP.proxy.comments = {}; }
-        var name = APP.$addComment.find('.cp-app-poll-comments-add-name').val();
-        var msg = APP.$addComment.find('.cp-app-poll-comments-add-msg').val();
+        var name = APP.$addComment.find('.cp-app-poll-comments-add-name').val().trim();
+        var msg = APP.$addComment.find('.cp-app-poll-comments-add-msg').val().trim();
         var time = +new Date();
+
+        if (!msg) { return; }
 
         var profile, avatar;
         if (common.isLoggedIn()) {
