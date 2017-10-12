@@ -1,8 +1,9 @@
 define([
     'jquery',
     '/file/file-crypto.js',
+    '/common/common-thumbnail.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto) {
+], function ($, FileCrypto, Thumb) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -220,30 +221,46 @@ define([
 
         var handleFile = File.handleFile = function (file, e, thumbnail) {
             var thumb;
-            var finish = function (arrayBuffer) {
+            var file_arraybuffer;
+            var finish = function () {
                 var metadata = {
                     name: file.name,
                     type: file.type,
                 };
                 if (thumb) { metadata.thumbnail = thumb; }
                 queue.push({
-                    blob: arrayBuffer,
+                    blob: file_arraybuffer,
                     metadata: metadata,
                     dropEvent: e
                 });
             };
 
-            var processFile = function () {
-                blobToArrayBuffer(file, function (e, buffer) {
-                    finish(buffer);
-                });
-            };
-
-            if (!thumbnail) { return void processFile(); }
-            blobToArrayBuffer(thumbnail, function (e, buffer) {
+            blobToArrayBuffer(file, function (e, buffer) {
                 if (e) { console.error(e); }
-                thumb = arrayBufferToString(buffer);
-                processFile();
+                file_arraybuffer = buffer;
+                if (thumbnail) { // there is already a thumbnail
+                    return blobToArrayBuffer(thumbnail, function (e, buffer) {
+                        if (e) { console.error(e); }
+                        thumb = arrayBufferToString(buffer);
+                        finish();
+                    });
+                }
+
+                if (!Thumb.isSupportedType(file.type)) { return finish(); }
+                // make a resized thumbnail from the image..
+                Thumb.fromImageBlob(file, function (e, thumb_blob) {
+                    if (e) { console.error(e); }
+                    if (!thumb_blob) { return finish(); }
+
+                    blobToArrayBuffer(thumb_blob, function (e, buffer) {
+                        if (e) {
+                            console.error(e);
+                            return finish();
+                        }
+                        thumb = arrayBufferToString(buffer);
+                        finish();
+                    });
+                });
             });
         };
 

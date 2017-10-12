@@ -158,9 +158,11 @@ define(function () {
     out.filePicker_filter = "Filter files by name";
     out.or = 'or';
 
-    out.tags_title = "Tags";
+    out.tags_title = "Tags (for you only)";
     out.tags_add = "Update this page's tags";
     out.tags_searchHint = "Find files by their tags by searching in your CryptDrive";
+    out.tags_searchHint = "Start a search with # in your CryptDrive to find your tagged pads.";
+    out.tags_notShared = "Your tags are not shared with other users";
 
     out.tags_duplicate = "Duplicate tag: {0}";
 
@@ -270,6 +272,9 @@ define(function () {
     out.poll_comment_add = "Add a comment";
     out.poll_comment_submit = "Send";
     out.poll_comment_remove = "Delete this comment";
+    out.poll_comment_placeholder = "Your comment";
+
+    out.poll_comment_disabled = "Publish this poll using the ✓ button to enable the comments.";
 
     // Canvas
     out.canvas_clear = "Clear";
@@ -449,8 +454,6 @@ define(function () {
             "<li><i class='fa fa-info-circle'> </i> If you are using a shared computer, you need to log out when you are done, closing the tab is not enough.</li>",
         "</ul>"
     ].join('');
-    out.register_testimonial =" \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\"  ";
-    out.register_testimonial_name = "Cory Doctorow";
 
     out.register_writtenPassword = "I have written down my username and password, proceed";
     out.register_cancel = "Go back";
@@ -737,7 +740,7 @@ define(function () {
     out.tips.drive = "Logged in users can organize their files in their CryptDrive, accessible from the CryptPad icon at the top left of all pads.";
     out.tips.profile = "Registered users can create a profile from the user menu in the top right.";
     out.tips.avatars = "You can upload an avatar in your profile. People will see it when you collaborate in a pad.";
-    out.tips.tags = "You can hashtag pads, and then search by tag in your CryptDrive.";
+    out.tips.tags = "Tag your pads and start a search with # in your CryptDrive to find them";
 
     out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
     out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";

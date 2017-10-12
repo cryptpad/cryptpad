@@ -76,7 +76,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.16.0 (Qalupalik)")
+            h('div.cp-version-footer', "CryptPad v1.17.0 (Ratatoskr)")
         ]);
     };
 
@@ -524,8 +524,8 @@ define([
                 h('div.row.cp-register-test',[
                     h('hr'),
                     h('div.col-12', [
-                        setHTML(h('p.test-details'), Msg.register_testimonial),
-                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, Msg.register_testimonial_name)
+                        setHTML(h('p.test-details'), " \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\" "),
+                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, "Cory Doctorow")
                     ])
                 ])
             ]),
@@ -558,8 +558,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.extra', [
-                            h('button.login.first.btn', Msg.login_login),
-                            h('button#register.btn.register.cp-login-register', Msg.login_register)
+                            h('button.login.first.btn', Msg.login_login)
                         ])
                     ])
                 ]),
@@ -657,7 +656,7 @@ define([
                             h('br')
                         ]),
                         h('div#cp-app-poll-table-container', [
-                            h('div#cp-app-poll-table-scroll'),
+                            h('div#cp-app-poll-table-scroll', [h('table')]),
                             h('button#cp-app-poll-create-user.btn.btn-secondary', {
                                 title: Msg.poll_create_user
                             }, h('span.fa.fa-plus')),
@@ -669,9 +668,12 @@ define([
                             h('h2#cp-app-poll-comments-add-title', Msg.poll_comment_add),
                             h('div#cp-app-poll-comments-add', [
                                 h('input.cp-app-poll-comments-add-name', {
-                                    type: 'text'
+                                    type: 'text',
+                                    placeholder: Msg.anonymous
                                 }),
-                                h('textarea.cp-app-poll-comments-add-msg'),
+                                h('textarea.cp-app-poll-comments-add-msg', {
+                                    placeholder: Msg.poll_comment_placeholder
+                                }),
                                 h('button.cp-app-poll-comments-add-submit.btn.btn-secondary',
                                     Msg.poll_comment_submit),
                                 h('button.cp-app-poll-comments-add-cancel.btn.btn-secondary',
@@ -679,7 +681,8 @@ define([
                             ]),
                             h('h2#cp-app-poll-comments-list-title', Msg.poll_comment_list),
                             h('div#cp-app-poll-comments-list')
-                        ])
+                        ]),
+                        h('div#cp-app-poll-nocomments', Msg.poll_comment_disabled)
                     ])
                 ])
             ])

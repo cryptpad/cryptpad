@@ -150,9 +150,6 @@ define([
                     'class': "fa fa-trash cryptpad-forget",
                     style: 'font:'+size+' FontAwesome'
                 });
-                if (!common.isStrongestStored()) {
-                    button.addClass('cp-toolbar-hidden');
-                }
                 if (callback) {
                     button
                     .click(common.prepareFeedback(type))
@@ -216,7 +213,7 @@ define([
                     title: Messages.tags_title,
                 })
                 .click(common.prepareFeedback(type))
-                .click(function () { UI.updateTags(null); });
+                .click(function () { UI.updateTags(common, null); });
                 break;
             default:
                 button = $('<button>', {

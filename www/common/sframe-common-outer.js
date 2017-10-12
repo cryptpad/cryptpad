@@ -216,6 +216,12 @@ define([
             });
 
             sframeChan.on('Q_MOVE_TO_TRASH', function (data, cb) {
+                cb = cb || $.noop;
+                if (readOnly && hashes.editHash) {
+                    var appPath = window.location.pathname;
+                    Cryptpad.moveToTrash(cb, appPath + '#' + hashes.editHash);
+                    return;
+                }
                 Cryptpad.moveToTrash(cb);
             });
 
@@ -262,7 +268,7 @@ define([
                     msg = parsed[1][4];
                     if (msg) {
                         msg = msg.replace(/^cp\|/, '');
-                        var decryptedMsg = crypto.decrypt(msg, secret.keys.validateKey);
+                        var decryptedMsg = crypto.decrypt(msg, true);
                         msgs.push(decryptedMsg);
                     }
                 };

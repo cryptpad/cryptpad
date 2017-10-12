@@ -77,7 +77,7 @@ define([
         var c = Slide.content;
         var m = '<span class="cp-app-slide-container"><span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container"><span class="'+slideClass+'">')+'</span></span>';
 
-        DiffMd.apply(m, $content);
+        try { DiffMd.apply(m, $content); } catch (e) { return console.error(e); }
 
         var length = getNumberOfSlides();
         $modal.find('style.cp-app-slide-style').remove();

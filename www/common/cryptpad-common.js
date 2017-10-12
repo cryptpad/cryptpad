@@ -489,8 +489,8 @@ define([
     };
 
     // STORAGE
-    common.setPadAttribute = function (attr, value, cb) {
-        var href = getRelativeHref(window.location.href);
+    common.setPadAttribute = function (attr, value, cb, href) {
+        href = getRelativeHref(href || window.location.href);
         getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setDisplayName = function (value, cb) {
@@ -1204,8 +1204,8 @@ define([
     };
 
     // Forget button
-    var moveToTrash = common.moveToTrash = function (cb) {
-        var href = window.location.href;
+    var moveToTrash = common.moveToTrash = function (cb, href) {
+        href = href || window.location.href;
         common.forgetPad(href, function (err) {
             if (err) {
                 console.log("unable to forget pad");

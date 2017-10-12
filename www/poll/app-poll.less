@@ -28,7 +28,7 @@
 @poll-uncommitted-bg: #ddd; //lighten(@poll-th-bg, 50%);
 @poll-uncommitted-text: black;
 
-@poll-placeholder: #666;
+@poll-placeholder: #fff;
 @poll-border-color: #555;
 @poll-cover-color: #000;
 @poll-fg: #000;
@@ -63,10 +63,6 @@ overflow-x: hidden;
     }
 }
 
-.cp-app-poll-table-text-cell input[type="text"] {
-    width: 400px;
-}
-
 input[type="text"], textarea {
     background-color: white;
     color: black;
@@ -81,12 +77,13 @@ input[type="text"][disabled], textarea[disabled] {
 // The placeholder color only seems to effect Safari when not set
 
 input[type="text"][disabled]::placeholder {
-    //color: @poll-placeholder;
+    color: @poll-placeholder;
     opacity: 1;
 }
 
 table#cp-app-poll-table {
     margin: 0px;
+    overflow: hidden;
 }
 #cp-app-poll-table-container {
     position: relative;
@@ -106,6 +103,7 @@ table#cp-app-poll-table {
     overflow: hidden;
 }
 #cp-app-poll-create-option {
+    order: 3;
     display: inline-flex;
     width: 50px;
     height: 24px;
@@ -125,6 +123,7 @@ table#cp-app-poll-table {
         min-width: 80%;
         width: 80%;
         min-height: 200px;
+        height: 200px;
         border: 1px solid black;
         .CodeMirror-placeholder {
             color: #777;
@@ -149,17 +148,25 @@ table#cp-app-poll-table {
         max-height: 20em;
     }
 }
-.cp-app-poll-published {
-    #cp-app-poll-description {
-        display: none;
-        &~ .CodeMirror {
+div.cp-app-poll-published {
+    div.cp-app-poll-realtime {
+        #cp-app-poll-description {
+            display: none;
+            &~ .CodeMirror {
+                display: none;
+            }
+        }
+        #cp-app-poll-description-published {
+            display: block;
+            &:empty {
+                display: none;
+            }
+        }
+        #cp-app-poll-nocomments {
             display: none;
         }
-    }
-    #cp-app-poll-description-published {
-        display: block;
-        &:empty {
-            display: none;
+        #cp-app-poll-comments {
+            display: block;
         }
     }
 }
@@ -218,6 +225,15 @@ div.cp-app-poll-realtime {
     padding: 0px;
     margin: 0px;
 
+    .cp-app-poll-table-scrolled {
+        tr td:last-child {
+            right: 0;
+        }
+        tr td:nth-last-child(2) {
+            right: 100px;
+        }
+    }
+
     table {
         border-collapse: collapse;
         width: ~"calc(100% - 1px)";
@@ -231,10 +247,6 @@ div.cp-app-poll-realtime {
             div.cp-app-poll-table-text-cell {
                 background-color: @poll-uncommitted-bg !important;
                 color: @poll-uncommitted-text !important;
-                input {
-                    width: ~"calc(100% - 80px)" !important;
-                    vertical-align: middle;
-                }
             }
             text-align: center;
             background-color: @poll-uncommitted-bg !important;
@@ -272,14 +284,22 @@ div.cp-app-poll-realtime {
                 margin: 0px;
 
                 div.cp-app-poll-table-text-cell {
+                    height: 28px;
                     padding: 0px;
                     margin: 0px;
-                    height: 100%;
-
+                    display: flex;
+                    align-items: center;
+                    .cp-app-poll-table-remove {
+                        order: 1;
+                    }
+                    .cp-app-poll-table-edit {
+                        order: 3;
+                    }
                     input {
-                        width: 80%;
-                        width: 90%;
-                        height: 100%;
+                        min-width: 0;
+                        order: 2;
+                        flex: 1;
+                        height: 24px;
                         border: 0px;
                         margin: 2px;
                         &[disabled] {
@@ -375,12 +395,20 @@ div.cp-app-poll-realtime {
         }
         thead {
             height: 52px;
+            tr {
+                height: 52px;
+            }
             td {
                 padding: 0px 5px;
                 background: @poll-th-bg;
                 color: @poll-th-fg;
                 &:not(:last-child) {
                     border-right: 1px solid rgba(255,255,255,0.2);
+                }
+                &:last-child {
+                    height: 52px;
+                    line-height: 52px;
+                    text-align: center;
                 }
                 &:nth-last-child(2) {
                     border-right: 1px solid @poll-border-color;
@@ -490,11 +518,18 @@ div.cp-app-poll-realtime {
             display: none;
         }
     }
+    #cp-app-poll-nocomments {
+        color: #999;
+        text-align: center;
+        margin: 20px;
+        font: @colortheme_app-font;
+    }
     #cp-app-poll-comments {
         width: 50%;
         margin: 20px auto;
         min-width: 400px;
         padding-bottom: 5px;
+        display: none;
         button {
             border-radius: 0;
         }

@@ -156,8 +156,10 @@ define(function () {
     out.filePicker_filter = "Filtrez les fichiers par leur nom";
     out.or = 'ou';
 
-    out.tags_title = "Mots-clés du pad";
+    out.tags_title = "Mots-clés du pad (pour vous uniquement)";
     out.tags_add = "Modifier les mots-clés du pad";
+    out.tags_searchHint = "Commencez une recherche par # dans votre CryptDrive pour retrouver vos pads par mot-clé.";
+    out.tags_notShared = "Vos mots-clés ne sont pas partagés avec les autres utilisateurs.";
     out.tags_duplicate = "Mot-clé déjà présent : {0}";
 
     out.slideOptionsText = "Options";
@@ -265,6 +267,9 @@ define(function () {
     out.poll_comment_add = "Ajouter un commentaire";
     out.poll_comment_submit = "Envoyer";
     out.poll_comment_remove = "Supprimer ce commentaire";
+    out.poll_comment_placeholder = "Votre commentaire";
+
+    out.poll_comment_disabled = "Publiez ce sondage en utilisant le bouton ✓ afin d'activer les commentaires.";
 
     // Canvas
     out.canvas_clear = "Nettoyer";
@@ -392,6 +397,7 @@ define(function () {
     out.fc_remove = "Supprimer définitivement";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
+    out.fc_hashtag = "Mots-clés";
     out.fc_sizeInKilobytes = "Taille en kilo-octets";
     // fileObject.js (logs)
     out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
@@ -539,6 +545,12 @@ define(function () {
     out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
     //contact.html
     out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker"><i class="fa fa-github"></i>GitHub</a>, venir dire bonjour sur <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">notre <i class="fa fa-comment"></i>salle Matrix</a> ou IRC (#cryptpad sur irc.freenode.net), ou bien encore <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>nous envoyer un email</a>.';
+    out.main_about_p22 = 'Tweetez nous';
+    out.main_about_p23 = 'Ouvrez un ticket (GitHub)';
+    out.main_about_p24 = 'Dites Bonjour (Matrix)';
+    out.main_about_p25 = 'Envoyez-nous un email';
+    out.main_about_p26 = 'Si vous avez une question ou des remarques, n\'hésitez pas à nous contacter !';
+
 
     out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
     out.main_catch_phrase = "Le Cloud Zero Knowledge";
@@ -583,6 +595,25 @@ define(function () {
     out.blog = "Blog";
 
     out.topbar_whatIsCryptpad = "Qu'est-ce que CryptPad";
+
+    // what-is-cryptpad.html
+
+    out.whatis_title = "Qu'est-ce que CryptPad";
+    out.whatis_collaboration = 'Collaboration rapide, facile';
+    out.whatis_collaboration_p1 = "Avec CryptPad, vous pouvez créer rapidement des documents collaboratifs pour prendre des notes à plusieurs. Quand vous vous enregistrez et vous vous connectez, vous obtenez la possibilité d'importer des fichiers dans un CryptDrive où vous pouvez organiser tous vos pads (documents). En tant qu'utilisateur enregistré, vous possédez 50 Mo de stockage gratuit.";
+    out.whatis_collaboration_p2 = "Vous pouvez partager l'accès à un document simplement en partageant le lien. Vous pouvez aussi partager un lien spécial fournissant un accès <em>en lecture seule</em> au pad, permettant du publier des travaux collaboratifs tout en restant maître de l'édition.";
+    out.whatis_collaboration_p3 = "Vous pouvez créer des documents de texte avec <a href=\"http://ckeditor.com/\">CKEditor</a> tout comme des documents Markdown qui sont rendus en temps-réel pendant que vous tapez. Vous pouvez aussi utiliser l'application de sondage pour planifier des évènements avec plusieurs participants.";
+    out.whatis_zeroknowledge = 'Zero Knowledge';
+    out.whatis_zeroknowledge_p1 = "Nous ne souhaitons pas connaître ce que vous tapez et grâce à la cryptographie moderne, vous pouvez être assuré que nous ne le <b>pouvons</b> pas. CryptPad utilise <b>un chiffrement à 100% côté client</b> pour protéger le contenu que vous tapez de nous, les personnes contrôlant le serveur.";
+    out.whatis_zeroknowledge_p2 = "Quand vous vous enregistrez et vous vous connectez, votre nom d'utilisateur et votre mot de passe sont transformés en une clé secrète grâce à la <a href=\"https://fr.wikipedia.org/wiki/Scrypt\">fonction de dérivation de clé Scrypt</a>. Ni cette clé, ni le nom d'utilisateur ou le mot de passe, ne sont envoyés au serveur. À la place, elle est utilisée côté client pour chiffrer et déchiffrer le contenu de votre CryptDrive, qui contient toutes les clés permettant d'accéder à vos pads.";
+    out.whatis_zeroknowledge_p3 = "Quand vous partagez le lien vers un document, vous partagez la clé cryptographique permettant de déchiffrer le document, mais puisque cette clé se trouve dans l'<a href=\"https://en.wikipedia.org/wiki/Fragment_identifier\">identificateur de fragment</a>, elle n'est jamais envoyée au serveur. Venez lire notre <a href=\"https://blog.cryptpad.fr/2017/07/07/cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want-to-know/\">article de blog sur la vie privée</a> pour en apprendre davantage sur le type de métadonnées auxquelles nous avons ou n'avons pas accès.";
+    out.whatis_drive = "Organisation avec CryptDrive";
+    out.whatis_drive_p1 = "Dés que vous accédez à un pad dans CryptPad, celui-ci est automatiquement ajouté à votre CryptDrive, dans le dossier principal. Vous pouvez alors ranger ce pad dans un dossier ou le déplacer vers la corbeille. CryptDrive vous permet de rechercher parmi vos pads et de les organiser quand vous le souaitez, comme vous le souhaitez.";
+    out.whatis_drive_p2 = "Avec le glisser-déposer intuitif, vous pouvez déplacer vos pads dans votre drive tout en conservant les liens vers ces pads pour que vos collaborateurs n'en perdent pas l'accès";
+    out.whatis_drive_p3 = "Vous pouvez également importer des fichier dans votre CryptDrive et les partager avec des collègues. Les fichiers importés peuvent être rangés de la même manière que vos pads collaboratifs.";
+    out.whatis_business = 'CryptPad for Business';
+    out.whatis_business_p1 = "Le chiffrement Zero Knowledge de CryptPad excelle pour multiplier l'efficacité des protocoles de sécurité existants en recréant les contrôles d'accès organisationnels de manière cryptographique. Puisque les données sensibles ne peuvent être déchiffrées qu'en utilisant les identifiants d'un employé, CryptPad empêche d'éventuels hackers ayant réussi à s'introduire dans le serveur d'avoir accès en clair à ces données. Découvrez-en plus sur la manière dont CryptPad peut aider votre entreprise en lisant le <a href=\"https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf\">CryptPad Whitepaper</a>.";
+    out.whatis_business_p2 = "CryptPad est déployable sur site et les <a href=\"https://cryptpad.fr/about.html\">développeurs CryptPad</a> chez XWiki SAS peuvent effectuer du développement, des personnalisations et du support commercial. Contactez-nous à <a href=\"mailto:sales@cryptpad.fr\">sales@cryptpad.fr</a> pour plus d'informations.";
 
     // privacy.html
 
@@ -697,6 +728,7 @@ define(function () {
     out.tips.drive = "Les utilisateurs enregistrés peuvent organiser leurs fichiers dans leur CryptDrive, accessible depuis l'icône CryptPad dans le coin supérieur gauche des pads.";
     out.tips.profile = "Les utilisateurs enregistrés peuvent créer un profil depuis le menu utilisateur, dans le coin supérieur droit.";
     out.tips.avatars = "Vous pouvez uploader un avatar dans votre profil. Les autres personnes le verront dans la liste d'utilisateurs des pads.";
+    out.tips.tags = "Ajoutez des mots-clés aux pads et effectuer une recherche commençant par # dans votre CryptDrive pour les retrouver.";
 
     out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
     out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
