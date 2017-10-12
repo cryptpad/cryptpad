@@ -1,9 +1,10 @@
 define([
     //'/common/cryptpad-common.js',
+    'jquery',
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/diff-dom/diffDOM.js',
-], function (Hyperjson, TextPatcher) {
+], function ($, Hyperjson, TextPatcher) {
     var DiffDOM = window.diffDOM;
 
     var Example = {
