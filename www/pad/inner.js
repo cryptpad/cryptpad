@@ -365,6 +365,13 @@ define([
             if (href) { ifrWindow.open(bounceHref, '_blank'); }
         };
 
+        framework.onEditableChange(function (unlocked) {
+            if (!framework.isReadOnly()) {
+                $(inner).attr('contenteditable', '' + Boolean(unlocked));
+            }
+            $(inner).css({ background: unlocked ? '#fff' : '#eee' });
+        });
+
         framework.setMediaTagEmbedder(function ($mt) {
             $mt.attr('contenteditable', 'false');
             $mt.attr('tabindex', '1');
