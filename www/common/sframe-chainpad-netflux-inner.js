@@ -75,7 +75,6 @@ define([
                 throw new Error("ChainPad.getLag() does not exist, please `bower update`");
             }
             if (l.lag < badStateTimeout) { return; }
-            chainpad.abort();
             evInfiniteSpinner.fire();
         }, 2000);
 

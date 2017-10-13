@@ -10,6 +10,7 @@ define([
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/customize/application_config.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -25,7 +26,8 @@ define([
     nThen,
     SFCommon,
     Messages,
-    Util)
+    Util,
+    AppConfig)
 {
     var SaveAs = window.saveAs;
 
@@ -39,6 +41,9 @@ define([
         HISTORY_MODE: 'HISTORY_MODE',
         READY: 'READY'
     });
+
+    var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
+        AppConfig.badStateTimeout : 30000;
 
     var onConnectError = function () {
         Cryptpad.errorLoadingScreen(Messages.websocketError);
@@ -101,7 +106,7 @@ define([
 
         var stateChange = function (newState) {
             var wasEditable = (state === STATE.READY);
-            if (state === STATE.INFINITE_SPINNER) { return; }
+            if (state === STATE.INFINITE_SPINNER && newState !== STATE.READY) { return; }
             if (newState === STATE.INFINITE_SPINNER) {
                 state = newState;
             } else if (state === STATE.DISCONNECTED && newState !== STATE.INITIALIZING) {
@@ -365,15 +370,27 @@ define([
 
             textPatcher = TextPatcher.create({ realtime: cpNfInner.chainpad });
 
-            cpNfInner.onInfiniteSpinner(function () {
-                toolbar.failed();
-                cpNfInner.chainpad.abort();
+            window.setInterval(function () {
+                if (state === STATE.DISCONNECTED) { return; }
+                var l;
+                try {
+                    l = cpNfInner.chainpad.getLag();
+                } catch (e) {
+                    throw new Error("ChainPad.getLag() does not exist, please `bower update`");
+                }
+                if (l.lag < badStateTimeout) { return; }
+
                 stateChange(STATE.INFINITE_SPINNER);
                 Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
                 });
-            });
+                cpNfInner.chainpad.onSettle(function () {
+                    Cryptpad.findCancelButton().click();
+                    stateChange(STATE.READY);
+                    onRemote();
+                });
+            }, 2000);
 
             //Cryptpad.onLogout(function () { ... });
 
