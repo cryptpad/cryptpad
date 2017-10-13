@@ -31,7 +31,12 @@ define([
     UI.updateTags = function (common, href) {
         var sframeChan = common.getSframeChannel();
         sframeChan.query('Q_TAGS_GET', href || null, function (err, res) {
-            if (err || res.error) { return void console.error(err || res.error); }
+            if (err || res.error) {
+                if (res.error === 'NO_ENTRY') {
+                    Cryptpad.alert(Messages.tags_noentry);
+                }
+                return void console.error(err || res.error);
+            }
             Cryptpad.dialog.tagPrompt(res.data, function (tags) {
                 if (!Array.isArray(tags)) { return; }
                 sframeChan.event('EV_TAGS_SET', {
@@ -98,6 +103,7 @@ define([
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
+                if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     title: Messages.saveTemplateButton,
                 }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
@@ -581,11 +587,18 @@ define([
         var sframeChan = common.getSframeChannel();
         var focus;
 
+        var pickerCfg = {
+            types: [type],
+            where: ['template'],
+            hidden: true
+        };
         var onConfirm = function (yes) {
             if (!yes) {
                 if (focus) { focus.focus(); }
                 return;
             }
+            delete pickerCfg.hidden;
+            common.openFilePicker(pickerCfg);
             var first = true; // We can only pick a template once (for a new document)
             var fileDialogCfg = {
                 onSelect: function (data) {
@@ -602,15 +615,11 @@ define([
                 }
             };
             common.initFilePicker(fileDialogCfg);
-            var pickerCfg = {
-                types: [type],
-                where: ['template']
-            };
-            common.openFilePicker(pickerCfg);
         };
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
             if (data) {
+                common.openFilePicker(pickerCfg);
                 focus = document.activeElement;
                 Cryptpad.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,

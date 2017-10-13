@@ -93,7 +93,6 @@ define([
             var metadata = file.metadata;
             var id = file.id;
             var dropEvent = file.dropEvent;
-            delete file.dropEvent;
             if (queue.inProgress) { return; }
             queue.inProgress = true;
 

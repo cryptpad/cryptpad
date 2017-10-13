@@ -499,7 +499,6 @@ define([
             });
         };
         var spliceFileData = exp.removeData = function (id) {
-            files[FILES_DATA][id] = undefined;
             delete files[FILES_DATA][id];
         };
 
@@ -649,7 +648,6 @@ define([
                 var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
                 if (hash && key.indexOf(hash) === 0) {
                     debug("Deleting pad attribute in the realtime object");
-                    files[key] = undefined;
                     delete files[key];
                 }
             });
@@ -709,7 +707,6 @@ define([
                 var parentPath = path.slice();
                 var key = parentPath.pop();
                 var parentEl = find(parentPath);
-                parentEl[key] = undefined;
                 delete parentEl[key];
             });
 
@@ -728,7 +725,6 @@ define([
                     return;
                 }
                 // Trash but not root: it's just a tree so remove the key
-                parentEl[key] = undefined;
                 delete parentEl[key];
             });
             deleteMultipleTrashRoot(trashRoot);
@@ -767,7 +763,6 @@ define([
                     return;
                 }
                 parentEl[newName] = element;
-                parentEl[oldName] = undefined;
                 delete parentEl[oldName];
                 if (typeof cb === "function") { cb(); }
                 return;
@@ -777,7 +772,6 @@ define([
             var data = files[FILES_DATA][element];
             if (!data) { return; }
             if (!newName || newName.trim() === "") {
-                data.filename = undefined;
                 delete data.filename;
                 if (typeof cb === "function") { cb(); }
                 return;
@@ -899,9 +893,7 @@ define([
                                 delete parent[okey];
                             });
                         });
-                        files[OLD_FILES_DATA] = undefined;
                         delete files[OLD_FILES_DATA];
-                        files.migrate = undefined;
                         delete files.migrate;
                         console.log('done');
                         todo();
@@ -942,7 +934,6 @@ define([
                 for (var el in element) {
                     if (!isFile(element[el], true) && !isFolder(element[el])) {
                         debug("An element in ROOT was not a folder nor a file. ", element[el]);
-                        element[el] = undefined;
                         delete element[el];
                         continue;
                     }
@@ -994,11 +985,9 @@ define([
                 for (var el in tr) {
                     if (!Array.isArray(tr[el])) {
                         debug("An element in TRASH root is not an array. ", tr[el]);
-                        tr[el] = undefined;
                         delete tr[el];
                     } else if (tr[el].length === 0) {
                         debug("Empty array in TRASH root. ", tr[el]);
-                        tr[el] = undefined;
                         delete tr[el];
                     } else {
                         toClean = [];

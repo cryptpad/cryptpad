@@ -28,6 +28,9 @@ define([
         var u8 = file.blob; // This is not a blob but a uint8array
         var metadata = file.metadata;
 
+        // if it exists, dropEvent contains the new pad location in the drive
+        var dropEvent = file.dropEvent;
+
         var key = Nacl.randomBytes(32);
         var next = FileCrypto.encrypt(u8, metadata, key);
 
@@ -73,6 +76,7 @@ define([
 
                 if (noStore) { return void onComplete(href); }
 
+                common.initialPath = dropEvent && dropEvent.path;
                 common.renamePad(title || "", href, function (err) {
                     if (err) { return void console.error(err); }
                     onComplete(href);
