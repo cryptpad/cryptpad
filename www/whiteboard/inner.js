@@ -234,6 +234,7 @@ define([
         APP.FM = common.createFileManager({});
         APP.upload = function (title) {
             var canvas = $canvas[0];
+            APP.canvas.deactivateAll().renderAll();
             var finish = function (thumb) {
                 canvas.toBlob(function (blob) {
                     blob.name = title;
