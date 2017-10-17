@@ -235,8 +235,38 @@ define([
     };
 
     // Avatars
+    UI.displayMediatagImage = function (Common, $tag, cb) {
+        if (!$tag.length || !$tag.is('media-tag')) { return void cb('NOT_MEDIATAG'); }
+        var observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.addedNodes.length) {
+                    if (mutation.addedNodes.length > 1 ||
+                        mutation.addedNodes[0].nodeName !== 'IMG') {
+                        return void cb('NOT_IMAGE');
+                    }
+                    var $image = $tag.find('img');
+                    var onLoad = function () {
+                        var img = new Image();
+                        img.onload = function () {
+                            var _cb = cb;
+                            cb = $.noop;
+                            _cb(null, $image, img);
+                        };
+                        img.src = $image.attr('src');
+                    };
+                    if ($image[0].complete) { onLoad(); }
+                    $image.on('load', onLoad);
+                }
+            });
+        });
+        observer.observe($tag[0], {
+            attributes: false,
+            childList: true,
+            characterData: false
+        });
+        MediaTag($tag[0]);
+    };
     UI.displayAvatar = function (Common, $container, href, name, cb) {
-        var MutationObserver = window.MutationObserver;
         var displayDefault = function () {
             var text = Cryptpad.getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
@@ -260,43 +290,19 @@ define([
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                var observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                            if (mutation.addedNodes.length > 1 ||
-                                mutation.addedNodes[0].nodeName !== 'IMG') {
-                                $img.remove();
-                                return void displayDefault();
-                            }
-                            var $image = $img.find('img');
-                            var onLoad = function () {
-                                var img = new Image();
-                                img.onload = function () {
-                                    var w = img.width;
-                                    var h = img.height;
-                                    if (w>h) {
-                                        $image.css('max-height', '100%');
-                                        $img.css('flex-direction', 'column');
-                                        if (cb) { cb($img); }
-                                        return;
-                                    }
-                                    $image.css('max-width', '100%');
-                                    $img.css('flex-direction', 'row');
-                                    if (cb) { cb($img); }
-                                };
-                                img.src = $image.attr('src');
-                            };
-                            if ($image[0].complete) { onLoad(); }
-                            $image.on('load', onLoad);
-                        }
-                    });
+                UI.displayMediatagImage(Common, $img, function (err, $image, img) {
+                    var w = img.width;
+                    var h = img.height;
+                    if (w>h) {
+                        $image.css('max-height', '100%');
+                        $img.css('flex-direction', 'column');
+                        if (cb) { cb($img); }
+                        return;
+                    }
+                    $image.css('max-width', '100%');
+                    $img.css('flex-direction', 'row');
+                    if (cb) { cb($img); }
                 });
-                observer.observe($img[0], {
-                    attributes: false,
-                    childList: true,
-                    characterData: false
-                });
-                MediaTag($img[0]);
             });
         }
     };

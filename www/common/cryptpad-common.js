@@ -858,20 +858,33 @@ define([
         return list;
     };
     // Needed for the secure filepicker app
-    common.getSecureFilesList = function (filter, cb) {
+    common.getSecureFilesList = function (query, cb) {
         var store = common.getStore();
         if (!store) { return void cb("Store is not ready"); }
         var proxy = store.getProxy();
         var fo = proxy.fo;
         var list = {};
         var hashes = [];
-        var types = filter.types;
-        var where = filter.where;
+        var types = query.types;
+        var where = query.where;
+        var filter = query.filter || {};
+        var isFiltered = function (type, data) {
+            var filtered;
+            var fType = filter.fileType || [];
+            if (type === 'file' && fType.length) {
+                if (!data.fileType) { return true; }
+                filtered = !fType.some(function (t) {
+                    return data.fileType.indexOf(t) === 0;
+                });
+            }
+            return filtered;
+        };
         fo.getFiles(where).forEach(function (id) {
             var data = fo.getFileData(id);
             var parsed = parsePadUrl(data.href);
             if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1)
                  && hashes.indexOf(parsed.hash) === -1) {
+                if (isFiltered(parsed.type, data)) { return; }
                 hashes.push(parsed.hash);
                 list[id] = data;
             }

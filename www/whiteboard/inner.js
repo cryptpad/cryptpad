@@ -354,11 +354,38 @@ define([
         var onLocal = config.onLocal = function () {
             if (initializing) { return; }
             if (readOnly) { return; }
-            console.error('local');
 
             var content = stringifyInner(canvas.toDatalessJSON());
 
             APP.patchText(content);
+        };
+
+        var blobURLToImage = function (url, cb) {
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function() {
+                var reader = new FileReader();
+                reader.onloadend = function() {
+                    cb(reader.result);
+                };
+                reader.readAsDataURL(xhr.response);
+            };
+            xhr.open('GET', url);
+            xhr.responseType = 'blob';
+            xhr.send();
+        };
+        var addImageToCanvas = function (img) {
+            var w = img.width;
+            var h = img.height;
+            if (w<h) {
+                img.width = img.width * (300/img.height);
+                img.height = 300;
+            } else {
+                img.height = img.height * (300/img.width);
+                img.width = 300;
+            }
+            var cImg = new Fabric.Image(img, { left:0, top:0, angle:0, });
+            APP.canvas.add(cImg);
+            onLocal();
         };
 
         config.onInit = function (info) {
@@ -397,14 +424,16 @@ define([
             var $export = common.createButton('export', true, {}, saveImage);
             $rightside.append($export);
 
-            common.createButton('savetodrive', true, {}, function () {})
-            .click(function () {
-                Cryptpad.prompt(Messages.exportPrompt, document.title + '.png',
-                function (name) {
-                    if (name === null || !name.trim()) { return; }
-                    APP.upload(name);
-                });
-            }).appendTo($rightside);
+            if (common.isLoggedIn()) {
+                common.createButton('savetodrive', true, {}, function () {})
+                .click(function () {
+                    Cryptpad.prompt(Messages.exportPrompt, document.title + '.png',
+                    function (name) {
+                        if (name === null || !name.trim()) { return; }
+                        APP.upload(name);
+                    });
+                }).appendTo($rightside);
+            }
 
             var $forget = common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
@@ -423,34 +452,29 @@ define([
                     reader.onload = function () {
                         var img = new Image();
                         img.onload = function () {
-                            var w = img.width;
-                            var h = img.height;
-                            if (w<h) {
-                                img.width = img.width * (300/img.height);
-                                img.height = 300;
-                            } else {
-                                img.height = img.height * (300/img.width);
-                                img.width = 300;
-                            }
-                            var cImg = new Fabric.Image(img, { left:0, top:0, angle:0, });
-                            APP.canvas.add(cImg);
-                            onLocal();
+                            addImageToCanvas(img);
                         };
                         img.src = reader.result;
                     };
                     reader.readAsDataURL(file);
                 };
                 common.createButton('', true)
-                    .attr('title', 'Embed an image')
+                    .attr('title', Messages.canvas_imageEmbed)
+                    .removeClass('fa-question').addClass('fa-file-image-o')
                     .click(function () {
                         $('<input>', {type:'file'}).on('change', onUpload).click();
                     }).appendTo($rightside);
                 var fileDialogCfg = {
                     onSelect: function (data) {
                         if (data.type === 'file') {
-                            var $block = $('#cp-app-whiteboard-media-hidden');
                             var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                            $block.append(mt);
+                            common.displayMediatagImage($(mt), function (err, $image) {
+                                blobURLToImage($image.attr('src'), function (imgSrc) {
+                                    var img = new Image();
+                                    img.onload = function () { addImageToCanvas(img); };
+                                    img.src = imgSrc;
+                                });
+                            });
                             return;
                         }
                     }
@@ -463,7 +487,10 @@ define([
                 }).click(function () {
                     var pickerCfg = {
                         types: ['file'],
-                        where: ['root']
+                        where: ['root'],
+                        filter: {
+                            fileType: ['image/']
+                        }
                     };
                     common.openFilePicker(pickerCfg);
                 }).appendTo($rightside);
@@ -508,7 +535,6 @@ define([
             } else {
                 Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
             }
-
 
             nThen(function (waitFor) {
                 if (newDoc) {
