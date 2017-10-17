@@ -1165,7 +1165,9 @@ define([
             var type = Messages.type[hrefData.type] || hrefData.type;
             common.displayThumbnail(data.href, $span, function ($thumb) {
                 // Called only if the thumbnail exists
-                $span.find('.cp-icon').addClass('cp-app-drive-element-list');
+                // Remove the .hide() added by displayThumnail() because it hides the icon in
+                // list mode too
+                $span.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
                 $thumb.addClass('cp-app-drive-element-grid')
                     .addClass('cp-app-drive-element-thumbnail');
             });
