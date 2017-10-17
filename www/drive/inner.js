@@ -1159,11 +1159,16 @@ define([
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
-            $span.html('');
             $span.append($name);
             $span.append($state);
 
             var type = Messages.type[hrefData.type] || hrefData.type;
+            common.displayThumbnail(data.href, $span, function ($thumb) {
+                // Called only if the thumbnail exists
+                $span.find('.cp-icon').addClass('cp-app-drive-element-list');
+                $thumb.addClass('cp-app-drive-element-grid')
+                    .addClass('cp-app-drive-element-thumbnail');
+            });
             var $type = $('<span>', {
                 'class': 'cp-app-drive-element-type cp-app-drive-element-list'
             }).text(type);
@@ -1181,7 +1186,6 @@ define([
 
         var addFolderData = function (element, key, $span) {
             if (!element || !filesOp.isFolder(element)) { return; }
-            $span.html('');
             // The element with the class '.name' is underlined when the 'li' is hovered
             var sf = filesOp.hasSubfolder(element);
             var files = filesOp.hasFile(element);
@@ -1239,11 +1243,6 @@ define([
                     APP.selectedFiles.splice(idx, 1);
                 }
             }
-            if (isFolder) {
-                addFolderData(element, key, $element);
-            } else {
-                addFileData(element, $element);
-            }
             $element.prepend($icon).dblclick(function () {
                 if (isFolder) {
                     APP.displayDirectory(newPath);
@@ -1252,6 +1251,11 @@ define([
                 if (isTrash) { return; }
                 openFile(root[key]);
             });
+            if (isFolder) {
+                addFolderData(element, key, $element);
+            } else {
+                addFileData(element, $element);
+            }
             $element.addClass(liClass);
             $element.data('path', newPath);
             addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
@@ -1850,10 +1854,10 @@ define([
                         APP.selectedFiles.splice(sidx, 1);
                     }
                 }
-                addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
+                addFileData(id, $element);
                 var path = [rootName, idx];
                 $element.data('path', path);
                 $element.click(function(e) {
@@ -1886,12 +1890,12 @@ define([
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass 
                 });
-                addFileData(id, $element);
-                $element.data('path', [FILES_DATA, id]);
-                $element.data('element', id);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
+                addFileData(id, $element);
+                $element.data('path', [FILES_DATA, id]);
+                $element.data('element', id);
                 $element.click(function(e) {
                     e.stopPropagation();
                     onElementClick(e, $element);
@@ -2018,10 +2022,10 @@ define([
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                 });
-                addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
+                addFileData(id, $element);
                 $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();

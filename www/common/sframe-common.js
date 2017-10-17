@@ -80,6 +80,7 @@ define([
     funcs.createButton = callWithCommon(UI.createButton);
     funcs.createUsageBar = callWithCommon(UI.createUsageBar);
     funcs.updateTags = callWithCommon(UI.updateTags);
+    funcs.displayThumbnail = UI.displayThumbnail;
 
     // History
     funcs.getHistory = callWithCommon(History.create);

@@ -21,11 +21,15 @@
         .cp-filepicker-content-element {
             @darker: darken(@colortheme_modal-fg, 30%);
 
-            width: 200px;
-            min-width: 200px;
-            height: 1em;
-            padding: 0.5em;
+            width: 125px;
+            //min-width: 200px;
+            //height: 1em;
+            padding: 10px;
             margin: 5px;
+
+            display: inline-flex;
+            flex-flow: column;
+
             box-sizing: content-box;
 
             text-align: left;
@@ -41,15 +45,24 @@
                 color: @colortheme_modal-fg;
             }
 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-
             align-items: center;
 
+            .cp-filepicker-content-element-name {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                height: 20px;
+                line-height: 20px;
+                margin-top: 5px;
+                max-width: 100%;
+            }
             .fa {
                 cursor: pointer;
-                margin-right: 0.5em;
+                width: 100px;
+                height: 100px;
+                font-size: 70px;
+                text-align: center;
+                line-height: 100px;
             }
         }
     }
