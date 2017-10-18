@@ -142,6 +142,7 @@ define([
             }
         };
 
+        var onLocal;
         var onRemote = function () {
             if (state !== STATE.READY) { return; }
 
@@ -199,7 +200,7 @@ define([
             if (!bool && update) { onRemote(); }
         };
 
-        var onLocal = function () {
+        onLocal = function () {
             if (state !== STATE.READY) { return; }
             if (readOnly) { return; }
 

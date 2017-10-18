@@ -4,10 +4,7 @@ define([
     '/common/themes.js',
     '/common/cryptpad-common.js',
     '/bower_components/textpatcher/TextPatcher.js',
-
-    '/bower_components/file-saver/FileSaver.min.js'
 ], function ($, Modes, Themes, Cryptpad, TextPatcher) {
-    var saveAs = window.saveAs;
     var module = {};
 
     var cursorToPos = function(cursor, oldText) {
