@@ -75,6 +75,7 @@ define([
     funcs.initFilePicker = callWithCommon(UI.initFilePicker);
     funcs.openFilePicker = callWithCommon(UI.openFilePicker);
     funcs.openTemplatePicker = callWithCommon(UI.openTemplatePicker);
+    funcs.displayMediatagImage = callWithCommon(UI.displayMediatagImage);
     funcs.displayAvatar = callWithCommon(UI.displayAvatar);
     funcs.createButton = callWithCommon(UI.createButton);
     funcs.createUsageBar = callWithCommon(UI.createUsageBar);

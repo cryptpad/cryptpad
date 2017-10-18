@@ -152,7 +152,7 @@ define(function () {
     out.printCSS = "Custom style rules (CSS):";
     out.printTransition = "Enable transition animations";
 
-    out.filePickerButton = "Embed a file";
+    out.filePickerButton = "Embed a file stored in CryptDrive";
     out.filePicker_close = "Close";
     out.filePicker_description = "Choose a file from your CryptDrive to embed it or upload a new one";
     out.filePicker_filter = "Filter files by name";
@@ -288,6 +288,7 @@ define(function () {
     out.canvas_saveToDrive = "Save this image as a file in your CryptDrive";
     out.canvas_currentBrush = "Current brush";
     out.canvas_chooseColor = "Choose a color";
+    out.canvas_imageEmbed = "Embed an image from your computer";
 
     // Profile
     out.profileButton = "Profile"; // dropdown menu

@@ -150,7 +150,7 @@ define(function () {
     out.printCSS = "Personnaliser l'apparence (CSS):";
     out.printTransition = "Activer les animations de transition";
 
-    out.filePickerButton = "Intégrer un fichier";
+    out.filePickerButton = "Intégrer un fichier stocké dans CryptDrive";
     out.filePicker_close = "Fermer";
     out.filePicker_description = "Choisissez un fichier de votre CryptDrive pour l'intégrer ou uploadez-en un nouveau";
     out.filePicker_filter = "Filtrez les fichiers par leur nom";
@@ -284,6 +284,7 @@ define(function () {
     out.canvas_saveToDrive = "Sauvegarder cette image en tant que fichier dans CryptDrive";
     out.canvas_currentBrush = "Pinceau actuel";
     out.canvas_chooseColor = "Choisir une couleur";
+    out.canvas_imageEmbed = "Intégrer une image de votre ordinateur";
 
     // Profile
     out.profileButton = "Profil"; // dropdown menu
