@@ -381,6 +381,7 @@ define([
                 }
                 if (l.lag < badStateTimeout) { return; }
 
+                if (state === STATE.INFINITE_SPINNER) { return; }
                 stateChange(STATE.INFINITE_SPINNER);
                 Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
