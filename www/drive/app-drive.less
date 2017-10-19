@@ -51,6 +51,7 @@ min-height: auto;
         text-overflow: ellipsis;
         padding-top: 5px;
         padding-bottom: 5px;
+        border: 1px solid transparent;
 
         &:not(.cp-app-drive-element-selected):not(.cp-app-drive-element-selected-tmp) {
             border: 1px solid #CCC;
@@ -514,6 +515,13 @@ span {
                 .fa {
                     margin:0;
                     font-size: 18px;
+                }
+            }
+            .cp-app-drive-element-thumbnail {
+                max-width: 64px;
+                max-height: 64px;
+                & ~ .fa {
+                    display: none;
                 }
             }
         }
