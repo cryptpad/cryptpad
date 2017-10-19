@@ -2494,6 +2494,18 @@ define([
                 }));
             }
 
+            $('<label>', {'for': 'cp-app-drive-prop-ctime'}).text(Messages.fm_creation)
+                .appendTo($d);
+            $d.append(Cryptpad.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+                id: 'cp-app-drive-prop-ctime',
+            }));
+
+            $('<label>', {'for': 'cp-app-drive-prop-atime'}).text(Messages.fm_lastAccess)
+                .appendTo($d);
+            $d.append(Cryptpad.dialog.selectable(new Date(data.atime).toLocaleString(), {
+                id: 'cp-app-drive-prop-atime',
+            }));
+
             if (APP.loggedIn && AppConfig.enablePinning) {
                 // check the size of this file...
                 common.getFileSize(data.href, function (e, bytes) {
