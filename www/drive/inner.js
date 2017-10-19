@@ -546,7 +546,7 @@ define([
         };
 
         var getFileNameExtension = function (name) {
-            var matched = /\.\S+$/.exec(name);
+            var matched = /\.[^\. ]+$/.exec(name);
             if (matched && matched.length) { return matched[matched.length -1]; }
             return '';
         };
