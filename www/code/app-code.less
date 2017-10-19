@@ -44,6 +44,10 @@
         flex-flow: row;
         height: 100%;
         overflow: hidden;
+        &.cp-app-code-present {
+            .CodeMirror { display: none; }
+            #cp-app-code-preview { border: 0; }
+        }
     }
     #cp-app-code-preview {
         flex: 1;

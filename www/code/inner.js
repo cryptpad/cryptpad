@@ -62,10 +62,14 @@ define([
         'xml',
     ]);
 
-    var mkPreviewPane = function (editor, CodeMirror, framework) {
+    var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
+        var $editorContainer = $('#cp-app-code-editor');
         var $codeMirror = $('.CodeMirror');
+
+        var $previewButton = framework._.sfCommon.createButton(null, true);
+
         var forceDrawPreview = function () {
             try {
                 DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
@@ -73,11 +77,10 @@ define([
         };
         var drawPreview = Util.throttle(function () {
             if (CodeMirror.highlightMode !== 'markdown') { return; }
-            if (!$previewContainer.is(':visible')) { return; }
+            if (!$previewButton.is('.cp-toolbar-button-active')) { return; }
             forceDrawPreview();
         }, 150);
 
-        var $previewButton = framework._.sfCommon.createButton(null, true);
         $previewButton.removeClass('fa-question').addClass('fa-eye');
         $previewButton.attr('title', Messages.previewButtonTitle);
         var previewTo;
@@ -126,12 +129,16 @@ define([
                     if (e) { return void console.error(e); }
                     if (data !== false) {
                         $previewContainer.show();
-                        $previewButton.addClass('active');
+                        $previewButton.addClass('cp-toolbar-button-active');
                         $codeMirror.removeClass('cp-app-code-fullpage');
+                        if (isPresentMode) {
+                            $editorContainer.addClass('cp-app-code-present');
+                        }
                     }
                 });
                 return;
             }
+            $editorContainer.removeClass('cp-app-code-present');
             $previewButton.hide();
             $previewContainer.hide();
             $previewButton.removeClass('active');
@@ -224,11 +231,11 @@ define([
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var andThen2 = function (editor, CodeMirror, framework) {
+    var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
 
         var common = framework._.sfCommon;
 
-        var previewPane = mkPreviewPane(editor, CodeMirror, framework);
+        var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);
 
@@ -335,8 +342,12 @@ define([
                 editor = CodeMirror.editor;
             }).nThen(waitFor());
 
+        }).nThen(function (waitFor) {
+            common.getSframeChannel().onReady(waitFor());
         }).nThen(function (/*waitFor*/) {
-            andThen2(editor, CodeMirror, framework);
+            common.isPresentUrl(function (err, val) {
+                andThen2(editor, CodeMirror, framework, val);
+            });
         });
     };
     main();
