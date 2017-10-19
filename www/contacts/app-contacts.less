@@ -34,7 +34,8 @@
     @button-border: 2px;
     @bg-color: @colortheme_friends-bg;
     @color: @colortheme_friends-color;
-    #app {
+
+    #cp-app-contacts-container {
         flex: 1;
         display: flex;
         justify-content: center;
@@ -46,26 +47,22 @@
         }
     }
 
-    #toolbar {
+    #cp-toolbar {
         display: flex; // We need this to remove a 3px border at the bottom of the toolbar
     }
 
-    .cryptpad-toolbar {
-        padding: 0px;
-        display: inline-block;
-    }
-
-    #friendList {
+    #cp-app-contacts-friendlist {
         width: 350px;
         height: 100%;
         background-color: lighten(@bg-color, 10%);
         overflow-y: auto;
-        .friend {
+        .cp-app-contacts-friend {
             background: rgba(0,0,0,0.1);
             padding: 5px;
             margin: 10px;
             cursor: pointer;
-            .right-col {
+            position: relative;
+            .cp-app-contacts-right-col {
                 margin-left: 5px;
                 display: flex;
                 flex-flow: column;
@@ -73,13 +70,20 @@
             &:hover {
                 background-color: rgba(0,0,0,0.3);
             }
-            &.notify {
+            &.cp-app-contacts-notify {
                 animation: example 2s ease-in-out infinite;
+            }
+        }
+        .cp-app-contacts-remove {
+            cursor: pointer;
+            width: 20px;
+            &:hover {
+                color: darken(@color, 20%);
             }
         }
     }
 
-    #friendList .friend, #messaging .cp-avatar {
+    #cp-app-contacts-friendlist .cp-app-contacts-friend, #cp-app-contacts-messaging .cp-avatar {
         .avatar_main(30px);
         &.cp-avatar {
             display: flex;
@@ -91,10 +95,10 @@
                 color: #000;
             }
         }
-        media-tag, .default {
+        media-tag, .cp-avatar-default {
             margin-right: 5px;
         }
-        .status {
+        .cp-app-contacts-status {
             width: 5px;
             display: inline-block;
             position: absolute;
@@ -103,24 +107,11 @@
             bottom: 0;
             opacity: 0.7;
             background-color: #777;
-            &.online {
+            &.cp-app-contacts-online {
                 background-color: green;
             }
-            &.offline {
+            &.cp-app-contacts-offline {
                 background-color: red;
-            }
-        }
-    }
-
-    #friendList {
-        .friend {
-            position: relative;
-        }
-        .remove {
-            cursor: pointer;
-            width: 20px;
-            &:hover {
-                color: darken(@color, 20%);
             }
         }
     }
@@ -145,16 +136,16 @@
         }
     }
 
-    #messaging {
+    #cp-app-contacts-messaging {
         flex: 1;
         height: 100%;
         background-color: lighten(@bg-color, 20%);
         min-width: 0;
 
-        .info {
+        .cp-app-contacts-info {
             padding: 20px;
         }
-        .header {
+        .cp-app-contacts-header {
             background-color: lighten(@bg-color, 15%);
             padding: 0;
             display: flex;
@@ -171,49 +162,49 @@
                 }
             }
 
-            .avatar,
-            .right-col {
+            .cp-avatar,
+            .cp-app-contacts-right-col {
                  flex:1 1 auto;
             }
-            .remove-history {
+            .cp-app-contacts-remove-history {
                 .hover;
             }
             .cp-avatar {
                 margin: 10px;
             }
-            .more-history {
+            .cp-app-contacts-more-history {
                 //display: none;
                 .hover;
-                &.faded {
+                &.cp-app-contacts-faded {
                     color: darken(@bg-color, 5%);
                 }
             }
         }
-        .chat {
+        .cp-app-contacts-chat {
             height: 100%;
             display: flex;
             flex-flow: column;
-            .messages {
+            .cp-app-contacts-messages {
                 padding: 0 20px;
                 margin: 10px 0;
                 flex: 1;
                 overflow-x: auto;
-                .message {
+                .cp-app-contacts-message {
                     & > div {
                         padding: 0 10px;
                     }
-                    .content {
+                    .cp-app-contacts-content {
                         overflow: hidden;
                         word-wrap: break-word;
                         &> * {
                             margin: 0;
                         }
                     }
-                    .date {
+                    .cp-app-contacts-date {
                         display: none;
                         font-style: italic;
                     }
-                    .sender {
+                    .cp-app-contacts-sender {
                         margin-top: 10px;
                         font-weight: bold;
                         background-color: rgba(0,0,0,0.1);
@@ -221,7 +212,7 @@
                 }
             }
         }
-        .input {
+        .cp-app-contacts-input {
             background-color: lighten(@bg-color, 15%);
             height: auto;
             min-height: 50px;
