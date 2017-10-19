@@ -1592,10 +1592,11 @@ define([
                 ['cp-app-drive-element-title', 'cp-app-drive-element-type',
                  'cp-app-drive-element-atime', 'cp-app-drive-element-ctime'].some(function (c) {
                     if ($span.hasClass(c)) {
-                        if (value === c) { descValue = descValue ? false : true; }
+                        var nValue = c.replace(/cp-app-drive-element-/, '');
+                        if (value === nValue) { descValue = descValue ? false : true; }
                         else {
                             // atime and ctime should be ordered in a desc order at the first click
-                            value = c.replace(/cp-app-drive-element-/, '');
+                            value = nValue;
                             descValue = value !== 'title';
                         }
                         return true;
@@ -1647,7 +1648,7 @@ define([
             }
             var classSorted;
             if (APP.store[SORT_FILE_BY] === '') { classSorted = 'cp-app-drive-sort-filename'; }
-            else if (APP.store[SORT_FILE_BY]) { classSorted = APP.store[SORT_FILE_BY]; }
+            else if (APP.store[SORT_FILE_BY]) { classSorted = 'cp-app-drive-element-' + APP.store[SORT_FILE_BY]; }
             if (classSorted) {
                 $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon);
             }
