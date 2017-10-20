@@ -382,10 +382,11 @@ define([
             var quota = usage/limit;
             var $usage = $('<span>', {'class': 'cp-limit-usage'}).css('width', quota*100+'%');
 
+            var urls = common.getMetadataMgr().getPrivateData().accounts;
             var makeDonateButton = function () {
                 $('<a>', {
                     'class': 'cp-limit-upgrade btn btn-success',
-                    href: Cryptpad.donateURL,
+                    href: urls.donateURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).text(Messages.supportCryptpad).appendTo($container);
@@ -394,7 +395,7 @@ define([
             var makeUpgradeButton = function () {
                 $('<a>', {
                     'class': 'cp-limit-upgrade btn btn-success',
-                    href: Cryptpad.upgradeURL,
+                    href: urls.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).text(Messages.upgradeAccount).appendTo($container);
