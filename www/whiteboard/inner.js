@@ -6,6 +6,7 @@ define([
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
+    '/common/common-util.js',
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -31,6 +32,7 @@ define([
     JSONSortify,
     JsonOT,
     Cryptpad,
+    Util,
     Cryptget,
     nThen,
     SFCommon,
@@ -361,19 +363,6 @@ define([
             APP.patchText(content);
         };
 
-        var blobURLToImage = function (url, cb) {
-            var xhr = new XMLHttpRequest();
-            xhr.onload = function() {
-                var reader = new FileReader();
-                reader.onloadend = function() {
-                    cb(reader.result);
-                };
-                reader.readAsDataURL(xhr.response);
-            };
-            xhr.open('GET', url);
-            xhr.responseType = 'blob';
-            xhr.send();
-        };
         var addImageToCanvas = function (img) {
             var w = img.width;
             var h = img.height;
@@ -470,7 +459,7 @@ define([
                         if (data.type === 'file') {
                             var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
                             common.displayMediatagImage($(mt), function (err, $image) {
-                                blobURLToImage($image.attr('src'), function (imgSrc) {
+                                Util.blobURLToImage($image.attr('src'), function (imgSrc) {
                                     var img = new Image();
                                     img.onload = function () { addImageToCanvas(img); };
                                     img.src = imgSrc;

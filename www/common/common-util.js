@@ -207,5 +207,19 @@ define([], function () {
         return Array.prototype.slice.call(A);
     };
 
+    Util.blobURLToImage = function (url, cb) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                cb(reader.result);
+            };
+            reader.readAsDataURL(xhr.response);
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
+    };
+
     return Util;
 });

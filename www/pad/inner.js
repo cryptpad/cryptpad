@@ -461,13 +461,36 @@ define([
             documentBody.innerHTML = Messages.initialState;
         });
 
-        framework.setFileImporter({ accept: 'text/html' }, function (content) {
-            return Hyperjson.fromDOM(domFromHTML(content).body);
-        });
+        var importMediaTags = function (dom, cb) {
+            var $dom = $(dom);
+            $dom.find('media-tag').each(function (i, el) {
+                $(el).empty();
+            });
+            cb($dom[0]);
+        };
+        framework.setFileImporter({ accept: 'text/html' }, function (content, f, cb) {
+            importMediaTags(domFromHTML(content).body, function (dom) {
+                cb(Hyperjson.fromDOM(dom));
+            });
+        }, true);
 
-        framework.setFileExporter('html', function () {
-            return new Blob([ getHTML(inner) ], { type: "text/html;charset=utf-8" });
-        });
+        var exportMediaTags = function (inner, cb) {
+            var $clone = $(inner).clone();
+            nThen(function (waitFor) {
+                $clone.find('media-tag > img').each(function (i, el) {
+                    Util.blobURLToImage($(el).attr('src'), waitFor(function (imgSrc) {
+                        $(el).attr('src', imgSrc);
+                    }));
+                });
+            }).nThen(function () {
+                cb($clone[0]);
+            });
+        };
+        framework.setFileExporter('html', function (cb) {
+            exportMediaTags(inner, function (toExport) {
+                cb(new Blob([ getHTML(toExport) ], { type: "text/html;charset=utf-8" }));
+            });
+        }, true);
 
         framework.setNormalizer(function (hjson) {
             return [

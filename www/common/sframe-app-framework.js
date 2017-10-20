@@ -265,7 +265,7 @@ define([
             }
         };
 
-        var setFileExporter = function (extension, fe) {
+        var setFileExporter = function (extension, fe, async) {
             var $export = common.createButton('export', true, {}, function () {
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
@@ -273,6 +273,12 @@ define([
                     Cryptpad.fixFileName(suggestion) + '.' + ext, function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
+                    if (async) {
+                        fe(function (blob) {
+                            SaveAs(blob, filename);
+                        });
+                        return;
+                    }
                     var blob = fe();
                     SaveAs(blob, filename);
                 });
@@ -280,10 +286,17 @@ define([
             toolbar.$drawer.append($export);
         };
 
-        var setFileImporter = function (options, fi) {
+        var setFileImporter = function (options, fi, async) {
             if (readOnly) { return; }
             toolbar.$drawer.append(
                 common.createButton('import', true, options, function (c, f) {
+                    if (async) {
+                        fi(c, f, function (content) {
+                            contentUpdate(content);
+                            onLocal();
+                        });
+                        return;
+                    }
                     contentUpdate(fi(c, f));
                     onLocal();
                 })
