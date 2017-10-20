@@ -546,7 +546,7 @@ define([
         };
 
         var getFileNameExtension = function (name) {
-            var matched = /\.\S+$/.exec(name);
+            var matched = /\.[^\. ]+$/.exec(name);
             if (matched && matched.length) { return matched[matched.length -1]; }
             return '';
         };
@@ -1159,11 +1159,18 @@ define([
 
             // The element with the class '.name' is underlined when the 'li' is hovered
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
-            $span.html('');
             $span.append($name);
             $span.append($state);
 
             var type = Messages.type[hrefData.type] || hrefData.type;
+            common.displayThumbnail(data.href, $span, function ($thumb) {
+                // Called only if the thumbnail exists
+                // Remove the .hide() added by displayThumnail() because it hides the icon in
+                // list mode too
+                $span.find('.cp-icon').removeAttr('style').addClass('cp-app-drive-element-list');
+                $thumb.addClass('cp-app-drive-element-grid')
+                    .addClass('cp-app-drive-element-thumbnail');
+            });
             var $type = $('<span>', {
                 'class': 'cp-app-drive-element-type cp-app-drive-element-list'
             }).text(type);
@@ -1181,7 +1188,6 @@ define([
 
         var addFolderData = function (element, key, $span) {
             if (!element || !filesOp.isFolder(element)) { return; }
-            $span.html('');
             // The element with the class '.name' is underlined when the 'li' is hovered
             var sf = filesOp.hasSubfolder(element);
             var files = filesOp.hasFile(element);
@@ -1239,11 +1245,6 @@ define([
                     APP.selectedFiles.splice(idx, 1);
                 }
             }
-            if (isFolder) {
-                addFolderData(element, key, $element);
-            } else {
-                addFileData(element, $element);
-            }
             $element.prepend($icon).dblclick(function () {
                 if (isFolder) {
                     APP.displayDirectory(newPath);
@@ -1252,6 +1253,11 @@ define([
                 if (isTrash) { return; }
                 openFile(root[key]);
             });
+            if (isFolder) {
+                addFolderData(element, key, $element);
+            } else {
+                addFileData(element, $element);
+            }
             $element.addClass(liClass);
             $element.data('path', newPath);
             addDragAndDropHandlers($element, newPath, isFolder, !isTrash);
@@ -1586,10 +1592,11 @@ define([
                 ['cp-app-drive-element-title', 'cp-app-drive-element-type',
                  'cp-app-drive-element-atime', 'cp-app-drive-element-ctime'].some(function (c) {
                     if ($span.hasClass(c)) {
-                        if (value === c) { descValue = descValue ? false : true; }
+                        var nValue = c.replace(/cp-app-drive-element-/, '');
+                        if (value === nValue) { descValue = descValue ? false : true; }
                         else {
                             // atime and ctime should be ordered in a desc order at the first click
-                            value = c.replace(/cp-app-drive-element-/, '');
+                            value = nValue;
                             descValue = value !== 'title';
                         }
                         return true;
@@ -1641,7 +1648,7 @@ define([
             }
             var classSorted;
             if (APP.store[SORT_FILE_BY] === '') { classSorted = 'cp-app-drive-sort-filename'; }
-            else if (APP.store[SORT_FILE_BY]) { classSorted = APP.store[SORT_FILE_BY]; }
+            else if (APP.store[SORT_FILE_BY]) { classSorted = 'cp-app-drive-element-' + APP.store[SORT_FILE_BY]; }
             if (classSorted) {
                 $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon);
             }
@@ -1850,10 +1857,10 @@ define([
                         APP.selectedFiles.splice(sidx, 1);
                     }
                 }
-                addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
+                addFileData(id, $element);
                 var path = [rootName, idx];
                 $element.data('path', path);
                 $element.click(function(e) {
@@ -1886,12 +1893,12 @@ define([
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-row' + roClass 
                 });
-                addFileData(id, $element);
-                $element.data('path', [FILES_DATA, id]);
-                $element.data('element', id);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
+                addFileData(id, $element);
+                $element.data('path', [FILES_DATA, id]);
+                $element.data('element', id);
                 $element.click(function(e) {
                     e.stopPropagation();
                     onElementClick(e, $element);
@@ -2018,10 +2025,10 @@ define([
                 var $element = $('<li>', {
                     'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                 });
-                addFileData(id, $element);
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
                 });
+                addFileData(id, $element);
                 $element.data('path', path);
                 $element.click(function(e) {
                     e.stopPropagation();
@@ -2486,6 +2493,18 @@ define([
                     id: 'cp-app-drive-prop-tags',
                 }));
             }
+
+            $('<label>', {'for': 'cp-app-drive-prop-ctime'}).text(Messages.fm_creation)
+                .appendTo($d);
+            $d.append(Cryptpad.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+                id: 'cp-app-drive-prop-ctime',
+            }));
+
+            $('<label>', {'for': 'cp-app-drive-prop-atime'}).text(Messages.fm_lastAccess)
+                .appendTo($d);
+            $d.append(Cryptpad.dialog.selectable(new Date(data.atime).toLocaleString(), {
+                id: 'cp-app-drive-prop-atime',
+            }));
 
             if (APP.loggedIn && AppConfig.enablePinning) {
                 // check the size of this file...

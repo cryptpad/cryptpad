@@ -838,12 +838,9 @@ define([
         prepareProxy(uncommitted, copyObject(Render.Example));
         if (!APP.readOnly) {
             var coluid = Render.coluid();
-            if (proxy.content.colsOrder.indexOf(userid) === -1 &&
-                uncommitted.content.colsOrder.indexOf(userid) === -1) {
-                // The user doesn't have his own column: the new one should be his
-                coluid = userid;
-            } else {
-                // The user already has his own column: unlock it
+            if (userid) {
+                // If userid exists, it means the user already has a pinned column
+                // and we should unlock it
                 unlockColumn(userid);
             }
             uncommitted.content.colsOrder.push(coluid);
@@ -968,10 +965,10 @@ define([
             });
 
         // If the user's column is not committed, add his username
-        var $userInput = $('.cp-app-poll-table-uncommitted > input[data-rt-id^='+ APP.userid +']');
-        if ($userInput.val() === '') {
+        var $userInput = $('.cp-app-poll-table-uncommitted > input');
+        if (!APP.userid) {
             var uname = metadataMgr.getUserData().name;
-            APP.uncommitted.content.cols[APP.userid] = uname;
+            APP.uncommitted.content.cols[APP.uncommitted.content.colsOrder[0]] = uname;
             $userInput.val(uname);
         }
 
@@ -1164,7 +1161,6 @@ define([
                  .on('ready', function (info) {
                     common.getPadAttribute('userid', function (e, userid) {
                         if (e) { console.error(e); }
-                        if (!userid) { userid = Render.coluid(); }
                         APP.userid = userid;
                         onReady(info, userid);
                     });

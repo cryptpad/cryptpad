@@ -114,6 +114,7 @@ define([
             }
 
             var $container = $('<span>', {'class': 'cp-filepicker-content'}).appendTo($block);
+
             // Update the files list when needed
             updateContainer = function () {
                 $container.html('');
@@ -132,10 +133,14 @@ define([
                             'title': name,
                         }).appendTo($container);
                         $span.append(Cryptpad.getFileIcon(data));
-                        $span.append(name);
+                        $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
+                            .appendTo($span);
                         $span.click(function () {
                             if (typeof onSelect === "function") { onSelect(data.href); }
                         });
+
+                        // Add thumbnail if it exists
+                        common.displayThumbnail(data.href, $span);
                     });
                     $input.focus();
                 };

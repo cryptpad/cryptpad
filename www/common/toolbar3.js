@@ -443,7 +443,7 @@ define([
             $shareBlock.find('a.cp-toolbar-share-view-embed').click(function () {
                 var url = origin + pathname + '#' + hashes.viewHash;
                 var parsed = Cryptpad.parsePadUrl(url);
-                url = origin + parsed.getUrl({embed: true});
+                url = origin + parsed.getUrl({embed: true, present: true});
                 // Alertify content
                 var $content = $('<div>');
                 $('<input>', {'style':'display:none;'}).appendTo($content);

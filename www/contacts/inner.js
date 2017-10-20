@@ -47,12 +47,12 @@ define([
             }
         });
 
-        var toolbarElement = h('div#toolbar.cp-toolbar-container');
+        var toolbarElement = h('div#cp-toolbar.cp-toolbar-container');
 
         document.body.appendChild(toolbarElement);
 
-        var messaging = h('div#messaging', [
-            h('div.info', [
+        var messaging = h('div#cp-app-contacts-messaging', [
+            h('div.cp-app-contacts-info', [
                 h('h2', Messages.contacts_info1),
                 h('ul', [
                     h('li', Messages.contacts_info2),
@@ -61,9 +61,9 @@ define([
             ])
         ]);
 
-        var friendList = h('div#friendList');
+        var friendList = h('div#cp-app-contacts-friendlist');
 
-        var appElement = h('div#app', [
+        var appElement = h('div#cp-app-contacts-container', [
             friendList,
             messaging,
         ]);
