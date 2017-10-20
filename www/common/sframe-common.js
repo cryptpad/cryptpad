@@ -343,7 +343,7 @@ define([
                 Cryptpad.confirm(confirmMsg, cb, null, true);
             });
             ctx.sframeChan.on('EV_FRIEND_REQUEST', function (data) {
-                var i = pendingFriends.indexOf(data.sender);
+                var i = pendingFriends.indexOf(data.netfluxId);
                 if (i !== -1) { pendingFriends.splice(i, 1); }
                 Cryptpad.log(data.logText);
             });
