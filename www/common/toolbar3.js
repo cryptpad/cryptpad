@@ -1034,13 +1034,25 @@ define([
             }
             //checkLag(toolbar, config);
         };
+        toolbar.initializing = function (/*userId*/) {
+            toolbar.connected = false;
+            if (toolbar.spinner) {
+                toolbar.spinner.text(Messages.initializing);
+            }
+        };
         toolbar.reconnecting = function (/*userId*/) {
-            //if (config.metadataMgr) { config.userList.userNetfluxId = userId; } TODO
             toolbar.connected = false;
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.reconnecting);
             }
-            //checkLag(toolbar, config);
+        };
+
+        // When the pad is moved to the trash (forget button)
+        toolbar.forgotten = function (/*userId*/) {
+            toolbar.connected = false;
+            if (toolbar.spinner) {
+                toolbar.spinner.text(Messages.forgotten);
+            }
         };
 
         // On log out, remove permanently the realtime elements of the toolbar

@@ -67,6 +67,7 @@ define([
         var title;
         var toolbar;
         var state = STATE.DISCONNECTED;
+        var firstConnection = true;
 
         var toolbarContainer = options.toolbarContainer ||
             (function () { throw new Error("toolbarContainer must be specified"); }());
@@ -119,11 +120,21 @@ define([
             switch (state) {
                 case STATE.DISCONNECTED:
                 case STATE.INITIALIZING: {
-                    evStart.reg(function () { toolbar.reconnecting(); });
+                    evStart.reg(function () {
+                        if (firstConnection) {
+                            toolbar.initializing();
+                            return;
+                        }
+                        toolbar.reconnecting();
+                    });
                     break;
                 }
                 case STATE.INFINITE_SPINNER: {
                     evStart.reg(function () { toolbar.failed(); });
+                    break;
+                }
+                case STATE.FORGOTTEN: {
+                    evStart.reg(function () { toolbar.forgotten(); });
                     break;
                 }
                 default:
@@ -247,6 +258,7 @@ define([
                 evOnDefaultContentNeeded.fire();
             }
             stateChange(STATE.READY);
+            firstConnection = false;
             if (!readOnly) { onLocal(); }
             evOnReady.fire(newPad);
 
@@ -479,7 +491,7 @@ define([
             /* add a forget button */
             toolbar.$rightside.append(common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }
-                stateChange(STATE.HISTORY_MODE);
+                stateChange(STATE.FORGOTTEN);
             }));
 
             var $tags = common.createButton('hashtag', true);

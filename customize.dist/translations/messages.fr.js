@@ -42,6 +42,8 @@ define(function () {
     out.synchronizing = 'Synchronisation';
     out.reconnecting = 'Reconnexion...';
     out.typing = "Édition";
+    out.initializing = "Initialisation...";
+    out.forgotten = 'Déplacé vers la corbeille';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";

@@ -44,6 +44,8 @@ define(function () {
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
     out.typing = "Typing";
+    out.initializing = "Initializing...";
+    out.forgotten = 'Moved to the trash';
     out.lag = 'Lag';
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";
