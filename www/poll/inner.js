@@ -526,6 +526,14 @@ define([
         }
     };
 
+    var optionOrder = {
+        3: 1, // ? => ✔
+        1: 2, // ✔ => ~
+        2: 0, // ~ => x
+        0: 3, // x => ?
+        // undefined => 3
+    };
+
     var handleClick = function (e, isKeyup) {
         if (APP.readOnly) { return; }
 
@@ -566,8 +574,7 @@ define([
             case 'LABEL':
                 var input = $('input[type="number"][id=' + $(target).attr('for') + ']');
                 var value = parseInt(input.val());
-
-                input.val((value + 1) % 4);
+                input.val(optionOrder[value]);
 
                 handleInput(input[0]);
                 break;
