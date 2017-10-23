@@ -460,7 +460,7 @@ define([
             var allFiles = files[FILES_DATA];
             var sorted = Object.keys(allFiles).filter(function (a) { return allFiles[a]; })
                 .sort(function (a,b) {
-                    return allFiles[a].atime < allFiles[b].atime;
+                    return allFiles[b].atime - allFiles[a].atime;
                 })
                 .map(function (str) { return Number(str); });
             return sorted;
