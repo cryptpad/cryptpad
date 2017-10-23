@@ -238,7 +238,7 @@ define(function () {
     out.poll_admin_button = "Admin";
     out.poll_create_user = "Add a new user";
     out.poll_create_option = "Add a new option";
-    out.poll_commit = "Commit";
+    out.poll_commit = "Submit";
 
     out.poll_closeWizardButton = "Close wizard";
     out.poll_closeWizardButtonTitle = "Close wizard";

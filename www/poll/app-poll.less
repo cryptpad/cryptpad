@@ -35,6 +35,10 @@
 @poll-option-yellow: #ff5;
 @poll-option-gray: #ccc;
 
+@poll-add-color: #fff;
+@poll-add-bg: #777;
+@poll-add-bg-alt: #444;
+
 .bottom-left(@s: 5px) { border-bottom-left-radius: @s; }
 .top-left(@s: 5px) { border-top-left-radius: @s; }
 
@@ -97,17 +101,29 @@ table#cp-app-poll-table {
 }
 #cp-app-poll-create-user {
     display: inline-flex;
-    height: 24px;
-    padding: 0;
-    width: 50px;
+    height: 20px;
+    padding: 0 5px;
+    margin: 2px auto;
+    width: auto;
     overflow: hidden;
+    color: @poll-add-color;
+    background: @poll-add-bg;
+    &:hover {
+        background: @poll-add-bg-alt;
+    }
 }
 #cp-app-poll-create-option {
     order: 3;
     display: inline-flex;
-    width: 50px;
-    height: 24px;
+    width: 46px;
+    height: 20px;
+    margin: 2px;
     padding: 0;
+    color: @poll-add-color;
+    background: @poll-add-bg;
+    &:hover {
+        background: @poll-add-bg-alt;
+    }
 }
 #cp-app-poll-table-scroll {
     overflow-y: hidden;
