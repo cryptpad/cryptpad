@@ -219,6 +219,7 @@ var Renderer = function (Cryptpad, APP) {
                         'data-rt-id': col,
                         type: 'text',
                         value: getColumnValue(obj, col) || "",
+                        title: getColumnValue(obj, col) || Cryptpad.Messages.anonymous,
                         placeholder: Cryptpad.Messages.anonymous,
                         disabled: 'disabled'
                     };
@@ -238,6 +239,7 @@ var Renderer = function (Cryptpad, APP) {
             return [{
                 'data-rt-id': row,
                 value: getRowValue(obj, row) || '',
+                title: getRowValue(obj, row) || Cryptpad.Messages.poll_optionPlaceholder,
                 type: 'text',
                 placeholder: Cryptpad.Messages.poll_optionPlaceholder,
                 disabled: 'disabled',
