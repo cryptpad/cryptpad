@@ -168,6 +168,7 @@ define(function () {
     out.slideOptionsText = "Options";
     out.slideOptionsTitle = "Personnaliser la présentation";
     out.slideOptionsButton = "Enregistrer (Entrée)";
+    out.slide_invalidLess = "Feuille de style non valide";
 
     out.languageButton = "Langage";
     out.languageButtonTitle = "Sélectionner le langage à utiliser pour la coloration syntaxique";
