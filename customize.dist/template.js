@@ -90,6 +90,7 @@ $(function () {
         $('body').addClass('cp-page-' + css);
     }
 
+    window.Tether = function () {};
     require([
         'less!/customize/src/less2/main.less',
         'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
