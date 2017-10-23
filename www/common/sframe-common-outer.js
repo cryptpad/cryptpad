@@ -468,6 +468,14 @@ define([
                         });
                     });
                 });
+                sframeChan.on('Q_CONTACTS_REMOVE_FRIEND', function (curvePublic, cb) {
+                    messenger.removeFriend(curvePublic, function (e, info) {
+                        cb({
+                            error: e,
+                            data: info,
+                        });
+                    });
+                });
 
                 sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
                     messenger.openFriendChannel(curvePublic, function (e) {
