@@ -207,6 +207,13 @@ define([], function () {
         return Array.prototype.slice.call(A);
     };
 
+    Util.blobToImage = function (blob, cb) {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            cb(reader.result);
+        };
+        reader.readAsDataURL(blob);
+    };
     Util.blobURLToImage = function (url, cb) {
         var xhr = new XMLHttpRequest();
         xhr.onload = function() {

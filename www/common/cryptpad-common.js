@@ -1498,9 +1498,14 @@ define([
         if (decrypted.callback) {
             var cb = decrypted.callback;
             cb(function (mediaObject) {
-                if (mediaObject.type !== 'download') { return; }
-                var root = mediaObject.rootElement;
+                var root = mediaObject.element;
                 if (!root) { return; }
+
+                if (mediaObject.type === 'image') {
+                    $(root).data('blob', decrypted.blob);
+                }
+
+                if (mediaObject.type !== 'download') { return; }
 
                 var metadata = decrypted.metadata;
 

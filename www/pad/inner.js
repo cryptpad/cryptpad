@@ -477,9 +477,11 @@ define([
         var exportMediaTags = function (inner, cb) {
             var $clone = $(inner).clone();
             nThen(function (waitFor) {
-                $clone.find('media-tag > img').each(function (i, el) {
-                    Util.blobURLToImage($(el).attr('src'), waitFor(function (imgSrc) {
-                        $(el).attr('src', imgSrc);
+                $(inner).find('media-tag').each(function (i, el) {
+                    if (!$(el).data('blob')) { return; }
+                    Util.blobToImage($(el).data('blob'), waitFor(function (imgSrc) {
+                        $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
+                            .attr('src', imgSrc);
                     }));
                 });
             }).nThen(function () {
