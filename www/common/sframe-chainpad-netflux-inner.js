@@ -38,6 +38,7 @@ define([
         var userName = config.userName;
         var initialState = config.initialState;
         var transformFunction = config.transformFunction;
+        var patchTransformer = config.patchTransformer;
         var validateContent = config.validateContent;
         var avgSyncMilliseconds = config.avgSyncMilliseconds;
         var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 1;
@@ -50,6 +51,7 @@ define([
             userName: userName,
             initialState: initialState,
             transformFunction: transformFunction,
+            patchTransformer: patchTransformer,
             validateContent: validateContent,
             avgSyncMilliseconds: avgSyncMilliseconds,
             logLevel: logLevel

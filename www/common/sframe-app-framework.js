@@ -362,8 +362,11 @@ define([
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform
-                //transformFunction: options.transformFunction || JsonOT.validate,
-                patchTransformer: options.patchTransformer || JsonOT.patchTransformer,
+                transformFunction: options.transformFunction || JsonOT.validate,
+
+                // This one causes a big mess.
+                //patchTransformer: options.patchTransformer || JsonOT.patchTransformer,
+
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,
                 validateContent: options.validateContent || function (content) {

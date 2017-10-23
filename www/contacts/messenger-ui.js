@@ -318,10 +318,10 @@ define([
         };
 
         var removeFriend = function (curvePublic) {
-            messenger.removeFriend(curvePublic, function (e, removed) {
+            messenger.removeFriend(curvePublic, function (e /*, removed */) {
                 if (e) { return void console.error(e); }
                 find.inList(curvePublic).remove();
-                console.log(removed);
+                //console.log(removed);
             });
         };
 

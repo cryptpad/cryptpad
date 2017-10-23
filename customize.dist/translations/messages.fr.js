@@ -1,7 +1,7 @@
 define(function () {
     var out = {};
 
-    out.main_title = "CryptPad: Éditeur collaboratif en temps réel, zero knowledge";
+    out.main_title = "CryptPad : Éditeur collaboratif en temps réel, zero knowledge";
     out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
     out.type = {};
@@ -75,9 +75,9 @@ define(function () {
 
     out.supportCryptpad = "Soutenir CryptPad";
 
-    out.formattedMB = "{0} Mo";
-    out.formattedGB = "{0} Go";
-    out.formattedKB = "{0} Ko";
+    out.formattedMB = "{0} Mo";
+    out.formattedGB = "{0} Go";
+    out.formattedKB = "{0} Ko";
 
     out.greenLight = "Tout fonctionne bien";
     out.orangeLight = "Votre connexion est lente, ce qui réduit la qualité de l'éditeur";
@@ -197,7 +197,7 @@ define(function () {
     out.okButton = 'OK (Entrée)';
 
     out.cancel = "Annuler";
-    out.cancelButton = 'Annuler (Echap)';
+    out.cancelButton = 'Annuler (Échap)';
 
     out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";
@@ -281,8 +281,8 @@ define(function () {
     out.canvas_enable = "Activer le dessin";
     out.canvas_width = "Taille";
     out.canvas_opacity = "Opacité";
-    out.canvas_opacityLabel = "Opacité: {0}";
-    out.canvas_widthLabel = "Taille: {0}";
+    out.canvas_opacityLabel = "Opacité : {0}";
+    out.canvas_widthLabel = "Taille : {0}";
     out.canvas_saveToDrive = "Sauvegarder cette image en tant que fichier dans CryptDrive";
     out.canvas_currentBrush = "Pinceau actuel";
     out.canvas_chooseColor = "Choisir une couleur";
@@ -294,11 +294,11 @@ define(function () {
     out.profile_namePlaceholder = 'Nom ou pseudo pour le profil';
     out.profile_avatar = "Avatar";
     out.profile_upload = " Importer un nouvel avatar";
-    out.profile_error = "Erreur lors de la création du profil : {0}";
+    out.profile_error = "Erreur lors de la création du profil : {0}";
     out.profile_register = "Vous devez vous inscrire pour pouvoir créer un profil !";
     out.profile_create = "Créer un profil";
     out.profile_description = "Description";
-    out.profile_fieldSaved = 'Nouvelle valeur enregistrée: {0}';
+    out.profile_fieldSaved = 'Nouvelle valeur enregistrée : {0}';
 
     out.profile_inviteButton = "Inviter";
     out.profile_inviteButtonTitle = 'Créer un lien pour inviter cet utilisateur à se connecter avec vous.';
@@ -306,8 +306,8 @@ define(function () {
     out.profile_viewMyProfile = "Voir mon profil";
 
     // contacts/userlist
-    out.userlist_addAsFriendTitle = 'Ajouter "{0}" comme contact';
-    out.userlist_thisIsYou = 'Vous ("{0}")';
+    out.userlist_addAsFriendTitle = 'Ajouter « {0} » comme contact';
+    out.userlist_thisIsYou = 'Vous (« {0} »)';
     out.userlist_pending = "En attente...";
     out.contacts_title = "Contacts";
     out.contacts_addError = "Erreur lors de l'ajout de ce contact dans votre liste";
@@ -316,7 +316,7 @@ define(function () {
     out.contacts_request = '<em>{0}</em> souhaite vous ajouter en tant que contact. <b>Accepter<b> ?';
     out.contacts_send = 'Envoyer';
     out.contacts_remove = 'Supprimer ce contact';
-    out.contacts_confirmRemove = 'Êtes-vous sûr de voulour supprimer <em>{0}</em> de vos contacts ?';
+    out.contacts_confirmRemove = 'Êtes-vous sûr de vouloir supprimer <em>{0}</em> de vos contacts ?';
     out.contacts_typeHere = "Entrez un message ici...";
 
 
@@ -475,8 +475,8 @@ define(function () {
     out.settings_resetButton = "Supprimer";
     out.settings_reset = "Supprimer tous les fichiers et dossiers de votre CryptDrive";
     out.settings_resetPrompt = "Cette action va supprimer tous les pads de votre drive.<br>"+
-                               "Êtes-vous sûr de vouloir continuer ?<br>" +
-                               "Tapez “<em>I love CryptPad</em>” pour confirmer.";
+                               "Êtes-vous sûr de vouloir continuer ?<br>" +
+                               "Tapez « <em>I love CryptPad</em> » pour confirmer.";
     out.settings_resetDone = "Votre drive est désormais vide!";
     out.settings_resetError = "Texte de vérification incorrect. Votre CryptDrive n'a pas été modifié.";
 
@@ -576,7 +576,7 @@ define(function () {
     out.main_slide = 'Présentations';
     out.main_slide_p = 'Créez vos présentations en syntaxe Markdown collaborativement de manière sécurisée et affichez les dans votre navigateur.';
     out.main_poll = 'Sondages';
-    out.main_poll_p = 'Plannifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
+    out.main_poll_p = 'Planifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
     out.main_drive = 'CryptDrive';
 
     out.main_richTextPad = 'Pad de Texte Riche';
@@ -605,7 +605,7 @@ define(function () {
     out.whatis_title = "Qu'est-ce que CryptPad";
     out.whatis_collaboration = 'Collaboration rapide, facile';
     out.whatis_collaboration_p1 = "Avec CryptPad, vous pouvez créer rapidement des documents collaboratifs pour prendre des notes à plusieurs. Quand vous vous enregistrez et vous vous connectez, vous obtenez la possibilité d'importer des fichiers dans un CryptDrive où vous pouvez organiser tous vos pads (documents). En tant qu'utilisateur enregistré, vous possédez 50 Mo de stockage gratuit.";
-    out.whatis_collaboration_p2 = "Vous pouvez partager l'accès à un document simplement en partageant le lien. Vous pouvez aussi partager un lien spécial fournissant un accès <em>en lecture seule</em> au pad, permettant du publier des travaux collaboratifs tout en restant maître de l'édition.";
+    out.whatis_collaboration_p2 = "Vous pouvez partager l'accès à un document simplement en partageant le lien. Vous pouvez aussi partager un lien spécial fournissant un accès <em>en lecture seule</em> au pad, permettant de publier des travaux collaboratifs tout en restant maître de l'édition.";
     out.whatis_collaboration_p3 = "Vous pouvez créer des documents de texte avec <a href=\"http://ckeditor.com/\">CKEditor</a> tout comme des documents Markdown qui sont rendus en temps-réel pendant que vous tapez. Vous pouvez aussi utiliser l'application de sondage pour planifier des évènements avec plusieurs participants.";
     out.whatis_zeroknowledge = 'Zero Knowledge';
     out.whatis_zeroknowledge_p1 = "Nous ne souhaitons pas connaître ce que vous tapez et grâce à la cryptographie moderne, vous pouvez être assuré que nous ne le <b>pouvons</b> pas. CryptPad utilise <b>un chiffrement à 100% côté client</b> pour protéger le contenu que vous tapez de nous, les personnes contrôlant le serveur.";
@@ -614,7 +614,7 @@ define(function () {
     out.whatis_drive = "Organisation avec CryptDrive";
     out.whatis_drive_p1 = "Dés que vous accédez à un pad dans CryptPad, celui-ci est automatiquement ajouté à votre CryptDrive, dans le dossier principal. Vous pouvez alors ranger ce pad dans un dossier ou le déplacer vers la corbeille. CryptDrive vous permet de rechercher parmi vos pads et de les organiser quand vous le souaitez, comme vous le souhaitez.";
     out.whatis_drive_p2 = "Avec le glisser-déposer intuitif, vous pouvez déplacer vos pads dans votre drive tout en conservant les liens vers ces pads pour que vos collaborateurs n'en perdent pas l'accès";
-    out.whatis_drive_p3 = "Vous pouvez également importer des fichier dans votre CryptDrive et les partager avec des collègues. Les fichiers importés peuvent être rangés de la même manière que vos pads collaboratifs.";
+    out.whatis_drive_p3 = "Vous pouvez également importer des fichiers dans votre CryptDrive et les partager avec des collègues. Les fichiers importés peuvent être rangés de la même manière que vos pads collaboratifs.";
     out.whatis_business = 'CryptPad for Business';
     out.whatis_business_p1 = "Le chiffrement Zero Knowledge de CryptPad excelle pour multiplier l'efficacité des protocoles de sécurité existants en recréant les contrôles d'accès organisationnels de manière cryptographique. Puisque les données sensibles ne peuvent être déchiffrées qu'en utilisant les identifiants d'un employé, CryptPad empêche d'éventuels hackers ayant réussi à s'introduire dans le serveur d'avoir accès en clair à ces données. Découvrez-en plus sur la manière dont CryptPad peut aider votre entreprise en lisant le <a href=\"https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf\">CryptPad Whitepaper</a>.";
     out.whatis_business_p2 = "CryptPad est déployable sur site et les <a href=\"https://cryptpad.fr/about.html\">développeurs CryptPad</a> chez XWiki SAS peuvent effectuer du développement, des personnalisations et du support commercial. Contactez-nous à <a href=\"mailto:sales@cryptpad.fr\">sales@cryptpad.fr</a> pour plus d'informations.";
@@ -643,7 +643,7 @@ define(function () {
 
     out.tos_title = "Conditions d'utilisation de CryptPad";
     out.tos_legal = "Veuillez ne pas être malveillant, abusif, ou faire quoi que ce soit d'illégal.";
-    out.tos_availability = "Nous espérons que vous trouvez ce service utile, mais nous ne pouvons garantir ses performances et disponibilités. Nous vous recommandons d'exporter vos données régurlièrement.";
+    out.tos_availability = "Nous espérons que vous trouvez ce service utile, mais nous ne pouvons garantir ses performances et disponibilités. Nous vous recommandons d'exporter vos données régulièrement.";
     out.tos_e2ee = "Le contenu sur CryptPad peuvent être lus et modifiés par quiconque est en mesure de deviner ou d'obtenir de quelque manière que ce soit l'identificateur de fragment du pad. Nous vous recommandons d'utiliser des technologies de messagerie chiffrées de bout à bout (end-to-end encryption ou e2ee) pour partager les liens, et déclinons toute responsabilité dans le cas ou un tel lien serait divulgué.";
     out.tos_logs = "Les meta-données fournies par votre navigateur au serveur peuvent être enregistrées dans le but de maintenir le service.";
     out.tos_3rdparties = "Nous ne fournissons aucune donnée individuelle à des tierces parties à moins d'y être contraints par la loi.";
@@ -725,7 +725,7 @@ define(function () {
     out.tips = {};
     out.tips.shortcuts = "`ctrl+b`, `ctrl+i` et `ctrl+u` sont des raccourcis rapides pour mettre en gras, en italique ou souligner.";
     out.tips.indent = "Dans les listes à puces ou numérotées, vous pouvez utiliser `Tab` ou `Maj+Tab` pour augmenter ou réduire rapidement l'indentation.";
-    out.tips.store = "Dés que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connectés.";
+    out.tips.store = "Dès que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connectés.";
     out.tips.marker = "Vous pouvez surligner du texte dans un pad en utilisant l'option \"marker\" dans le menu déroulant des styles.";
     out.tips.driveUpload = "Les utilisateurs enregistrés peuvent importer des fichiers en les faisant glisser et en les déposant dans leur CryptDrive.";
     out.tips.filenames = "Vous pouvez renommer les fichiers de votre CryptDrive, ce nom ne sera visible que par vous.";

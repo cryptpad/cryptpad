@@ -66,6 +66,11 @@ define([], function () {
                 //cb({ error: err, data: data, });
             });
         };
+        messenger.removeFriend = function (curvePublic, cb) {
+            sFrameChan.query('Q_CONTACTS_REMOVE_FRIEND', curvePublic, function (err, data) {
+                cb(err || data.error, data.data);
+            });
+        };
         messenger.openFriendChannel = function (curvePublic, cb) {
             sFrameChan.query('Q_CONTACTS_OPEN_FRIEND_CHANNEL', curvePublic, function (err, data) {
                 cb(err || data.error);
