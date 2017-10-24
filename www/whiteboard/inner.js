@@ -238,17 +238,9 @@ define([
         APP.upload = function (title) {
             var canvas = $canvas[0];
             APP.canvas.deactivateAll().renderAll();
-            var finish = function (thumb) {
-                canvas.toBlob(function (blob) {
-                    blob.name = title;
-                    APP.FM.handleFile(blob, void 0, thumb);
-                });
-            };
-
-            Thumb.fromCanvas(canvas, function (e, blob) {
-                // carry on even if you can't get a thumbnail
-                if (e) { console.error(e); }
-                finish(blob);
+            canvas.toBlob(function (blob) {
+                blob.name = title;
+                APP.FM.handleFile(blob);
             });
         };
 
