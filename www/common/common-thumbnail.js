@@ -44,27 +44,29 @@ define([
 
         var dim = Thumb.dimension;
         // if the image is too small, don't bother making a thumbnail
-        if (h <= dim || w <= dim) { return null; }
+        if (h <= dim && w <= dim) { return null; }
 
         // the image is taller than it is wide, so scale to that.
         var r = dim / (h > w? h: w); // ratio
 
         var d;
         if (h > w) {
-            d = Math.floor(((h * r) - dim) / 2);
+            var newW = Math.floor(w*r);
+            d = Math.floor((dim - newW) / 2);
             return {
-                x1: 0,
-                x2: dim,
-                y1: d,
-                y2: dim + d,
+                x: d,
+                w: newW,
+                y: 0,
+                h: dim,
             };
         } else {
-            d = Math.floor(((w * r) - dim) / 2);
+            var newH = Math.floor(h*r);
+            d = Math.floor((dim - newH) / 2);
             return {
-                x1: d,
-                x2: dim + d,
-                y1: 0,
-                y2: dim,
+                x: 0,
+                w: dim,
+                y: d,
+                h: newH
             };
         }
     };
@@ -80,7 +82,7 @@ define([
         c2.height = Thumb.dimension;
 
         var ctx = c2.getContext('2d');
-        ctx.drawImage(canvas, D.x1, D.y1, D.x2, D.y2);
+        ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
         c2.toBlob(function (blob) {
             cb(void 0, blob);
         });
@@ -91,7 +93,10 @@ define([
         var img = new Image();
 
         img.onload = function () {
-            Thumb.fromImage(img, cb);
+            Thumb.fromImage(img, function (err, t) {
+                if (err === 'TOO_SMALL') { return void cb(void 0, blob); }
+                cb(err, t);
+            });
         };
         img.onerror = function () {
             cb('ERROR');
