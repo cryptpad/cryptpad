@@ -8,8 +8,10 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/sframe-common-interface.js',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/common/common-thumbnail.js',
     '/customize/application_config.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -25,8 +27,10 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
+    SFUI,
     Messages,
     Util,
+    Thumb,
     AppConfig)
 {
     var SaveAs = window.saveAs;
@@ -263,6 +267,29 @@ define([
             evOnReady.fire(newPad);
 
             Cryptpad.removeLoadingScreen(emitResize);
+
+            if (options.getThumbnailContainer) {
+                var oldThumbnailState;
+                var privateDat = cpNfInner.metadataMgr.getPrivateData();
+                var hash = privateDat.availableHashes.editHash || privateDat.availableHashes.viewHash;
+                var href = privateDat.pathname + '#' + hash;
+                var mkThumbnail = function () {
+                    if (!hash) { return; }
+                    if (state !== STATE.READY) { return; }
+                    if (!cpNfInner.chainpad) { return; }
+                    var content = cpNfInner.chainpad.getUserDoc();
+                    if (content === oldThumbnailState) { return; }
+                    var el = options.getThumbnailContainer();
+                    if (!el) { return; }
+                    $(el).parents().css('overflow', 'visible');
+                    Thumb.fromDOM(el, function (err, b64) {
+                        oldThumbnailState = content;
+                        $(el).parents().css('overflow', '');
+                        SFUI.setPadThumbnail(href, b64)
+                    });
+                };
+                window.setInterval(mkThumbnail, 5000);
+            }
 
             if (newPad) {
                 common.openTemplatePicker();

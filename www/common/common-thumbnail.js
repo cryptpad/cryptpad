@@ -48,7 +48,14 @@ define([
 
         var dim = Thumb.dimension;
         // if the image is too small, don't bother making a thumbnail
-        if (h <= dim && w <= dim) { return null; }
+        if (h <= dim && w <= dim) {
+            return {
+                x: Math.floor((dim - w) / 2),
+                w: w,
+                y: Math.floor((dim - h) / 2),
+                h : h
+            };
+        }
 
         // the image is taller than it is wide, so scale to that.
         var r = dim / (h > w? h: w); // ratio
@@ -77,18 +84,16 @@ define([
 
     // assumes that your canvas is square
     // nodeback returning blob
-    Thumb.fromCanvas = Thumb.fromImage = function (canvas, D, cb) {
+    Thumb.fromCanvas = function (canvas, D, cb) {
         var c2 = document.createElement('canvas');
-        if (!D) { return void cb('TOO_SMALL'); }
+        if (!D) { return void cb('ERROR'); }
 
         c2.width = Thumb.dimension;
         c2.height = Thumb.dimension;
 
         var ctx = c2.getContext('2d');
         ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
-        c2.toBlob(function (blob) {
-            cb(void 0, blob);
-        });
+        cb(void 0, c2.toDataURL());
     };
 
     Thumb.fromImageBlob = function (blob, cb) {
@@ -97,10 +102,7 @@ define([
 
         img.onload = function () {
             var D = getResizedDimensions(img, 'image');
-            Thumb.fromImage(img, D, function (err, t) {
-                if (err === 'TOO_SMALL') { return void cb(void 0, blob); }
-                cb(err, t);
-            });
+            Thumb.fromCanvas(img, D, cb);
         };
         img.onerror = function () {
             cb('ERROR');
@@ -145,9 +147,7 @@ define([
             PDFJS.getDocument(url).promise
             .then(function (doc) {
                 return doc.getPage(1).then(makeThumb).then(function (canvas) {
-                    canvas.toBlob(function (blob) {
-                        cb(void 0, blob);
-                    });
+                    cb(void 0, canvas.toDataURL());
                 });
             }).catch(function () {
                 cb('ERROR');
@@ -164,8 +164,19 @@ define([
         Thumb.fromImageBlob(blob, cb);
     };
 
-    Thumb.fromVideo = function (video, cb) {
-        cb = cb; // WIP
+    window.html2canvas = undefined;
+    Thumb.fromDOM = function (element, cb) {
+        var todo = function () {
+            html2canvas(element, {
+                allowTaint: true,
+                onrendered: function (canvas) {
+                    var D = getResizedDimensions(canvas, 'image');
+                    Thumb.fromCanvas(canvas, D, cb);
+                }
+            });
+        };
+        if (html2canvas) { return void todo(); }
+        require(['/bower_components/html2canvas/build/html2canvas.min.js'], todo);
     };
 
     return Thumb;

@@ -35,15 +35,20 @@ define([
 
     var addThumbnail = function (err, thumb, $span, cb) {
         var img = new Image();
-        img.src = 'data:;base64,'+thumb;
+        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:;base64,'+thumb;
         $span.find('.cp-icon').hide();
         $span.prepend(img);
         cb($(img));
     };
+    UI.setPadThumbnail = function (href, b64, cb) {
+        cb = cb || $.noop;
+        var k  ='thumbnail-' + href;
+        localForage.setItem(k, b64, cb);
+    };
+    localForage.removeItem('thumbnail-/1/edit/lqg6RRnynI76LV0sR8F0YA/Nh1SNXxB5U2UjaADvODfvI5l/');
     UI.displayThumbnail = function (href, $container, cb) {
         cb = cb || $.noop;
         var parsed = Hash.parsePadUrl(href);
-        if (parsed.type !== 'file') { return; }
         var k  ='thumbnail-' + href;
         var whenNewThumb = function () {
             var secret = Hash.getSecrets('file', parsed.hash);
@@ -61,7 +66,10 @@ define([
             });
         };
         localForage.getItem(k, function (err, v) {
-            if (!v) { return void whenNewThumb(); }
+            if (!v && parsed.type === 'file') {
+                // We can only create thumbnails for files here since we can't easily decrypt pads
+                return void whenNewThumb();
+            }
             if (v === 'EMPTY') { return; }
             addThumbnail(err, v, $container, cb);
         });

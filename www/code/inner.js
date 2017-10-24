@@ -7,6 +7,7 @@ define([
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
+    '/common/common-thumbnail.js',
     '/common/modes.js',
     'cm/lib/codemirror',
 
@@ -45,6 +46,7 @@ define([
     SFCommon,
     Framework,
     Util,
+    Thumb,
     Modes,
     CMeditor)
 {
@@ -145,6 +147,10 @@ define([
             $codeMirror.addClass('cp-app-code-fullpage');
         };
 
+        var isVisible = function () {
+            return $previewContainer.is(':visible');
+        };
+
         framework.onReady(function () {
             // add the splitter
             var splitter = $('<div>', {
@@ -184,7 +190,8 @@ define([
         return {
             forceDraw: forceDrawPreview,
             draw: drawPreview,
-            modeChange: modeChange
+            modeChange: modeChange,
+            isVisible: isVisible
         };
     };
 
@@ -317,6 +324,17 @@ define([
         framework.start();
     };
 
+    var getThumbnailContainer = function () {
+        var $preview = $('#cp-app-code-preview-content');
+        var $codeMirror = $('.CodeMirror');
+        if ($preview.length && $preview.is(':visible')) {
+            return $preview[0];
+        }
+        if ($codeMirror.length) {
+            return $codeMirror[0];
+        }
+    };
+
     var main = function () {
         var CodeMirror;
         var editor;
@@ -327,7 +345,8 @@ define([
 
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
-                contentContainer: '#cp-app-code-editor'
+                contentContainer: '#cp-app-code-editor',
+                getThumbnailContainer: getThumbnailContainer
             }, waitFor(function (fw) { framework = fw; }));
 
             nThen(function (waitFor) {
