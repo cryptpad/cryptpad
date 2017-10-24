@@ -120,6 +120,7 @@ define([
             });
         });
         video.addEventListener('error', function (e) {
+            console.error(e);
             cb('ERROR');
         });
     };
