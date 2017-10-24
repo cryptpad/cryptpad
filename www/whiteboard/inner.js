@@ -208,6 +208,7 @@ define([
         });
 
         var setEditable = function (bool) {
+            APP.editable = bool;
             if (readOnly && bool) { return; }
             if (bool) { $controls.css('display', 'flex'); }
             else { $controls.hide(); }
@@ -237,17 +238,9 @@ define([
         APP.upload = function (title) {
             var canvas = $canvas[0];
             APP.canvas.deactivateAll().renderAll();
-            var finish = function (thumb) {
-                canvas.toBlob(function (blob) {
-                    blob.name = title;
-                    APP.FM.handleFile(blob, void 0, thumb);
-                });
-            };
-
-            Thumb.fromCanvas(canvas, function (e, blob) {
-                // carry on even if you can't get a thumbnail
-                if (e) { console.error(e); }
-                finish(blob);
+            canvas.toBlob(function (blob) {
+                blob.name = title;
+                APP.FM.handleFile(blob);
             });
         };
 
@@ -287,6 +280,7 @@ define([
             })
             .on('dblclick', function (e) {
                 e.preventDefault();
+                if (!APP.editable) { return; }
                 pickColor(Colors.rgb2hex($color.css('background-color')), function (c) {
                     $color.css({
                         'background-color': c,

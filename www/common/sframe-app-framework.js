@@ -391,8 +391,7 @@ define([
                 // really basic operational transform
                 transformFunction: options.transformFunction || JsonOT.validate,
 
-                // This one causes a big mess.
-                //patchTransformer: options.patchTransformer || JsonOT.patchTransformer,
+                patchTransformer: options.patchTransformer || JsonOT.patchTransformer,
 
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,

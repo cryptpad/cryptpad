@@ -651,7 +651,7 @@ define([
 
         if (editable === false) {
             // disable all the things
-            $('.icp-app-poll-realtime input, .cp-app-poll-realtime button, .cp-app-poll-upper button, .cp-app-poll-realtime textarea').attr('disabled', true);
+            $('.cp-app-poll-realtime input, .cp-app-poll-realtime button, .cp-app-poll-upper button, .cp-app-poll-realtime textarea').attr('disabled', true);
             $('span.cp-app-poll-table-edit, span.cp-app-poll-table-remove').hide();
             $('span.cp-app-poll-table-lock').addClass('fa-lock').removeClass('fa-unlock')
                 .attr('title', Messages.poll_locked)
