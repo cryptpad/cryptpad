@@ -11,7 +11,8 @@ define([
         'image/jpeg',
         'image/jpg',
         'image/gif',
-        'video/'
+        'video/',
+        'application/pdf'
     ];
 
     Thumb.isSupportedType = function (type) {
@@ -122,9 +123,42 @@ define([
             cb('ERROR');
         });
     };
+    Thumb.fromPdfBlob = function (blob, cb) {
+        require.config({paths: {'pdfjs-dist': '/common/pdfjs'}});
+        require(['pdfjs-dist/build/pdf'], function (PDFJS) {
+            var url = URL.createObjectURL(blob);
+            var makeThumb = function (page) {
+                var vp = page.getViewport(1);
+                var canvas = document.createElement("canvas");
+                canvas.width = canvas.height = Thumb.dimension;
+                var scale = Math.min(canvas.width / vp.width, canvas.height / vp.height);
+                canvas.width = Math.floor(vp.width * scale);
+                canvas.height = Math.floor(vp.height * scale);
+                return page.render({
+                    canvasContext: canvas.getContext("2d"),
+                    viewport: page.getViewport(scale)
+                }).promise.then(function () {
+                    return canvas;
+                });
+            };
+            PDFJS.getDocument(url).promise
+            .then(function (doc) {
+                return doc.getPage(1).then(makeThumb).then(function (canvas) {
+                    canvas.toBlob(function (blob) {
+                        cb(void 0, blob);
+                    });
+                });
+            }).catch(function (err) {
+                cb('ERROR');
+            });
+        });
+    };
     Thumb.fromBlob = function (blob, cb) {
         if (blob.type.indexOf('video/') !== -1) {
             return void Thumb.fromVideoBlob(blob, cb);
+        }
+        if (blob.type.indexOf('application/pdf') !== -1) {
+            return void Thumb.fromPdfBlob(blob, cb);
         }
         Thumb.fromImageBlob(blob, cb);
     };
