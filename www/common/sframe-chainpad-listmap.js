@@ -685,7 +685,9 @@ define([
             });
         };
 
+        var ready = false;
         realtimeOptions.onReady = function (info) {
+            if (ready) { return; }
             // create your patcher
             if (realtime !== info.realtime) {
                 realtime = rt.realtime = info.realtime;
@@ -709,6 +711,7 @@ define([
             DeepProxy.checkLocalChange(proxy, onLocal);
 
             initializing = false;
+            ready = true;
         };
 
         realtimeOptions.onAbort = function (info) {
