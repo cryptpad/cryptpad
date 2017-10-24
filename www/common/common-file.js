@@ -296,7 +296,7 @@ define([
 
                 if (!Thumb.isSupportedType(file.type)) { return finish(); }
                 // make a resized thumbnail from the image..
-                Thumb.fromImageBlob(file, function (e, thumb_blob) {
+                Thumb.fromBlob(file, function (e, thumb_blob) {
                     if (e) { console.error(e); }
                     if (!thumb_blob) { return finish(); }
 

@@ -10,11 +10,14 @@ define([
         'image/png',
         'image/jpeg',
         'image/jpg',
-        'image/gif', // TODO confirm this is true
+        'image/gif',
+        'video/'
     ];
 
     Thumb.isSupportedType = function (type) {
-        return supportedTypes.indexOf(type) !== -1;
+        return supportedTypes.some(function (t) {
+            return type.indexOf(t) !== -1;
+        });
     };
 
     // create thumbnail image from metadata
@@ -38,9 +41,9 @@ define([
         }
     };
 
-    var getResizedDimensions = function (img) {
-        var h = img.height;
-        var w = img.width;
+    var getResizedDimensions = function (img, type) {
+        var h = type === 'video' ? img.videoHeight : img.height;
+        var w = type === 'video' ? img.videoWidth : img.width;
 
         var dim = Thumb.dimension;
         // if the image is too small, don't bother making a thumbnail
@@ -73,9 +76,8 @@ define([
 
     // assumes that your canvas is square
     // nodeback returning blob
-    Thumb.fromCanvas = Thumb.fromImage = function (canvas, cb) {
+    Thumb.fromCanvas = Thumb.fromImage = function (canvas, D, cb) {
         var c2 = document.createElement('canvas');
-        var D = getResizedDimensions(canvas);
         if (!D) { return void cb('TOO_SMALL'); }
 
         c2.width = Thumb.dimension;
@@ -93,7 +95,8 @@ define([
         var img = new Image();
 
         img.onload = function () {
-            Thumb.fromImage(img, function (err, t) {
+            var D = getResizedDimensions(img, 'image');
+            Thumb.fromImage(img, D, function (err, t) {
                 if (err === 'TOO_SMALL') { return void cb(void 0, blob); }
                 cb(err, t);
             });
@@ -102,6 +105,25 @@ define([
             cb('ERROR');
         };
         img.src = url;
+    };
+    Thumb.fromVideoBlob = function (blob, cb) {
+        var url = URL.createObjectURL(blob);
+        var video = document.createElement("VIDEO");
+
+        video.src = url;
+        video.addEventListener('loadedmetadata', function() {
+            video.currentTime = Number(Math.floor(Math.min(video.duration/10, 5)));
+            video.addEventListener('loadeddata', function() {
+                var D = getResizedDimensions(video, 'video');
+                Thumb.fromCanvas(video, D, cb);
+            });
+        });
+    };
+    Thumb.fromBlob = function (blob, cb) {
+        if (blob.type.indexOf('video/') !== -1) {
+            return void Thumb.fromVideoBlob(blob, cb);
+        }
+        Thumb.fromImageBlob(blob, cb);
     };
 
     Thumb.fromVideo = function (video, cb) {
