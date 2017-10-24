@@ -149,7 +149,7 @@ define([
                         cb(void 0, blob);
                     });
                 });
-            }).catch(function (err) {
+            }).catch(function () {
                 cb('ERROR');
             });
         });
