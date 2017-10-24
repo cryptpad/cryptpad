@@ -208,6 +208,7 @@ define([
         });
 
         var setEditable = function (bool) {
+            APP.editable = bool;
             if (readOnly && bool) { return; }
             if (bool) { $controls.css('display', 'flex'); }
             else { $controls.hide(); }
@@ -287,6 +288,7 @@ define([
             })
             .on('dblclick', function (e) {
                 e.preventDefault();
+                if (!APP.editable) { return; }
                 pickColor(Colors.rgb2hex($color.css('background-color')), function (c) {
                     $color.css({
                         'background-color': c,
