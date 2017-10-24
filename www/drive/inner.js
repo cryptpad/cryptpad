@@ -3005,7 +3005,10 @@ define([
                     APP.$displayName.text(name);
                 });
             };
+            var firstConnection = true;
             var onReady = function () {
+                if (!firstConnection) { return; } // TODO fix this issue in listmap
+                firstConnection = false;
                 $('body').css('display', '');
                 APP.files = proxy;
                 if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }

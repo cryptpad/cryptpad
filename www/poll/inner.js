@@ -1164,8 +1164,11 @@ define([
             var rt = APP.rt = Listmap.create(listmapConfig);
             APP.proxy = rt.proxy;
 
+            var firstConnection = true;
             rt.proxy.on('create', onCreate)
                  .on('ready', function (info) {
+                    if (!firstConnection) { return; } // TODO fix this issue in listmap
+                    firstConnection = false;
                     common.getPadAttribute('userid', function (e, userid) {
                         if (e) { console.error(e); }
                         APP.userid = userid;
