@@ -886,6 +886,7 @@ define([
                 // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
                 if (typeof name === "undefined") { return; }
                 name = name || Messages.anonymous;
+                if (Config.disableUserlistNotifications) { return; }
                 switch(type) {
                     case 1:
                         Cryptpad.log(Messages._getKey("notifyJoined", [name]));
