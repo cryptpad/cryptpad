@@ -118,6 +118,9 @@ define([
                 Thumb.fromCanvas(video, D, cb);
             });
         });
+        video.addEventListener('error', function (e) {
+            cb('ERROR');
+        });
     };
     Thumb.fromBlob = function (blob, cb) {
         if (blob.type.indexOf('video/') !== -1) {
