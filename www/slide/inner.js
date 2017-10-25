@@ -376,6 +376,8 @@ define([
 
     var andThen2 = function (editor, CodeMirror, framework, isPresentMode) {
 
+        var common = framework._.sfCommon;
+
         var $contentContainer = $('#cp-app-slide-editor');
         var $modal = $('#cp-app-slide-modal');
         var $content = $('#cp-app-slide-modal-content');
@@ -427,6 +429,22 @@ define([
                 framework._.sfCommon.setTabTitle('{title}' + slideNumber);
             });
             Slide.update(editor.getValue());
+
+            var fmConfig = {
+                dropArea: $('.CodeMirror'),
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    //var cursor = editor.getCursor();
+                    //var cleanName = data.name.replace(/[\[\]]/g, '');
+                    //var text = '!['+cleanName+']('+data.url+')';
+                    var parsed = Cryptpad.parsePadUrl(data.url);
+                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                    editor.replaceSelection(mt);
+                }
+            };
+            common.createFileManager(fmConfig);
         });
 
         framework.onDefaultContentNeeded(function () {
