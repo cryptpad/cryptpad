@@ -1145,6 +1145,10 @@ define([
             if (!data) { return void logError("No data for the file", element); }
 
             var hrefData = Cryptpad.parsePadUrl(data.href);
+            if (hrefData.type) {
+                $span.addClass('cp-border-color-'+hrefData.type);
+            }
+
             var $state = $('<span>', {'class': 'cp-app-drive-element-state'});
             if (hrefData.hashData && hrefData.hashData.mode === 'view') {
                 var $ro = $readonlyIcon.clone().appendTo($state);
@@ -1161,6 +1165,7 @@ define([
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(name);
             $span.append($name);
             $span.append($state);
+            $span.attr('title', name);
 
             var type = Messages.type[hrefData.type] || hrefData.type;
             common.displayThumbnail(data.href, $span, function ($thumb) {
@@ -1199,6 +1204,7 @@ define([
             var $files = $('<span>', {
                 'class': 'cp-app-drive-element-files cp-app-drive-element-list'
             }).text(files);
+            $span.attr('title', key);
             $span.append($name).append($state).append($subfolders).append($files);
         };
 
@@ -2197,7 +2203,7 @@ define([
             }
             $content.append($info).append($dirContent);
 
-            var $truncated = $('<span>', {'class': 'cp-app-drive-element-truncated'}).text('...');
+            /*var $truncated = $('<span>', {'class': 'cp-app-drive-element-truncated'}).text('...');
             $content.find('.cp-app-drive-element').each(function (idx, el) {
                 var $name = $(el).find('.cp-app-drive-element-name');
                 if ($name.length === 0) { return; }
@@ -2206,7 +2212,7 @@ define([
                     $tr.attr('title', $name.text());
                     $(el).append($tr);
                 }
-            });
+            });*/
 
             $content.scrollTop(s);
             appStatus.ready(true);

@@ -4,6 +4,7 @@ define([
     var Nacl = window.nacl;
     var Thumb = {
         dimension: 100,
+        padDimension: 200
     };
 
     var supportedTypes = [
@@ -46,25 +47,28 @@ define([
         var h = type === 'video' ? img.videoHeight : img.height;
         var w = type === 'video' ? img.videoWidth : img.width;
 
-        var dim = Thumb.dimension;
+        var dim = type === 'pad' ? Thumb.padDimension : Thumb.dimension;
+
         // if the image is too small, don't bother making a thumbnail
-        if (h <= dim && w <= dim) {
+        /*if (h <= dim && w <= dim) {
             return {
                 x: Math.floor((dim - w) / 2),
                 w: w,
                 y: Math.floor((dim - h) / 2),
                 h : h
             };
-        }
+        }*/
 
         // the image is taller than it is wide, so scale to that.
         var r = dim / (h > w? h: w); // ratio
+        if (h <= dim && w <= dim) { r = 1; }
 
         var d;
         if (h > w) {
             var newW = Math.floor(w*r);
             d = Math.floor((dim - newW) / 2);
             return {
+                dim: dim,
                 x: d,
                 w: newW,
                 y: 0,
@@ -74,6 +78,7 @@ define([
             var newH = Math.floor(h*r);
             d = Math.floor((dim - newH) / 2);
             return {
+                dim: dim,
                 x: 0,
                 w: dim,
                 y: d,
@@ -88,8 +93,8 @@ define([
         var c2 = document.createElement('canvas');
         if (!D) { return void cb('ERROR'); }
 
-        c2.width = Thumb.dimension;
-        c2.height = Thumb.dimension;
+        c2.width = D.dim;
+        c2.height = D.dim;
 
         var ctx = c2.getContext('2d');
         ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
@@ -147,7 +152,8 @@ define([
             PDFJS.getDocument(url).promise
             .then(function (doc) {
                 return doc.getPage(1).then(makeThumb).then(function (canvas) {
-                    cb(void 0, canvas.toDataURL());
+                    var D = getResizedDimensions(canvas, 'pdf');
+                    Thumb.fromCanvas(canvas, D, cb);
                 });
             }).catch(function () {
                 cb('ERROR');
@@ -165,17 +171,20 @@ define([
     };
 
     window.html2canvas = undefined;
-    Thumb.fromDOM = function (element, cb) {
+    Thumb.fromDOM = function (opts, cb) {
+        var element = opts.getContainer();
         var todo = function () {
-            html2canvas(element, {
+            if (opts.filter) { opts.filter(element, true); }
+            window.html2canvas(element, {
                 allowTaint: true,
                 onrendered: function (canvas) {
-                    var D = getResizedDimensions(canvas, 'image');
+                    if (opts.filter) { opts.filter(element, false); }
+                    var D = getResizedDimensions(canvas, 'pad');
                     Thumb.fromCanvas(canvas, D, cb);
                 }
             });
         };
-        if (html2canvas) { return void todo(); }
+        if (window.html2canvas) { return void todo(); }
         require(['/bower_components/html2canvas/build/html2canvas.min.js'], todo);
     };
 

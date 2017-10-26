@@ -70,6 +70,7 @@ define([
                 // We can only create thumbnails for files here since we can't easily decrypt pads
                 return void whenNewThumb();
             }
+            if (!v) { return; }
             if (v === 'EMPTY') { return; }
             addThumbnail(err, v, $container, cb);
         });

@@ -552,7 +552,25 @@ define([
         nThen(function (waitFor) {
             Framework.create({
                 toolbarContainer: '#cke_1_toolbox',
-                contentContainer: '#cke_1_contents'
+                contentContainer: '#cke_1_contents',
+                thumbnail: {
+                    getContainer: function () { return $('iframe').contents().find('html')[0]; },
+                    filter: function (el, before) {
+                        if (before) {
+                            $(el).parents().css('overflow', 'visible');
+                            $(el).css('max-width', '1200px');
+                            $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
+                            $(el).css('overflow', 'hidden');
+                            $(el).find('body').css('background-color', 'transparent');
+                            return;
+                        }
+                        $(el).parents().css('overflow', '');
+                        $(el).css('max-width', '');
+                        $(el).css('max-height', '');
+                        $(el).css('overflow', '');
+                        $(el).find('body').css('background-color', '#fff');
+                    }
+                }
             }, waitFor(function (fw) { window.APP.framework = framework = fw; }));
 
             nThen(function (waitFor) {
