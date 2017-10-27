@@ -278,7 +278,7 @@ define([
         // recreate a _mostly_ equivalent DOM
         var dom = Flat.toDOM(flat);
         // assume we don't care about comments
-        var bodyText = document.body.outerHTML.replace(/<!\-\-[\s\S]*?\-\->/g, '')
+        var bodyText = document.body.outerHTML.replace(/<!\-\-[\s\S]*?\-\->/g, '');
         // check for equality
         cb(dom.outerHTML === bodyText);
     });
