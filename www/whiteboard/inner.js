@@ -10,6 +10,7 @@ define([
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/sframe-common-interface.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/pages.js',
@@ -36,6 +37,7 @@ define([
     Cryptget,
     nThen,
     SFCommon,
+    SFUI,
     ApiConfig,
     CommonRealtime,
     Pages,
@@ -372,6 +374,27 @@ define([
             onLocal();
         };
 
+        var initThumbnails = function () {
+            var oldThumbnailState;
+            var privateDat = metadataMgr.getPrivateData();
+            var hash = privateDat.availableHashes.editHash ||
+                       privateDat.availableHashes.viewHash;
+            var href = privateDat.pathname + '#' + hash;
+            var mkThumbnail = function () {
+                if (!hash) { return; }
+                if (initializing) { return; }
+                if (!APP.realtime) { return; }
+                var content = APP.realtime.getUserDoc();
+                if (content === oldThumbnailState) { return; }
+                var D = Thumb.getResizedDimensions($canvas[0], 'pad');
+                Thumb.fromCanvas($canvas[0], D, function (err, b64) {
+                    oldThumbnailState = content;
+                    SFUI.setPadThumbnail(href, b64);
+                });
+            };
+            window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
+        };
+
         config.onInit = function (info) {
             updateLocalPalette(palette);
             readOnly = metadataMgr.getPrivateData().readOnly;
@@ -532,6 +555,10 @@ define([
                 initializing = false;
                 config.onLocal();
                 Cryptpad.removeLoadingScreen();
+
+                initThumbnails();
+
+
                 if (readOnly) { return; }
                 if (isNew) {
                     common.openTemplatePicker();

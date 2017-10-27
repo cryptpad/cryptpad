@@ -285,7 +285,7 @@ define([
                         SFUI.setPadThumbnail(href, b64);
                     });
                 };
-                window.setInterval(mkThumbnail, 5000);
+                window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
             }
 
             if (newPad) {

@@ -14,6 +14,8 @@ define([
     '/poll/render.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
+    '/common/sframe-common-interface.js',
+    '/common/common-thumbnail.js',
 
     'cm/lib/codemirror',
     'cm/addon/display/placeholder',
@@ -41,6 +43,8 @@ define([
     Renderer,
     DiffMd,
     SframeCM,
+    SFUI,
+    Thumb,
     CMeditor)
 {
     var Messages = Cryptpad.Messages;
@@ -790,6 +794,51 @@ define([
         updateComments();
     };
 
+    var initThumbnails = function () {
+        var oldThumbnailState;
+        var privateDat = metadataMgr.getPrivateData();
+        var hash = privateDat.availableHashes.editHash ||
+                   privateDat.availableHashes.viewHash;
+        var href = privateDat.pathname + '#' + hash;
+        var $el = $('.cp-app-poll-realtime');
+        //var $el = $('#cp-app-poll-table');
+        var options = {
+            getContainer: function () { return $el[0]; },
+            filter: function (el, before) {
+                if (before) {
+                    $el.parents().css('overflow', 'visible');
+                    $el.css('max-height', Math.max(600, $(el).width()) + 'px');
+                    $el.find('tr td:first-child, tr td:last-child, tr td:nth-last-child(2)')
+                        .css('position', 'static');
+                    $el.find('#cp-app-poll-comments').css('display', 'none');
+                    $el.find('#cp-app-poll-table-container').css('text-align', 'center');
+                    $el.find('#cp-app-poll-table-scroll').css('margin', 'auto');
+                    $el.find('#cp-app-poll-table-scroll').css('max-width', '100%');
+                    return;
+                }
+                $el.parents().css('overflow', '');
+                $el.css('max-height', '');
+                $el.find('#cp-app-poll-comments').css('display', '');
+                $el.find('#cp-app-poll-table-container').css('text-align', '');
+                $el.find('#cp-app-poll-table-scroll').css('margin', '');
+                $el.find('#cp-app-poll-table-scroll').css('max-width', '');
+                $el.find('tr td:first-child, tr td:last-child, tr td:nth-last-child(2)')
+                    .css('position', '');
+            }
+        };
+        var mkThumbnail = function () {
+            if (!hash) { return; }
+            if (!APP.proxy) { return; }
+            var content = JSON.stringify(APP.proxy.content);
+            if (content === oldThumbnailState) { return; }
+            Thumb.fromDOM(options, function (err, b64) {
+                oldThumbnailState = content;
+                SFUI.setPadThumbnail(href, b64);
+            });
+        };
+        window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
+    };
+
     var checkDeletedCells = function () {
         // faster than forEach?
         var c;
@@ -938,6 +987,7 @@ define([
         var $table = APP.$table = $('#cp-app-poll-table-scroll').find('table');
         updateDisplayedTable();
         updateDescription(null, APP.proxy.description || '');
+        initThumbnails();
 
         // Initialize author name for comments.
         // Disable name modification for logged in users
