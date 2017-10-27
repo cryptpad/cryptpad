@@ -268,10 +268,11 @@ define([
 
             Cryptpad.removeLoadingScreen(emitResize);
 
-            if (options.getThumbnailContainer) {
+            if (options.thumbnail) {
                 var oldThumbnailState;
                 var privateDat = cpNfInner.metadataMgr.getPrivateData();
-                var hash = privateDat.availableHashes.editHash || privateDat.availableHashes.viewHash;
+                var hash = privateDat.availableHashes.editHash ||
+                           privateDat.availableHashes.viewHash;
                 var href = privateDat.pathname + '#' + hash;
                 var mkThumbnail = function () {
                     if (!hash) { return; }
@@ -279,13 +280,9 @@ define([
                     if (!cpNfInner.chainpad) { return; }
                     var content = cpNfInner.chainpad.getUserDoc();
                     if (content === oldThumbnailState) { return; }
-                    var el = options.getThumbnailContainer();
-                    if (!el) { return; }
-                    $(el).parents().css('overflow', 'visible');
-                    Thumb.fromDOM(el, function (err, b64) {
+                    Thumb.fromDOM(options.thumbnail, function (err, b64) {
                         oldThumbnailState = content;
-                        $(el).parents().css('overflow', '');
-                        SFUI.setPadThumbnail(href, b64)
+                        SFUI.setPadThumbnail(href, b64);
                     });
                 };
                 window.setInterval(mkThumbnail, 5000);

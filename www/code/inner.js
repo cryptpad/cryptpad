@@ -346,7 +346,18 @@ define([
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
                 contentContainer: '#cp-app-code-editor',
-                getThumbnailContainer: getThumbnailContainer
+                thumbnail: {
+                    getContainer: getThumbnailContainer,
+                    filter: function (el, before) {
+                        if (before) {
+                            $(el).parents().css('overflow', 'visible');
+                            $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
+                            return;
+                        }
+                        $(el).parents().css('overflow', '');
+                        $(el).css('max-height', '');
+                    }
+                }
             }, waitFor(function (fw) { framework = fw; }));
 
             nThen(function (waitFor) {

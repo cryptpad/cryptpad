@@ -467,6 +467,17 @@ define([
         framework.start();
     };
 
+    var getThumbnailContainer = function () {
+        var $codeMirror = $('.CodeMirror');
+        var $c = $('#cp-app-slide-editor');
+        if ($c.hasClass('cp-app-slide-preview')) {
+            return $('.cp-app-slide-frame').first()[0];
+        }
+        if ($codeMirror.length) {
+            return $codeMirror[0];
+        }
+    };
+
     var main = function () {
         var CodeMirror;
         var editor;
@@ -474,10 +485,21 @@ define([
         var framework;
 
         nThen(function (waitFor) {
-
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
-                contentContainer: '#cp-app-slide-editor'
+                contentContainer: '#cp-app-slide-editor',
+                thumbnail: {
+                    getContainer: getThumbnailContainer,
+                    filter: function (el, before) {
+                        var metadataMgr = framework._.cpNfInner.metadataMgr;
+                        var metadata = metadataMgr.getMetadata();
+                        if (before) {
+                            $(el).css('background-color', metadata.backColor || '#000');
+                            return;
+                        }
+                        $(el).css('background-color', '');
+                    }
+                }
             }, waitFor(function (fw) { framework = fw; }));
 
             nThen(function (waitFor) {

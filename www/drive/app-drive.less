@@ -58,13 +58,15 @@ min-height: auto;
         }
         .cp-app-drive-element-name {
             width: 100%;
-            height: 48px;
-            margin: 8px 0;
+            height: 24px;
+            margin: 0;
             display: inline-block;
+            font-size: 14px;
             //align-items: center;
             //justify-content: center;
             overflow: hidden;
-            //text-overflow: ellipsis;
+            white-space: nowrap;
+            text-overflow: ellipsis;
             word-wrap: break-word;
         }
         .cp-app-drive-element-truncated {
@@ -83,8 +85,8 @@ min-height: auto;
         .fa {
             display: block;
             margin: auto;
-            font-size: 48px;
-            margin: 8px 0;
+            font-size: 64px;
+            margin: 18px 0;
             text-align: center;
             &.listonly {
                 display: none;
@@ -518,10 +520,15 @@ span {
                 }
             }
             .cp-app-drive-element-thumbnail {
-                max-width: 64px;
-                max-height: 64px;
+                max-width: 100px;
+                max-height: 100px;
                 & ~ .fa {
-                    display: none;
+                    display: inline;
+                    font-size: 17px;
+                    position: absolute;
+                    top: 3px;
+                    left: 3px;
+                    margin: 0;
                 }
             }
         }
