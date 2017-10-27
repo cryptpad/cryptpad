@@ -4,7 +4,8 @@ define([
     var Nacl = window.nacl;
     var Thumb = {
         dimension: 100,
-        padDimension: 200
+        padDimension: 200,
+        UPDATE_INTERVAL: 5000
     };
 
     var supportedTypes = [
@@ -43,7 +44,7 @@ define([
         }
     };
 
-    var getResizedDimensions = function (img, type) {
+    var getResizedDimensions = Thumb.getResizedDimensions = function (img, type) {
         var h = type === 'video' ? img.videoHeight : img.height;
         var w = type === 'video' ? img.videoWidth : img.width;
 
