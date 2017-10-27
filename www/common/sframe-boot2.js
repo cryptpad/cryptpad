@@ -13,7 +13,8 @@ define(['/common/requireconfig.js'], function (RequireConfig) {
     var mkFakeStore = function () {
         var fakeStorage = {
             getItem: function (k) { return fakeStorage[k]; },
-            setItem: function (k, v) { fakeStorage[k] = v; return v; }
+            setItem: function (k, v) { fakeStorage[k] = v; return v; },
+            removeItem: function (k) { delete fakeStorage[k]; }
         };
         return fakeStorage;
     };
