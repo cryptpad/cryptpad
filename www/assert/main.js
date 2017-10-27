@@ -7,7 +7,8 @@ define([
     '/drive/tests.js',
     '/common/test.js',
     '/common/common-thumbnail.js',
-], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive, Test, Thumb) {
+    '/common/flat-dom.js',
+], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive, Test, Thumb, Flat) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
@@ -241,6 +242,7 @@ define([
         return cb(true);
     }, "version 2 hash failed to parse correctly");
 
+/*
     assert(function (cb) {
         var getBlob = function (url, cb) {
             var xhr = new XMLHttpRequest();
@@ -266,8 +268,20 @@ define([
             });
         });
     });
+*/
 
     Drive.test(assert);
+
+    assert(function (cb) {
+        // extract dom elements into a flattened JSON representation
+        var flat = Flat.fromDOM(document.body);
+        // recreate a _mostly_ equivalent DOM
+        var dom = Flat.toDOM(flat);
+        // assume we don't care about comments
+        var bodyText = document.body.outerHTML.replace(/<!\-\-[\s\S]*?\-\->/g, '')
+        // check for equality
+        cb(dom.outerHTML === bodyText);
+    });
 
     var swap = function (str, dict) {
         return str.replace(/\{\{(.*?)\}\}/g, function (all, key) {

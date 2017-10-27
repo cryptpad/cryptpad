@@ -17,6 +17,7 @@ define([], function () {
         return data;
     };
 
+    var identity = function (x) { return x; };
     Flat.fromDOM = function (dom) {
         var data = {
             map: {},
@@ -26,18 +27,20 @@ define([], function () {
         var uid = function () { return i++; };
 
         var process = function (el) {
-            if (!el || el.attributes) { return void console.error(el); }
-            var id = uid();
+            var id;
             if (!el.tagName && el.nodeType === Node.TEXT_NODE) {
+                id = uid();
                 data.map[id] = el.textContent;
                 return id;
             }
+            if (!el || !el.attributes) { return void console.error(el); }
+            id = uid();
             data.map[id] = [
                 el.tagName,
                 getAttrs(el),
                 slice(el.childNodes).map(function (e) {
                     return process(e);
-                })
+                }).filter(identity)
             ];
             return id;
         };
@@ -49,6 +52,7 @@ define([], function () {
     Flat.toDOM = function (data) {
         var visited = {};
         var process = function (key) {
+            if (!key) { return; } // ignore falsey keys
             if (visited[key]) {
                 // TODO handle this more gracefully.
                 throw new Error('duplicate id or loop detected');
