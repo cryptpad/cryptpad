@@ -39,7 +39,7 @@ define([
         var getSecrets = function (Cryptpad) {
             var proxy = Cryptpad.getProxy();
             var hash = proxy.todo || Cryptpad.createRandomHash();
-            return Cryptpad.getSecrets('todo', hash)
+            return Cryptpad.getSecrets('todo', hash);
         };
         SFCommonO.start({
             getSecrets: getSecrets,
