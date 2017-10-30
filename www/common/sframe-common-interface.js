@@ -339,6 +339,7 @@ define([
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
                 UI.displayMediatagImage(Common, $img, function (err, $image, img) {
+                    if (err) { return void console.error(err); }
                     var w = img.width;
                     var h = img.height;
                     if (w>h) {

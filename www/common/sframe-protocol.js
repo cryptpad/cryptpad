@@ -168,4 +168,8 @@ define({
     // in the drive at registration.
     'Q_MERGE_ANON_DRIVE': true,
 
+    // Add or remove the avatar from the profile.
+    // We have to pin/unpin the avatar and store/remove the value from the user object
+    'Q_PROFILE_AVATAR_ADD': true,
+    'Q_PROFILE_AVATAR_REMOVE': true
 });
