@@ -238,6 +238,14 @@ define([
     }, "test support for trailing slashes in version 1 hash failed to parse");
 
     assert(function (cb) {
+        var secret = Cryptpad.parsePadUrl('/invite/#/1/ilrOtygzDVoUSRpOOJrUuQ/e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=/');
+        var hd = secret.hashData;
+        cb(hd.channel === "ilrOtygzDVoUSRpOOJrUuQ" &&
+            hd.pubkey === "e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=" &&
+            hd.type === 'invite');
+    }, "test support for invite urls");
+
+    assert(function (cb) {
         // TODO
         return cb(true);
     }, "version 2 hash failed to parse correctly");
