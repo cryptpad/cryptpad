@@ -1518,7 +1518,7 @@ define([
             if (isInRoot) {
                 options.push({
                     tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-older'},
+                    attributes: {'class': 'cp-app-drive-new-folder'},
                     content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
                 });
                 options.push({tag: 'hr'});
