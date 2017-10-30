@@ -526,7 +526,8 @@ define([
         // them.
         var win;
         $('.tippy-popper').each(function (i, el) {
-            win = win || $('#pad-iframe')[0].contentWindow;
+            win = win || $('#pad-iframe').length? $('#pad-iframe')[0].contentWindow: undefined;
+            if (!win) { return; }
             if (win.$('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
                 el.remove();
             }

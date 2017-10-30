@@ -921,6 +921,7 @@ define([
                 return count;
             };
 
+            var joined = false;
             metadataMgr.onChange(function () {
                 var newdata = metadataMgr.getMetadata().users;
                 var netfluxIds = Object.keys(newdata);
@@ -949,7 +950,7 @@ define([
                     return;
                 }
                 for (var k in newdata) {
-                    if (k !== userNetfluxId && netfluxIds.indexOf(k) !== -1) {
+                    if (joined && k !== userNetfluxId && netfluxIds.indexOf(k) !== -1) {
                         if (typeof oldUserData[k] === "undefined") {
                             // if the same uid is already present in the userdata, don't notify
                             if (!userPresent(k, newdata[k], oldUserData)) {
@@ -960,6 +961,7 @@ define([
                         }
                     }
                 }
+                joined = true;
                 oldUserData = JSON.parse(JSON.stringify(newdata));
             });
         }
