@@ -70,7 +70,7 @@ define([
                 var chanId = Cryptpad.hrefToHexChannelId(data);
                 Cryptpad.pinPads([chanId], function (e) {
                     if (e) { return void cb(e); }
-                    Cryptpad.getProxy().profile.avatar = data.url;
+                    Cryptpad.getProxy().profile.avatar = data;
                     Cryptpad.whenRealtimeSyncs(Cryptpad.getRealtime(), function () {
                         cb();
                     });

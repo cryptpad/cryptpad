@@ -13,29 +13,31 @@
     input[type="text"] {
         padding-left: 10px;
     }
-    #container {
+    #cp-sidebarlayout-container {
         font-size: 16px;
         display: flex;
         flex: 1;
         min-height: 0;
-        #leftSide {
+        #cp-sidebarlayout-leftside {
             color: @leftside-color;
             width: 250px;
             background: @leftside-bg;
             display: flex;
             flex-flow: column;
-            .categories {
+            .cp-sidebarlayout-categories {
                 flex: 1;
-                .category {
+                .cp-sidebarlayout-category {
                     .leftside-menu-category_main();
                 }
             }
         }
-        #rightSide {
+        #cp-sidebarlayout-rightside {
             flex: 1;
             padding: 5px 20px;
             color: @rightside-color;
             overflow: auto;
+
+            // Following rules are only in settings
             .element {
                 label:not(.noTitle), .label {
                     display: block;
@@ -73,8 +75,8 @@
                 margin: 10px 0;
             }
             button.btn {
-                @button-bg: #3066e5;
-                @button-red-bg: #e54e4e;
+                @button-bg: @colortheme_sidebar-button-bg;
+                @button-red-bg: @colortheme_sidebar-button-red-bg;
                 background-color: @button-bg;
                 border-color: darken(@button-bg, 10%);
                 color: white;

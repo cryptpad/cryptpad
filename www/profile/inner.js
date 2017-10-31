@@ -75,16 +75,16 @@ define([
         return '<li'+ cls + '>' + text + '</li>\n';
     };
 
-    var DISPLAYNAME_ID = "displayName";
-    var LINK_ID = "link";
-    var AVATAR_ID = "avatar";
-    var DESCRIPTION_ID = "description";
-    var PUBKEY_ID = "pubKey";
-    var CREATE_ID = "createProfile";
-    var HEADER_ID = "header";
-    var HEADER_RIGHT_ID = "rightside";
-    var CREATE_INVITE_BUTTON = 'inviteButton'; /* jshint ignore: line */
-    var VIEW_PROFILE_BUTTON = 'viewProfileButton';
+    var DISPLAYNAME_ID = "cp-app-profile-displayname";
+    var LINK_ID = "cp-app-profile-link";
+    var AVATAR_ID = "cp-app-profile-avatar";
+    var DESCRIPTION_ID = "cp-app-profile-description";
+    var PUBKEY_ID = "cp-app-profile-pubkey";
+    var CREATE_ID = "cp-app-profile-create";
+    var HEADER_ID = "cp-app-profile-header";
+    var HEADER_RIGHT_ID = "cp-app-profile-rightside";
+    var CREATE_INVITE_BUTTON = 'cp-app-profile-invite-button'; /* jshint ignore: line */
+    var VIEW_PROFILE_BUTTON = 'cp-app-profile-viewprofile-button';
 
     var common;
     var sFrameChan;
@@ -98,7 +98,7 @@ define([
                 'id': name+'Input',
                 placeholder: ph
             }).val(value);
-            var $icon = $('<span>', {'class': 'fa fa-pencil edit'});
+            var $icon = $('<span>', {'class': 'fa fa-pencil cp-app-profile-input-edit'});
             var editing = false;
             var todo = function () {
                 if (editing) { return; }
@@ -273,7 +273,7 @@ define([
             if (APP.readOnly) { return; }
 
             var $delButton = $('<button>', {
-                'class': 'delete btn btn-danger fa fa-times',
+                'class': 'cp-app-profile-avatar-delete btn btn-danger fa fa-times',
                 title: Messages.fc_delete
             });
             $span.append($delButton);
@@ -333,15 +333,20 @@ define([
 
         if (APP.readOnly) {
             if (!(APP.lm.proxy.description || "").trim()) { return void $block.hide(); }
-            var $div = $('<div>', {'class': 'rendered'}).appendTo($block);
+            var $div = $('<div>', {'class': 'cp-app-profile-description-rendered'}).appendTo($block);
             var val = Marked(APP.lm.proxy.description);
             $div.html(val);
             return;
         }
         $('<h3>').text(Messages.profile_description).insertBefore($block);
 
-        var $ok = $('<span>', {'class': 'ok fa fa-check', title: Messages.saved}).appendTo($block);
-        var $spinner = $('<span>', {'class': 'spin fa fa-spinner fa-pulse'}).appendTo($block);
+        var $ok = $('<span>', {
+            'class': 'cp-app-profile-description-ok fa fa-check',
+            title: Messages.saved
+        }).appendTo($block);
+        var $spinner = $('<span>', {
+            'class': 'cp-app-profile-description-spin fa fa-spinner fa-pulse'
+        }).appendTo($block);
         var $textarea = $('<textarea>').val(APP.lm.proxy.description || '');
         $block.append($textarea);
         var editor = APP.editor = CodeMirror.fromTextArea($textarea[0], {
@@ -371,10 +376,8 @@ define([
     };
 
     var createLeftside = function () {
-        var $categories = $('<div>', {'class': 'categories'}).appendTo(APP.$leftside);
-        APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
-
-        var $category = $('<div>', {'class': 'category'}).appendTo($categories);
+        var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'}).appendTo(APP.$leftside);
+        var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
         $category.append($('<span>', {'class': 'fa fa-user'}));
         $category.addClass('cp-leftside-active');
         $category.append(Messages.profileButton);
@@ -426,10 +429,10 @@ define([
         $(waitFor(Cryptpad.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
-        APP.$container = $('#container');
+        APP.$container = $('#cp-sidebarlayout-container');
         APP.$toolbar = $('#cp-toolbar');
-        APP.$leftside = $('<div>', {id: 'leftSide'}).appendTo(APP.$container);
-        APP.$rightside = $('<div>', {id: 'rightSide'}).appendTo(APP.$container);
+        APP.$leftside = $('<div>', {id: 'cp-sidebarlayout-leftside'}).appendTo(APP.$container);
+        APP.$rightside = $('<div>', {id: 'cp-sidebarlayout-rightside'}).appendTo(APP.$container);
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
