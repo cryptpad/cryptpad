@@ -422,6 +422,7 @@ define([
 
             textPatcher = TextPatcher.create({ realtime: cpNfInner.chainpad });
 
+            var infiniteSpinnerModal = false;
             window.setInterval(function () {
                 if (state === STATE.DISCONNECTED) { return; }
                 var l;
@@ -432,13 +433,15 @@ define([
                 }
                 if (l.lag < badStateTimeout) { return; }
 
-                if (state === STATE.INFINITE_SPINNER) { return; }
+                if (infiniteSpinnerModal) { return; }
+                infiniteSpinnerModal = true;
                 stateChange(STATE.INFINITE_SPINNER);
                 Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
                 });
                 cpNfInner.chainpad.onSettle(function () {
+                    infiniteSpinnerModal = false;
                     Cryptpad.findCancelButton().click();
                     stateChange(STATE.READY);
                     onRemote();
