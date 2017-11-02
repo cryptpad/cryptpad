@@ -7,7 +7,6 @@ define([
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
-    '/common/common-thumbnail.js',
     '/common/modes.js',
     'cm/lib/codemirror',
 
@@ -46,7 +45,6 @@ define([
     SFCommon,
     Framework,
     Util,
-    Thumb,
     Modes,
     CMeditor)
 {
@@ -350,11 +348,13 @@ define([
                     getContainer: getThumbnailContainer,
                     filter: function (el, before) {
                         if (before) {
-                            $(el).parents().css('overflow', 'visible');
+                            // Overflow visible to the parents makes it look better but
+                            // it creates chaos in the editbale area
+                            //$(el).parents().css('overflow', 'visible');
                             $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
                             return;
                         }
-                        $(el).parents().css('overflow', '');
+                        //$(el).parents().css('overflow', '');
                         $(el).css('max-height', '');
                     }
                 }

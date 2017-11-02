@@ -393,6 +393,7 @@ define([
                 });
             };
             window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
+            window.setTimeout(mkThumbnail, Thumb.UPDATE_FIRST);
         };
 
         config.onInit = function (info) {

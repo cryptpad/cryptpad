@@ -5,7 +5,8 @@ define([
     var Thumb = {
         dimension: 100,
         padDimension: 200,
-        UPDATE_INTERVAL: 5000
+        UPDATE_INTERVAL: 60000,
+        UPDATE_FIRST: 5000
     };
 
     var supportedTypes = [

@@ -280,12 +280,13 @@ define([
                     if (!cpNfInner.chainpad) { return; }
                     var content = cpNfInner.chainpad.getUserDoc();
                     if (content === oldThumbnailState) { return; }
-                    Thumb.fromDOM(options.thumbnail, function (err, b64) {
-                        oldThumbnailState = content;
-                        SFUI.setPadThumbnail(href, b64);
-                    });
+                        Thumb.fromDOM(options.thumbnail, function (err, b64) {
+                            oldThumbnailState = content;
+                            SFUI.setPadThumbnail(href, b64);
+                        });
                 };
                 window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
+                window.setTimeout(mkThumbnail, Thumb.UPDATE_FIRST);
             }
 
             if (newPad) {
