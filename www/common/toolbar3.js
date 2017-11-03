@@ -691,6 +691,7 @@ define([
     var typing = -1;
     var kickSpinner = function (toolbar, config/*, local*/) {
         if (!toolbar.spinner) { return; }
+        if (toolbar.isErrorState) { return; }
         var $spin = toolbar.spinner;
 
         if (typing === -1) {
@@ -1047,6 +1048,17 @@ define([
             toolbar.connected = false;
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.reconnecting);
+            }
+        };
+
+        toolbar.errorState = function (state, error) {
+            toolbar.isErrorState = state;
+            if (toolbar.spinner) {
+                if (!state) {
+                    return void kickSpinner(toolbar, config);
+                }
+                var txt = Messages._getKey('errorState', [error]);
+                toolbar.spinner.text(txt);
             }
         };
 

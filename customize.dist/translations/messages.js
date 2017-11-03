@@ -43,9 +43,10 @@ define(function () {
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
-    out.typing = "Typing";
+    out.typing = "Editing";
     out.initializing = "Initializing...";
     out.forgotten = 'Moved to the trash';
+    out.errorState = 'Critical error: {0}';
     out.lag = 'Lag';
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";

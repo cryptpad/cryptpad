@@ -44,6 +44,7 @@ define(function () {
     out.typing = "Édition";
     out.initializing = "Initialisation...";
     out.forgotten = 'Déplacé vers la corbeille';
+    out.errorState = 'Erreur critique : {0}';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
