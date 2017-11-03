@@ -59,6 +59,7 @@ define(function () {
     out.viewers = "viewers";
     out.editor = "editor";
     out.editors = "editors";
+    out.userlist_offline = "You're currently offline, the user list is not available.";
 
     out.language = "Language";
 

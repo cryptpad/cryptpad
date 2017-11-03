@@ -57,6 +57,7 @@ define(function () {
     out.viewers = "lecteurs";
     out.editor = "éditeur";
     out.editors = "éditeurs";
+    out.userlist_offline = "Vous êtes actuellement hors-ligne, la liste des utilisateurs n'est pas disponible.";
 
     out.language = "Langue";
 

@@ -154,6 +154,7 @@ define([
         var $userlistContent = toolbar.userlistContent;
 
         var metadataMgr = config.metadataMgr;
+        var online = metadataMgr.isConnected();
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
         var priv = metadataMgr.getPrivateData();
@@ -184,7 +185,23 @@ define([
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
 
-        var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'});
+        var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'})
+                                .appendTo($editUsers);
+
+        if (!online) {
+            $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
+            numberOfEditUsers = '?';
+            numberOfViewUsers = '?';
+        };
+
+        // Update the buttons
+        var fa_editusers = '<span class="fa fa-users"></span>';
+        var fa_viewusers = '<span class="fa fa-eye"></span>';
+        var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
+        $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
+
+        if (!online) { return; }
+        // Display the userlist
 
         // Editors
         var pendingFriends = Common.getPendingFriends();
@@ -237,7 +254,6 @@ define([
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
-        $editUsers.append($editUsersList);
 
         // Viewers
         if (numberOfViewUsers > 0) {
@@ -246,12 +262,6 @@ define([
             viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
         }
-
-        // Update the buttons
-        var fa_editusers = '<span class="fa fa-users"></span>';
-        var fa_viewusers = '<span class="fa fa-eye"></span>';
-        var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
     };
 
     var initUserList = function (toolbar, config) {
