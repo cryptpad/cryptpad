@@ -488,6 +488,13 @@ define(function () {
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
 
+    out.settings_thumbnails = "Vignettes";
+    out.settings_disableThumbnailsAction = "Désactiver la création de vignettes dans CryptDrive";
+    out.settings_disableThumbnailsDescription = "Des vignettes de vos pads sont automatiquement créées et stockées dans votre navigateur. Vous pouvez désactiver cette fonctionnalité.";
+    out.settings_resetThumbnailsAction = "Nettoyer";
+    out.settings_resetThumbnailsDescription = "Nettoyer toutes les vignettes stockées dans votre navigateur.";
+    out.settings_resetThumbnailsDone = "Toutes les vignettes ont été effacées.";
+
     out.settings_importTitle = "Importer les pads récents de ce navigateur dans votre CryptDrive";
     out.settings_import = "Importer";
     out.settings_importConfirm = "Êtes-vous sûr de vouloir importer les pads récents de ce navigateur dans le CryptDrive de votre compte utilisateur ?";

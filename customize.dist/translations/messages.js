@@ -493,6 +493,13 @@ define(function () {
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
 
+    out.settings_thumbnails = "Thumbnails";
+    out.settings_disableThumbnailsAction = "Disable thumbnails creation in your CryptDrive";
+    out.settings_disableThumbnailsDescription = "Thumbnails are automatically created and stored in your browser when you visit a new pad. You can disable this feature here.";
+    out.settings_resetThumbnailsAction = "Clean";
+    out.settings_resetThumbnailsDescription = "Clean all the pads thumbnails stored in your browser.";
+    out.settings_resetThumbnailsDone = "All the thumbnails have been erased.";
+
     out.settings_importTitle = "Import this browser's recent pads in your CryptDrive";
     out.settings_import = "Import";
     out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";

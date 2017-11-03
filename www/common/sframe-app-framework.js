@@ -268,9 +268,9 @@ define([
 
             Cryptpad.removeLoadingScreen(emitResize);
 
-            if (options.thumbnail) {
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            if (options.thumbnail && privateDat.thumbnails) {
                 var oldThumbnailState;
-                var privateDat = cpNfInner.metadataMgr.getPrivateData();
                 var hash = privateDat.availableHashes.editHash ||
                            privateDat.availableHashes.viewHash;
                 var href = privateDat.pathname + '#' + hash;
