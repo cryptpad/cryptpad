@@ -192,7 +192,7 @@ define([
             $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
             numberOfEditUsers = '?';
             numberOfViewUsers = '?';
-        };
+        }
 
         // Update the buttons
         var fa_editusers = '<span class="fa fa-users"></span>';
