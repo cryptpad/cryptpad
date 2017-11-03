@@ -686,6 +686,8 @@ define([
 
     var getCommentId = Render.Uid('c');
     var removeComment = function (uid) {
+        var idx = APP.proxy.commentsOrder.indexOf(uid);
+        if (idx !== -1) { APP.proxy.commentsOrder.splice(idx, 1); }
         delete APP.proxy.comments[uid];
         APP.updateComments();
     };
@@ -695,6 +697,7 @@ define([
     var avatars = {};
     var updateComments = APP.updateComments = function () {
         if (!APP.proxy.comments) { APP.proxy.comments = {}; }
+        if (!APP.proxy.commentsOrder) { APP.proxy.commentsOrder = []; }
 
         var profile;
         if (common.isLoggedIn()) {
@@ -703,10 +706,9 @@ define([
 
         var $comments = APP.$comments.html('');
         var comments = APP.proxy.comments;
-        Object.keys(copyObject(comments)).sort(function (a, b) {
-            return comments[a].time > comments[b].time;
-        }).forEach(function (k) {
+        APP.proxy.commentsOrder.forEach(function (k) {
             var c = comments[k];
+            if (!c) { return; }
             var name = c.name || Messages.anonymous;
             var $c = $('<div>', {
                 'class': 'cp-app-poll-comments-list-el'
@@ -770,6 +772,7 @@ define([
     };
     var addComment = function () {
         if (!APP.proxy.comments) { APP.proxy.comments = {}; }
+        if (!APP.proxy.commentsOrder) { APP.proxy.commentsOrder = []; }
         var name = APP.$addComment.find('.cp-app-poll-comments-add-name').val().trim();
         var msg = APP.$addComment.find('.cp-app-poll-comments-add-msg').val().trim();
         var time = +new Date();
@@ -783,6 +786,7 @@ define([
         }
 
         var uid = getCommentId();
+        APP.proxy.commentsOrder.push(uid);
         APP.proxy.comments[uid] = {
             msg: msg,
             name: name,
@@ -806,7 +810,7 @@ define([
             getContainer: function () { return $el[0]; },
             filter: function (el, before) {
                 if (before) {
-                    $el.parents().css('overflow', 'visible');
+                    //$el.parents().css('overflow', 'visible');
                     $el.css('max-height', Math.max(600, $(el).width()) + 'px');
                     $el.find('tr td:first-child, tr td:last-child, tr td:nth-last-child(2)')
                         .css('position', 'static');
@@ -816,7 +820,7 @@ define([
                     $el.find('#cp-app-poll-table-scroll').css('max-width', '100%');
                     return;
                 }
-                $el.parents().css('overflow', '');
+                //$el.parents().css('overflow', '');
                 $el.css('max-height', '');
                 $el.find('#cp-app-poll-comments').css('display', '');
                 $el.find('#cp-app-poll-table-container').css('text-align', '');
@@ -860,16 +864,22 @@ define([
 
         if (!isNew) {
             if (proxy.info) {
-                // Migration??
+                // Migration
                 proxy.metadata = proxy.info;
                 delete proxy.info;
             }
             if (proxy.table) {
-                // Migration??
+                // Migration
                 proxy.content = proxy.table;
                 delete proxy.table;
             }
             checkDeletedCells();
+
+            if (proxy.comments && !proxy.commentsOrder) { // Migration
+                proxy.commentsOrder = Object.keys(copyObject(proxy.comments)).sort(function (a, b) {
+                    return proxy.comments[a].time > proxy.comments[b].time;
+                });
+            }
 
             if (proxy && proxy.metadata) {
                 metadataMgr.updateMetadata(proxy.metadata);
@@ -1200,6 +1210,17 @@ define([
                 mode: "markdown",
             });
 
+            APP.$descriptionPublished.click(function (e) {
+                if (!e.target) { return; }
+                var $t = $(e.target);
+                if ($t.is('a') || $t.parents('a').length) {
+                    e.preventDefault();
+                    var $a = $t.is('a') ? $t : $t.parents('a').first();
+                    var href = $a.attr('href');
+                    if (!href) { return; }
+                    window.open(href);
+                }
+            });
 
             var listmapConfig = {
                 data: {},
