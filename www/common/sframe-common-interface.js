@@ -3,16 +3,13 @@ define([
     '/api/config',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
-    '/common/common-hash.js',
     '/common/media-tag.js',
     '/common/tippy.min.js',
     '/customize/application_config.js',
-    '/file/file-crypto.js',
-    '/bower_components/localforage/dist/localforage.min.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/tippy.css',
-], function ($, Config, Cryptpad, Util, Hash, MediaTag, Tippy, AppConfig, FileCrypto, localForage) {
+], function ($, Config, Cryptpad, Util, MediaTag, Tippy, AppConfig) {
     var UI = {};
     var Messages = Cryptpad.Messages;
     var Nacl = window.nacl;
@@ -32,49 +29,6 @@ define([
      *  - fixHTML
      *  - createDropdown
     */
-
-    var addThumbnail = function (err, thumb, $span, cb) {
-        var img = new Image();
-        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:;base64,'+thumb;
-        $span.find('.cp-icon').hide();
-        $span.prepend(img);
-        cb($(img));
-    };
-    UI.setPadThumbnail = function (href, b64, cb) {
-        cb = cb || $.noop;
-        var k  ='thumbnail-' + href;
-        localForage.setItem(k, b64, cb);
-    };
-    localForage.removeItem('thumbnail-/1/edit/lqg6RRnynI76LV0sR8F0YA/Nh1SNXxB5U2UjaADvODfvI5l/');
-    UI.displayThumbnail = function (href, $container, cb) {
-        cb = cb || $.noop;
-        var parsed = Hash.parsePadUrl(href);
-        var k  ='thumbnail-' + href;
-        var whenNewThumb = function () {
-            var secret = Hash.getSecrets('file', parsed.hash);
-            var hexFileName = Util.base64ToHex(secret.channel);
-            var src = Hash.getBlobPathFromHex(hexFileName);
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var key = Nacl.util.decodeBase64(cryptKey);
-            FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
-                if (!metadata.thumbnail) {
-                    return void localForage.setItem(k, 'EMPTY');
-                }
-                localForage.setItem(k, metadata.thumbnail, function (err) {
-                    addThumbnail(err, metadata.thumbnail, $container, cb);
-                });
-            });
-        };
-        localForage.getItem(k, function (err, v) {
-            if (!v && parsed.type === 'file') {
-                // We can only create thumbnails for files here since we can't easily decrypt pads
-                return void whenNewThumb();
-            }
-            if (!v) { return; }
-            if (v === 'EMPTY') { return; }
-            addThumbnail(err, v, $container, cb);
-        });
-    };
 
     UI.updateTags = function (common, href) {
         var sframeChan = common.getSframeChannel();

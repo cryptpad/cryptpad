@@ -1,6 +1,11 @@
 define([
+    '/common/common-util.js',
+    '/common/visible.js',
+    '/common/common-hash.js',
+    '/file/file-crypto.js',
+    '/bower_components/localforage/dist/localforage.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function () {
+], function (Util, Visible, Hash, FileCrypto, localForage) {
     var Nacl = window.nacl;
     var Thumb = {
         dimension: 100,
@@ -188,6 +193,83 @@ define([
         };
         if (window.html2canvas) { return void todo(); }
         require(['/bower_components/html2canvas/build/html2canvas.min.js'], todo);
+    };
+
+    Thumb.initPadThumbnails = function (opts) {
+        if (!opts.href || !opts.getContent) {
+            throw new Error("href and getContent are needed for thumbnails");
+        }
+        var oldThumbnailState;
+        var mkThumbnail = function () {
+            var content = opts.getContent();
+            if (content === oldThumbnailState) { return; }
+            Thumb.fromDOM(opts, function (err, b64) {
+                oldThumbnailState = content;
+                Thumb.setPadThumbnail(opts.href, b64);
+            });
+        };
+        var nafa = Util.notAgainForAnother(mkThumbnail, Thumb.UPDATE_INTERVAL);
+        var to;
+        var tUntil;
+        var interval = function () {
+            tUntil = nafa();
+            if (tUntil) {
+                window.clearTimeout(to);
+                to = window.setTimeout(interval, tUntil+1);
+                return;
+            }
+            to = window.setTimeout(interval, Thumb.UPDATE_INTERVAL+1);
+        };
+        Visible.onChange(function (v) {
+            if (v) {
+                window.clearTimeout(to);
+                return;
+            }
+            interval();
+        });
+        if (!Visible.currently()) { to = window.setTimeout(interval, Thumb.UPDATE_FIRST); }
+    };
+
+    var addThumbnail = function (err, thumb, $span, cb) {
+        var img = new Image();
+        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:;base64,'+thumb;
+        $span.find('.cp-icon').hide();
+        $span.prepend(img);
+        cb($(img));
+    };
+    Thumb.setPadThumbnail = function (href, b64, cb) {
+        cb = cb || function () {};
+        var k  ='thumbnail-' + href;
+        localForage.setItem(k, b64, cb);
+    };
+    Thumb.displayThumbnail = function (href, $container, cb) {
+        cb = cb || function () {};
+        var parsed = Hash.parsePadUrl(href);
+        var k  ='thumbnail-' + href;
+        var whenNewThumb = function () {
+            var secret = Hash.getSecrets('file', parsed.hash);
+            var hexFileName = Util.base64ToHex(secret.channel);
+            var src = Hash.getBlobPathFromHex(hexFileName);
+            var cryptKey = secret.keys && secret.keys.fileKeyStr;
+            var key = Nacl.util.decodeBase64(cryptKey);
+            FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
+                if (!metadata.thumbnail) {
+                    return void localForage.setItem(k, 'EMPTY');
+                }
+                localForage.setItem(k, metadata.thumbnail, function (err) {
+                    addThumbnail(err, metadata.thumbnail, $container, cb);
+                });
+            });
+        };
+        localForage.getItem(k, function (err, v) {
+            if (!v && parsed.type === 'file') {
+                // We can only create thumbnails for files here since we can't easily decrypt pads
+                return void whenNewThumb();
+            }
+            if (!v) { return; }
+            if (v === 'EMPTY') { return; }
+            addThumbnail(err, v, $container, cb);
+        });
     };
 
     return Thumb;

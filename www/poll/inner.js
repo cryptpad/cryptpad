@@ -22,6 +22,7 @@ define([
     'cm/mode/markdown/markdown',
     'css!cm/lib/codemirror.css',
 
+
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -801,16 +802,20 @@ define([
     var initThumbnails = function () {
         var oldThumbnailState;
         var privateDat = metadataMgr.getPrivateData();
+        if (!privateDat.thumbnails) { return; } // Thumbnails are disabled
         var hash = privateDat.availableHashes.editHash ||
                    privateDat.availableHashes.viewHash;
+        if (!hash) { return; }
         var href = privateDat.pathname + '#' + hash;
         var $el = $('.cp-app-poll-realtime');
         //var $el = $('#cp-app-poll-table');
+        var scrollTop;
         var options = {
             getContainer: function () { return $el[0]; },
             filter: function (el, before) {
                 if (before) {
-                    //$el.parents().css('overflow', 'visible');
+                    $el.parents().css('overflow', 'visible');
+                    scrollTop = $('#cp-app-poll-form').scrollTop();
                     $el.css('max-height', Math.max(600, $(el).width()) + 'px');
                     $el.find('tr td:first-child, tr td:last-child, tr td:nth-last-child(2)')
                         .css('position', 'static');
@@ -820,7 +825,7 @@ define([
                     $el.find('#cp-app-poll-table-scroll').css('max-width', '100%');
                     return;
                 }
-                //$el.parents().css('overflow', '');
+                $el.parents().css('overflow', '');
                 $el.css('max-height', '');
                 $el.find('#cp-app-poll-comments').css('display', '');
                 $el.find('#cp-app-poll-table-container').css('text-align', '');
@@ -828,20 +833,12 @@ define([
                 $el.find('#cp-app-poll-table-scroll').css('max-width', '');
                 $el.find('tr td:first-child, tr td:last-child, tr td:nth-last-child(2)')
                     .css('position', '');
-            }
+                $('#cp-app-poll-form').scrollTop(scrollTop);
+            },
+            href: href,
+            getContent: function () { return JSON.stringify(APP.proxy.content); }
         };
-        var mkThumbnail = function () {
-            if (!hash) { return; }
-            if (!APP.proxy) { return; }
-            var content = JSON.stringify(APP.proxy.content);
-            if (content === oldThumbnailState) { return; }
-            Thumb.fromDOM(options, function (err, b64) {
-                oldThumbnailState = content;
-                SFUI.setPadThumbnail(href, b64);
-            });
-        };
-        window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
-        window.setTimeout(mkThumbnail, Thumb.UPDATE_FIRST);
+        Thumb.initPadThumbnails(options);
     };
 
     var checkDeletedCells = function () {

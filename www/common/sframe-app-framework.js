@@ -8,7 +8,6 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/common/sframe-common-interface.js',
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-thumbnail.js',
@@ -27,7 +26,6 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
-    SFUI,
     Messages,
     Util,
     Thumb,
@@ -270,23 +268,16 @@ define([
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             if (options.thumbnail && privateDat.thumbnails) {
-                var oldThumbnailState;
                 var hash = privateDat.availableHashes.editHash ||
                            privateDat.availableHashes.viewHash;
-                var href = privateDat.pathname + '#' + hash;
-                var mkThumbnail = function () {
-                    if (!hash) { return; }
-                    if (state !== STATE.READY) { return; }
-                    if (!cpNfInner.chainpad) { return; }
-                    var content = cpNfInner.chainpad.getUserDoc();
-                    if (content === oldThumbnailState) { return; }
-                        Thumb.fromDOM(options.thumbnail, function (err, b64) {
-                            oldThumbnailState = content;
-                            SFUI.setPadThumbnail(href, b64);
-                        });
-                };
-                window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
-                window.setTimeout(mkThumbnail, Thumb.UPDATE_FIRST);
+                if (hash) {
+                    options.thumbnail.href = privateDat.pathname + '#' + hash;
+                    options.thumbnail.getContent = function () {
+                        if (!cpNfInner.chainpad) { return; }
+                        return cpNfInner.chainpad.getUserDoc();
+                    };
+                    Thumb.initPadThumbnails(options.thumbnail);
+                }
             }
 
             if (newPad) {

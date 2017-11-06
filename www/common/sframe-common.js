@@ -14,7 +14,8 @@ define([
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/common/common-realtime.js',
-    '/common/common-util.js'
+    '/common/common-util.js',
+    '/common/common-thumbnail.js'
 ], function (
     $,
     nThen,
@@ -30,7 +31,8 @@ define([
     AppConfig,
     Cryptpad,
     CommonRealtime,
-    Util
+    Util,
+    Thumb
 ) {
 
     // Chainpad Netflux Inner
@@ -80,7 +82,9 @@ define([
     funcs.createButton = callWithCommon(UI.createButton);
     funcs.createUsageBar = callWithCommon(UI.createUsageBar);
     funcs.updateTags = callWithCommon(UI.updateTags);
-    funcs.displayThumbnail = UI.displayThumbnail;
+
+    // Thumb
+    funcs.displayThumbnail = Thumb.displayThumbnail;
 
     // History
     funcs.getHistory = callWithCommon(History.create);
