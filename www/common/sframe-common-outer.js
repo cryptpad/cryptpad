@@ -130,6 +130,7 @@ define([
                             settings: proxy.settings || {},
                             isPresent: parsed.hashData && parsed.hashData.present,
                             isEmbed: parsed.hashData && parsed.hashData.embed,
+                            thumbnails: !((proxy.settings || {}).general || {}).disableThumbnails,
                             accounts: {
                                 donateURL: Cryptpad.donateURL,
                                 upgradeURL: Cryptpad.upgradeURL

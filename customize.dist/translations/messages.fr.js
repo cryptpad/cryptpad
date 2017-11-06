@@ -44,6 +44,7 @@ define(function () {
     out.typing = "Édition";
     out.initializing = "Initialisation...";
     out.forgotten = 'Déplacé vers la corbeille';
+    out.errorState = 'Erreur critique : {0}';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
@@ -56,6 +57,7 @@ define(function () {
     out.viewers = "lecteurs";
     out.editor = "éditeur";
     out.editors = "éditeurs";
+    out.userlist_offline = "Vous êtes actuellement hors-ligne, la liste des utilisateurs n'est pas disponible.";
 
     out.language = "Langue";
 
@@ -485,6 +487,13 @@ define(function () {
     out.settings_resetTips = "Astuces";
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
+
+    out.settings_thumbnails = "Vignettes";
+    out.settings_disableThumbnailsAction = "Désactiver la création de vignettes dans CryptDrive";
+    out.settings_disableThumbnailsDescription = "Des vignettes de vos pads sont automatiquement créées et stockées dans votre navigateur. Vous pouvez désactiver cette fonctionnalité.";
+    out.settings_resetThumbnailsAction = "Nettoyer";
+    out.settings_resetThumbnailsDescription = "Nettoyer toutes les vignettes stockées dans votre navigateur.";
+    out.settings_resetThumbnailsDone = "Toutes les vignettes ont été effacées.";
 
     out.settings_importTitle = "Importer les pads récents de ce navigateur dans votre CryptDrive";
     out.settings_import = "Importer";

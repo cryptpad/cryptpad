@@ -402,7 +402,6 @@ define([
         });
 
         framework.setContentGetter(function () {
-            console.log(framework._.title.title);
             var content = CodeMirror.getContent();
             Slide.update(content.content);
             return content;

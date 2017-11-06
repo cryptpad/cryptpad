@@ -42,6 +42,7 @@ define([
             'languageSelector',
             'logoutEverywhere',
             'resetTips',
+            'thumbnails',
             'userFeedback'
         ],
         'drive': [
@@ -220,6 +221,60 @@ define([
 
         return $div;
     };
+
+    var createThumbnails = function (obj) {
+        var $div = $('<div>', {'class': 'thumbnails element'});
+        $('<label>').text(Messages.settings_thumbnails).appendTo($div);
+
+        // Disable
+        $('<span>', {'class': 'description'})
+            .text(Messages.settings_disableThumbnailsDescription).appendTo($div);
+        var $label = $('<label>', { 'for': 'disableThumbnails', 'class': 'noTitle' })
+            .text(Messages.settings_disableThumbnailsAction);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $checkbox = $('<input>', {
+            'type': 'checkbox',
+            id: 'disableThumbnails'
+        }).on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            if (!obj.proxy.settings) { obj.proxy.settings = {}; }
+            if (!obj.proxy.settings.general) { obj.proxy.settings.general = {}; }
+            obj.proxy.settings.general.disableThumbnails = $checkbox.is(':checked') || false;
+            Cryptpad.whenRealtimeSyncs(obj.info.realtime, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+
+        $checkbox.appendTo($div);
+        $label.appendTo($div);
+
+        $ok.hide().appendTo($div);
+        $spinner.hide().appendTo($div);
+
+        if (obj.proxy.settings && obj.proxy.settings.general
+            && obj.proxy.settings.general.disableThumbnails) {
+            $checkbox[0].checked = true;
+        }
+
+        // Reset
+        /*$('<span>', {'class': 'description'})
+            .text(Messages.settings_resetThumbnailsDescription).appendTo($div);
+        var $button = $('<button>', {'id': 'resetThumbnails', 'class': 'btn btn-primary'})
+            .text(Messages.settings_resetThumbnailsAction).appendTo($div);
+
+        $button.click(function () {
+            // TODO we need to have access to the sandbox localforage first...
+            Cryptpad.alert(Messages.settings_resetThumbnailsDone);
+        });*/
+
+        return $div;
+    };
+
     var createBackupDrive = function (store) {
         var obj = store.proxy;
         var $div = $('<div>', {'class': 'backupDrive element'});
@@ -467,6 +522,7 @@ define([
             $rightside.append(createLogoutEverywhere(obj));
         }
         $rightside.append(createResetTips());
+        $rightside.append(createThumbnails(obj));
         $rightside.append(createBackupDrive(obj));
         $rightside.append(createImportLocalPads(obj));
         $rightside.append(createResetDrive(obj));

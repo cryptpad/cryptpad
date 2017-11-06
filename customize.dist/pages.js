@@ -728,7 +728,7 @@ define([
 
     Pages['/profile/'] = Pages['/profile/index.html'] = function () {
         return [
-            h('div#toolbar'),
+            h('div#cp-toolbar'),
             h('div#container'),
             loadingScreen()
         ];

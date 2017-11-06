@@ -43,9 +43,10 @@ define(function () {
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
-    out.typing = "Typing";
+    out.typing = "Editing";
     out.initializing = "Initializing...";
     out.forgotten = 'Moved to the trash';
+    out.errorState = 'Critical error: {0}';
     out.lag = 'Lag';
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";
@@ -58,6 +59,7 @@ define(function () {
     out.viewers = "viewers";
     out.editor = "editor";
     out.editors = "editors";
+    out.userlist_offline = "You're currently offline, the user list is not available.";
 
     out.language = "Language";
 
@@ -490,6 +492,13 @@ define(function () {
     out.settings_resetTips = "Tips";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
+
+    out.settings_thumbnails = "Thumbnails";
+    out.settings_disableThumbnailsAction = "Disable thumbnails creation in your CryptDrive";
+    out.settings_disableThumbnailsDescription = "Thumbnails are automatically created and stored in your browser when you visit a new pad. You can disable this feature here.";
+    out.settings_resetThumbnailsAction = "Clean";
+    out.settings_resetThumbnailsDescription = "Clean all the pads thumbnails stored in your browser.";
+    out.settings_resetThumbnailsDone = "All the thumbnails have been erased.";
 
     out.settings_importTitle = "Import this browser's recent pads in your CryptDrive";
     out.settings_import = "Import";

@@ -7,7 +7,6 @@ define([
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
-    '/common/common-thumbnail.js',
     '/common/modes.js',
     'cm/lib/codemirror',
 
@@ -46,7 +45,6 @@ define([
     SFCommon,
     Framework,
     Util,
-    Thumb,
     Modes,
     CMeditor)
 {

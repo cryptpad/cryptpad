@@ -8,7 +8,6 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/common/sframe-common-interface.js',
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-thumbnail.js',
@@ -27,7 +26,6 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
-    SFUI,
     Messages,
     Util,
     Thumb,
@@ -268,24 +266,18 @@ define([
 
             Cryptpad.removeLoadingScreen(emitResize);
 
-            if (options.thumbnail) {
-                var oldThumbnailState;
-                var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            if (options.thumbnail && privateDat.thumbnails) {
                 var hash = privateDat.availableHashes.editHash ||
                            privateDat.availableHashes.viewHash;
-                var href = privateDat.pathname + '#' + hash;
-                var mkThumbnail = function () {
-                    if (!hash) { return; }
-                    if (state !== STATE.READY) { return; }
-                    if (!cpNfInner.chainpad) { return; }
-                    var content = cpNfInner.chainpad.getUserDoc();
-                    if (content === oldThumbnailState) { return; }
-                    Thumb.fromDOM(options.thumbnail, function (err, b64) {
-                        oldThumbnailState = content;
-                        SFUI.setPadThumbnail(href, b64);
-                    });
-                };
-                window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
+                if (hash) {
+                    options.thumbnail.href = privateDat.pathname + '#' + hash;
+                    options.thumbnail.getContent = function () {
+                        if (!cpNfInner.chainpad) { return; }
+                        return cpNfInner.chainpad.getUserDoc();
+                    };
+                    Thumb.initPadThumbnails(options.thumbnail);
+                }
             }
 
             if (newPad) {
@@ -422,6 +414,7 @@ define([
 
             textPatcher = TextPatcher.create({ realtime: cpNfInner.chainpad });
 
+            var infiniteSpinnerModal = false;
             window.setInterval(function () {
                 if (state === STATE.DISCONNECTED) { return; }
                 var l;
@@ -432,13 +425,15 @@ define([
                 }
                 if (l.lag < badStateTimeout) { return; }
 
-                if (state === STATE.INFINITE_SPINNER) { return; }
+                if (infiniteSpinnerModal) { return; }
+                infiniteSpinnerModal = true;
                 stateChange(STATE.INFINITE_SPINNER);
                 Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
                 });
                 cpNfInner.chainpad.onSettle(function () {
+                    infiniteSpinnerModal = false;
                     Cryptpad.findCancelButton().click();
                     stateChange(STATE.READY);
                     onRemote();

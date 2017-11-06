@@ -129,6 +129,7 @@ define([
 
     var domFromHTML = function (html) {
         var Dom = new DOMParser().parseFromString(html, "text/html");
+        Dom.normalize();
         removeForbiddenTags(Dom.body);
         removeListeners(Dom.body);
         return Dom;
@@ -179,6 +180,7 @@ define([
         var $div = $('<div>', {id: id}).append(safe_newHtmlFixed);
 
         var Dom = domFromHTML($('<div>').append($div).html());
+        $content[0].normalize();
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {

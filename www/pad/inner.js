@@ -557,6 +557,7 @@ define([
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
                     filter: function (el, before) {
                         if (before) {
+                            module.cursor.update();
                             $(el).parents().css('overflow', 'visible');
                             $(el).css('max-width', '1200px');
                             $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
@@ -569,6 +570,9 @@ define([
                         $(el).css('max-height', '');
                         $(el).css('overflow', '');
                         $(el).find('body').css('background-color', '#fff');
+                        var sel = module.cursor.makeSelection();
+                        var range = module.cursor.makeRange();
+                        module.cursor.fixSelection(sel, range);
                     }
                 }
             }, waitFor(function (fw) { window.APP.framework = framework = fw; }));
