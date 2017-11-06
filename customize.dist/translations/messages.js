@@ -401,7 +401,7 @@ define(function () {
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
-    out.fc_delete = "Delete";
+    out.fc_delete = "Move to trash";
     out.fc_restore = "Restore";
     out.fc_remove = "Delete permanently";
     out.fc_empty = "Empty the trash";
