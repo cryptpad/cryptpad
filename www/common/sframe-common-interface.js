@@ -7,12 +7,10 @@ define([
     '/common/tippy.min.js',
     '/customize/application_config.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/tippy.css',
 ], function ($, Config, Cryptpad, Util, MediaTag, Tippy, AppConfig) {
     var UI = {};
     var Messages = Cryptpad.Messages;
-    var Nacl = window.nacl;
 
     /**
      * Requirements from cryptpad-common.js

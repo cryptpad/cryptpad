@@ -188,7 +188,7 @@ define([
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
                             var list_values = [].slice.call(mutation.target.children)
-                                                .map(function (el) { return el.outerHTML })
+                                                .map(function (el) { return el.outerHTML; })
                                                 .join('');
                             mediaMap[mutation.target.getAttribute('src')] = list_values;
                             observer.disconnect();

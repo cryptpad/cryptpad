@@ -800,7 +800,6 @@ define([
     };
 
     var initThumbnails = function () {
-        var oldThumbnailState;
         var privateDat = metadataMgr.getPrivateData();
         if (!privateDat.thumbnails) { return; } // Thumbnails are disabled
         var hash = privateDat.availableHashes.editHash ||

@@ -1,11 +1,12 @@
 define([
+    'jquery',
     '/common/common-util.js',
     '/common/visible.js',
     '/common/common-hash.js',
     '/file/file-crypto.js',
     '/bower_components/localforage/dist/localforage.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (Util, Visible, Hash, FileCrypto, localForage) {
+], function ($, Util, Visible, Hash, FileCrypto, localForage) {
     var Nacl = window.nacl;
     var Thumb = {
         dimension: 100,
