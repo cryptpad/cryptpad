@@ -361,8 +361,8 @@ define(function () {
     out.fm_openParent = "Montrer dans le dossier";
     out.fm_noname = "Document sans titre";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
-    out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
-    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de manière permanente ?";
+    out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?";
+    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";
@@ -401,7 +401,7 @@ define(function () {
     out.fc_open_ro = "Ouvrir (lecture seule)";
     out.fc_delete = "Déplacer vers la corbeille";
     out.fc_restore = "Restaurer";
-    out.fc_remove = "Supprimer définitivement";
+    out.fc_remove = "Supprimer de votre CryptDrive";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
     out.fc_hashtag = "Mots-clés";

@@ -403,7 +403,7 @@ define(function () {
     out.fc_open_ro = "Open (read-only)";
     out.fc_delete = "Move to trash";
     out.fc_restore = "Restore";
-    out.fc_remove = "Remove from my CryptDrive.";
+    out.fc_remove = "Remove from your CryptDrive";
     out.fc_empty = "Empty the trash";
     out.fc_prop = "Properties";
     out.fc_hashtag = "Tags";
