@@ -363,8 +363,8 @@ define(function () {
     out.fm_openParent = "Show in folder";
     out.fm_noname = "Untitled Document";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
-    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
-    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element permanently?";
+    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from your CryptDrive permanently?";
+    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
@@ -403,7 +403,7 @@ define(function () {
     out.fc_open_ro = "Open (read-only)";
     out.fc_delete = "Move to trash";
     out.fc_restore = "Restore";
-    out.fc_remove = "Delete permanently";
+    out.fc_remove = "Remove from my CryptDrive.";
     out.fc_empty = "Empty the trash";
     out.fc_prop = "Properties";
     out.fc_hashtag = "Tags";
