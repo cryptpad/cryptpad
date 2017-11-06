@@ -45,9 +45,7 @@ define([
             var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
             var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '">';
             if (mediaMap[src]) {
-                mediaMap[src].forEach(function (n) {
-                    mt += n.outerHTML;
-                });
+                mt += mediaMap[src];
             }
             mt += '</media-tag>';
             return mt;
@@ -168,11 +166,7 @@ define([
 
         var unsafe_newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
             var mt = tag;
-            if (mediaMap[src]) {
-                mediaMap[src].forEach(function (n) {
-                    mt += n.outerHTML;
-                });
-            }
+            if (mediaMap[src]) { mt += mediaMap[src]; }
             return mt + '</media-tag>';
         });
 
@@ -193,9 +187,11 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            //console.log(el.outerHTML);
-                            var list_values = [].slice.call(el.children);
-                            mediaMap[el.getAttribute('src')] = list_values;
+                            var list_values = [].slice.call(mutation.target.children)
+                                                .map(function (el) { return el.outerHTML })
+                                                .join('');
+                            mediaMap[mutation.target.getAttribute('src')] = list_values;
+                            observer.disconnect();
                         }
                     });
                 });
