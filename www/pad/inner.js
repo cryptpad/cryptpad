@@ -30,6 +30,7 @@ define([
     '/api/config',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -48,7 +49,8 @@ define([
     MediaTag,
     ApiConfig,
     Hash,
-    Util)
+    Util,
+    JsonOT)
 {
     var DiffDom = window.diffDOM;
 
@@ -553,6 +555,7 @@ define([
             Framework.create({
                 toolbarContainer: '#cke_1_toolbox',
                 contentContainer: '#cke_1_contents',
+                transformFunction: JsonOT.validate,
                 thumbnail: {
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
                     filter: function (el, before) {
