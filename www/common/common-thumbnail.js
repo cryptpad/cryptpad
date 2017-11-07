@@ -232,7 +232,7 @@ define([
 
     var addThumbnail = function (err, thumb, $span, cb) {
         var img = new Image();
-        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:;base64,'+thumb;
+        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:image/png;base64,'+thumb;
         $span.find('.cp-icon').hide();
         $span.prepend(img);
         cb($(img));
