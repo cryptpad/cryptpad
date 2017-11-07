@@ -276,7 +276,7 @@ define([
                         if (!cpNfInner.chainpad) { return; }
                         return cpNfInner.chainpad.getUserDoc();
                     };
-                    Thumb.initPadThumbnails(options.thumbnail);
+                    Thumb.initPadThumbnails(common, options.thumbnail);
                 }
             }
 
