@@ -43,9 +43,10 @@ define(function () {
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
     out.reconnecting = 'Reconnecting...';
-    out.typing = "Typing";
+    out.typing = "Editing";
     out.initializing = "Initializing...";
     out.forgotten = 'Moved to the trash';
+    out.errorState = 'Critical error: {0}';
     out.lag = 'Lag';
     out.readonly = 'Read only';
     out.anonymous = "Anonymous";
@@ -58,6 +59,7 @@ define(function () {
     out.viewers = "viewers";
     out.editor = "editor";
     out.editors = "editors";
+    out.userlist_offline = "You're currently offline, the user list is not available.";
 
     out.language = "Language";
 
@@ -361,8 +363,8 @@ define(function () {
     out.fm_openParent = "Show in folder";
     out.fm_noname = "Untitled Document";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
-    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from the trash permanently?";
-    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element permanently?";
+    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from your CryptDrive permanently?";
+    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
@@ -399,9 +401,9 @@ define(function () {
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
-    out.fc_delete = "Delete";
+    out.fc_delete = "Move to trash";
     out.fc_restore = "Restore";
-    out.fc_remove = "Delete permanently";
+    out.fc_remove = "Remove from your CryptDrive";
     out.fc_empty = "Empty the trash";
     out.fc_prop = "Properties";
     out.fc_hashtag = "Tags";
@@ -490,6 +492,13 @@ define(function () {
     out.settings_resetTips = "Tips";
     out.settings_resetTipsButton = "Reset the available tips in CryptDrive";
     out.settings_resetTipsDone = "All the tips are now visible again.";
+
+    out.settings_thumbnails = "Thumbnails";
+    out.settings_disableThumbnailsAction = "Disable thumbnails creation in your CryptDrive";
+    out.settings_disableThumbnailsDescription = "Thumbnails are automatically created and stored in your browser when you visit a new pad. You can disable this feature here.";
+    out.settings_resetThumbnailsAction = "Clean";
+    out.settings_resetThumbnailsDescription = "Clean all the pads thumbnails stored in your browser.";
+    out.settings_resetThumbnailsDone = "All the thumbnails have been erased.";
 
     out.settings_importTitle = "Import this browser's recent pads in your CryptDrive";
     out.settings_import = "Import";

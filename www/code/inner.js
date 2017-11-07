@@ -145,6 +145,10 @@ define([
             $codeMirror.addClass('cp-app-code-fullpage');
         };
 
+        var isVisible = function () {
+            return $previewContainer.is(':visible');
+        };
+
         framework.onReady(function () {
             // add the splitter
             var splitter = $('<div>', {
@@ -184,7 +188,8 @@ define([
         return {
             forceDraw: forceDrawPreview,
             draw: drawPreview,
-            modeChange: modeChange
+            modeChange: modeChange,
+            isVisible: isVisible
         };
     };
 
@@ -317,6 +322,17 @@ define([
         framework.start();
     };
 
+    var getThumbnailContainer = function () {
+        var $preview = $('#cp-app-code-preview-content');
+        var $codeMirror = $('.CodeMirror');
+        if ($preview.length && $preview.is(':visible')) {
+            return $preview[0];
+        }
+        if ($codeMirror.length) {
+            return $codeMirror[0];
+        }
+    };
+
     var main = function () {
         var CodeMirror;
         var editor;
@@ -327,7 +343,19 @@ define([
 
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
-                contentContainer: '#cp-app-code-editor'
+                contentContainer: '#cp-app-code-editor',
+                thumbnail: {
+                    getContainer: getThumbnailContainer,
+                    filter: function (el, before) {
+                        if (before) {
+                            $(el).parents().css('overflow', 'visible');
+                            $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
+                            return;
+                        }
+                        $(el).parents().css('overflow', '');
+                        $(el).css('max-height', '');
+                    }
+                }
             }, waitFor(function (fw) { framework = fw; }));
 
             nThen(function (waitFor) {

@@ -1,3 +1,9 @@
+// Defaults to avoid breaking existing themes
+
+@colortheme_poll-th-bg: #005bef;
+@colortheme_poll-th-fg: #fff;
+@colortheme_poll-help-bg: #bbffbb;
+
 @import (once) "../../customize/src/less2/include/browser.less";
 @import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) "../../customize/src/less2/include/markdown.less";
@@ -14,15 +20,15 @@
 
 @poll-fore: #555;
 
-@poll-th-bg: #005bef;
-@poll-th-fg: #fff;
+@poll-th-bg: @colortheme_poll-th-bg;
+@poll-th-fg: @colortheme_poll-th-fg;
 @poll-th-user-bg: darken(@poll-th-bg, 10%);
 @poll-editing: lighten(@poll-th-bg, 10%);
 @poll-winner: darken(@poll-th-bg, 15%);
 @poll-td-bg: @poll-th-bg;
 @poll-td-fg: @poll-th-fg;
 
-@poll-help-bg: #bbffbb; // lightgreen
+@poll-help-bg: @colortheme_poll-help-bg;
 
 @poll-uncommitted-cell: #eee;
 @poll-uncommitted-bg: #ddd; //lighten(@poll-th-bg, 50%);

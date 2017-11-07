@@ -2,7 +2,6 @@ define([
 
 ], function () {
     var Todo = {};
-    var Cryptpad;
 
 /*  data model
 {
@@ -60,9 +59,7 @@ define([
         if (proxy.data[id]) { delete proxy.data[id]; }
     };
 
-    Todo.init = function (proxy, common) {
-        Cryptpad = common;
-
+    Todo.init = function (proxy) {
         var api = {};
         initialize(proxy);
 

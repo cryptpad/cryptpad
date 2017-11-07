@@ -14,11 +14,14 @@ define([
     '/poll/render.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
+    '/common/sframe-common-interface.js',
+    '/common/common-thumbnail.js',
 
     'cm/lib/codemirror',
     'cm/addon/display/placeholder',
     'cm/mode/markdown/markdown',
     'css!cm/lib/codemirror.css',
+
 
     '/bower_components/file-saver/FileSaver.min.js',
 
@@ -41,6 +44,8 @@ define([
     Renderer,
     DiffMd,
     SframeCM,
+    SFUI,
+    Thumb,
     CMeditor)
 {
     var Messages = Cryptpad.Messages;
@@ -651,7 +656,7 @@ define([
 
         if (editable === false) {
             // disable all the things
-            $('.icp-app-poll-realtime input, .cp-app-poll-realtime button, .cp-app-poll-upper button, .cp-app-poll-realtime textarea').attr('disabled', true);
+            $('.cp-app-poll-realtime input, .cp-app-poll-realtime button, .cp-app-poll-upper button, .cp-app-poll-realtime textarea').attr('disabled', true);
             $('span.cp-app-poll-table-edit, span.cp-app-poll-table-remove').hide();
             $('span.cp-app-poll-table-lock').addClass('fa-lock').removeClass('fa-unlock')
                 .attr('title', Messages.poll_locked)
@@ -682,6 +687,8 @@ define([
 
     var getCommentId = Render.Uid('c');
     var removeComment = function (uid) {
+        var idx = APP.proxy.commentsOrder.indexOf(uid);
+        if (idx !== -1) { APP.proxy.commentsOrder.splice(idx, 1); }
         delete APP.proxy.comments[uid];
         APP.updateComments();
     };
@@ -691,6 +698,7 @@ define([
     var avatars = {};
     var updateComments = APP.updateComments = function () {
         if (!APP.proxy.comments) { APP.proxy.comments = {}; }
+        if (!APP.proxy.commentsOrder) { APP.proxy.commentsOrder = []; }
 
         var profile;
         if (common.isLoggedIn()) {
@@ -699,10 +707,9 @@ define([
 
         var $comments = APP.$comments.html('');
         var comments = APP.proxy.comments;
-        Object.keys(copyObject(comments)).sort(function (a, b) {
-            return comments[a].time > comments[b].time;
-        }).forEach(function (k) {
+        APP.proxy.commentsOrder.forEach(function (k) {
             var c = comments[k];
+            if (!c) { return; }
             var name = c.name || Messages.anonymous;
             var $c = $('<div>', {
                 'class': 'cp-app-poll-comments-list-el'
@@ -766,6 +773,7 @@ define([
     };
     var addComment = function () {
         if (!APP.proxy.comments) { APP.proxy.comments = {}; }
+        if (!APP.proxy.commentsOrder) { APP.proxy.commentsOrder = []; }
         var name = APP.$addComment.find('.cp-app-poll-comments-add-name').val().trim();
         var msg = APP.$addComment.find('.cp-app-poll-comments-add-msg').val().trim();
         var time = +new Date();
@@ -779,6 +787,7 @@ define([
         }
 
         var uid = getCommentId();
+        APP.proxy.commentsOrder.push(uid);
         APP.proxy.comments[uid] = {
             msg: msg,
             name: name,
@@ -788,6 +797,47 @@ define([
         };
         resetComment();
         updateComments();
+    };
+
+    var initThumbnails = function () {
+        var privateDat = metadataMgr.getPrivateData();
+        if (!privateDat.thumbnails) { return; } // Thumbnails are disabled
+        var hash = privateDat.availableHashes.editHash ||
+                   privateDat.availableHashes.viewHash;
+        if (!hash) { return; }
+        var href = privateDat.pathname + '#' + hash;
+        var $el = $('.cp-app-poll-realtime');
+        //var $el = $('#cp-app-poll-table');
+        var scrollTop;
+        var options = {
+            getContainer: function () { return $el[0]; },
+            filter: function (el, before) {
+                if (before) {
+                    $el.parents().css('overflow', 'visible');
+                    scrollTop = $('#cp-app-poll-form').scrollTop();
+                    $el.css('max-height', Math.max(600, $(el).width()) + 'px');
+                    $el.find('tr td:first-child, tr td:last-child, tr td:nth-last-child(2)')
+                        .css('position', 'static');
+                    $el.find('#cp-app-poll-comments').css('display', 'none');
+                    $el.find('#cp-app-poll-table-container').css('text-align', 'center');
+                    $el.find('#cp-app-poll-table-scroll').css('margin', 'auto');
+                    $el.find('#cp-app-poll-table-scroll').css('max-width', '100%');
+                    return;
+                }
+                $el.parents().css('overflow', '');
+                $el.css('max-height', '');
+                $el.find('#cp-app-poll-comments').css('display', '');
+                $el.find('#cp-app-poll-table-container').css('text-align', '');
+                $el.find('#cp-app-poll-table-scroll').css('margin', '');
+                $el.find('#cp-app-poll-table-scroll').css('max-width', '');
+                $el.find('tr td:first-child, tr td:last-child, tr td:nth-last-child(2)')
+                    .css('position', '');
+                $('#cp-app-poll-form').scrollTop(scrollTop);
+            },
+            href: href,
+            getContent: function () { return JSON.stringify(APP.proxy.content); }
+        };
+        Thumb.initPadThumbnails(options);
     };
 
     var checkDeletedCells = function () {
@@ -810,16 +860,22 @@ define([
 
         if (!isNew) {
             if (proxy.info) {
-                // Migration??
+                // Migration
                 proxy.metadata = proxy.info;
                 delete proxy.info;
             }
             if (proxy.table) {
-                // Migration??
+                // Migration
                 proxy.content = proxy.table;
                 delete proxy.table;
             }
             checkDeletedCells();
+
+            if (proxy.comments && !proxy.commentsOrder) { // Migration
+                proxy.commentsOrder = Object.keys(copyObject(proxy.comments)).sort(function (a, b) {
+                    return proxy.comments[a].time > proxy.comments[b].time;
+                });
+            }
 
             if (proxy && proxy.metadata) {
                 metadataMgr.updateMetadata(proxy.metadata);
@@ -938,6 +994,7 @@ define([
         var $table = APP.$table = $('#cp-app-poll-table-scroll').find('table');
         updateDisplayedTable();
         updateDescription(null, APP.proxy.description || '');
+        initThumbnails();
 
         // Initialize author name for comments.
         // Disable name modification for logged in users
@@ -1149,6 +1206,17 @@ define([
                 mode: "markdown",
             });
 
+            APP.$descriptionPublished.click(function (e) {
+                if (!e.target) { return; }
+                var $t = $(e.target);
+                if ($t.is('a') || $t.parents('a').length) {
+                    e.preventDefault();
+                    var $a = $t.is('a') ? $t : $t.parents('a').first();
+                    var href = $a.attr('href');
+                    if (!href) { return; }
+                    window.open(href);
+                }
+            });
 
             var listmapConfig = {
                 data: {},

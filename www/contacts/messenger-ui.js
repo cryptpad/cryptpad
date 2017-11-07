@@ -3,10 +3,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
-], function ($, Cryptpad, h, Marked) {
+    '/common/media-tag.js',
+], function ($, Cryptpad, h, Marked, MediaTag) {
     'use strict';
-    // TODO use our fancy markdown and support media-tags
-    Marked.setOptions({ sanitize: true, });
 
     var UI = {};
     var Messages = Cryptpad.Messages;
@@ -15,6 +14,12 @@ define([
         var d = h('div.cp-app-contacts-content');
         try {
             d.innerHTML = Marked(md || '');
+            var $d = $(d);
+            // remove potentially malicious elements
+            $d.find('script, iframe, object, applet, video, audio').remove();
+
+            // activate media-tags
+            $d.find('media-tag').each(function (i, e) { MediaTag(e); });
         } catch (e) {
             console.error(md);
             console.error(e);

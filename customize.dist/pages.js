@@ -76,7 +76,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.18.0 (Snallygaster)")
+            h('div.cp-version-footer', "CryptPad v1.19.0 (Tarasque)")
         ]);
     };
 
@@ -728,7 +728,7 @@ define([
 
     Pages['/profile/'] = Pages['/profile/index.html'] = function () {
         return [
-            h('div#toolbar'),
+            h('div#cp-toolbar'),
             h('div#container'),
             loadingScreen()
         ];

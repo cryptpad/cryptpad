@@ -45,9 +45,7 @@ define([
             var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
             var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '">';
             if (mediaMap[src]) {
-                mediaMap[src].forEach(function (n) {
-                    mt += n.outerHTML;
-                });
+                mt += mediaMap[src];
             }
             mt += '</media-tag>';
             return mt;
@@ -129,6 +127,7 @@ define([
 
     var domFromHTML = function (html) {
         var Dom = new DOMParser().parseFromString(html, "text/html");
+        Dom.normalize();
         removeForbiddenTags(Dom.body);
         removeListeners(Dom.body);
         return Dom;
@@ -167,11 +166,7 @@ define([
 
         var unsafe_newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
             var mt = tag;
-            if (mediaMap[src]) {
-                mediaMap[src].forEach(function (n) {
-                    mt += n.outerHTML;
-                });
-            }
+            if (mediaMap[src]) { mt += mediaMap[src]; }
             return mt + '</media-tag>';
         });
 
@@ -179,6 +174,7 @@ define([
         var $div = $('<div>', {id: id}).append(safe_newHtmlFixed);
 
         var Dom = domFromHTML($('<div>').append($div).html());
+        $content[0].normalize();
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {
@@ -191,9 +187,11 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            //console.log(el.outerHTML);
-                            var list_values = [].slice.call(el.children);
-                            mediaMap[el.getAttribute('src')] = list_values;
+                            var list_values = [].slice.call(mutation.target.children)
+                                                .map(function (el) { return el.outerHTML; })
+                                                .join('');
+                            mediaMap[mutation.target.getAttribute('src')] = list_values;
+                            observer.disconnect();
                         }
                     });
                 });

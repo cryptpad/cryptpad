@@ -10,6 +10,7 @@ define([
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/sframe-common-interface.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/pages.js',
@@ -36,6 +37,7 @@ define([
     Cryptget,
     nThen,
     SFCommon,
+    SFUI,
     ApiConfig,
     CommonRealtime,
     Pages,
@@ -208,6 +210,7 @@ define([
         });
 
         var setEditable = function (bool) {
+            APP.editable = bool;
             if (readOnly && bool) { return; }
             if (bool) { $controls.css('display', 'flex'); }
             else { $controls.hide(); }
@@ -237,17 +240,9 @@ define([
         APP.upload = function (title) {
             var canvas = $canvas[0];
             APP.canvas.deactivateAll().renderAll();
-            var finish = function (thumb) {
-                canvas.toBlob(function (blob) {
-                    blob.name = title;
-                    APP.FM.handleFile(blob, void 0, thumb);
-                });
-            };
-
-            Thumb.fromCanvas(canvas, function (e, blob) {
-                // carry on even if you can't get a thumbnail
-                if (e) { console.error(e); }
-                finish(blob);
+            canvas.toBlob(function (blob) {
+                blob.name = title;
+                APP.FM.handleFile(blob);
             });
         };
 
@@ -287,6 +282,7 @@ define([
             })
             .on('dblclick', function (e) {
                 e.preventDefault();
+                if (!APP.editable) { return; }
                 pickColor(Colors.rgb2hex($color.css('background-color')), function (c) {
                     $color.css({
                         'background-color': c,
@@ -376,6 +372,29 @@ define([
             var cImg = new Fabric.Image(img, { left:0, top:0, angle:0, });
             APP.canvas.add(cImg);
             onLocal();
+        };
+
+        var initThumbnails = function () {
+            var oldThumbnailState;
+            var privateDat = metadataMgr.getPrivateData();
+            if (!privateDat.thumbnails) { return; }
+            var hash = privateDat.availableHashes.editHash ||
+                       privateDat.availableHashes.viewHash;
+            var href = privateDat.pathname + '#' + hash;
+            var mkThumbnail = function () {
+                if (!hash) { return; }
+                if (initializing) { return; }
+                if (!APP.realtime) { return; }
+                var content = APP.realtime.getUserDoc();
+                if (content === oldThumbnailState) { return; }
+                var D = Thumb.getResizedDimensions($canvas[0], 'pad');
+                Thumb.fromCanvas($canvas[0], D, function (err, b64) {
+                    oldThumbnailState = content;
+                    Thumb.setPadThumbnail(href, b64);
+                });
+            };
+            window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);
+            window.setTimeout(mkThumbnail, Thumb.UPDATE_FIRST);
         };
 
         config.onInit = function (info) {
@@ -538,6 +557,10 @@ define([
                 initializing = false;
                 config.onLocal();
                 Cryptpad.removeLoadingScreen();
+
+                initThumbnails();
+
+
                 if (readOnly) { return; }
                 if (isNew) {
                     common.openTemplatePicker();

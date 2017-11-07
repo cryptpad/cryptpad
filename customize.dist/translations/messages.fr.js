@@ -44,6 +44,7 @@ define(function () {
     out.typing = "Édition";
     out.initializing = "Initialisation...";
     out.forgotten = 'Déplacé vers la corbeille';
+    out.errorState = 'Erreur critique : {0}';
     out.lag = 'Latence';
     out.readonly = 'Lecture seule';
     out.anonymous = "Anonyme";
@@ -56,6 +57,7 @@ define(function () {
     out.viewers = "lecteurs";
     out.editor = "éditeur";
     out.editors = "éditeurs";
+    out.userlist_offline = "Vous êtes actuellement hors-ligne, la liste des utilisateurs n'est pas disponible.";
 
     out.language = "Langue";
 
@@ -359,8 +361,8 @@ define(function () {
     out.fm_openParent = "Montrer dans le dossier";
     out.fm_noname = "Document sans titre";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
-    out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de manière permanente ?";
-    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de manière permanente ?";
+    out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?";
+    out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";
@@ -397,9 +399,9 @@ define(function () {
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";
     out.fc_open_ro = "Ouvrir (lecture seule)";
-    out.fc_delete = "Supprimer";
+    out.fc_delete = "Déplacer vers la corbeille";
     out.fc_restore = "Restaurer";
-    out.fc_remove = "Supprimer définitivement";
+    out.fc_remove = "Supprimer de votre CryptDrive";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
     out.fc_hashtag = "Mots-clés";
@@ -485,6 +487,13 @@ define(function () {
     out.settings_resetTips = "Astuces";
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
+
+    out.settings_thumbnails = "Vignettes";
+    out.settings_disableThumbnailsAction = "Désactiver la création de vignettes dans CryptDrive";
+    out.settings_disableThumbnailsDescription = "Des vignettes de vos pads sont automatiquement créées et stockées dans votre navigateur. Vous pouvez désactiver cette fonctionnalité.";
+    out.settings_resetThumbnailsAction = "Nettoyer";
+    out.settings_resetThumbnailsDescription = "Nettoyer toutes les vignettes stockées dans votre navigateur.";
+    out.settings_resetThumbnailsDone = "Toutes les vignettes ont été effacées.";
 
     out.settings_importTitle = "Importer les pads récents de ce navigateur dans votre CryptDrive";
     out.settings_import = "Importer";

@@ -10,6 +10,7 @@ define([
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/common/common-thumbnail.js',
     '/customize/application_config.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -27,6 +28,7 @@ define([
     SFCommon,
     Messages,
     Util,
+    Thumb,
     AppConfig)
 {
     var SaveAs = window.saveAs;
@@ -264,6 +266,20 @@ define([
 
             Cryptpad.removeLoadingScreen(emitResize);
 
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            if (options.thumbnail && privateDat.thumbnails) {
+                var hash = privateDat.availableHashes.editHash ||
+                           privateDat.availableHashes.viewHash;
+                if (hash) {
+                    options.thumbnail.href = privateDat.pathname + '#' + hash;
+                    options.thumbnail.getContent = function () {
+                        if (!cpNfInner.chainpad) { return; }
+                        return cpNfInner.chainpad.getUserDoc();
+                    };
+                    Thumb.initPadThumbnails(options.thumbnail);
+                }
+            }
+
             if (newPad) {
                 common.openTemplatePicker();
             }
@@ -362,10 +378,7 @@ define([
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform
-                transformFunction: options.transformFunction || JsonOT.validate,
-
-                // This one causes a big mess.
-                //patchTransformer: options.patchTransformer || JsonOT.patchTransformer,
+                transformFunction: options.transformFunction || JsonOT.transform,
 
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,
@@ -399,6 +412,7 @@ define([
 
             textPatcher = TextPatcher.create({ realtime: cpNfInner.chainpad });
 
+            var infiniteSpinnerModal = false;
             window.setInterval(function () {
                 if (state === STATE.DISCONNECTED) { return; }
                 var l;
@@ -409,13 +423,15 @@ define([
                 }
                 if (l.lag < badStateTimeout) { return; }
 
-                if (state === STATE.INFINITE_SPINNER) { return; }
+                if (infiniteSpinnerModal) { return; }
+                infiniteSpinnerModal = true;
                 stateChange(STATE.INFINITE_SPINNER);
                 Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
                 });
                 cpNfInner.chainpad.onSettle(function () {
+                    infiniteSpinnerModal = false;
                     Cryptpad.findCancelButton().click();
                     stateChange(STATE.READY);
                     onRemote();

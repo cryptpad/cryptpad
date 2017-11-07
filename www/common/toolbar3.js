@@ -154,6 +154,7 @@ define([
         var $userlistContent = toolbar.userlistContent;
 
         var metadataMgr = config.metadataMgr;
+        var online = metadataMgr.isConnected();
         var userData = metadataMgr.getMetadata().users;
         var viewers = metadataMgr.getViewers();
         var priv = metadataMgr.getPrivateData();
@@ -184,7 +185,23 @@ define([
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
 
-        var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'});
+        var $editUsersList = $('<div>', {'class': 'cp-toolbar-userlist-others'})
+                                .appendTo($editUsers);
+
+        if (!online) {
+            $('<em>').text(Messages.userlist_offline).appendTo($editUsersList);
+            numberOfEditUsers = '?';
+            numberOfViewUsers = '?';
+        }
+
+        // Update the buttons
+        var fa_editusers = '<span class="fa fa-users"></span>';
+        var fa_viewusers = '<span class="fa fa-eye"></span>';
+        var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
+        $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
+
+        if (!online) { return; }
+        // Display the userlist
 
         // Editors
         var pendingFriends = Common.getPendingFriends();
@@ -237,7 +254,6 @@ define([
             $span.data('uid', data.uid);
             $editUsersList.append($span);
         });
-        $editUsers.append($editUsersList);
 
         // Viewers
         if (numberOfViewUsers > 0) {
@@ -246,12 +262,6 @@ define([
             viewText += numberOfViewUsers + ' ' + viewerText + '</div>';
             $editUsers.append(viewText);
         }
-
-        // Update the buttons
-        var fa_editusers = '<span class="fa fa-users"></span>';
-        var fa_viewusers = '<span class="fa fa-eye"></span>';
-        var $spansmall = $('<span>').html(fa_editusers + ' ' + numberOfEditUsers + '&nbsp;&nbsp; ' + fa_viewusers + ' ' + numberOfViewUsers);
-        $userButtons.find('.cp-dropdown-button-title').html('').append($spansmall);
     };
 
     var initUserList = function (toolbar, config) {
@@ -691,6 +701,7 @@ define([
     var typing = -1;
     var kickSpinner = function (toolbar, config/*, local*/) {
         if (!toolbar.spinner) { return; }
+        if (toolbar.isErrorState) { return; }
         var $spin = toolbar.spinner;
 
         if (typing === -1) {
@@ -886,6 +897,7 @@ define([
                 // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
                 if (typeof name === "undefined") { return; }
                 name = name || Messages.anonymous;
+                if (Config.disableUserlistNotifications) { return; }
                 switch(type) {
                     case 1:
                         Cryptpad.log(Messages._getKey("notifyJoined", [name]));
@@ -920,6 +932,7 @@ define([
                 return count;
             };
 
+            var joined = false;
             metadataMgr.onChange(function () {
                 var newdata = metadataMgr.getMetadata().users;
                 var netfluxIds = Object.keys(newdata);
@@ -948,7 +961,7 @@ define([
                     return;
                 }
                 for (var k in newdata) {
-                    if (k !== userNetfluxId && netfluxIds.indexOf(k) !== -1) {
+                    if (joined && k !== userNetfluxId && netfluxIds.indexOf(k) !== -1) {
                         if (typeof oldUserData[k] === "undefined") {
                             // if the same uid is already present in the userdata, don't notify
                             if (!userPresent(k, newdata[k], oldUserData)) {
@@ -959,6 +972,7 @@ define([
                         }
                     }
                 }
+                joined = true;
                 oldUserData = JSON.parse(JSON.stringify(newdata));
             });
         }
@@ -1044,6 +1058,17 @@ define([
             toolbar.connected = false;
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.reconnecting);
+            }
+        };
+
+        toolbar.errorState = function (state, error) {
+            toolbar.isErrorState = state;
+            if (toolbar.spinner) {
+                if (!state) {
+                    return void kickSpinner(toolbar, config);
+                }
+                var txt = Messages._getKey('errorState', [error]);
+                toolbar.spinner.text(txt);
             }
         };
 

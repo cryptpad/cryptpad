@@ -30,6 +30,7 @@ define([
     '/api/config',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -48,7 +49,8 @@ define([
     MediaTag,
     ApiConfig,
     Hash,
-    Util)
+    Util,
+    JsonOT)
 {
     var DiffDom = window.diffDOM;
 
@@ -552,7 +554,30 @@ define([
         nThen(function (waitFor) {
             Framework.create({
                 toolbarContainer: '#cke_1_toolbox',
-                contentContainer: '#cke_1_contents'
+                contentContainer: '#cke_1_contents',
+                transformFunction: JsonOT.validate,
+                thumbnail: {
+                    getContainer: function () { return $('iframe').contents().find('html')[0]; },
+                    filter: function (el, before) {
+                        if (before) {
+                            module.cursor.update();
+                            $(el).parents().css('overflow', 'visible');
+                            $(el).css('max-width', '1200px');
+                            $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
+                            $(el).css('overflow', 'hidden');
+                            $(el).find('body').css('background-color', 'transparent');
+                            return;
+                        }
+                        $(el).parents().css('overflow', '');
+                        $(el).css('max-width', '');
+                        $(el).css('max-height', '');
+                        $(el).css('overflow', '');
+                        $(el).find('body').css('background-color', '#fff');
+                        var sel = module.cursor.makeSelection();
+                        var range = module.cursor.makeRange();
+                        module.cursor.fixSelection(sel, range);
+                    }
+                }
             }, waitFor(function (fw) { window.APP.framework = framework = fw; }));
 
             nThen(function (waitFor) {

@@ -12,6 +12,7 @@ define(function() {
      *  You can change their duration here (measured in milliseconds)
      */
     config.notificationTimeout = 5000;
+    config.disableUserlistNotifications = false;
 
     config.enablePinning = true;
 

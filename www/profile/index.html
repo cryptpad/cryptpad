@@ -1,20 +1,38 @@
 <!DOCTYPE html>
-<html class="cp">
-<!-- If this file is not called customize.dist/src/template.html, it is generated -->
+<html>
 <head>
-    <title data-localization="main_title">CryptPad: Zero Knowledge, Collaborative Real Time Editing</title>
+    <title>CryptPad</title>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-    <link rel="icon" type="image/png" href="/customize/main-favicon.png" id="favicon"/>
-    <script async data-bootload="/customize/template.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
-
-    <link rel="stylesheet" href="/bower_components/codemirror/lib/codemirror.css">
-    <link rel="stylesheet" href="/bower_components/codemirror/addon/dialog/dialog.css">
-    <link rel="stylesheet" href="/bower_components/codemirror/addon/fold/foldgutter.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="no-referrer" />
+    <script async data-bootload="main.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <style>
+        html, body {
+            margin: 0px;
+            padding: 0px;
+        }
+        #sbox-iframe {
+            position:fixed;
+            top:0px;
+            left:0px;
+            bottom:0px;
+            right:0px;
+            width:100%;
+            height:100%;
+            border:none;
+            margin:0;
+            padding:0;
+            overflow:hidden;
+        }
+        #sbox-filePicker-iframe {
+            position: fixed;
+            top:0; left:0;
+            bottom:0; right:0;
+            width:100%;
+            height: 100%;
+            border: 0;
+        }
+    </style>
 </head>
-<body class="html">
-    <noscript>
-        <p><strong>OOPS</strong> In order to do encryption in your browser, Javascript is really <strong>really</strong> required.</p>
-        <p><strong>OUPS</strong> Afin de pouvoir réaliser le chiffrement dans votre navigateur, Javascript est <strong>vraiment</strong> nécessaire.</p>
-    </noscript>
-</html>
+<body>
+<iframe id="sbox-iframe">

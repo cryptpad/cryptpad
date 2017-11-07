@@ -249,18 +249,11 @@ define([
 
                 if (!Thumb.isSupportedType(file.type)) { return finish(); }
                 // make a resized thumbnail from the image..
-                Thumb.fromBlob(file, function (e, thumb_blob) {
+                Thumb.fromBlob(file, function (e, thumb64) {
                     if (e) { console.error(e); }
-                    if (!thumb_blob) { return finish(); }
-
-                    blobToArrayBuffer(thumb_blob, function (e, buffer) {
-                        if (e) {
-                            console.error(e);
-                            return finish();
-                        }
-                        thumb = arrayBufferToString(buffer);
-                        finish();
-                    });
+                    if (!thumb64) { return finish(); }
+                    thumb = thumb64;
+                    finish();
                 });
             });
         };
