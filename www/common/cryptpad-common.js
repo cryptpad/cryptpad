@@ -327,6 +327,7 @@ define([
             delete localStorage[k];
             delete sessionStorage[k];
         });
+        localForage.clear();
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
         if (!localStorage[fileHashKey]) {
