@@ -171,5 +171,9 @@ define({
     // Add or remove the avatar from the profile.
     // We have to pin/unpin the avatar and store/remove the value from the user object
     'Q_PROFILE_AVATAR_ADD': true,
-    'Q_PROFILE_AVATAR_REMOVE': true
+    'Q_PROFILE_AVATAR_REMOVE': true,
+
+    // Store outside and get thumbnails inside (stored with localForage (indexedDB) outside)
+    'Q_THUMBNAIL_SET': true,
+    'Q_THUMBNAIL_GET': true,
 });

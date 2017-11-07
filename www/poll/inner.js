@@ -837,7 +837,7 @@ define([
             href: href,
             getContent: function () { return JSON.stringify(APP.proxy.content); }
         };
-        Thumb.initPadThumbnails(options);
+        Thumb.initPadThumbnails(common, options);
     };
 
     var checkDeletedCells = function () {

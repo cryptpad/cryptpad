@@ -15,7 +15,8 @@ define([
     '/common/cryptpad-common.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
-    '/common/common-thumbnail.js'
+    '/common/common-thumbnail.js',
+    '/bower_components/localforage/dist/localforage.min.js'
 ], function (
     $,
     nThen,
@@ -32,9 +33,9 @@ define([
     Cryptpad,
     CommonRealtime,
     Util,
-    Thumb
+    Thumb,
+    localForage
 ) {
-
     // Chainpad Netflux Inner
     var funcs = {};
     var ctx = {};
@@ -84,7 +85,7 @@ define([
     funcs.updateTags = callWithCommon(UI.updateTags);
 
     // Thumb
-    funcs.displayThumbnail = Thumb.displayThumbnail;
+    funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
 
     // History
     funcs.getHistory = callWithCommon(History.create);
@@ -218,6 +219,22 @@ define([
         }, cb);
     };
 
+    // Thumbnails
+    funcs.setThumbnail = function (key, value, cb) {
+        cb = cb || $.noop;
+        ctx.sframeChan.query('Q_THUMBNAIL_SET', {
+            key: key,
+            value: value
+        }, cb);
+    };
+    funcs.getThumbnail = function (key, cb) {
+        ctx.sframeChan.query('Q_THUMBNAIL_GET', {
+            key: key
+        }, function (err, res) {
+            cb (err || res.error, res.data);
+        });
+    };
+
     funcs.sessionStorage = {
         put: function (key, value, cb) {
             ctx.sframeChan.query('Q_SESSIONSTORAGE_PUT', {
@@ -310,6 +327,8 @@ define([
             SFrameChannel.create(window.parent, waitFor(function (sfc) { ctx.sframeChan = sfc; }), true);
             // CpNfInner.start() should be here....
         }).nThen(function () {
+            localForage.clear();
+
             ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
 
             ctx.sframeChan.whenReg('EV_CACHE_PUT', function () {

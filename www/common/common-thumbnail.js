@@ -4,9 +4,8 @@ define([
     '/common/visible.js',
     '/common/common-hash.js',
     '/file/file-crypto.js',
-    '/bower_components/localforage/dist/localforage.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, Util, Visible, Hash, FileCrypto, localForage) {
+], function ($, Util, Visible, Hash, FileCrypto) {
     var Nacl = window.nacl;
     var Thumb = {
         dimension: 100,
@@ -196,7 +195,7 @@ define([
         require(['/bower_components/html2canvas/build/html2canvas.min.js'], todo);
     };
 
-    Thumb.initPadThumbnails = function (opts) {
+    Thumb.initPadThumbnails = function (common, opts) {
         if (!opts.href || !opts.getContent) {
             throw new Error("href and getContent are needed for thumbnails");
         }
@@ -206,7 +205,7 @@ define([
             if (content === oldThumbnailState) { return; }
             Thumb.fromDOM(opts, function (err, b64) {
                 oldThumbnailState = content;
-                Thumb.setPadThumbnail(opts.href, b64);
+                Thumb.setPadThumbnail(common, opts.href, b64);
             });
         };
         var nafa = Util.notAgainForAnother(mkThumbnail, Thumb.UPDATE_INTERVAL);
@@ -233,20 +232,24 @@ define([
 
     var addThumbnail = function (err, thumb, $span, cb) {
         var img = new Image();
-        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:;base64,'+thumb;
+        img.src = thumb.slice(0,5) === 'data:' ? thumb : 'data:image/png;base64,'+thumb;
         $span.find('.cp-icon').hide();
         $span.prepend(img);
         cb($(img));
     };
-    Thumb.setPadThumbnail = function (href, b64, cb) {
-        cb = cb || function () {};
-        var k  ='thumbnail-' + href;
-        localForage.setItem(k, b64, cb);
+    var getKey = function (href) {
+        var parsed = Hash.parsePadUrl(href);
+        return 'thumbnail-' + parsed.type + '-' + parsed.hashData.channel;
     };
-    Thumb.displayThumbnail = function (href, $container, cb) {
+    Thumb.setPadThumbnail = function (common, href, b64, cb) {
+        cb = cb || function () {};
+        var k = getKey(href);
+        common.setThumbnail(k, b64, cb);
+    };
+    Thumb.displayThumbnail = function (common, href, $container, cb) {
         cb = cb || function () {};
         var parsed = Hash.parsePadUrl(href);
-        var k  ='thumbnail-' + href;
+        var k = getKey(href);
         var whenNewThumb = function () {
             var secret = Hash.getSecrets('file', parsed.hash);
             var hexFileName = Util.base64ToHex(secret.channel);
@@ -254,15 +257,17 @@ define([
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
-                if (!metadata.thumbnail) {
-                    return void localForage.setItem(k, 'EMPTY');
+                var v = metadata.thumbnail;
+                if (!v) {
+                    v = 'EMPTY';
                 }
-                localForage.setItem(k, metadata.thumbnail, function (err) {
+                Thumb.setPadThumbnail(common, href, v, function (err) {
+                    if (!metadata.thumbnail) { return; }
                     addThumbnail(err, metadata.thumbnail, $container, cb);
                 });
             });
         };
-        localForage.getItem(k, function (err, v) {
+        common.getThumbnail(k, function (err, v) {
             if (!v && parsed.type === 'file') {
                 // We can only create thumbnails for files here since we can't easily decrypt pads
                 return void whenNewThumb();

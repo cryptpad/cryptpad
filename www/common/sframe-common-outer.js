@@ -309,6 +309,20 @@ define([
                 });
             });
 
+            sframeChan.on('Q_THUMBNAIL_GET', function (data, cb) {
+                Cryptpad.getThumbnail(data.key, function (e, data) {
+                    cb({
+                        error: e,
+                        data: data
+                    });
+                });
+            });
+            sframeChan.on('Q_THUMBNAIL_SET', function (data, cb) {
+                Cryptpad.setThumbnail(data.key, data.value, function (e) {
+                    cb({error:e});
+                });
+            });
+
             sframeChan.on('Q_SESSIONSTORAGE_PUT', function (data, cb) {
                 sessionStorage[data.key] = data.value;
                 cb();
