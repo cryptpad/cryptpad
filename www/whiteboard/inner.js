@@ -390,7 +390,7 @@ define([
                 var D = Thumb.getResizedDimensions($canvas[0], 'pad');
                 Thumb.fromCanvas($canvas[0], D, function (err, b64) {
                     oldThumbnailState = content;
-                    Thumb.setPadThumbnail(href, b64);
+                    Thumb.setPadThumbnail(common, href, b64);
                 });
             };
             window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);

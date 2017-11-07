@@ -21,9 +21,10 @@ define([
     '/customize/application_config.js',
     '/common/media-tag.js',
     '/bower_components/nthen/index.js',
+    '/bower_components/localforage/dist/localforage.min.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
             Messaging, CodeMirror, Files, FileCrypto, Realtime, Clipboard,
-            Pinpad, AppConfig, MediaTag, Nthen) {
+            Pinpad, AppConfig, MediaTag, Nthen, localForage) {
 
     // Configure MediaTags to use our local viewer
     if (MediaTag && MediaTag.PdfPlugin) {
@@ -326,6 +327,7 @@ define([
             delete localStorage[k];
             delete sessionStorage[k];
         });
+        localForage.clear();
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
         if (!localStorage[fileHashKey]) {
@@ -517,6 +519,13 @@ define([
         getStore().getAttribute(attr, function (err, data) {
             cb(err, data);
         });
+    };
+
+    common.setThumbnail = function (key, value, cb) {
+        localForage.setItem(key, value, cb);
+    };
+    common.getThumbnail = function (key, cb) {
+        localForage.getItem(key, cb);
     };
 
     /*  this returns a reference to your proxy. changing it will change your drive.
