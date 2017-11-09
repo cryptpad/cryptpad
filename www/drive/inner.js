@@ -2446,7 +2446,7 @@ define([
             var parsed = Cryptpad.parsePadUrl(data.href);
             if (parsed.hashData.type !== "pad") { return; }
             var i = data.href.indexOf('#') + 1;
-            var base = APP.origin + data.href.slice(0, i);
+            var base = data.href.slice(0, i);
             var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }
             var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
@@ -2484,7 +2484,7 @@ define([
 
             var parsed = Cryptpad.parsePadUrl(data.href);
             if (parsed.hashData && parsed.hashData.type === 'pad') {
-                var roLink = ro ? base + data.href : getReadOnlyUrl(el);
+                var roLink = ro ? base + data.href : base + getReadOnlyUrl(el);
                 if (roLink) {
                     $('<label>', {'for': 'cp-app-drive-prop-rolink'}).text(Messages.viewShare).appendTo($d);
                     $d.append(Cryptpad.dialog.selectable(roLink, {
