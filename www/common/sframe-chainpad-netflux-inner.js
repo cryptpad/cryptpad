@@ -37,7 +37,7 @@ define([
         var onReady = config.onReady || function () { };
         var userName = config.userName;
         var initialState = config.initialState;
-        var transformFunction = config.transformFunction;
+        if (config.transformFunction) { throw new Error("transformFunction is nolonger allowed"); }
         var patchTransformer = config.patchTransformer;
         var validateContent = config.validateContent;
         var avgSyncMilliseconds = config.avgSyncMilliseconds;
@@ -50,7 +50,6 @@ define([
         var chainpad = ChainPad.create({
             userName: userName,
             initialState: initialState,
-            transformFunction: transformFunction,
             patchTransformer: patchTransformer,
             validateContent: validateContent,
             avgSyncMilliseconds: avgSyncMilliseconds,

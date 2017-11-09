@@ -3,8 +3,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/common/cryptpad-common.js',
-    '/bower_components/textpatcher/TextPatcher.js'
-], function ($, Crypto, Realtime, Cryptpad, TextPatcher) {
+], function ($, Crypto, Realtime, Cryptpad) {
     //var Messages = Cryptpad.Messages;
     //var noop = function () {};
     var finish = function (S, err, doc) {
@@ -72,9 +71,7 @@ define([
             var realtime = Session.session = info.realtime;
             Session.network = info.network;
 
-            TextPatcher.create({
-                realtime: realtime,
-            })(doc);
+            realtime.contentUpdate(doc);
 
             var to = window.setTimeout(function () {
                 cb(new Error("Timeout"));

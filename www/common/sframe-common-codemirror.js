@@ -3,9 +3,12 @@ define([
     '/common/modes.js',
     '/common/themes.js',
     '/common/cryptpad-common.js',
-    '/bower_components/textpatcher/TextPatcher.js',
-], function ($, Modes, Themes, Cryptpad, TextPatcher) {
+    '/common/text-cursor.js',
+
+    '/bower_components/chainpad/chainpad.dist.js'
+], function ($, Modes, Themes, Cryptpad, TextCursor) {
     var module = {};
+    var ChainPad = window.ChainPad;
 
     var cursorToPos = function(cursor, oldText) {
         var cLine = cursor.line;
@@ -34,7 +37,7 @@ define([
         return cursor;
     };
 
-    module.setValueAndCursor = function (editor, oldDoc, remoteDoc, TextPatcher) {
+    module.setValueAndCursor = function (editor, oldDoc, remoteDoc) {
         var scroll = editor.getScrollInfo();
         //get old cursor here
         var oldCursor = {};
@@ -44,9 +47,9 @@ define([
         editor.setValue(remoteDoc);
         editor.save();
 
-        var op = TextPatcher.diff(oldDoc, remoteDoc);
+        var ops = ChainPad.Diff.diff(oldDoc, remoteDoc);
         var selects = ['selectionStart', 'selectionEnd'].map(function (attr) {
-            return TextPatcher.transformCursor(oldCursor[attr], op);
+            return TextCursor.transformCursor(oldCursor[attr], ops);
         });
 
         if(selects[0] === selects[1]) {
@@ -295,8 +298,8 @@ define([
             return { content: content };
         };
 
-        exp.setValueAndCursor = function (oldDoc, remoteDoc, TextPatcher) {
-            return module.setValueAndCursor(editor, oldDoc, remoteDoc, TextPatcher);
+        exp.setValueAndCursor = function (oldDoc, remoteDoc) {
+            return module.setValueAndCursor(editor, oldDoc, remoteDoc);
         };
 
         /////
@@ -308,7 +311,7 @@ define([
         exp.contentUpdate = function (newContent) {
             var oldDoc = canonicalize($textarea.val());
             var remoteDoc = newContent.content;
-            exp.setValueAndCursor(oldDoc, remoteDoc, TextPatcher);
+            exp.setValueAndCursor(oldDoc, remoteDoc);
         };
 
         exp.getContent = function () {

@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/cryptpad-common.js',
     '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
@@ -38,7 +37,6 @@ define([
 
 ], function (
     $,
-    TextPatcher,
     Cryptpad,
     DiffMd,
     nThen,

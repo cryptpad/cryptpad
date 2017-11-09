@@ -11,11 +11,9 @@ define([
     '/common/common-title.js',
     '/common/common-metadata.js',
     '/common/common-messaging.js',
-    '/common/common-codemirror.js',
     '/common/common-file.js',
     '/file/file-crypto.js',
     '/common/common-realtime.js',
-
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js',
@@ -23,7 +21,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/localforage/dist/localforage.min.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            Messaging, CodeMirror, Files, FileCrypto, Realtime, Clipboard,
+            Messaging, Files, FileCrypto, Realtime, Clipboard,
             Pinpad, AppConfig, MediaTag, Nthen, localForage) {
 
     // Configure MediaTags to use our local viewer
@@ -153,9 +151,6 @@ define([
 
     // Metadata
     common.createMetadata = Metadata.create;
-
-    // CodeMirror
-    common.createCodemirror = CodeMirror.create;
 
     // Files
     common.createFileManager = function (config) { return Files.create(common, config); };

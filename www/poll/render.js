@@ -2,10 +2,13 @@ define([
     //'/common/cryptpad-common.js',
     'jquery',
     '/bower_components/hyperjson/hyperjson.js',
-    '/bower_components/textpatcher/TextPatcher.js',
+    '/common/text-cursor.js',
+
     '/bower_components/diff-dom/diffDOM.js',
-], function ($, Hyperjson, TextPatcher) {
+    '/bower_components/chainpad/chainpad.dist.js'
+], function ($, Hyperjson, TextCursor) {
     var DiffDOM = window.diffDOM;
+    var ChainPad = window.ChainPad;
 
     var Example = {
         metadata: {
@@ -400,10 +403,10 @@ var Renderer = function (Cryptpad, APP) {
 
             var o = info.oldValue || '';
             var n = info.newValue || '';
-            var op = TextPatcher.diff(o, n);
+            var ops = ChainPad.Diff.diff(o, n);
 
             info.selection = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                return TextPatcher.transformCursor(element[attr], op);
+                return TextCursor.transformCursor(element[attr], ops);
             });
         }
     };

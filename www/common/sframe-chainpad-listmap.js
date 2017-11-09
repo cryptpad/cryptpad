@@ -1,10 +1,10 @@
 require.config({ paths: { 'json.sortify': '/bower_components/json.sortify/dist/JSON.sortify' } });
 define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     'json.sortify',
-    '/bower_components/textpatcher/TextPatcher.js',
-], function (Realtime, JsonOT, Sortify, TextPatcher) {
+    '/bower_components/chainpad/chainpad.dist.js'
+], function (Realtime, Sortify) {
+    var ChainPad = window.ChainPad;
     var api = {};
     // "Proxy" is undefined in Safari : we need to use an normal object and check if there are local
     // changes regurlarly.
@@ -627,7 +627,7 @@ define([
             userName: cfg.userName,
             initialState: Sortify(cfg.data),
             readOnly: cfg.readOnly,
-            transformFunction: JsonOT.transform || JsonOT.validate,
+            patchTransformer: ChainPad.SmartJSONTransformer,
             logLevel: typeof(cfg.logLevel) === 'undefined'? 0: cfg.logLevel,
             validateContent: function (content) {
                 try {
@@ -650,7 +650,6 @@ define([
         var realtime;
 
         var proxy;
-        var patchText;
 
         realtimeOptions.onRemote = function () {
             if (initializing) { return; }
@@ -667,10 +666,10 @@ define([
         var onLocal = realtimeOptions.onLocal = function () {
             if (initializing) { return; }
             var strung = isFakeProxy? DeepProxy.stringifyFakeProxy(proxy): Sortify(proxy);
-            patchText(strung);
+            realtime.contentUpdate(strung);
 
             // try harder
-            if (realtime.getUserDoc() !== strung) { patchText(strung); }
+            if (realtime.getUserDoc() !== strung) { realtime.contentUpdate(strung); }
 
             // onLocal
             if (cfg.onLocal) { cfg.onLocal(); }
@@ -688,13 +687,8 @@ define([
         var ready = false;
         realtimeOptions.onReady = function (info) {
             if (ready) { return; }
-            // create your patcher
             if (realtime !== info.realtime) {
                 realtime = rt.realtime = info.realtime;
-                patchText = TextPatcher.create({
-                    realtime: realtime,
-                    logging: cfg.logging || false,
-                });
             } else {
                 console.error(realtime);
             }

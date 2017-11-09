@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
@@ -16,21 +15,20 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-interface.js',
     '/common/common-thumbnail.js',
-
     'cm/lib/codemirror',
+
     'cm/addon/display/placeholder',
     'cm/mode/markdown/markdown',
     'css!cm/lib/codemirror.css',
 
-
     '/bower_components/file-saver/FileSaver.min.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
 ], function (
     $,
-    TextPatcher,
     Toolbar,
     Cryptpad,
     Util,
@@ -50,6 +48,7 @@ define([
 {
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
+    var ChainPad = window.ChainPad;
 
     var APP = window.APP = {
         unlocked: {
@@ -1069,10 +1068,6 @@ define([
 
         if (APP.realtime !== info.realtime) {
             APP.realtime = info.realtime;
-            APP.patchText = TextPatcher.create({
-                realtime: info.realtime,
-                logging: true,
-            });
         }
 
         metadataMgr = common.getMetadataMgr();

@@ -1,9 +1,9 @@
 define([
     'jquery',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/bower_components/chainpad-crypto/crypto.js',
+
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, JsonOT, Crypto) {
+], function ($, Crypto) {
     var ChainPad = window.ChainPad;
     var History = {};
 
@@ -28,7 +28,7 @@ define([
             return ChainPad.create({
                 userName: 'history',
                 initialState: '',
-                transformFunction: JsonOT.validate,
+                patchTransformer: ChainPad.NaiveJSONStransformer,
                 logLevel: 0,
                 noPrune: true
             });

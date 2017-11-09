@@ -1,8 +1,6 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/textpatcher/TextPatcher.js',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -14,8 +12,6 @@ define([
 ], function (
     $,
     Crypto,
-    TextPatcher,
-    JsonOT,
     Cryptpad,
     nThen,
     SFCommon,

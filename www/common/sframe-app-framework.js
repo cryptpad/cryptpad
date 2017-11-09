@@ -2,9 +2,7 @@ define([
     'jquery',
     '/bower_components/hyperjson/hyperjson.js',
     '/common/toolbar3.js',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     'json.sortify',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -12,6 +10,7 @@ define([
     '/common/common-util.js',
     '/common/common-thumbnail.js',
     '/customize/application_config.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -20,9 +19,7 @@ define([
     $,
     Hyperjson,
     Toolbar,
-    JsonOT,
     JSONSortify,
-    TextPatcher,
     Cryptpad,
     nThen,
     SFCommon,
@@ -31,6 +28,7 @@ define([
     Thumb,
     AppConfig)
 {
+    var ChainPad = window.ChainPad;
     var SaveAs = window.saveAs;
 
     var UNINITIALIZED = 'UNINITIALIZED';
@@ -64,7 +62,6 @@ define([
 
         var common;
         var cpNfInner;
-        var textPatcher;
         var readOnly;
         var title;
         var toolbar;
@@ -182,10 +179,11 @@ define([
                         result in a feedback loop, which we call a browser
                         fight */
                     // what changed?
-                    var op = TextPatcher.diff(newContentStrNoMeta, newContent2StrNoMeta);
+                    var ops = ChainPad.Diff.diff(newContentStrNoMeta, newContent2StrNoMeta);
                     // log the changes
-                    TextPatcher.log(newContentStrNoMeta, op);
-                    var sop = JSON.stringify(TextPatcher.format(newContentStrNoMeta, op));
+                    console.log(newContentStrNoMeta);
+                    console.log(ops);
+                    var sop = JSON.stringify([ newContentStrNoMeta, ops ]);
 
                     var fights = window.CryptPad_fights = window.CryptPad_fights || [];
                     var index = fights.indexOf(sop);
@@ -232,7 +230,7 @@ define([
             }
 
             var contentStr = JSONSortify(content);
-            textPatcher(contentStr);
+            cpNfInner.chainpad.contentUpdate(contentStr);
             if (cpNfInner.chainpad.getUserDoc() !== contentStr) {
                 console.error("realtime.getUserDoc() !== shjson");
             }
@@ -378,7 +376,7 @@ define([
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform
-                transformFunction: options.transformFunction || JsonOT.transform,
+                patchTransformer: options.patchTransformer || ChainPad.SmartJSONTransformer,
 
                 // cryptpad debug logging (default is 1)
                 // logLevel: 0,
@@ -409,8 +407,6 @@ define([
             };
             cpNfInner.metadataMgr.onChange(checkReady);
             checkReady();
-
-            textPatcher = TextPatcher.create({ realtime: cpNfInner.chainpad });
 
             var infiniteSpinnerModal = false;
             window.setInterval(function () {

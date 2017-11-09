@@ -1,10 +1,8 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     'json.sortify',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
     '/common/cryptget.js',
@@ -14,13 +12,13 @@ define([
     '/api/config',
     '/common/common-realtime.js',
     '/customize/pages.js',
-
     '/customize/application_config.js',
     '/common/common-thumbnail.js',
     '/whiteboard/colors.js',
 
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -28,10 +26,8 @@ define([
 ], function (
     $,
     Crypto,
-    TextPatcher,
     Toolbar,
     JSONSortify,
-    JsonOT,
     Cryptpad,
     Util,
     Cryptget,
@@ -47,6 +43,7 @@ define([
 {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
+    var ChainPad = window.ChainPad;
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
@@ -254,7 +251,7 @@ define([
 
         config = {
             readOnly: readOnly,
-            transformFunction: JsonOT.validate,
+            patchTransformer: ChainPad.NaiveJSONTransformer,
             // cryptpad debug logging (default is 1)
             // logLevel: 0,
             validateContent: function (content) {
@@ -356,7 +353,7 @@ define([
 
             var content = stringifyInner(canvas.toDatalessJSON());
 
-            APP.patchText(content);
+            APP.realtime.contentUpdate(content);
         };
 
         var addImageToCanvas = function (img) {
@@ -516,10 +513,6 @@ define([
         config.onReady = function (info) {
             if (APP.realtime !== info.realtime) {
                 var realtime = APP.realtime = info.realtime;
-                APP.patchText = TextPatcher.create({
-                    realtime: realtime,
-                    //logging: true
-                });
             }
 
             var userDoc = APP.realtime.getUserDoc();
