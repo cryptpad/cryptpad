@@ -2,7 +2,6 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
-    '/customize/header.js',
 ], function ($, Config, Cryptpad) {
 
     window.APP = {

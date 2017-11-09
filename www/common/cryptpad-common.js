@@ -6,13 +6,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
-    '/common/common-history.js',
-    '/common/common-userlist.js',
-    '/common/common-title.js',
-    '/common/common-metadata.js',
     '/common/common-messaging.js',
-    '/common/common-codemirror.js',
-    '/common/common-file.js',
     '/file/file-crypto.js',
     '/common/common-realtime.js',
     '/common/common-language.js',
@@ -23,8 +17,8 @@ define([
     '/common/media-tag.js',
     '/bower_components/nthen/index.js',
     '/bower_components/localforage/dist/localforage.min.js',
-], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            Messaging, CodeMirror, Files, FileCrypto, Realtime, Language, Clipboard,
+], function ($, Config, Messages, Store, Util, Hash, UI,
+            Messaging, FileCrypto, Realtime, Language, Clipboard,
             Pinpad, AppConfig, MediaTag, Nthen, localForage) {
 
     // Configure MediaTags to use our local viewer
@@ -111,7 +105,7 @@ define([
     var createRandomHash = common.createRandomHash = Hash.createRandomHash;
     common.parseTypeHash = Hash.parseTypeHash;
     var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
-    var isNotStrongestStored = common.isNotStrongestStored = Hash.isNotStrongestStored;
+    common.isNotStrongestStored = Hash.isNotStrongestStored;
     var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
     var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
     common.getBlobPathFromHex = Hash.getBlobPathFromHex;
@@ -145,24 +139,6 @@ define([
     common.beginDetectingInfiniteSpinner = function (realtime) {
         Realtime.beginDetectingInfiniteSpinner(common, realtime);
     };
-
-    // Userlist
-    common.createUserList = UserList.create;
-
-    // Title
-    common.createTitle = Title.create;
-
-    // Metadata
-    common.createMetadata = Metadata.create;
-
-    // CodeMirror
-    common.createCodemirror = CodeMirror.create;
-
-    // Files
-    common.createFileManager = function (config) { return Files.create(common, config); };
-
-    // History
-    common.getHistory = function (config) { return History.create(common, config); };
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -1131,9 +1107,6 @@ define([
         rpc.uploadCancel(cb);
     };
 
-
-    common.uploadFileSecure = Files.upload;
-
     /*  Create a usage bar which keeps track of how much storage space is used
         by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
         so we throttle its usage. Clients will not update more than once per
@@ -1228,17 +1201,9 @@ define([
         cb(null, $container);
     };
 
-    var prepareFeedback = common.prepareFeedback = function (key) {
-        if (typeof(key) !== 'string') { return $.noop; }
-
-        var type = common.getAppType();
-        return function () {
-            feedback((key + (type? '_' + type: '')).toUpperCase());
-        };
-    };
-
     // Forget button
-    var moveToTrash = common.moveToTrash = function (cb, href) {
+    // TODO REFACTOR only used in sframe-common-outer
+    common.moveToTrash = function (cb, href) {
         href = href || window.location.href;
         common.forgetPad(href, function (err) {
             if (err) {
@@ -1259,7 +1224,8 @@ define([
             }
         });
     };
-    var saveAsTemplate = common.saveAsTemplate = function (Cryptput, data, cb) {
+    // TODO REFACTOR only used in sframe-common-outer
+    common.saveAsTemplate = function (Cryptput, data, cb) {
         var p = parsePadUrl(window.location.href);
         if (!p.type) { return; }
         var hash = createRandomHash();
@@ -1271,209 +1237,6 @@ define([
                 cb();
             });
         });
-    };
-    common.createButton = function (type, rightside, data, callback) {
-        var button;
-        var size = "17px";
-        switch (type) {
-            case 'export':
-                button = $('<button>', {
-                    'class': 'fa fa-download',
-                    title: Messages.exportButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.exportButton));
-
-                button.click(prepareFeedback(type));
-                if (callback) {
-                    button.click(callback);
-                }
-                break;
-            case 'import':
-                button = $('<button>', {
-                    'class': 'fa fa-upload',
-                    title: Messages.importButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.importButton));
-                if (callback) {
-                    button
-                    .click(prepareFeedback(type))
-                    .click(UI.importContent('text/plain', function (content, file) {
-                        callback(content, file);
-                    }, {accept: data ? data.accept : undefined}));
-                }
-                break;
-            case 'upload':
-                console.log('UPLOAD');
-                button = $('<button>', {
-                    'class': 'btn btn-primary new',
-                    title: Messages.uploadButtonTitle,
-                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
-                if (!data.FM) { return; }
-                var $input = $('<input>', {
-                    'type': 'file',
-                    'style': 'display: none;'
-                }).on('change', function (e) {
-                    var file = e.target.files[0];
-                    var ev = {
-                        target: data.target
-                    };
-                    if (data.filter && !data.filter(file)) {
-                        common.log('TODO: invalid avatar (type or size)');
-                        return;
-                    }
-                    data.FM.handleFile(file, ev);
-                    if (callback) { callback(); }
-                });
-                if (data.accept) { $input.attr('accept', data.accept); }
-                button.click(function () { $input.click(); });
-                break;
-            case 'template':
-                if (!AppConfig.enableTemplates) { return; }
-                button = $('<button>', {
-                    title: Messages.saveTemplateButton,
-                }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
-                if (data.rt && data.Crypt) {
-                    button
-                    .click(function () {
-                        var title = data.getTitle() || document.title;
-                        var todo = function (val) {
-                            if (typeof(val) !== "string") { return; }
-                            var toSave = data.rt.getUserDoc();
-                            if (val.trim()) {
-                                val = val.trim();
-                                title = val;
-                                try {
-                                    var parsed = JSON.parse(toSave);
-                                    var meta;
-                                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
-                                        meta = parsed[3].metadata; // pad
-                                    } else if (parsed.info) {
-                                        meta = parsed.info; // poll
-                                    } else {
-                                        meta = parsed.metadata;
-                                    }
-                                    if (typeof(meta) === "object") {
-                                        meta.title = val;
-                                        meta.defaultTitle = val;
-                                        delete meta.users;
-                                    }
-                                    toSave = JSON.stringify(parsed);
-                                } catch(e) {
-                                    console.error("Parse error while setting the title", e);
-                                }
-                            }
-                            saveAsTemplate(data.Crypt.put, {
-                                title: title,
-                                toSave: toSave
-                            }, function () {
-                                common.alert(Messages.templateSaved);
-                                common.feedback('TEMPLATE_CREATED');
-                            });
-                        };
-                        common.prompt(Messages.saveTemplatePrompt, title || document.title, todo);
-                    });
-                }
-                break;
-            case 'forget':
-                button = $('<button>', {
-                    id: 'cryptpad-forget',
-                    title: Messages.forgetButtonTitle,
-                    'class': "fa fa-trash cryptpad-forget",
-                    style: 'font:'+size+' FontAwesome'
-                });
-                getRecentPads(function (err, recent) {
-                    if (isNotStrongestStored(window.location.href, recent)) {
-                        button.addClass('hidden');
-                    }
-                });
-                if (callback) {
-                    button
-                    .click(prepareFeedback(type))
-                    .click(function() {
-                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
-                        common.confirm(msg, function (yes) {
-                            if (!yes) { return; }
-                            moveToTrash(function (err) {
-                                if (err) { return void callback(err); }
-                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                                common.alert(cMsg, undefined, true);
-                                callback();
-                                return;
-                            });
-                        });
-
-                    });
-                }
-                break;
-            case 'present':
-                button = $('<button>', {
-                    title: Messages.presentButtonTitle,
-                    'class': "fa fa-play-circle cryptpad-present-button", // class used in slide.js
-                    style: 'font:'+size+' FontAwesome'
-                });
-                break;
-            case 'source':
-                button = $('<button>', {
-                    title: Messages.sourceButtonTitle,
-                    'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
-                    style: 'font:'+size+' FontAwesome'
-                });
-                break;
-            case 'history':
-                if (!AppConfig.enableHistory) {
-                    button = $('<span>');
-                    break;
-                }
-                button = $('<button>', {
-                    title: Messages.historyButton,
-                    'class': "fa fa-history history",
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.historyText));
-                if (data.histConfig) {
-                    button
-                    .click(prepareFeedback(type))
-                    .on('click', function () {
-                        common.getHistory(data.histConfig);
-                    });
-                }
-                break;
-            case 'more':
-                button = $('<button>', {
-                    title: Messages.moreActions || 'TODO',
-                    'class': "drawer-button fa fa-ellipsis-h",
-                    style: 'font:'+size+' FontAwesome'
-                });
-                break;
-            case 'savetodrive':
-                button = $('<button>', {
-                    'class': 'fa fa-cloud-upload',
-                    title: Messages.canvas_saveToDrive,
-                })
-                .click(prepareFeedback(type));
-                break;
-            case 'hashtag':
-                button = $('<button>', {
-                    'class': 'fa fa-hashtag',
-                })
-                .click(prepareFeedback(type))
-                .click(function () {
-                    // TODO fetch pad tags before presenting dialog to user
-                    var dialog = UI.dialog.tagPrompt([], function (tags) {
-                        if (!Array.isArray(tags)) { return; }
-                        console.error(tags);
-                        // TODO do something with the tags the user entered
-                    });
-                    document.body.appendChild(dialog);
-                });
-                break;
-            default:
-                button = $('<button>', {
-                    'class': "fa fa-question",
-                    style: 'font:'+size+' FontAwesome'
-                })
-                .click(prepareFeedback(type));
-        }
-        if (rightside) {
-            button.addClass('rightside-button');
-        }
-        return button;
     };
 
     var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
@@ -1564,73 +1327,6 @@ define([
         'image/jpg',
         'image/gif',
     ];
-    // SFRAME: copied to sframe-common-interface.js
-    common.displayAvatar = function ($container, href, name, cb) {
-        var MutationObserver = window.MutationObserver;
-        var displayDefault = function () {
-            var text = getFirstEmojiOrCharacter(name);
-            var $avatar = $('<span>', {'class': 'default'}).text(text);
-            $container.append($avatar);
-            if (cb) { cb(); }
-        };
-
-        if (!href) { return void displayDefault(); }
-        var parsed = common.parsePadUrl(href);
-        var secret = common.getSecrets('file', parsed.hash);
-        if (secret.keys && secret.channel) {
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = common.base64ToHex(secret.channel);
-            var src = common.getBlobPathFromHex(hexFileName);
-            common.getFileSize(href, function (e, data) {
-                if (e) {
-                    displayDefault();
-                    return void console.error(e);
-                }
-                if (typeof data !== "number") { return void displayDefault(); }
-                if (common.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
-                var $img = $('<media-tag>').appendTo($container);
-                $img.attr('src', src);
-                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                var observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                            if (mutation.addedNodes.length > 1 ||
-                                mutation.addedNodes[0].nodeName !== 'IMG') {
-                                $img.remove();
-                                return void displayDefault();
-                            }
-                            var $image = $img.find('img');
-                            var onLoad = function () {
-                                var img = new Image();
-                                img.onload = function () {
-                                    var w = img.width;
-                                    var h = img.height;
-                                    if (w>h) {
-                                        $image.css('max-height', '100%');
-                                        $img.css('flex-direction', 'column');
-                                        if (cb) { cb($img); }
-                                        return;
-                                    }
-                                    $image.css('max-width', '100%');
-                                    $img.css('flex-direction', 'row');
-                                    if (cb) { cb($img); }
-                                };
-                                img.src = $image.attr('src');
-                            };
-                            if ($image[0].complete) { onLoad(); }
-                            $image.on('load', onLoad);
-                        }
-                    });
-                });
-                observer.observe($img[0], {
-                    attributes: false,
-                    childList: true,
-                    characterData: false
-                });
-                MediaTag($img[0]);
-            });
-        }
-    };
 
     // This is duplicated in drive/main.js, it should be unified
     var getFileIcon = common.getFileIcon = function (data) {
@@ -1880,195 +1576,6 @@ define([
         }
 
         return $container;
-    };
-
-    // Provide $container if you want to put the generated block in another element
-    // Provide $initBlock if you already have the menu block and you want the content inserted in it
-    common.createLanguageSelector = function ($container, $initBlock) {
-        var options = [];
-        var languages = Messages._languages;
-        var keys = Object.keys(languages).sort();
-        keys.forEach(function (l) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'languageValue',
-                    'data-value': l,
-                    'href': '#',
-                },
-                content: languages[l] // Pretty name of the language value
-            });
-        });
-        var dropdownConfig = {
-            text: Messages.language, // Button initial text
-            options: options, // Entries displayed in the menu
-            left: true, // Open to the left of the button
-            container: $initBlock, // optional
-            isSelect: true
-        };
-        var $block = createDropdown(dropdownConfig);
-        $block.attr('id', 'language-selector');
-
-        if ($container) {
-            $block.appendTo($container);
-        }
-
-        Language.initSelector($block);
-
-        return $block;
-    };
-
-    // SFRAME: moved to sframe-common-interface.js
-    common.createUserAdminMenu = function (config) {
-        var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
-        var accountName = localStorage[common.userNameKey];
-        var account = isLoggedIn();
-        var $userName = $('<span>', {'class': 'userDisplayName'});
-        var options = [];
-        if (config.displayNameCls) {
-            var $userAdminContent = $('<p>');
-            if (account) {
-                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + fixHTML(accountName));
-                $userAdminContent.append($userAccount);
-                $userAdminContent.append($('<br>'));
-            }
-            if (config.displayName) {
-                // Hide "Display name:" in read only mode
-                $userName.append(Messages.user_displayName + ': ');
-                $userName.append($displayedName.clone());
-            }
-            $userAdminContent.append($userName);
-            options.push({
-                tag: 'p',
-                attributes: {'class': 'accountData'},
-                content: $userAdminContent.html()
-            });
-        }
-        var parsed = parsePadUrl(window.location.href);
-        if (parsed && (!parsed.type || parsed.type && parsed.type !== 'drive')) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'href': '/drive/'
-                },
-                content: Messages.login_accessDrive
-            });
-        }
-        // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': config.changeNameButtonCls},
-                content: Messages.user_rename
-            });
-        }
-        if (account) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'profile'},
-                content: Messages.profileButton
-            });
-        }
-        if (parsed && (!parsed.type || parsed.type !== 'settings')) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'settings'},
-                content: Messages.settingsButton
-            });
-        }
-        // Add login or logout button depending on the current status
-        if (account) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'logout'},
-                content: Messages.logoutButton
-            });
-        } else {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'login'},
-                content: Messages.login_login
-            });
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'register'},
-                content: Messages.login_register
-            });
-        }
-        var $icon = $('<span>', {'class': 'fa fa-user-secret'});
-        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon);//.append($userbig);
-        if (account) {
-            $userButton = $('<div>').append(accountName);
-        }
-        /*if (account && config.displayNameCls) {
-            $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
-        } else if (account) {
-            // If no display name, do not display the parentheses
-            $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
-        }*/
-        var dropdownConfigUser = {
-            text: $userButton.html(), // Button initial text
-            options: options, // Entries displayed in the menu
-            left: true, // Open to the left of the button
-            container: config.$initBlock, // optional
-            feedback: "USER_ADMIN",
-        };
-        var $userAdmin = createDropdown(dropdownConfigUser);
-
-        var oldUrl = '';
-        if (account && !config.static && store) {
-            var $avatar = $userAdmin.find('.cp-dropdown-button-title');
-            var updateButton = function (newName) {
-                var profile = store.getProfile();
-                var url = profile && profile.avatar;
-
-                if (oldUrl === url) { return; }
-                oldUrl = url;
-                $avatar.html('');
-                common.displayAvatar($avatar, url, newName || Messages.anonymous, function ($img) {
-                    if ($img) {
-                        $userAdmin.find('button').addClass('avatar');
-                    }
-                });
-            };
-            common.onDisplayNameChanged(updateButton);
-            updateButton(common.getDisplayName());
-        }
-
-        $userAdmin.find('a.logout').click(function () {
-            common.logout();
-            window.location.href = '/';
-        });
-        $userAdmin.find('a.settings').click(function () {
-            if (parsed && parsed.type) {
-                window.open('/settings/');
-            } else {
-                window.location.href = '/settings/';
-            }
-        });
-        $userAdmin.find('a.profile').click(function () {
-            if (parsed && parsed.type) {
-                window.open('/profile/');
-            } else {
-                window.location.href = '/profile/';
-            }
-        });
-        $userAdmin.find('a.login').click(function () {
-            if (window.location.pathname !== "/") {
-                sessionStorage.redirectTo = window.location.href;
-            }
-            window.location.href = '/login/';
-        });
-        $userAdmin.find('a.register').click(function () {
-            if (window.location.pathname !== "/") {
-                sessionStorage.redirectTo = window.location.href;
-            }
-            window.location.href = '/register/';
-        });
-
-        return $userAdmin;
     };
 
     common.getShareHashes = function (secret, cb) {

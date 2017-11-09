@@ -5,7 +5,7 @@ define([
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/sframe-channel.js',
     '/common/sframe-common-title.js',
-    '/common/sframe-common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/sframe-common-history.js',
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',

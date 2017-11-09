@@ -12,24 +12,6 @@ define([
     $(function () {
         var $main = $('#mainBlock');
 
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
-        $(window).click(function () {
-            $('.cp-dropdown-content').hide();
-        });
-
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');
 

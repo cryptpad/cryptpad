@@ -10,7 +10,7 @@ define([
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/common/sframe-common-interface.js',
+    '/common/common-ui-elements.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/pages.js',

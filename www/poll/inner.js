@@ -14,7 +14,7 @@ define([
     '/poll/render.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
-    '/common/sframe-common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-thumbnail.js',
 
     'cm/lib/codemirror',
