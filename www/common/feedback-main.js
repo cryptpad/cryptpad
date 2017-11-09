@@ -1,5 +1,5 @@
 define([
-    '/customize/messages.js',
-], function (Messages) {
-    Messages._applyTranslation();
+    '/common/common-language.js',
+], function (Language) {
+    Language.applyTranslation();
 });

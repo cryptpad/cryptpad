@@ -3,12 +3,13 @@ define([
     '/api/config',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
+    '/common/common-language.js',
     '/common/media-tag.js',
     '/common/tippy.min.js',
     '/customize/application_config.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Cryptpad, Util, MediaTag, Tippy, AppConfig) {
+], function ($, Config, Cryptpad, Util, Language, MediaTag, Tippy, AppConfig) {
     var UI = {};
     var Messages = Cryptpad.Messages;
 
@@ -573,6 +574,43 @@ define([
 
         return $userAdmin;
     };
+
+    // Provide $container if you want to put the generated block in another element
+    // Provide $initBlock if you already have the menu block and you want the content inserted in it
+    UI.createLanguageSelector = function (common, $container, $initBlock) {
+        var options = [];
+        var languages = Messages._languages;
+        var keys = Object.keys(languages).sort();
+        keys.forEach(function (l) {
+            options.push({
+                tag: 'a',
+                attributes: {
+                    'class': 'cp-language-value',
+                    'data-value': l,
+                    'href': '#',
+                },
+                content: languages[l] // Pretty name of the language value
+            });
+        });
+        var dropdownConfig = {
+            text: Messages.language, // Button initial text
+            options: options, // Entries displayed in the menu
+            //left: true, // Open to the left of the button
+            container: $initBlock, // optional
+            isSelect: true
+        };
+        var $block = Cryptpad.createDropdown(dropdownConfig);
+        $block.attr('id', 'cp-language-selector');
+
+        if ($container) {
+            $block.appendTo($container);
+        }
+
+        Language.initSelector($block, common);
+
+        return $block;
+    };
+
 
     UI.initFilePicker = function (common, cfg) {
         var onSelect = cfg.onSelect || $.noop;

@@ -118,6 +118,7 @@ define([
                             netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
                         },
                         priv: {
+                            edPublic: proxy.edPublic,
                             accountName: Cryptpad.getAccountName(),
                             origin: window.location.origin,
                             pathname: window.location.pathname,
@@ -450,6 +451,10 @@ define([
                         data: data
                     });
                 });
+            });
+
+            sframeChan.on('Q_LANGUAGE_SET', function (data, cb) {
+                Cryptpad.setLanguage(data, cb);
             });
 
             if (cfg.addRpc) {

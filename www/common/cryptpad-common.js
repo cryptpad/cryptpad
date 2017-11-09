@@ -14,6 +14,8 @@ define([
     '/common/common-file.js',
     '/file/file-crypto.js',
     '/common/common-realtime.js',
+    '/common/common-language.js',
+
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js',
@@ -21,8 +23,8 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/localforage/dist/localforage.min.js',
 ], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-            Messaging, Files, FileCrypto, Realtime, Clipboard,
-            Pinpad, AppConfig, MediaTag, Nthen, localForage) {
+             Messaging, Files, FileCrypto, Realtime, Language, Clipboard,
+             Pinpad, AppConfig, MediaTag, Nthen, localForage) {
 
     // Configure MediaTags to use our local viewer
     if (MediaTag && MediaTag.PdfPlugin) {
@@ -183,6 +185,9 @@ define([
     common.getLanguage = function () {
         return Messages._languageUsed;
     };
+    common.setLanguage = function (l, cb) {
+        Language.setLanguage(l, null, cb);
+    };
     common.getUserlist = function () {
         if (store) {
             if (store.getProxy() && store.getProxy().info) {
@@ -220,7 +225,12 @@ define([
 
     common.isFeedbackAllowed = function () {
         try {
-            if (!getStore().getProxy().proxy.allowUserFeedback) { return false; }
+            var entry = common.find(getProxy(), [
+                'settings',
+                'general',
+                'allowUserFeedback'
+            ]);
+            if (!entry) { return false; }
             return true;
         } catch (e) {
             console.error(e);
@@ -494,7 +504,7 @@ define([
         if (getProxy()) {
             getProxy()[common.displayNameKey] = value;
         }
-        if (typeof cb === "function") { cb(); }
+        if (typeof cb === "function") { whenRealtimeSyncs(getRealtime(), cb); }
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().setAttribute(attr, value, function (err, data) {
@@ -521,6 +531,9 @@ define([
     };
     common.getThumbnail = function (key, cb) {
         localForage.getItem(key, cb);
+    };
+    common.clearThumbnail = function (cb) {
+        localForage.clear(cb);
     };
 
     /*  this returns a reference to your proxy. changing it will change your drive.
@@ -1896,7 +1909,7 @@ define([
             $block.appendTo($container);
         }
 
-        Messages._initSelector($block);
+        Language.initSelector($block);
 
         return $block;
     };
@@ -2310,7 +2323,7 @@ define([
 
     // MAGIC that happens implicitly
     $(function () {
-        Messages._applyTranslation();
+        Language.applyTranslation();
     });
 
     return common;

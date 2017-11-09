@@ -1,0 +1,67 @@
+@import (once) "../../customize/src/less2/include/colortheme.less";
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/toolbar.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/sidebar-layout.less';
+@import (once) "../../customize/src/less2/include/limit-bar.less";  
+
+.toolbar_main();
+.alertify_main();
+.sidebar-layout_main();
+.limit-bar_main();
+
+// body
+&.cp-app-settings {
+    display: flex;
+    flex-flow: column;
+    #cp-sidebarlayout-container {
+        #cp-sidebarlayout-rightside {
+            .cp-settings-userfeedback, .cp-settings-thumbnails {
+                input[type="checkbox"] {
+                    vertical-align: middle;
+                    margin-right: 5px;
+                }
+            }
+            .cp-settings-language-selector {
+                button.btn {
+                    width: @sidebar_button-width;
+                    background-color: @colortheme_sidebar-button-alt-bg;
+                    border-color: #adadad;
+                    color: black;
+                    &:hover {
+                        background-color: darken(@colortheme_sidebar-button-alt-bg, 15%);
+                    }
+                }
+            }
+            .cp-sidebarlayout-input-block {
+                input {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    padding: 5px;
+                    padding-left: 15px;
+                    &[type="number"] {
+                        border-right: 1px solid #adadad;
+                    }
+                    &[type="checkbox"] {
+                        margin-right: 100%;
+                    }
+                }
+            }
+            .cp-settings-info-block {
+                [type="text"] {
+                    width: @sidebar_button-width;
+                }
+            }
+            .cp-settings-backup-drive {
+                button {
+                    span.fa {
+                        margin-right: 5px;
+                    }
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}
+
