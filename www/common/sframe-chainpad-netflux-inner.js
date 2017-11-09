@@ -18,8 +18,7 @@ define([
     '/common/common-util.js',
     '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js'
-], function (Util, AppConfig) {
-    var ChainPad = window.ChainPad;
+], function (Util, AppConfig, ChainPad) {
     var module = { exports: {} };
 
     var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?

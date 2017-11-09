@@ -15,6 +15,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/sframe-common-interface.js',
     '/common/common-thumbnail.js',
+    '/bower_components/chainpad/chainpad.dist.js',
     'cm/lib/codemirror',
 
     'cm/addon/display/placeholder',
@@ -22,7 +23,6 @@ define([
     'css!cm/lib/codemirror.css',
 
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/chainpad/chainpad.dist.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -44,11 +44,11 @@ define([
     SframeCM,
     SFUI,
     Thumb,
+    ChainPad,
     CMeditor)
 {
     var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
-    var ChainPad = window.ChainPad;
 
     var APP = window.APP = {
         unlocked: {
@@ -675,7 +675,7 @@ define([
     };
     var updateDescription = function (old, n) {
         var o = APP.editor.getValue();
-        SframeCM.setValueAndCursor(APP.editor, o, n, TextPatcher);
+        SframeCM.setValueAndCursor(APP.editor, o, n);
         updatePublishedDescription();
         common.notify();
     };

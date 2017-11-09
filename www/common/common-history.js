@@ -1,10 +1,8 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, Crypto) {
-    var ChainPad = window.ChainPad;
+], function ($, Crypto, ChainPad) {
     var History = {};
 
     var getStates = function (rt) {

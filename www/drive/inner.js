@@ -17,7 +17,6 @@ define([
     'less!/customize/src/less2/main.less',
 ], function (
     $,
-    TextPatcher,
     Toolbar,
     JSONSortify,
     Cryptpad,

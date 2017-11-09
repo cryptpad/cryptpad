@@ -3,12 +3,11 @@ define([
     'jquery',
     '/bower_components/hyperjson/hyperjson.js',
     '/common/text-cursor.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
-    '/bower_components/diff-dom/diffDOM.js',
-    '/bower_components/chainpad/chainpad.dist.js'
-], function ($, Hyperjson, TextCursor) {
+    '/bower_components/diff-dom/diffDOM.js'
+], function ($, Hyperjson, TextCursor, ChainPad) {
     var DiffDOM = window.diffDOM;
-    var ChainPad = window.ChainPad;
 
     var Example = {
         metadata: {

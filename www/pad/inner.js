@@ -30,9 +30,9 @@ define([
     '/api/config',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     '/bower_components/diff-dom/diffDOM.js',
-    '/bower_components/chainpad/chainpad.dist.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -49,10 +49,10 @@ define([
     MediaTag,
     ApiConfig,
     Hash,
-    Util)
+    Util,
+    ChainPad)
 {
     var DiffDom = window.diffDOM;
-    var ChainPad = window.ChainPad;
 
     var slice = function (coll) {
         return Array.prototype.slice.call(coll);

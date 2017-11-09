@@ -3,8 +3,7 @@ define([
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     'json.sortify',
     '/bower_components/chainpad/chainpad.dist.js'
-], function (Realtime, Sortify) {
-    var ChainPad = window.ChainPad;
+], function (Realtime, Sortify, ChainPad) {
     var api = {};
     // "Proxy" is undefined in Safari : we need to use an normal object and check if there are local
     // changes regurlarly.

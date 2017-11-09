@@ -15,16 +15,36 @@ define([
     '/file/file-crypto.js',
     '/common/common-realtime.js',
     '/common/common-language.js',
-
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js',
     '/common/media-tag.js',
     '/bower_components/nthen/index.js',
     '/bower_components/localforage/dist/localforage.min.js',
-], function ($, Config, Messages, Store, Util, Hash, UI, History, UserList, Title, Metadata,
-             Messaging, Files, FileCrypto, Realtime, Language, Clipboard,
-             Pinpad, AppConfig, MediaTag, Nthen, localForage) {
+], function (
+    $,
+    Config,
+    Messages,
+    Store,
+    Util,
+    Hash,
+    UI,
+    History,
+    UserList,
+    Title,
+    Metadata,
+    Messaging,
+    Files,
+    FileCrypto,
+    Realtime,
+    Language,
+    Clipboard,
+    Pinpad,
+    AppConfig,
+    MediaTag,
+    Nthen,
+    localForage)
+{
 
     // Configure MediaTags to use our local viewer
     if (MediaTag && MediaTag.PdfPlugin) {

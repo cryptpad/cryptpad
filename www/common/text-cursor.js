@@ -22,4 +22,5 @@ define([
         }
         transformCursor(ops);
     };
+    return module.exports;
 });

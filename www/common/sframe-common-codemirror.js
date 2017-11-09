@@ -4,11 +4,9 @@ define([
     '/common/themes.js',
     '/common/cryptpad-common.js',
     '/common/text-cursor.js',
-
     '/bower_components/chainpad/chainpad.dist.js'
-], function ($, Modes, Themes, Cryptpad, TextCursor) {
+], function ($, Modes, Themes, Cryptpad, TextCursor, ChainPad) {
     var module = {};
-    var ChainPad = window.ChainPad;
 
     var cursorToPos = function(cursor, oldText) {
         var cLine = cursor.line;

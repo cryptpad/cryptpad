@@ -26,9 +26,9 @@ define([
     Messages,
     Util,
     Thumb,
-    AppConfig)
+    AppConfig,
+    ChainPad)
 {
-    var ChainPad = window.ChainPad;
     var SaveAs = window.saveAs;
 
     var UNINITIALIZED = 'UNINITIALIZED';

@@ -15,10 +15,10 @@ define([
     '/customize/application_config.js',
     '/common/common-thumbnail.js',
     '/whiteboard/colors.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
-    '/bower_components/chainpad/chainpad.dist.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -39,11 +39,11 @@ define([
     Pages,
     AppConfig,
     Thumb,
-    Colors)
+    Colors,
+    ChainPad)
 {
     var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
-    var ChainPad = window.ChainPad;
 
     var APP = window.APP = {
         Cryptpad: Cryptpad,
