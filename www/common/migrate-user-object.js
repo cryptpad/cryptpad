@@ -67,7 +67,7 @@ define([], function () {
 
 
         // Migration 4: allowUserFeedback to settings
-        var migrateLanguage = function () {
+        var migrateFeedback = function () {
             var settings = userObject.settings = userObject.settings || {};
             if (typeof(userObject['allowUserFeedback']) !== "undefined") {
                 settings.general = settings.general || {};
@@ -76,7 +76,7 @@ define([], function () {
             }
         };
         if (version < 4) {
-            migrateLanguage();
+            migrateFeedback();
             Cryptpad.feedback('Migrate-4', true);
             userObject.version = version = 4;
         }

@@ -60,7 +60,7 @@ define([
                 var sjson = JSON.stringify(data);
                 var k = Cryptpad.getUserHash() || localStorage[Cryptpad.fileHashKey];
                 require(['/common/cryptget.js'], function (Crypt) {
-                    Crypt.put(k, sjson, function (err, data) {
+                    Crypt.put(k, sjson, function (err) {
                         cb(err);
                     });
                 });
@@ -80,7 +80,10 @@ define([
                 Cryptpad.whenRealtimeSyncs(realtime, cb);
             });
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
-                Merge.anonDriveIntoUser(Cryptpad.getStore().getProxy(), localStorage.FS_hash, cb);
+                var proxyData = Cryptpad.getStore().getProxy();
+                require(['/common/mergeDrive.js'], function (Merge) {
+                    Merge.anonDriveIntoUser(proxyData, localStorage.FS_hash, cb);
+                });
             });
         };
         SFCommonO.start({

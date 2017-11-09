@@ -4,8 +4,8 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/customize/pages.js',
 
+    '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
@@ -14,10 +14,10 @@ define([
     Toolbar,
     Cryptpad,
     nThen,
-    SFCommon,
-    Pages
+    SFCommon
     )
 {
+    var saveAs = window.saveAs;
     var Messages = Cryptpad.Messages;
     var APP = window.APP = {
         Cryptpad: Cryptpad,
@@ -151,7 +151,7 @@ define([
         return $div;
     };
 
-    var createIndentTypeSelector = function (obj) {
+    var createIndentTypeSelector = function () {
         var key = 'indentWithTabs';
 
         var $div = $('<div>', {
@@ -305,7 +305,7 @@ define([
         return $div;
     };
 
-    var createResetDrive = function (obj) {
+    var createResetDrive = function () {
         var $div = $('<div>', {'class': 'cp-settings-reset-drive cp-sidebarlayout-element'});
         $('<label>').text(Messages.settings_resetNewTitle).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
@@ -397,7 +397,7 @@ define([
                 $spinner.show();
                 $ok.hide();
 
-                sframeChan.query('Q_SETTINGS_LOGOUT', null, function (err) {
+                sframeChan.query('Q_SETTINGS_LOGOUT', null, function () {
                     $spinner.hide();
                     $ok.show();
                     window.setTimeout(function () {
@@ -428,7 +428,7 @@ define([
                 if (!yes) { return; }
                 $spinner.show();
                 $ok.hide();
-                sframeChan.query('Q_SETTINGS_IMPORT_LOCAL', null, function (err) {
+                sframeChan.query('Q_SETTINGS_IMPORT_LOCAL', null, function () {
                     $spinner.hide();
                     $ok.show();
                     Cryptpad.alert(Messages.settings_importDone);
