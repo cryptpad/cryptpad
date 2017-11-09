@@ -237,8 +237,11 @@ define([
                 }
             }
 
-            if (typeof(proxy.allowUserFeedback) !== 'boolean') {
-                proxy.allowUserFeedback = true;
+            if (!proxy.settings || !proxy.settings.general ||
+                    typeof(proxy.settings.general.allowUserFeedback) !== 'boolean') {
+                proxy.settings = proxy.settings || {};
+                proxy.settings.general = proxy.settings.general || {};
+                proxy.settings.general.allowUserFeedback = true;
             }
 
             if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {

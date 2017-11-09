@@ -176,4 +176,19 @@ define({
     // Store outside and get thumbnails inside (stored with localForage (indexedDB) outside)
     'Q_THUMBNAIL_SET': true,
     'Q_THUMBNAIL_GET': true,
+
+    // Settings app only
+    // Clear all thumbnails
+    'Q_THUMBNAIL_CLEAR': true,
+    // Backup and restore a drive
+    'Q_SETTINGS_DRIVE_GET': true,
+    'Q_SETTINGS_DRIVE_SET': true,
+    'Q_SETTINGS_DRIVE_RESET': true,
+    // Logout from all the devices where the account is logged in
+    'Q_SETTINGS_LOGOUT': true,
+    // Import pads from this computer's anon session into the current user account
+    'Q_SETTINGS_IMPORT_LOCAL': true,
+
+    // Store the language selected in the iframe into localStorage outside
+    'Q_LANGUAGE_SET': true,
 });

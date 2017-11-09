@@ -63,5 +63,22 @@ define([], function () {
             Cryptpad.feedback('Migrate-3', true);
             userObject.version = version = 3;
         }
+
+
+
+        // Migration 4: allowUserFeedback to settings
+        var migrateLanguage = function () {
+            var settings = userObject.settings = userObject.settings || {};
+            if (typeof(userObject['allowUserFeedback']) !== "undefined") {
+                settings.general = settings.general || {};
+                settings.general.allowUserFeedback = userObject['allowUserFeedback'];
+                delete userObject['allowUserFeedback'];
+            }
+        };
+        if (version < 4) {
+            migrateLanguage();
+            Cryptpad.feedback('Migrate-4', true);
+            userObject.version = version = 4;
+        }
     };
 });

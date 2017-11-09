@@ -1,6 +1,4 @@
 (function () {
-var LS_LANG = "CRYPTPAD_LANG";
-
 // add your module to this map so it gets used
 var map = {
     'fr': 'Français',
@@ -12,17 +10,17 @@ var map = {
     'zh': '繁體中文',
 };
 
+var messages = {};
+var LS_LANG = "CRYPTPAD_LANG";
 var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
-var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
-var getLanguage = function () {
+var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
+var getLanguage = messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
     if (getStoredLanguage()) { return getStoredLanguage(); }
-    var l = getBrowserLanguage() || '';
-    if (Object.keys(map).indexOf(l) !== -1) {
-        return l;
-    }
+    var l = getBrowserLanguage();
     // Edge returns 'fr-FR' --> transform it to 'fr' and check again
-    return Object.keys(map).indexOf(l.split('-')[0]) !== -1 ? l.split('-')[0] : 'en';
+    return map[l] ? l :
+            (map[l.split('-')[0]] ? l.split('-')[0] : 'en');
 };
 var language = getLanguage();
 
@@ -30,21 +28,18 @@ var req = ['jquery', '/customize/translations/messages.js'];
 if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
 
 define(req, function($, Default, Language) {
-
-    var externalMap = JSON.parse(JSON.stringify(map));
-
     map.en = 'English';
     var defaultLanguage = 'en';
+console.log(messages);
 
-    var messages;
-
-    if (!Language || !language || language === defaultLanguage || language === 'default' || !map[language]) {
-        messages = Default;
+    if (!Language || language === defaultLanguage || !map[language]) {
+        messages = $.extend(true, messages, Default);
     }
     else {
         // Add the translated keys to the returned object
-        messages = $.extend(true, {}, Default, Language);
+        messages = $.extend(true, messages, Default, Language);
     }
+console.log(messages);
 
     messages._languages = map;
     messages._languageUsed = language;
@@ -53,12 +48,12 @@ define(req, function($, Default, Language) {
         if (typeof(cb) !== "function") { return; }
         var missing = [];
         var reqs = [];
-        Object.keys(externalMap).forEach(function (code) {
+        Object.keys(map).forEach(function (code) {
             reqs.push('/customize/translations/messages.' + code + '.js');
         });
         require(reqs, function () {
             var langs = arguments;
-            Object.keys(externalMap).forEach(function (code, i) {
+            Object.keys(map).forEach(function (code, i) {
                 var translation = langs[i];
                 var updated = {};
                 Object.keys(Default).forEach(function (k) {
@@ -105,59 +100,6 @@ define(req, function($, Default, Language) {
         } else {
             return text;
         }
-    };
-
-    // Add handler to the language selector
-    var storeLanguage = function (l) {
-        localStorage.setItem(LS_LANG, l);
-    };
-    messages._initSelector = function ($select) {
-        var selector = $select || $('#language-selector');
-
-        if (!selector.length) { return; }
-
-        // Select the current language in the list
-        selector.setValue(language || 'English');
-
-        // Listen for language change
-        $(selector).find('a.languageValue').on('click', function () {
-            var newLanguage = $(this).attr('data-value');
-            storeLanguage(newLanguage);
-            if (newLanguage !== language) {
-                window.location.reload();
-            }
-        });
-    };
-
-    var translateText = function (i, e) {
-        var $el = $(e);
-        var key = $el.data('localization');
-        $el.html(messages[key]);
-    };
-    var translateAppend = function (i, e) {
-        var $el = $(e);
-        var key = $el.data('localization-append');
-        $el.append(messages[key]);
-    };
-    var translateTitle = function () {
-        var $el = $(this);
-        var key = $el.data('localization-title');
-        $el.attr('title', messages[key]);
-    };
-    var translatePlaceholder = function () {
-        var $el = $(this);
-        var key = $el.data('localization-placeholder');
-        $el.attr('placeholder', messages[key]);
-    };
-    messages._applyTranslation = function () {
-        $('[data-localization]').each(translateText);
-        $('[data-localization-append]').each(translateAppend);
-        $('[data-localization-title]').each(translateTitle);
-        $('[data-localization-placeholder]').each(translatePlaceholder);
-        $('#pad-iframe').contents().find('[data-localization]').each(translateText);
-        $('#pad-iframe').contents().find('[data-localization-append]').each(translateAppend);
-        $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
-        $('#pad-iframe').contents().find('[data-localization-placeholder]').each(translatePlaceholder);
     };
 
     messages.driveReadme = '["BODY",{"class":"cke_editable cke_editable_themed cke_contents_ltr cke_show_borders","contenteditable":"true","spellcheck":"false","style":"color: rgb(51, 51, 51);"},' +

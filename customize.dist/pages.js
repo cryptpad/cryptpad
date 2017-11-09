@@ -719,27 +719,15 @@ define([
     };
 
     Pages['/settings/'] = Pages['/settings/index.html'] = function () {
-        return [
-            h('div#toolbar'),
-            h('div#container'),
-            loadingScreen()
-        ];
+        return loadingScreen();
     };
 
     Pages['/profile/'] = Pages['/profile/index.html'] = function () {
-        return [
-            h('div#cp-toolbar'),
-            h('div#container'),
-            loadingScreen()
-        ];
+        return loadingScreen();
     };
 
     Pages['/todo/'] = Pages['/todo/index.html'] = function () {
-        return [
-            h('div#toolbar'),
-            h('div#container'),
-            loadingScreen()
-        ];
+        return loadingScreen();
     };
 
     return Pages;

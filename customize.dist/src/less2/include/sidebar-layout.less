@@ -6,7 +6,7 @@
 @rightside-color: @colortheme_sidebar-right-fg;
 @description-color: @colortheme_sidebar-description;
 
-@button-width: 400px;
+@sidebar_button-width: 400px;
 
 
 .sidebar-layout_main() {
@@ -38,13 +38,13 @@
             overflow: auto;
 
             // Following rules are only in settings
-            .element {
+            .cp-sidebarlayout-element {
                 label:not(.noTitle), .label {
                     display: block;
                     font-weight: bold;
                     margin-bottom: 0;
                 }
-                .description {
+                .cp-sidebarlayout-description {
                     display: block;
                     color: @description-color;
                     margin-bottom: 5px;
@@ -56,9 +56,9 @@
                 height: 40px;
                 box-sizing: border-box;
             }
-            .inputBlock {
+            .cp-sidebarlayout-input-block {
                 display: inline-flex;
-                width: @button-width;
+                width: @sidebar_button-width;
                 input {
                     flex: 1;
                     border-radius: 0.25em 0 0 0.25em;

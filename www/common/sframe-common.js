@@ -83,6 +83,7 @@ define([
     funcs.createButton = callWithCommon(UI.createButton);
     funcs.createUsageBar = callWithCommon(UI.createUsageBar);
     funcs.updateTags = callWithCommon(UI.updateTags);
+    funcs.createLanguageSelector = callWithCommon(UI.createLanguageSelector);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
