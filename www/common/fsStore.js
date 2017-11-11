@@ -297,6 +297,15 @@ define([
             crypto: Crypto.createEncryptor(secret.keys),
             userName: 'fs',
             logLevel: 1,
+            validateContent: function (content) {
+                try {
+                    JSON.parse(content);
+                    return true;
+                } catch (e) {
+                    console.error("Failed to parse, rejecting patch");
+                    return false;
+                }
+            },
         };
 
         var exp = {};
