@@ -2,7 +2,6 @@ define([
     'jquery',
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/common/common-util.js',
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
@@ -16,6 +15,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
+    '/customize/messages.js',
 
     'cm/lib/codemirror',
     'cm/addon/display/placeholder',
@@ -32,7 +32,6 @@ define([
     $,
     TextPatcher,
     Toolbar,
-    Cryptpad,
     Util,
     Cryptget,
     nThen,
@@ -46,9 +45,9 @@ define([
     SframeCM,
     Thumb,
     UI,
+    Messages,
     CMeditor)
 {
-    var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
 
     var APP = window.APP = {
@@ -57,7 +56,6 @@ define([
             col: []
         },
         readOnly: false,
-        Cryptpad: Cryptpad,
         mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
     };
     var Render = Renderer(APP);
@@ -332,7 +330,7 @@ define([
 
     /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path, throttle, cb) {
-        if (path && !Cryptpad.isArray(path)) {
+        if (path && !Array.isArray(path)) {
             return;
         }
         if (path && path.join) {
@@ -1086,7 +1084,6 @@ define([
             metadataMgr: metadataMgr,
             readOnly: APP.readOnly,
             realtime: info.realtime,
-            common: Cryptpad,
             sfCommon: common,
             $container: APP.$bar,
             $contentContainer: APP.$content

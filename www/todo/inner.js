@@ -3,12 +3,12 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-chainpad-listmap.js',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
     '/todo/todo.js',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -18,19 +18,15 @@ define([
     Crypto,
     Listmap,
     Toolbar,
-    Cryptpad,
     nThen,
     SFCommon,
     Hash,
     UI,
-    Todo
+    Todo,
+    Messages
     )
 {
-    var Messages = Cryptpad.Messages;
     var APP = window.APP = {};
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
-    };
 
     var common;
     var sFrameChan;
@@ -41,12 +37,6 @@ define([
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        Cryptpad.onError(function (info) {
-            if (info && info.type === "store") {
-                onConnectError();
-            }
-        });
-
         var $body = $('body');
         var $list = $('#cp-app-todo-taskslist');
 
@@ -206,7 +196,6 @@ define([
             var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
             var configTb = {
                 displayed: displayed,
-                common: Cryptpad,
                 sfCommon: common,
                 $container: $bar,
                 pageTitle: Messages.todo_title,

@@ -3,14 +3,15 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-chainpad-listmap.js',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-realtime.js',
+    '/customize/messages.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
+
     'cm/mode/markdown/markdown',
 
     'css!/bower_components/codemirror/lib/codemirror.css',
@@ -24,23 +25,18 @@ define([
     Crypto,
     Listmap,
     Toolbar,
-    Cryptpad,
     nThen,
     SFCommon,
     Util,
     UI,
     Realtime,
+    Messages,
     Marked,
     CodeMirror
     )
 {
-    var Messages = Cryptpad.Messages;
     var APP = window.APP = {
-        Cryptpad: Cryptpad,
         _onRefresh: []
-    };
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     // Decryption event for avatar mediatag (TODO not needed anymore?)
@@ -147,7 +143,7 @@ define([
 
     var addCreateInviteLinkButton = function ($container) {
         return;
-        var obj = APP.lm.proxy;
+        /*var obj = APP.lm.proxy;
 
         var proxy = Cryptpad.getProxy();
         var userViewHash = Util.find(proxy, ['profile', 'view']);
@@ -185,7 +181,7 @@ define([
                 // TODO copy invite link to clipboard
             }, null, true);
         })
-        .appendTo($container);
+        .appendTo($container);*/
     };
         /* jshint ignore:end */
 
@@ -398,13 +394,13 @@ define([
         APP.$container.find('#'+CREATE_ID).remove();
 
         var obj = APP.lm && APP.lm.proxy;
-        if (!APP.readOnly) {
+        /*if (!APP.readOnly) {
             var pubKeys = Cryptpad.getPublicKeys();
             if (pubKeys && pubKeys.curve) {
                 obj.curveKey = pubKeys.curve;
                 obj.edKey = pubKeys.ed;
             }
-        }
+        }*/
 
         if (!APP.initialized) {
             var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$rightside);
@@ -426,7 +422,6 @@ define([
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
         var configTb = {
             displayed: displayed,
-            common: Cryptpad,
             sfCommon: common,
             $container: APP.$toolbar,
             pageTitle: Messages.profileButton,
@@ -447,12 +442,6 @@ define([
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        Cryptpad.onError(function (info) {
-            if (info && info.type === "store") {
-                onConnectError();
-            }
-        });
-
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();

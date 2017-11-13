@@ -3,7 +3,6 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
@@ -11,6 +10,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     'json.sortify',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -20,24 +20,16 @@ define([
     Crypto,
     TextPatcher,
     JsonOT,
-    Cryptpad,
     nThen,
     SFCommon,
     UI,
     UIElements,
     Util,
     Hash,
-    Sortify)
+    Sortify,
+    Messages)
 {
-    var Messages = Cryptpad.Messages;
-
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
-
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
-    };
+    var APP = window.APP = {};
 
     var andThen = function (common) {
         var metadataMgr = common.getMetadataMgr();
@@ -181,11 +173,6 @@ define([
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
             var metadataMgr = common.getMetadataMgr();
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
             if (metadataMgr.getMetadataLazy() !== 'uninitialized') {
                 andThen(common);
                 return;

@@ -5,16 +5,14 @@ define([
     '/common/toolbar3.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/cryptpad-common.js',
     '/common/common-util.js',
-    '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/pages.js',
-
+    '/customize/messages.js',
     '/customize/application_config.js',
     '/common/common-thumbnail.js',
     '/whiteboard/colors.js',
@@ -32,24 +30,21 @@ define([
     Toolbar,
     JSONSortify,
     JsonOT,
-    Cryptpad,
     Util,
-    Cryptget,
     nThen,
     SFCommon,
     UI,
     ApiConfig,
     CommonRealtime,
     Pages,
+    Messages,
     AppConfig,
     Thumb,
     Colors)
 {
     var saveAs = window.saveAs;
-    var Messages = Cryptpad.Messages;
 
     var APP = window.APP = {
-        Cryptpad: Cryptpad,
         $: $
     };
     var Fabric = APP.Fabric = window.fabric;
@@ -59,10 +54,6 @@ define([
     };
 
     var toolbar;
-
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
-    };
 
     var andThen = function (common) {
         var config = {};
@@ -129,7 +120,7 @@ define([
         var updateBrushWidth = function () {
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
-            $widthLabel.text(Cryptpad.Messages._getKey("canvas_widthLabel", [val]));
+            $widthLabel.text(Messages._getKey("canvas_widthLabel", [val]));
             $('#cp-app-whiteboard-width-val').text(val + 'px');
             createCursor();
         };
@@ -140,7 +131,7 @@ define([
             var val = $opacity.val();
             brush.opacity = Number(val);
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
-            $opacityLabel.text(Cryptpad.Messages._getKey("canvas_opacityLabel", [val]));
+            $opacityLabel.text(Messages._getKey("canvas_opacityLabel", [val]));
             $('#cp-app-whiteboard-opacity-val').text((Number(val) * 100) + '%');
             createCursor();
         };
@@ -409,7 +400,6 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
                 realtime: info.realtime,
-                common: Cryptpad,
                 sfCommon: common,
                 $container: $bar,
                 $contentContainer: $('#cp-app-whiteboard-canvas-area')
@@ -542,7 +532,7 @@ define([
                 }
                 newDoc = hjson.content;
             } else {
-                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
+                Title.updateTitle(Title.defaultTitle);
             }
 
             nThen(function (waitFor) {
@@ -643,11 +633,6 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
             andThen(common);
         });
     };

@@ -3,12 +3,12 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar3.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/contacts/messenger-ui.js',
     '/common/sframe-messenger-inner.js',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -18,19 +18,15 @@ define([
     Crypto,
     Toolbar,
     JsonOT,
-    Cryptpad,
     nThen,
     SFCommon,
     h,
     UI,
-    Messenger
+    Messenger,
+    Messages
     )
 {
-    var Messages = Cryptpad.Messages;
     var APP = {};
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
-    };
 
     var common;
     var sFrameChan;
@@ -41,12 +37,6 @@ define([
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        Cryptpad.onError(function (info) {
-            if (info && info.type === "store") {
-                onConnectError();
-            }
-        });
-
         var toolbarElement = h('div#cp-toolbar.cp-toolbar-container');
 
         document.body.appendChild(toolbarElement);
@@ -73,10 +63,8 @@ define([
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
         var configTb = {
             displayed: displayed,
-            common: Cryptpad,
             sfCommon: common,
             $container: $(toolbarElement),
-            network: Cryptpad.getNetwork(),
             pageTitle: Messages.contacts_title,
             metadataMgr: common.getMetadataMgr(),
         };

@@ -1,7 +1,6 @@
 define([
     'jquery',
     'json.sortify',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/slide/slide.js',
@@ -9,6 +8,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/customize/messages.js',
     'cm/lib/codemirror',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -44,7 +44,6 @@ define([
 ], function (
     $,
     JSONSortify,
-    Cryptpad,
     nThen,
     SFCommon,
     Slide,
@@ -52,10 +51,10 @@ define([
     Util,
     Hash,
     UI,
+    Messages,
     CMeditor)
 {
     window.CodeMirror = CMeditor;
-    var Messages = Cryptpad.Messages;
 
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";
     var SLIDE_COLOR_ID = "cp-app-slide-toolbar-color";

@@ -15,6 +15,7 @@ define([
     '/common/userObject.js',
     '/customize/application_config.js',
     '/common/sframe-chainpad-listmap.js',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -35,7 +36,8 @@ define([
     CommonRealtime,
     FO,
     AppConfig,
-    Listmap)
+    Listmap,
+    Messages)
 {
     var Messages = Cryptpad.Messages;
 
@@ -47,10 +49,6 @@ define([
 
     var stringify = function (obj) {
         return JSONSortify(obj);
-    };
-
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
@@ -1463,7 +1461,7 @@ define([
                 if (type === 'contacts') { return; }
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }
-                if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
+                if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
                 }
@@ -2961,7 +2959,6 @@ define([
                     metadataMgr: metadataMgr,
                     readOnly: readOnly,
                     realtime: info.realtime,
-                    common: Cryptpad,
                     sfCommon: common,
                     $container: APP.$bar
                 };
@@ -3050,12 +3047,6 @@ define([
             });
             proxy.on('reconnect', function (info) {
                 onReconnect(info);
-            });
-
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
             });
             common.onLogout(function () { setEditable(false); });
         });

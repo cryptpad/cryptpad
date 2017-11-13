@@ -1,7 +1,6 @@
 define([
     'jquery',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
@@ -16,7 +15,6 @@ define([
 ], function (
     $,
     Toolbar,
-    Cryptpad,
     nThen,
     SFCommon,
     UI,
@@ -26,9 +24,7 @@ define([
     )
 {
     var saveAs = window.saveAs;
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
+    var APP = window.APP = {};
 
     var common;
     var metadataMgr;
@@ -509,7 +505,6 @@ define([
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
         var configTb = {
             displayed: displayed,
-            common: Cryptpad,
             sfCommon: common,
             $container: APP.$toolbar,
             pageTitle: Messages.settings_title,

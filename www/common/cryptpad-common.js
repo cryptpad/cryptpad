@@ -47,7 +47,6 @@ define([
     var userNameKey = common.userNameKey = 'User_name';
     var fileHashKey = common.fileHashKey = 'FS_hash';
     common.displayNameKey = 'cryptpad.username';
-    var newPadNameKey = common.newPadNameKey = "newPadName";
     var newPadPathKey = common.newPadPathKey = "newPadPath";
     common.oldStorageKey = 'CryptPad_RECENTPADS';
     common.storageKey = 'filesData';
@@ -716,19 +715,6 @@ define([
         });
     };
 
-    var errorHandlers = [];
-    common.onError = function (h) {
-        if (typeof h !== "function") { return; }
-        errorHandlers.push(h);
-    };
-    common.storeError = function () {
-        errorHandlers.forEach(function (h) {
-            if (typeof h === "function") {
-                h({type: "store"});
-            }
-        });
-    };
-
     /*
      * Buttons
      */
@@ -1145,10 +1131,6 @@ define([
             return void setTimeout(function () { f(void 0, env); });
         }
 
-        if (sessionStorage[newPadNameKey]) {
-            common.initialName = sessionStorage[newPadNameKey];
-            delete sessionStorage[newPadNameKey];
-        }
         if (sessionStorage[newPadPathKey]) {
             common.initialPath = sessionStorage[newPadPathKey];
             delete sessionStorage[newPadPathKey];

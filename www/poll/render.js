@@ -1,5 +1,4 @@
 define([
-    //'/common/cryptpad-common.js',
     'jquery',
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/textpatcher/TextPatcher.js',

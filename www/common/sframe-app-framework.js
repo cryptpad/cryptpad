@@ -5,7 +5,6 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/customize/messages.js',
@@ -24,7 +23,6 @@ define([
     JsonOT,
     JSONSortify,
     TextPatcher,
-    Cryptpad,
     nThen,
     SFCommon,
     Messages,
@@ -48,10 +46,6 @@ define([
 
     var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
         AppConfig.badStateTimeout : 30000;
-
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
-    };
 
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
@@ -258,7 +252,7 @@ define([
                 newContent = normalize(newContent);
                 contentUpdate(newContent);
             } else {
-                title.updateTitle(Cryptpad.initialName || title.defaultTitle);
+                title.updateTitle(title.defaultTitle);
                 evOnDefaultContentNeeded.fire();
             }
             stateChange(STATE.READY);
@@ -441,12 +435,6 @@ define([
             }, 2000);
 
             //common.onLogout(function () { ... });
-
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
         }).nThen(function (waitFor) {
 
             if (readOnly) { $('body').addClass('cp-readonly'); }
@@ -478,7 +466,6 @@ define([
                 metadataMgr: cpNfInner.metadataMgr,
                 readOnly: readOnly,
                 realtime: cpNfInner.chainpad,
-                common: Cryptpad,
                 sfCommon: common,
                 $container: $(toolbarContainer),
                 $contentContainer: $(contentContainer)

@@ -1,7 +1,6 @@
 define([
     'jquery',
     '/bower_components/textpatcher/TextPatcher.js',
-    '/common/cryptpad-common.js',
     '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -9,6 +8,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/modes.js',
+    '/customize/messages.js',
     'cm/lib/codemirror',
 
     'css!cm/lib/codemirror.css',
@@ -40,7 +40,6 @@ define([
 ], function (
     $,
     TextPatcher,
-    Cryptpad,
     DiffMd,
     nThen,
     SFCommon,
@@ -48,10 +47,10 @@ define([
     Util,
     Hash,
     Modes,
+    Messages,
     CMeditor)
 {
     window.CodeMirror = CMeditor;
-    var Messages = Cryptpad.Messages;
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',

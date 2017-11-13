@@ -327,15 +327,6 @@ define([
             // Drive already exist: return the existing drive, don't load data from legacy store
             onReady(f, rt.proxy, Cryptpad, exp);
         })
-        .on('disconnect', function (info) {
-            // We only manage errors during the loading screen here. Other websocket errors are handled by the apps
-            if (info.error) {
-                if (typeof Cryptpad.storeError === "function") {
-                    Cryptpad.storeError();
-                }
-                return;
-            }
-        })
         .on('change', ['drive', 'migrate'], function () {
             var path = arguments[2];
             var value = arguments[1];
