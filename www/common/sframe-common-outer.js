@@ -18,6 +18,7 @@ define([
         var sframeChan;
         var FilePicker;
         var Messenger;
+        var Notifier;
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -29,14 +30,16 @@ define([
                 '/common/sframe-channel.js',
                 '/filepicker/main.js',
                 '/common/common-messenger.js',
+                '/common/common-notifier.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel,
-            _FilePicker, _Messenger) {
+            _FilePicker, _Messenger, _Notifier) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 FilePicker = _FilePicker;
                 Messenger = _Messenger;
+                Notifier = _Notifier;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -176,7 +179,7 @@ define([
                 currentTitle = newTitle;
                 setDocumentTitle();
                 Cryptpad.renamePad(newTitle, undefined, function (err) {
-                    if (err) { cb('ERROR'); } else { cb(); }
+                    cb(err);
                 });
             });
             sframeChan.on('EV_SET_TAB_TITLE', function (newTabTitle) {
@@ -203,7 +206,7 @@ define([
             });
 
             sframeChan.on('EV_NOTIFY', function () {
-                Cryptpad.notify();
+                Notifier.notify();
             });
 
             sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {

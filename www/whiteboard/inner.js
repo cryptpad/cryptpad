@@ -61,7 +61,7 @@ define([
     var toolbar;
 
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var andThen = function (common) {
@@ -537,7 +537,7 @@ define([
                     (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
                      hjson.metadata.type !== 'whiteboard')) {
                     var errorText = Messages.typeError;
-                    Cryptpad.errorLoadingScreen(errorText);
+                    UI.errorLoadingScreen(errorText);
                     throw new Error(errorText);
                 }
                 newDoc = hjson.content;
@@ -556,7 +556,7 @@ define([
                 setEditable(!readOnly);
                 initializing = false;
                 config.onLocal();
-                Cryptpad.removeLoadingScreen();
+                UI.removeLoadingScreen();
 
                 initThumbnails();
 
@@ -637,7 +637,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
                 var $div = $('<div>').append(Pages['/whiteboard/']());
                 $('body').append($div.html());
             }));

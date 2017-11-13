@@ -207,7 +207,7 @@ define([
 
                 var todoBigFile = function (sizeMb) {
                     $dlform.show();
-                    Cryptpad.removeLoadingScreen();
+                    UI.removeLoadingScreen();
                     $dllabel.append($('<br>'));
                     $dllabel.append(Util.fixHTML(metadata.name));
 
@@ -230,7 +230,7 @@ define([
                 var href = priv.origin + priv.pathname + priv.filehash;
                 common.getFileSize(href, function (e, data) {
                     if (e) {
-                        return void Cryptpad.errorLoadingScreen(e);
+                        return void UI.errorLoadingScreen(e);
                     }
                     var size = Cryptpad.bytesToMegabytes(data);
                     return void todoBigFile(size);
@@ -243,7 +243,7 @@ define([
 
         if (!common.isLoggedIn()) {
             return UI.alert(Messages.upload_mustLogin, function () {
-                Cryptpad.errorLoadingScreen(Messages.upload_mustLogin);
+                UI.errorLoadingScreen(Messages.upload_mustLogin);
                 common.setLoginRedirect(function () {
                     common.gotoURL('/login/');
                 });
@@ -268,7 +268,7 @@ define([
             FM.handleFile(file);
         });
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var main = function () {
@@ -276,7 +276,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {

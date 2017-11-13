@@ -38,7 +38,7 @@ define([
         _onRefresh: []
     };
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     // Decryption event for avatar mediatag (TODO not needed anymore?)
@@ -412,7 +412,7 @@ define([
             createLeftside();
         }
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var createToolbar = function () {
@@ -430,7 +430,7 @@ define([
     };
 
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         APP.$container = $('#cp-sidebarlayout-container');
@@ -455,7 +455,7 @@ define([
 
         // If not logged in, you can only view other users's profile
         if (!privateData.readOnly && !common.isLoggedIn()) {
-            Cryptpad.removeLoadingScreen();
+            UI.removeLoadingScreen();
 
             var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
             var $a = $('<a>', {

@@ -122,7 +122,7 @@ define([
                 registering = true;
                 // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
                 window.setTimeout(function () {
-                    Cryptpad.addLoadingScreen({
+                    UI.addLoadingScreen({
                         loadingText: Messages.login_hashing,
                         hideTips: true,
                     });
@@ -135,28 +135,28 @@ define([
                             if (err) {
                                 switch (err) {
                                     case 'NO_SUCH_USER':
-                                        Cryptpad.removeLoadingScreen(function () {
+                                        UI.removeLoadingScreen(function () {
                                             UI.alert(Messages.login_noSuchUser, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'INVAL_USER':
-                                        Cryptpad.removeLoadingScreen(function () {
+                                        UI.removeLoadingScreen(function () {
                                             UI.alert(Messages.login_invalUser, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'INVAL_PASS':
-                                        Cryptpad.removeLoadingScreen(function () {
+                                        UI.removeLoadingScreen(function () {
                                             UI.alert(Messages.login_invalPass, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'PASS_TOO_SHORT':
-                                        Cryptpad.removeLoadingScreen(function () {
+                                        UI.removeLoadingScreen(function () {
                                             var warning = Messages._getKey('register_passwordTooShort', [
                                                 Cred.MINIMUM_PASSWORD_LENGTH
                                             ]);
@@ -167,7 +167,7 @@ define([
                                         break;
                                     case 'ALREADY_REGISTERED':
                                         // logMeIn should reset registering = false
-                                        Cryptpad.removeLoadingScreen(function () {
+                                        UI.removeLoadingScreen(function () {
                                             UI.confirm(Messages.register_alreadyRegistered, function (yes) {
                                                 if (!yes) { return; }
                                                 proxy.login_name = uname;
@@ -182,7 +182,7 @@ define([
                                         break;
                                     default: // UNHANDLED ERROR
                                         registering = false;
-                                        Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                                        UI.errorLoadingScreen(Messages.login_unhandledError);
                                 }
                                 return;
                             }

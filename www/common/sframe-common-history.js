@@ -85,7 +85,6 @@ define([
         var onReady = function () { };
 
         var Messages = common.Messages;
-        var Cryptpad = common.getCryptpadCommon();
 
         var realtime;
 
@@ -102,7 +101,7 @@ define([
         $right.hide();
         $cke.hide();
 
-        Cryptpad.spinner($hist).get().show();
+        UI.spinner($hist).get().show();
 
         var onUpdate;
 

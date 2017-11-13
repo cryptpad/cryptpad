@@ -25,7 +25,7 @@ define([
         Cryptpad: Cryptpad,
     };
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var common;
@@ -73,7 +73,7 @@ define([
             var userHref = Cryptpad.getUserHrefFromKeys(accountName, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
                 .text(Messages.settings_publicSigningKey);
-            $key.append($pubLabel).append(Cryptpad.dialog.selectable(userHref));
+            $key.append($pubLabel).append(UI.dialog.selectable(userHref));
         }
 
         return $div;
@@ -490,7 +490,7 @@ define([
 
 
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         APP.$container = $('#cp-sidebarlayout-container');
@@ -548,6 +548,6 @@ define([
         createLeftside();
         createUsageButton();
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     });
 });

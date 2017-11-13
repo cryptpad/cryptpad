@@ -359,7 +359,7 @@ define([
                 };
             });
 
-            UIElements.addTooltips();
+            UI.addTooltips();
 
             ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
             ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });

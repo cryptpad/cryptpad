@@ -88,7 +88,7 @@ define([
         $('button.login').click(function () {
             // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
-                Cryptpad.addLoadingScreen({loadingText: Messages.login_hashing});
+                UI.addLoadingScreen({loadingText: Messages.login_hashing});
                 // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
                 window.setTimeout(function () {
                     loginReady(function () {
@@ -116,22 +116,22 @@ define([
                             }
                             switch (err) {
                                 case 'NO_SUCH_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
+                                    UI.removeLoadingScreen(function () {
                                         UI.alert(Messages.login_noSuchUser);
                                     });
                                     break;
                                 case 'INVAL_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
+                                    UI.removeLoadingScreen(function () {
                                         UI.alert(Messages.login_invalUser);
                                     });
                                     break;
                                 case 'INVAL_PASS':
-                                    Cryptpad.removeLoadingScreen(function () {
+                                    UI.removeLoadingScreen(function () {
                                         UI.alert(Messages.login_invalPass);
                                     });
                                     break;
                                 default: // UNHANDLED ERROR
-                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                                    UI.errorLoadingScreen(Messages.login_unhandledError);
                             }
                         });
                     });

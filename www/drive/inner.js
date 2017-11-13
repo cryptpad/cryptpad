@@ -48,7 +48,7 @@ define([
     };
 
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
@@ -1215,9 +1215,9 @@ define([
         // This is duplicated in cryptpad-common, it should be unified
         var getFileIcon = function (id) {
             var data = filesOp.getFileData(id);
-            return Cryptpad.getFileIcon(data);
+            return UI.getFileIcon(data);
         };
-        var getIcon = Cryptpad.getIcon;
+        var getIcon = UI.getIcon;
 
         // Create the "li" element corresponding to the file/folder located in "path"
         var createElement = function (path, elPath, root, isFolder) {
@@ -1803,7 +1803,7 @@ define([
                 .text(Messages.fm_newFile));
             $element.attr('title', Messages.fm_newFile);
             $element.click(function () {
-                var $modal = Cryptpad.createModal({
+                var $modal = UIElements.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
                     $body: $('body')
                 });
@@ -2481,7 +2481,7 @@ define([
             $('<br>').appendTo($d);
             if (!ro) {
                 $('<label>', {'for': 'cp-app-drive-prop-link'}).text(Messages.editShare).appendTo($d);
-                $d.append(Cryptpad.dialog.selectable(base + data.href, {
+                $d.append(UI.dialog.selectable(base + data.href, {
                     id: 'cp-app-drive-prop-link',
                 }));
             }
@@ -2491,7 +2491,7 @@ define([
                 var roLink = ro ? base + data.href : base + getReadOnlyUrl(el);
                 if (roLink) {
                     $('<label>', {'for': 'cp-app-drive-prop-rolink'}).text(Messages.viewShare).appendTo($d);
-                    $d.append(Cryptpad.dialog.selectable(roLink, {
+                    $d.append(UI.dialog.selectable(roLink, {
                         id: 'cp-app-drive-prop-rolink',
                     }));
                 }
@@ -2499,20 +2499,20 @@ define([
 
             if (data.tags && Array.isArray(data.tags)) {
                 $('<label>', {'for': 'cp-app-drive-prop-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
-                $d.append(Cryptpad.dialog.selectable(data.tags.join(', '), {
+                $d.append(UI.dialog.selectable(data.tags.join(', '), {
                     id: 'cp-app-drive-prop-tags',
                 }));
             }
 
             $('<label>', {'for': 'cp-app-drive-prop-ctime'}).text(Messages.fm_creation)
                 .appendTo($d);
-            $d.append(Cryptpad.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+            $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
                 id: 'cp-app-drive-prop-ctime',
             }));
 
             $('<label>', {'for': 'cp-app-drive-prop-atime'}).text(Messages.fm_lastAccess)
                 .appendTo($d);
-            $d.append(Cryptpad.dialog.selectable(new Date(data.atime).toLocaleString(), {
+            $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
                 id: 'cp-app-drive-prop-atime',
             }));
 
@@ -2537,7 +2537,7 @@ define([
                         'for': 'cp-app-drive-prop-size'
                     }).text(Messages.fc_sizeInKilobytes).appendTo($d);
 
-                    $d.append(Cryptpad.dialog.selectable(formatted, {
+                    $d.append(UI.dialog.selectable(formatted, {
                         id: 'cp-app-drive-prop-size',
                     }));
                     cb(void 0, $d);
@@ -2888,7 +2888,7 @@ define([
         APP.FM = common.createFileManager(fmConfig);
 
         refresh();
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var setHistory = function (bool, update) {
@@ -2906,7 +2906,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
             }));
             window.cryptpadStore.getAll(waitFor(function (val) {
                 APP.store = JSON.parse(JSON.stringify(val));
@@ -3023,7 +3023,7 @@ define([
                 APP.files = proxy;
                 if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
                 andThen(common, proxy);
-                Cryptpad.removeLoadingScreen();
+                UI.removeLoadingScreen();
             };
             var onDisconnect = APP.onDisconnect = function (noAlert) {
                 setEditable(false);

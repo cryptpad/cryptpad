@@ -57,7 +57,7 @@ define([
 
             // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
-                Cryptpad.addLoadingScreen({
+                UI.addLoadingScreen({
                     loadingText: Messages.login_hashing,
                     hideTips: true,
                 });
@@ -103,28 +103,28 @@ define([
                             }
                             switch (err) {
                                 case 'NO_SUCH_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
+                                    UI.removeLoadingScreen(function () {
                                         UI.alert(Messages.login_noSuchUser, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 case 'INVAL_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
+                                    UI.removeLoadingScreen(function () {
                                         UI.alert(Messages.login_invalUser, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 case 'INVAL_PASS':
-                                    Cryptpad.removeLoadingScreen(function () {
+                                    UI.removeLoadingScreen(function () {
                                         UI.alert(Messages.login_invalPass, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 default: // UNHANDLED ERROR
-                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                                    UI.errorLoadingScreen(Messages.login_unhandledError);
                             }
                         });
                     });

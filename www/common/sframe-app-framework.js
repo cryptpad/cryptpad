@@ -50,7 +50,7 @@ define([
         AppConfig.badStateTimeout : 30000;
 
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var create = function (options, cb) {
@@ -153,7 +153,7 @@ define([
                 evContentUpdate.fire(newContent);
             } catch (e) {
                 console.log(e.stack);
-                Cryptpad.errorLoadingScreen(e.message);
+                UI.errorLoadingScreen(e.message);
             }
         };
 
@@ -266,7 +266,7 @@ define([
             if (!readOnly) { onLocal(); }
             evOnReady.fire(newPad);
 
-            Cryptpad.removeLoadingScreen(emitResize);
+            UI.removeLoadingScreen(emitResize);
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             if (options.thumbnail && privateDat.thumbnails) {
@@ -375,7 +375,7 @@ define([
         };
 
         nThen(function (waitFor) {
-            Cryptpad.addLoadingScreen();
+            UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({

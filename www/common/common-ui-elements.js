@@ -6,11 +6,9 @@ define([
     '/common/common-language.js',
     '/common/common-interface.js',
     '/common/media-tag.js',
-    '/common/tippy.min.js',
-    '/customize/application_config.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Cryptpad, Util, UI, Language, MediaTag, Tippy, AppConfig) {
+], function ($, Config, Cryptpad, Util, Language, UI, MediaTag) {
     var UIElements = {};
     var Messages = Cryptpad.Messages;
 
@@ -36,7 +34,7 @@ define([
                 }
                 return void console.error(err || res.error);
             }
-            Cryptpad.dialog.tagPrompt(res.data, function (tags) {
+            UI.dialog.tagPrompt(res.data, function (tags) {
                 if (!Array.isArray(tags)) { return; }
                 sframeChan.event('EV_TAGS_SET', {
                     tags: tags,
@@ -44,6 +42,22 @@ define([
                 });
             });
         });
+    };
+
+    var importContent = function (type, f, cfg) {
+        return function () {
+            var $files = $('<input>', {type:"file"});
+            if (cfg && cfg.accept) {
+                $files.attr('accept', cfg.accept);
+            }
+            $files.click();
+            $files.on('change', function (e) {
+                var file = e.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function (e) { f(e.target.result, file); };
+                reader.readAsText(file, type);
+            });
+        };
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
@@ -71,7 +85,7 @@ define([
                 if (callback) {
                     button
                     .click(common.prepareFeedback(type))
-                    .click(Cryptpad.importContent('text/plain', function (content, file) {
+                    .click(importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }, {accept: data ? data.accept : undefined}));
                 }
@@ -781,6 +795,37 @@ define([
         return $block;
     };
 
+    UIElements.createModal = function (cfg) {
+        var $body = cfg.$body || $('body');
+        var $blockContainer = $body.find('#'+cfg.id);
+        if (!$blockContainer.length) {
+            $blockContainer = $('<div>', {
+                'class': 'cp-modal-container',
+                'id': cfg.id
+            });
+        }
+        var hide = function () {
+            if (cfg.onClose) { return void cfg.onClose(); }
+            $blockContainer.hide();
+        };
+        $blockContainer.html('').appendTo($body);
+        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
+        $('<span>', {
+            'class': 'cp-modal-close fa fa-times',
+            'title': Messages.filePicker_close
+        }).click(hide).appendTo($block);
+        $body.click(hide);
+        $block.click(function (e) {
+            e.stopPropagation();
+        });
+        $body.keydown(function (e) {
+            if (e.which === 27) {
+                hide();
+            }
+        });
+        return $blockContainer;
+    };
+
 
     UIElements.initFilePicker = function (common, cfg) {
         var onSelect = cfg.onSelect || $.noop;
@@ -816,10 +861,10 @@ define([
             var fileDialogCfg = {
                 onSelect: function (data) {
                     if (data.type === type && first) {
-                        Cryptpad.addLoadingScreen({hideTips: true});
+                        UI.addLoadingScreen({hideTips: true});
                         sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
                             first = false;
-                            Cryptpad.removeLoadingScreen();
+                            UI.removeLoadingScreen();
                             common.feedback('TEMPLATE_USED');
                         });
                         if (focus) { focus.focus(); }
@@ -839,59 +884,6 @@ define([
                     cancel: Messages.useTemplateCancel,
                 });
             }
-        });
-    };
-
-    UIElements.addTooltips = function () {
-        var MutationObserver = window.MutationObserver;
-        var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
-        var addTippy = function (i, el) {
-            if (el.nodeName === 'IFRAME') { return; }
-            Tippy(el, {
-                position: 'bottom',
-                distance: 0,
-                performance: true,
-                dynamicTitle: true,
-                delay: [delay, 0]
-            });
-        };
-        var clearTooltips = function () {
-            $('.tippy-popper').each(function (i, el) {
-                if ($('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
-                    el.remove();
-                }
-            });
-        };
-        // This is the robust solution to remove dangling tooltips
-        // The mutation observer does not always find removed nodes.
-        setInterval(clearTooltips, delay);
-        var checkRemoved = function (x) {
-            var out = false;
-            $(x).find('[aria-describedby]').each(function (i, el) {
-                var id = el.getAttribute('aria-describedby');
-                if (id.indexOf('tippy-tooltip-') !== 0) { return; }
-                out = true;
-            });
-            return out;
-        };
-        $('[title]').each(addTippy);
-        var observer = new MutationObserver(function(mutations) {
-            var removed = false;
-            mutations.forEach(function(mutation) {
-                for (var i = 0; i < mutation.addedNodes.length; i++) {
-                    $(mutation.addedNodes[i]).find('[title]').each(addTippy);
-                }
-                for (var j = 0; j < mutation.removedNodes.length; j++) {
-                    removed |= checkRemoved(mutation.removedNodes[j]);
-                }
-            });
-            if (removed) { clearTooltips(); }
-        });
-        observer.observe($('body')[0], {
-            attributes: false,
-            childList: true,
-            characterData: false,
-            subtree: true
         });
     };
 

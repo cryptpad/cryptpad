@@ -7,10 +7,11 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
+    '/common/common-interface.js',
     //'/common/visible.js',
     //'/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js'
-], function ($, Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad /*, Visible, Notify*/) {
+], function ($, Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad, UI /*, Visible, Notify*/) {
 
     // var saveAs = window.saveAs;
 
@@ -87,7 +88,7 @@ define([
             });
         })
         .on('disconnect', function () {
-            Cryptpad.warn("Disconnected!");
+            UI.warn("Disconnected!");
         });
     });
 });

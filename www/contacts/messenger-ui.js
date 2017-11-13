@@ -4,13 +4,14 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/common-notifier.js',
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
     '/common/media-tag.js',
-], function ($, Cryptpad, Messages, Util, UI, h, Marked, MediaTag) {
+], function ($, Cryptpad, Messages, Util, UI, Notifier, h, Marked, MediaTag) {
     'use strict';
 
-    var UI = {};
+    var MessengerUI = {};
 
     var m = function (md) {
         var d = h('div.cp-app-contacts-content');
@@ -42,7 +43,7 @@ define([
         };
     };
 
-    UI.create = function (messenger, $userlist, $messages, common) {
+    MessengerUI.create = function (messenger, $userlist, $messages, common) {
         var origin = common.getMetadataMgr().getPrivateData().origin;
 
         var state = window.state = {
@@ -391,7 +392,7 @@ define([
 
         var initializing = true;
         messenger.on('message', function (message) {
-            if (!initializing) { Cryptpad.notify(); }
+            if (!initializing) { Notifier.notify(); }
             var curvePublic = message.curve;
 
             var name = displayNames[curvePublic];
@@ -516,7 +517,7 @@ define([
                 count--;
                 if (count === 0) {
                     initializing = false;
-                    Cryptpad.removeLoadingScreen();
+                    UI.removeLoadingScreen();
                 }
             };
             ready();
@@ -526,5 +527,5 @@ define([
         });
     };
 
-    return UI;
+    return MessengerUI;
 });

@@ -312,12 +312,13 @@ define([
             } else if (o && !n) {
                 $(window).on('keyup', function (e) {
                     if (e.keyCode === 27) {
-                        Cryptpad.removeLoadingScreen();
+                        //UI.removeLoadingScreen();
                     }
                 });
                 Cryptpad.logout();
-                Cryptpad.addLoadingScreen({hideTips: true});
-                Cryptpad.errorLoadingScreen(Cryptpad.Messages.onLogout, true);
+                UI.alert(Cryptpad.Messages.onLogout, null, true);
+                //UI.addLoadingScreen({hideTips: true});
+                //UI.errorLoadingScreen(Cryptpad.Messages.onLogout, true);
                 if (exp.info) {
                     exp.info.network.disconnect();
                 }

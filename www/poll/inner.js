@@ -884,7 +884,7 @@ define([
                 (proxy.metadata && typeof(proxy.metadata.type) !== 'undefined' &&
                  proxy.metadata.type !== 'poll')) {
                 var errorText = Messages.typeError;
-                Cryptpad.errorLoadingScreen(errorText);
+                UI.errorLoadingScreen(errorText);
                 throw new Error(errorText);
             }
         } else {
@@ -1043,7 +1043,7 @@ define([
             publish(true);
         }
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
         if (isNew) {
             common.openTemplatePicker();
         }
@@ -1167,7 +1167,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
                 var $div = $('<div>').append(Pages['/poll/']());
                 $('body').append($div.html());
             }));

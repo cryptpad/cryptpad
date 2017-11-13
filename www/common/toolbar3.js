@@ -529,10 +529,10 @@ define([
             $('<h3>').text(Messages.fileEmbedTitle).appendTo($content);
             var $script = $('<p>').text(Messages.fileEmbedScript).appendTo($content);
             $('<br>').appendTo($script);
-            $script.append(Cryptpad.dialog.selectable(Common.getMediatagScript()));
+            $script.append(UI.dialog.selectable(Common.getMediatagScript()));
             var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
             $('<br>').appendTo($tag);
-            $tag.append(Cryptpad.dialog.selectable(Common.getMediatagFromHref(url)));
+            $tag.append(UI.dialog.selectable(Common.getMediatagFromHref(url)));
             UI.alert($content[0], null, true);
         });
 
@@ -787,7 +787,7 @@ define([
                     'target': '_blank',
                     'href': origin + '/' + p + '/',
                 },
-                content: $('<div>').append(Cryptpad.getIcon(p)).html() + Messages.type[p]
+                content: $('<div>').append(UI.getIcon(p)).html() + Messages.type[p]
             });
         });
         var dropdownConfig = {

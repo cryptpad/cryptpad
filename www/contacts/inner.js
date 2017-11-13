@@ -29,13 +29,13 @@ define([
     var Messages = Cryptpad.Messages;
     var APP = {};
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var common;
     var sFrameChan;
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         sFrameChan = common.getSframeChannel();
@@ -87,13 +87,13 @@ define([
 
         UI.create(messenger, $(friendList), $(messaging), common);
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
 
 /*
         sFrameChan.query('Q_HEY_BUDDY', null, function (err, data) {
             if (!data) { return; }
             if (data.error) {
-                Cryptpad.warn(data.error);
+                UI.warn(data.error);
             } else {
                 UI.log(data.response);
             }

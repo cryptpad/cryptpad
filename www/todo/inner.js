@@ -6,6 +6,7 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-interface.js',
     '/todo/todo.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -19,19 +20,20 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
+    UI,
     Todo
     )
 {
     var Messages = Cryptpad.Messages;
     var APP = window.APP = {};
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var common;
     var sFrameChan;
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         sFrameChan = common.getSframeChannel();
@@ -47,7 +49,7 @@ define([
         var $list = $('#cp-app-todo-taskslist');
 
         var removeTips = function () {
-            Cryptpad.clearTooltips();
+            UI.clearTooltips();
         };
 
         var onReady = function () {
@@ -188,11 +190,11 @@ define([
             editTask = editTask;
 
             display();
-            Cryptpad.removeLoadingScreen();
+            UI.removeLoadingScreen();
         };
 
         var onInit = function () {
-            Cryptpad.addLoadingScreen();
+            UI.addLoadingScreen();
 
             $body.on('dragover', function (e) { e.preventDefault(); });
             $body.on('drop', function (e) { e.preventDefault(); });

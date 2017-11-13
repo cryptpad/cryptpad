@@ -6,6 +6,8 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     'json.sortify',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -19,6 +21,8 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
+    UI,
+    UIElements,
     Sortify)
 {
     var Messages = Cryptpad.Messages;
@@ -28,7 +32,7 @@ define([
     };
 
     var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
+        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var andThen = function (common) {
@@ -80,7 +84,7 @@ define([
         var createFileDialog = function () {
             var types = filters.types || [];
             // Create modal
-            var $blockContainer = Cryptpad.createModal({
+            var $blockContainer = UIElements.createModal({
                 id: 'cp-filepicker-dialog',
                 $body: $body,
                 onClose: hideFileDialog
@@ -132,7 +136,7 @@ define([
                             'class': 'cp-filepicker-content-element',
                             'title': name,
                         }).appendTo($container);
-                        $span.append(Cryptpad.getFileIcon(data));
+                        $span.append(UI.getFileIcon(data));
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         $span.click(function () {
@@ -160,7 +164,7 @@ define([
         });
         createFileDialog();
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var main = function () {
@@ -168,7 +172,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen({hideTips: true, hideLogo: true});
+                UI.addLoadingScreen({hideTips: true, hideLogo: true});
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {

@@ -5,7 +5,6 @@ define([
     '/common/fsStore.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/common-interface.js',
     '/common/common-messaging.js',
     '/file/file-crypto.js',
     '/common/common-realtime.js',
@@ -17,7 +16,7 @@ define([
     '/common/media-tag.js',
     '/bower_components/nthen/index.js',
     '/bower_components/localforage/dist/localforage.min.js',
-], function ($, Config, Messages, Store, Util, Hash, UI,
+], function ($, Config, Messages, Store, Util, Hash,
             Messaging, FileCrypto, Realtime, Language, Clipboard,
             Pinpad, AppConfig, MediaTag, Nthen, localForage) {
 
@@ -57,29 +56,6 @@ define([
     var store;
     var rpc;
     var anon_rpc;
-
-    // import UI elements
-    //common.findCancelButton = UI.findCancelButton; REFACTOR
-    //common.findOKButton = UI.findOKButton;
-    //common.listenForKeys = UI.listenForKeys;
-    //common.stopListening = UI.stopListening;
-    //common.prompt = UI.prompt;
-    //common.confirm = UI.confirm;
-    //common.alert = UI.alert;
-    //common.log = UI.log;
-    common.warn = UI.warn;
-    common.spinner = UI.spinner;
-    common.addLoadingScreen = UI.addLoadingScreen;
-    common.removeLoadingScreen = UI.removeLoadingScreen;
-    common.errorLoadingScreen = UI.errorLoadingScreen;
-    common.notify = UI.notify;
-    common.unnotify = UI.unnotify;
-    common.getIcon = UI.getIcon;
-    common.addTooltips = UI.addTooltips;
-    common.clearTooltips = UI.clearTooltips;
-    common.importContent = UI.importContent;
-    common.tokenField = UI.tokenField;
-    common.dialog = UI.dialog;
 
     // import common utilities for export
     common.find = Util.find;
@@ -626,35 +602,7 @@ define([
             return t.href === rhref;
         });
     };
-    common.selectTemplate = function (type, rt, Crypt) {
-        if (!AppConfig.enableTemplates) { return; }
-        var temps = listTemplates(type);
-        if (temps.length === 0) { return; }
-        var $content = $('<div>');
-        $('<b>').text(Messages.selectTemplate).appendTo($content);
-        $('<p>', {id:"selectTemplate"}).appendTo($content);
-        UI.alert($content.html(), null, true);
-        var $p = $('#selectTemplate');
-        temps.forEach(function (t, i) {
-            $('<a>', {href: t.href, title: t.title}).text(t.title).click(function (e) {
-                e.preventDefault();
-                var parsed = parsePadUrl(t.href);
-                if(!parsed) { throw new Error("Cannot get template hash"); }
-                common.addLoadingScreen({hideTips: true});
-                Crypt.get(parsed.hash, function (err, val) {
-                    if (err) { throw new Error(err); }
-                    var p = parsePadUrl(window.location.href);
-                    Crypt.put(p.hash, val, function () {
-                        UI.findOKButton().click();
-                        common.removeLoadingScreen();
-                        common.feedback('TEMPLATE_USED');
-                    });
-                });
-            }).appendTo($p);
-            if (i !== temps.length) { $('<br>').appendTo($p); }
-        });
-        UI.findOKButton().text(Messages.cancelButton);
-    };
+
     // Secure iframes
     common.useTemplate = function (href, Crypt, cb) {
         var parsed = parsePadUrl(href);
@@ -696,7 +644,6 @@ define([
         _onDisplayNameChanged.forEach(function (h) {
             h(newName, isLocal);
         });
-        common.clearTooltips();
     };
 
     // STORAGE
@@ -781,9 +728,6 @@ define([
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e, id) {
                     if (e) {
-                        if (e === 'E_OVER_LIMIT') {
-                            UI.alert(Messages.pinLimitNotPinned, null, true);
-                        }
                         return void cb(e);
                     }
                     getStore().addPad(id, common.initialPath);
@@ -1299,105 +1243,6 @@ define([
         'image/gif',
     ];
 
-    // This is duplicated in drive/main.js, it should be unified
-    var getFileIcon = common.getFileIcon = function (data) {
-        var $icon = common.getIcon();
-
-        if (!data) { return $icon; }
-
-        var href = data.href;
-        if (!href) { return $icon; }
-
-        var type = common.parsePadUrl(href).type;
-        $icon = common.getIcon(type);
-
-        return $icon;
-    };
-
-    common.createModal = function (cfg) {
-        var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#'+cfg.id);
-        if (!$blockContainer.length) {
-            $blockContainer = $('<div>', {
-                'class': 'cp-modal-container',
-                'id': cfg.id
-            });
-        }
-        var hide = function () {
-            if (cfg.onClose) { return void cfg.onClose(); }
-            $blockContainer.hide();
-        };
-        $blockContainer.html('').appendTo($body);
-        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
-        $('<span>', {
-            'class': 'cp-modal-close fa fa-times',
-            'title': Messages.filePicker_close
-        }).click(hide).appendTo($block);
-        $body.click(hide);
-        $block.click(function (e) {
-            e.stopPropagation();
-        });
-        $body.keydown(function (e) {
-            if (e.which === 27) {
-                hide();
-            }
-        });
-        return $blockContainer;
-    };
-    common.createFileDialog = function (cfg) {
-        var $blockContainer = common.createModal({
-            id: 'fileDialog',
-            $body: cfg.$body
-        });
-        var $block = $blockContainer.find('.cp-modal');
-        var $description = $('<p>').text(Messages.filePicker_description);
-        $block.append($description);
-        var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
-        var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
-        var updateContainer = function () {
-            $container.html('');
-            var filter = $filter.find('.filter').val().trim();
-            var list = common.getUserFilesList();
-            var fo = common.getFO();
-            list.forEach(function (id) {
-                var data = fo.getFileData(id);
-                var name = fo.getTitle(id);
-                if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
-                    return;
-                }
-                var $span = $('<span>', {
-                    'class': 'element',
-                    'title': name,
-                }).appendTo($container);
-                $span.append(getFileIcon(data));
-                $span.append(name);
-                $span.click(function () {
-                    if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
-                    $blockContainer.hide();
-                });
-            });
-        };
-        var to;
-        $('<input>', {
-            type: 'text',
-            'class': 'filter',
-            'placeholder': Messages.filePicker_filter
-        }).appendTo($filter).on('keypress', function () {
-            if (to) { window.clearTimeout(to); }
-            to = window.setTimeout(updateContainer, 300);
-        });
-        //$filter.append(' '+Messages.or+' ');
-        var data = {FM: cfg.data.FM};
-        $filter.append(common.createButton('upload', false, data, function () {
-            $blockContainer.hide();
-        }));
-        updateContainer();
-        $blockContainer.show();
-    };
-
-
-
-
     common.getShareHashes = function (secret, cb) {
         if (!window.location.hash) {
             var hashes = common.getHashes(secret.channel, secret);
@@ -1443,7 +1288,6 @@ define([
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) > parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
-        //UI.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
         localStorage[CRYPTPAD_VERSION] = ver;
     };
 
@@ -1464,12 +1308,6 @@ define([
             common.initialPath = sessionStorage[newPadPathKey];
             delete sessionStorage[newPadPathKey];
         }
-        common.onFriendRequest = function (confirmText, cb) {
-            UI.confirm(confirmText, cb, null, true);
-        };
-        common.onFriendComplete = function (data) {
-            UI.log(data.logText);
-        };
 
         var proxy;
         var network;
@@ -1515,12 +1353,6 @@ define([
         }).nThen(function (waitFor) {
             $(waitFor());
         }).nThen(function (waitFor) {
-            // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
-            // won't work. We have to reset it now to make sure it uses a correct "body"
-            UI.Alertify.reset();
-            // clear any tooltips that might get hung
-            setInterval(function () { common.clearTooltips(); }, 5000);
-
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;
             window.onhashchange = function () {
@@ -1644,7 +1476,6 @@ define([
             }
         }).nThen(function () {
             updateLocalVersion();
-            common.addTooltips();
             f(void 0, env);
             if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
         });

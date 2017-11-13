@@ -16,7 +16,7 @@ define([
     };
 
     $(function () {
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
         console.log("wut");
         $('body #mainBlock').append(comingSoon());
     });
@@ -38,7 +38,7 @@ define([
         console.log(info);
 
         if (!info.pubkey) {
-            Cryptpad.removeLoadingScreen();
+            UI.removeLoadingScreen();
             UI.alert('invalid invite');
             return;
         }
@@ -49,7 +49,7 @@ define([
         var keys = Curve.deriveKeys(info.pubkey, mySecret);
         var encryptor = Curve.createEncryptor(keys);
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
 
         var listmapConfig = {
             data: {},
