@@ -1215,6 +1215,21 @@ define([
                 }
                 if (parsedNew) { oldHref = newHref; }
             };
+            // Listen for login/logout in other tabs
+            window.addEventListener('storage', function (e) {
+                if (e.key !== common.userHashKey) { return; }
+                var o = e.oldValue;
+                var n = e.newValue;
+                if (!o && n) {
+                    document.location.reload();
+                } else if (o && !n) {
+                    common.logout();
+                    if (getNetwork()) {
+                        getNetwork().disconnect();
+                    }
+                }
+            });
+
 
             if (PINNING_ENABLED && isLoggedIn()) {
                 console.log("logged in. pads will be pinned");

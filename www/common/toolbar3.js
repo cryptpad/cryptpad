@@ -1038,7 +1038,7 @@ define([
         initClickEvents(toolbar, config);
         initNotifications(toolbar, config);
 
-        toolbar.failed = function () {
+        var failed = toolbar.failed = function () {
             toolbar.connected = false;
 
             if (toolbar.spinner) {
@@ -1079,12 +1079,11 @@ define([
         };
 
         // On log out, remove permanently the realtime elements of the toolbar
-        // TODO
-        /*Common.onLogout(function () {
+        Common.onLogout(function () {
             failed();
             if (toolbar.useradmin) { toolbar.useradmin.hide(); }
             if (toolbar.userlist) { toolbar.userlist.hide(); }
-        });*/
+        });
 
         return toolbar;
     };

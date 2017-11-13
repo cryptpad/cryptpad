@@ -440,7 +440,7 @@ define([
                 });
             }, 2000);
 
-            //Cryptpad.onLogout(function () { ... });
+            //common.onLogout(function () { ... });
 
             Cryptpad.onError(function (info) {
                 if (info && info.type === "store") {

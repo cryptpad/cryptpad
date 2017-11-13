@@ -101,6 +101,7 @@ define([
                 secret.channel = Utils.Hash.createChannelId();
             }
             Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
+
         }).nThen(function () {
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             if (!secret.keys) { secret.keys = secret.key; }
@@ -160,6 +161,10 @@ define([
             Cryptpad.onDisplayNameChanged(updateMeta);
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
             proxy.on('change', 'settings', updateMeta);
+
+            Cryptpad.onLogout(function () {
+                sframeChan.event('EV_LOGOUT');
+            });
 
             Cryptpad.onError(function (info) {
                 console.log('error');

@@ -3057,7 +3057,7 @@ define([
                     onConnectError();
                 }
             });
-            //Cryptpad.onLogout(function () { setEditable(false); });
+            common.onLogout(function () { setEditable(false); });
         });
     };
     main();

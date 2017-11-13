@@ -304,28 +304,6 @@ define([
 
         var exp = {};
 
-        window.addEventListener('storage', function (e) {
-            if (e.key !== Cryptpad.userHashKey) { return; }
-            var o = e.oldValue;
-            var n = e.newValue;
-            if (!o && n) {
-                window.location.reload();
-            } else if (o && !n) {
-                $(window).on('keyup', function (e) {
-                    if (e.keyCode === 27) {
-                        //UI.removeLoadingScreen();
-                    }
-                });
-                Cryptpad.logout();
-                UI.alert(Cryptpad.Messages.onLogout, null, true);
-                //UI.addLoadingScreen({hideTips: true});
-                //UI.errorLoadingScreen(Cryptpad.Messages.onLogout, true);
-                if (exp.info) {
-                    exp.info.network.disconnect();
-                }
-            }
-        });
-
         var rt = window.rt = Listmap.create(listmapConfig);
 
         exp.realtime = rt.realtime;

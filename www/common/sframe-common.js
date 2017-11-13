@@ -314,6 +314,14 @@ define([
 
     funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
+    var logoutHandlers = [];
+    funcs.onLogout = function (h) {
+        if (typeof (h) !== "function") { return; }
+        if (logoutHandlers.indexOf(h) !== -1) { return; }
+        logoutHandlers.push(h);
+    };
+
+
     Object.freeze(funcs);
     return { create: function (cb) {
 
@@ -359,6 +367,19 @@ define([
             });
 
             UI.addTooltips();
+
+            ctx.sframeChan.on('EV_LOGOUT', function () {
+                $(window).on('keyup', function (e) {
+                    if (e.keyCode === 27) {
+                        UI.removeLoadingScreen();
+                    }
+                });
+                UI.addLoadingScreen({hideTips: true});
+                UI.errorLoadingScreen(Messages.onLogout, true);
+                logoutHandlers.forEach(function (h) {
+                    if (typeof (h) === "function") { h(); }
+                });
+            });
 
             ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
             ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });

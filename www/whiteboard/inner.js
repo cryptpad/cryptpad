@@ -629,7 +629,7 @@ define([
             saveImage();
         });
 
-        Cryptpad.onLogout(function () { setEditable(false); });
+        common.onLogout(function () { setEditable(false); });
     };
 
     var main = function () {
