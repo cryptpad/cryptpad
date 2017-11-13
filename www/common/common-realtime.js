@@ -16,7 +16,7 @@ define([
     /*
         TODO make this not blow up when disconnected or lagging...
     */
-    common.whenRealtimeSyncs = function (Cryptpad, realtime, cb) {
+    common.whenRealtimeSyncs = function (realtime, cb) {
         if (typeof(realtime.getAuthDoc) !== 'function') {
             return void console.error('improper use of this function');
         }
@@ -29,7 +29,7 @@ define([
         }, 0);
     };
 
-    common.beginDetectingInfiniteSpinner = function (Cryptpad, realtime) {
+    common.beginDetectingInfiniteSpinner = function (realtime) {
         if (intr) { return; }
         intr = window.setInterval(function () {
             var l;

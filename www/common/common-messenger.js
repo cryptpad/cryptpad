@@ -50,21 +50,6 @@ define([
         return proxy.friends;
     };
 
-    var eachFriend = function (friends, cb) {
-        Object.keys(friends).forEach(function (id) {
-            if (id === 'me') { return; }
-            cb(friends[id], id, friends);
-        });
-    };
-
-    Msg.getFriendChannelsList = function (proxy) {
-        var list = [];
-        eachFriend(proxy, function (friend) {
-            list.push(friend.channel);
-        });
-        return list;
-    };
-
     var msgAlreadyKnown = function (channel, sig) {
         return channel.messages.some(function (message) {
             return message[0] === sig;

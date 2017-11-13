@@ -6,9 +6,10 @@ define([
     '/common/credential.js', // preloaded for login.js
     '/common/common-interface.js',
     '/common/common-util.js',
+    '/common/common-realtime.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI, Util) {
+], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -66,7 +67,7 @@ define([
 
             Cryptpad.feedback('REGISTRATION', true);
 
-            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+            Realtime.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
                     registering = false;
                     if (sessionStorage.redirectTo) {

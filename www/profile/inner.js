@@ -8,6 +8,7 @@ define([
     '/common/sframe-common.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/common-realtime.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
     'cm/mode/markdown/markdown',
@@ -28,6 +29,7 @@ define([
     SFCommon,
     Util,
     UI,
+    Realtime,
     Marked,
     CodeMirror
     )
@@ -225,7 +227,7 @@ define([
         }
         var setValue = function (value, cb) {
             APP.lm.proxy.name = value;
-            Cryptpad.whenRealtimeSyncs(APP.lm.realtime, cb);
+            Realtime.whenRealtimeSyncs(APP.lm.realtime, cb);
         };
         createEditableInput($block, DISPLAYNAME_ID, placeholder, getValue, setValue, Messages.anonymous);
     };
@@ -251,7 +253,7 @@ define([
         }
         var setValue = function (value, cb) {
             APP.lm.proxy.url = value;
-            Cryptpad.whenRealtimeSyncs(APP.lm.realtime, cb);
+            Realtime.whenRealtimeSyncs(APP.lm.realtime, cb);
         };
         var placeholder = Messages.profile_urlPlaceholder;
         createEditableInput($block, LINK_ID, placeholder, getValue, setValue);
@@ -370,7 +372,7 @@ define([
             $spinner.show();
             var val = editor.getValue();
             APP.lm.proxy.description = val;
-            Cryptpad.whenRealtimeSyncs(APP.lm.realtime, function () {
+            Realtime.whenRealtimeSyncs(APP.lm.realtime, function () {
                 $ok.show();
                 $spinner.hide();
             });

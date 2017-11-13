@@ -98,22 +98,21 @@ define([
     //common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
-    common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
-    common.inviteFromUserlist = Messaging.inviteFromUserlist;
-    common.getFriendList = Messaging.getFriendList;
-    common.getFriendChannelsList = Messaging.getFriendChannelsList;
-    common.createData = Messaging.createData;
-    common.getPendingInvites = Messaging.getPending;
-    common.getLatestMessages = Messaging.getLatestMessages;
+    //common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
+    //common.inviteFromUserlist = Messaging.inviteFromUserlist;
+    //common.getFriendList = Messaging.getFriendList;
+    //common.getFriendChannelsList = Messaging.getFriendChannelsList;
+    //common.createData = Messaging.createData;
+    //common.getPendingInvites = Messaging.getPending;
+    //common.getLatestMessages = Messaging.getLatestMessages;
 
     // Realtime
-    // REFACTOR: common is not needed anymore so we should just pull common-reealtime directly
-    var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
-        Realtime.whenRealtimeSyncs(common, realtime, cb);
-    };
-    common.beginDetectingInfiniteSpinner = function (realtime) {
-        Realtime.beginDetectingInfiniteSpinner(common, realtime);
-    };
+    //var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
+        //Realtime.whenRealtimeSyncs(common, realtime, cb);
+    //};
+    //common.beginDetectingInfiniteSpinner = function (realtime) {
+        //Realtime.beginDetectingInfiniteSpinner(common, realtime);
+    //};
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -429,7 +428,7 @@ define([
         if (getProxy()) {
             getProxy()[common.displayNameKey] = value;
         }
-        if (typeof cb === "function") { whenRealtimeSyncs(getRealtime(), cb); }
+        if (typeof cb === "function") { Realtime.whenRealtimeSyncs(getRealtime(), cb); }
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().setAttribute(attr, value, function (err, data) {
@@ -814,7 +813,7 @@ define([
         }
 
         if (getProxy().friends) {
-            var fList = common.getFriendChannelsList(common);
+            var fList = Messaging.getFriendChannelsList(common);
             list = list.concat(fList);
         }
 
@@ -1018,7 +1017,7 @@ define([
             var n = getNetwork();
             var r = getRealtime();
             if (n && r) {
-                whenRealtimeSyncs(r, function () {
+                Realtime.whenRealtimeSyncs(r, function () {
                     n.disconnect();
                     cb();
                 });
@@ -1037,7 +1036,7 @@ define([
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
             common.addTemplate(makePad(href, data.title));
-            whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
+            Realtime.whenRealtimeSyncs(getRealtime(), function () {
                 cb();
             });
         });
@@ -1185,7 +1184,7 @@ define([
         Nthen(function (waitFor) {
             Store.ready(waitFor(function (err, storeObj) {
                 store = common.store = env.store = storeObj;
-                common.addDirectMessageHandler(common);
+                Messaging.addDirectMessageHandler(common);
                 proxy = getProxy();
                 network = getNetwork();
                 network.on('disconnect', function () {

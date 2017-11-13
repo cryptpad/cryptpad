@@ -3,9 +3,10 @@ define([
     '/common/cryptpad-common.js',
     '/common/login.js',
     '/common/common-interface.js',
+    '/common/common-realtime.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login, UI) {
+], function ($, Cryptpad, Login, UI, Realtime) {
     $(function () {
         var $main = $('#mainBlock');
         var Messages = Cryptpad.Messages;
@@ -83,7 +84,7 @@ define([
                                 proxy.curvePublic = result.curvePublic;
 
                                 Cryptpad.feedback('LOGIN', true);
-                                Cryptpad.whenRealtimeSyncs(result.realtime, function() {
+                                Realtime.whenRealtimeSyncs(result.realtime, function() {
                                     Cryptpad.login(result.userHash, result.userName, function () {
                                         hashing = false;
                                         if (sessionStorage.redirectTo) {

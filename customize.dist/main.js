@@ -3,13 +3,13 @@ define([
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
     '/common/common-interface.js',
-], function ($, Config, Cryptpad, UI) {
+    '/common/common-realtime.js',
+    '/customize/messages.js',
+], function ($, Config, Cryptpad, UI, Realtime, Messages) {
 
     window.APP = {
         Cryptpad: Cryptpad,
     };
-
-    var Messages = Cryptpad.Messages;
 
     $(function () {
         var $main = $('#mainBlock');
@@ -107,7 +107,7 @@ define([
                                 proxy.edPrivate = result.edPrivate;
                                 proxy.edPublic = result.edPublic;
 
-                                Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                                Realtime.whenRealtimeSyncs(result.realtime, function () {
                                     Cryptpad.login(result.userHash, result.userName, function () {
                                         document.location.href = '/drive/';
                                     });

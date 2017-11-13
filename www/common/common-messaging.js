@@ -82,7 +82,7 @@ define([
 
         friends[pubKey] = data;
 
-        Realtime.whenRealtimeSyncs(common, common.getRealtime(), function () {
+        Realtime.whenRealtimeSyncs(common.getRealtime(), function () {
             cb();
             common.pinPads([data.channel], function (e) {
                 if (e) { console.error(e); }

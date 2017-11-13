@@ -18,6 +18,7 @@ define([
         var sframeChan;
         var FilePicker;
         var Messenger;
+        var Messaging;
         var Notifier;
         var Utils = {};
 
@@ -31,18 +32,20 @@ define([
                 '/common/sframe-channel.js',
                 '/filepicker/main.js',
                 '/common/common-messenger.js',
+                '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
                 '/common/common-util.js',
                 '/common/common-realtime.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel,
-            _FilePicker, _Messenger, _Notifier, _Hash, _Util, _Realtime) {
+            _FilePicker, _Messenger, _Messaging, _Notifier, _Hash, _Util, _Realtime) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 FilePicker = _FilePicker;
                 Messenger = _Messenger;
+                Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
                 Utils.Util = _Util;
@@ -246,7 +249,7 @@ define([
             });
 
             sframeChan.on('Q_SEND_FRIEND_REQUEST', function (netfluxId, cb) {
-                Cryptpad.inviteFromUserlist(Cryptpad, netfluxId);
+                Messaging.inviteFromUserlist(Cryptpad, netfluxId);
                 cb();
             });
             Cryptpad.onFriendRequest = function (confirmText, cb) {
