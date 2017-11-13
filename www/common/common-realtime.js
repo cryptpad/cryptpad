@@ -1,7 +1,8 @@
 define([
     '/customize/application_config.js',
     '/customize/messages.js',
-], function (AppConfig, Messages) {
+    '/common/common-interface.js',
+], function (AppConfig, Messages, UI) {
     var common = {};
 
     common.infiniteSpinnerDetected = false;
@@ -44,7 +45,7 @@ define([
             infiniteSpinnerHandlers.forEach(function (ish) { ish(); });
 
             // inform the user their session is in a bad state
-            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+            UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                 if (!yes) { return; }
                 window.parent.location.reload();
             });

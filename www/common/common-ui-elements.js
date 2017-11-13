@@ -4,13 +4,14 @@ define([
     '/common/cryptpad-common.js',
     '/common/common-util.js',
     '/common/common-language.js',
+    '/common/common-interface.js',
     '/common/media-tag.js',
     '/common/tippy.min.js',
     '/customize/application_config.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Cryptpad, Util, Language, MediaTag, Tippy, AppConfig) {
-    var UI = {};
+], function ($, Config, Cryptpad, Util, UI, Language, MediaTag, Tippy, AppConfig) {
+    var UIElements = {};
     var Messages = Cryptpad.Messages;
 
     /**
@@ -24,17 +25,14 @@ define([
      *  - base64ToHex
      *  - getBlobPathFromHex
      *  - bytesToMegabytes
-     * createUserAdminMenu
-     *  - fixHTML
-     *  - createDropdown
     */
 
-    UI.updateTags = function (common, href) {
+    UIElements.updateTags = function (common, href) {
         var sframeChan = common.getSframeChannel();
         sframeChan.query('Q_TAGS_GET', href || null, function (err, res) {
             if (err || res.error) {
                 if (res.error === 'NO_ENTRY') {
-                    Cryptpad.alert(Messages.tags_noentry);
+                    UI.alert(Messages.tags_noentry);
                 }
                 return void console.error(err || res.error);
             }
@@ -48,7 +46,7 @@ define([
         });
     };
 
-    UI.createButton = function (common, type, rightside, data, callback) {
+    UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;
         var size = "17px";
@@ -93,7 +91,7 @@ define([
                         target: data.target
                     };
                     if (data.filter && !data.filter(file)) {
-                        Cryptpad.log('Invalid avatar (type or size)');
+                        UI.log('Invalid avatar (type or size)');
                         return;
                     }
                     data.FM.handleFile(file, ev);
@@ -142,11 +140,11 @@ define([
                                 title: title,
                                 toSave: toSave
                             }, function () {
-                                Cryptpad.alert(Messages.templateSaved);
+                                UI.alert(Messages.templateSaved);
                                 common.feedback('TEMPLATE_CREATED');
                             });
                         };
-                        Cryptpad.prompt(Messages.saveTemplatePrompt, title, todo);
+                        UI.prompt(Messages.saveTemplatePrompt, title, todo);
                     });
                 }
                 break;
@@ -162,12 +160,12 @@ define([
                     .click(common.prepareFeedback(type))
                     .click(function() {
                         var msg = common.isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
-                        Cryptpad.confirm(msg, function (yes) {
+                        UI.confirm(msg, function (yes) {
                             if (!yes) { return; }
                             sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
                                 if (err) { return void callback(err); }
                                 var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                                Cryptpad.alert(cMsg, undefined, true);
+                                UI.alert(cMsg, undefined, true);
                                 callback();
                                 return;
                             });
@@ -220,7 +218,7 @@ define([
                     title: Messages.tags_title,
                 })
                 .click(common.prepareFeedback(type))
-                .click(function () { UI.updateTags(common, null); });
+                .click(function () { UIElements.updateTags(common, null); });
                 break;
             default:
                 button = $('<button>', {
@@ -236,7 +234,7 @@ define([
     };
 
     // Avatars
-    UI.displayMediatagImage = function (Common, $tag, cb) {
+    UIElements.displayMediatagImage = function (Common, $tag, cb) {
         if (!$tag.length || !$tag.is('media-tag')) { return void cb('NOT_MEDIATAG'); }
         var observer = new MutationObserver(function(mutations) {
             mutations.forEach(function(mutation) {
@@ -267,9 +265,30 @@ define([
         });
         MediaTag($tag[0]);
     };
-    UI.displayAvatar = function (Common, $container, href, name, cb) {
+
+    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
+    var isEmoji = function (str) {
+      return emoji_patt.test(str);
+    };
+    var emojiStringToArray = function (str) {
+      var split = str.split(emoji_patt);
+      var arr = [];
+      for (var i=0; i<split.length; i++) {
+        var char = split[i];
+        if (char !== "") {
+          arr.push(char);
+        }
+      }
+      return arr;
+    };
+    var getFirstEmojiOrCharacter = function (str) {
+      if (!str || !str.trim()) { return '?'; }
+      var emojis = emojiStringToArray(str);
+      return isEmoji(emojis[0])? emojis[0]: str[0];
+    };
+    UIElements.displayAvatar = function (Common, $container, href, name, cb) {
         var displayDefault = function () {
-            var text = Cryptpad.getFirstEmojiOrCharacter(name);
+            var text = getFirstEmojiOrCharacter(name);
             var $avatar = $('<span>', {'class': 'cp-avatar-default'}).text(text);
             $container.append($avatar);
             if (cb) { cb(); }
@@ -291,7 +310,7 @@ define([
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                UI.displayMediatagImage(Common, $img, function (err, $image, img) {
+                UIElements.displayMediatagImage(Common, $img, function (err, $image, img) {
                     if (err) { return void console.error(err); }
                     var w = img.width;
                     var h = img.height;
@@ -317,7 +336,7 @@ define([
         update.
     */
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    UI.createUsageBar = function (common, cb) {
+    UIElements.createUsageBar = function (common, cb) {
         if (!common.isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
@@ -404,7 +423,158 @@ define([
         cb(null, $container);
     };
 
-    UI.createUserAdminMenu = function (Common, config) {
+    // Create a button with a dropdown menu
+    // input is a config object with parameters:
+    //  - container (optional): the dropdown container (span)
+    //  - text (optional): the button text value
+    //  - options: array of {tag: "", attributes: {}, content: "string"}
+    //
+    // allowed options tags: ['a', 'hr', 'p']
+    UIElements.createDropdown = function (config) {
+        if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
+
+        var allowedTags = ['a', 'p', 'hr'];
+        var isValidOption = function (o) {
+            if (typeof o !== "object") { return false; }
+            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
+            return true;
+        };
+
+        // Container
+        var $container = $(config.container);
+        var containerConfig = {
+            'class': 'cp-dropdown-container'
+        };
+        if (config.buttonTitle) {
+            containerConfig.title = config.buttonTitle;
+        }
+
+        if (!config.container) {
+            $container = $('<span>', containerConfig);
+        }
+
+        // Button
+        var $button = $('<button>', {
+            'class': ''
+        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
+        /*$('<span>', {
+            'class': 'fa fa-caret-down',
+        }).appendTo($button);*/
+
+        // Menu
+        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
+        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
+
+        config.options.forEach(function (o) {
+            if (!isValidOption(o)) { return; }
+            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
+        });
+
+        $container.append($button).append($innerblock);
+
+        var value = config.initialValue || '';
+
+        var setActive = function ($el) {
+            if ($el.length !== 1) { return; }
+            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
+            $el.addClass('cp-dropdown-element-active');
+            var scroll = $el.position().top + $innerblock.scrollTop();
+            if (scroll < $innerblock.scrollTop()) {
+                $innerblock.scrollTop(scroll);
+            } else if (scroll > ($innerblock.scrollTop() + 280)) {
+                $innerblock.scrollTop(scroll-270);
+            }
+        };
+
+        var hide = function () {
+            window.setTimeout(function () { $innerblock.hide(); }, 0);
+        };
+
+        var show = function () {
+            $innerblock.show();
+            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
+            if (config.isSelect && value) {
+                var $val = $innerblock.find('[data-value="'+value+'"]');
+                setActive($val);
+                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
+            }
+            if (config.feedback) { Cryptpad.feedback(config.feedback); }
+        };
+
+        $container.click(function (e) {
+            e.stopPropagation();
+            var state = $innerblock.is(':visible');
+            $('.cp-dropdown-content').hide();
+            try {
+                $('iframe').each(function (idx, ifrw) {
+                    $(ifrw).contents().find('.cp-dropdown-content').hide();
+                });
+            } catch (er) {
+                // empty try catch in case this iframe is problematic (cross-origin)
+            }
+            if (state) {
+                hide();
+                return;
+            }
+            show();
+        });
+
+        if (config.isSelect) {
+            var pressed = '';
+            var to;
+            $container.keydown(function (e) {
+                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
+                if (e.which === 38) { // Up
+                    if ($value.length) {
+                        var $prev = $value.prev();
+                        setActive($prev);
+                    }
+                }
+                if (e.which === 40) { // Down
+                    if ($value.length) {
+                        var $next = $value.next();
+                        setActive($next);
+                    }
+                }
+                if (e.which === 13) { //Enter
+                    if ($value.length) {
+                        $value.click();
+                        hide();
+                    }
+                }
+                if (e.which === 27) { // Esc
+                    hide();
+                }
+            });
+            $container.keypress(function (e) {
+                window.clearTimeout(to);
+                var c = String.fromCharCode(e.which);
+                pressed += c;
+                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
+                if ($value.length) {
+                    setActive($value);
+                    $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
+                }
+                to = window.setTimeout(function () {
+                    pressed = '';
+                }, 1000);
+            });
+
+            $container.setValue = function (val, name) {
+                value = val;
+                var $val = $innerblock.find('[data-value="'+val+'"]');
+                var textValue = name || $val.html() || val;
+                $button.find('.cp-dropdown-button-title').html(textValue);
+            };
+            $container.getValue = function () {
+                return value || '';
+            };
+        }
+
+        return $container;
+    };
+
+    UIElements.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
         var displayNameCls = config.displayNameCls || 'displayName';
@@ -419,7 +589,7 @@ define([
         if (config.displayNameCls) {
             var $userAdminContent = $('<p>');
             if (accountName) {
-                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + Cryptpad.fixHTML(accountName));
+                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + Util.fixHTML(accountName));
                 $userAdminContent.append($userAccount);
                 $userAdminContent.append($('<br>'));
             }
@@ -505,7 +675,7 @@ define([
             container: config.$initBlock, // optional
             feedback: "USER_ADMIN",
         };
-        var $userAdmin = Cryptpad.createDropdown(dropdownConfigUser);
+        var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
@@ -528,7 +698,7 @@ define([
             $displayName.text(newName || Messages.anonymous);
             if (accountName && oldUrl !== url) {
                 $avatar.html('');
-                UI.displayAvatar(Common, $avatar, url, newName || Messages.anonymous, function ($img) {
+                UIElements.displayAvatar(Common, $avatar, url, newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
                     if ($img) {
                         $userAdmin.find('button').addClass('cp-avatar');
@@ -577,7 +747,7 @@ define([
 
     // Provide $container if you want to put the generated block in another element
     // Provide $initBlock if you already have the menu block and you want the content inserted in it
-    UI.createLanguageSelector = function (common, $container, $initBlock) {
+    UIElements.createLanguageSelector = function (common, $container, $initBlock) {
         var options = [];
         var languages = Messages._languages;
         var keys = Object.keys(languages).sort();
@@ -599,7 +769,7 @@ define([
             container: $initBlock, // optional
             isSelect: true
         };
-        var $block = Cryptpad.createDropdown(dropdownConfig);
+        var $block = UIElements.createDropdown(dropdownConfig);
         $block.attr('id', 'cp-language-selector');
 
         if ($container) {
@@ -612,19 +782,19 @@ define([
     };
 
 
-    UI.initFilePicker = function (common, cfg) {
+    UIElements.initFilePicker = function (common, cfg) {
         var onSelect = cfg.onSelect || $.noop;
         var sframeChan = common.getSframeChannel();
         sframeChan.on("EV_FILE_PICKED", function (data) {
             onSelect(data);
         });
     };
-    UI.openFilePicker = function (common, types) {
+    UIElements.openFilePicker = function (common, types) {
         var sframeChan = common.getSframeChannel();
         sframeChan.event("EV_FILE_PICKER_OPEN", types);
     };
 
-    UI.openTemplatePicker = function (common) {
+    UIElements.openTemplatePicker = function (common) {
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
         var sframeChan = common.getSframeChannel();
@@ -664,7 +834,7 @@ define([
             if (data) {
                 common.openFilePicker(pickerCfg);
                 focus = document.activeElement;
-                Cryptpad.confirm(Messages.useTemplate, onConfirm, {
+                UI.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,
                     cancel: Messages.useTemplateCancel,
                 });
@@ -672,7 +842,7 @@ define([
         });
     };
 
-    UI.addTooltips = function () {
+    UIElements.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
         var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
         var addTippy = function (i, el) {
@@ -725,5 +895,5 @@ define([
         });
     };
 
-    return UI;
+    return UIElements;
 });

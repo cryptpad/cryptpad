@@ -2,7 +2,8 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
-], function ($, Config, Cryptpad) {
+    '/common/common-interface.js',
+], function ($, Config, Cryptpad, UI) {
 
     window.APP = {
         Cryptpad: Cryptpad,
@@ -56,34 +57,6 @@ define([
             $main.find('#userForm').removeClass('hidden');
             $('#name').focus();
         }
-
-        var displayCreateButtons = function () {
-            var $parent = $('#buttons');
-            var options = [];
-            var $container = $('<div>', {'class': 'cp-dropdown-container'}).appendTo($parent);
-            Config.availablePadTypes.forEach(function (el) {
-                if (el === 'drive') { return; }
-                if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&
-                    Config.registeredOnlyTypes.indexOf(el) !== -1) { return; }
-                options.push({
-                    tag: 'a',
-                    attributes: {
-                        'class': 'newdoc',
-                        'href': '/' + el + '/',
-                        'target': '_blank'
-                    },
-                    content: Messages['button_new' + el] // Pretty name of the language value
-                });
-            });
-            var dropdownConfig = {
-                text: Messages.login_makeAPad, // Button initial text
-                options: options, // Entries displayed in the menu
-                container: $container
-            };
-            var $block = Cryptpad.createDropdown(dropdownConfig);
-            $block.find('button').addClass('btn').addClass('btn-primary');
-            $block.appendTo($parent);
-        };
 
         /* Log in UI */
         var Login;
@@ -144,17 +117,17 @@ define([
                             switch (err) {
                                 case 'NO_SUCH_USER':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_noSuchUser);
+                                        UI.alert(Messages.login_noSuchUser);
                                     });
                                     break;
                                 case 'INVAL_USER':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalUser);
+                                        UI.alert(Messages.login_invalUser);
                                     });
                                     break;
                                 case 'INVAL_PASS':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalPass);
+                                        UI.alert(Messages.login_invalPass);
                                     });
                                     break;
                                 default: // UNHANDLED ERROR
@@ -166,27 +139,6 @@ define([
             }, 100);
         });
         /* End Log in UI */
-
-        var addButtonHandlers = function () {
-            $('button.register').click(function () {
-                var username = $('#name').val();
-                var passwd = $('#password').val();
-                sessionStorage.login_user = username;
-                sessionStorage.login_pass = passwd;
-                document.location.href = '/register/';
-            });
-            $('button.gotodrive').click(function () {
-                document.location.href = '/drive/';
-            });
-
-            $('button#loggedInLogout').click(function () {
-                $('#user-menu .logout').click();
-            });
-        };
-
-        displayCreateButtons();
-
-        addButtonHandlers();
         console.log("ready");
     });
 });

@@ -10,6 +10,7 @@ define([
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/common/common-interface.js',
     '/common/common-thumbnail.js',
     '/customize/application_config.js',
 
@@ -28,6 +29,7 @@ define([
     SFCommon,
     Messages,
     Util,
+    UI,
     Thumb,
     AppConfig)
 {
@@ -287,9 +289,9 @@ define([
         var onConnectionChange = function (info) {
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);
             if (info.state) {
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             } else {
-                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                UI.alert(Messages.common_connectionLost, undefined, true);
             }
         };
 
@@ -297,7 +299,7 @@ define([
             var $export = common.createButton('export', true, {}, function () {
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
-                Cryptpad.prompt(Messages.exportPrompt,
+                UI.prompt(Messages.exportPrompt,
                     Cryptpad.fixFileName(suggestion) + '.' + ext, function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
@@ -426,13 +428,13 @@ define([
                 if (infiniteSpinnerModal) { return; }
                 infiniteSpinnerModal = true;
                 stateChange(STATE.INFINITE_SPINNER);
-                Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
                 });
                 cpNfInner.chainpad.onSettle(function () {
                     infiniteSpinnerModal = false;
-                    Cryptpad.findCancelButton().click();
+                    UI.findCancelButton().click();
                     stateChange(STATE.READY);
                     onRemote();
                 });

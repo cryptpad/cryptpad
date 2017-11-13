@@ -7,6 +7,7 @@ define([
     '/slide/slide.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
+    '/common/common-interface.js',
     'cm/lib/codemirror',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -48,6 +49,7 @@ define([
     Slide,
     Framework,
     Util,
+    UI,
     CMeditor)
 {
     window.CodeMirror = CMeditor;
@@ -104,7 +106,7 @@ define([
             Slide.update(editor.getValue(), true);
             $print.html($content.html());
             // TODO use translation key
-            Cryptpad.confirm("Are you sure you want to print?", function (yes) {
+            UI.confirm("Are you sure you want to print?", function (yes) {
                 if (yes) {
                     window.focus();
                     window.print();
@@ -224,7 +226,7 @@ define([
                     slideOptionsTmp.style = '';
                     parseLess(mkLess(less), function (err, css) {
                         if (err) {
-                            Cryptpad.alert(
+                            UI.alert(
                                 '<strong>' + Messages.slide_invalidLess + '</strong>' +
                                 '<br>' +
                                 '<pre class="cp-slide-css-error">' + Util.fixHTML(
@@ -245,14 +247,14 @@ define([
                     updateLocalOptions(slideOptionsTmp);
                 }
                 $container.remove();
-                Cryptpad.stopListening(h);
+                UI.stopListening(h);
             };
             var todoCancel = function () {
                 $container.remove();
-                Cryptpad.stopListening(h);
+                UI.stopListening(h);
             };
 
-            h = Cryptpad.listenForKeys(todo, todoCancel);
+            h = UI.listenForKeys(todo, todoCancel);
 
             var $nav = $('<nav>').appendTo($div);
             $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);

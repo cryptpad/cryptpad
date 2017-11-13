@@ -6,6 +6,8 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-util.js',
+    '/common/common-interface.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
     'cm/mode/markdown/markdown',
@@ -24,6 +26,8 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
+    Util,
+    UI,
     Marked,
     CodeMirror
     )
@@ -44,7 +48,7 @@ define([
     })
     .on('decryptionError', function (e) {
         var error = e.originalEvent;
-        Cryptpad.alert(error.message);
+        UI.alert(error.message);
     });
 
     $(window).click(function () {
@@ -114,7 +118,7 @@ define([
                 setValue(newVal, function (err) {
                     if (err) { return void console.error(err); }
                     lastVal = newVal;
-                    Cryptpad.log(Messages._getKey('profile_fieldSaved', [newVal || fallbackValue]));
+                    UI.log(Messages._getKey('profile_fieldSaved', [newVal || fallbackValue]));
                     editing = false;
                 });
             };
@@ -158,7 +162,7 @@ define([
 
         var unsafeName = obj.name || '';
         console.log(unsafeName);
-        var name = Cryptpad.fixHTML(unsafeName) || Messages.anonymous;
+        var name = Util.fixHTML(unsafeName) || Messages.anonymous;
         console.log(name);
 
         console.log("Creating invite button");
@@ -169,10 +173,10 @@ define([
         .addClass('btn btn-success')
         .text(Messages.profile_inviteButton)
         .click(function () {
-            Cryptpad.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
+            UI.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
                 if (!yes) { return; }
                 console.log(obj.curveKey);
-                Cryptpad.alert("TODO");
+                UI.alert("TODO");
                 // TODO create a listmap object using your curve keys
                 // TODO fill the listmap object with your invite data
                 // TODO generate link to invite object
@@ -280,7 +284,7 @@ define([
             $delButton.click(function () {
                 var old = common.getMetadataMgr().getUserData().avatar;
                 sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                    if (err || err2) { return void Cryptpad.log(err || err2); }
+                    if (err || err2) { return void UI.log(err || err2); }
                     delete APP.lm.proxy.avatar;
                     displayAvatar();
                 });
@@ -297,14 +301,14 @@ define([
                 var old = common.getMetadataMgr().getUserData().avatar;
                 var todo = function () {
                     sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
-                        if (err || err2) { return void Cryptpad.log(err || err2); }
+                        if (err || err2) { return void UI.log(err || err2); }
                         APP.lm.proxy.avatar = data.url;
                         displayAvatar();
                     });
                 };
                 if (old) {
                     sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                        if (err || err2) { return void Cryptpad.log(err || err2); }
+                        if (err || err2) { return void UI.log(err || err2); }
                         todo();
                     });
                     return;

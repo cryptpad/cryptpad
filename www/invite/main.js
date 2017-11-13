@@ -1,10 +1,11 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    '/common/common-interface.js',
+    //'/bower_components/chainpad-listmap/chainpad-listmap.js',
     //'/common/curve.js',
     'less!/invite/main.less',
-], function ($, Cryptpad /*, Listmap, Curve*/) {
+], function ($, Cryptpad, UI /*, Listmap, Curve*/) {
     var Messages = Cryptpad.Messages;
     var comingSoon = function () {
         return $('<div>', {
@@ -38,7 +39,7 @@ define([
 
         if (!info.pubkey) {
             Cryptpad.removeLoadingScreen();
-            Cryptpad.alert('invalid invite');
+            UI.alert('invalid invite');
             return;
         }
 

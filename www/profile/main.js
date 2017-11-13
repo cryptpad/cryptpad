@@ -56,7 +56,7 @@ define([
                         // TODO
                     }
                     return;
-                    //return void Cryptpad.log(Messages._getKey('profile_error', [e])) // TODO
+                    //return void UI.log(Messages._getKey('profile_error', [e])) // TODO
                 }
                 obj.profile = {};
                 obj.profile.edit = Cryptpad.getEditHashFromKeys(secret.channel, secret.keys);

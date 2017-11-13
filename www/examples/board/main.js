@@ -49,7 +49,7 @@ define([
     });
 
     var firstUser = function () {
-        Cryptpad.log("You are the first user to visit this board");
+        UI.log("You are the first user to visit this board");
     };
 
     var whenReady = function () {
@@ -81,7 +81,7 @@ define([
             window.location.hash = info.channel + secret.key;
         })
         .on('ready', function () {
-            Cryptpad.log("Ready!");
+            UI.log("Ready!");
             whenReady({
 
             });

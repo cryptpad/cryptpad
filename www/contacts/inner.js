@@ -95,7 +95,7 @@ define([
             if (data.error) {
                 Cryptpad.warn(data.error);
             } else {
-                Cryptpad.log(data.response);
+                UI.log(data.response);
             }
         });*/
     });

@@ -6,6 +6,8 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
+    '/common/common-util.js',
+    '/common/common-interface.js',
 
     '/file/file-crypto.js',
     '/common/media-tag.js',
@@ -24,6 +26,8 @@ define([
     nThen,
     SFCommon,
     CommonRealtime,
+    Util,
+    UI,
     FileCrypto,
     MediaTag)
 {
@@ -128,7 +132,7 @@ define([
                         }
                         $dlButton.addClass('btn btn-success');
                         var text = Messages.download_mt_button + '<br>';
-                        text += '<b>' + Cryptpad.fixHTML(title) + '</b><br>';
+                        text += '<b>' + Util.fixHTML(title) + '</b><br>';
                         text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
                         $dlButton.html(text);
 
@@ -165,7 +169,7 @@ define([
                     })
                     .on('decryptionError', function (e) {
                         var error = e.originalEvent;
-                        //Cryptpad.alert(error.message);
+                        //UI.alert(error.message);
                         cb(error.message);
                     })
                     .on('decryptionProgress', function (e) {
@@ -205,7 +209,7 @@ define([
                     $dlform.show();
                     Cryptpad.removeLoadingScreen();
                     $dllabel.append($('<br>'));
-                    $dllabel.append(Cryptpad.fixHTML(metadata.name));
+                    $dllabel.append(Util.fixHTML(metadata.name));
 
                     // don't display the size if you don't know it.
                     if (typeof(sizeM) === 'number') {
@@ -217,7 +221,7 @@ define([
                         if (decrypting) { return; }
                         decrypting = true;
                         displayFile(ev, sizeMb, function (err) {
-                            if (err) { Cryptpad.alert(err); }
+                            if (err) { UI.alert(err); }
                         });
                     };
                     if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
@@ -238,7 +242,7 @@ define([
         // we're in upload mode
 
         if (!common.isLoggedIn()) {
-            return Cryptpad.alert(Messages.upload_mustLogin, function () {
+            return UI.alert(Messages.upload_mustLogin, function () {
                 Cryptpad.errorLoadingScreen(Messages.upload_mustLogin);
                 common.setLoginRedirect(function () {
                     common.gotoURL('/login/');

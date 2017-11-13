@@ -2,9 +2,10 @@ define([
     'jquery',
     '/common/cryptpad-common.js',
     '/common/login.js',
+    '/common/common-interface.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login) {
+], function ($, Cryptpad, Login, UI) {
     $(function () {
         var $main = $('#mainBlock');
         var Messages = Cryptpad.Messages;
@@ -103,21 +104,21 @@ define([
                             switch (err) {
                                 case 'NO_SUCH_USER':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_noSuchUser, function () {
+                                        UI.alert(Messages.login_noSuchUser, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 case 'INVAL_USER':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalUser, function () {
+                                        UI.alert(Messages.login_invalUser, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 case 'INVAL_PASS':
                                     Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalPass, function () {
+                                        UI.alert(Messages.login_invalPass, function () {
                                             hashing = false;
                                         });
                                     });

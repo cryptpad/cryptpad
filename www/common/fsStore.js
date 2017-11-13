@@ -4,8 +4,9 @@ define([
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/userObject.js',
+    '/common/common-interface.js',
     '/common/migrate-user-object.js',
-], function ($, Listmap, Crypto, TextPatcher, FO, Migrate) {
+], function ($, Listmap, Crypto, TextPatcher, FO, UI, Migrate) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -361,7 +362,7 @@ define([
             if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
                 rt.network.disconnect();
                 rt.realtime.abort();
-                Cryptpad.alert(Cryptpad.Messages.fs_migration, null, true);
+                UI.alert(Cryptpad.Messages.fs_migration, null, true);
             }
         });
     };

@@ -59,14 +59,14 @@ define([
     var anon_rpc;
 
     // import UI elements
-    common.findCancelButton = UI.findCancelButton;
-    common.findOKButton = UI.findOKButton;
-    common.listenForKeys = UI.listenForKeys;
-    common.stopListening = UI.stopListening;
-    common.prompt = UI.prompt;
-    common.confirm = UI.confirm;
-    common.alert = UI.alert;
-    common.log = UI.log;
+    //common.findCancelButton = UI.findCancelButton; REFACTOR
+    //common.findOKButton = UI.findOKButton;
+    //common.listenForKeys = UI.listenForKeys;
+    //common.stopListening = UI.stopListening;
+    //common.prompt = UI.prompt;
+    //common.confirm = UI.confirm;
+    //common.alert = UI.alert;
+    //common.log = UI.log;
     common.warn = UI.warn;
     common.spinner = UI.spinner;
     common.addLoadingScreen = UI.addLoadingScreen;
@@ -83,7 +83,6 @@ define([
 
     // import common utilities for export
     common.find = Util.find;
-    var fixHTML = common.fixHTML = Util.fixHTML;
     common.hexToBase64 = Util.hexToBase64;
     common.base64ToHex = Util.base64ToHex;
     var deduplicateString = common.deduplicateString = Util.deduplicateString;
@@ -167,14 +166,6 @@ define([
     };
     common.setLanguage = function (l, cb) {
         Language.setLanguage(l, null, cb);
-    };
-    common.getUserlist = function () {
-        if (store) {
-            if (store.getProxy() && store.getProxy().info) {
-                return store.getProxy().info.userList;
-            }
-        }
-        return;
     };
     common.getProfileUrl = function () {
         if (store && store.getProfile()) {
@@ -642,7 +633,7 @@ define([
         var $content = $('<div>');
         $('<b>').text(Messages.selectTemplate).appendTo($content);
         $('<p>', {id:"selectTemplate"}).appendTo($content);
-        common.alert($content.html(), null, true);
+        UI.alert($content.html(), null, true);
         var $p = $('#selectTemplate');
         temps.forEach(function (t, i) {
             $('<a>', {href: t.href, title: t.title}).text(t.title).click(function (e) {
@@ -654,7 +645,7 @@ define([
                     if (err) { throw new Error(err); }
                     var p = parsePadUrl(window.location.href);
                     Crypt.put(p.hash, val, function () {
-                        common.findOKButton().click();
+                        UI.findOKButton().click();
                         common.removeLoadingScreen();
                         common.feedback('TEMPLATE_USED');
                     });
@@ -662,7 +653,7 @@ define([
             }).appendTo($p);
             if (i !== temps.length) { $('<br>').appendTo($p); }
         });
-        common.findOKButton().text(Messages.cancelButton);
+        UI.findOKButton().text(Messages.cancelButton);
     };
     // Secure iframes
     common.useTemplate = function (href, Crypt, cb) {
@@ -791,7 +782,7 @@ define([
                 getStore().pushData(data, function (e, id) {
                     if (e) {
                         if (e === 'E_OVER_LIMIT') {
-                            common.alert(Messages.pinLimitNotPinned, null, true);
+                            UI.alert(Messages.pinLimitNotPinned, null, true);
                         }
                         return void cb(e);
                     }
@@ -1239,26 +1230,6 @@ define([
         });
     };
 
-    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
-    var isEmoji = function (str) {
-      return emoji_patt.test(str);
-    };
-    var emojiStringToArray = function (str) {
-      var split = str.split(emoji_patt);
-      var arr = [];
-      for (var i=0; i<split.length; i++) {
-        var char = split[i];
-        if (char !== "") {
-          arr.push(char);
-        }
-      }
-      return arr;
-    };
-    var getFirstEmojiOrCharacter = common.getFirstEmojiOrCharacter = function (str) {
-      if (!str || !str.trim()) { return '?'; }
-      var emojis = emojiStringToArray(str);
-      return isEmoji(emojis[0])? emojis[0]: str[0];
-    };
 
     common.getMediatagScript = function () {
         var origin = window.location.origin;
@@ -1311,7 +1282,7 @@ define([
                     .html(function () {
                         var text = Messages.download_mt_button + '<br>';
                         if (title) {
-                            text += '<b>' + common.fixHTML(title) + '</b><br>';
+                            text += '<b>' + Util.fixHTML(title) + '</b><br>';
                         }
                         if (size) {
                             text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
@@ -1427,157 +1398,6 @@ define([
 
 
 
-    // Create a button with a dropdown menu
-    // input is a config object with parameters:
-    //  - container (optional): the dropdown container (span)
-    //  - text (optional): the button text value
-    //  - options: array of {tag: "", attributes: {}, content: "string"}
-    //
-    // allowed options tags: ['a', 'hr', 'p']
-    var createDropdown = common.createDropdown = function (config) {
-        if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
-
-        var allowedTags = ['a', 'p', 'hr'];
-        var isValidOption = function (o) {
-            if (typeof o !== "object") { return false; }
-            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
-            return true;
-        };
-
-        // Container
-        var $container = $(config.container);
-        var containerConfig = {
-            'class': 'cp-dropdown-container'
-        };
-        if (config.buttonTitle) {
-            containerConfig.title = config.buttonTitle;
-        }
-
-        if (!config.container) {
-            $container = $('<span>', containerConfig);
-        }
-
-        // Button
-        var $button = $('<button>', {
-            'class': ''
-        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
-        /*$('<span>', {
-            'class': 'fa fa-caret-down',
-        }).appendTo($button);*/
-
-        // Menu
-        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
-        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
-
-        config.options.forEach(function (o) {
-            if (!isValidOption(o)) { return; }
-            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
-        });
-
-        $container.append($button).append($innerblock);
-
-        var value = config.initialValue || '';
-
-        var setActive = function ($el) {
-            if ($el.length !== 1) { return; }
-            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
-            $el.addClass('cp-dropdown-element-active');
-            var scroll = $el.position().top + $innerblock.scrollTop();
-            if (scroll < $innerblock.scrollTop()) {
-                $innerblock.scrollTop(scroll);
-            } else if (scroll > ($innerblock.scrollTop() + 280)) {
-                $innerblock.scrollTop(scroll-270);
-            }
-        };
-
-        var hide = function () {
-            window.setTimeout(function () { $innerblock.hide(); }, 0);
-        };
-
-        var show = function () {
-            $innerblock.show();
-            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
-            if (config.isSelect && value) {
-                var $val = $innerblock.find('[data-value="'+value+'"]');
-                setActive($val);
-                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
-            }
-            if (config.feedback && store) { common.feedback(config.feedback); }
-        };
-
-        $container.click(function (e) {
-            e.stopPropagation();
-            var state = $innerblock.is(':visible');
-            $('.cp-dropdown-content').hide();
-            try {
-                $('iframe').each(function (idx, ifrw) {
-                    $(ifrw).contents().find('.cp-dropdown-content').hide();
-                });
-            } catch (er) {
-                // empty try catch in case this iframe is problematic (cross-origin)
-            }
-            if (state) {
-                hide();
-                return;
-            }
-            show();
-        });
-
-        if (config.isSelect) {
-            var pressed = '';
-            var to;
-            $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
-                if (e.which === 38) { // Up
-                    if ($value.length) {
-                        var $prev = $value.prev();
-                        setActive($prev);
-                    }
-                }
-                if (e.which === 40) { // Down
-                    if ($value.length) {
-                        var $next = $value.next();
-                        setActive($next);
-                    }
-                }
-                if (e.which === 13) { //Enter
-                    if ($value.length) {
-                        $value.click();
-                        hide();
-                    }
-                }
-                if (e.which === 27) { // Esc
-                    hide();
-                }
-            });
-            $container.keypress(function (e) {
-                window.clearTimeout(to);
-                var c = String.fromCharCode(e.which);
-                pressed += c;
-                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
-                if ($value.length) {
-                    setActive($value);
-                    $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
-                }
-                to = window.setTimeout(function () {
-                    pressed = '';
-                }, 1000);
-            });
-
-            $container.setValue = function (val, name) {
-                value = val;
-                var $val = $innerblock.find('[data-value="'+val+'"]');
-                var textValue = name || $val.html() || val;
-                $button.find('.cp-dropdown-button-title').html(textValue);
-            };
-            $container.getValue = function () {
-                return value || '';
-            };
-        }
-
-        return $container;
-    };
-
     common.getShareHashes = function (secret, cb) {
         if (!window.location.hash) {
             var hashes = common.getHashes(secret.channel, secret);
@@ -1623,7 +1443,7 @@ define([
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) > parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
-        //common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
+        //UI.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
         localStorage[CRYPTPAD_VERSION] = ver;
     };
 
@@ -1645,10 +1465,10 @@ define([
             delete sessionStorage[newPadPathKey];
         }
         common.onFriendRequest = function (confirmText, cb) {
-            common.confirm(confirmText, cb, null, true);
+            UI.confirm(confirmText, cb, null, true);
         };
         common.onFriendComplete = function (data) {
-            common.log(data.logText);
+            UI.log(data.logText);
         };
 
         var proxy;

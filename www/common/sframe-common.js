@@ -16,6 +16,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-util.js',
     '/common/common-thumbnail.js',
+    '/common/common-interface.js',
     '/bower_components/localforage/dist/localforage.min.js'
 ], function (
     $,
@@ -24,7 +25,7 @@ define([
     CpNfInner,
     SFrameChannel,
     Title,
-    UI,
+    UIElements,
     History,
     File,
     CodeMirror,
@@ -34,6 +35,7 @@ define([
     CommonRealtime,
     Util,
     Thumb,
+    UI,
     localForage
 ) {
     // Chainpad Netflux Inner
@@ -74,16 +76,16 @@ define([
     };
 
     // UI
-    funcs.createUserAdminMenu = callWithCommon(UI.createUserAdminMenu);
-    funcs.initFilePicker = callWithCommon(UI.initFilePicker);
-    funcs.openFilePicker = callWithCommon(UI.openFilePicker);
-    funcs.openTemplatePicker = callWithCommon(UI.openTemplatePicker);
-    funcs.displayMediatagImage = callWithCommon(UI.displayMediatagImage);
-    funcs.displayAvatar = callWithCommon(UI.displayAvatar);
-    funcs.createButton = callWithCommon(UI.createButton);
-    funcs.createUsageBar = callWithCommon(UI.createUsageBar);
-    funcs.updateTags = callWithCommon(UI.updateTags);
-    funcs.createLanguageSelector = callWithCommon(UI.createLanguageSelector);
+    funcs.createUserAdminMenu = callWithCommon(UIElements.createUserAdminMenu);
+    funcs.initFilePicker = callWithCommon(UIElements.initFilePicker);
+    funcs.openFilePicker = callWithCommon(UIElements.openFilePicker);
+    funcs.openTemplatePicker = callWithCommon(UIElements.openTemplatePicker);
+    funcs.displayMediatagImage = callWithCommon(UIElements.displayMediatagImage);
+    funcs.displayAvatar = callWithCommon(UIElements.displayAvatar);
+    funcs.createButton = callWithCommon(UIElements.createButton);
+    funcs.createUsageBar = callWithCommon(UIElements.createUsageBar);
+    funcs.updateTags = callWithCommon(UIElements.updateTags);
+    funcs.createLanguageSelector = callWithCommon(UIElements.createLanguageSelector);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -357,19 +359,19 @@ define([
                 };
             });
 
-            UI.addTooltips();
+            UIElements.addTooltips();
 
             ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
             ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });
 
 
             ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
-                Cryptpad.confirm(confirmMsg, cb, null, true);
+                UI.confirm(confirmMsg, cb, null, true);
             });
             ctx.sframeChan.on('EV_FRIEND_REQUEST', function (data) {
                 var i = pendingFriends.indexOf(data.netfluxId);
                 if (i !== -1) { pendingFriends.splice(i, 1); }
-                Cryptpad.log(data.logText);
+                UI.log(data.logText);
             });
 
             ctx.sframeChan.ready();

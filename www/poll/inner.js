@@ -14,8 +14,8 @@ define([
     '/poll/render.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
-    '/common/common-ui-elements.js',
     '/common/common-thumbnail.js',
+    '/common/common-interface.js',
 
     'cm/lib/codemirror',
     'cm/addon/display/placeholder',
@@ -44,8 +44,8 @@ define([
     Renderer,
     DiffMd,
     SframeCM,
-    SFUI,
     Thumb,
+    UI,
     CMeditor)
 {
     var Messages = Cryptpad.Messages;
@@ -118,7 +118,7 @@ define([
     var exportFile = function () {
         var csv = getCSV();
         var suggestion = Title.suggestTitle(Title.defaultTitle);
-        Cryptpad.prompt(Messages.exportPrompt,
+        UI.prompt(Messages.exportPrompt,
             Cryptpad.fixFileName(suggestion) + '.csv', function (filename) {
             if (!(typeof(filename) === 'string' && filename)) { return; }
             var blob = new Blob([csv], {type: "application/csv;charset=utf-8"});
@@ -495,7 +495,7 @@ define([
         var isLocked = span.className && span.className.split(' ').indexOf('fa-lock') !== -1;
         if (type === 'row') {
             if (isRemove) {
-                Cryptpad.confirm(Messages.poll_removeOption, function (res) {
+                UI.confirm(Messages.poll_removeOption, function (res) {
                     if (!res) { return; }
                     Render.removeRow(APP.proxy, id, function () {
                         change();
@@ -508,7 +508,7 @@ define([
             }
         } else if (type === 'col') {
             if (isRemove) {
-                Cryptpad.confirm(Messages.poll_removeUser, function (res) {
+                UI.confirm(Messages.poll_removeUser, function (res) {
                     if (!res) { return; }
                     Render.removeColumn(APP.proxy, id, function () {
                         change();
@@ -1051,12 +1051,12 @@ define([
 
     var onDisconnect = function () {
         setEditable(false);
-        Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+        UI.alert(Messages.common_connectionLost, undefined, true);
     };
 
     var onReconnect = function () {
         setEditable(true);
-        Cryptpad.findOKButton().click();
+        UI.findOKButton().click();
     };
 
     var getHeadingText = function () {

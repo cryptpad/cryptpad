@@ -4,6 +4,7 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-interface.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -14,7 +15,8 @@ define([
     Toolbar,
     Cryptpad,
     nThen,
-    SFCommon
+    SFCommon,
+    UI
     )
 {
     var saveAs = window.saveAs;
@@ -198,7 +200,7 @@ define([
                     localStore.put(k, undefined);
                 }
             });
-            Cryptpad.alert(Messages.settings_resetTipsDone);
+            UI.alert(Messages.settings_resetTipsDone);
         });
 
         return $div;
@@ -249,7 +251,7 @@ define([
         $button.click(function () {
             sframeChan.query("Q_THUMBNAIL_CLEAR", null, function (err) {
                 if (err) { return void console.error("Cannot clear localForage"); }
-                Cryptpad.alert(Messages.settings_resetThumbnailsDone);
+                UI.alert(Messages.settings_resetThumbnailsDone);
             });
         });
 
@@ -268,7 +270,7 @@ define([
                 var sjson = JSON.stringify(data);
                 var name = displayName || accountName || Messages.anonymous;
                 var suggestion = name + '-' + new Date().toDateString();
-                Cryptpad.prompt(Cryptpad.Messages.exportPrompt,
+                UI.prompt(Cryptpad.Messages.exportPrompt,
                     Cryptpad.fixFileName(suggestion) + '.json', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     var blob = new Blob([sjson], {type: "application/json;charset=utf-8"});
@@ -314,14 +316,14 @@ define([
             .text(Messages.settings_resetButton).appendTo($div);
 
         $button.click(function () {
-            Cryptpad.prompt(Messages.settings_resetPrompt, "", function (val) {
+            UI.prompt(Messages.settings_resetPrompt, "", function (val) {
                 if (val !== "I love CryptPad") {
-                    Cryptpad.alert(Messages.settings_resetError);
+                    UI.alert(Messages.settings_resetError);
                     return;
                 }
                 sframeChan.query("Q_SETTINGS_DRIVE_RESET", null, function (err) {
                     if (err) { return void console.error(err); }
-                    Cryptpad.alert(Messages.settings_resetDone);
+                    UI.alert(Messages.settings_resetDone);
                 });
             }, undefined, true);
         });
@@ -392,7 +394,7 @@ define([
 
         $button.click(function () {
 
-            Cryptpad.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
+            UI.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
                 if (!yes) { return; }
                 $spinner.show();
                 $ok.hide();
@@ -424,14 +426,14 @@ define([
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
 
         $button.click(function () {
-            Cryptpad.confirm(Messages.settings_importConfirm, function (yes) {
+            UI.confirm(Messages.settings_importConfirm, function (yes) {
                 if (!yes) { return; }
                 $spinner.show();
                 $ok.hide();
                 sframeChan.query('Q_SETTINGS_IMPORT_LOCAL', null, function () {
                     $spinner.hide();
                     $ok.show();
-                    Cryptpad.alert(Messages.settings_importDone);
+                    UI.alert(Messages.settings_importDone);
                 });
             }, undefined, true);
         });

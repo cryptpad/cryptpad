@@ -5,6 +5,8 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
+    '/common/common-ui-elements.js',
+    '/common/common-interface.js',
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -23,6 +25,8 @@ define([
     JSONSortify,
     Cryptpad,
     Util,
+    UIElements,
+    UI,
     Cryptget,
     nThen,
     SFCommon,
@@ -76,7 +80,7 @@ define([
     var logError = config.logError = function () {
         console.error.apply(console, arguments);
     };
-    var log = config.log = Cryptpad.log;
+    var log = config.log = UI.log;
 
     var localStore = window.cryptpadStore;
     APP.store = {};
@@ -255,7 +259,7 @@ define([
             currentPath = [FILES_DATA];
             $tree.hide();
             if (Object.keys(files.root).length && !proxy.anonymousAlert) {
-                Cryptpad.alert(Messages.fm_alert_anonymous, null, true);
+                UI.alert(Messages.fm_alert_anonymous, null, true);
                 proxy.anonymousAlert = true;
             }
         }
@@ -1442,7 +1446,7 @@ define([
             $button.addClass('cp-app-drive-toolbar-emptytrash');
             $button.attr('title', Messages.fc_empty);
             $button.click(function () {
-                Cryptpad.confirm(Messages.fm_emptyTrashDialog, function(res) {
+                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
                     if (!res) { return; }
                     filesOp.emptyTrash(refresh);
                 });
@@ -1471,9 +1475,9 @@ define([
                 var onCreated = function (err, info) {
                     if (err) {
                         if (err === E_OVER_LIMIT) {
-                            return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                            return void UI.alert(Messages.pinLimitDrive, null, true);
                         }
-                        return void Cryptpad.alert(Messages.fm_error_cantPin);
+                        return void UI.alert(Messages.fm_error_cantPin);
                     }
                     APP.newFolder = info.newPath;
                     refresh();
@@ -1549,7 +1553,7 @@ define([
                 options: options,
                 feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
             };
-            var $block = Cryptpad.createDropdown(dropdownConfig);
+            var $block = UIElements.createDropdown(dropdownConfig);
 
             // Custom style:
             $block.find('button').addClass('cp-app-drive-toolbar-new');
@@ -2593,7 +2597,7 @@ define([
                 el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert($prop[0], undefined, true);
+                    UI.alert($prop[0], undefined, true);
                 });
             }
             else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
@@ -2639,7 +2643,7 @@ define([
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
                     }
-                    Cryptpad.confirm(msg, function(res) {
+                    UI.confirm(msg, function(res) {
                         $(window).focus();
                         if (!res) { return; }
                         filesOp.delete(pathsList, refresh);
@@ -2653,7 +2657,7 @@ define([
                 el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert($prop[0], undefined, true);
+                    UI.alert($prop[0], undefined, true);
                 });
             }
             else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
@@ -2672,10 +2676,10 @@ define([
             var path = $(this).data('path');
             var onCreated = function (err, info) {
                 if (err === E_OVER_LIMIT) {
-                    return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                    return void UI.alert(Messages.pinLimitDrive, null, true);
                 }
                 if (err) {
-                    return void Cryptpad.alert(Messages.fm_error_cantPin);
+                    return void UI.alert(Messages.fm_error_cantPin);
                 }
                 APP.newFolder = info.newPath;
                 refresh();
@@ -2700,7 +2704,7 @@ define([
                 return;
             }
             if ($(this).hasClass("cp-app-drive-context-empty")) {
-                Cryptpad.confirm(Messages.fm_emptyTrashDialog, function(res) {
+                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
                     if (!res) { return; }
                     filesOp.emptyTrash(refresh);
                 });
@@ -2720,7 +2724,7 @@ define([
             var name = paths[0].path[paths[0].path.length - 1];
             if ($(this).hasClass("cp-app-drive-context-remove")) {
                 if (paths.length === 1) {
-                    Cryptpad.confirm(Messages.fm_removePermanentlyDialog, function(res) {
+                    UI.confirm(Messages.fm_removePermanentlyDialog, function(res) {
                         if (!res) { return; }
                         filesOp.delete([path], refresh);
                     });
@@ -2729,7 +2733,7 @@ define([
                 var pathsList = [];
                 paths.forEach(function (p) { pathsList.push(p.path); });
                 var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
-                Cryptpad.confirm(msg, function(res) {
+                UI.confirm(msg, function(res) {
                     if (!res) { return; }
                     filesOp.delete(pathsList, refresh);
                 });
@@ -2744,7 +2748,7 @@ define([
                         name = path[1];
                     }
                 }
-                Cryptpad.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
+                UI.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
                     if (!res) { return; }
                     filesOp.restore(path, refresh);
                 });
@@ -2753,7 +2757,7 @@ define([
                 if (paths.length !== 1 || path.length !== 4) { return; }
                 var element = filesOp.find(path.slice(0,3)); // element containing the oldpath
                 var sPath = stringifyPath(element.path);
-                Cryptpad.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
+                UI.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
             }
             APP.hideMenu();
         });
@@ -2802,7 +2806,7 @@ define([
                         msg = Messages.fm_removePermanentlyDialog;
                     }
 
-                    Cryptpad.confirm(msg, function(res) {
+                    UI.confirm(msg, function(res) {
                         $(window).focus();
                         if (!res) { return; }
                         filesOp.delete(paths, refresh);
@@ -2996,7 +3000,7 @@ define([
                     $backupButton.on('click', function() {
                         var url = window.location.origin + window.location.pathname + '#' + editHash;
                         var msg = Messages.fm_alert_backupUrl + '<input type="text" readonly="readonly" id="fm_backupUrl" value="'+url+'">';
-                        Cryptpad.alert(msg, undefined, true);
+                        UI.alert(msg, undefined, true);
                         $('#fm_backupUrl').val(url);
                         $('#fm_backupUrl').click(function () {
                             $(this).select();
@@ -3025,13 +3029,13 @@ define([
                 setEditable(false);
                 if (APP.refresh) { APP.refresh(); }
                 APP.toolbar.failed();
-                if (!noAlert) { Cryptpad.alert(Messages.common_connectionLost, undefined, true); }
+                if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
             };
             var onReconnect = function (info) {
                 setEditable(true);
                 if (APP.refresh) { APP.refresh(); }
                 APP.toolbar.reconnecting(info.myId);
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             };
 
             proxy.on('create', function (info) {

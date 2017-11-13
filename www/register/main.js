@@ -4,9 +4,10 @@ define([
     '/common/cryptpad-common.js',
     '/common/test.js',
     '/common/credential.js', // preloaded for login.js
+    '/common/common-interface.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred) {
+], function ($, Login, Cryptpad, Test, Cred, UI) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -100,21 +101,21 @@ define([
                 var warning = Messages._getKey('register_passwordTooShort', [
                     Cred.MINIMUM_PASSWORD_LENGTH
                 ]);
-                return void Cryptpad.alert(warning, function () {
+                return void UI.alert(warning, function () {
                     registering = false;
                 });
             }
 
             if (passwd !== confirmPassword) { // do their passwords match?
-                return void Cryptpad.alert(Messages.register_passwordsDontMatch);
+                return void UI.alert(Messages.register_passwordsDontMatch);
             }
 
             if (!doesAccept) { // do they accept the terms of service?
-                return void Cryptpad.alert(Messages.register_mustAcceptTerms);
+                return void UI.alert(Messages.register_mustAcceptTerms);
             }
 
             setTimeout(function () {
-            Cryptpad.confirm("<h2 class='bright msg'>" + Messages.register_warning + "</h2>",
+            UI.confirm("<h2 class='bright msg'>" + Messages.register_warning + "</h2>",
             function (yes) {
                 if (!yes) { return; }
 
@@ -135,21 +136,21 @@ define([
                                 switch (err) {
                                     case 'NO_SUCH_USER':
                                         Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_noSuchUser, function () {
+                                            UI.alert(Messages.login_noSuchUser, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'INVAL_USER':
                                         Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_invalUser, function () {
+                                            UI.alert(Messages.login_invalUser, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'INVAL_PASS':
                                         Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_invalPass, function () {
+                                            UI.alert(Messages.login_invalPass, function () {
                                                 registering = false;
                                             });
                                         });
@@ -159,7 +160,7 @@ define([
                                             var warning = Messages._getKey('register_passwordTooShort', [
                                                 Cred.MINIMUM_PASSWORD_LENGTH
                                             ]);
-                                            Cryptpad.alert(warning, function () {
+                                            UI.alert(warning, function () {
                                                 registering = false;
                                             });
                                         });
@@ -167,7 +168,7 @@ define([
                                     case 'ALREADY_REGISTERED':
                                         // logMeIn should reset registering = false
                                         Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.confirm(Messages.register_alreadyRegistered, function (yes) {
+                                            UI.confirm(Messages.register_alreadyRegistered, function (yes) {
                                                 if (!yes) { return; }
                                                 proxy.login_name = uname;
 
@@ -240,7 +241,7 @@ define([
             $register.click();
 
             window.setTimeout(function () {
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             }, 1000);
         });
     });

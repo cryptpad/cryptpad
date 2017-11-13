@@ -2,7 +2,9 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/api/config',
-], function ($, Config, ApiConfig) {
+    '/common/common-ui-elements.js',
+    '/common/common-interface.js'
+], function ($, Config, ApiConfig, UIElements, UI) {
     var Messages = {};
     var Cryptpad;
     var Common;
@@ -426,7 +428,7 @@ define([
             options: options,
             feedback: 'SHARE_MENU',
         };
-        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
         $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
         $shareBlock.addClass('cp-toolbar-share-button');
         $shareBlock.find('button').attr('title', Messages.shareButton);
@@ -434,21 +436,21 @@ define([
         if (hashes.editHash) {
             $shareBlock.find('a.cp-toolbar-share-edit-copy').click(function () {
                 /*Common.storeLinkToClipboard(false, function (err) {
-                    if (!err) { Cryptpad.log(Messages.shareSuccess); }
+                    if (!err) { UI.log(Messages.shareSuccess); }
                 });*/
                 var url = origin + pathname + '#' + hashes.editHash;
                 var success = Cryptpad.Clipboard.copy(url);
-                if (success) { Cryptpad.log(Messages.shareSuccess); }
+                if (success) { UI.log(Messages.shareSuccess); }
             });
         }
         if (hashes.viewHash) {
             $shareBlock.find('a.cp-toolbar-share-view-copy').click(function () {
                 /*Common.storeLinkToClipboard(true, function (err) {
-                    if (!err) { Cryptpad.log(Messages.shareSuccess); }
+                    if (!err) { UI.log(Messages.shareSuccess); }
                 });*/
                 var url = origin + pathname + '#' + hashes.viewHash;
                 var success = Cryptpad.Clipboard.copy(url);
-                if (success) { Cryptpad.log(Messages.shareSuccess); }
+                if (success) { UI.log(Messages.shareSuccess); }
             });
             $shareBlock.find('a.cp-toolbar-share-view-embed').click(function () {
                 var url = origin + pathname + '#' + hashes.viewHash;
@@ -468,12 +470,12 @@ define([
                     readonly: 'readonly',
                     value: iframeEmbed,
                 }).appendTo($tag);
-                Cryptpad.alert($content.html(), null, true);
+                UI.alert($content.html(), null, true);
                 $('#'+iframeId).click(function () {
                     this.select();
                 });
                 //var success = Cryptpad.Clipboard.copy(url);
-                //if (success) { Cryptpad.log(Messages.shareSuccess); }
+                //if (success) { UI.log(Messages.shareSuccess); }
             });
         }
 
@@ -511,7 +513,7 @@ define([
             options: options,
             feedback: 'FILESHARE_MENU',
         };
-        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
         $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS);
         $shareBlock.addClass('cp-toolbar-share-button');
         $shareBlock.find('button').attr('title', Messages.shareButton);
@@ -519,7 +521,7 @@ define([
         // Add handlers
         $shareBlock.find('a.cp-toolbar-share-file-copy').click(function () {
             var success = Cryptpad.Clipboard.copy(url);
-            if (success) { Cryptpad.log(Messages.shareSuccess); }
+            if (success) { UI.log(Messages.shareSuccess); }
         });
         $shareBlock.find('a.cp-toolbar-share-file-embed').click(function () {
             var $content = $('<div>');
@@ -531,7 +533,7 @@ define([
             var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
             $('<br>').appendTo($tag);
             $tag.append(Cryptpad.dialog.selectable(Common.getMediatagFromHref(url)));
-            Cryptpad.alert($content[0], null, true);
+            UI.alert($content[0], null, true);
         });
 
         toolbar.$leftside.append($shareBlock);
@@ -760,7 +762,7 @@ define([
                     key = 'pinLimitReachedAlertNoAccounts';
                 }
                 $limit.show().click(function () {
-                    Cryptpad.alert(Messages._getKey(key, [encodeURIComponent(window.location.hostname)]), null, true);
+                    UI.alert(Messages._getKey(key, [encodeURIComponent(window.location.hostname)]), null, true);
                 });
             }
         };
@@ -796,7 +798,7 @@ define([
             feedback: /drive/.test(window.location.pathname)?
                 'DRIVE_NEWPAD': 'NEWPAD',
         };
-        var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
+        var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
         $newPadBlock.find('button').addClass('fa fa-th');
         return $newPadBlock;
@@ -830,7 +832,7 @@ define([
             e.stopPropagation();
             var myData = metadataMgr.getMetadata().users[metadataMgr.getNetfluxId()];
             var lastName = myData.name;
-            Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
+            UI.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                 if (newName === null && typeof(lastName) === "string") { return; }
                 if (newName === null) { newName = ''; }
                 else { Common.feedback('NAME_CHANGED'); }
@@ -900,14 +902,14 @@ define([
                 if (Config.disableUserlistNotifications) { return; }
                 switch(type) {
                     case 1:
-                        Cryptpad.log(Messages._getKey("notifyJoined", [name]));
+                        UI.log(Messages._getKey("notifyJoined", [name]));
                         break;
                     case 0:
                         oldname = (!oldname) ? Messages.anonymous : oldname;
-                        Cryptpad.log(Messages._getKey("notifyRenamed", [oldname, name]));
+                        UI.log(Messages._getKey("notifyRenamed", [oldname, name]));
                         break;
                     case -1:
-                        Cryptpad.log(Messages._getKey("notifyLeft", [name]));
+                        UI.log(Messages._getKey("notifyLeft", [name]));
                         break;
                     default:
                         console.log("Invalid type of notification");

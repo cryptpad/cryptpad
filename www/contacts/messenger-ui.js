@@ -1,14 +1,16 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
+    '/customize/messages.js',
+    '/common/common-util.js',
+    '/common/common-interface.js',
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
     '/common/media-tag.js',
-], function ($, Cryptpad, h, Marked, MediaTag) {
+], function ($, Cryptpad, Messages, Util, UI, h, Marked, MediaTag) {
     'use strict';
 
     var UI = {};
-    var Messages = Cryptpad.Messages;
 
     var m = function (md) {
         var d = h('div.cp-app-contacts-content');
@@ -163,12 +165,12 @@ define([
             });
 
             $(removeHistory).click(function () {
-                Cryptpad.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
+                UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
                     Cryptpad.clearOwnedChannel(data.channel, function (e) {
                         if (e) {
                             console.error(e);
-                            Cryptpad.alert(Messages.contacts_removeHistoryServerError);
+                            UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
                     });
@@ -355,8 +357,8 @@ define([
 
             $(remove).click(function (e) {
                 e.stopPropagation();
-                Cryptpad.confirm(Messages._getKey('contacts_confirmRemove', [
-                    Cryptpad.fixHTML(data.displayName)
+                UI.confirm(Messages._getKey('contacts_confirmRemove', [
+                    Util.fixHTML(data.displayName)
                 ]), function (yes) {
                     if (!yes) { return; }
                     removeFriend(curvePublic, function (e) {

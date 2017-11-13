@@ -10,7 +10,7 @@ define([
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/common/common-ui-elements.js',
+    '/common/common-interface.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/pages.js',
@@ -37,7 +37,7 @@ define([
     Cryptget,
     nThen,
     SFCommon,
-    SFUI,
+    UI,
     ApiConfig,
     CommonRealtime,
     Pages,
@@ -228,7 +228,7 @@ define([
 
         var saveImage = APP.saveImage = function () {
             var defaultName = "pretty-picture.png";
-            Cryptpad.prompt(Messages.exportPrompt, defaultName, function (filename) {
+            UI.prompt(Messages.exportPrompt, defaultName, function (filename) {
                 if (!(typeof(filename) === 'string' && filename)) { return; }
                 $canvas[0].toBlob(function (blob) {
                     saveAs(blob, filename);
@@ -436,7 +436,7 @@ define([
             if (common.isLoggedIn()) {
                 common.createButton('savetodrive', true, {}, function () {})
                 .click(function () {
-                    Cryptpad.prompt(Messages.exportPrompt, document.title + '.png',
+                    UI.prompt(Messages.exportPrompt, document.title + '.png',
                     function (name) {
                         if (name === null || !name.trim()) { return; }
                         APP.upload(name);
@@ -592,16 +592,16 @@ define([
             // inform of network disconnect
             setEditable(false);
             toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            UI.alert(Messages.common_connectionLost, undefined, true);
         };
 
         config.onConnectionChange = function (info) {
             setEditable(info.state);
             if (info.state) {
                 initializing = true;
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             } else {
-                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                UI.alert(Messages.common_connectionLost, undefined, true);
             }
         };
 
@@ -612,7 +612,7 @@ define([
 
         cpNfInner.onInfiniteSpinner(function () {
             setEditable(false);
-            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+            UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                 if (!yes) { return; }
                 common.gotoURL();
             });
