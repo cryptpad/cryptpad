@@ -3,12 +3,12 @@ define([
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
-    '/common/cryptpad-common.js',
     '/drive/tests.js',
     '/common/test.js',
+    '/common/common-hash.js',
     '/common/common-thumbnail.js',
     '/common/flat-dom.js',
-], function ($, Hyperjson, TextPatcher, Sortify, Cryptpad, Drive, Test, Thumb, Flat) {
+], function ($, Hyperjson, TextPatcher, Sortify, Drive, Test, Hash, Thumb, Flat) {
     window.Hyperjson = Hyperjson;
     window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
@@ -158,7 +158,7 @@ define([
 
     // check that old hashes parse correctly
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
+        var secret = Hash.parsePadUrl('/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
         return cb(secret.hashData.channel === "67b8385b07352be53e40746d2be6ccd7" &&
             secret.hashData.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
             secret.hashData.version === 0);
@@ -166,7 +166,7 @@ define([
 
     // make sure version 1 hashes parse correctly
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI');
         return cb(secret.hashData.version === 1 &&
             secret.hashData.mode === "edit" &&
             secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
@@ -176,7 +176,7 @@ define([
 
     // test support for present mode in hashes
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present');
         return cb(secret.hashData.version === 1
             && secret.hashData.mode === "edit"
             && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
@@ -186,7 +186,7 @@ define([
 
     // test support for present mode in hashes
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G//present');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G//present');
         return cb(secret.hashData.version === 1
             && secret.hashData.mode === "edit"
             && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
@@ -196,7 +196,7 @@ define([
 
     // test support for present & embed mode in hashes
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/embed/present/');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/embed/present/');
         return cb(secret.hashData.version === 1
             && secret.hashData.mode === "edit"
             && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
@@ -207,7 +207,7 @@ define([
 
     // test support for present & embed mode in hashes
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present/embed');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present/embed');
         return cb(secret.hashData.version === 1
             && secret.hashData.mode === "edit"
             && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
@@ -218,7 +218,7 @@ define([
 
     // test support for embed mode in hashes
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G///embed//');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit//CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G///embed//');
         return cb(secret.hashData.version === 1
             && secret.hashData.mode === "edit"
             && secret.hashData.channel === "CmN5+YJkrHFS3NSBg-P7Sg"
@@ -229,7 +229,7 @@ define([
 
     // test support for trailing slash
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');
+        var secret = Hash.parsePadUrl('/pad/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/');
         return cb(secret.hashData.version === 1 &&
             secret.hashData.mode === "edit" &&
             secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
@@ -238,7 +238,7 @@ define([
     }, "test support for trailing slashes in version 1 hash failed to parse");
 
     assert(function (cb) {
-        var secret = Cryptpad.parsePadUrl('/invite/#/1/ilrOtygzDVoUSRpOOJrUuQ/e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=/');
+        var secret = Hash.parsePadUrl('/invite/#/1/ilrOtygzDVoUSRpOOJrUuQ/e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=/');
         var hd = secret.hashData;
         cb(hd.channel === "ilrOtygzDVoUSRpOOJrUuQ" &&
             hd.pubkey === "e8jvf36S3chzkkcaMrLSW7PPrz7VDp85lIFNI26dTmr=" &&

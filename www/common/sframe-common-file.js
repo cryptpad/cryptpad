@@ -3,9 +3,11 @@ define([
     '/file/file-crypto.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
+    '/common/common-util.js',
+    '/customize/messages.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, Thumb, UI) {
+], function ($, FileCrypto, Thumb, UI, Util, Messages) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -33,9 +35,6 @@ define([
 
     module.create = function (common, config) {
         var File = {};
-        var Cryptpad = common.getCryptpadCommon();
-
-        var Messages = Cryptpad.Messages;
 
         var queue = File.queue = {
             queue: [],
@@ -168,9 +167,9 @@ define([
         };
 
         var prettySize = function (bytes) {
-            var kB = Cryptpad.bytesToKilobytes(bytes);
+            var kB = Util.bytesToKilobytes(bytes);
             if (kB < 1024) { return kB + Messages.KB; }
-            var mB = Cryptpad.bytesToMegabytes(bytes);
+            var mB = Util.bytesToMegabytes(bytes);
             return mB + Messages.MB;
         };
 

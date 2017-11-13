@@ -3,27 +3,15 @@ define([
     '/api/config',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-language.js',
     '/common/common-interface.js',
     '/common/media-tag.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Cryptpad, Util, Language, UI, MediaTag) {
+], function ($, Config, Cryptpad, Util, Hash, Language, UI, MediaTag) {
     var UIElements = {};
     var Messages = Cryptpad.Messages;
-
-    /**
-     * Requirements from cryptpad-common.js
-     * getFileSize
-     *  - hrefToHexChannelId
-     * displayAvatar
-     *  - getFirstEmojiOrCharacter
-     *  - parsePadUrl
-     *  - getSecrets
-     *  - base64ToHex
-     *  - getBlobPathFromHex
-     *  - bytesToMegabytes
-    */
 
     UIElements.updateTags = function (common, href) {
         var sframeChan = common.getSframeChannel();
@@ -308,19 +296,19 @@ define([
             if (cb) { cb(); }
         };
         if (!href) { return void displayDefault(); }
-        var parsed = Cryptpad.parsePadUrl(href);
-        var secret = Cryptpad.getSecrets('file', parsed.hash);
+        var parsed = Hash.parsePadUrl(href);
+        var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = Cryptpad.base64ToHex(secret.channel);
-            var src = Cryptpad.getBlobPathFromHex(hexFileName);
+            var hexFileName = Util.base64ToHex(secret.channel);
+            var src = Hash.getBlobPathFromHex(hexFileName);
             Common.getFileSize(href, function (e, data) {
                 if (e) {
                     displayDefault();
                     return void console.error(e);
                 }
                 if (typeof data !== "number") { return void displayDefault(); }
-                if (Cryptpad.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
+                if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
                 var $img = $('<media-tag>').appendTo($container);
                 $img.attr('src', src);
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
@@ -356,7 +344,7 @@ define([
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'cp-limit-container'});
         var todo;
-        var updateUsage = Cryptpad.notAgainForAnother(function () {
+        var updateUsage = Util.notAgainForAnother(function () {
             common.getPinUsage(todo);
         }, LIMIT_REFRESH_RATE);
 

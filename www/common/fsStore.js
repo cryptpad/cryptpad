@@ -5,8 +5,9 @@ define([
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/userObject.js',
     '/common/common-interface.js',
+    '/common/common-hash.js',
     '/common/migrate-user-object.js',
-], function ($, Listmap, Crypto, TextPatcher, FO, UI, Migrate) {
+], function ($, Listmap, Crypto, TextPatcher, FO, UI, Hash, Migrate) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -248,7 +249,7 @@ define([
             if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                 // even anonymous users should have a persistent, unique-ish id
                 console.log('generating a persistent identifier');
-                proxy.uid = Cryptpad.createChannelId();
+                proxy.uid = Hash.createChannelId();
             }
 
             // if the user is logged in, but does not have signing keys...
@@ -285,11 +286,11 @@ define([
         if (!Cryptpad || initialized) { return; }
         initialized = true;
 
-        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Cryptpad.createRandomHash();
+        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Hash.createRandomHash();
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
         }
-        var secret = Cryptpad.getSecrets('drive', hash);
+        var secret = Hash.getSecrets('drive', hash);
         var listmapConfig = {
             data: {},
             websocketURL: Cryptpad.getWebsocketURL(),
@@ -332,7 +333,7 @@ define([
         rt.proxy.on('create', function (info) {
             exp.info = info;
             if (!Cryptpad.getUserHash()) {
-                localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                localStorage.FS_hash = Hash.getEditHashFromKeys(info.channel, secret.keys);
             }
         }).on('ready', function () {
             if (store) { return; } // the store is already ready, it is a reconnection

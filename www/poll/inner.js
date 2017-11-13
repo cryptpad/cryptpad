@@ -60,7 +60,7 @@ define([
         Cryptpad: Cryptpad,
         mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
     };
-    var Render = Renderer(Cryptpad, APP);
+    var Render = Renderer(APP);
 
     var debug = $.noop; //console.log;
 
@@ -119,7 +119,7 @@ define([
         var csv = getCSV();
         var suggestion = Title.suggestTitle(Title.defaultTitle);
         UI.prompt(Messages.exportPrompt,
-            Cryptpad.fixFileName(suggestion) + '.csv', function (filename) {
+            Util.fixFileName(suggestion) + '.csv', function (filename) {
             if (!(typeof(filename) === 'string' && filename)) { return; }
             var blob = new Blob([csv], {type: "application/csv;charset=utf-8"});
             saveAs(blob, filename);

@@ -139,7 +139,7 @@ define([
 
 /* jshint ignore:start */
     var isFriend = function (proxy, edKey) {
-        var friends = Cryptpad.find(proxy, ['friends']);
+        var friends = Util.find(proxy, ['friends']);
         return typeof(edKey) === 'string' && friends && (edKey in friends);
     };
 
@@ -148,7 +148,7 @@ define([
         var obj = APP.lm.proxy;
 
         var proxy = Cryptpad.getProxy();
-        var userViewHash = Cryptpad.find(proxy, ['profile', 'view']);
+        var userViewHash = Util.find(proxy, ['profile', 'view']);
 
         var edKey = obj.edKey;
         var curveKey = obj.curveKey;
@@ -257,10 +257,15 @@ define([
         createEditableInput($block, LINK_ID, placeholder, getValue, setValue);
     };
 
+    var allowedMediaTypes = [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif',
+    ];
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
         var $span = $('<span>').appendTo($block);
-        var allowedMediaTypes = Cryptpad.avatarAllowedTypes;
         var sframeChan = common.getSframeChannel();
         var displayAvatar = function () {
             $span.html('');
@@ -320,7 +325,7 @@ define([
         var data = {
             FM: APP.FM,
             filter: function (file) {
-                var sizeMB = Cryptpad.bytesToMegabytes(file.size);
+                var sizeMB = Util.bytesToMegabytes(file.size);
                 var type = file.type;
                 return sizeMB <= 0.5 && allowedMediaTypes.indexOf(type) !== -1;
             },

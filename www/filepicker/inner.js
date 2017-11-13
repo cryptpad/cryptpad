@@ -8,6 +8,8 @@ define([
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
+    '/common/common-util.js',
+    '/common/common-hash.js',
     'json.sortify',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -23,6 +25,8 @@ define([
     SFCommon,
     UI,
     UIElements,
+    Util,
+    Hash,
     Sortify)
 {
     var Messages = Cryptpad.Messages;
@@ -45,10 +49,10 @@ define([
             sframeChan.event('EV_FILE_PICKER_CLOSE');
         };
         var onFilePicked = function (data) {
-            var parsed = Cryptpad.parsePadUrl(data.url);
+            var parsed = Hash.parsePadUrl(data.url);
             hideFileDialog();
             if (parsed.type === 'file') {
-                var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                 var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                 sframeChan.event("EV_FILE_PICKED", {
                     type: parsed.type,

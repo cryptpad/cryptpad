@@ -2,10 +2,11 @@ define([
     'jquery',
     '/common/cryptpad-common.js',
     '/common/common-interface.js',
+    //'/common/common-hash.js',
     //'/bower_components/chainpad-listmap/chainpad-listmap.js',
     //'/common/curve.js',
     'less!/invite/main.less',
-], function ($, Cryptpad, UI /*, Listmap, Curve*/) {
+], function ($, Cryptpad, UI/*, Hash , Listmap, Curve*/) {
     var Messages = Cryptpad.Messages;
     var comingSoon = function () {
         return $('<div>', {
@@ -34,7 +35,7 @@ define([
     var andThen = function () {
         var hash = window.location.hash.slice(1);
 
-        var info = Cryptpad.parseTypeHash('invite', hash);
+        var info = Hash.parseTypeHash('invite', hash);
         console.log(info);
 
         if (!info.pubkey) {

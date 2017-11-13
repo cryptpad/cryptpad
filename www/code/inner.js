@@ -7,6 +7,7 @@ define([
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/modes.js',
     'cm/lib/codemirror',
 
@@ -45,6 +46,7 @@ define([
     SFCommon,
     Framework,
     Util,
+    Hash,
     Modes,
     CMeditor)
 {
@@ -293,8 +295,8 @@ define([
                     //var cursor = editor.getCursor();
                     //var cleanName = data.name.replace(/[\[\]]/g, '');
                     //var text = '!['+cleanName+']('+data.url+')';
-                    var parsed = Cryptpad.parsePadUrl(data.url);
-                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
                     editor.replaceSelection(mt);

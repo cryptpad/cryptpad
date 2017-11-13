@@ -19,6 +19,7 @@ define([
         var FilePicker;
         var Messenger;
         var Notifier;
+        var Utils = {};
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -31,8 +32,11 @@ define([
                 '/filepicker/main.js',
                 '/common/common-messenger.js',
                 '/common/common-notifier.js',
+                '/common/common-hash.js',
+                '/common/common-util.js',
+                '/common/common-realtime.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel,
-            _FilePicker, _Messenger, _Notifier) {
+            _FilePicker, _Messenger, _Notifier, _Hash, _Util, _Realtime) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
@@ -40,6 +44,9 @@ define([
                 FilePicker = _FilePicker;
                 Messenger = _Messenger;
                 Notifier = _Notifier;
+                Utils.Hash = _Hash;
+                Utils.Util = _Util;
+                Utils.Realtime = _Realtime;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -85,16 +92,16 @@ define([
                 });
             });
 
-            secret = cfg.getSecrets ? cfg.getSecrets(Cryptpad) : Cryptpad.getSecrets();
+            secret = cfg.getSecrets ? cfg.getSecrets(Cryptpad, Utils) : Utils.Hash.getSecrets();
             if (!secret.channel) {
                 // New pad: create a new random channel id
-                secret.channel = Cryptpad.createChannelId();
+                secret.channel = Utils.Hash.createChannelId();
             }
             Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
         }).nThen(function () {
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             if (!secret.keys) { secret.keys = secret.key; }
-            var parsed = Cryptpad.parsePadUrl(window.location.href);
+            var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Cryptpad.getDefaultName(parsed);
             var proxy = Cryptpad.getProxy();
@@ -335,11 +342,11 @@ define([
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 cb(parsed.hashData && parsed.hashData.present);
             });
             sframeChan.on('EV_PRESENT_URL_SET_VALUE', function (data) {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 window.location.href = parsed.getUrl({
                     embed: parsed.hashData.embed,
                     present: data
@@ -463,7 +470,7 @@ define([
             });
 
             if (cfg.addRpc) {
-                cfg.addRpc(sframeChan, Cryptpad);
+                cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
 
             if (cfg.messaging) {
@@ -580,6 +587,18 @@ define([
 
             if (!realtime) { return; }
 
+            var replaceHash = function (hash) {
+                if (window.history && window.history.replaceState) {
+                    if (!/^#/.test(hash)) { hash = '#' + hash; }
+                    void window.history.replaceState({}, window.document.title, hash);
+                    if (typeof(window.onhashchange) === 'function') {
+                        window.onhashchange();
+                    }
+                    return;
+                }
+                window.location.hash = hash;
+            };
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
@@ -596,7 +615,7 @@ define([
                         return;
                     }
                     if (readOnly || cfg.noHash) { return; }
-                    Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
+                    replaceHash(Utils.Hash.getEditHashFromKeys(wc.id, secret.keys));
                 }
             });
         });

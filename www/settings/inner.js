@@ -5,6 +5,9 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
+    '/common/common-util.js',
+    '/common/common-hash.js',
+    '/customize/messages.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -16,16 +19,15 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
-    UI
+    UI,
+    Util,
+    Hash,
+    Messages
     )
 {
     var saveAs = window.saveAs;
-    var Messages = Cryptpad.Messages;
     var APP = window.APP = {
         Cryptpad: Cryptpad,
-    };
-    var onConnectError = function () {
-        UI.errorLoadingScreen(Messages.websocketError);
     };
 
     var common;
@@ -70,7 +72,7 @@ define([
         var publicKey = privateData.edPublic;
         if (publicKey) {
             var $key = $('<div>', {'class': 'cp-sidebarlayout-element'}).appendTo($div);
-            var userHref = Cryptpad.getUserHrefFromKeys(accountName, publicKey);
+            var userHref = Hash.getUserHrefFromKeys(accountName, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
                 .text(Messages.settings_publicSigningKey);
             $key.append($pubLabel).append(UI.dialog.selectable(userHref));
@@ -270,8 +272,8 @@ define([
                 var sjson = JSON.stringify(data);
                 var name = displayName || accountName || Messages.anonymous;
                 var suggestion = name + '-' + new Date().toDateString();
-                UI.prompt(Cryptpad.Messages.exportPrompt,
-                    Cryptpad.fixFileName(suggestion) + '.json', function (filename) {
+                UI.prompt(Messages.exportPrompt,
+                    Util.fixFileName(suggestion) + '.json', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     var blob = new Blob([sjson], {type: "application/json;charset=utf-8"});
                     saveAs(blob, filename);
@@ -500,12 +502,6 @@ define([
         sframeChan = common.getSframeChannel();
         sframeChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        Cryptpad.onError(function (info) {
-            if (info && info.type === "store") {
-                onConnectError();
-            }
-        });
-
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
 

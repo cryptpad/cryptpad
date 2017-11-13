@@ -300,7 +300,7 @@ define([
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
                 UI.prompt(Messages.exportPrompt,
-                    Cryptpad.fixFileName(suggestion) + '.' + ext, function (filename)
+                    Util.fixFileName(suggestion) + '.' + ext, function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     if (async) {

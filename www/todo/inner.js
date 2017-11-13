@@ -7,6 +7,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
+    '/common/common-hash.js',
     '/todo/todo.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -20,6 +21,7 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
+    Hash,
     UI,
     Todo
     )
@@ -165,7 +167,7 @@ define([
                     "mtime": +new Date()
                 };
 
-                var id = Cryptpad.createChannelId();
+                var id = Hash.createChannelId();
                 todo.add(id, obj);
 
                 $input.val("");

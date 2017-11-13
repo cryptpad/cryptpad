@@ -3,8 +3,10 @@ define([
     'jquery',
     '/bower_components/hyperjson/hyperjson.js',
     '/bower_components/textpatcher/TextPatcher.js',
+    '/common/common-util.js',
+    '/customize/messages.js',
     '/bower_components/diff-dom/diffDOM.js',
-], function ($, Hyperjson, TextPatcher) {
+], function ($, Hyperjson, TextPatcher, Util, Messages) {
     var DiffDOM = window.diffDOM;
 
     var Example = {
@@ -31,7 +33,7 @@ by maintaining indexes in rowsOrder and colsOrder
         }
     };
 
-var Renderer = function (Cryptpad, APP) {
+var Renderer = function (APP) {
 
     var Render = {
         Example: Example
@@ -64,15 +66,15 @@ var Renderer = function (Cryptpad, APP) {
     };
 
     var getColumnValue = Render.getColumnValue = function (obj, colId) {
-        return Cryptpad.find(obj, ['content', 'cols'].concat([colId]));
+        return Util.find(obj, ['content', 'cols'].concat([colId]));
     };
 
     var getRowValue = Render.getRowValue = function (obj, rowId) {
-        return Cryptpad.find(obj, ['content', 'rows'].concat([rowId]));
+        return Util.find(obj, ['content', 'rows'].concat([rowId]));
     };
 
     var getCellValue = Render.getCellValue = function (obj, cellId) {
-        var value = Cryptpad.find(obj, ['content', 'cells'].concat([cellId]));
+        var value = Util.find(obj, ['content', 'cells'].concat([cellId]));
         if (typeof value === 'boolean') {
             return (value === true ? 1 : 0);
         } else {
@@ -81,25 +83,25 @@ var Renderer = function (Cryptpad, APP) {
     };
 
     var setRowValue = Render.setRowValue = function (obj, rowId, value) {
-        var parent = Cryptpad.find(obj, ['content', 'rows']);
+        var parent = Util.find(obj, ['content', 'rows']);
         if (typeof(parent) === 'object') { return (parent[rowId] = value); }
         return null;
     };
 
     var setColumnValue = Render.setColumnValue = function (obj, colId, value) {
-        var parent = Cryptpad.find(obj, ['content', 'cols']);
+        var parent = Util.find(obj, ['content', 'cols']);
         if (typeof(parent) === 'object') { return (parent[colId] = value); }
         return null;
     };
 
     var setCellValue = Render.setCellValue = function (obj, cellId, value) {
-        var parent = Cryptpad.find(obj, ['content', 'cells']);
+        var parent = Util.find(obj, ['content', 'cells']);
         if (typeof(parent) === 'object') { return (parent[cellId] = value); }
         return null;
     };
 
     Render.createColumn = function (obj, cb, id, value) {
-        var order = Cryptpad.find(obj, ['content', 'colsOrder']);
+        var order = Util.find(obj, ['content', 'colsOrder']);
         if (!order) { throw new Error("Uninitialized realtime object!"); }
         id = id || coluid();
         value = value || "";
@@ -109,8 +111,8 @@ var Renderer = function (Cryptpad, APP) {
     };
 
     Render.removeColumn = function (obj, id, cb) {
-        var order = Cryptpad.find(obj, ['content', 'colsOrder']);
-        var parent = Cryptpad.find(obj, ['content', 'cols']);
+        var order = Util.find(obj, ['content', 'colsOrder']);
+        var parent = Util.find(obj, ['content', 'cols']);
 
         if (!(order && parent)) { throw new Error("Uninitialized realtime object!"); }
 
@@ -134,7 +136,7 @@ var Renderer = function (Cryptpad, APP) {
     };
 
     Render.createRow = function (obj, cb, id, value) {
-        var order = Cryptpad.find(obj, ['content', 'rowsOrder']);
+        var order = Util.find(obj, ['content', 'rowsOrder']);
         if (!order) { throw new Error("Uninitialized realtime object!"); }
         id = id || rowuid();
         value = value || "";
@@ -144,8 +146,8 @@ var Renderer = function (Cryptpad, APP) {
     };
 
     Render.removeRow = function (obj, id, cb) {
-        var order = Cryptpad.find(obj, ['content', 'rowsOrder']);
-        var parent = Cryptpad.find(obj, ['content', 'rows']);
+        var order = Util.find(obj, ['content', 'rowsOrder']);
+        var parent = Util.find(obj, ['content', 'rows']);
 
         if (!(order && parent)) { throw new Error("Uninitialized realtime object!"); }
 
@@ -185,15 +187,15 @@ var Renderer = function (Cryptpad, APP) {
     };
 
     var getRowIds = Render.getRowIds = function (obj) {
-        return Cryptpad.find(obj, ['content', 'rowsOrder']);
+        return Util.find(obj, ['content', 'rowsOrder']);
     };
 
     var getColIds = Render.getColIds = function (obj) {
-        return Cryptpad.find(obj, ['content', 'colsOrder']);
+        return Util.find(obj, ['content', 'colsOrder']);
     };
 
     var getCells = Render.getCells = function (obj) {
-        return Cryptpad.find(obj, ['content', 'cells']);
+        return Util.find(obj, ['content', 'cells']);
     };
 
     /*  cellMatrix takes a proxy object, and optionally an alternate ordering
@@ -219,13 +221,13 @@ var Renderer = function (Cryptpad, APP) {
                         'data-rt-id': col,
                         type: 'text',
                         value: getColumnValue(obj, col) || "",
-                        title: getColumnValue(obj, col) || Cryptpad.Messages.anonymous,
-                        placeholder: Cryptpad.Messages.anonymous,
+                        title: getColumnValue(obj, col) || Messages.anonymous,
+                        placeholder: Messages.anonymous,
                         disabled: 'disabled'
                     };
                     return result;
                 })).concat([{
-                    content: Cryptpad.Messages.poll_total
+                    content: Messages.poll_total
                 }]);
             }
             if (i === rows.length) {
@@ -239,9 +241,9 @@ var Renderer = function (Cryptpad, APP) {
             return [{
                 'data-rt-id': row,
                 value: getRowValue(obj, row) || '',
-                title: getRowValue(obj, row) || Cryptpad.Messages.poll_optionPlaceholder,
+                title: getRowValue(obj, row) || Messages.poll_optionPlaceholder,
                 type: 'text',
-                placeholder: Cryptpad.Messages.poll_optionPlaceholder,
+                placeholder: Messages.poll_optionPlaceholder,
                 disabled: 'disabled',
             }].concat(cols.map(function (col) {
                 var id = [col, rows[i-1]].join('_');
@@ -269,7 +271,7 @@ var Renderer = function (Cryptpad, APP) {
     var makeRemoveElement = Render.makeRemoveElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
-            'title': Cryptpad.Messages.poll_remove,
+            'title': Messages.poll_remove,
             class: 'cp-app-poll-table-remove',
         }, ['✖']];
     };
@@ -277,7 +279,7 @@ var Renderer = function (Cryptpad, APP) {
     var makeEditElement = Render.makeEditElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
-            'title': Cryptpad.Messages.poll_edit,
+            'title': Messages.poll_edit,
             class: 'cp-app-poll-table-edit',
         }, ['✐']];
     };
@@ -285,7 +287,7 @@ var Renderer = function (Cryptpad, APP) {
     var makeLockElement = Render.makeLockElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
-            'title': Cryptpad.Messages.poll_locked,
+            'title': Messages.poll_locked,
             class: 'cp-app-poll-table-lock fa fa-lock',
         }, []];
     };
@@ -293,7 +295,7 @@ var Renderer = function (Cryptpad, APP) {
     var makeBookmarkElement = Render.makeBookmarkElement = function (id) {
         return ['SPAN', {
             'data-rt-id': id,
-            'title': Cryptpad.Messages.poll_bookmark_col,
+            'title': Messages.poll_bookmark_col,
             'style': 'visibility: hidden;',
             class: 'cp-app-poll-table-bookmark fa fa-thumb-tack',
         }, []];
@@ -383,13 +385,13 @@ var Renderer = function (Cryptpad, APP) {
     };
 
     var diffIsInput = Render.diffIsInput = function (info) {
-        var nodeName = Cryptpad.find(info, ['node', 'nodeName']);
+        var nodeName = Util.find(info, ['node', 'nodeName']);
         if (nodeName !== 'INPUT') { return; }
         return true;
     };
 
     var getInputType = Render.getInputType = function (info) {
-        return Cryptpad.find(info, ['node', 'type']);
+        return Util.find(info, ['node', 'type']);
     };
 
     var preserveCursor = Render.preserveCursor = function (info) {
@@ -457,14 +459,14 @@ var Renderer = function (Cryptpad, APP) {
         // Enable input for the userid column
         APP.enableColumn(userid, table);
         $(table).find('input[disabled="disabled"][data-rt-id^="' + userid + '"]')
-            .attr('placeholder', Cryptpad.Messages.poll_userPlaceholder);
+            .attr('placeholder', Messages.poll_userPlaceholder);
         $(table).find('.cp-app-poll-table-lock[data-rt-id="' + userid + '"]').remove();
         $(table).find('[data-rt-id^="' + userid + '"]').closest('td')
             .addClass("cp-app-poll-table-own");
         $(table).find('.cp-app-poll-table-bookmark[data-rt-id="' + userid + '"]')
             .css('visibility', '')
             .addClass('cp-app-poll-table-bookmark-full')
-            .attr('title', Cryptpad.Messages.poll_bookmarked_col);
+            .attr('title', Messages.poll_bookmarked_col);
     };
     var styleUncommittedColumn = function (table) {
         APP.uncommitted.content.colsOrder.forEach(function(id) {

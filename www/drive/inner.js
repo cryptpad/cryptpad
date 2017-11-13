@@ -5,6 +5,7 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/cryptget.js',
@@ -25,6 +26,7 @@ define([
     JSONSortify,
     Cryptpad,
     Util,
+    Hash,
     UIElements,
     UI,
     Cryptget,
@@ -1148,7 +1150,7 @@ define([
             var data = filesOp.getFileData(element);
             if (!data) { return void logError("No data for the file", element); }
 
-            var hrefData = Cryptpad.parsePadUrl(data.href);
+            var hrefData = Hash.parsePadUrl(data.href);
             if (hrefData.type) {
                 $span.addClass('cp-border-color-'+hrefData.type);
             }
@@ -1707,7 +1709,7 @@ define([
                 var data = filesOp.getFileData(id);
                 if (!data) { return ''; }
                 if (prop === 'type') {
-                    var hrefData = Cryptpad.parsePadUrl(data.href);
+                    var hrefData = Hash.parsePadUrl(data.href);
                     return hrefData.type;
                 }
                 if (prop === 'atime' || prop === 'ctime') {
@@ -1742,7 +1744,7 @@ define([
                         };
                     }
                     if (prop === 'type') {
-                        var hrefData = Cryptpad.parsePadUrl(e.href);
+                        var hrefData = Hash.parsePadUrl(e.href);
                         return hrefData.type;
                     }
                     if (prop === 'atime' || prop === 'ctime') {
@@ -1957,7 +1959,7 @@ define([
             filesList.forEach(function (r) {
                 r.paths.forEach(function (path) {
                     var href = r.data.href;
-                    var parsed = Cryptpad.parsePadUrl(href);
+                    var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
                         .append(getFileIcon(href));
@@ -2447,13 +2449,13 @@ define([
             if (!filesOp.isFile(id)) { return; }
             var data = filesOp.getFileData(id);
             if (!data) { return; }
-            var parsed = Cryptpad.parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href);
             if (parsed.hashData.type !== "pad") { return; }
             var i = data.href.indexOf('#') + 1;
             var base = data.href.slice(0, i);
-            var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
+            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }
-            var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+            var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
             return base + viewHash;
         };
 
@@ -2486,7 +2488,7 @@ define([
                 }));
             }
 
-            var parsed = Cryptpad.parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href);
             if (parsed.hashData && parsed.hashData.type === 'pad') {
                 var roLink = ro ? base + data.href : base + getReadOnlyUrl(el);
                 if (roLink) {
@@ -2528,7 +2530,7 @@ define([
 
                         return void cb(void 0, $d);
                     }
-                    var KB = Cryptpad.bytesToKilobytes(bytes);
+                    var KB = Util.bytesToKilobytes(bytes);
 
                     var formatted = Messages._getKey('formattedKB', [KB]);
                     $('<br>').appendTo($d);

@@ -1,7 +1,8 @@
 define([
     '/file/file-crypto.js',
+    '/common/common-hash.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (FileCrypto) {
+], function (FileCrypto, Hash) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -50,7 +51,7 @@ define([
 
                 var b64Key = Nacl.util.encodeBase64(key);
 
-                var hash = common.getFileHashFromKeys(id, b64Key);
+                var hash = Hash.getFileHashFromKeys(id, b64Key);
                 var href = '/file/#' + hash;
 
                 var title = metadata.name;

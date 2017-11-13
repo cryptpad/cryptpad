@@ -38,9 +38,9 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad) {
+        var getSecrets = function (Cryptpad, Utils) {
             var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
-            return Cryptpad.getSecrets('drive', hash);
+            return Utils.Hash.getSecrets('drive', hash);
         };
         Netflux.connect(Cryptpad.getWebsocketURL()).then(function (network) {
             SFCommonO.start({

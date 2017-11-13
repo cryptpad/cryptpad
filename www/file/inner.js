@@ -2,12 +2,13 @@ define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
+    '/customize/messages.js',
 
     '/file/file-crypto.js',
     '/common/media-tag.js',
@@ -22,22 +23,20 @@ define([
     $,
     Crypto,
     Toolbar,
-    Cryptpad,
     nThen,
     SFCommon,
     CommonRealtime,
     Util,
+    Hash,
     UI,
+    Messages,
     FileCrypto,
     MediaTag)
 {
-    var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
 
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
+    var APP = window.APP = {};
 
     var andThen = function (common) {
         var $appContainer = $('#cp-app-file-content');
@@ -62,9 +61,9 @@ define([
         if (!priv.filehash) {
             uploadMode = true;
         } else {
-            secret = Cryptpad.getSecrets('file', priv.filehash);
+            secret = Hash.getSecrets('file', priv.filehash);
             if (!secret.keys) { throw new Error("You need a hash"); }
-            hexFileName = Cryptpad.base64ToHex(secret.channel);
+            hexFileName = Util.base64ToHex(secret.channel);
         }
 
         var Title = common.createTitle({});
@@ -74,7 +73,6 @@ define([
         }
         var configTb = {
             displayed: displayed,
-            common: Cryptpad,
             //hideDisplayName: true,
             $container: $bar,
             metadataMgr: metadataMgr,
@@ -88,7 +86,7 @@ define([
         toolbar.$rightside.html('');
 
         if (!uploadMode) {
-            var src = Cryptpad.getBlobPathFromHex(hexFileName);
+            var src = Hash.getBlobPathFromHex(hexFileName);
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
 
@@ -110,7 +108,7 @@ define([
 
                     var $mt = $dlview.find('media-tag');
                     var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                    var hexFileName = Cryptpad.base64ToHex(secret.channel);
+                    var hexFileName = Util.base64ToHex(secret.channel);
                     $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
@@ -232,7 +230,7 @@ define([
                     if (e) {
                         return void UI.errorLoadingScreen(e);
                     }
-                    var size = Cryptpad.bytesToMegabytes(data);
+                    var size = Util.bytesToMegabytes(data);
                     return void todoBigFile(size);
                 });
             });

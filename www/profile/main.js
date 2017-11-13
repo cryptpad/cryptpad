@@ -4,7 +4,7 @@ define([
     '/api/config',
     'jquery',
     '/common/requireconfig.js',
-    '/common/sframe-common-outer.js'
+    '/common/sframe-common-outer.js',
 ], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
@@ -36,20 +36,21 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad) {
+        var getSecrets = function (Cryptpad, Utils) {
+            var Hash = Utils.Hash;
             // 1st case: visiting someone else's profile with hash in the URL
             if (window.location.hash) {
-                return Cryptpad.getSecrets('profile', window.location.hash.slice(1));
+                return Hash.getSecrets('profile', window.location.hash.slice(1));
             }
             // 2nd case: visiting our own existing profile
             var obj = Cryptpad.getProxy();
             if (obj.profile && obj.profile.view && obj.profile.edit) {
-                return Cryptpad.getSecrets('profile', obj.profile.edit);
+                return Hash.getSecrets('profile', obj.profile.edit);
             }
             // 3rd case: profile creation (create a new random hash, store it later if needed)
             if (!Cryptpad.isLoggedIn()) { return; }
-            var hash = Cryptpad.createRandomHash();
-            var secret = Cryptpad.getSecrets('profile', hash);
+            var hash = Hash.createRandomHash();
+            var secret = Hash.getSecrets('profile', hash);
             Cryptpad.pinPads([secret.channel], function (e) {
                 if (e) {
                     if (e === 'E_OVER_LIMIT') {
@@ -59,26 +60,26 @@ define([
                     //return void UI.log(Messages._getKey('profile_error', [e])) // TODO
                 }
                 obj.profile = {};
-                obj.profile.edit = Cryptpad.getEditHashFromKeys(secret.channel, secret.keys);
-                obj.profile.view = Cryptpad.getViewHashFromKeys(secret.channel, secret.keys);
+                obj.profile.edit = Utils.Hash.getEditHashFromKeys(secret.channel, secret.keys);
+                obj.profile.view = Utils.Hash.getViewHashFromKeys(secret.channel, secret.keys);
             });
             return secret;
         };
-        var addRpc = function (sframeChan, Cryptpad) {
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
             // Adding a new avatar from the profile: pin it and store it in the object
             sframeChan.on('Q_PROFILE_AVATAR_ADD', function (data, cb) {
-                var chanId = Cryptpad.hrefToHexChannelId(data);
+                var chanId = Utils.Hash.hrefToHexChannelId(data);
                 Cryptpad.pinPads([chanId], function (e) {
                     if (e) { return void cb(e); }
                     Cryptpad.getProxy().profile.avatar = data;
-                    Cryptpad.whenRealtimeSyncs(Cryptpad.getRealtime(), function () {
+                    Utils.Realtime.whenRealtimeSyncs(Cryptpad.getRealtime(), function () {
                         cb();
                     });
                 });
             });
             // Removing the avatar from the profile: unpin it
             sframeChan.on('Q_PROFILE_AVATAR_REMOVE', function (data, cb) {
-                var chanId = Cryptpad.hrefToHexChannelId(data);
+                var chanId = Utils.Hash.hrefToHexChannelId(data);
                 Cryptpad.unpinPads([chanId], function (e) {
                     delete Cryptpad.getProxy().profile.avatar;
                     cb(e);

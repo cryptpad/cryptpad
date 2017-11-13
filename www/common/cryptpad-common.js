@@ -58,44 +58,44 @@ define([
     var anon_rpc;
 
     // import common utilities for export
-    common.find = Util.find;
-    common.hexToBase64 = Util.hexToBase64;
-    common.base64ToHex = Util.base64ToHex;
-    var deduplicateString = common.deduplicateString = Util.deduplicateString;
-    common.uint8ArrayToHex = Util.uint8ArrayToHex;
-    common.replaceHash = Util.replaceHash;
-    common.getHash = Util.getHash;
-    common.fixFileName = Util.fixFileName;
-    common.bytesToMegabytes = Util.bytesToMegabytes;
-    common.bytesToKilobytes = Util.bytesToKilobytes;
-    common.fetch = Util.fetch;
-    common.throttle = Util.throttle;
-    common.createRandomInteger = Util.createRandomInteger;
-    common.getAppType = Util.getAppType;
-    common.notAgainForAnother = Util.notAgainForAnother;
-    common.uid = Util.uid;
-    common.slice = Util.slice;
+    //common.find = Util.find;
+    //common.hexToBase64 = Util.hexToBase64;
+    //common.base64ToHex = Util.base64ToHex;
+    //var deduplicateString = common.deduplicateString = Util.deduplicateString;
+    //common.uint8ArrayToHex = Util.uint8ArrayToHex;
+    //common.replaceHash = Util.replaceHash;
+    //common.getHash = Util.getHash;
+    //common.fixFileName = Util.fixFileName;
+    //common.bytesToMegabytes = Util.bytesToMegabytes;
+    //common.bytesToKilobytes = Util.bytesToKilobytes;
+    //common.fetch = Util.fetch;
+    //common.throttle = Util.throttle;
+    //common.createRandomInteger = Util.createRandomInteger;
+    //common.getAppType = Util.getAppType;
+    //common.notAgainForAnother = Util.notAgainForAnother;
+    //common.uid = Util.uid;
+    //common.slice = Util.slice;
 
     // import hash utilities for export
-    var createRandomHash = common.createRandomHash = Hash.createRandomHash;
-    common.parseTypeHash = Hash.parseTypeHash;
-    var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
-    common.isNotStrongestStored = Hash.isNotStrongestStored;
-    var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
-    var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
-    common.getBlobPathFromHex = Hash.getBlobPathFromHex;
+    //var createRandomHash = common.createRandomHash = Hash.createRandomHash;
+    //common.parseTypeHash = Hash.parseTypeHash;
+    //var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
+    //common.isNotStrongestStored = Hash.isNotStrongestStored;
+    //var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
+    //var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
+    //common.getBlobPathFromHex = Hash.getBlobPathFromHex;
 
-    common.getEditHashFromKeys = Hash.getEditHashFromKeys;
-    common.getViewHashFromKeys = Hash.getViewHashFromKeys;
-    common.getFileHashFromKeys = Hash.getFileHashFromKeys;
-    common.getUserHrefFromKeys = Hash.getUserHrefFromKeys;
-    common.getSecrets = Hash.getSecrets;
-    common.getHashes = Hash.getHashes;
-    common.createChannelId = Hash.createChannelId;
-    common.findWeaker = Hash.findWeaker;
-    common.findStronger = Hash.findStronger;
-    common.serializeHash = Hash.serializeHash;
-    common.createInviteUrl = Hash.createInviteUrl;
+    //common.getEditHashFromKeys = Hash.getEditHashFromKeys;
+    //common.getViewHashFromKeys = Hash.getViewHashFromKeys;
+    //common.getFileHashFromKeys = Hash.getFileHashFromKeys;
+    //common.getUserHrefFromKeys = Hash.getUserHrefFromKeys;
+    //common.getSecrets = Hash.getSecrets;
+    //common.getHashes = Hash.getHashes;
+    //common.createChannelId = Hash.createChannelId;
+    //common.findWeaker = Hash.findWeaker;
+    //common.findStronger = Hash.findStronger;
+    //common.serializeHash = Hash.serializeHash;
+    //common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
     common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
@@ -107,10 +107,10 @@ define([
     common.getLatestMessages = Messaging.getLatestMessages;
 
     // Realtime
+    // REFACTOR: common is not needed anymore so we should just pull common-reealtime directly
     var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
         Realtime.whenRealtimeSyncs(common, realtime, cb);
     };
-
     common.beginDetectingInfiniteSpinner = function (realtime) {
         Realtime.beginDetectingInfiniteSpinner(common, realtime);
     };
@@ -137,12 +137,16 @@ define([
         }
         return;
     };
+
+    // REFACTOR pull language directly
     common.getLanguage = function () {
         return Messages._languageUsed;
     };
     common.setLanguage = function (l, cb) {
         Language.setLanguage(l, null, cb);
     };
+
+    // REAFCTOR store.getProfile should be store.get(['profile'])
     common.getProfileUrl = function () {
         if (store && store.getProfile()) {
             return store.getProfile().view;
@@ -166,13 +170,14 @@ define([
         return localStorage[common.userNameKey];
     };
 
+    // REFACTOR: move to util?
     var randomToken = function () {
         return Math.random().toString(16).replace(/0./, '');
     };
 
     common.isFeedbackAllowed = function () {
         try {
-            var entry = common.find(getProxy(), [
+            var entry = Util.find(getProxy(), [
                 'settings',
                 'general',
                 'allowUserFeedback'
@@ -246,7 +251,7 @@ define([
     common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
-        hash = common.serializeHash(hash);
+        hash = Hash.serializeHash(hash);
         localStorage.setItem(userHashKey, hash);
         localStorage.setItem(userNameKey, name);
         if (cb) { cb(); }
@@ -283,7 +288,7 @@ define([
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
         if (!localStorage[fileHashKey]) {
-            localStorage[fileHashKey] = common.createRandomHash();
+            localStorage[fileHashKey] = Hash.createRandomHash();
         }
         eraseTempSessionValues();
 
@@ -308,7 +313,7 @@ define([
         }
 
         if (hash) {
-            var sHash = common.serializeHash(hash);
+            var sHash = Hash.serializeHash(hash);
             if (sHash !== hash) { localStorage[userHashKey] = sHash; }
         }
 
@@ -357,9 +362,9 @@ define([
     var checkObjectData = function (pad, cb) {
         if (!pad.ctime) { pad.ctime = pad.atime; }
         if (/^https*:\/\//.test(pad.href)) {
-            pad.href = common.getRelativeHref(pad.href);
+            pad.href = Hash.getRelativeHref(pad.href);
         }
-        var parsed = common.parsePadUrl(pad.href);
+        var parsed = Hash.parsePadUrl(pad.href);
         if (!parsed || !parsed.hash) { return; }
         if (typeof(cb) === 'function') {
             cb(parsed);
@@ -368,28 +373,6 @@ define([
             pad.title = common.getDefaultName(parsed);
         }
         return parsed.hashData;
-    };
-    // Migrate from legacy store (localStorage)
-    common.migrateRecentPads = function (pads) {
-        return pads.map(function (pad) {
-            var parsedHash;
-            if (Array.isArray(pad)) { // TODO DEPRECATE_F
-                return {
-                    href: pad[0],
-                    atime: pad[1],
-                    title: pad[2] || '',
-                    ctime: pad[1],
-                };
-            } else if (pad && typeof(pad) === 'object') {
-                parsedHash = checkObjectData(pad);
-                if (!parsedHash || !parsedHash.type) { return; }
-                return pad;
-            } else {
-                console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
-                console.log(pad);
-                return;
-            }
-        }).filter(function (x) { return x; });
     };
     // Remove everything from RecentPads that is not an object and check the objects
     var checkRecentPads = common.checkRecentPads = function (pads) {
@@ -410,7 +393,7 @@ define([
     };
 
     // Create untitled documents when no name is given
-    var getLocaleDate = common.getLocaleDate = function () {
+    var getLocaleDate = function () {
         if (window.Intl && window.Intl.DateTimeFormat) {
             var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
             return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
@@ -433,18 +416,13 @@ define([
             href: href,
             atime: now,
             ctime: now,
-            title: title || getDefaultName(parsePadUrl(href)),
+            title: title || getDefaultName(Hash.parsePadUrl(href)),
         };
-    };
-
-    /* Sort pads according to how recently they were accessed */
-    common.mostRecent = function (a, b) {
-        return new Date(b.atime).getTime() - new Date(a.atime).getTime();
     };
 
     // STORAGE
     common.setPadAttribute = function (attr, value, cb, href) {
-        href = getRelativeHref(href || window.location.href);
+        href = Hash.getRelativeHref(href || window.location.href);
         getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setDisplayName = function (value, cb) {
@@ -464,7 +442,7 @@ define([
 
     // STORAGE
     common.getPadAttribute = function (attr, cb) {
-        var href = getRelativeHref(window.location.href);
+        var href = Hash.getRelativeHref(window.location.href);
         getStore().getPadAttribute(href, attr, cb);
     };
     common.getAttribute = function (attr, cb) {
@@ -492,7 +470,7 @@ define([
         href = href || (window.location.pathname + window.location.hash);
         var id = store.getIdFromHref(href);
         if (!id) { return void cb('NO_ID'); }
-        var entry = common.find(getProxy(), [
+        var entry = Util.find(getProxy(), [
             'drive',
             'filesData',
             id
@@ -558,7 +536,7 @@ define([
     common.listAllTags = function (cb) {
         var all = [];
         var proxy = getProxy();
-        var files = common.find(proxy, ['drive', 'filesData']);
+        var files = Util.find(proxy, ['drive', 'filesData']);
 
         if (typeof(files) !== 'object') { return cb('invalid_drive'); }
         Object.keys(files).forEach(function (k) {
@@ -583,7 +561,7 @@ define([
         if (!type) { return allTemplates; }
 
         var templates = allTemplates.filter(function (f) {
-            var parsed = parsePadUrl(f.href);
+            var parsed = Hash.parsePadUrl(f.href);
             return parsed.type === type;
         });
         return templates;
@@ -596,7 +574,7 @@ define([
     };
 
     common.isTemplate = function (href) {
-        var rhref = getRelativeHref(href);
+        var rhref = Hash.getRelativeHref(href);
         var templates = listTemplates();
         return templates.some(function (t) {
             return t.href === rhref;
@@ -605,11 +583,11 @@ define([
 
     // Secure iframes
     common.useTemplate = function (href, Crypt, cb) {
-        var parsed = parsePadUrl(href);
+        var parsed = Hash.parsePadUrl(href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         Crypt.get(parsed.hash, function (err, val) {
             if (err) { throw new Error(err); }
-            var p = parsePadUrl(window.location.href);
+            var p = Hash.parsePadUrl(window.location.href);
             Crypt.put(p.hash, val, cb);
         });
     };
@@ -649,7 +627,7 @@ define([
     // STORAGE
     common.forgetPad = function (href, cb) {
         if (typeof(getStore().forgetPad) === "function") {
-            getStore().forgetPad(common.getRelativeHref(href), cb);
+            getStore().forgetPad(Hash.getRelativeHref(href), cb);
             return;
         }
         cb ("store.forgetPad is not a function");
@@ -657,10 +635,10 @@ define([
 
     common.setPadTitle = function (name, padHref, cb) {
         var href = typeof padHref === "string" ? padHref : window.location.href;
-        var parsed = parsePadUrl(href);
+        var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return; }
         href = parsed.getUrl({present: parsed.present});
-        //href = getRelativeHref(href);
+        //href = Hash.getRelativeHref(href);
         // getRecentPads return the array from the drive, not a copy
         // We don't have to call "set..." at the end, everything is stored with listmap
         getRecentPads(function (err, recent) {
@@ -673,7 +651,7 @@ define([
             var contains;
             Object.keys(recent).forEach(function (id) {
                 var pad = recent[id];
-                var p = parsePadUrl(pad.href);
+                var p = Hash.parsePadUrl(pad.href);
 
                 if (p.type !== parsed.type) { return pad; }
 
@@ -759,7 +737,7 @@ define([
         if (title === null) { return; }
 
         if (title.trim() === "") {
-            var parsed = parsePadUrl(href || window.location.href);
+            var parsed = Hash.parsePadUrl(href || window.location.href);
             title = getDefaultName(parsed);
         }
 
@@ -773,22 +751,6 @@ define([
         });
     };
 
-    common.getUserFilesList = function () {
-        var store = common.getStore();
-        var proxy = store.getProxy();
-        var fo = proxy.fo;
-        var hashes = [];
-        var list = fo.getFiles([fo.ROOT]).filter(function (id) {
-            var href = fo.getFileData(id).href;
-            var parsed = parsePadUrl(href);
-            if ((parsed.type === 'file' || parsed.type === 'media')
-                 && hashes.indexOf(parsed.hash) === -1) {
-                hashes.push(parsed.hash);
-                return true;
-            }
-        });
-        return list;
-    };
     // Needed for the secure filepicker app
     common.getSecureFilesList = function (query, cb) {
         var store = common.getStore();
@@ -813,7 +775,7 @@ define([
         };
         fo.getFiles(where).forEach(function (id) {
             var data = fo.getFileData(id);
-            var parsed = parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href);
             if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1)
                  && hashes.indexOf(parsed.hash) === -1) {
                 if (isFiltered(parsed.type, data)) { return; }
@@ -833,21 +795,21 @@ define([
         var userHash = localStorage && localStorage.User_hash;
         if (!userHash) { return null; }
 
-        var userParsedHash = common.parseTypeHash('drive', userHash);
+        var userParsedHash = Hash.parseTypeHash('drive', userHash);
         var userChannel = userParsedHash && userParsedHash.channel;
         if (!userChannel) { return null; }
 
         var list = fo.getFiles([fo.FILES_DATA]).map(function (id) {
-                return hrefToHexChannelId(fo.getFileData(id).href);
+                return Hash.hrefToHexChannelId(fo.getFileData(id).href);
             })
             .filter(function (x) { return x; });
 
         // Get the avatar
         var profile = store.getProfile();
         if (profile) {
-            var profileChan = profile.edit ? hrefToHexChannelId('/profile/#' + profile.edit) : null;
+            var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit) : null;
             if (profileChan) { list.push(profileChan); }
-            var avatarChan = profile.avatar ? hrefToHexChannelId(profile.avatar) : null;
+            var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar) : null;
             if (avatarChan) { list.push(avatarChan); }
         }
 
@@ -856,14 +818,14 @@ define([
             list = list.concat(fList);
         }
 
-        list.push(common.base64ToHex(userChannel));
+        list.push(Util.base64ToHex(userChannel));
         list.sort();
 
         return list;
     };
 
     var getCanonicalChannelList = common.getCanonicalChannelList = function () {
-        return deduplicateString(getUserChannelList()).sort();
+        return Util.deduplicateString(getUserChannelList()).sort();
     };
 
     var pinsReady = common.pinsReady = function () {
@@ -1042,100 +1004,6 @@ define([
         rpc.uploadCancel(cb);
     };
 
-    /*  Create a usage bar which keeps track of how much storage space is used
-        by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
-        so we throttle its usage. Clients will not update more than once per
-        LIMIT_REFRESH_RATE. It will be update at least once every three such intervals
-        If changes are made to your drive in the interim, they will trigger an
-        update.
-    */
-    var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    common.createUsageBar = function (cb) {
-        if (!isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
-        // getPinnedUsage updates common.account.usage, and other values
-        // so we can just use those and only check for errors
-        var $container = $('<span>', {'class':'limit-container'});
-        var todo;
-        var updateUsage = window.updateUsage = common.notAgainForAnother(function () {
-            common.getPinnedUsage(todo);
-        }, LIMIT_REFRESH_RATE);
-
-        todo = function (err) {
-            if (err) { return void console.error(err); }
-
-            $container.html('');
-            var unit = Util.magnitudeOfBytes(common.account.limit);
-
-            var usage = unit === 'GB'? Util.bytesToGigabytes(common.account.usage):
-                Util.bytesToMegabytes(common.account.usage);
-            var limit = unit === 'GB'? Util.bytesToGigabytes(common.account.limit):
-                Util.bytesToMegabytes(common.account.limit);
-
-            var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
-            var quota = usage/limit;
-            var $usage = $('<span>', {'class': 'usage'}).css('width', quota*100+'%');
-
-            var makeDonateButton = function () {
-                $('<a>', {
-                    'class': 'upgrade btn btn-success',
-                    href: common.donateURL,
-                    rel: "noreferrer noopener",
-                    target: "_blank",
-                }).text(Messages.supportCryptpad).appendTo($container);
-            };
-
-            var makeUpgradeButton = function () {
-                $('<a>', {
-                    'class': 'upgrade btn btn-success',
-                    href: common.upgradeURL,
-                    rel: "noreferrer noopener",
-                    target: "_blank",
-                }).text(Messages.upgradeAccount).appendTo($container);
-            };
-
-            if (!Config.removeDonateButton) {
-                if (!common.isLoggedIn() || !Config.allowSubscriptions) {
-                    // user is not logged in, or subscriptions are disallowed
-                    makeDonateButton();
-                } else if (!common.account.plan) {
-                    // user is logged in and subscriptions are allowed
-                    // and they don't have one. show upgrades
-                    makeUpgradeButton();
-                } else {
-                    // they have a plan. show nothing
-                }
-            }
-
-            var prettyUsage;
-            var prettyLimit;
-
-            if (unit === 'GB') {
-                prettyUsage = Messages._getKey('formattedGB', [usage]);
-                prettyLimit = Messages._getKey('formattedGB', [limit]);
-            } else {
-                prettyUsage = Messages._getKey('formattedMB', [usage]);
-                prettyLimit = Messages._getKey('formattedMB', [limit]);
-            }
-
-            if (quota < 0.8) { $usage.addClass('normal'); }
-            else if (quota < 1) { $usage.addClass('warning'); }
-            else { $usage.addClass('above'); }
-            var $text = $('<span>', {'class': 'usageText'});
-            $text.text(usage + ' / ' + prettyLimit);
-            $limit.append($usage).append($text);
-        };
-
-        setInterval(function () {
-            updateUsage();
-        }, LIMIT_REFRESH_RATE * 3);
-
-        updateUsage();
-        getProxy().on('change', ['drive'], function () {
-            updateUsage();
-        });
-        cb(null, $container);
-    };
-
     // Forget button
     // TODO REFACTOR only used in sframe-common-outer
     common.moveToTrash = function (cb, href) {
@@ -1159,11 +1027,12 @@ define([
             }
         });
     };
+
     // TODO REFACTOR only used in sframe-common-outer
     common.saveAsTemplate = function (Cryptput, data, cb) {
-        var p = parsePadUrl(window.location.href);
+        var p = Hash.parsePadUrl(window.location.href);
         if (!p.type) { return; }
-        var hash = createRandomHash();
+        var hash = Hash.createRandomHash();
         var href = '/' + p.type + '/#' + hash;
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
@@ -1175,23 +1044,6 @@ define([
     };
 
 
-    common.getMediatagScript = function () {
-        var origin = window.location.origin;
-        return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
-    };
-    common.getMediatagFromHref = function (href) {
-        var parsed = common.parsePadUrl(href);
-        var secret = common.getSecrets('file', parsed.hash);
-        if (secret.keys && secret.channel) {
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = common.base64ToHex(secret.channel);
-            var origin = Config.fileHost || window.location.origin;
-            var src = origin + common.getBlobPathFromHex(hexFileName);
-            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + cryptKey + '">' +
-                   '</media-tag>';
-        }
-        return;
-    };
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
@@ -1218,7 +1070,7 @@ define([
                     size = decrypted.blob.size;
                 }
 
-                var sizeMb = common.bytesToMegabytes(size);
+                var sizeMb = Util.bytesToMegabytes(size);
 
                 var $btn = $(root).find('button');
                 $btn.addClass('btn btn-success')
@@ -1236,23 +1088,17 @@ define([
             });
         }
     });
-    common.avatarAllowedTypes = [
-        'image/png',
-        'image/jpeg',
-        'image/jpg',
-        'image/gif',
-    ];
 
     common.getShareHashes = function (secret, cb) {
         if (!window.location.hash) {
-            var hashes = common.getHashes(secret.channel, secret);
+            var hashes = Hash.getHashes(secret.channel, secret);
             return void cb(null, hashes);
         }
         common.getRecentPads(function (err, recent) {
-            var parsed = parsePadUrl(window.location.href);
+            var parsed = Hash.parsePadUrl(window.location.href);
             if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
             if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
-            var hashes = common.getHashes(secret.channel, secret);
+            var hashes = Hash.getHashes(secret.channel, secret);
 
             if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
                 // It means we're using an old hash
@@ -1260,9 +1106,9 @@ define([
             }
 
             // If we have a stronger version in drive, add it and add a redirect button
-            var stronger = recent && common.findStronger(null, recent);
+            var stronger = recent && Hash.findStronger(null, recent);
             if (stronger) {
-                var parsed2 = parsePadUrl(stronger);
+                var parsed2 = Hash.parsePadUrl(stronger);
                 hashes.editHash = parsed2.hash;
             }
 
@@ -1357,8 +1203,8 @@ define([
             var oldHref  = document.location.href;
             window.onhashchange = function () {
                 var newHref = document.location.href;
-                var parsedOld = parsePadUrl(oldHref).hashData;
-                var parsedNew = parsePadUrl(newHref).hashData;
+                var parsedOld = Hash.parsePadUrl(oldHref).hashData;
+                var parsedNew = Hash.parsePadUrl(newHref).hashData;
                 if (parsedOld && parsedNew && (
                       parsedOld.type !== parsedNew.type
                       || parsedOld.channel !== parsedNew.channel
@@ -1438,7 +1284,7 @@ define([
             if (sessionStorage.createReadme) {
                 var w = waitFor();
                 require(['/common/cryptget.js'], function (Crypt) {
-                    var hash = common.createRandomHash();
+                    var hash = Hash.createRandomHash();
                     Crypt.put(hash, Messages.driveReadme, function (e) {
                         if (e) {
                             console.error("Error while creating the default pad:", e);

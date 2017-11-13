@@ -5,9 +5,10 @@ define([
     '/common/test.js',
     '/common/credential.js', // preloaded for login.js
     '/common/common-interface.js',
+    '/common/common-util.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI) {
+], function ($, Login, Cryptpad, Test, Cred, UI, Util) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -215,7 +216,7 @@ define([
             }, 150);
         });
 
-        var clickRegister = Cryptpad.notAgainForAnother(function () {
+        var clickRegister = Util.notAgainForAnother(function () {
             $register.click();
         }, 500);
 
