@@ -393,8 +393,8 @@ define([
     var onReady = function () {
         APP.$container.find('#'+CREATE_ID).remove();
 
-        var obj = APP.lm && APP.lm.proxy;
-        /*if (!APP.readOnly) {
+        /*var obj = APP.lm && APP.lm.proxy;
+        if (!APP.readOnly) {
             var pubKeys = Cryptpad.getPublicKeys();
             if (pubKeys && pubKeys.curve) {
                 obj.curveKey = pubKeys.curve;

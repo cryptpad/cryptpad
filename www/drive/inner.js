@@ -39,8 +39,6 @@ define([
     Listmap,
     Messages)
 {
-    var Messages = Cryptpad.Messages;
-
     var APP = window.APP = {
         editable: false,
         Cryptpad: Cryptpad,

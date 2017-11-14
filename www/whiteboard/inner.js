@@ -595,8 +595,6 @@ define([
             }
         };
 
-        config.onError = onConnectError;
-
         cpNfInner = common.startRealtime(config);
         metadataMgr = cpNfInner.metadataMgr;
 
