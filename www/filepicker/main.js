@@ -94,14 +94,6 @@ define([
                 sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
                 proxy.on('change', 'settings', updateMeta);
 
-                Cryptpad.onError(function (info) {
-                    console.log('error');
-                    console.log(info);
-                    if (info && info.type === "store") {
-                        //onConnectError();
-                    }
-                });
-
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
                     Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
                         cb({error: err, response: response});

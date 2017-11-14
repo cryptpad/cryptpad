@@ -7,10 +7,11 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
+    '/common/common-interface.js',
     //'/common/visible.js',
     //'/common/notify.js',
     '/bower_components/file-saver/FileSaver.min.js'
-], function ($, Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad /*, Visible, Notify*/) {
+], function ($, Config, Messages, Board, TextPatcher, Listmap, Crypto, Cryptpad, UI /*, Visible, Notify*/) {
 
     // var saveAs = window.saveAs;
 
@@ -49,7 +50,7 @@ define([
     });
 
     var firstUser = function () {
-        Cryptpad.log("You are the first user to visit this board");
+        UI.log("You are the first user to visit this board");
     };
 
     var whenReady = function () {
@@ -81,13 +82,13 @@ define([
             window.location.hash = info.channel + secret.key;
         })
         .on('ready', function () {
-            Cryptpad.log("Ready!");
+            UI.log("Ready!");
             whenReady({
 
             });
         })
         .on('disconnect', function () {
-            Cryptpad.warn("Disconnected!");
+            UI.warn("Disconnected!");
         });
     });
 });

@@ -18,6 +18,9 @@ define([
         var sframeChan;
         var FilePicker;
         var Messenger;
+        var Messaging;
+        var Notifier;
+        var Utils = {};
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -29,14 +32,24 @@ define([
                 '/common/sframe-channel.js',
                 '/filepicker/main.js',
                 '/common/common-messenger.js',
+                '/common/common-messaging.js',
+                '/common/common-notifier.js',
+                '/common/common-hash.js',
+                '/common/common-util.js',
+                '/common/common-realtime.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel,
-            _FilePicker, _Messenger) {
+            _FilePicker, _Messenger, _Messaging, _Notifier, _Hash, _Util, _Realtime) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 FilePicker = _FilePicker;
                 Messenger = _Messenger;
+                Messaging = _Messaging;
+                Notifier = _Notifier;
+                Utils.Hash = _Hash;
+                Utils.Util = _Util;
+                Utils.Realtime = _Realtime;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -82,16 +95,17 @@ define([
                 });
             });
 
-            secret = cfg.getSecrets ? cfg.getSecrets(Cryptpad) : Cryptpad.getSecrets();
+            secret = cfg.getSecrets ? cfg.getSecrets(Cryptpad, Utils) : Utils.Hash.getSecrets();
             if (!secret.channel) {
                 // New pad: create a new random channel id
-                secret.channel = Cryptpad.createChannelId();
+                secret.channel = Utils.Hash.createChannelId();
             }
             Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
+
         }).nThen(function () {
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             if (!secret.keys) { secret.keys = secret.key; }
-            var parsed = Cryptpad.parsePadUrl(window.location.href);
+            var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Cryptpad.getDefaultName(parsed);
             var proxy = Cryptpad.getProxy();
@@ -148,12 +162,8 @@ define([
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
             proxy.on('change', 'settings', updateMeta);
 
-            Cryptpad.onError(function (info) {
-                console.log('error');
-                console.log(info);
-                if (info && info.type === "store") {
-                    //onConnectError();
-                }
+            Cryptpad.onLogout(function () {
+                sframeChan.event('EV_LOGOUT');
             });
 
             sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
@@ -176,7 +186,7 @@ define([
                 currentTitle = newTitle;
                 setDocumentTitle();
                 Cryptpad.renamePad(newTitle, undefined, function (err) {
-                    if (err) { cb('ERROR'); } else { cb(); }
+                    cb(err);
                 });
             });
             sframeChan.on('EV_SET_TAB_TITLE', function (newTabTitle) {
@@ -203,7 +213,7 @@ define([
             });
 
             sframeChan.on('EV_NOTIFY', function () {
-                Cryptpad.notify();
+                Notifier.notify();
             });
 
             sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
@@ -236,7 +246,7 @@ define([
             });
 
             sframeChan.on('Q_SEND_FRIEND_REQUEST', function (netfluxId, cb) {
-                Cryptpad.inviteFromUserlist(Cryptpad, netfluxId);
+                Messaging.inviteFromUserlist(Cryptpad, netfluxId);
                 cb();
             });
             Cryptpad.onFriendRequest = function (confirmText, cb) {
@@ -332,11 +342,11 @@ define([
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 cb(parsed.hashData && parsed.hashData.present);
             });
             sframeChan.on('EV_PRESENT_URL_SET_VALUE', function (data) {
-                var parsed = Cryptpad.parsePadUrl(window.location.href);
+                var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 window.location.href = parsed.getUrl({
                     embed: parsed.hashData.embed,
                     present: data
@@ -346,35 +356,37 @@ define([
 
             // File upload
             var onFileUpload = function (sframeChan, data, cb) {
-                var sendEvent = function (data) {
-                    sframeChan.event("EV_FILE_UPLOAD_STATE", data);
-                };
-                var updateProgress = function (progressValue) {
-                    sendEvent({
-                        progress: progressValue
-                    });
-                };
-                var onComplete = function (href) {
-                    sendEvent({
-                        complete: true,
-                        href: href
-                    });
-                };
-                var onError = function (e) {
-                    sendEvent({
-                        error: e
-                    });
-                };
-                var onPending = function (cb) {
-                    sframeChan.query('Q_CANCEL_PENDING_FILE_UPLOAD', null, function (err, data) {
-                        if (data) {
-                            cb();
-                        }
-                    });
-                };
-                data.blob = Crypto.Nacl.util.decodeBase64(data.blob);
-                Cryptpad.uploadFileSecure(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
-                cb();
+                require(['/common/outer/upload.js'], function (Files) {
+                    var sendEvent = function (data) {
+                        sframeChan.event("EV_FILE_UPLOAD_STATE", data);
+                    };
+                    var updateProgress = function (progressValue) {
+                        sendEvent({
+                            progress: progressValue
+                        });
+                    };
+                    var onComplete = function (href) {
+                        sendEvent({
+                            complete: true,
+                            href: href
+                        });
+                    };
+                    var onError = function (e) {
+                        sendEvent({
+                            error: e
+                        });
+                    };
+                    var onPending = function (cb) {
+                        sframeChan.query('Q_CANCEL_PENDING_FILE_UPLOAD', null, function (err, data) {
+                            if (data) {
+                                cb();
+                            }
+                        });
+                    };
+                    data.blob = Crypto.Nacl.util.decodeBase64(data.blob);
+                    Files.upload(data, data.noStore, Cryptpad, updateProgress, onComplete, onError, onPending);
+                    cb();
+                });
             };
             sframeChan.on('Q_UPLOAD_FILE', function (data, cb) {
                 onFileUpload(sframeChan, data, cb);
@@ -458,7 +470,7 @@ define([
             });
 
             if (cfg.addRpc) {
-                cfg.addRpc(sframeChan, Cryptpad);
+                cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
 
             if (cfg.messaging) {
@@ -575,6 +587,18 @@ define([
 
             if (!realtime) { return; }
 
+            var replaceHash = function (hash) {
+                if (window.history && window.history.replaceState) {
+                    if (!/^#/.test(hash)) { hash = '#' + hash; }
+                    void window.history.replaceState({}, window.document.title, hash);
+                    if (typeof(window.onhashchange) === 'function') {
+                        window.onhashchange();
+                    }
+                    return;
+                }
+                window.location.hash = hash;
+            };
+
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
@@ -591,7 +615,7 @@ define([
                         return;
                     }
                     if (readOnly || cfg.noHash) { return; }
-                    Cryptpad.replaceHash(Cryptpad.getEditHashFromKeys(wc.id, secret.keys));
+                    replaceHash(Utils.Hash.getEditHashFromKeys(wc.id, secret.keys));
                 }
             });
         });

@@ -47,7 +47,7 @@ define([
         }
     });
     */
-        var addRpc = function (sframeChan, Cryptpad) {
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_THUMBNAIL_CLEAR', function (d, cb) {
                 Cryptpad.clearThumbnail(function (err, data) {
                     cb({err:err, data:data});
@@ -69,7 +69,7 @@ define([
                 var proxy = Cryptpad.getProxy();
                 var realtime = Cryptpad.getRealtime();
                 proxy.drive = Cryptpad.getStore().getEmptyObject();
-                Cryptpad.whenRealtimeSyncs(realtime, cb);
+                Utils.Realtime.whenRealtimeSyncs(realtime, cb);
             });
             sframeChan.on('Q_SETTINGS_LOGOUT', function (data, cb) {
                 var proxy = Cryptpad.getProxy();
@@ -77,7 +77,7 @@ define([
                 var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                 localStorage.setItem('loginToken', token);
                 proxy.loginToken = token;
-                Cryptpad.whenRealtimeSyncs(realtime, cb);
+                Utils.Realtime.whenRealtimeSyncs(realtime, cb);
             });
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
                 var proxyData = Cryptpad.getStore().getProxy();

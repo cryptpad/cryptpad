@@ -1,10 +1,12 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
-    '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    '/common/common-interface.js',
+    //'/common/common-hash.js',
+    //'/bower_components/chainpad-listmap/chainpad-listmap.js',
     //'/common/curve.js',
     'less!/invite/main.less',
-], function ($, Cryptpad /*, Listmap, Curve*/) {
+], function ($, Cryptpad, UI/*, Hash , Listmap, Curve*/) {
     var Messages = Cryptpad.Messages;
     var comingSoon = function () {
         return $('<div>', {
@@ -15,7 +17,7 @@ define([
     };
 
     $(function () {
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
         console.log("wut");
         $('body #mainBlock').append(comingSoon());
     });
@@ -33,12 +35,12 @@ define([
     var andThen = function () {
         var hash = window.location.hash.slice(1);
 
-        var info = Cryptpad.parseTypeHash('invite', hash);
+        var info = Hash.parseTypeHash('invite', hash);
         console.log(info);
 
         if (!info.pubkey) {
-            Cryptpad.removeLoadingScreen();
-            Cryptpad.alert('invalid invite');
+            UI.removeLoadingScreen();
+            UI.alert('invalid invite');
             return;
         }
 
@@ -48,7 +50,7 @@ define([
         var keys = Curve.deriveKeys(info.pubkey, mySecret);
         var encryptor = Curve.createEncryptor(keys);
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
 
         var listmapConfig = {
             data: {},
@@ -72,23 +74,6 @@ define([
 
     $(function () {
         var $main = $('#mainBlock');
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
-        $(window).click(function () {
-            $('.cp-dropdown-content').hide();
-        });
 
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');

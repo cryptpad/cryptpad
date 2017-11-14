@@ -2,10 +2,13 @@ define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
+    '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-interface.js',
+    '/customize/messages.js',
 
     '/file/file-crypto.js',
     '/common/media-tag.js',
@@ -20,20 +23,20 @@ define([
     $,
     Crypto,
     Toolbar,
-    Cryptpad,
     nThen,
     SFCommon,
     CommonRealtime,
+    Util,
+    Hash,
+    UI,
+    Messages,
     FileCrypto,
     MediaTag)
 {
-    var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
 
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
+    var APP = window.APP = {};
 
     var andThen = function (common) {
         var $appContainer = $('#cp-app-file-content');
@@ -58,9 +61,9 @@ define([
         if (!priv.filehash) {
             uploadMode = true;
         } else {
-            secret = Cryptpad.getSecrets('file', priv.filehash);
+            secret = Hash.getSecrets('file', priv.filehash);
             if (!secret.keys) { throw new Error("You need a hash"); }
-            hexFileName = Cryptpad.base64ToHex(secret.channel);
+            hexFileName = Util.base64ToHex(secret.channel);
         }
 
         var Title = common.createTitle({});
@@ -70,7 +73,6 @@ define([
         }
         var configTb = {
             displayed: displayed,
-            common: Cryptpad,
             //hideDisplayName: true,
             $container: $bar,
             metadataMgr: metadataMgr,
@@ -84,7 +86,7 @@ define([
         toolbar.$rightside.html('');
 
         if (!uploadMode) {
-            var src = Cryptpad.getBlobPathFromHex(hexFileName);
+            var src = Hash.getBlobPathFromHex(hexFileName);
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
 
@@ -106,7 +108,7 @@ define([
 
                     var $mt = $dlview.find('media-tag');
                     var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                    var hexFileName = Cryptpad.base64ToHex(secret.channel);
+                    var hexFileName = Util.base64ToHex(secret.channel);
                     $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
@@ -128,7 +130,7 @@ define([
                         }
                         $dlButton.addClass('btn btn-success');
                         var text = Messages.download_mt_button + '<br>';
-                        text += '<b>' + Cryptpad.fixHTML(title) + '</b><br>';
+                        text += '<b>' + Util.fixHTML(title) + '</b><br>';
                         text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
                         $dlButton.html(text);
 
@@ -165,7 +167,7 @@ define([
                     })
                     .on('decryptionError', function (e) {
                         var error = e.originalEvent;
-                        //Cryptpad.alert(error.message);
+                        //UI.alert(error.message);
                         cb(error.message);
                     })
                     .on('decryptionProgress', function (e) {
@@ -203,9 +205,9 @@ define([
 
                 var todoBigFile = function (sizeMb) {
                     $dlform.show();
-                    Cryptpad.removeLoadingScreen();
+                    UI.removeLoadingScreen();
                     $dllabel.append($('<br>'));
-                    $dllabel.append(Cryptpad.fixHTML(metadata.name));
+                    $dllabel.append(Util.fixHTML(metadata.name));
 
                     // don't display the size if you don't know it.
                     if (typeof(sizeM) === 'number') {
@@ -217,7 +219,7 @@ define([
                         if (decrypting) { return; }
                         decrypting = true;
                         displayFile(ev, sizeMb, function (err) {
-                            if (err) { Cryptpad.alert(err); }
+                            if (err) { UI.alert(err); }
                         });
                     };
                     if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
@@ -226,9 +228,9 @@ define([
                 var href = priv.origin + priv.pathname + priv.filehash;
                 common.getFileSize(href, function (e, data) {
                     if (e) {
-                        return void Cryptpad.errorLoadingScreen(e);
+                        return void UI.errorLoadingScreen(e);
                     }
-                    var size = Cryptpad.bytesToMegabytes(data);
+                    var size = Util.bytesToMegabytes(data);
                     return void todoBigFile(size);
                 });
             });
@@ -238,8 +240,8 @@ define([
         // we're in upload mode
 
         if (!common.isLoggedIn()) {
-            return Cryptpad.alert(Messages.upload_mustLogin, function () {
-                Cryptpad.errorLoadingScreen(Messages.upload_mustLogin);
+            return UI.alert(Messages.upload_mustLogin, function () {
+                UI.errorLoadingScreen(Messages.upload_mustLogin);
                 common.setLoginRedirect(function () {
                     common.gotoURL('/login/');
                 });
@@ -264,7 +266,7 @@ define([
             FM.handleFile(file);
         });
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var main = function () {
@@ -272,7 +274,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {

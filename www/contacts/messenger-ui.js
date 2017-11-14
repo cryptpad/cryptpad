@@ -1,14 +1,17 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
+    '/customize/messages.js',
+    '/common/common-util.js',
+    '/common/common-interface.js',
+    '/common/common-notifier.js',
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
     '/common/media-tag.js',
-], function ($, Cryptpad, h, Marked, MediaTag) {
+], function ($, Cryptpad, Messages, Util, UI, Notifier, h, Marked, MediaTag) {
     'use strict';
 
-    var UI = {};
-    var Messages = Cryptpad.Messages;
+    var MessengerUI = {};
 
     var m = function (md) {
         var d = h('div.cp-app-contacts-content');
@@ -40,7 +43,7 @@ define([
         };
     };
 
-    UI.create = function (messenger, $userlist, $messages, common) {
+    MessengerUI.create = function (messenger, $userlist, $messages, common) {
         var origin = common.getMetadataMgr().getPrivateData().origin;
 
         var state = window.state = {
@@ -163,12 +166,12 @@ define([
             });
 
             $(removeHistory).click(function () {
-                Cryptpad.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
+                UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
                     Cryptpad.clearOwnedChannel(data.channel, function (e) {
                         if (e) {
                             console.error(e);
-                            Cryptpad.alert(Messages.contacts_removeHistoryServerError);
+                            UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
                     });
@@ -355,8 +358,8 @@ define([
 
             $(remove).click(function (e) {
                 e.stopPropagation();
-                Cryptpad.confirm(Messages._getKey('contacts_confirmRemove', [
-                    Cryptpad.fixHTML(data.displayName)
+                UI.confirm(Messages._getKey('contacts_confirmRemove', [
+                    Util.fixHTML(data.displayName)
                 ]), function (yes) {
                     if (!yes) { return; }
                     removeFriend(curvePublic, function (e) {
@@ -389,7 +392,7 @@ define([
 
         var initializing = true;
         messenger.on('message', function (message) {
-            if (!initializing) { Cryptpad.notify(); }
+            if (!initializing) { Notifier.notify(); }
             var curvePublic = message.curve;
 
             var name = displayNames[curvePublic];
@@ -514,7 +517,7 @@ define([
                 count--;
                 if (count === 0) {
                     initializing = false;
-                    Cryptpad.removeLoadingScreen();
+                    UI.removeLoadingScreen();
                 }
             };
             ready();
@@ -524,5 +527,5 @@ define([
         });
     };
 
-    return UI;
+    return MessengerUI;
 });

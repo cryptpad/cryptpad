@@ -56,6 +56,8 @@ define({
 
     // Log the user out in all the tabs
     'Q_LOGOUT': true,
+    // Tell the user that he has been logged out from outside (probably from another tab)
+    'EV_LOGOUT': true,
 
     // When moving to the login or register page from a pad, we need to redirect to that pad at the
     // end of the login process. This query set the current href to the sessionStorage.

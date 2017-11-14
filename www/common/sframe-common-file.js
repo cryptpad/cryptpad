@@ -2,8 +2,12 @@ define([
     'jquery',
     '/file/file-crypto.js',
     '/common/common-thumbnail.js',
+    '/common/common-interface.js',
+    '/common/common-util.js',
+    '/customize/messages.js',
+
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, Thumb) {
+], function ($, FileCrypto, Thumb, UI, Util, Messages) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -31,9 +35,6 @@ define([
 
     module.create = function (common, config) {
         var File = {};
-        var Cryptpad = common.getCryptpadCommon();
-
-        var Messages = Cryptpad.Messages;
 
         var queue = File.queue = {
             queue: [],
@@ -123,7 +124,7 @@ define([
                         window.open(origin + $link.attr('href'), '_blank');
                     });
                 var title = metadata.name;
-                Cryptpad.log(Messages._getKey('upload_success', [title]));
+                UI.log(Messages._getKey('upload_success', [title]));
                 common.prepareFeedback('upload')();
 
                 if (config.onUploaded) {
@@ -140,18 +141,18 @@ define([
                 queue.next();
                 if (e === 'TOO_LARGE') {
                     // TODO update table to say too big?
-                    return void Cryptpad.alert(Messages.upload_tooLarge);
+                    return void UI.alert(Messages.upload_tooLarge);
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
                     // TODO update table to say not enough space?
-                    return void Cryptpad.alert(Messages.upload_notEnoughSpace);
+                    return void UI.alert(Messages.upload_notEnoughSpace);
                 }
                 console.error(e);
-                return void Cryptpad.alert(Messages.upload_serverError);
+                return void UI.alert(Messages.upload_serverError);
             };
 
             onPending = function (cb) {
-                Cryptpad.confirm(Messages.upload_uploadPending, cb);
+                UI.confirm(Messages.upload_uploadPending, cb);
             };
 
             file.noStore = config.noStore;
@@ -161,14 +162,14 @@ define([
                     console.log('Upload started...');
                 });
             } catch (e) {
-                Cryptpad.alert(Messages.upload_serverError);
+                UI.alert(Messages.upload_serverError);
             }
         };
 
         var prettySize = function (bytes) {
-            var kB = Cryptpad.bytesToKilobytes(bytes);
+            var kB = Util.bytesToKilobytes(bytes);
             if (kB < 1024) { return kB + Messages.KB; }
-            var mB = Cryptpad.bytesToMegabytes(bytes);
+            var mB = Util.bytesToMegabytes(bytes);
             return mB + Messages.MB;
         };
 
@@ -260,7 +261,7 @@ define([
 
         var onFileDrop = File.onFileDrop = function (file, e) {
             if (!common.isLoggedIn()) {
-                return Cryptpad.alert(common.Messages.upload_mustLogin);
+                return UI.alert(common.Messages.upload_mustLogin);
             }
 
             Array.prototype.slice.call(file).forEach(function (d) {

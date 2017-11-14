@@ -89,22 +89,6 @@ define([], function () {
         return a;
     };
 
-    Util.getHash = function () {
-        return window.location.hash.slice(1);
-    };
-
-    Util.replaceHash = function (hash) {
-        if (window.history && window.history.replaceState) {
-            if (!/^#/.test(hash)) { hash = '#' + hash; }
-            void window.history.replaceState({}, window.document.title, hash);
-            if (typeof(window.onhashchange) === 'function') {
-                window.onhashchange();
-            }
-            return;
-        }
-        window.location.hash = hash;
-    };
-
     /*
      *  Saving files
      */
@@ -184,13 +168,6 @@ define([], function () {
 
     Util.createRandomInteger = function () {
         return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
-    };
-
-    Util.getAppType = function () {
-        var parts = window.location.pathname.split('/')
-            .filter(function (x) { return x; });
-        if (!parts[0]) { return ''; }
-        return parts[0];
     };
 
     /* for wrapping async functions such that they can only be called once */

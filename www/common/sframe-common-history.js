@@ -1,8 +1,10 @@
 define([
     'jquery',
+    '/common/common-interface.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
+
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, JsonOT) {
+], function ($, UI, JsonOT) {
     var ChainPad = window.ChainPad;
     var History = {};
 
@@ -83,7 +85,6 @@ define([
         var onReady = function () { };
 
         var Messages = common.Messages;
-        var Cryptpad = common.getCryptpadCommon();
 
         var realtime;
 
@@ -100,7 +101,7 @@ define([
         $right.hide();
         $cke.hide();
 
-        Cryptpad.spinner($hist).get().show();
+        UI.spinner($hist).get().show();
 
         var onUpdate;
 
@@ -203,11 +204,11 @@ define([
                 onClose();
             });
             $rev.click(function () {
-                Cryptpad.confirm(Messages.history_restorePrompt, function (yes) {
+                UI.confirm(Messages.history_restorePrompt, function (yes) {
                     if (!yes) { return; }
                     close();
                     onRevert();
-                    Cryptpad.log(Messages.history_restoreDone);
+                    UI.log(Messages.history_restoreDone);
                 });
             });
 

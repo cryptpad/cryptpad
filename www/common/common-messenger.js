@@ -3,7 +3,9 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/curve.js',
     '/common/common-hash.js',
-], function ($, Crypto, Curve, Hash) {
+    '/common/common-util.js',
+    '/common/common-realtime.js',
+], function ($, Crypto, Curve, Hash, Util, Realtime) {
     'use strict';
     var Msg = {
         inputs: [],
@@ -46,21 +48,6 @@ define([
     var getFriendList = Msg.getFriendList = function (proxy) {
         if (!proxy.friends) { proxy.friends = {}; }
         return proxy.friends;
-    };
-
-    var eachFriend = function (friends, cb) {
-        Object.keys(friends).forEach(function (id) {
-            if (id === 'me') { return; }
-            cb(friends[id], id, friends);
-        });
-    };
-
-    Msg.getFriendChannelsList = function (proxy) {
-        var list = [];
-        eachFriend(proxy, function (friend) {
-            list.push(friend.channel);
-        });
-        return list;
     };
 
     var msgAlreadyKnown = function (channel, sig) {
@@ -149,7 +136,7 @@ define([
                 return;
             }
 
-            var txid = common.uid();
+            var txid = Util.uid();
             initRangeRequest(txid, curvePublic, hash, cb);
             var msg = [ 'GET_HISTORY_RANGE', chan.id, {
                     from: hash,
@@ -245,7 +232,7 @@ define([
             if (!proxy.friends) { return; }
             var friends = proxy.friends;
             delete friends[curvePublic];
-            common.whenRealtimeSyncs(realtime, cb);
+            Realtime.whenRealtimeSyncs(realtime, cb);
         };
 
         var pushMsg = function (channel, cryptMsg) {
@@ -352,7 +339,7 @@ define([
             return cb();
         };
 
-        var onDirectMessage = function (common, msg, sender) {
+        var onDirectMessage = function (msg, sender) {
             if (sender !== Msg.hk) { return void onIdMessage(msg, sender); }
             var parsed = JSON.parse(msg);
 
@@ -443,7 +430,7 @@ define([
 
         // listen for messages...
         network.on('message', function(msg, sender) {
-            onDirectMessage(common, msg, sender);
+            onDirectMessage(msg, sender);
         });
 
         messenger.removeFriend = function (curvePublic, cb) {
@@ -476,7 +463,7 @@ define([
                 channel.wc.bcast(cryptMsg).then(function () {
                     delete friends[curvePublic];
                     delete channels[curvePublic];
-                    common.whenRealtimeSyncs(realtime, function () {
+                    Realtime.whenRealtimeSyncs(realtime, function () {
                         cb();
                     });
                 }, function (err) {

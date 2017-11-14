@@ -3,10 +3,14 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/textpatcher/TextPatcher.js',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-interface.js',
+    '/common/common-ui-elements.js',
+    '/common/common-util.js',
+    '/common/common-hash.js',
     'json.sortify',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -16,20 +20,16 @@ define([
     Crypto,
     TextPatcher,
     JsonOT,
-    Cryptpad,
     nThen,
     SFCommon,
-    Sortify)
+    UI,
+    UIElements,
+    Util,
+    Hash,
+    Sortify,
+    Messages)
 {
-    var Messages = Cryptpad.Messages;
-
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
+    var APP = window.APP = {};
 
     var andThen = function (common) {
         var metadataMgr = common.getMetadataMgr();
@@ -41,10 +41,10 @@ define([
             sframeChan.event('EV_FILE_PICKER_CLOSE');
         };
         var onFilePicked = function (data) {
-            var parsed = Cryptpad.parsePadUrl(data.url);
+            var parsed = Hash.parsePadUrl(data.url);
             hideFileDialog();
             if (parsed.type === 'file') {
-                var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                 var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                 sframeChan.event("EV_FILE_PICKED", {
                     type: parsed.type,
@@ -80,7 +80,7 @@ define([
         var createFileDialog = function () {
             var types = filters.types || [];
             // Create modal
-            var $blockContainer = Cryptpad.createModal({
+            var $blockContainer = UIElements.createModal({
                 id: 'cp-filepicker-dialog',
                 $body: $body,
                 onClose: hideFileDialog
@@ -132,7 +132,7 @@ define([
                             'class': 'cp-filepicker-content-element',
                             'title': name,
                         }).appendTo($container);
-                        $span.append(Cryptpad.getFileIcon(data));
+                        $span.append(UI.getFileIcon(data));
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         $span.click(function () {
@@ -160,7 +160,7 @@ define([
         });
         createFileDialog();
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var main = function () {
@@ -168,16 +168,11 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen({hideTips: true, hideLogo: true});
+                UI.addLoadingScreen({hideTips: true, hideLogo: true});
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
             var metadataMgr = common.getMetadataMgr();
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
             if (metadataMgr.getMetadataLazy() !== 'uninitialized') {
                 andThen(common);
                 return;

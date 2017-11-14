@@ -3,11 +3,15 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-chainpad-listmap.js',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-util.js',
+    '/common/common-interface.js',
+    '/common/common-realtime.js',
+    '/customize/messages.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
+
     'cm/mode/markdown/markdown',
 
     'css!/bower_components/codemirror/lib/codemirror.css',
@@ -21,20 +25,18 @@ define([
     Crypto,
     Listmap,
     Toolbar,
-    Cryptpad,
     nThen,
     SFCommon,
+    Util,
+    UI,
+    Realtime,
+    Messages,
     Marked,
     CodeMirror
     )
 {
-    var Messages = Cryptpad.Messages;
     var APP = window.APP = {
-        Cryptpad: Cryptpad,
         _onRefresh: []
-    };
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
     // Decryption event for avatar mediatag (TODO not needed anymore?)
@@ -44,7 +46,7 @@ define([
     })
     .on('decryptionError', function (e) {
         var error = e.originalEvent;
-        Cryptpad.alert(error.message);
+        UI.alert(error.message);
     });
 
     $(window).click(function () {
@@ -114,7 +116,7 @@ define([
                 setValue(newVal, function (err) {
                     if (err) { return void console.error(err); }
                     lastVal = newVal;
-                    Cryptpad.log(Messages._getKey('profile_fieldSaved', [newVal || fallbackValue]));
+                    UI.log(Messages._getKey('profile_fieldSaved', [newVal || fallbackValue]));
                     editing = false;
                 });
             };
@@ -135,16 +137,16 @@ define([
 
 /* jshint ignore:start */
     var isFriend = function (proxy, edKey) {
-        var friends = Cryptpad.find(proxy, ['friends']);
+        var friends = Util.find(proxy, ['friends']);
         return typeof(edKey) === 'string' && friends && (edKey in friends);
     };
 
     var addCreateInviteLinkButton = function ($container) {
         return;
-        var obj = APP.lm.proxy;
+        /*var obj = APP.lm.proxy;
 
         var proxy = Cryptpad.getProxy();
-        var userViewHash = Cryptpad.find(proxy, ['profile', 'view']);
+        var userViewHash = Util.find(proxy, ['profile', 'view']);
 
         var edKey = obj.edKey;
         var curveKey = obj.curveKey;
@@ -158,7 +160,7 @@ define([
 
         var unsafeName = obj.name || '';
         console.log(unsafeName);
-        var name = Cryptpad.fixHTML(unsafeName) || Messages.anonymous;
+        var name = Util.fixHTML(unsafeName) || Messages.anonymous;
         console.log(name);
 
         console.log("Creating invite button");
@@ -169,17 +171,17 @@ define([
         .addClass('btn btn-success')
         .text(Messages.profile_inviteButton)
         .click(function () {
-            Cryptpad.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
+            UI.confirm(Messages._getKey('profile_inviteExplanation', [name]), function (yes) {
                 if (!yes) { return; }
                 console.log(obj.curveKey);
-                Cryptpad.alert("TODO");
+                UI.alert("TODO");
                 // TODO create a listmap object using your curve keys
                 // TODO fill the listmap object with your invite data
                 // TODO generate link to invite object
                 // TODO copy invite link to clipboard
             }, null, true);
         })
-        .appendTo($container);
+        .appendTo($container);*/
     };
         /* jshint ignore:end */
 
@@ -221,7 +223,7 @@ define([
         }
         var setValue = function (value, cb) {
             APP.lm.proxy.name = value;
-            Cryptpad.whenRealtimeSyncs(APP.lm.realtime, cb);
+            Realtime.whenRealtimeSyncs(APP.lm.realtime, cb);
         };
         createEditableInput($block, DISPLAYNAME_ID, placeholder, getValue, setValue, Messages.anonymous);
     };
@@ -247,16 +249,21 @@ define([
         }
         var setValue = function (value, cb) {
             APP.lm.proxy.url = value;
-            Cryptpad.whenRealtimeSyncs(APP.lm.realtime, cb);
+            Realtime.whenRealtimeSyncs(APP.lm.realtime, cb);
         };
         var placeholder = Messages.profile_urlPlaceholder;
         createEditableInput($block, LINK_ID, placeholder, getValue, setValue);
     };
 
+    var allowedMediaTypes = [
+        'image/png',
+        'image/jpeg',
+        'image/jpg',
+        'image/gif',
+    ];
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
         var $span = $('<span>').appendTo($block);
-        var allowedMediaTypes = Cryptpad.avatarAllowedTypes;
         var sframeChan = common.getSframeChannel();
         var displayAvatar = function () {
             $span.html('');
@@ -280,7 +287,7 @@ define([
             $delButton.click(function () {
                 var old = common.getMetadataMgr().getUserData().avatar;
                 sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                    if (err || err2) { return void Cryptpad.log(err || err2); }
+                    if (err || err2) { return void UI.log(err || err2); }
                     delete APP.lm.proxy.avatar;
                     displayAvatar();
                 });
@@ -297,14 +304,14 @@ define([
                 var old = common.getMetadataMgr().getUserData().avatar;
                 var todo = function () {
                     sframeChan.query("Q_PROFILE_AVATAR_ADD", data.url, function (err, err2) {
-                        if (err || err2) { return void Cryptpad.log(err || err2); }
+                        if (err || err2) { return void UI.log(err || err2); }
                         APP.lm.proxy.avatar = data.url;
                         displayAvatar();
                     });
                 };
                 if (old) {
                     sframeChan.query("Q_PROFILE_AVATAR_REMOVE", old, function (err, err2) {
-                        if (err || err2) { return void Cryptpad.log(err || err2); }
+                        if (err || err2) { return void UI.log(err || err2); }
                         todo();
                     });
                     return;
@@ -316,7 +323,7 @@ define([
         var data = {
             FM: APP.FM,
             filter: function (file) {
-                var sizeMB = Cryptpad.bytesToMegabytes(file.size);
+                var sizeMB = Util.bytesToMegabytes(file.size);
                 var type = file.type;
                 return sizeMB <= 0.5 && allowedMediaTypes.indexOf(type) !== -1;
             },
@@ -361,7 +368,7 @@ define([
             $spinner.show();
             var val = editor.getValue();
             APP.lm.proxy.description = val;
-            Cryptpad.whenRealtimeSyncs(APP.lm.realtime, function () {
+            Realtime.whenRealtimeSyncs(APP.lm.realtime, function () {
                 $ok.show();
                 $spinner.hide();
             });
@@ -387,13 +394,13 @@ define([
         APP.$container.find('#'+CREATE_ID).remove();
 
         var obj = APP.lm && APP.lm.proxy;
-        if (!APP.readOnly) {
+        /*if (!APP.readOnly) {
             var pubKeys = Cryptpad.getPublicKeys();
             if (pubKeys && pubKeys.curve) {
                 obj.curveKey = pubKeys.curve;
                 obj.edKey = pubKeys.ed;
             }
-        }
+        }*/
 
         if (!APP.initialized) {
             var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$rightside);
@@ -408,14 +415,13 @@ define([
             createLeftside();
         }
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var createToolbar = function () {
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
         var configTb = {
             displayed: displayed,
-            common: Cryptpad,
             sfCommon: common,
             $container: APP.$toolbar,
             pageTitle: Messages.profileButton,
@@ -426,7 +432,7 @@ define([
     };
 
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         APP.$container = $('#cp-sidebarlayout-container');
@@ -436,12 +442,6 @@ define([
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        Cryptpad.onError(function (info) {
-            if (info && info.type === "store") {
-                onConnectError();
-            }
-        });
-
         createToolbar();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -451,7 +451,7 @@ define([
 
         // If not logged in, you can only view other users's profile
         if (!privateData.readOnly && !common.isLoggedIn()) {
-            Cryptpad.removeLoadingScreen();
+            UI.removeLoadingScreen();
 
             var $p = $('<p>', {id: CREATE_ID}).append(Messages.profile_register);
             var $a = $('<a>', {

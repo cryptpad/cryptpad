@@ -2,9 +2,12 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/api/config',
-], function ($, Config, ApiConfig) {
-    var Messages = {};
-    var Cryptpad;
+    '/common/common-ui-elements.js',
+    '/common/common-interface.js',
+    '/common/common-hash.js',
+    '/customize/messages.js',
+    '/common/clipboard.js',
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Messages, Clipboard) {
     var Common;
 
     var Bar = {
@@ -426,7 +429,7 @@ define([
             options: options,
             feedback: 'SHARE_MENU',
         };
-        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
         $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
         $shareBlock.addClass('cp-toolbar-share-button');
         $shareBlock.find('button').attr('title', Messages.shareButton);
@@ -434,25 +437,25 @@ define([
         if (hashes.editHash) {
             $shareBlock.find('a.cp-toolbar-share-edit-copy').click(function () {
                 /*Common.storeLinkToClipboard(false, function (err) {
-                    if (!err) { Cryptpad.log(Messages.shareSuccess); }
+                    if (!err) { UI.log(Messages.shareSuccess); }
                 });*/
                 var url = origin + pathname + '#' + hashes.editHash;
-                var success = Cryptpad.Clipboard.copy(url);
-                if (success) { Cryptpad.log(Messages.shareSuccess); }
+                var success = Clipboard.copy(url);
+                if (success) { UI.log(Messages.shareSuccess); }
             });
         }
         if (hashes.viewHash) {
             $shareBlock.find('a.cp-toolbar-share-view-copy').click(function () {
                 /*Common.storeLinkToClipboard(true, function (err) {
-                    if (!err) { Cryptpad.log(Messages.shareSuccess); }
+                    if (!err) { UI.log(Messages.shareSuccess); }
                 });*/
                 var url = origin + pathname + '#' + hashes.viewHash;
-                var success = Cryptpad.Clipboard.copy(url);
-                if (success) { Cryptpad.log(Messages.shareSuccess); }
+                var success = Clipboard.copy(url);
+                if (success) { UI.log(Messages.shareSuccess); }
             });
             $shareBlock.find('a.cp-toolbar-share-view-embed').click(function () {
                 var url = origin + pathname + '#' + hashes.viewHash;
-                var parsed = Cryptpad.parsePadUrl(url);
+                var parsed = Hash.parsePadUrl(url);
                 url = origin + parsed.getUrl({embed: true, present: true});
                 // Alertify content
                 var $content = $('<div>');
@@ -468,12 +471,12 @@ define([
                     readonly: 'readonly',
                     value: iframeEmbed,
                 }).appendTo($tag);
-                Cryptpad.alert($content.html(), null, true);
+                UI.alert($content.html(), null, true);
                 $('#'+iframeId).click(function () {
                     this.select();
                 });
-                //var success = Cryptpad.Clipboard.copy(url);
-                //if (success) { Cryptpad.log(Messages.shareSuccess); }
+                //var success = Clipboard.copy(url);
+                //if (success) { UI.log(Messages.shareSuccess); }
             });
         }
 
@@ -511,15 +514,15 @@ define([
             options: options,
             feedback: 'FILESHARE_MENU',
         };
-        var $shareBlock = Cryptpad.createDropdown(dropdownConfigShare);
+        var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
         $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS);
         $shareBlock.addClass('cp-toolbar-share-button');
         $shareBlock.find('button').attr('title', Messages.shareButton);
 
         // Add handlers
         $shareBlock.find('a.cp-toolbar-share-file-copy').click(function () {
-            var success = Cryptpad.Clipboard.copy(url);
-            if (success) { Cryptpad.log(Messages.shareSuccess); }
+            var success = Clipboard.copy(url);
+            if (success) { UI.log(Messages.shareSuccess); }
         });
         $shareBlock.find('a.cp-toolbar-share-file-embed').click(function () {
             var $content = $('<div>');
@@ -527,11 +530,11 @@ define([
             $('<h3>').text(Messages.fileEmbedTitle).appendTo($content);
             var $script = $('<p>').text(Messages.fileEmbedScript).appendTo($content);
             $('<br>').appendTo($script);
-            $script.append(Cryptpad.dialog.selectable(Common.getMediatagScript()));
+            $script.append(UI.dialog.selectable(Common.getMediatagScript()));
             var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
             $('<br>').appendTo($tag);
-            $tag.append(Cryptpad.dialog.selectable(Common.getMediatagFromHref(url)));
-            Cryptpad.alert($content[0], null, true);
+            $tag.append(UI.dialog.selectable(Common.getMediatagFromHref(url)));
+            UI.alert($content[0], null, true);
         });
 
         toolbar.$leftside.append($shareBlock);
@@ -568,8 +571,8 @@ define([
         if (config.readOnly === 1) {
             $titleContainer.append($('<span>', {'class': 'cp-toolbar-title-readonly'})
                 .text('('+Messages.readonly+')'));
+            return $titleContainer;
         }
-        if (config.readOnly === 1 || typeof(Cryptpad) === "undefined") { return $titleContainer; }
         var $input = $('<input>', {
             type: 'text',
             placeholder: placeholder
@@ -760,7 +763,7 @@ define([
                     key = 'pinLimitReachedAlertNoAccounts';
                 }
                 $limit.show().click(function () {
-                    Cryptpad.alert(Messages._getKey(key, [encodeURIComponent(window.location.hostname)]), null, true);
+                    UI.alert(Messages._getKey(key, [encodeURIComponent(window.location.hostname)]), null, true);
                 });
             }
         };
@@ -785,7 +788,7 @@ define([
                     'target': '_blank',
                     'href': origin + '/' + p + '/',
                 },
-                content: $('<div>').append(Cryptpad.getIcon(p)).html() + Messages.type[p]
+                content: $('<div>').append(UI.getIcon(p)).html() + Messages.type[p]
             });
         });
         var dropdownConfig = {
@@ -796,7 +799,7 @@ define([
             feedback: /drive/.test(window.location.pathname)?
                 'DRIVE_NEWPAD': 'NEWPAD',
         };
-        var $newPadBlock = Cryptpad.createDropdown(dropdownConfig);
+        var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
         $newPadBlock.find('button').addClass('fa fa-th');
         return $newPadBlock;
@@ -830,7 +833,7 @@ define([
             e.stopPropagation();
             var myData = metadataMgr.getMetadata().users[metadataMgr.getNetfluxId()];
             var lastName = myData.name;
-            Cryptpad.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
+            UI.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                 if (newName === null && typeof(lastName) === "string") { return; }
                 if (newName === null) { newName = ''; }
                 else { Common.feedback('NAME_CHANGED'); }
@@ -840,7 +843,6 @@ define([
                         console.error(err);
                         return;
                     }
-                    //Cryptpad.changeDisplayName(newName, true); Already done?
                 });
             });
         });
@@ -892,90 +894,88 @@ define([
         if (!config.metadataMgr) { return; }
         var metadataMgr = config.metadataMgr;
         var userNetfluxId = metadataMgr.getNetfluxId();
-        if (typeof Cryptpad !== "undefined") {
-            var notify = function(type, name, oldname) {
-                // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
-                if (typeof name === "undefined") { return; }
-                name = name || Messages.anonymous;
-                if (Config.disableUserlistNotifications) { return; }
-                switch(type) {
-                    case 1:
-                        Cryptpad.log(Messages._getKey("notifyJoined", [name]));
-                        break;
-                    case 0:
-                        oldname = (!oldname) ? Messages.anonymous : oldname;
-                        Cryptpad.log(Messages._getKey("notifyRenamed", [oldname, name]));
-                        break;
-                    case -1:
-                        Cryptpad.log(Messages._getKey("notifyLeft", [name]));
-                        break;
-                    default:
-                        console.log("Invalid type of notification");
-                        break;
-                }
-            };
+        var notify = function(type, name, oldname) {
+            // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
+            if (typeof name === "undefined") { return; }
+            name = name || Messages.anonymous;
+            if (Config.disableUserlistNotifications) { return; }
+            switch(type) {
+                case 1:
+                    UI.log(Messages._getKey("notifyJoined", [name]));
+                    break;
+                case 0:
+                    oldname = (!oldname) ? Messages.anonymous : oldname;
+                    UI.log(Messages._getKey("notifyRenamed", [oldname, name]));
+                    break;
+                case -1:
+                    UI.log(Messages._getKey("notifyLeft", [name]));
+                    break;
+                default:
+                    console.log("Invalid type of notification");
+                    break;
+            }
+        };
 
-            var userPresent = function (id, user, data) {
-                if (!(user && user.uid)) {
-                    console.log('no uid');
-                    return 0;
-                }
-                if (!data) {
-                    console.log('no data');
-                    return 0;
-                }
+        var userPresent = function (id, user, data) {
+            if (!(user && user.uid)) {
+                console.log('no uid');
+                return 0;
+            }
+            if (!data) {
+                console.log('no data');
+                return 0;
+            }
 
-                var count = 0;
-                Object.keys(data).forEach(function (k) {
-                    if (data[k] && data[k].uid === user.uid) { count++; }
-                });
-                return count;
-            };
-
-            var joined = false;
-            metadataMgr.onChange(function () {
-                var newdata = metadataMgr.getMetadata().users;
-                var netfluxIds = Object.keys(newdata);
-                // Notify for disconnected users
-                if (typeof oldUserData !== "undefined") {
-                    for (var u in oldUserData) {
-                        // if a user's uid is still present after having left, don't notify
-                        if (netfluxIds.indexOf(u) === -1) {
-                            var temp = JSON.parse(JSON.stringify(oldUserData[u]));
-                            delete oldUserData[u];
-                            if (temp && newdata[userNetfluxId] && temp.uid === newdata[userNetfluxId].uid) { return; }
-                            if (userPresent(u, temp, newdata || oldUserData) < 1) {
-                                notify(-1, temp.name);
-                            }
-                        }
-                    }
-                }
-                // Update the "oldUserData" object and notify for new users and names changed
-                if (typeof newdata === "undefined") { return; }
-                if (typeof oldUserData === "undefined") {
-                    oldUserData = JSON.parse(JSON.stringify(newdata));
-                    return;
-                }
-                if (config.readOnly === 0 && !oldUserData[userNetfluxId]) {
-                    oldUserData = JSON.parse(JSON.stringify(newdata));
-                    return;
-                }
-                for (var k in newdata) {
-                    if (joined && k !== userNetfluxId && netfluxIds.indexOf(k) !== -1) {
-                        if (typeof oldUserData[k] === "undefined") {
-                            // if the same uid is already present in the userdata, don't notify
-                            if (!userPresent(k, newdata[k], oldUserData)) {
-                                notify(1, newdata[k].name);
-                            }
-                        } else if (oldUserData[k].name !== newdata[k].name) {
-                            notify(0, newdata[k].name, oldUserData[k].name);
-                        }
-                    }
-                }
-                joined = true;
-                oldUserData = JSON.parse(JSON.stringify(newdata));
+            var count = 0;
+            Object.keys(data).forEach(function (k) {
+                if (data[k] && data[k].uid === user.uid) { count++; }
             });
-        }
+            return count;
+        };
+
+        var joined = false;
+        metadataMgr.onChange(function () {
+            var newdata = metadataMgr.getMetadata().users;
+            var netfluxIds = Object.keys(newdata);
+            // Notify for disconnected users
+            if (typeof oldUserData !== "undefined") {
+                for (var u in oldUserData) {
+                    // if a user's uid is still present after having left, don't notify
+                    if (netfluxIds.indexOf(u) === -1) {
+                        var temp = JSON.parse(JSON.stringify(oldUserData[u]));
+                        delete oldUserData[u];
+                        if (temp && newdata[userNetfluxId] && temp.uid === newdata[userNetfluxId].uid) { return; }
+                        if (userPresent(u, temp, newdata || oldUserData) < 1) {
+                            notify(-1, temp.name);
+                        }
+                    }
+                }
+            }
+            // Update the "oldUserData" object and notify for new users and names changed
+            if (typeof newdata === "undefined") { return; }
+            if (typeof oldUserData === "undefined") {
+                oldUserData = JSON.parse(JSON.stringify(newdata));
+                return;
+            }
+            if (config.readOnly === 0 && !oldUserData[userNetfluxId]) {
+                oldUserData = JSON.parse(JSON.stringify(newdata));
+                return;
+            }
+            for (var k in newdata) {
+                if (joined && k !== userNetfluxId && netfluxIds.indexOf(k) !== -1) {
+                    if (typeof oldUserData[k] === "undefined") {
+                        // if the same uid is already present in the userdata, don't notify
+                        if (!userPresent(k, newdata[k], oldUserData)) {
+                            notify(1, newdata[k].name);
+                        }
+                    } else if (oldUserData[k].name !== newdata[k].name) {
+                        notify(0, newdata[k].name, oldUserData[k].name);
+                    }
+                }
+            }
+            joined = true;
+            oldUserData = JSON.parse(JSON.stringify(newdata));
+        });
     };
 
 
@@ -984,9 +984,7 @@ define([
 
     Bar.create = function (cfg) {
         var config = cfg || {};
-        Cryptpad = config.common;
         Common = config.sfCommon;
-        Messages = Cryptpad.Messages;
         config.readOnly = (typeof config.readOnly !== "undefined") ? (config.readOnly ? 1 : 0) : -1;
         config.displayed = config.displayed || [];
 
@@ -1081,7 +1079,7 @@ define([
         };
 
         // On log out, remove permanently the realtime elements of the toolbar
-        Cryptpad.onLogout(function () {
+        Common.onLogout(function () {
             failed();
             if (toolbar.useradmin) { toolbar.useradmin.hide(); }
             if (toolbar.userlist) { toolbar.userlist.hide(); }
