@@ -425,6 +425,10 @@ var Renderer = function (APP) {
     var diffOptions = {
         preDiffApply: function (info) {
             if (!diffIsInput(info)) { return; }
+            if (info.diff.action === "removeAttribute" &&
+                (info.diff.name === "aria-describedby" || info.diff.name === "data-original-title")) {
+                return;
+            }
             switch (getInputType(info)) {
                 case 'number':
                     //console.log('checkbox');

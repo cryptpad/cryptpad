@@ -515,7 +515,8 @@ define([
                 distance: 0,
                 performance: true,
                 dynamicTitle: true,
-                delay: [delay, 0]
+                delay: [delay, 0],
+                sticky: true
             });
         };
         // This is the robust solution to remove dangling tooltips
@@ -534,17 +535,22 @@ define([
         var observer = new MutationObserver(function(mutations) {
             var removed = false;
             mutations.forEach(function(mutation) {
-                for (var i = 0; i < mutation.addedNodes.length; i++) {
-                    $(mutation.addedNodes[i]).find('[title]').each(addTippy);
+                if (mutation.type === "childList") {
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        $(mutation.addedNodes[i]).find('[title]').each(addTippy);
+                    }
+                    for (var j = 0; j < mutation.removedNodes.length; j++) {
+                        removed |= checkRemoved(mutation.removedNodes[j]);
+                    }
                 }
-                for (var j = 0; j < mutation.removedNodes.length; j++) {
-                    removed |= checkRemoved(mutation.removedNodes[j]);
+                if (mutation.type === "attributes" && mutation.attributeName === "title") {
+                    addTippy(0, mutation.target);
                 }
             });
             if (removed) { UI.clearTooltips(); }
         });
         observer.observe($('body')[0], {
-            attributes: false,
+            attributes: true,
             childList: true,
             characterData: false,
             subtree: true
