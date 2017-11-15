@@ -149,8 +149,6 @@ define([
             updateContainer();
         };
         sframeChan.on('EV_FILE_PICKER_REFRESH', function (newFilters) {
-            console.log(Sortify(filters));
-            console.log(Sortify(newFilters));
             if (Sortify(filters) !== Sortify(newFilters)) {
                 $body.html('');
                 filters = newFilters;

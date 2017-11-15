@@ -15,6 +15,7 @@ define([
         var Cryptpad;
         var Crypto;
         var Cryptget;
+        var SFrameChannel;
         var sframeChan;
         var FilePicker;
         var Messenger;
@@ -37,12 +38,13 @@ define([
                 '/common/common-hash.js',
                 '/common/common-util.js',
                 '/common/common-realtime.js',
-            ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, SFrameChannel,
+            ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _FilePicker, _Messenger, _Messaging, _Notifier, _Hash, _Util, _Realtime) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
+                SFrameChannel = _SFrameChannel;
                 FilePicker = _FilePicker;
                 Messenger = _Messenger;
                 Messaging = _Messaging;
@@ -166,11 +168,40 @@ define([
                 sframeChan.event('EV_LOGOUT');
             });
 
-            sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
-                Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
-                    cb({error: err, response: response});
+            // Put in the following function the RPC queries that should also work in filepicker
+            var addCommonRpc = function (sframeChan) {
+                sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
+                    Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
+                        cb({error: err, response: response});
+                    });
                 });
-            });
+
+                sframeChan.on('Q_GET_PIN_LIMIT_STATUS', function (data, cb) {
+                    Cryptpad.isOverPinLimit(function (e, overLimit, limits) {
+                        cb({
+                            error: e,
+                            overLimit: overLimit,
+                            limits: limits
+                        });
+                    });
+                });
+
+                sframeChan.on('Q_THUMBNAIL_GET', function (data, cb) {
+                    Cryptpad.getThumbnail(data.key, function (e, data) {
+                        cb({
+                            error: e,
+                            data: data
+                        });
+                    });
+                });
+                sframeChan.on('Q_THUMBNAIL_SET', function (data, cb) {
+                    Cryptpad.setThumbnail(data.key, data.value, function (e) {
+                        cb({error:e});
+                    });
+                });
+
+            };
+            addCommonRpc(sframeChan);
 
             var currentTitle;
             var currentTabTitle;
@@ -219,16 +250,6 @@ define([
             sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
                 sessionStorage.redirectTo = window.location.href;
                 cb();
-            });
-
-            sframeChan.on('Q_GET_PIN_LIMIT_STATUS', function (data, cb) {
-                Cryptpad.isOverPinLimit(function (e, overLimit, limits) {
-                    cb({
-                        error: e,
-                        overLimit: overLimit,
-                        limits: limits
-                    });
-                });
             });
 
             sframeChan.on('Q_MOVE_TO_TRASH', function (data, cb) {
@@ -320,20 +341,6 @@ define([
                 });
             });
 
-            sframeChan.on('Q_THUMBNAIL_GET', function (data, cb) {
-                Cryptpad.getThumbnail(data.key, function (e, data) {
-                    cb({
-                        error: e,
-                        data: data
-                    });
-                });
-            });
-            sframeChan.on('Q_THUMBNAIL_SET', function (data, cb) {
-                Cryptpad.setThumbnail(data.key, data.value, function (e) {
-                    cb({error:e});
-                });
-            });
-
             sframeChan.on('Q_SESSIONSTORAGE_PUT', function (data, cb) {
                 sessionStorage[data.key] = data.value;
                 cb();
@@ -405,6 +412,11 @@ define([
                     };
                     config.onFileUpload = onFileUpload;
                     config.types = cfg;
+                    config.addCommonRpc = addCommonRpc;
+                    config.modules = {
+                        Cryptpad: Cryptpad,
+                        SFrameChannel: SFrameChannel
+                    };
                     FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
                     FP.picker = FilePicker.create(config);
                 } else {
