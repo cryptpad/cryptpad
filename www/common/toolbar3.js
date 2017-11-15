@@ -151,6 +151,18 @@ define([
     };
 
     var avatars = {};
+    var editingUserName = {
+        state: false
+    };
+    var setDisplayName = function (newName) {
+        Common.setDisplayName(newName, function (err) {
+            if (err) {
+                console.log("Couldn't set username");
+                console.error(err);
+                return;
+            }
+        });
+    };
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
@@ -185,6 +197,16 @@ define([
         var numberOfEditUsers = Object.keys(userData).length - duplicates;
         var numberOfViewUsers = viewers;
 
+        // If the user was changing his username, do not reste the input, store the current value
+        // and cursor
+        if (editingUserName.state) {
+            var $input = $userlistContent.find('.cp-toolbar-userlist-name-input');
+            editingUserName.value = $input.val();
+            editingUserName.select = [$input[0].selectionStart, $input[0].selectionEnd];
+        }
+
+
+
         // Update the userlist
         var $editUsers = $userlistContent.find('.' + USERLIST_CLS).html('');
 
@@ -213,28 +235,71 @@ define([
             var $span = $('<span>', {'class': 'cp-avatar'});
             var $rightCol = $('<span>', {'class': 'cp-toolbar-userlist-rightcol'});
             var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).text(name).appendTo($rightCol);
-            var isMe = data.curvePublic === user.curvePublic;
-            if (Common.isLoggedIn() && data.curvePublic) {
-                if (isMe) {
-                    $span.attr('title', Messages._getKey('userlist_thisIsYou', [
-                        name
-                    ]));
-                    $nameSpan.text(name);
-                } else if (!friends[data.curvePublic]) {
-                    if (pendingFriends.indexOf(data.netfluxId) !== -1) {
-                        $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
-                            .appendTo($rightCol);
-                    } else {
-                        $('<span>', {
-                            'class': 'fa fa-user-plus cp-toolbar-userlist-friend',
-                            'title': Messages._getKey('userlist_addAsFriendTitle', [
-                                name
-                            ])
-                        }).appendTo($rightCol).click(function (e) {
-                            e.stopPropagation();
-                            Common.sendFriendRequest(data.netfluxId);
-                        });
+            var isMe = data.uid === user.uid;
+            if (isMe) {
+                $span.attr('title', Messages._getKey('userlist_thisIsYou', [
+                    name
+                ]));
+                $nameSpan.html('');
+                var $nameValue = $('<span>', {
+                    'class': 'cp-toolbar-userlist-name-value'
+                }).text(name).appendTo($nameSpan);
+                var $button = $('<button>', {
+                    'class': 'fa fa-pencil cp-toolbar-userlist-name-edit',
+                    title: "TODO: Edit your username"
+                }).appendTo($nameSpan);
+                var $nameInput = $('<input>', {
+                    'class': 'cp-toolbar-userlist-name-input'
+                }).val(name).appendTo($rightCol);
+                $button.click(function (e) {
+                    e.stopPropagation();
+                    $nameSpan.hide();
+                    $nameInput.show().focus().select();
+                    editingUserName.state = true;
+                    editingUserName.oldName = $nameInput.val();
+                });
+                $nameInput.click(function (e) {
+                    e.stopPropagation();
+                });
+                $nameInput.on('keydown', function (e) {
+                    if (e.which === 13 || e.which === 27) {
+                        $nameInput.hide();
+                        $nameSpan.show();
+                        $button.show();
+                        editingUserName.state = false;
                     }
+                    if (e.which === 13) {
+                        var newName = $nameInput.val(); // TODO clean
+                        $nameValue.text(newName);
+                        setDisplayName(newName);
+                        return;
+                    }
+                    if (e.which === 27) {
+                        $nameValue.text(editingUserName.oldName);
+                        return;
+                    }
+                });
+                if (editingUserName.state) {
+                    $button.click();
+                    $nameInput.val(editingUserName.value);
+                    $nameInput[0].setSelectionRange(editingUserName.select[0],
+                                                 editingUserName.select[1]);
+                    setTimeout(function () { $nameInput.focus(); });
+                }
+            } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]) {
+                if (pendingFriends.indexOf(data.netfluxId) !== -1) {
+                    $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
+                        .appendTo($rightCol);
+                } else {
+                    $('<span>', {
+                        'class': 'fa fa-user-plus cp-toolbar-userlist-friend',
+                        'title': Messages._getKey('userlist_addAsFriendTitle', [
+                            name
+                        ])
+                    }).appendTo($rightCol).click(function (e) {
+                        e.stopPropagation();
+                        Common.sendFriendRequest(data.netfluxId);
+                    });
                 }
             }
             if (data.profile) {
@@ -824,6 +889,9 @@ define([
             userMenuCfg.displayName = 1;
             userMenuCfg.displayChangeName = 1;
         }
+        /*if (config.displayed.indexOf('userlist') !== -1) {
+            userMenuCfg.displayChangeName = 0;
+        }*/
         Common.createUserAdminMenu(userMenuCfg);
         $userAdmin.find('button').attr('title', Messages.userAccountButton);
 
@@ -837,13 +905,7 @@ define([
                 if (newName === null && typeof(lastName) === "string") { return; }
                 if (newName === null) { newName = ''; }
                 else { Common.feedback('NAME_CHANGED'); }
-                Common.setDisplayName(newName, function (err) {
-                    if (err) {
-                        console.log("Couldn't set username");
-                        console.error(err);
-                        return;
-                    }
-                });
+                setDisplayName(newName);
             });
         });
 

@@ -102,6 +102,32 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .cp-toolbar-userlist-name-input {
+                        flex: 1;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        display: none;
+                        border: none;
+                    }
+                    .cp-toolbar-userlist-name-value {
+                        overflow: hidden;
+                        flex: 1;
+                        min-width: 0;
+                        min-height: 0;
+                        text-overflow: ellipsis;
+                    }
+                    .cp-toolbar-userlist-name-edit {
+                        width: 20px;
+                        font-size: 16px;
+                        padding: 0;
+                        border: none;
+                        height: 20px;
+                        cursor: pointer;
                     }
                     .cp-toolbar-userlist-friend {
                         padding: 0;
@@ -125,6 +151,19 @@
             h2 {
                 background-color: darken(@bgcolor, 10%);
                 color: @color;
+            }
+            .cp-toolbar-userlist-name-input {
+                background-color: darken(@bg-color, 10%);
+                color: @color;
+            }
+            .cp-toolbar-userlist-name-edit {
+                color: contrast(@color,
+                                lighten(@color, 20%),
+                                darken(@color, 20%));
+                background: transparent;
+                &:hover {
+                    color: @color;
+                }
             }
             .cp-toolbar-userlist-friend {
                 &:hover {

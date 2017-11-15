@@ -591,8 +591,8 @@ define([
         if (config.displayNameCls) {
             var $userAdminContent = $('<p>');
             if (accountName) {
-                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + Util.fixHTML(accountName));
-                $userAdminContent.append($userAccount);
+                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ');
+                $userAdminContent.append($userAccount).append(Util.fixHTML(accountName));
                 $userAdminContent.append($('<br>'));
             }
             if (config.displayName) {
