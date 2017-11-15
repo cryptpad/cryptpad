@@ -679,9 +679,16 @@ define([
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
+        /*
+        // Uncomment these lines to have a language selector in the admin menu
+        // FIXME clicking on the inner menu hides the outer one
+        var $lang = UIElements.createLanguageSelector(Common);
+        $userAdmin.find('.cp-dropdown-content').append($lang);
+        */
+
         var $displayName = $userAdmin.find('.'+displayNameCls);
 
-        var $avatar = $userAdmin.find('.cp-dropdown-button-title');
+        var $avatar = $userAdmin.find('> button .cp-dropdown-button-title');
         var loadingAvatar;
         var to;
         var oldUrl = '';
@@ -700,10 +707,11 @@ define([
             $displayName.text(newName || Messages.anonymous);
             if (accountName && oldUrl !== url) {
                 $avatar.html('');
-                UIElements.displayAvatar(Common, $avatar, url, newName || Messages.anonymous, function ($img) {
+                UIElements.displayAvatar(Common, $avatar, url,
+                        newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
                     if ($img) {
-                        $userAdmin.find('button').addClass('cp-avatar');
+                        $userAdmin.find('> button').addClass('cp-avatar');
                     }
                     loadingAvatar = false;
                 });

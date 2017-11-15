@@ -893,7 +893,7 @@ define([
             userMenuCfg.displayChangeName = 0;
         }*/
         Common.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').attr('title', Messages.userAccountButton);
+        $userAdmin.find('> button').attr('title', Messages.userAccountButton);
 
         var $userButton = toolbar.$userNameButton = $userAdmin.find('a.' + USERBUTTON_CLS);
         $userButton.click(function (e) {
