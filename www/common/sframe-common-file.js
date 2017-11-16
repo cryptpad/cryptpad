@@ -19,15 +19,6 @@ define([
         reader.readAsArrayBuffer(blob);
     };
 
-    var arrayBufferToString = function (AB) {
-        try {
-            return Nacl.util.encodeBase64(new Uint8Array(AB));
-        } catch (e) {
-            console.error(e);
-            return null;
-        }
-    };
-
     module.uploadFile = function (common, data, cb) {
         var sframeChan = common.getSframeChannel();
         sframeChan.query('Q_UPLOAD_FILE', data, cb);
