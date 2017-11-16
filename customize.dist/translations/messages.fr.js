@@ -523,6 +523,9 @@ define(function () {
     out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
 
     out.upload_title = "Hébergement de fichiers";
+    out.upload_rename = "Souhaitez-vous renommer <b>{0}</b> avant son stockage en ligne ?<br>" +
+                        "<em>L'extension du fichier ({1}) sera ajoutée automatiquement. "+
+                        "Ce nom sera permanent et visible par les autres utilisateurs</em>.";
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
     out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";
