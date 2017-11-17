@@ -20,8 +20,8 @@ define([
     Toolbar,
     nThen,
     SFCommon,
-    Hash,
     UI,
+    Hash,
     Todo,
     Messages
     )
