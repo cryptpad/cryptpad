@@ -231,7 +231,7 @@ define([
                 var newExt = newExtIdx !== -1 ? newName.slice(newExtIdx) : "";
                 if (newExt !== ext) { newName += ext; }
                 cb(newName);
-            }, null, true);
+            }, {cancel: Messages.doNotAskAgain}, true);
         };
         var handleFileState = {
             queue: [],
@@ -259,6 +259,7 @@ define([
                 if (handleFileState.queue.length) { handleFile(handleFileState.queue.shift()); }
             };
             var getName = function () {
+                if (!showNamePrompt) { return void finish(); }
                 promptName(file, function (newName) {
                     name = newName;
                     finish();
