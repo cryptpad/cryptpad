@@ -579,19 +579,19 @@ define([
     UIElements.createUserAdminMenu = function (Common, config) {
         var metadataMgr = Common.getMetadataMgr();
 
-        var displayNameCls = config.displayNameCls || 'displayName';
+        var displayNameCls = config.displayNameCls || 'cp-toolbar-user-name';
         var $displayedName = $('<span>', {'class': displayNameCls});
 
         var accountName = metadataMgr.getPrivateData().accountName;
         var origin = metadataMgr.getPrivateData().origin;
         var padType = metadataMgr.getMetadata().type;
 
-        var $userName = $('<span>', {'class': 'userDisplayName'});
+        var $userName = $('<span>');
         var options = [];
         if (config.displayNameCls) {
             var $userAdminContent = $('<p>');
             if (accountName) {
-                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ');
+                var $userAccount = $('<span>').append(Messages.user_accountName + ': ');
                 $userAdminContent.append($userAccount).append(Util.fixHTML(accountName));
                 $userAdminContent.append($('<br>'));
             }
@@ -628,14 +628,14 @@ define([
         if (accountName) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'profile'},
+                attributes: {'class': 'cp-toolbar-menu-profile'},
                 content: Messages.profileButton
             });
         }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'settings'},
+                attributes: {'class': 'cp-toolbar-menu-settings'},
                 content: Messages.settingsButton
             });
         }
@@ -643,18 +643,18 @@ define([
         if (accountName) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'logout'},
+                attributes: {'class': 'cp-toolbar-menu-logout'},
                 content: Messages.logoutButton
             });
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'login'},
+                attributes: {'class': 'cp-toolbar-menu-login'},
                 content: Messages.login_login
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'register'},
+                attributes: {'class': 'cp-toolbar-menu-register'},
                 content: Messages.login_register
             });
         }
@@ -722,31 +722,31 @@ define([
         metadataMgr.onChange(updateButton);
         updateButton();
 
-        $userAdmin.find('a.logout').click(function () {
+        $userAdmin.find('a.cp-toolbar-menu-logout').click(function () {
             Common.logout(function () {
                 window.parent.location = origin+'/';
             });
         });
-        $userAdmin.find('a.settings').click(function () {
+        $userAdmin.find('a.cp-toolbar-menu-settings').click(function () {
             if (padType) {
                 window.open(origin+'/settings/');
             } else {
                 window.parent.location = origin+'/settings/';
             }
         });
-        $userAdmin.find('a.profile').click(function () {
+        $userAdmin.find('a.cp-toolbar-menu-profile').click(function () {
             if (padType) {
                 window.open(origin+'/profile/');
             } else {
                 window.parent.location = origin+'/profile/';
             }
         });
-        $userAdmin.find('a.login').click(function () {
+        $userAdmin.find('a.cp-toolbar-menu-login').click(function () {
             Common.setLoginRedirect(function () {
                 window.parent.location = origin+'/login/';
             });
         });
-        $userAdmin.find('a.register').click(function () {
+        $userAdmin.find('a.cp-toolbar-menu-register').click(function () {
             Common.setLoginRedirect(function () {
                 window.parent.location = origin+'/register/';
             });
