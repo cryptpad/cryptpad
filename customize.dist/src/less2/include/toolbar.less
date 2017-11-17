@@ -141,7 +141,7 @@
         }
     }
 
-    .addToolbarColors (@color, @bg-color) {
+    .addToolbarColors (@color, @bg-color, @barWidth: 600px) {
         .cp-toolbar-userlist-drawer {
             background-color: @bgcolor;
             color: @color;
@@ -185,6 +185,13 @@
                 background-color: lighten(@bgcolor, 8%);
                 button:hover, button.cp-toolbar-button-active {
                     background-color: @bgcolor;
+                }
+            }
+            .cp-toolbar-rightside {
+                @media screen and (max-width: @barWidth) { // 450px
+                    flex-wrap: wrap;
+                    height: auto;
+                    width: 100%;
                 }
             }
             .cp-toolbar-title-hoverable:hover {
@@ -231,7 +238,7 @@
     &.cp-app-slide {
         @bgcolor: @colortheme_slide-bg;
         @color: @colortheme_slide-color;
-        .addToolbarColors(@color, @bgcolor);
+        .addToolbarColors(@color, @bgcolor, 700px);
     }
     &.cp-app-poll {
         @bgcolor: @colortheme_poll-bg;
@@ -275,33 +282,6 @@
     }
 
 
-    /* TODO: move to the slide LESS page */
-    .cp-app-slide {
-        @media screen and (max-width: @browser_media-medium-screen) {
-            .cp-toolbar-leftside {
-                flex-flow: row wrap;
-                width: 175px;
-                height: auto;
-                .cp-toolbar-spinner { order: 0; }
-            }
-            .cp-toolbar-rightside {
-                height: 2*@toolbar_line-height;
-            }
-        }
-        @media screen and (max-width: 320px) {
-            .cp-toolbar-leftside {
-                flex-flow: row wrap;
-                width: 175px;
-                height: auto;
-                padding-top: @toolbar_line-height;
-                .cp-toolbar-spinner { order: 0; }
-            }
-            .cp-toolbar-rightside {
-                height: auto;
-            }
-        }
-    }
-
     .cp-toolbar {
         * {
             outline-width: 0;
@@ -314,6 +294,9 @@
 
         box-sizing: border-box;
         padding: 0px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
 
         //background-color: #BBBBFF;
         background-color: @colortheme_default-bg;
@@ -476,8 +459,9 @@
         flex-flow: row;
         height: @toolbar_top-height;
         position: relative;
+        width: 100%;
         .cp-toolbar-top-filler {
-            height: 100%;
+            height: @toolbar_top-height;
             display: inline-block;
             order: 4;
             //flex: 1;
@@ -639,7 +623,7 @@
             }
         }
         .cp-toolbar-user {
-            height: 100%;
+            height: @toolbar_top-height;
             display: inline-flex;
             order: 5;
             line-height: @toolbar_top-height;
@@ -715,9 +699,10 @@
         &:empty {
             height: 0;
         }
-        float: left;
         display: inline-flex;
         align-items: center;
+        max-width: 100%;
+        flex: 1;
         //margin-bottom: -1px;
         .cp-toolbar-users {
             pre {
@@ -760,12 +745,6 @@
             height: 0;
         }
         text-align: right;
-        /*&> button {
-            height: 100%;
-            margin: 0;
-            border-radius: 0;
-            padding: 0 10px;
-        }*/
         .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
             display: none;
         }
@@ -813,6 +792,11 @@
     .cp-toolbar-spinner {
         line-height: @toolbar_line-height;
         padding: 0 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 200px;
+        box-sizing: border-box;
         &> span.fa {
             height: 20px;
             width: 20px;
