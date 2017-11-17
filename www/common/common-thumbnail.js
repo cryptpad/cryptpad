@@ -125,13 +125,10 @@ define([
     Thumb.fromVideoBlob = function (blob, cb) {
         var url = URL.createObjectURL(blob);
         var video = document.createElement("VIDEO");
-        video.addEventListener('loadedmetadata', function() {
-            video.addEventListener('loadeddata', function() {
-                var D = getResizedDimensions(video, 'video');
-                Thumb.fromCanvas(video, D, cb);
-            });
-            video.currentTime = Number(Math.floor(Math.min(video.duration/10, 5)));
-        });
+        video.addEventListener('loadeddata', function() {
+            var D = getResizedDimensions(video, 'video');
+            Thumb.fromCanvas(video, D, cb);
+        }, false);
         video.addEventListener('error', function (e) {
             console.error(e);
             cb('ERROR');
