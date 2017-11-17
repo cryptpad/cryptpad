@@ -83,7 +83,11 @@ define([
         }, 150);
 
         $previewButton.removeClass('fa-question').addClass('fa-eye');
-        $previewButton.attr('title', Messages.previewButtonTitle);
+        window.setTimeout(function () {
+            // setTimeout needed for tippy (tooltip), otherwise we have the browser's default
+            // tooltips
+            $previewButton.attr('title', Messages.previewButtonTitle);
+        });
         var previewTo;
         $previewButton.click(function () {
             clearTimeout(previewTo);
