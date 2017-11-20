@@ -358,18 +358,18 @@ define([
         * ??? // what else can we put in here?
     */
     var checkObjectData = function (pad, cb) {
+        if (typeof(pad.atime) !== "number") { pad.atime = +new Date(pad.atime); }
         if (!pad.ctime) { pad.ctime = pad.atime; }
-        if (/^https*:\/\//.test(pad.href)) {
-            pad.href = Hash.getRelativeHref(pad.href);
-        }
+        if (typeof(pad.actime) !== "number") { pad.ctime = +new Date(pad.ctime); }
+
+        if (/^https*:\/\//.test(pad.href)) { pad.href = Hash.getRelativeHref(pad.href); }
+
         var parsed = Hash.parsePadUrl(pad.href);
         if (!parsed || !parsed.hash) { return; }
-        if (typeof(cb) === 'function') {
-            cb(parsed);
-        }
-        if (!pad.title) {
-            pad.title = common.getDefaultName(parsed);
-        }
+        if (typeof(cb) === 'function') { cb(parsed); }
+
+        if (!pad.title) { pad.title = common.getDefaultName(parsed); }
+
         return parsed.hashData;
     };
     // Remove everything from RecentPads that is not an object and check the objects
