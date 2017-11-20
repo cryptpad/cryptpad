@@ -114,6 +114,7 @@ Version 1
 
         if (!href) { return ret; }
         if (href.slice(-1) !== '/') { href += '/'; }
+        href = href.replace(/\/\?[^#]+#/, '/#');
 
         var idx;
 

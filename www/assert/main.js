@@ -246,6 +246,17 @@ define([
     }, "test support for invite urls");
 
     assert(function (cb) {
+        var url = '/pad/?utm_campaign=new_comment&utm_medium=email&utm_source=thread_mailer#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/';
+        var secret = Cryptpad.parsePadUrl(url);
+
+        return cb(secret.hashData.version === 1 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.channel === "3Ujt4F2Sjnjbis6CoYWpoQ" &&
+            secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
+            !secret.hashData.present);
+    }, "test support for ugly tracking query paramaters in url");
+
+    assert(function (cb) {
         // TODO
         return cb(true);
     }, "version 2 hash failed to parse correctly");
