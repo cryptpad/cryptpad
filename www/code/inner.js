@@ -359,6 +359,7 @@ define([
                         }
                         $(el).parents().css('overflow', '');
                         $(el).css('max-height', '');
+                        editor.refresh();
                     }
                 }
             }, waitFor(function (fw) { framework = fw; }));
