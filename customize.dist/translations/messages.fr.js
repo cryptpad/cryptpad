@@ -201,7 +201,7 @@ define(function () {
 
     out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Échap)';
-    out.doNotAskAgain = "Ne jamais renommer (Échap)";
+    out.doNotAskAgain = "Ne plus demander (Échap)";
 
     out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";

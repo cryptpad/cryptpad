@@ -204,7 +204,7 @@ define(function () {
 
     out.cancel = "Cancel";
     out.cancelButton = 'Cancel (esc)';
-    out.doNotAskAgain = "Always keep existing name (Esc)";
+    out.doNotAskAgain = "Don't ask me again (Esc)";
 
     out.historyText = "History";
     out.historyButton = "Display the document history";
