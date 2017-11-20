@@ -419,10 +419,6 @@ define([
             var ev = {};
             if (e.ctrlKey) { ev.ctrlKey = true; }
             if (e.shiftKey) { ev.shiftKey = true; }
-            var click = function (el) {
-                if (!el) { return; }
-                APP.onElementClick(ev, $(el));
-            };
 
             // Enter
             if (e.which === 13) {
@@ -443,6 +439,11 @@ define([
             // [Left, Up, Right, Down]
             if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
             e.preventDefault();
+
+            var click = function (el) {
+                if (!el) { return; }
+                APP.onElementClick(ev, $(el));
+            };
 
             var $selection = $content.find('.cp-app-drive-element.cp-app-drive-element-selected');
             if ($selection.length === 0) { return void click($elements.first()[0]); }
@@ -2386,6 +2387,13 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                     return;
                 }
+                if (e.which === 27) {
+                    $input.val('');
+                    setSearchCursor(0);
+                    if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
+                    else { displayDirectory([ROOT]); }
+                    return;
+                }
                 if (APP.mobile()) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
@@ -2813,6 +2821,19 @@ define([
                 }
                 // else move to trash
                 moveElements(paths, [TRASH], false, refresh);
+            }
+        });
+        var isCharacterKey = function (e) {
+            return e.which === "undefined" /* IE */ ||
+                    (e.which > 0 && e.which !== 13 && e.which !== 27 && !e.ctrlKey && !e.altKey);
+        };
+        $appContainer.on('keypress', function (e) {
+            var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
+            if ($searchBar.is(':focus')) { return; }
+            if (isCharacterKey(e)) {
+                $searchBar.focus();
+                e.preventDefault();
+                return;
             }
         });
         $appContainer.contextmenu(function () {
