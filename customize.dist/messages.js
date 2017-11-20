@@ -47,11 +47,13 @@ define(req, function($, Default, Language) {
         var missing = [];
         var reqs = [];
         Object.keys(map).forEach(function (code) {
+            if (code === defaultLanguage) { return; }
             reqs.push('/customize/translations/messages.' + code + '.js');
         });
         require(reqs, function () {
             var langs = arguments;
             Object.keys(map).forEach(function (code, i) {
+                if (code === defaultLanguage) { return; }
                 var translation = langs[i];
                 var updated = {};
                 Object.keys(Default).forEach(function (k) {
