@@ -21,6 +21,14 @@ define([
             // remove potentially malicious elements
             $d.find('script, iframe, object, applet, video, audio').remove();
 
+            // override link clicking, because we're in an iframe
+            $d.find('a').each(function () {
+                var href = $(this).click(function (e) {
+                    e.preventDefault();
+                    window.open(href);
+                }).attr('href');
+            });
+
             // activate media-tags
             $d.find('media-tag').each(function (i, e) { MediaTag(e); });
         } catch (e) {
