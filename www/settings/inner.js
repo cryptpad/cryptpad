@@ -1,9 +1,12 @@
 define([
     'jquery',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-interface.js',
+    '/common/common-util.js',
+    '/common/common-hash.js',
+    '/customize/messages.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -12,19 +15,16 @@ define([
 ], function (
     $,
     Toolbar,
-    Cryptpad,
     nThen,
-    SFCommon
+    SFCommon,
+    UI,
+    Util,
+    Hash,
+    Messages
     )
 {
     var saveAs = window.saveAs;
-    var Messages = Cryptpad.Messages;
-    var APP = window.APP = {
-        Cryptpad: Cryptpad,
-    };
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
+    var APP = window.APP = {};
 
     var common;
     var metadataMgr;
@@ -68,10 +68,10 @@ define([
         var publicKey = privateData.edPublic;
         if (publicKey) {
             var $key = $('<div>', {'class': 'cp-sidebarlayout-element'}).appendTo($div);
-            var userHref = Cryptpad.getUserHrefFromKeys(accountName, publicKey);
+            var userHref = Hash.getUserHrefFromKeys(privateData.origin, accountName, publicKey);
             var $pubLabel = $('<span>', {'class': 'label'})
                 .text(Messages.settings_publicSigningKey);
-            $key.append($pubLabel).append(Cryptpad.dialog.selectable(userHref));
+            $key.append($pubLabel).append(UI.dialog.selectable(userHref));
         }
 
         return $div;
@@ -198,7 +198,7 @@ define([
                     localStore.put(k, undefined);
                 }
             });
-            Cryptpad.alert(Messages.settings_resetTipsDone);
+            UI.alert(Messages.settings_resetTipsDone);
         });
 
         return $div;
@@ -249,7 +249,7 @@ define([
         $button.click(function () {
             sframeChan.query("Q_THUMBNAIL_CLEAR", null, function (err) {
                 if (err) { return void console.error("Cannot clear localForage"); }
-                Cryptpad.alert(Messages.settings_resetThumbnailsDone);
+                UI.alert(Messages.settings_resetThumbnailsDone);
             });
         });
 
@@ -268,8 +268,8 @@ define([
                 var sjson = JSON.stringify(data);
                 var name = displayName || accountName || Messages.anonymous;
                 var suggestion = name + '-' + new Date().toDateString();
-                Cryptpad.prompt(Cryptpad.Messages.exportPrompt,
-                    Cryptpad.fixFileName(suggestion) + '.json', function (filename) {
+                UI.prompt(Messages.exportPrompt,
+                    Util.fixFileName(suggestion) + '.json', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     var blob = new Blob([sjson], {type: "application/json;charset=utf-8"});
                     saveAs(blob, filename);
@@ -314,14 +314,14 @@ define([
             .text(Messages.settings_resetButton).appendTo($div);
 
         $button.click(function () {
-            Cryptpad.prompt(Messages.settings_resetPrompt, "", function (val) {
+            UI.prompt(Messages.settings_resetPrompt, "", function (val) {
                 if (val !== "I love CryptPad") {
-                    Cryptpad.alert(Messages.settings_resetError);
+                    UI.alert(Messages.settings_resetError);
                     return;
                 }
                 sframeChan.query("Q_SETTINGS_DRIVE_RESET", null, function (err) {
                     if (err) { return void console.error(err); }
-                    Cryptpad.alert(Messages.settings_resetDone);
+                    UI.alert(Messages.settings_resetDone);
                 });
             }, undefined, true);
         });
@@ -392,7 +392,7 @@ define([
 
         $button.click(function () {
 
-            Cryptpad.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
+            UI.confirm(Messages.settings_logoutEverywhereConfirm, function (yes) {
                 if (!yes) { return; }
                 $spinner.show();
                 $ok.hide();
@@ -424,14 +424,14 @@ define([
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide().appendTo($div);
 
         $button.click(function () {
-            Cryptpad.confirm(Messages.settings_importConfirm, function (yes) {
+            UI.confirm(Messages.settings_importConfirm, function (yes) {
                 if (!yes) { return; }
                 $spinner.show();
                 $ok.hide();
                 sframeChan.query('Q_SETTINGS_IMPORT_LOCAL', null, function () {
                     $spinner.hide();
                     $ok.show();
-                    Cryptpad.alert(Messages.settings_importDone);
+                    UI.alert(Messages.settings_importDone);
                 });
             }, undefined, true);
         });
@@ -488,7 +488,7 @@ define([
 
 
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         APP.$container = $('#cp-sidebarlayout-container');
@@ -498,12 +498,6 @@ define([
         sframeChan = common.getSframeChannel();
         sframeChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        Cryptpad.onError(function (info) {
-            if (info && info.type === "store") {
-                onConnectError();
-            }
-        });
-
         metadataMgr = common.getMetadataMgr();
         privateData = metadataMgr.getPrivateData();
 
@@ -511,7 +505,6 @@ define([
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
         var configTb = {
             displayed: displayed,
-            common: Cryptpad,
             sfCommon: common,
             $container: APP.$toolbar,
             pageTitle: Messages.settings_title,
@@ -546,6 +539,6 @@ define([
         createLeftside();
         createUsageButton();
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     });
 });

@@ -5,11 +5,11 @@ define([
     '/bower_components/chainpad-json-validator/json-ot.js',
     'json.sortify',
     '/bower_components/textpatcher/TextPatcher.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/common/common-interface.js',
     '/common/common-thumbnail.js',
     '/customize/application_config.js',
 
@@ -23,11 +23,11 @@ define([
     JsonOT,
     JSONSortify,
     TextPatcher,
-    Cryptpad,
     nThen,
     SFCommon,
     Messages,
     Util,
+    UI,
     Thumb,
     AppConfig)
 {
@@ -46,10 +46,6 @@ define([
 
     var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
         AppConfig.badStateTimeout : 30000;
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
 
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
@@ -151,7 +147,7 @@ define([
                 evContentUpdate.fire(newContent);
             } catch (e) {
                 console.log(e.stack);
-                Cryptpad.errorLoadingScreen(e.message);
+                UI.errorLoadingScreen(e.message);
             }
         };
 
@@ -256,7 +252,7 @@ define([
                 newContent = normalize(newContent);
                 contentUpdate(newContent);
             } else {
-                title.updateTitle(Cryptpad.initialName || title.defaultTitle);
+                title.updateTitle(title.defaultTitle);
                 evOnDefaultContentNeeded.fire();
             }
             stateChange(STATE.READY);
@@ -264,7 +260,7 @@ define([
             if (!readOnly) { onLocal(); }
             evOnReady.fire(newPad);
 
-            Cryptpad.removeLoadingScreen(emitResize);
+            UI.removeLoadingScreen(emitResize);
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             if (options.thumbnail && privateDat.thumbnails) {
@@ -287,9 +283,9 @@ define([
         var onConnectionChange = function (info) {
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);
             if (info.state) {
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             } else {
-                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                UI.alert(Messages.common_connectionLost, undefined, true);
             }
         };
 
@@ -297,8 +293,8 @@ define([
             var $export = common.createButton('export', true, {}, function () {
                 var ext = (typeof(extension) === 'function') ? extension() : extension;
                 var suggestion = title.suggestTitle('cryptpad-document');
-                Cryptpad.prompt(Messages.exportPrompt,
-                    Cryptpad.fixFileName(suggestion) + '.' + ext, function (filename)
+                UI.prompt(Messages.exportPrompt,
+                    Util.fixFileName(suggestion) + '.' + ext, function (filename)
                 {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     if (async) {
@@ -373,7 +369,7 @@ define([
         };
 
         nThen(function (waitFor) {
-            Cryptpad.addLoadingScreen();
+            UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
@@ -426,25 +422,19 @@ define([
                 if (infiniteSpinnerModal) { return; }
                 infiniteSpinnerModal = true;
                 stateChange(STATE.INFINITE_SPINNER);
-                Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+                UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                     if (!yes) { return; }
                     common.gotoURL();
                 });
                 cpNfInner.chainpad.onSettle(function () {
                     infiniteSpinnerModal = false;
-                    Cryptpad.findCancelButton().click();
+                    UI.findCancelButton().click();
                     stateChange(STATE.READY);
                     onRemote();
                 });
             }, 2000);
 
-            //Cryptpad.onLogout(function () { ... });
-
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
+            //common.onLogout(function () { ... });
         }).nThen(function (waitFor) {
 
             if (readOnly) { $('body').addClass('cp-readonly'); }
@@ -476,7 +466,6 @@ define([
                 metadataMgr: cpNfInner.metadataMgr,
                 readOnly: readOnly,
                 realtime: cpNfInner.chainpad,
-                common: Cryptpad,
                 sfCommon: common,
                 $container: $(toolbarContainer),
                 $contentContainer: $(contentContainer)

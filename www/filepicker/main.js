@@ -38,25 +38,13 @@ define([
             window.addEventListener('message', onMsg);
         }).nThen(function (/*waitFor*/) {
             var Cryptpad;
-            var Crypto;
-            var Cryptget;
 
             nThen(function (waitFor) {
-                // Load #2, the loading screen is up so grab whatever you need...
-                require([
-                    '/common/cryptpad-common.js',
-                    '/bower_components/chainpad-crypto/crypto.js',
-                    '/common/cryptget.js',
-                    '/common/sframe-channel.js',
-                ], waitFor(function (_Cryptpad, _Crypto, _Cryptget, SFrameChannel) {
-                    Cryptpad = _Cryptpad;
-                    Crypto = _Crypto;
-                    Cryptget = _Cryptget;
-                    SFrameChannel.create($('#sbox-filePicker-iframe')[0].contentWindow, waitFor(function (sfc) {
+                Cryptpad = config.modules.Cryptpad;
+                config.modules.SFrameChannel.create($('#sbox-filePicker-iframe')[0].contentWindow,
+                    waitFor(function (sfc) {
                         sframeChan = sfc;
                     }));
-                    Cryptpad.ready(waitFor());
-                }));
             }).nThen(function () {
                 var proxy = Cryptpad.getProxy();
                 var updateMeta = function () {
@@ -94,29 +82,7 @@ define([
                 sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
                 proxy.on('change', 'settings', updateMeta);
 
-                Cryptpad.onError(function (info) {
-                    console.log('error');
-                    console.log(info);
-                    if (info && info.type === "store") {
-                        //onConnectError();
-                    }
-                });
-
-                sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
-                    Cryptpad.anonRpcMsg(data.msg, data.content, function (err, response) {
-                        cb({error: err, response: response});
-                    });
-                });
-
-                sframeChan.on('Q_GET_PIN_LIMIT_STATUS', function (data, cb) {
-                    Cryptpad.isOverPinLimit(function (e, overLimit, limits) {
-                        cb({
-                            error: e,
-                            overLimit: overLimit,
-                            limits: limits
-                        });
-                    });
-                });
+                config.addCommonRpc(sframeChan);
 
                 sframeChan.on('Q_GET_FILES_LIST', function (types, cb) {
                     console.error("TODO: make sure Q_GET_FILES_LIST is only available from filepicker");

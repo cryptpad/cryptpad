@@ -3,10 +3,11 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js',
+    '/common/common-util.js',
     '/common/credential.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
-], function ($, Listmap, Crypto, Cryptpad, Cred) {
+], function ($, Listmap, Crypto, Cryptpad, Util, Cred) {
     var Exports = {
         Cred: Cred,
     };
@@ -43,12 +44,12 @@ define([
         keys.editKeyStr = keys.editKeyStr.replace(/\//g, '-');
 
         // 32 bytes of hex
-        var channelHex = opt.channelHex = Cryptpad.uint8ArrayToHex(channelSeed);
+        var channelHex = opt.channelHex = Util.uint8ArrayToHex(channelSeed);
 
         // should never happen
         if (channelHex.length !== 32) { throw new Error('invalid channel id'); }
 
-        opt.channel64 = Cryptpad.hexToBase64(channelHex);
+        opt.channel64 = Util.hexToBase64(channelHex);
 
         opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
 

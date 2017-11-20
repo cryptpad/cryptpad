@@ -1,7 +1,8 @@
 define([
     '/customize/application_config.js',
     '/customize/messages.js',
-], function (AppConfig, Messages) {
+    '/common/common-interface.js',
+], function (AppConfig, Messages, UI) {
     var common = {};
 
     common.infiniteSpinnerDetected = false;
@@ -15,7 +16,7 @@ define([
     /*
         TODO make this not blow up when disconnected or lagging...
     */
-    common.whenRealtimeSyncs = function (Cryptpad, realtime, cb) {
+    common.whenRealtimeSyncs = function (realtime, cb) {
         if (typeof(realtime.getAuthDoc) !== 'function') {
             return void console.error('improper use of this function');
         }
@@ -28,7 +29,7 @@ define([
         }, 0);
     };
 
-    common.beginDetectingInfiniteSpinner = function (Cryptpad, realtime) {
+    common.beginDetectingInfiniteSpinner = function (realtime) {
         if (intr) { return; }
         intr = window.setInterval(function () {
             var l;
@@ -44,7 +45,7 @@ define([
             infiniteSpinnerHandlers.forEach(function (ish) { ish(); });
 
             // inform the user their session is in a bad state
-            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+            UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                 if (!yes) { return; }
                 window.parent.location.reload();
             });

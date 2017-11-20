@@ -2,16 +2,17 @@ define([
     'jquery',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-notifier.js',
     '/customize/application_config.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/common/notify.js',
-    '/common/visible.js',
     '/common/tippy.min.js',
     '/customize/pages.js',
     '/common/hyperscript.js',
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/common/tippy.css',
-], function ($, Messages, Util, AppConfig, Alertify, Notify, Visible, Tippy, Pages, h) {
+], function ($, Messages, Util, Hash, Notifier, AppConfig,
+            Alertify, Tippy, Pages, h) {
     var UI = {};
 
     /*
@@ -270,7 +271,7 @@ define([
         document.body.appendChild(frame);
         setTimeout(function () {
             $ok.focus();
-            UI.notify();
+            Notifier.notify();
         });
     };
 
@@ -318,7 +319,7 @@ define([
         document.body.appendChild(frame);
         setTimeout(function () {
             $(input).select().focus();
-            UI.notify();
+            Notifier.notify();
         });
     };
 
@@ -365,7 +366,7 @@ define([
 
         document.body.appendChild(frame);
         setTimeout(function () {
-            UI.notify();
+            Notifier.notify();
             $(frame).find('.ok').focus();
             if (typeof(opt.done) === 'function') {
                 opt.done($ok.closest('.dialog'));
@@ -468,44 +469,6 @@ define([
         $('#' + LOADING).find('p').html(error || Messages.error);
     };
 
-    // Notify
-    var notify = {};
-    UI.unnotify = function () {
-        if (notify.tabNotification &&
-            typeof(notify.tabNotification.cancel) === 'function') {
-            notify.tabNotification.cancel();
-        }
-    };
-
-    UI.notify = function () {
-        if (Visible.isSupported() && !Visible.currently()) {
-            UI.unnotify();
-            notify.tabNotification = Notify.tab(1000, 10);
-        }
-    };
-
-    if (Visible.isSupported()) {
-        Visible.onChange(function (yes) {
-            if (yes) { UI.unnotify(); }
-        });
-    }
-
-    UI.importContent = function (type, f, cfg) {
-        return function () {
-            var $files = $('<input>', {type:"file"});
-            if (cfg && cfg.accept) {
-                $files.attr('accept', cfg.accept);
-            }
-            $files.click();
-            $files.on('change', function (e) {
-                var file = e.target.files[0];
-                var reader = new FileReader();
-                reader.onload = function (e) { f(e.target.result, file); };
-                reader.readAsText(file, type);
-            });
-        };
-    };
-
     var $defaultIcon = $('<span>', {"class": "fa fa-file-text-o"});
     UI.getIcon = function (type) {
         var $icon = $defaultIcon.clone();
@@ -517,6 +480,17 @@ define([
 
         return $icon;
     };
+    UI.getFileIcon = function (data) {
+        var $icon = UI.getIcon();
+        if (!data) { return $icon; }
+        var href = data.href;
+        if (!href) { return $icon; }
+
+        var type = Hash.parsePadUrl(href).type;
+        $icon = UI.getIcon(type);
+
+        return $icon;
+    };
 
     // Tooltips
 
@@ -524,11 +498,8 @@ define([
         // If an element is removed from the UI while a tooltip is applied on that element, the tooltip will get hung
         // forever, this is a solution which just searches for tooltips which have no corrisponding element and removes
         // them.
-        var win;
         $('.tippy-popper').each(function (i, el) {
-            win = win || $('#pad-iframe').length? $('#pad-iframe')[0].contentWindow: undefined;
-            if (!win) { return; }
-            if (win.$('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
+            if ($('[aria-describedby=' + el.getAttribute('id') + ']').length === 0) {
                 el.remove();
             }
         });
@@ -536,52 +507,54 @@ define([
 
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
-        var addTippy = function (el) {
+        var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
+        var addTippy = function (i, el) {
             if (el.nodeName === 'IFRAME') { return; }
-            var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
             Tippy(el, {
                 position: 'bottom',
                 distance: 0,
                 performance: true,
                 dynamicTitle: true,
-                delay: [delay, 0]
+                delay: [delay, 0],
+                sticky: true
             });
         };
-        var $body = $('body');
-        var $padIframe = $('#pad-iframe').contents().find('body');
-        $('[title]').each(function (i, el) {
-            addTippy(el);
-        });
-        $('#pad-iframe').contents().find('[title]').each(function (i, el) {
-            addTippy(el);
-        });
+        // This is the robust solution to remove dangling tooltips
+        // The mutation observer does not always find removed nodes.
+        setInterval(UI.clearTooltips, delay);
+        var checkRemoved = function (x) {
+            var out = false;
+            $(x).find('[aria-describedby]').each(function (i, el) {
+                var id = el.getAttribute('aria-describedby');
+                if (id.indexOf('tippy-tooltip-') !== 0) { return; }
+                out = true;
+            });
+            return out;
+        };
+        $('[title]').each(addTippy);
         var observer = new MutationObserver(function(mutations) {
+            var removed = false;
             mutations.forEach(function(mutation) {
-                if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                    $body.find('[title]').each(function (i, el) {
-                        addTippy(el);
-                    });
-                    if (!$padIframe.length) { return; }
-                    $padIframe.find('[title]').each(function (i, el) {
-                        addTippy(el);
-                    });
+                if (mutation.type === "childList") {
+                    for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        $(mutation.addedNodes[i]).find('[title]').each(addTippy);
+                    }
+                    for (var j = 0; j < mutation.removedNodes.length; j++) {
+                        removed |= checkRemoved(mutation.removedNodes[j]);
+                    }
+                }
+                if (mutation.type === "attributes" && mutation.attributeName === "title") {
+                    addTippy(0, mutation.target);
                 }
             });
+            if (removed) { UI.clearTooltips(); }
         });
         observer.observe($('body')[0], {
-            attributes: false,
+            attributes: true,
             childList: true,
             characterData: false,
             subtree: true
         });
-        if ($('#pad-iframe').length) {
-            observer.observe($('#pad-iframe').contents().find('body')[0], {
-                attributes: false,
-                childList: true,
-                characterData: false,
-                subtree: true
-            });
-        }
     };
 
     return UI;

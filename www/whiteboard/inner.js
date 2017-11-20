@@ -5,16 +5,14 @@ define([
     '/common/toolbar3.js',
     'json.sortify',
     '/bower_components/chainpad-json-validator/json-ot.js',
-    '/common/cryptpad-common.js',
     '/common/common-util.js',
-    '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
-    '/common/sframe-common-interface.js',
+    '/common/common-interface.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/pages.js',
-
+    '/customize/messages.js',
     '/customize/application_config.js',
     '/common/common-thumbnail.js',
     '/whiteboard/colors.js',
@@ -32,24 +30,21 @@ define([
     Toolbar,
     JSONSortify,
     JsonOT,
-    Cryptpad,
     Util,
-    Cryptget,
     nThen,
     SFCommon,
-    SFUI,
+    UI,
     ApiConfig,
     CommonRealtime,
     Pages,
+    Messages,
     AppConfig,
     Thumb,
     Colors)
 {
     var saveAs = window.saveAs;
-    var Messages = Cryptpad.Messages;
 
     var APP = window.APP = {
-        Cryptpad: Cryptpad,
         $: $
     };
     var Fabric = APP.Fabric = window.fabric;
@@ -59,10 +54,6 @@ define([
     };
 
     var toolbar;
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
 
     var andThen = function (common) {
         var config = {};
@@ -129,7 +120,7 @@ define([
         var updateBrushWidth = function () {
             var val = $width.val();
             canvas.freeDrawingBrush.width = Number(val);
-            $widthLabel.text(Cryptpad.Messages._getKey("canvas_widthLabel", [val]));
+            $widthLabel.text(Messages._getKey("canvas_widthLabel", [val]));
             $('#cp-app-whiteboard-width-val').text(val + 'px');
             createCursor();
         };
@@ -140,7 +131,7 @@ define([
             var val = $opacity.val();
             brush.opacity = Number(val);
             canvas.freeDrawingBrush.color = Colors.hex2rgba(brush.color, brush.opacity);
-            $opacityLabel.text(Cryptpad.Messages._getKey("canvas_opacityLabel", [val]));
+            $opacityLabel.text(Messages._getKey("canvas_opacityLabel", [val]));
             $('#cp-app-whiteboard-opacity-val').text((Number(val) * 100) + '%');
             createCursor();
         };
@@ -228,7 +219,7 @@ define([
 
         var saveImage = APP.saveImage = function () {
             var defaultName = "pretty-picture.png";
-            Cryptpad.prompt(Messages.exportPrompt, defaultName, function (filename) {
+            UI.prompt(Messages.exportPrompt, defaultName, function (filename) {
                 if (!(typeof(filename) === 'string' && filename)) { return; }
                 $canvas[0].toBlob(function (blob) {
                     saveAs(blob, filename);
@@ -409,7 +400,6 @@ define([
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
                 realtime: info.realtime,
-                common: Cryptpad,
                 sfCommon: common,
                 $container: $bar,
                 $contentContainer: $('#cp-app-whiteboard-canvas-area')
@@ -436,7 +426,7 @@ define([
             if (common.isLoggedIn()) {
                 common.createButton('savetodrive', true, {}, function () {})
                 .click(function () {
-                    Cryptpad.prompt(Messages.exportPrompt, document.title + '.png',
+                    UI.prompt(Messages.exportPrompt, document.title + '.png',
                     function (name) {
                         if (name === null || !name.trim()) { return; }
                         APP.upload(name);
@@ -537,12 +527,12 @@ define([
                     (hjson.metadata && typeof(hjson.metadata.type) !== 'undefined' &&
                      hjson.metadata.type !== 'whiteboard')) {
                     var errorText = Messages.typeError;
-                    Cryptpad.errorLoadingScreen(errorText);
+                    UI.errorLoadingScreen(errorText);
                     throw new Error(errorText);
                 }
                 newDoc = hjson.content;
             } else {
-                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
+                Title.updateTitle(Title.defaultTitle);
             }
 
             nThen(function (waitFor) {
@@ -556,7 +546,7 @@ define([
                 setEditable(!readOnly);
                 initializing = false;
                 config.onLocal();
-                Cryptpad.removeLoadingScreen();
+                UI.removeLoadingScreen();
 
                 initThumbnails();
 
@@ -592,27 +582,25 @@ define([
             // inform of network disconnect
             setEditable(false);
             toolbar.failed();
-            Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            UI.alert(Messages.common_connectionLost, undefined, true);
         };
 
         config.onConnectionChange = function (info) {
             setEditable(info.state);
             if (info.state) {
                 initializing = true;
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             } else {
-                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+                UI.alert(Messages.common_connectionLost, undefined, true);
             }
         };
-
-        config.onError = onConnectError;
 
         cpNfInner = common.startRealtime(config);
         metadataMgr = cpNfInner.metadataMgr;
 
         cpNfInner.onInfiniteSpinner(function () {
             setEditable(false);
-            Cryptpad.confirm(Messages.realtime_unrecoverableError, function (yes) {
+            UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                 if (!yes) { return; }
                 common.gotoURL();
             });
@@ -629,7 +617,7 @@ define([
             saveImage();
         });
 
-        Cryptpad.onLogout(function () { setEditable(false); });
+        common.onLogout(function () { setEditable(false); });
     };
 
     var main = function () {
@@ -637,17 +625,12 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
                 var $div = $('<div>').append(Pages['/whiteboard/']());
                 $('body').append($div.html());
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (/*waitFor*/) {
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
             andThen(common);
         });
     };

@@ -1,9 +1,8 @@
 define([
     '/common/common-util.js',
-    '/common/common-interface.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function (Util, UI, Crypto) {
+], function (Util, Crypto) {
     var Nacl = window.nacl;
 
     var Hash = {};
@@ -35,8 +34,8 @@ define([
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
         return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
     };
-    Hash.getUserHrefFromKeys = function (username, pubkey) {
-        return window.location.origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
+    Hash.getUserHrefFromKeys = function (origin, username, pubkey) {
+        return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
 
     var fixDuplicateSlashes = function (s) {
@@ -212,14 +211,12 @@ Version 1
                         secret.keys = Crypto.createEditCryptor(parsed.key);
                         secret.key = secret.keys.editKeyStr;
                         if (secret.channel.length !== 32 || secret.key.length !== 24) {
-                            UI.alert("The channel key and/or the encryption key is invalid");
                             throw new Error("The channel key and/or the encryption key is invalid");
                         }
                     }
                     else if (parsed.mode === 'view') {
                         secret.keys = Crypto.createViewCryptor(parsed.key);
                         if (secret.channel.length !== 32) {
-                            UI.alert("The channel key is invalid");
                             throw new Error("The channel key is invalid");
                         }
                     }

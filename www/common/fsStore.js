@@ -4,8 +4,10 @@ define([
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/userObject.js',
+    '/common/common-interface.js',
+    '/common/common-hash.js',
     '/common/migrate-user-object.js',
-], function ($, Listmap, Crypto, TextPatcher, FO, Migrate) {
+], function ($, Listmap, Crypto, TextPatcher, FO, UI, Hash, Migrate) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -247,7 +249,7 @@ define([
             if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                 // even anonymous users should have a persistent, unique-ish id
                 console.log('generating a persistent identifier');
-                proxy.uid = Cryptpad.createChannelId();
+                proxy.uid = Hash.createChannelId();
             }
 
             // if the user is logged in, but does not have signing keys...
@@ -284,11 +286,11 @@ define([
         if (!Cryptpad || initialized) { return; }
         initialized = true;
 
-        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Cryptpad.createRandomHash();
+        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Hash.createRandomHash();
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
         }
-        var secret = Cryptpad.getSecrets('drive', hash);
+        var secret = Hash.getSecrets('drive', hash);
         var listmapConfig = {
             data: {},
             websocketURL: Cryptpad.getWebsocketURL(),
@@ -302,27 +304,6 @@ define([
 
         var exp = {};
 
-        window.addEventListener('storage', function (e) {
-            if (e.key !== Cryptpad.userHashKey) { return; }
-            var o = e.oldValue;
-            var n = e.newValue;
-            if (!o && n) {
-                window.location.reload();
-            } else if (o && !n) {
-                $(window).on('keyup', function (e) {
-                    if (e.keyCode === 27) {
-                        Cryptpad.removeLoadingScreen();
-                    }
-                });
-                Cryptpad.logout();
-                Cryptpad.addLoadingScreen({hideTips: true});
-                Cryptpad.errorLoadingScreen(Cryptpad.Messages.onLogout, true);
-                if (exp.info) {
-                    exp.info.network.disconnect();
-                }
-            }
-        });
-
         var rt = window.rt = Listmap.create(listmapConfig);
 
         exp.realtime = rt.realtime;
@@ -330,7 +311,7 @@ define([
         rt.proxy.on('create', function (info) {
             exp.info = info;
             if (!Cryptpad.getUserHash()) {
-                localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                localStorage.FS_hash = Hash.getEditHashFromKeys(info.channel, secret.keys);
             }
         }).on('ready', function () {
             if (store) { return; } // the store is already ready, it is a reconnection
@@ -346,22 +327,13 @@ define([
             // Drive already exist: return the existing drive, don't load data from legacy store
             onReady(f, rt.proxy, Cryptpad, exp);
         })
-        .on('disconnect', function (info) {
-            // We only manage errors during the loading screen here. Other websocket errors are handled by the apps
-            if (info.error) {
-                if (typeof Cryptpad.storeError === "function") {
-                    Cryptpad.storeError();
-                }
-                return;
-            }
-        })
         .on('change', ['drive', 'migrate'], function () {
             var path = arguments[2];
             var value = arguments[1];
             if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
                 rt.network.disconnect();
                 rt.realtime.abort();
-                Cryptpad.alert(Cryptpad.Messages.fs_migration, null, true);
+                UI.alert(Cryptpad.Messages.fs_migration, null, true);
             }
         });
     };

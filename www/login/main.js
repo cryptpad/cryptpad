@@ -2,30 +2,14 @@ define([
     'jquery',
     '/common/cryptpad-common.js',
     '/common/login.js',
+    '/common/common-interface.js',
+    '/common/common-realtime.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login) {
+], function ($, Cryptpad, Login, UI, Realtime) {
     $(function () {
         var $main = $('#mainBlock');
         var Messages = Cryptpad.Messages;
-
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
-        $(window).click(function () {
-            $('.cp-dropdown-content').hide();
-        });
 
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');
@@ -74,7 +58,7 @@ define([
 
             // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
-                Cryptpad.addLoadingScreen({
+                UI.addLoadingScreen({
                     loadingText: Messages.login_hashing,
                     hideTips: true,
                 });
@@ -100,7 +84,7 @@ define([
                                 proxy.curvePublic = result.curvePublic;
 
                                 Cryptpad.feedback('LOGIN', true);
-                                Cryptpad.whenRealtimeSyncs(result.realtime, function() {
+                                Realtime.whenRealtimeSyncs(result.realtime, function() {
                                     Cryptpad.login(result.userHash, result.userName, function () {
                                         hashing = false;
                                         if (sessionStorage.redirectTo) {
@@ -120,28 +104,28 @@ define([
                             }
                             switch (err) {
                                 case 'NO_SUCH_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_noSuchUser, function () {
+                                    UI.removeLoadingScreen(function () {
+                                        UI.alert(Messages.login_noSuchUser, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 case 'INVAL_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalUser, function () {
+                                    UI.removeLoadingScreen(function () {
+                                        UI.alert(Messages.login_invalUser, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 case 'INVAL_PASS':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalPass, function () {
+                                    UI.removeLoadingScreen(function () {
+                                        UI.alert(Messages.login_invalPass, function () {
                                             hashing = false;
                                         });
                                     });
                                     break;
                                 default: // UNHANDLED ERROR
-                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                                    UI.errorLoadingScreen(Messages.login_unhandledError);
                             }
                         });
                     });

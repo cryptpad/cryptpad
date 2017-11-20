@@ -36,10 +36,10 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad) {
+        var getSecrets = function (Cryptpad, Utils) {
             var proxy = Cryptpad.getProxy();
-            var hash = proxy.todo || Cryptpad.createRandomHash();
-            return Cryptpad.getSecrets('todo', hash);
+            var hash = proxy.todo || Utils.Hash.createRandomHash();
+            return Utils.Hash.getSecrets('todo', hash);
         };
         SFCommonO.start({
             getSecrets: getSecrets,

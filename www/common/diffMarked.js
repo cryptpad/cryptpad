@@ -1,11 +1,12 @@
 define([
     'jquery',
     '/bower_components/marked/marked.min.js',
-    '/common/cryptpad-common.js',
+    '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/media-tag.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-],function ($, Marked, Cryptpad, MediaTag) {
+],function ($, Marked, Hash, Util, MediaTag) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -40,8 +41,8 @@ define([
     };
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
-            var parsed = Cryptpad.parsePadUrl(href);
-            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+            var parsed = Hash.parsePadUrl(href);
+            var hexFileName = Util.base64ToHex(parsed.hashData.channel);
             var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
             var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '">';
             if (mediaMap[src]) {

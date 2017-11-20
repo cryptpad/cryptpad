@@ -1,7 +1,10 @@
 define([
     'jquery',
-    '/customize/application_config.js'
-], function ($, AppConfig) {
+    '/customize/application_config.js',
+    '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-realtime.js'
+], function ($, AppConfig, Util, Hash, Realtime) {
     var module = {};
 
     var ROOT = module.ROOT = "root";
@@ -74,7 +77,7 @@ define([
         exp.isReadOnlyFile = function (element) {
             if (!isFile(element)) { return false; }
             var data = exp.getFileData(element);
-            var parsed = Cryptpad.parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href);
             if (!parsed) { return false; }
             var pHash = parsed.hashData;
             if (!pHash || pHash.type !== "pad") { return; }
@@ -243,7 +246,7 @@ define([
             getHrefArray().forEach(function (c) {
                 ret = ret.concat(_getFiles[c]());
             });
-            return Cryptpad.deduplicateString(ret);
+            return Util.deduplicateString(ret);
         };
         _getFiles[ROOT] = function () {
             var ret = [];
@@ -294,7 +297,7 @@ define([
                     ret = ret.concat(_getFiles[c]());
                 }
             });
-            return Cryptpad.deduplicateString(ret);
+            return Util.deduplicateString(ret);
         };
 
         var getIdFromHref = exp.getIdFromHref = function (href) {
@@ -437,13 +440,13 @@ define([
             });
 
             // Search Href
-            var href = Cryptpad.getRelativeHref(value);
+            var href = Hash.getRelativeHref(value);
             if (href) {
                 var id = getIdFromHref(href);
                 if (id) { res.push(id); }
             }
 
-            res = Cryptpad.deduplicateString(res);
+            res = Util.deduplicateString(res);
 
             var ret = [];
             res.forEach(function (l) {
@@ -486,14 +489,14 @@ define([
             // TODO: can only be called from outside atm
             if (typeof cb !== "function") { cb = function () {}; }
             var todo = function () {
-                var id = Cryptpad.createRandomInteger();
+                var id = Util.createRandomInteger();
                 files[FILES_DATA][id] = data;
                 cb(null, id);
             };
             if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
                 return void todo();
             }
-            Cryptpad.pinPads([Cryptpad.hrefToHexChannelId(data.href)], function (e) {
+            Cryptpad.pinPads([Hash.hrefToHexChannelId(data.href)], function (e) {
                 if (e) { return void cb(e); }
                 todo();
             });
@@ -547,7 +550,7 @@ define([
             }
             // Move to root
             var newName = isFile(element) ?
-                            getAvailableName(newParent, Cryptpad.createChannelId()) :
+                            getAvailableName(newParent, Hash.createChannelId()) :
                             isInTrashRoot(elementPath) ?
                               elementPath[1] : elementPath.pop();
 
@@ -605,7 +608,7 @@ define([
             if (path && isPathIn(newPath, [ROOT]) || filesList.indexOf(id) === -1) {
                 parentEl = find(newPath || [ROOT]);
                 if (parentEl) {
-                    var newName = getAvailableName(parentEl, Cryptpad.createChannelId());
+                    var newName = getAvailableName(parentEl, Hash.createChannelId());
                     parentEl[newName] = id;
                     return;
                 }
@@ -865,10 +868,10 @@ define([
                         oldData.forEach(function (obj) {
                             if (!obj || !obj.href) { return; }
                             var href = obj.href;
-                            var id = Cryptpad.createRandomInteger();
+                            var id = Util.createRandomInteger();
                             var paths = findFile(href);
                             var data = obj;
-                            var key = Cryptpad.createChannelId();
+                            var key = Hash.createChannelId();
                             if (data) {
                                 newData[id] = data;
                             } else {
@@ -901,7 +904,7 @@ define([
                     if (exp.rt) {
                         exp.rt.sync();
                         // TODO
-                        Cryptpad.whenRealtimeSyncs(exp.rt, next);
+                        Realtime.whenRealtimeSyncs(exp.rt, next);
                     } else {
                         window.setTimeout(next, 1000);
                     }
@@ -943,8 +946,8 @@ define([
                     }
                     if (typeof element[el] === "string") {
                         // We have an old file (href) which is not in filesData: add it
-                        var id = Cryptpad.createRandomInteger();
-                        var key = Cryptpad.createChannelId();
+                        var id = Util.createRandomInteger();
+                        var key = Hash.createChannelId();
                         files[FILES_DATA][id] = {href: element[el], filename: el};
                         element[key] = id;
                         delete element[el];
@@ -968,7 +971,7 @@ define([
                     if (!$.isArray(obj.path)) { toClean.push(idx); return; }
                     if (typeof obj.element === "string") {
                         // We have an old file (href) which is not in filesData: add it
-                        var id = Cryptpad.createRandomInteger();
+                        var id = Util.createRandomInteger();
                         files[FILES_DATA][id] = {href: obj.element, filename: el};
                         obj.element = id;
                     }
@@ -1002,7 +1005,7 @@ define([
             };
             var fixTemplate = function () {
                 if (!Array.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
-                files[TEMPLATE] = Cryptpad.deduplicateString(files[TEMPLATE].slice());
+                files[TEMPLATE] = Util.deduplicateString(files[TEMPLATE].slice());
                 var us = files[TEMPLATE];
                 var rootFiles = getFiles([ROOT]).slice();
                 var toClean = [];
@@ -1012,7 +1015,7 @@ define([
                     }
                     if (typeof el === "string") {
                         // We have an old file (href) which is not in filesData: add it
-                        var id = Cryptpad.createRandomInteger();
+                        var id = Util.createRandomInteger();
                         files[FILES_DATA][id] = {href: el};
                         us[idx] = id;
                     }
@@ -1050,7 +1053,7 @@ define([
                         toClean.push(id);
                         continue;
                     }
-                    var parsed = Cryptpad.parsePadUrl(el.href);
+                    var parsed = Hash.parsePadUrl(el.href);
                     if (!parsed.hash) {
                         debug("Removing an element in filesData with a invalid href.", el);
                         toClean.push(id);
@@ -1059,7 +1062,7 @@ define([
 
                     if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {
                         debug("An element in filesData was not in ROOT, TEMPLATE or TRASH.", id, el);
-                        var newName = Cryptpad.createChannelId();
+                        var newName = Hash.createChannelId();
                         root[newName] = id;
                         continue;
                     }

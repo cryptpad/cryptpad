@@ -5,17 +5,18 @@ define([
     '/common/sframe-chainpad-netflux-inner.js',
     '/common/sframe-channel.js',
     '/common/sframe-common-title.js',
-    '/common/sframe-common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/sframe-common-history.js',
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
-    '/common/cryptpad-common.js',
     '/common/common-realtime.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-thumbnail.js',
+    '/common/common-interface.js',
     '/bower_components/localforage/dist/localforage.min.js'
 ], function (
     $,
@@ -24,16 +25,17 @@ define([
     CpNfInner,
     SFrameChannel,
     Title,
-    UI,
+    UIElements,
     History,
     File,
     CodeMirror,
     MetadataMgr,
     AppConfig,
-    Cryptpad,
     CommonRealtime,
     Util,
+    Hash,
     Thumb,
+    UI,
     localForage
 ) {
     // Chainpad Netflux Inner
@@ -55,7 +57,6 @@ define([
     };
 
     funcs.getMetadataMgr = function () { return ctx.metadataMgr; };
-    funcs.getCryptpadCommon = function () { return Cryptpad; };
     funcs.getSframeChannel = function () { return ctx.sframeChan; };
     funcs.getAppConfig = function () { return AppConfig; };
 
@@ -74,16 +75,16 @@ define([
     };
 
     // UI
-    funcs.createUserAdminMenu = callWithCommon(UI.createUserAdminMenu);
-    funcs.initFilePicker = callWithCommon(UI.initFilePicker);
-    funcs.openFilePicker = callWithCommon(UI.openFilePicker);
-    funcs.openTemplatePicker = callWithCommon(UI.openTemplatePicker);
-    funcs.displayMediatagImage = callWithCommon(UI.displayMediatagImage);
-    funcs.displayAvatar = callWithCommon(UI.displayAvatar);
-    funcs.createButton = callWithCommon(UI.createButton);
-    funcs.createUsageBar = callWithCommon(UI.createUsageBar);
-    funcs.updateTags = callWithCommon(UI.updateTags);
-    funcs.createLanguageSelector = callWithCommon(UI.createLanguageSelector);
+    funcs.createUserAdminMenu = callWithCommon(UIElements.createUserAdminMenu);
+    funcs.initFilePicker = callWithCommon(UIElements.initFilePicker);
+    funcs.openFilePicker = callWithCommon(UIElements.openFilePicker);
+    funcs.openTemplatePicker = callWithCommon(UIElements.openTemplatePicker);
+    funcs.displayMediatagImage = callWithCommon(UIElements.displayMediatagImage);
+    funcs.displayAvatar = callWithCommon(UIElements.displayAvatar);
+    funcs.createButton = callWithCommon(UIElements.createButton);
+    funcs.createUsageBar = callWithCommon(UIElements.createUsageBar);
+    funcs.updateTags = callWithCommon(UIElements.updateTags);
+    funcs.createLanguageSelector = callWithCommon(UIElements.createLanguageSelector);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -102,21 +103,21 @@ define([
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
     funcs.getMediatagFromHref = function (href) {
-        var parsed = Cryptpad.parsePadUrl(href);
-        var secret = Cryptpad.getSecrets('file', parsed.hash);
+        var parsed = Hash.parsePadUrl(href);
+        var secret = Hash.getSecrets('file', parsed.hash);
         var data = ctx.metadataMgr.getPrivateData();
         if (secret.keys && secret.channel) {
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = Cryptpad.base64ToHex(secret.channel);
+            var hexFileName = Util.base64ToHex(secret.channel);
             var origin = data.fileHost || data.origin;
-            var src = origin + Cryptpad.getBlobPathFromHex(hexFileName);
+            var src = origin + Hash.getBlobPathFromHex(hexFileName);
             return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + cryptKey + '">' +
                    '</media-tag>';
         }
         return;
     };
     funcs.getFileSize = function (href, cb) {
-        var channelId = Cryptpad.hrefToHexChannelId(href);
+        var channelId = Hash.hrefToHexChannelId(href);
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
             if (!data) { return void cb("No response"); }
             if (data.error) { return void cb(data.error); }
@@ -313,6 +314,14 @@ define([
 
     funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
+    var logoutHandlers = [];
+    funcs.onLogout = function (h) {
+        if (typeof (h) !== "function") { return; }
+        if (logoutHandlers.indexOf(h) !== -1) { return; }
+        logoutHandlers.push(h);
+    };
+
+
     Object.freeze(funcs);
     return { create: function (cb) {
 
@@ -359,17 +368,30 @@ define([
 
             UI.addTooltips();
 
+            ctx.sframeChan.on('EV_LOGOUT', function () {
+                $(window).on('keyup', function (e) {
+                    if (e.keyCode === 27) {
+                        UI.removeLoadingScreen();
+                    }
+                });
+                UI.addLoadingScreen({hideTips: true});
+                UI.errorLoadingScreen(Messages.onLogout, true);
+                logoutHandlers.forEach(function (h) {
+                    if (typeof (h) === "function") { h(); }
+                });
+            });
+
             ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
             ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });
 
 
             ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
-                Cryptpad.confirm(confirmMsg, cb, null, true);
+                UI.confirm(confirmMsg, cb, null, true);
             });
             ctx.sframeChan.on('EV_FRIEND_REQUEST', function (data) {
                 var i = pendingFriends.indexOf(data.netfluxId);
                 if (i !== -1) { pendingFriends.splice(i, 1); }
-                Cryptpad.log(data.logText);
+                UI.log(data.logText);
             });
 
             ctx.sframeChan.ready();

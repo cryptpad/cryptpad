@@ -5,6 +5,9 @@ define([
     'json.sortify',
     '/common/cryptpad-common.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-ui-elements.js',
+    '/common/common-interface.js',
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -12,6 +15,7 @@ define([
     '/common/userObject.js',
     '/customize/application_config.js',
     '/common/sframe-chainpad-listmap.js',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -23,16 +27,18 @@ define([
     JSONSortify,
     Cryptpad,
     Util,
+    Hash,
+    UIElements,
+    UI,
     Cryptget,
     nThen,
     SFCommon,
     CommonRealtime,
     FO,
     AppConfig,
-    Listmap)
+    Listmap,
+    Messages)
 {
-    var Messages = Cryptpad.Messages;
-
     var APP = window.APP = {
         editable: false,
         Cryptpad: Cryptpad,
@@ -41,10 +47,6 @@ define([
 
     var stringify = function (obj) {
         return JSONSortify(obj);
-    };
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
@@ -76,7 +78,7 @@ define([
     var logError = config.logError = function () {
         console.error.apply(console, arguments);
     };
-    var log = config.log = Cryptpad.log;
+    var log = config.log = UI.log;
 
     var localStore = window.cryptpadStore;
     APP.store = {};
@@ -255,7 +257,7 @@ define([
             currentPath = [FILES_DATA];
             $tree.hide();
             if (Object.keys(files.root).length && !proxy.anonymousAlert) {
-                Cryptpad.alert(Messages.fm_alert_anonymous, null, true);
+                UI.alert(Messages.fm_alert_anonymous, null, true);
                 proxy.anonymousAlert = true;
             }
         }
@@ -417,10 +419,6 @@ define([
             var ev = {};
             if (e.ctrlKey) { ev.ctrlKey = true; }
             if (e.shiftKey) { ev.shiftKey = true; }
-            var click = function (el) {
-                if (!el) { return; }
-                APP.onElementClick(ev, $(el));
-            };
 
             // Enter
             if (e.which === 13) {
@@ -441,6 +439,11 @@ define([
             // [Left, Up, Right, Down]
             if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
             e.preventDefault();
+
+            var click = function (el) {
+                if (!el) { return; }
+                APP.onElementClick(ev, $(el));
+            };
 
             var $selection = $content.find('.cp-app-drive-element.cp-app-drive-element-selected');
             if ($selection.length === 0) { return void click($elements.first()[0]); }
@@ -1144,7 +1147,7 @@ define([
             var data = filesOp.getFileData(element);
             if (!data) { return void logError("No data for the file", element); }
 
-            var hrefData = Cryptpad.parsePadUrl(data.href);
+            var hrefData = Hash.parsePadUrl(data.href);
             if (hrefData.type) {
                 $span.addClass('cp-border-color-'+hrefData.type);
             }
@@ -1211,9 +1214,9 @@ define([
         // This is duplicated in cryptpad-common, it should be unified
         var getFileIcon = function (id) {
             var data = filesOp.getFileData(id);
-            return Cryptpad.getFileIcon(data);
+            return UI.getFileIcon(data);
         };
-        var getIcon = Cryptpad.getIcon;
+        var getIcon = UI.getIcon;
 
         // Create the "li" element corresponding to the file/folder located in "path"
         var createElement = function (path, elPath, root, isFolder) {
@@ -1442,7 +1445,7 @@ define([
             $button.addClass('cp-app-drive-toolbar-emptytrash');
             $button.attr('title', Messages.fc_empty);
             $button.click(function () {
-                Cryptpad.confirm(Messages.fm_emptyTrashDialog, function(res) {
+                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
                     if (!res) { return; }
                     filesOp.emptyTrash(refresh);
                 });
@@ -1457,7 +1460,7 @@ define([
                 if (type === 'contacts') { return; }
                 if (type === 'todo') { return; }
                 if (type === 'file') { return; }
-                if (!Cryptpad.isLoggedIn() && AppConfig.registeredOnlyTypes &&
+                if (!APP.loggedIn && AppConfig.registeredOnlyTypes &&
                     AppConfig.registeredOnlyTypes.indexOf(type) !== -1) {
                     return;
                 }
@@ -1471,9 +1474,9 @@ define([
                 var onCreated = function (err, info) {
                     if (err) {
                         if (err === E_OVER_LIMIT) {
-                            return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                            return void UI.alert(Messages.pinLimitDrive, null, true);
                         }
-                        return void Cryptpad.alert(Messages.fm_error_cantPin);
+                        return void UI.alert(Messages.fm_error_cantPin);
                     }
                     APP.newFolder = info.newPath;
                     refresh();
@@ -1549,7 +1552,7 @@ define([
                 options: options,
                 feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
             };
-            var $block = Cryptpad.createDropdown(dropdownConfig);
+            var $block = UIElements.createDropdown(dropdownConfig);
 
             // Custom style:
             $block.find('button').addClass('cp-app-drive-toolbar-new');
@@ -1703,7 +1706,7 @@ define([
                 var data = filesOp.getFileData(id);
                 if (!data) { return ''; }
                 if (prop === 'type') {
-                    var hrefData = Cryptpad.parsePadUrl(data.href);
+                    var hrefData = Hash.parsePadUrl(data.href);
                     return hrefData.type;
                 }
                 if (prop === 'atime' || prop === 'ctime') {
@@ -1738,7 +1741,7 @@ define([
                         };
                     }
                     if (prop === 'type') {
-                        var hrefData = Cryptpad.parsePadUrl(e.href);
+                        var hrefData = Hash.parsePadUrl(e.href);
                         return hrefData.type;
                     }
                     if (prop === 'atime' || prop === 'ctime') {
@@ -1799,7 +1802,7 @@ define([
                 .text(Messages.fm_newFile));
             $element.attr('title', Messages.fm_newFile);
             $element.click(function () {
-                var $modal = Cryptpad.createModal({
+                var $modal = UIElements.createModal({
                     id: 'cp-app-drive-new-ghost-dialog',
                     $body: $('body')
                 });
@@ -1953,7 +1956,7 @@ define([
             filesList.forEach(function (r) {
                 r.paths.forEach(function (path) {
                     var href = r.data.href;
-                    var parsed = Cryptpad.parsePadUrl(href);
+                    var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
                         .append(getFileIcon(href));
@@ -2384,6 +2387,13 @@ define([
                     if (!filesOp.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                     return;
                 }
+                if (e.which === 27) {
+                    $input.val('');
+                    setSearchCursor(0);
+                    if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
+                    else { displayDirectory([ROOT]); }
+                    return;
+                }
                 if (APP.mobile()) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
@@ -2443,13 +2453,13 @@ define([
             if (!filesOp.isFile(id)) { return; }
             var data = filesOp.getFileData(id);
             if (!data) { return; }
-            var parsed = Cryptpad.parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href);
             if (parsed.hashData.type !== "pad") { return; }
             var i = data.href.indexOf('#') + 1;
             var base = data.href.slice(0, i);
-            var hrefsecret = Cryptpad.getSecrets(parsed.type, parsed.hash);
+            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
             if (!hrefsecret.keys) { return; }
-            var viewHash = Cryptpad.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+            var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
             return base + viewHash;
         };
 
@@ -2477,17 +2487,17 @@ define([
             $('<br>').appendTo($d);
             if (!ro) {
                 $('<label>', {'for': 'cp-app-drive-prop-link'}).text(Messages.editShare).appendTo($d);
-                $d.append(Cryptpad.dialog.selectable(base + data.href, {
+                $d.append(UI.dialog.selectable(base + data.href, {
                     id: 'cp-app-drive-prop-link',
                 }));
             }
 
-            var parsed = Cryptpad.parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href);
             if (parsed.hashData && parsed.hashData.type === 'pad') {
                 var roLink = ro ? base + data.href : base + getReadOnlyUrl(el);
                 if (roLink) {
                     $('<label>', {'for': 'cp-app-drive-prop-rolink'}).text(Messages.viewShare).appendTo($d);
-                    $d.append(Cryptpad.dialog.selectable(roLink, {
+                    $d.append(UI.dialog.selectable(roLink, {
                         id: 'cp-app-drive-prop-rolink',
                     }));
                 }
@@ -2495,20 +2505,20 @@ define([
 
             if (data.tags && Array.isArray(data.tags)) {
                 $('<label>', {'for': 'cp-app-drive-prop-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
-                $d.append(Cryptpad.dialog.selectable(data.tags.join(', '), {
+                $d.append(UI.dialog.selectable(data.tags.join(', '), {
                     id: 'cp-app-drive-prop-tags',
                 }));
             }
 
             $('<label>', {'for': 'cp-app-drive-prop-ctime'}).text(Messages.fm_creation)
                 .appendTo($d);
-            $d.append(Cryptpad.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+            $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
                 id: 'cp-app-drive-prop-ctime',
             }));
 
             $('<label>', {'for': 'cp-app-drive-prop-atime'}).text(Messages.fm_lastAccess)
                 .appendTo($d);
-            $d.append(Cryptpad.dialog.selectable(new Date(data.atime).toLocaleString(), {
+            $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
                 id: 'cp-app-drive-prop-atime',
             }));
 
@@ -2524,7 +2534,7 @@ define([
 
                         return void cb(void 0, $d);
                     }
-                    var KB = Cryptpad.bytesToKilobytes(bytes);
+                    var KB = Util.bytesToKilobytes(bytes);
 
                     var formatted = Messages._getKey('formattedKB', [KB]);
                     $('<br>').appendTo($d);
@@ -2533,7 +2543,7 @@ define([
                         'for': 'cp-app-drive-prop-size'
                     }).text(Messages.fc_sizeInKilobytes).appendTo($d);
 
-                    $d.append(Cryptpad.dialog.selectable(formatted, {
+                    $d.append(UI.dialog.selectable(formatted, {
                         id: 'cp-app-drive-prop-size',
                     }));
                     cb(void 0, $d);
@@ -2593,7 +2603,7 @@ define([
                 el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert($prop[0], undefined, true);
+                    UI.alert($prop[0], undefined, true);
                 });
             }
             else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
@@ -2639,7 +2649,7 @@ define([
                     if (paths.length === 1) {
                         msg = Messages.fm_removePermanentlyDialog;
                     }
-                    Cryptpad.confirm(msg, function(res) {
+                    UI.confirm(msg, function(res) {
                         $(window).focus();
                         if (!res) { return; }
                         filesOp.delete(pathsList, refresh);
@@ -2653,7 +2663,7 @@ define([
                 el = filesOp.find(paths[0].path);
                 getProperties(el, function (e, $prop) {
                     if (e) { return void logError(e); }
-                    Cryptpad.alert($prop[0], undefined, true);
+                    UI.alert($prop[0], undefined, true);
                 });
             }
             else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
@@ -2672,10 +2682,10 @@ define([
             var path = $(this).data('path');
             var onCreated = function (err, info) {
                 if (err === E_OVER_LIMIT) {
-                    return void Cryptpad.alert(Messages.pinLimitDrive, null, true);
+                    return void UI.alert(Messages.pinLimitDrive, null, true);
                 }
                 if (err) {
-                    return void Cryptpad.alert(Messages.fm_error_cantPin);
+                    return void UI.alert(Messages.fm_error_cantPin);
                 }
                 APP.newFolder = info.newPath;
                 refresh();
@@ -2700,7 +2710,7 @@ define([
                 return;
             }
             if ($(this).hasClass("cp-app-drive-context-empty")) {
-                Cryptpad.confirm(Messages.fm_emptyTrashDialog, function(res) {
+                UI.confirm(Messages.fm_emptyTrashDialog, function(res) {
                     if (!res) { return; }
                     filesOp.emptyTrash(refresh);
                 });
@@ -2720,7 +2730,7 @@ define([
             var name = paths[0].path[paths[0].path.length - 1];
             if ($(this).hasClass("cp-app-drive-context-remove")) {
                 if (paths.length === 1) {
-                    Cryptpad.confirm(Messages.fm_removePermanentlyDialog, function(res) {
+                    UI.confirm(Messages.fm_removePermanentlyDialog, function(res) {
                         if (!res) { return; }
                         filesOp.delete([path], refresh);
                     });
@@ -2729,7 +2739,7 @@ define([
                 var pathsList = [];
                 paths.forEach(function (p) { pathsList.push(p.path); });
                 var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
-                Cryptpad.confirm(msg, function(res) {
+                UI.confirm(msg, function(res) {
                     if (!res) { return; }
                     filesOp.delete(pathsList, refresh);
                 });
@@ -2744,7 +2754,7 @@ define([
                         name = path[1];
                     }
                 }
-                Cryptpad.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
+                UI.confirm(Messages._getKey("fm_restoreDialog", [name]), function(res) {
                     if (!res) { return; }
                     filesOp.restore(path, refresh);
                 });
@@ -2753,7 +2763,7 @@ define([
                 if (paths.length !== 1 || path.length !== 4) { return; }
                 var element = filesOp.find(path.slice(0,3)); // element containing the oldpath
                 var sPath = stringifyPath(element.path);
-                Cryptpad.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
+                UI.alert('<strong>' + Messages.fm_originalPath + "</strong>:<br>" + sPath, undefined, true);
             }
             APP.hideMenu();
         });
@@ -2802,7 +2812,7 @@ define([
                         msg = Messages.fm_removePermanentlyDialog;
                     }
 
-                    Cryptpad.confirm(msg, function(res) {
+                    UI.confirm(msg, function(res) {
                         $(window).focus();
                         if (!res) { return; }
                         filesOp.delete(paths, refresh);
@@ -2811,6 +2821,19 @@ define([
                 }
                 // else move to trash
                 moveElements(paths, [TRASH], false, refresh);
+            }
+        });
+        var isCharacterKey = function (e) {
+            return e.which === "undefined" /* IE */ ||
+                    (e.which > 0 && e.which !== 13 && e.which !== 27 && !e.ctrlKey && !e.altKey);
+        };
+        $appContainer.on('keypress', function (e) {
+            var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
+            if ($searchBar.is(':focus')) { return; }
+            if (isCharacterKey(e)) {
+                $searchBar.focus();
+                e.preventDefault();
+                return;
             }
         });
         $appContainer.contextmenu(function () {
@@ -2884,7 +2907,7 @@ define([
         APP.FM = common.createFileManager(fmConfig);
 
         refresh();
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
     };
 
     var setHistory = function (bool, update) {
@@ -2902,7 +2925,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
             }));
             window.cryptpadStore.getAll(waitFor(function (val) {
                 APP.store = JSON.parse(JSON.stringify(val));
@@ -2955,7 +2978,6 @@ define([
                     metadataMgr: metadataMgr,
                     readOnly: readOnly,
                     realtime: info.realtime,
-                    common: Cryptpad,
                     sfCommon: common,
                     $container: APP.$bar
                 };
@@ -2996,7 +3018,7 @@ define([
                     $backupButton.on('click', function() {
                         var url = window.location.origin + window.location.pathname + '#' + editHash;
                         var msg = Messages.fm_alert_backupUrl + '<input type="text" readonly="readonly" id="fm_backupUrl" value="'+url+'">';
-                        Cryptpad.alert(msg, undefined, true);
+                        UI.alert(msg, undefined, true);
                         $('#fm_backupUrl').val(url);
                         $('#fm_backupUrl').click(function () {
                             $(this).select();
@@ -3019,19 +3041,19 @@ define([
                 APP.files = proxy;
                 if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
                 andThen(common, proxy);
-                Cryptpad.removeLoadingScreen();
+                UI.removeLoadingScreen();
             };
             var onDisconnect = APP.onDisconnect = function (noAlert) {
                 setEditable(false);
                 if (APP.refresh) { APP.refresh(); }
                 APP.toolbar.failed();
-                if (!noAlert) { Cryptpad.alert(Messages.common_connectionLost, undefined, true); }
+                if (!noAlert) { UI.alert(Messages.common_connectionLost, undefined, true); }
             };
             var onReconnect = function (info) {
                 setEditable(true);
                 if (APP.refresh) { APP.refresh(); }
                 APP.toolbar.reconnecting(info.myId);
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             };
 
             proxy.on('create', function (info) {
@@ -3045,13 +3067,7 @@ define([
             proxy.on('reconnect', function (info) {
                 onReconnect(info);
             });
-
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
-                }
-            });
-            //Cryptpad.onLogout(function () { setEditable(false); });
+            common.onLogout(function () { setEditable(false); });
         });
     };
     main();
