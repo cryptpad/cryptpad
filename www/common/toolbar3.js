@@ -237,17 +237,22 @@ define([
             var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).text(name).appendTo($rightCol);
             var isMe = data.uid === user.uid;
             if (isMe) {
-                $span.attr('title', Messages._getKey('userlist_thisIsYou', [
-                    name
-                ]));
                 $nameSpan.html('');
                 var $nameValue = $('<span>', {
                     'class': 'cp-toolbar-userlist-name-value'
                 }).text(name).appendTo($nameSpan);
                 var $button = $('<button>', {
                     'class': 'fa fa-pencil cp-toolbar-userlist-name-edit',
-                    title: "TODO: Edit your username"
+                    title: Messages.user_rename
                 }).appendTo($nameSpan);
+                $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
+                $button.mouseenter(function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    window.setTimeout(function () {
+                        $button.parents().mouseleave();
+                    });
+                });
                 var $nameInput = $('<input>', {
                     'class': 'cp-toolbar-userlist-name-input'
                 }).val(name).appendTo($rightCol);
