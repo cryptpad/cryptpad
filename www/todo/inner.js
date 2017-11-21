@@ -186,8 +186,6 @@ define([
         };
 
         var onInit = function () {
-            UI.addLoadingScreen();
-
             $body.on('dragover', function (e) { e.preventDefault(); });
             $body.on('drop', function (e) { e.preventDefault(); });
 
