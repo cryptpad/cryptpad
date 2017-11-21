@@ -124,6 +124,15 @@ define([
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous').css('visibility', '');
             if (c === states.length - 1) { $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden'); }
             if (c === 0) { $hist.find('.cp-toolbar-history-previous').css('visibility', 'hidden'); }
+
+            if (config.debug) {
+                console.log(states[i]);
+                var ops = states[i] && states[i].getPatch() && states[i].getPatch().operations;
+                if (Array.isArray(ops)) {
+                    ops.forEach(function (op) { console.log(op); });
+                }
+            }
+
             return val || '';
         };
 
