@@ -3,8 +3,10 @@ define([
     '/customize/application_config.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/common-realtime.js'
-], function ($, AppConfig, Util, Hash, Realtime) {
+    '/common/common-realtime.js',
+    '/common/common-constants.js',
+    '/customize/messages.js'
+], function ($, AppConfig, Util, Hash, Realtime, Constants, Messages) {
     var module = {};
 
     var ROOT = module.ROOT = "root";
@@ -20,11 +22,10 @@ define([
     module.init = function (files, config) {
         var exp = {};
         var Cryptpad = config.Cryptpad;
-        var Messages = Cryptpad.Messages;
-        var loggedIn = config.loggedIn || Cryptpad.isLoggedIn();
+        var loggedIn = config.loggedIn;
 
-        var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Cryptpad.storageKey;
-        var OLD_FILES_DATA = module.OLD_FILES_DATA = exp.OLD_FILES_DATA = Cryptpad.oldStorageKey;
+        var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Constants.storageKey;
+        var OLD_FILES_DATA = module.OLD_FILES_DATA = exp.OLD_FILES_DATA = Constants.oldStorageKey;
         var NEW_FOLDER_NAME = Messages.fm_newFolder;
         var NEW_FILE_NAME = Messages.fm_newFile;
 
@@ -487,6 +488,7 @@ define([
         // FILES DATA
         exp.pushData = function (data, cb) {
             // TODO: can only be called from outside atm
+            if (!Cryptpad) { return; }
             if (typeof cb !== "function") { cb = function () {}; }
             var todo = function () {
                 var id = Util.createRandomInteger();
@@ -855,8 +857,6 @@ define([
                 }
                 try {
                     debug("Migrating file system...");
-                    // TODO
-                    Cryptpad.feedback('Migrate-oldFilesData', true);
                     files.migrate = 1;
                     var next = function () {
                         var oldData = files[OLD_FILES_DATA].slice();

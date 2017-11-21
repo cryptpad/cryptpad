@@ -3,11 +3,11 @@ define([
     '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     'json.sortify',
-    '/common/cryptpad-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
+    '/common/common-constants.js',
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -25,11 +25,11 @@ define([
     TextPatcher,
     Toolbar,
     JSONSortify,
-    Cryptpad,
     Util,
     Hash,
     UIElements,
     UI,
+    Constants,
     Cryptget,
     nThen,
     SFCommon,
@@ -41,7 +41,6 @@ define([
 {
     var APP = window.APP = {
         editable: false,
-        Cryptpad: Cryptpad,
         mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
     };
 
@@ -55,7 +54,7 @@ define([
     var SEARCH_NAME = Messages.fm_searchName;
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
-    var FILES_DATA = Cryptpad.storageKey;
+    var FILES_DATA = Constants.storageKey;
     var FILES_DATA_NAME = Messages.fm_filesDataName;
     var TEMPLATE = "template";
     var TEMPLATE_NAME = Messages.fm_templateName;
@@ -195,13 +194,11 @@ define([
         var user = metadataMgr.getUserData();
         var isOwnDrive = function () {
             return true; // TODO
-            //return Cryptpad.getUserHash() === APP.hash || localStorage.FS_hash === APP.hash;
         };
         var isWorkgroup = function () {
             return files.workgroup === 1;
         };
         config.workgroup = isWorkgroup();
-        config.Cryptpad = Cryptpad;
         config.loggedIn = APP.loggedIn;
 
         APP.origin = priv.origin;
@@ -1505,7 +1502,7 @@ define([
                 .click(function () {
                 var type = $(this).attr('data-type') || 'pad';
                 var path = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                common.sessionStorage.put(Cryptpad.newPadPathKey, path, function () {
+                common.sessionStorage.put(Constants.newPadPathKey, path, function () {
                     common.openURL('/' + type + '/');
                 });
             });
@@ -2695,8 +2692,10 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
                 var type = $(this).data('type') || 'pad';
-                sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                window.open(APP.origin + '/' + type + '/');
+                var path2 = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                common.sessionStorage.put(Constants.newPadPathKey, path2, function () {
+                    common.openURL('/' + type + '/');
+                });
             }
             APP.hideMenu();
         });
@@ -3007,26 +3006,6 @@ define([
                     },
                     $toolbar: APP.$bar,
                 };
-
-                /* TODO iframe: backup button here?
-                if (!readOnly && !APP.loggedIn) {
-                    // TODO secure drive
-                    // cryptpad-backup --> cp-toolbar-backup
-                    var $backupButton = Cryptpad.createButton('', true).removeClass('fa').removeClass('fa-question').addClass('cryptpad-backup');
-                    $backupButton.append($backupIcon.clone().css('marginRight', '0px'));
-                    $backupButton.attr('title', Messages.fm_backup_title);
-                    $backupButton.on('click', function() {
-                        var url = window.location.origin + window.location.pathname + '#' + editHash;
-                        var msg = Messages.fm_alert_backupUrl + '<input type="text" readonly="readonly" id="fm_backupUrl" value="'+url+'">';
-                        UI.alert(msg, undefined, true);
-                        $('#fm_backupUrl').val(url);
-                        $('#fm_backupUrl').click(function () {
-                            $(this).select();
-                        });
-                    });
-                    $userBlock.append($backupButton);
-                }
-                */
 
                 metadataMgr.onChange(function () {
                     var name = metadataMgr.getUserData().name || Messages.anonymous;

@@ -69,7 +69,12 @@ define([
     };
 
     module.test = function (assert) {
-        var config = {Cryptpad: Cryptpad, workgroup: false, testMode: true};
+        var config = {
+            Cryptpad: Cryptpad,
+            workgroup: false,
+            testMode: true,
+            loggedIn: false
+        };
 
         // MIGRATION FROM HREF TO ID
         assert(function (cb) {

@@ -4,8 +4,9 @@ define([
     '/common/cryptpad-common.js',
     '/common/common-interface.js',
     '/common/common-realtime.js',
+    '/common/common-constants.js',
     '/customize/messages.js',
-], function ($, Config, Cryptpad, UI, Realtime, Messages) {
+], function ($, Config, Cryptpad, UI, Realtime, Constants, Messages) {
 
     window.APP = {
         Cryptpad: Cryptpad,
@@ -33,7 +34,7 @@ define([
             $main.find('a[href="/drive/"] div.pad-button-text h4')
                 .text(Messages.main_yourCryptDrive);
 
-            var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
+            var name = localStorage[Constants.userNameKey] || sessionStorage[Constants.userNameKey];
             var $loggedInBlock = $main.find('#loggedIn');
             var $hello = $loggedInBlock.find('#loggedInHello');
             var $logout = $loggedInBlock.find('#loggedInLogOut');

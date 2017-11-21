@@ -7,9 +7,10 @@ define([
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-realtime.js',
+    '/common/common-constants.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime) {
+], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -174,8 +175,8 @@ define([
                                                 if (!yes) { return; }
                                                 proxy.login_name = uname;
 
-                                                if (!proxy[Cryptpad.displayNameKey]) {
-                                                    proxy[Cryptpad.displayNameKey] = uname;
+                                                if (!proxy[Constants.displayNameKey]) {
+                                                    proxy[Constants.displayNameKey] = uname;
                                                 }
                                                 Cryptpad.eraseTempSessionValues();
                                                 logMeIn(result);
@@ -197,7 +198,7 @@ define([
                             }
 
                             proxy.login_name = uname;
-                            proxy[Cryptpad.displayNameKey] = uname;
+                            proxy[Constants.displayNameKey] = uname;
                             sessionStorage.createReadme = 1;
 
                             logMeIn(result);

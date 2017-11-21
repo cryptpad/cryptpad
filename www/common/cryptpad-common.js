@@ -9,6 +9,7 @@ define([
     '/file/file-crypto.js',
     '/common/common-realtime.js',
     '/common/common-language.js',
+    '/common/common-constants.js',
 
     '/common/clipboard.js',
     '/common/pinpad.js',
@@ -17,7 +18,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/localforage/dist/localforage.min.js',
 ], function ($, Config, Messages, Store, Util, Hash,
-            Messaging, FileCrypto, Realtime, Language, Clipboard,
+            Messaging, FileCrypto, Realtime, Language, Constants, Clipboard,
             Pinpad, AppConfig, MediaTag, Nthen, localForage) {
 
     // Configure MediaTags to use our local viewer
@@ -42,14 +43,6 @@ define([
         MediaTag: MediaTag,
     };
 
-    // constants
-    var userHashKey = common.userHashKey = 'User_hash';
-    var userNameKey = common.userNameKey = 'User_name';
-    var fileHashKey = common.fileHashKey = 'FS_hash';
-    common.displayNameKey = 'cryptpad.username';
-    var newPadPathKey = common.newPadPathKey = "newPadPath";
-    common.oldStorageKey = 'CryptPad_RECENTPADS';
-    common.storageKey = 'filesData';
     var PINNING_ENABLED = AppConfig.enablePinning;
 
     var store;
@@ -158,14 +151,14 @@ define([
     common.getDisplayName = function (cb) {
         var name;
         if (getProxy()) {
-            name = getProxy()[common.displayNameKey];
+            name = getProxy()[Constants.displayNameKey];
         }
         name = name || '';
         if (typeof cb === "function") { cb(null, name); }
         return name;
     };
     common.getAccountName = function () {
-        return localStorage[common.userNameKey];
+        return localStorage[Constants.userNameKey];
     };
 
     // REFACTOR: move to util?
@@ -250,8 +243,8 @@ define([
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
         hash = Hash.serializeHash(hash);
-        localStorage.setItem(userHashKey, hash);
-        localStorage.setItem(userNameKey, name);
+        localStorage.setItem(Constants.userHashKey, hash);
+        localStorage.setItem(Constants.userNameKey, name);
         if (cb) { cb(); }
     };
 
@@ -272,8 +265,8 @@ define([
     var logoutHandlers = [];
     common.logout = function (cb) {
         [
-            userNameKey,
-            userHashKey,
+            Constants.userNameKey,
+            Constants.userHashKey,
             'loginToken',
             'plan',
         ].forEach(function (k) {
@@ -285,8 +278,8 @@ define([
         localForage.clear();
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
-        if (!localStorage[fileHashKey]) {
-            localStorage[fileHashKey] = Hash.createRandomHash();
+        if (!localStorage[Constants.fileHashKey]) {
+            localStorage[Constants.fileHashKey] = Hash.createRandomHash();
         }
         eraseTempSessionValues();
 
@@ -303,16 +296,16 @@ define([
     };
 
     var getUserHash = common.getUserHash = function () {
-        var hash = localStorage[userHashKey];
+        var hash = localStorage[Constants.userHashKey];
 
         if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
-            localStorage.removeItem(userHashKey);
+            localStorage.removeItem(Constants.userHashKey);
             return;
         }
 
         if (hash) {
             var sHash = Hash.serializeHash(hash);
-            if (sHash !== hash) { localStorage[userHashKey] = sHash; }
+            if (sHash !== hash) { localStorage[Constants.userHashKey] = sHash; }
         }
 
         return hash;
@@ -365,7 +358,7 @@ define([
     };
     common.setDisplayName = function (value, cb) {
         if (getProxy()) {
-            getProxy()[common.displayNameKey] = value;
+            getProxy()[Constants.displayNameKey] = value;
         }
         if (typeof cb === "function") { Realtime.whenRealtimeSyncs(getRealtime(), cb); }
     };
@@ -716,7 +709,7 @@ define([
         var fo = proxy.fo;
 
         // start with your userHash...
-        var userHash = localStorage && localStorage.User_hash;
+        var userHash = localStorage && localStorage[Constants.userHashKey];
         if (!userHash) { return null; }
 
         var userParsedHash = Hash.parseTypeHash('drive', userHash);
@@ -1070,9 +1063,9 @@ define([
             return void setTimeout(function () { f(void 0, env); });
         }
 
-        if (sessionStorage[newPadPathKey]) {
-            common.initialPath = sessionStorage[newPadPathKey];
-            delete sessionStorage[newPadPathKey];
+        if (sessionStorage[Constants.newPadPathKey]) {
+            common.initialPath = sessionStorage[Constants.newPadPathKey];
+            delete sessionStorage[Constants.newPadPathKey];
         }
 
         var proxy;
@@ -1138,7 +1131,7 @@ define([
             };
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {
-                if (e.key !== common.userHashKey) { return; }
+                if (e.key !== Constants.userHashKey) { return; }
                 var o = e.oldValue;
                 var n = e.newValue;
                 if (!o && n) {
