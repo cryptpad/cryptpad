@@ -9,6 +9,7 @@ define([
     '/contacts/messenger-ui.js',
     '/common/sframe-messenger-inner.js',
     '/customize/messages.js',
+    '/common/common-interface.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -21,9 +22,10 @@ define([
     nThen,
     SFCommon,
     h,
-    UI,
+    MessengerUI,
     Messenger,
-    Messages
+    Messages,
+    UI
     )
 {
     var APP = {};
@@ -73,7 +75,7 @@ define([
 
         var messenger = Messenger.create(sFrameChan);
 
-        UI.create(messenger, $(friendList), $(messaging), common);
+        MessengerUI.create(messenger, $(friendList), $(messaging), common);
 
         UI.removeLoadingScreen();
 
