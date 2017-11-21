@@ -1,8 +1,9 @@
 define([
     '/common/common-util.js',
+    '/customize/messages.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function (Util, Crypto) {
+], function (Util, Messages, Crypto) {
     var Nacl = window.nacl;
 
     var Hash = {};
@@ -359,6 +360,20 @@ Version 1
         channel = channel || Hash.createChannelId();
         return window.location.origin + '/invite/#/1/' + channel +
             '/' + curvePublic.replace(/\//g, '-') + '/';
+    };
+
+    // Create untitled documents when no name is given
+    var getLocaleDate = function () {
+        if (window.Intl && window.Intl.DateTimeFormat) {
+            var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
+            return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
+        }
+        return new Date().toString().split(' ').slice(0,4).join(' ');
+    };
+    Hash.getDefaultName = function (parsed) {
+        var type = parsed.type;
+        var name = (Messages.type)[type] + ' - ' + getLocaleDate();
+        return name;
     };
 
     return Hash;

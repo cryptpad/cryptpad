@@ -1053,9 +1053,18 @@ define([
                         toClean.push(id);
                         continue;
                     }
+                    if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
+                    if (!el.ctime) { el.ctime = el.atime; }
+
                     var parsed = Hash.parsePadUrl(el.href);
+                    if (!el.title) { el.title = Hash.getDefaultName(parsed); }
                     if (!parsed.hash) {
                         debug("Removing an element in filesData with a invalid href.", el);
+                        toClean.push(id);
+                        continue;
+                    }
+                    if (!parsed.type) {
+                        debug("Removing an element in filesData with a invalid type.", el);
                         toClean.push(id);
                         continue;
                     }

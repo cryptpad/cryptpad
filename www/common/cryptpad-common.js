@@ -348,73 +348,13 @@ define([
     /*
      *  localStorage formatting
      */
-    /*
-        the first time this gets called, your local storage will migrate to a
-        new format. No more indices for values, everything is named now.
-
-        * href
-        * atime (access time)
-        * title
-        * ??? // what else can we put in here?
-    */
-    var checkObjectData = function (pad, cb) {
-        if (typeof(pad.atime) !== "number") { pad.atime = +new Date(pad.atime); }
-        if (!pad.ctime) { pad.ctime = pad.atime; }
-        if (typeof(pad.actime) !== "number") { pad.ctime = +new Date(pad.ctime); }
-
-        if (/^https*:\/\//.test(pad.href)) { pad.href = Hash.getRelativeHref(pad.href); }
-
-        var parsed = Hash.parsePadUrl(pad.href);
-        if (!parsed || !parsed.hash) { return; }
-        if (typeof(cb) === 'function') { cb(parsed); }
-
-        if (!pad.title) { pad.title = common.getDefaultName(parsed); }
-
-        return parsed.hashData;
-    };
-    // Remove everything from RecentPads that is not an object and check the objects
-    var checkRecentPads = common.checkRecentPads = function (pads) {
-        Object.keys(pads).forEach(function (id, i) {
-            var pad = pads[id];
-            if (pad && typeof(pad) === 'object') {
-                var parsedHash = checkObjectData(pad);
-                if (!parsedHash || !parsedHash.type) {
-                    console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
-                    getStore().removeData(i);
-                    return;
-                }
-                return pad;
-            }
-            console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
-            getStore().removeData(i);
-        });
-    };
-
-    // Create untitled documents when no name is given
-    var getLocaleDate = function () {
-        if (window.Intl && window.Intl.DateTimeFormat) {
-            var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
-            return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
-        }
-        return new Date().toString().split(' ').slice(0,4).join(' ');
-    };
-    var getDefaultName = common.getDefaultName = function (parsed) {
-        var type = parsed.type;
-        var name = (Messages.type)[type] + ' - ' + getLocaleDate();
-        return name;
-    };
-    common.isDefaultName = function (parsed, title) {
-        var name = getDefaultName(parsed);
-        return title === name;
-    };
-
     var makePad = common.makePad = function (href, title) {
         var now = +new Date();
         return {
             href: href,
             atime: now,
             ctime: now,
-            title: title || getDefaultName(Hash.parsePadUrl(href)),
+            title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
         };
     };
 
@@ -595,7 +535,6 @@ define([
     var getRecentPads = common.getRecentPads = function (cb) {
         getStore().getDrive('filesData', function (err, recentPads) {
             if (typeof(recentPads) === "object") {
-                checkRecentPads(recentPads);
                 cb(void 0, recentPads);
                 return;
             }
@@ -723,7 +662,7 @@ define([
 
         if (title.trim() === "") {
             var parsed = Hash.parsePadUrl(href || window.location.href);
-            title = getDefaultName(parsed);
+            title = Hash.getDefaultName(parsed);
         }
 
         common.setPadTitle(title, href, function (err) {
@@ -1290,8 +1229,8 @@ define([
                         var data = {
                             href: href,
                             title: Messages.driveReadmeTitle,
-                            atime: new Date().toISOString(),
-                            ctime: new Date().toISOString()
+                            atime: +new Date(),
+                            ctime: +new Date()
                         };
                         common.getFO().pushData(data, function (e, id) {
                             if (e) {

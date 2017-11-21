@@ -109,7 +109,7 @@ define([
             if (!secret.keys) { secret.keys = secret.key; }
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
-            var defaultTitle = Cryptpad.getDefaultName(parsed);
+            var defaultTitle = Utils.Hash.getDefaultName(parsed);
             var proxy = Cryptpad.getProxy();
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
