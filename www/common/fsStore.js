@@ -6,8 +6,9 @@ define([
     '/common/userObject.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
+    '/common/common-constants.js',
     '/common/migrate-user-object.js',
-], function ($, Listmap, Crypto, TextPatcher, FO, UI, Hash, Migrate) {
+], function ($, Listmap, Crypto, TextPatcher, FO, UI, Hash, Constants, Migrate) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -191,7 +192,7 @@ define([
     var onReady = function (f, proxy, Cryptpad, exp) {
         var fo = exp.fo = FO.init(proxy.drive, {
             Cryptpad: Cryptpad,
-            rt: exp.realtime
+            loggedIn: Cryptpad.isLoggedIn()
         });
         var todo = function () {
             fo.fixFiles();
@@ -258,17 +259,17 @@ define([
                 return void requestLogin();
             }
 
-            proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
+            proxy.on('change', [Constants.displayNameKey], function (o, n) {
                 if (typeof(n) !== "string") { return; }
                 Cryptpad.changeDisplayName(n);
             });
             proxy.on('change', ['profile'], function () {
                 // Trigger userlist update when the avatar has changed
-                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+                Cryptpad.changeDisplayName(proxy[Constants.displayNameKey]);
             });
             proxy.on('change', ['friends'], function () {
                 // Trigger userlist update when the avatar has changed
-                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+                Cryptpad.changeDisplayName(proxy[Constants.displayNameKey]);
             });
             proxy.on('change', [tokenKey], function () {
                 var localToken = tryParsing(localStorage.getItem(tokenKey));
@@ -318,9 +319,9 @@ define([
             if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
             var drive = rt.proxy.drive;
             // Creating a new anon drive: import anon pads from localStorage
-            if ((!drive[Cryptpad.oldStorageKey] || !Cryptpad.isArray(drive[Cryptpad.oldStorageKey]))
+            if ((!drive[Constants.oldStorageKey] || !Array.isArray(drive[Constants.oldStorageKey]))
                 && !drive['filesData']) {
-                drive[Cryptpad.oldStorageKey] = [];
+                drive[Constants.oldStorageKey] = [];
                 onReady(f, rt.proxy, Cryptpad, exp);
                 return;
             }

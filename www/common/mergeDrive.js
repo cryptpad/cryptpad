@@ -105,7 +105,7 @@ define([
             if (parsed) {
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
-                    Cryptpad: Cryptpad
+                    loggedIn: Cryptpad.isLoggedIn()
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles();

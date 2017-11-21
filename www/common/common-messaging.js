@@ -4,11 +4,12 @@ define([
     '/common/curve.js',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/common-constants.js',
     '/customize/messages.js',
 
     '/bower_components/marked/marked.min.js',
     '/common/common-realtime.js',
-], function ($, Crypto, Curve, Hash, Util, Messages, Marked, Realtime) {
+], function ($, Crypto, Curve, Hash, Util, Constants, Messages, Marked, Realtime) {
     var Msg = {
         inputs: [],
     };
@@ -88,7 +89,7 @@ define([
                 if (e) { console.error(e); }
             });
         });
-        common.changeDisplayName(proxy[common.displayNameKey]);
+        common.changeDisplayName(proxy[Constants.displayNameKey]);
     };
 
     /*  Used to accept friend requests within apps other than /contacts/ */
@@ -170,7 +171,7 @@ define([
                         logText: Messages.contacts_rejected,
                         netfluxId: sender
                     });
-                    common.changeDisplayName(proxy[common.displayNameKey]);
+                    common.changeDisplayName(proxy[Constants.displayNameKey]);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_ACK") {
@@ -220,7 +221,7 @@ define([
             var proxy = common.getProxy();
             // this redraws the userlist after a change has occurred
             // TODO rename this function to reflect its purpose
-            common.changeDisplayName(proxy[common.displayNameKey]);
+            common.changeDisplayName(proxy[Constants.displayNameKey]);
         }
         network.sendto(netfluxId, msgStr);
     };
