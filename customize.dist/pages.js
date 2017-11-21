@@ -49,11 +49,6 @@ define([
                             h('p', Msg.main_footerText)
                         ])
                     ], ''),
-                   /* footerCol(null, [
-                        footLink('/about.html', 'about'),
-                        footLink('/terms.html', 'terms'),
-                        footLink('/privacy.html', 'privacy'),
-                    ], 'CryptPad'),*/
                     footerCol('footer_applications', [
                         footLink('/drive/', 'main_drive'),
                         footLink('/pad/', 'main_richText'),
@@ -688,46 +683,6 @@ define([
                 ])
             ])
         ];
-    };
-
-    Pages['/drive/'] = Pages['/drive/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/file/'] = Pages['/file/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/contacts/'] = Pages['/contacts/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/pad/'] = Pages['/pad/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/code/'] = Pages['/code/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/slide/'] = Pages['/slide/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/invite/'] = Pages['/invite/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/settings/'] = Pages['/settings/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/profile/'] = Pages['/profile/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/todo/'] = Pages['/todo/index.html'] = function () {
-        return loadingScreen();
     };
 
     return Pages;
