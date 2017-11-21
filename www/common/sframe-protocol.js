@@ -156,6 +156,7 @@ define({
     'Q_CONTACTS_GET_MORE_HISTORY': true,
     'Q_CONTACTS_SEND_MESSAGE': true,
     'Q_CONTACTS_SET_CHANNEL_HEAD': true,
+    'Q_CONTACTS_CLEAR_OWNED_CHANNEL': true,
 
     // Put one or more entries to the localStore which will go in localStorage.
     'EV_LOCALSTORE_PUT': true,

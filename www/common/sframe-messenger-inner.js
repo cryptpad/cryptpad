@@ -108,6 +108,12 @@ define([], function () {
             });
         };
 
+        messenger.clearOwnedChannel = function (channel, cb) {
+            sFrameChan.query('Q_CONTACTS_CLEAR_OWNED_CHANNEL', channel, function (e) {
+                cb(e);
+            });
+        };
+
         return messenger;
     };
 

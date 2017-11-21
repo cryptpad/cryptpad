@@ -1,11 +1,10 @@
 define([
     'jquery',
     '/common/hyperscript.js',
-    '/common/cryptpad-common.js',
     '/customize/pages.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, h, Cryptpad, Pages) {
+], function ($, h, Pages) {
 $(function () {
     var $body = $('body');
     var isMainApp = function () {

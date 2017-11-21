@@ -176,7 +176,8 @@ define([
             $(removeHistory).click(function () {
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
-                    Cryptpad.clearOwnedChannel(data.channel, function (e) {
+
+                    messenger.clearOwnedChannel(data.channel, function (e) {
                         if (e) {
                             console.error(e);
                             UI.alert(Messages.contacts_removeHistoryServerError);
