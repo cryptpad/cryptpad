@@ -633,6 +633,13 @@ define([
             });
         };
 
+        messenger.clearOwnedChannel = function (channel, cb) {
+            common.clearOwnedChannel(channel, function (e) {
+                if (e) { return void cb(e); }
+                cb();
+            });
+        };
+
         // TODO listen for changes to your friend list
         // emit 'update' events for clients
 

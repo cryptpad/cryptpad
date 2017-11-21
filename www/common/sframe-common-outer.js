@@ -559,6 +559,13 @@ define([
                         });
                     });
                 });
+                sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
+                    messenger.clearOwnedChannel(channel, function (e) {
+                        cb({
+                            error: e,
+                        });
+                    });
+                });
 
                 messenger.on('message', function (message) {
                     sframeChan.event('EV_CONTACTS_MESSAGE', message);
