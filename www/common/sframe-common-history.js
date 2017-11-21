@@ -34,7 +34,7 @@ define([
                 },
                 initialState: '',
                 transformFunction: JsonOT.validate,
-                logLevel: 0,
+                logLevel: config.debug ? 1 : 0,
                 noPrune: true
             });
         };
