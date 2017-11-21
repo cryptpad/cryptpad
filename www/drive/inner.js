@@ -2695,8 +2695,10 @@ define([
             }
             else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
                 var type = $(this).data('type') || 'pad';
-                sessionStorage[Cryptpad.newPadPathKey] = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
-                window.open(APP.origin + '/' + type + '/');
+                var path2 = filesOp.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
+                common.sessionStorage.put(Cryptpad.newPadPathKey, path2, function () {
+                    common.openURL('/' + type + '/');
+                });
             }
             APP.hideMenu();
         });
