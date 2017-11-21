@@ -39,7 +39,8 @@ define([
         $: $,
         AppConfig: AppConfig,
         SFCommon: SFCommon,
-        Crypto: Crypto
+        Crypto: Crypto,
+        ApiConfig: ApiConfig
     };
 
     var toolbar;
@@ -167,8 +168,8 @@ define([
             console.log('onConnectionChange', info.state);
         };
 
-        cpNfInner = common.startRealtime(config);
-        metadataMgr = cpNfInner.metadataMgr;
+        cpNfInner = APP.cpNfInner = common.startRealtime(config);
+        metadataMgr = APP.metadataMgr = cpNfInner.metadataMgr;
 
         cpNfInner.onInfiniteSpinner(function () {
             console.error('infinite spinner');
