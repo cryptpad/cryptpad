@@ -13,6 +13,7 @@ define([
     '/common/common-thumbnail.js',
     '/customize/application_config.js',
 
+    '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
