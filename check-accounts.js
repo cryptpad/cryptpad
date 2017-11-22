@@ -1,3 +1,4 @@
+/* globals Buffer */
 var Https = require('https');
 var Config = require("./config.js");
 var Package = require("./package.json");
@@ -18,7 +19,7 @@ var options = {
     }
 };
 
-var req = Https.request(options, function (response) {
+Https.request(options, function (response) {
     if (!('' + response.statusCode).match(/^2\d\d$/)) {
         throw new Error('SERVER ERROR ' + response.statusCode);
     }
