@@ -24,6 +24,7 @@
     }
 
     .cp-toolbar-userlist-drawer {
+        background-color: @colortheme_default-bg;
         font: @colortheme_app-font-size @colortheme_font;
         min-width: 175px;
         width: 175px;
@@ -102,6 +103,32 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                    }
+                    .cp-toolbar-userlist-name-input {
+                        flex: 1;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        display: none;
+                        border: none;
+                    }
+                    .cp-toolbar-userlist-name-value {
+                        overflow: hidden;
+                        flex: 1;
+                        min-width: 0;
+                        min-height: 0;
+                        text-overflow: ellipsis;
+                    }
+                    .cp-toolbar-userlist-name-edit {
+                        width: 20px;
+                        font-size: 16px;
+                        padding: 0;
+                        border: none;
+                        height: 20px;
+                        cursor: pointer;
                     }
                     .cp-toolbar-userlist-friend {
                         padding: 0;
@@ -115,7 +142,7 @@
         }
     }
 
-    .addToolbarColors (@color, @bg-color) {
+    .addToolbarColors (@color, @bg-color, @barWidth: 600px) {
         .cp-toolbar-userlist-drawer {
             background-color: @bgcolor;
             color: @color;
@@ -125,6 +152,19 @@
             h2 {
                 background-color: darken(@bgcolor, 10%);
                 color: @color;
+            }
+            .cp-toolbar-userlist-name-input {
+                background-color: darken(@bg-color, 10%);
+                color: @color;
+            }
+            .cp-toolbar-userlist-name-edit {
+                color: contrast(@color,
+                                lighten(@color, 20%),
+                                darken(@color, 20%));
+                background: transparent;
+                &:hover {
+                    color: @color;
+                }
             }
             .cp-toolbar-userlist-friend {
                 &:hover {
@@ -146,6 +186,13 @@
                 background-color: lighten(@bgcolor, 8%);
                 button:hover, button.cp-toolbar-button-active {
                     background-color: @bgcolor;
+                }
+            }
+            .cp-toolbar-rightside {
+                @media screen and (max-width: @barWidth) { // 450px
+                    flex-wrap: wrap;
+                    height: auto;
+                    width: 100%;
                 }
             }
             .cp-toolbar-title-hoverable:hover {
@@ -192,7 +239,7 @@
     &.cp-app-slide {
         @bgcolor: @colortheme_slide-bg;
         @color: @colortheme_slide-color;
-        .addToolbarColors(@color, @bgcolor);
+        .addToolbarColors(@color, @bgcolor, 700px);
     }
     &.cp-app-poll {
         @bgcolor: @colortheme_poll-bg;
@@ -236,33 +283,6 @@
     }
 
 
-    /* TODO: move to the slide LESS page */
-    .cp-app-slide {
-        @media screen and (max-width: @browser_media-medium-screen) {
-            .cp-toolbar-leftside {
-                flex-flow: row wrap;
-                width: 175px;
-                height: auto;
-                .cp-toolbar-spinner { order: 0; }
-            }
-            .cp-toolbar-rightside {
-                height: 2*@toolbar_line-height;
-            }
-        }
-        @media screen and (max-width: 320px) {
-            .cp-toolbar-leftside {
-                flex-flow: row wrap;
-                width: 175px;
-                height: auto;
-                padding-top: @toolbar_line-height;
-                .cp-toolbar-spinner { order: 0; }
-            }
-            .cp-toolbar-rightside {
-                height: auto;
-            }
-        }
-    }
-
     .cp-toolbar {
         * {
             outline-width: 0;
@@ -275,6 +295,9 @@
 
         box-sizing: border-box;
         padding: 0px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
 
         //background-color: #BBBBFF;
         background-color: @colortheme_default-bg;
@@ -437,8 +460,9 @@
         flex-flow: row;
         height: @toolbar_top-height;
         position: relative;
+        width: 100%;
         .cp-toolbar-top-filler {
-            height: 100%;
+            height: @toolbar_top-height;
             display: inline-block;
             order: 4;
             //flex: 1;
@@ -600,7 +624,7 @@
             }
         }
         .cp-toolbar-user {
-            height: 100%;
+            height: @toolbar_top-height;
             display: inline-flex;
             order: 5;
             line-height: @toolbar_top-height;
@@ -628,8 +652,9 @@
                 }
                 .cp-dropdown-content {
                     margin: 0;
+                    overflow: visible;
                 }
-                button {
+                & > button {
                     display: flex;
                     justify-content: center;
                     align-items: center;
@@ -675,9 +700,10 @@
         &:empty {
             height: 0;
         }
-        float: left;
         display: inline-flex;
         align-items: center;
+        max-width: 100%;
+        flex: 1;
         //margin-bottom: -1px;
         .cp-toolbar-users {
             pre {
@@ -720,12 +746,6 @@
             height: 0;
         }
         text-align: right;
-        /*&> button {
-            height: 100%;
-            margin: 0;
-            border-radius: 0;
-            padding: 0 10px;
-        }*/
         .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
             display: none;
         }
@@ -773,6 +793,11 @@
     .cp-toolbar-spinner {
         line-height: @toolbar_line-height;
         padding: 0 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        min-width: 200px;
+        box-sizing: border-box;
         &> span.fa {
             height: 20px;
             width: 20px;

@@ -2,10 +2,13 @@ define([
     'jquery',
     '/common/modes.js',
     '/common/themes.js',
-    '/common/cryptpad-common.js',
+    '/customize/messages.js',
+    '/common/common-ui-elements.js',
+    '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/text-cursor.js',
-    '/bower_components/chainpad/chainpad.dist.js'
-], function ($, Modes, Themes, Cryptpad, TextCursor, ChainPad) {
+    '/bower_components/chainpad/chainpad.dist.js',
+], function ($, Modes, Themes, Messages, UIElements, Hash, Util, TextCursor, ChainPad) {
     var module = {};
 
     var cursorToPos = function(cursor, oldText) {
@@ -102,7 +105,6 @@ define([
 
     module.create = function (Common, defaultMode, CMeditor) {
         var exp = {};
-        var Messages = Cryptpad.Messages;
 
         var CodeMirror = exp.CodeMirror = CMeditor;
         CodeMirror.modeURL = "cm/mode/%N/%N";
@@ -212,7 +214,7 @@ define([
                 isSelect: true,
                 feedback: 'CODE_LANGUAGE',
             };
-            var $block = exp.$language = Cryptpad.createDropdown(dropdownConfig);
+            var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle);
             $block.find('a').click(function () {
                 setMode($(this).attr('data-value'), onModeChanged);
@@ -249,7 +251,7 @@ define([
                     initialValue: lastTheme,
                     feedback: 'CODE_THEME',
                 };
-                var $block = exp.$theme = Cryptpad.createDropdown(dropdownConfig);
+                var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
                 $block.find('button').attr('title', Messages.themeButtonTitle);
 
                 setTheme(lastTheme, $block);
@@ -325,8 +327,8 @@ define([
                     //var cursor = editor.getCursor();
                     //var cleanName = data.name.replace(/[\[\]]/g, '');
                     //var text = '!['+cleanName+']('+data.url+')';
-                    var parsed = Cryptpad.parsePadUrl(data.url);
-                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' +
                         parsed.hashData.key + '"></media-tag>';

@@ -2,8 +2,12 @@ define([
     'jquery',
     '/file/file-crypto.js',
     '/common/common-thumbnail.js',
+    '/common/common-interface.js',
+    '/common/common-util.js',
+    '/customize/messages.js',
+
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, Thumb) {
+], function ($, FileCrypto, Thumb, UI, Util, Messages) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -15,15 +19,6 @@ define([
         reader.readAsArrayBuffer(blob);
     };
 
-    var arrayBufferToString = function (AB) {
-        try {
-            return Nacl.util.encodeBase64(new Uint8Array(AB));
-        } catch (e) {
-            console.error(e);
-            return null;
-        }
-    };
-
     module.uploadFile = function (common, data, cb) {
         var sframeChan = common.getSframeChannel();
         sframeChan.query('Q_UPLOAD_FILE', data, cb);
@@ -31,9 +26,6 @@ define([
 
     module.create = function (common, config) {
         var File = {};
-        var Cryptpad = common.getCryptpadCommon();
-
-        var Messages = Cryptpad.Messages;
 
         var queue = File.queue = {
             queue: [],
@@ -94,7 +86,7 @@ define([
             var id = file.id;
             var dropEvent = file.dropEvent;
             delete file.dropEvent;
-            if (dropEvent.path) { file.path = dropEvent.path; }
+            if (dropEvent && dropEvent.path) { file.path = dropEvent.path; }
             if (queue.inProgress) { return; }
             queue.inProgress = true;
 
@@ -123,7 +115,7 @@ define([
                         window.open(origin + $link.attr('href'), '_blank');
                     });
                 var title = metadata.name;
-                Cryptpad.log(Messages._getKey('upload_success', [title]));
+                UI.log(Messages._getKey('upload_success', [title]));
                 common.prepareFeedback('upload')();
 
                 if (config.onUploaded) {
@@ -140,18 +132,18 @@ define([
                 queue.next();
                 if (e === 'TOO_LARGE') {
                     // TODO update table to say too big?
-                    return void Cryptpad.alert(Messages.upload_tooLarge);
+                    return void UI.alert(Messages.upload_tooLarge);
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
                     // TODO update table to say not enough space?
-                    return void Cryptpad.alert(Messages.upload_notEnoughSpace);
+                    return void UI.alert(Messages.upload_notEnoughSpace);
                 }
                 console.error(e);
-                return void Cryptpad.alert(Messages.upload_serverError);
+                return void UI.alert(Messages.upload_serverError);
             };
 
             onPending = function (cb) {
-                Cryptpad.confirm(Messages.upload_uploadPending, cb);
+                UI.confirm(Messages.upload_uploadPending, cb);
             };
 
             file.noStore = config.noStore;
@@ -161,14 +153,14 @@ define([
                     console.log('Upload started...');
                 });
             } catch (e) {
-                Cryptpad.alert(Messages.upload_serverError);
+                UI.alert(Messages.upload_serverError);
             }
         };
 
         var prettySize = function (bytes) {
-            var kB = Cryptpad.bytesToKilobytes(bytes);
+            var kB = Util.bytesToKilobytes(bytes);
             if (kB < 1024) { return kB + Messages.KB; }
-            var mB = Cryptpad.bytesToMegabytes(bytes);
+            var mB = Util.bytesToMegabytes(bytes);
             return mB + Messages.MB;
         };
 
@@ -220,12 +212,41 @@ define([
             queue.next();
         };
 
-        var handleFile = File.handleFile = function (file, e, thumbnail) {
+        var showNamePrompt = true;
+        var promptName = function (file, cb) {
+            var extIdx = file.name.lastIndexOf('.');
+            var name = extIdx !== -1 ? file.name.slice(0,extIdx) : file.name;
+            var ext = extIdx !== -1 ? file.name.slice(extIdx) : "";
+            var msg = Messages._getKey('upload_rename', [
+                Util.fixHTML(file.name),
+                Util.fixHTML(ext)
+            ]);
+            UI.prompt(msg, name, function (newName) {
+                if (newName === null) {
+                    showNamePrompt = false;
+                    return void cb (file.name);
+                }
+                if (!newName || !newName.trim()) { return void cb (file.name); }
+                var newExtIdx = newName.lastIndexOf('.');
+                var newExt = newExtIdx !== -1 ? newName.slice(newExtIdx) : "";
+                if (newExt !== ext) { newName += ext; }
+                cb(newName);
+            }, {cancel: Messages.doNotAskAgain}, true);
+        };
+        var handleFileState = {
+            queue: [],
+            inProgress: false
+        };
+        var handleFile = File.handleFile = function (file, e) {
+            //if (handleFileState.inProgress) { return void handleFileState.queue.push(file); }
+            handleFileState.inProgress = true;
+
             var thumb;
             var file_arraybuffer;
+            var name = file.name;
             var finish = function () {
                 var metadata = {
-                    name: file.name,
+                    name: name,
                     type: file.type,
                 };
                 if (thumb) { metadata.thumbnail = thumb; }
@@ -234,33 +255,34 @@ define([
                     metadata: metadata,
                     dropEvent: e
                 });
+                handleFileState.inProgress = false;
+                if (handleFileState.queue.length) { handleFile(handleFileState.queue.shift()); }
+            };
+            var getName = function () {
+                if (!showNamePrompt) { return void finish(); }
+                promptName(file, function (newName) {
+                    name = newName;
+                    finish();
+                });
             };
 
             blobToArrayBuffer(file, function (e, buffer) {
                 if (e) { console.error(e); }
                 file_arraybuffer = buffer;
-                if (thumbnail) { // there is already a thumbnail
-                    return blobToArrayBuffer(thumbnail, function (e, buffer) {
-                        if (e) { console.error(e); }
-                        thumb = arrayBufferToString(buffer);
-                        finish();
-                    });
-                }
-
-                if (!Thumb.isSupportedType(file.type)) { return finish(); }
+                if (!Thumb.isSupportedType(file.type)) { return getName(); }
                 // make a resized thumbnail from the image..
                 Thumb.fromBlob(file, function (e, thumb64) {
                     if (e) { console.error(e); }
-                    if (!thumb64) { return finish(); }
+                    if (!thumb64) { return getName(); }
                     thumb = thumb64;
-                    finish();
+                    getName();
                 });
             });
         };
 
         var onFileDrop = File.onFileDrop = function (file, e) {
             if (!common.isLoggedIn()) {
-                return Cryptpad.alert(common.Messages.upload_mustLogin);
+                return UI.alert(common.Messages.upload_mustLogin);
             }
 
             Array.prototype.slice.call(file).forEach(function (d) {

@@ -1,7 +1,9 @@
 define([
     'jquery',
-    '/common/common-util.js'
-], function ($, Util) {
+    '/common/common-util.js',
+    '/common/common-interface.js',
+    '/customize/messages.js'
+], function ($, Util, UI, Messages) {
     var module = {};
 
     module.create = function (Common, cfg) {
@@ -54,7 +56,9 @@ define([
         });
         metadataMgr.onTitleChange(function (title) {
             sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
-                if (err) { return; }
+                if (err === 'E_OVER_LIMIT') {
+                    return void UI.alert(Messages.pinLimitNotPinned, null, true);
+                } else if (err) { return; }
                 evTitleChange.fire(title);
                 if (titleUpdated) { titleUpdated(undefined, title); }
             });

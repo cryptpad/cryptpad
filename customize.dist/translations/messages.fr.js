@@ -201,6 +201,7 @@ define(function () {
 
     out.cancel = "Annuler";
     out.cancelButton = 'Annuler (Échap)';
+    out.doNotAskAgain = "Ne plus demander (Échap)";
 
     out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";
@@ -440,7 +441,7 @@ define(function () {
     out.login_invalPass = 'Mot de passe requis';
     out.login_unhandledError = "Une erreur inattendue s'est produite :(";
 
-    out.register_importRecent = "Importer l'historique (Recommendé)";
+    out.register_importRecent = "Importer l'historique (Recommandé)";
     out.register_acceptTerms = "J'accepte <a href='/terms.html' tabindex='-1'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
     out.register_passwordTooShort = "Les mots de passe doivent contenir au moins {0} caractères.";
@@ -488,12 +489,12 @@ define(function () {
     out.settings_resetTipsButton = "Réinitialiser les astuces visibles dans CryptDrive";
     out.settings_resetTipsDone = "Toutes les astuces sont de nouveau visibles.";
 
-    out.settings_thumbnails = "Vignettes";
-    out.settings_disableThumbnailsAction = "Désactiver la création de vignettes dans CryptDrive";
-    out.settings_disableThumbnailsDescription = "Des vignettes de vos pads sont automatiquement créées et stockées dans votre navigateur. Vous pouvez désactiver cette fonctionnalité.";
+    out.settings_thumbnails = "Miniatures";
+    out.settings_disableThumbnailsAction = "Désactiver la création de miniatures dans CryptDrive";
+    out.settings_disableThumbnailsDescription = "Des miniatures de vos pads sont automatiquement créées et stockées dans votre navigateur. Vous pouvez désactiver cette fonctionnalité.";
     out.settings_resetThumbnailsAction = "Nettoyer";
-    out.settings_resetThumbnailsDescription = "Nettoyer toutes les vignettes stockées dans votre navigateur.";
-    out.settings_resetThumbnailsDone = "Toutes les vignettes ont été effacées.";
+    out.settings_resetThumbnailsDescription = "Nettoyer toutes les miniatures stockées dans votre navigateur.";
+    out.settings_resetThumbnailsDone = "Toutes les miniatures ont été effacées.";
 
     out.settings_importTitle = "Importer les pads récents de ce navigateur dans votre CryptDrive";
     out.settings_import = "Importer";
@@ -523,6 +524,9 @@ define(function () {
     out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
 
     out.upload_title = "Hébergement de fichiers";
+    out.upload_rename = "Souhaitez-vous renommer <b>{0}</b> avant son stockage en ligne ?<br>" +
+                        "<em>L'extension du fichier ({1}) sera ajoutée automatiquement. "+
+                        "Ce nom sera permanent et visible par les autres utilisateurs</em>.";
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
     out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";

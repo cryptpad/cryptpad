@@ -2,7 +2,8 @@ define([
     '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/userObject.js',
-], function (Cryptpad, Crypt, FO) {
+    '/common/common-hash.js',
+], function (Cryptpad, Crypt, FO, Hash) {
     var exp = {};
 
     var getType = function (el) {
@@ -41,7 +42,7 @@ define([
             if (typeof(p) === "string") {
                 if (getType(root) !== "object") { root = undefined; error(); return; }
                 if (i === path.length - 1) {
-                    root[Cryptpad.createChannelId()] = id;
+                    root[Hash.createChannelId()] = id;
                     return;
                 }
                 next = getType(path[i+1]);
@@ -104,7 +105,7 @@ define([
             if (parsed) {
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
-                    Cryptpad: Cryptpad
+                    loggedIn: Cryptpad.isLoggedIn()
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles();
@@ -120,10 +121,10 @@ define([
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
                         if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href
-                        if (Cryptpad.findStronger(href, newRecentPads)) { return; }
+                        if (Hash.findStronger(href, newRecentPads)) { return; }
                         // If we have a weaker version, replace the href by the new one
                         // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
-                        var weaker = Cryptpad.findWeaker(href, newRecentPads);
+                        var weaker = Hash.findWeaker(href, newRecentPads);
                         if (weaker) {
                             // Update RECENTPADS
                             newRecentPads.some(function (pad) {

@@ -6,8 +6,23 @@ define([
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js',
     '/common/cryptpad-common.js',
-    '/bower_components/netflux-websocket/netflux-client.js',
-], function (nThen, ApiConfig, $, RequireConfig, SFCommonO, Cryptpad, Netflux) {
+    '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-realtime.js',
+    '/common/common-constants.js',
+    '/common/common-interface.js',
+], function (nThen, ApiConfig, $, RequireConfig, SFCommonO,
+    Cryptpad, Util, Hash, Realtime, Constants, UI) {
+
+    window.Cryptpad = {
+        Common: Cryptpad,
+        Util: Util,
+        Hash: Hash,
+        Realtime: Realtime,
+        Constants: Constants,
+        UI: UI
+    };
+
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
@@ -22,7 +37,7 @@ define([
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
         $('#sbox-iframe').attr('src',
-            ApiConfig.httpSafeOrigin + '/drive/inner.html?' + requireConfig.urlArgs +
+            ApiConfig.httpSafeOrigin + '/debug/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
@@ -38,16 +53,6 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils) {
-            var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
-            return Utils.Hash.getSecrets('drive', hash);
-        };
-        Netflux.connect(Cryptpad.getWebsocketURL()).then(function (network) {
-            SFCommonO.start({
-                getSecrets: getSecrets,
-                newNetwork: network,
-                noHash: true
-            });
-        }, function (err) { console.error(err); });
+        SFCommonO.start();
     });
 });

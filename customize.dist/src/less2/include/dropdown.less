@@ -43,7 +43,7 @@
                 display: block;
             }
 
-            a {
+            & > a, & > span {
                 color: @colortheme_dropdown-color;
                 padding: 5px 16px;
                 text-decoration: none;
@@ -73,6 +73,31 @@
                 &.cp-dropdown-element-active {
                     background-color: @colortheme_dropdown-bg-active;
                     color: @colortheme_dropdown-color;
+                }
+            }
+            &> span {
+                box-sizing: border-box;
+                height: 26px;
+                border-radius: 0;
+                border: 0;
+                padding: 0 16px;
+                .cp-dropdown-content {
+                    margin-top: 26px;
+                    left: 0;
+                }
+                button {
+                    padding: 0;
+                    text-align: left;
+                    margin: 0;
+                    border-radius: 0;
+                    border: 0;
+                    width: 100%;
+                    line-height: 1em;
+                    .cp-toolbar-drawer-element {
+                        margin-left: 10px;
+                        display: inline;
+                        vertical-align: top;
+                    }
                 }
             }
 

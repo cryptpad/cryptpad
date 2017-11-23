@@ -36,18 +36,7 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-    /* TODO
-    window.addEventListener('storage', function (e) {
-        if (e.key !== Cryptpad.userHashKey) { return; }
-        var o = e.oldValue;
-        var n = e.newValue;
-        window.location.reload();
-        if (o && !n) { // disconnect
-            //redirectToMain();
-        }
-    });
-    */
-        var addRpc = function (sframeChan, Cryptpad) {
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_THUMBNAIL_CLEAR', function (d, cb) {
                 Cryptpad.clearThumbnail(function (err, data) {
                     cb({err:err, data:data});
@@ -58,8 +47,11 @@ define([
             });
             sframeChan.on('Q_SETTINGS_DRIVE_SET', function (data, cb) {
                 var sjson = JSON.stringify(data);
-                var k = Cryptpad.getUserHash() || localStorage[Cryptpad.fileHashKey];
-                require(['/common/cryptget.js'], function (Crypt) {
+                require([
+                    '/common/cryptget.js',
+                    '/common/common-constants.js'
+                ], function (Crypt, Constants) {
+                    var k = Cryptpad.getUserHash() || localStorage[Constants.fileHashKey];
                     Crypt.put(k, sjson, function (err) {
                         cb(err);
                     });
@@ -69,7 +61,7 @@ define([
                 var proxy = Cryptpad.getProxy();
                 var realtime = Cryptpad.getRealtime();
                 proxy.drive = Cryptpad.getStore().getEmptyObject();
-                Cryptpad.whenRealtimeSyncs(realtime, cb);
+                Utils.Realtime.whenRealtimeSyncs(realtime, cb);
             });
             sframeChan.on('Q_SETTINGS_LOGOUT', function (data, cb) {
                 var proxy = Cryptpad.getProxy();
@@ -77,12 +69,15 @@ define([
                 var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                 localStorage.setItem('loginToken', token);
                 proxy.loginToken = token;
-                Cryptpad.whenRealtimeSyncs(realtime, cb);
+                Utils.Realtime.whenRealtimeSyncs(realtime, cb);
             });
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
                 var proxyData = Cryptpad.getStore().getProxy();
-                require(['/common/mergeDrive.js'], function (Merge) {
-                    Merge.anonDriveIntoUser(proxyData, localStorage.FS_hash, cb);
+                require([
+                    '/common/mergeDrive.js',
+                    '/common/common-constants.js'
+                ], function (Merge, Constants) {
+                    Merge.anonDriveIntoUser(proxyData, localStorage[Constants.fileHashKey], cb);
                 });
             });
         };

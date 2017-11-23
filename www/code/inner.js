@@ -1,12 +1,13 @@
 define([
     'jquery',
-    '/common/cryptpad-common.js',
     '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/modes.js',
+    '/customize/messages.js',
     'cm/lib/codemirror',
 
     'css!cm/lib/codemirror.css',
@@ -37,17 +38,17 @@ define([
 
 ], function (
     $,
-    Cryptpad,
     DiffMd,
     nThen,
     SFCommon,
     Framework,
     Util,
+    Hash,
     Modes,
+    Messages,
     CMeditor)
 {
     window.CodeMirror = CMeditor;
-    var Messages = Cryptpad.Messages;
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
@@ -80,7 +81,11 @@ define([
         }, 150);
 
         $previewButton.removeClass('fa-question').addClass('fa-eye');
-        $previewButton.attr('title', Messages.previewButtonTitle);
+        window.setTimeout(function () {
+            // setTimeout needed for tippy (tooltip), otherwise we have the browser's default
+            // tooltips
+            $previewButton.attr('title', Messages.previewButtonTitle);
+        });
         var previewTo;
         $previewButton.click(function () {
             clearTimeout(previewTo);
@@ -291,8 +296,8 @@ define([
                     //var cursor = editor.getCursor();
                     //var cleanName = data.name.replace(/[\[\]]/g, '');
                     //var text = '!['+cleanName+']('+data.url+')';
-                    var parsed = Cryptpad.parsePadUrl(data.url);
-                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
                     editor.replaceSelection(mt);
@@ -352,6 +357,7 @@ define([
                         }
                         $(el).parents().css('overflow', '');
                         $(el).css('max-height', '');
+                        editor.refresh();
                     }
                 }
             }, waitFor(function (fw) { framework = fw; }));

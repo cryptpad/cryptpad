@@ -3,10 +3,13 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/curve.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
+    '/common/common-constants.js',
+    '/customize/messages.js',
 
     '/bower_components/marked/marked.min.js',
     '/common/common-realtime.js',
-], function ($, Crypto, Curve, Hash, Marked, Realtime) {
+], function ($, Crypto, Curve, Hash, Util, Constants, Messages, Marked, Realtime) {
     var Msg = {
         inputs: [],
     };
@@ -80,13 +83,13 @@ define([
 
         friends[pubKey] = data;
 
-        Realtime.whenRealtimeSyncs(common, common.getRealtime(), function () {
+        Realtime.whenRealtimeSyncs(common.getRealtime(), function () {
             cb();
             common.pinPads([data.channel], function (e) {
                 if (e) { console.error(e); }
             });
         });
-        common.changeDisplayName(proxy[common.displayNameKey]);
+        common.changeDisplayName(proxy[Constants.displayNameKey]);
     };
 
     /*  Used to accept friend requests within apps other than /contacts/ */
@@ -98,7 +101,7 @@ define([
             var msg;
             if (sender === network.historyKeeper) { return; }
             try {
-                var parsed = common.parsePadUrl(window.location.href);
+                var parsed = Hash.parsePadUrl(window.location.href);
                 if (!parsed.hashData) { return; }
                 var chan = parsed.hashData.channel;
                 // Decrypt
@@ -132,11 +135,11 @@ define([
                         todo(true);
                         return;
                     }
-                    var confirmMsg = common.Messages._getKey('contacts_request', [
-                        common.fixHTML(msgData.displayName)
+                    var confirmMsg = Messages._getKey('contacts_request', [
+                        Util.fixHTML(msgData.displayName)
                     ]);
                     common.onFriendRequest(confirmMsg, todo);
-                    //common.confirm(confirmMsg, todo, null, true);
+                    //UI.confirm(confirmMsg, todo, null, true);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_OK") {
@@ -147,12 +150,12 @@ define([
                     addToFriendList(common, msgData, function (err) {
                         if (err) {
                             return void common.onFriendComplete({
-                                logText: common.Messages.contacts_addError,
+                                logText: Messages.contacts_addError,
                                 netfluxId: sender
                             });
                         }
                         common.onFriendComplete({
-                            logText: common.Messages.contacts_added,
+                            logText: Messages.contacts_added,
                             netfluxId: sender
                         });
                         var msg = ["FRIEND_REQ_ACK", chan];
@@ -165,10 +168,10 @@ define([
                     var i = pendingRequests.indexOf(sender);
                     if (i !== -1) { pendingRequests.splice(i, 1); }
                     common.onFriendComplete({
-                        logText: common.Messages.contacts_rejected,
+                        logText: Messages.contacts_rejected,
                         netfluxId: sender
                     });
-                    common.changeDisplayName(proxy[common.displayNameKey]);
+                    common.changeDisplayName(proxy[Constants.displayNameKey]);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_ACK") {
@@ -177,12 +180,12 @@ define([
                     addToFriendList(common, data, function (err) {
                         if (err) {
                             return void common.onFriendComplete({
-                                logText: common.Messages.contacts_addError,
+                                logText: Messages.contacts_addError,
                                 netfluxId: sender
                             });
                         }
                         common.onFriendComplete({
-                            logText: common.Messages.contacts_added,
+                            logText: Messages.contacts_added,
                             netfluxId: sender
                         });
                     });
@@ -201,7 +204,7 @@ define([
 
     Msg.inviteFromUserlist = function (common, netfluxId) {
         var network = common.getNetwork();
-        var parsed = common.parsePadUrl(window.location.href);
+        var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.hashData) { return; }
         // Message
         var chan = parsed.hashData.channel;
@@ -218,7 +221,7 @@ define([
             var proxy = common.getProxy();
             // this redraws the userlist after a change has occurred
             // TODO rename this function to reflect its purpose
-            common.changeDisplayName(proxy[common.displayNameKey]);
+            common.changeDisplayName(proxy[Constants.displayNameKey]);
         }
         network.sendto(netfluxId, msgStr);
     };

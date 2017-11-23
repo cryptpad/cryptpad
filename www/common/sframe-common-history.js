@@ -1,7 +1,11 @@
 define([
     'jquery',
+    '/common/common-interface.js',
+    //'/bower_components/chainpad-json-validator/json-ot.js',
+
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, ChainPad) {
+], function ($, UI, JsonOT) {
+    var ChainPad = window.ChainPad;
     var History = {};
 
     var getStates = function (rt) {
@@ -29,8 +33,10 @@ define([
                     }
                 },
                 initialState: '',
-                patchTransformer: ChainPad.NaiveJSONTransformer,
-                logLevel: 0,
+                //patchTransformer: ChainPad.NaiveJSONTransformer,
+                //logLevel: 0,
+                //transformFunction: JsonOT.validate,
+                logLevel: config.debug ? 1 : 0,
                 noPrune: true
             });
         };
@@ -81,7 +87,6 @@ define([
         var onReady = function () { };
 
         var Messages = common.Messages;
-        var Cryptpad = common.getCryptpadCommon();
 
         var realtime;
 
@@ -98,7 +103,7 @@ define([
         $right.hide();
         $cke.hide();
 
-        Cryptpad.spinner($hist).get().show();
+        UI.spinner($hist).get().show();
 
         var onUpdate;
 
@@ -121,6 +126,15 @@ define([
             $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous').css('visibility', '');
             if (c === states.length - 1) { $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden'); }
             if (c === 0) { $hist.find('.cp-toolbar-history-previous').css('visibility', 'hidden'); }
+
+            if (config.debug) {
+                console.log(states[i]);
+                var ops = states[i] && states[i].getPatch() && states[i].getPatch().operations;
+                if (Array.isArray(ops)) {
+                    ops.forEach(function (op) { console.log(op); });
+                }
+            }
+
             return val || '';
         };
 
@@ -201,11 +215,11 @@ define([
                 onClose();
             });
             $rev.click(function () {
-                Cryptpad.confirm(Messages.history_restorePrompt, function (yes) {
+                UI.confirm(Messages.history_restorePrompt, function (yes) {
                     if (!yes) { return; }
                     close();
                     onRevert();
-                    Cryptpad.log(Messages.history_restoreDone);
+                    UI.log(Messages.history_restoreDone);
                 });
             });
 

@@ -3,8 +3,12 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/common/userObject.js',
+    '/common/common-interface.js',
+    '/common/common-hash.js',
+    '/common/common-constants.js',
     '/common/migrate-user-object.js',
-], function ($, Listmap, Crypto, FO, Migrate) {
+    '/bower_components/chainpad/chainpad.dist.js',
+], function ($, Listmap, Crypto, /* TextPatcher, */ FO, UI, Hash, Constants, Migrate, ChainPad) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -188,7 +192,7 @@ define([
     var onReady = function (f, proxy, Cryptpad, exp) {
         var fo = exp.fo = FO.init(proxy.drive, {
             Cryptpad: Cryptpad,
-            rt: exp.realtime
+            loggedIn: Cryptpad.isLoggedIn()
         });
         var todo = function () {
             fo.fixFiles();
@@ -246,7 +250,7 @@ define([
             if (typeof(proxy.uid) !== 'string' || proxy.uid.length !== 32) {
                 // even anonymous users should have a persistent, unique-ish id
                 console.log('generating a persistent identifier');
-                proxy.uid = Cryptpad.createChannelId();
+                proxy.uid = Hash.createChannelId();
             }
 
             // if the user is logged in, but does not have signing keys...
@@ -255,17 +259,17 @@ define([
                 return void requestLogin();
             }
 
-            proxy.on('change', [Cryptpad.displayNameKey], function (o, n) {
+            proxy.on('change', [Constants.displayNameKey], function (o, n) {
                 if (typeof(n) !== "string") { return; }
                 Cryptpad.changeDisplayName(n);
             });
             proxy.on('change', ['profile'], function () {
                 // Trigger userlist update when the avatar has changed
-                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+                Cryptpad.changeDisplayName(proxy[Constants.displayNameKey]);
             });
             proxy.on('change', ['friends'], function () {
                 // Trigger userlist update when the avatar has changed
-                Cryptpad.changeDisplayName(proxy[Cryptpad.displayNameKey]);
+                Cryptpad.changeDisplayName(proxy[Constants.displayNameKey]);
             });
             proxy.on('change', [tokenKey], function () {
                 var localToken = tryParsing(localStorage.getItem(tokenKey));
@@ -283,11 +287,11 @@ define([
         if (!Cryptpad || initialized) { return; }
         initialized = true;
 
-        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Cryptpad.createRandomHash();
+        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Hash.createRandomHash();
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
         }
-        var secret = Cryptpad.getSecrets('drive', hash);
+        var secret = Hash.getSecrets('drive', hash);
         var listmapConfig = {
             data: {},
             websocketURL: Cryptpad.getWebsocketURL(),
@@ -297,30 +301,10 @@ define([
             crypto: Crypto.createEncryptor(secret.keys),
             userName: 'fs',
             logLevel: 1,
+            ChainPad: ChainPad,
         };
 
         var exp = {};
-
-        window.addEventListener('storage', function (e) {
-            if (e.key !== Cryptpad.userHashKey) { return; }
-            var o = e.oldValue;
-            var n = e.newValue;
-            if (!o && n) {
-                window.location.reload();
-            } else if (o && !n) {
-                $(window).on('keyup', function (e) {
-                    if (e.keyCode === 27) {
-                        Cryptpad.removeLoadingScreen();
-                    }
-                });
-                Cryptpad.logout();
-                Cryptpad.addLoadingScreen({hideTips: true});
-                Cryptpad.errorLoadingScreen(Cryptpad.Messages.onLogout, true);
-                if (exp.info) {
-                    exp.info.network.disconnect();
-                }
-            }
-        });
 
         var rt = window.rt = Listmap.create(listmapConfig);
 
@@ -329,30 +313,21 @@ define([
         rt.proxy.on('create', function (info) {
             exp.info = info;
             if (!Cryptpad.getUserHash()) {
-                localStorage.FS_hash = Cryptpad.getEditHashFromKeys(info.channel, secret.keys);
+                localStorage.FS_hash = Hash.getEditHashFromKeys(info.channel, secret.keys);
             }
         }).on('ready', function () {
             if (store) { return; } // the store is already ready, it is a reconnection
             if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
             var drive = rt.proxy.drive;
             // Creating a new anon drive: import anon pads from localStorage
-            if ((!drive[Cryptpad.oldStorageKey] || !Cryptpad.isArray(drive[Cryptpad.oldStorageKey]))
+            if ((!drive[Constants.oldStorageKey] || !Array.isArray(drive[Constants.oldStorageKey]))
                 && !drive['filesData']) {
-                drive[Cryptpad.oldStorageKey] = [];
+                drive[Constants.oldStorageKey] = [];
                 onReady(f, rt.proxy, Cryptpad, exp);
                 return;
             }
             // Drive already exist: return the existing drive, don't load data from legacy store
             onReady(f, rt.proxy, Cryptpad, exp);
-        })
-        .on('disconnect', function (info) {
-            // We only manage errors during the loading screen here. Other websocket errors are handled by the apps
-            if (info.error) {
-                if (typeof Cryptpad.storeError === "function") {
-                    Cryptpad.storeError();
-                }
-                return;
-            }
         })
         .on('change', ['drive', 'migrate'], function () {
             var path = arguments[2];
@@ -360,7 +335,7 @@ define([
             if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
                 rt.network.disconnect();
                 rt.realtime.abort();
-                Cryptpad.alert(Cryptpad.Messages.fs_migration, null, true);
+                UI.alert(Cryptpad.Messages.fs_migration, null, true);
             }
         });
     };

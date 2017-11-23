@@ -5,46 +5,21 @@ define([
     '/common/fsStore.js',
     '/common/common-util.js',
     '/common/common-hash.js',
-    '/common/common-interface.js',
-    '/common/common-history.js',
-    '/common/common-userlist.js',
-    '/common/common-title.js',
-    '/common/common-metadata.js',
     '/common/common-messaging.js',
-    '/common/common-file.js',
     '/file/file-crypto.js',
     '/common/common-realtime.js',
     '/common/common-language.js',
+    '/common/common-constants.js',
+
     '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js',
     '/common/media-tag.js',
     '/bower_components/nthen/index.js',
     '/bower_components/localforage/dist/localforage.min.js',
-], function (
-    $,
-    Config,
-    Messages,
-    Store,
-    Util,
-    Hash,
-    UI,
-    History,
-    UserList,
-    Title,
-    Metadata,
-    Messaging,
-    Files,
-    FileCrypto,
-    Realtime,
-    Language,
-    Clipboard,
-    Pinpad,
-    AppConfig,
-    MediaTag,
-    Nthen,
-    localForage)
-{
+], function ($, Config, Messages, Store, Util, Hash,
+            Messaging, FileCrypto, Realtime, Language, Constants, Clipboard,
+            Pinpad, AppConfig, MediaTag, Nthen, localForage) {
 
     // Configure MediaTags to use our local viewer
     if (MediaTag && MediaTag.PdfPlugin) {
@@ -68,117 +43,60 @@ define([
         MediaTag: MediaTag,
     };
 
-    // constants
-    var userHashKey = common.userHashKey = 'User_hash';
-    var userNameKey = common.userNameKey = 'User_name';
-    var fileHashKey = common.fileHashKey = 'FS_hash';
-    common.displayNameKey = 'cryptpad.username';
-    var newPadNameKey = common.newPadNameKey = "newPadName";
-    var newPadPathKey = common.newPadPathKey = "newPadPath";
-    common.oldStorageKey = 'CryptPad_RECENTPADS';
-    common.storageKey = 'filesData';
     var PINNING_ENABLED = AppConfig.enablePinning;
 
     var store;
     var rpc;
     var anon_rpc;
 
-    // import UI elements
-    common.findCancelButton = UI.findCancelButton;
-    common.findOKButton = UI.findOKButton;
-    common.listenForKeys = UI.listenForKeys;
-    common.stopListening = UI.stopListening;
-    common.prompt = UI.prompt;
-    common.confirm = UI.confirm;
-    common.alert = UI.alert;
-    common.log = UI.log;
-    common.warn = UI.warn;
-    common.spinner = UI.spinner;
-    common.addLoadingScreen = UI.addLoadingScreen;
-    common.removeLoadingScreen = UI.removeLoadingScreen;
-    common.errorLoadingScreen = UI.errorLoadingScreen;
-    common.notify = UI.notify;
-    common.unnotify = UI.unnotify;
-    common.getIcon = UI.getIcon;
-    common.addTooltips = UI.addTooltips;
-    common.clearTooltips = UI.clearTooltips;
-    common.importContent = UI.importContent;
-    common.tokenField = UI.tokenField;
-    common.dialog = UI.dialog;
-
     // import common utilities for export
-    common.find = Util.find;
-    var fixHTML = common.fixHTML = Util.fixHTML;
-    common.hexToBase64 = Util.hexToBase64;
-    common.base64ToHex = Util.base64ToHex;
-    var deduplicateString = common.deduplicateString = Util.deduplicateString;
-    common.uint8ArrayToHex = Util.uint8ArrayToHex;
-    common.replaceHash = Util.replaceHash;
-    common.getHash = Util.getHash;
-    common.fixFileName = Util.fixFileName;
-    common.bytesToMegabytes = Util.bytesToMegabytes;
-    common.bytesToKilobytes = Util.bytesToKilobytes;
-    common.fetch = Util.fetch;
-    common.throttle = Util.throttle;
-    common.createRandomInteger = Util.createRandomInteger;
-    common.getAppType = Util.getAppType;
-    common.notAgainForAnother = Util.notAgainForAnother;
-    common.uid = Util.uid;
-    common.slice = Util.slice;
+    //common.find = Util.find;
+    //common.hexToBase64 = Util.hexToBase64;
+    //common.base64ToHex = Util.base64ToHex;
+    //var deduplicateString = common.deduplicateString = Util.deduplicateString;
+    //common.uint8ArrayToHex = Util.uint8ArrayToHex;
+    //common.replaceHash = Util.replaceHash;
+    //common.getHash = Util.getHash;
+    //common.fixFileName = Util.fixFileName;
+    //common.bytesToMegabytes = Util.bytesToMegabytes;
+    //common.bytesToKilobytes = Util.bytesToKilobytes;
+    //common.fetch = Util.fetch;
+    //common.throttle = Util.throttle;
+    //common.createRandomInteger = Util.createRandomInteger;
+    //common.getAppType = Util.getAppType;
+    //common.notAgainForAnother = Util.notAgainForAnother;
+    //common.uid = Util.uid;
+    //common.slice = Util.slice;
 
     // import hash utilities for export
-    var createRandomHash = common.createRandomHash = Hash.createRandomHash;
-    common.parseTypeHash = Hash.parseTypeHash;
-    var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
-    var isNotStrongestStored = common.isNotStrongestStored = Hash.isNotStrongestStored;
-    var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
-    var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
-    common.getBlobPathFromHex = Hash.getBlobPathFromHex;
+    //var createRandomHash = common.createRandomHash = Hash.createRandomHash;
+    //common.parseTypeHash = Hash.parseTypeHash;
+    //var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
+    //common.isNotStrongestStored = Hash.isNotStrongestStored;
+    //var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
+    //var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
+    //common.getBlobPathFromHex = Hash.getBlobPathFromHex;
 
-    common.getEditHashFromKeys = Hash.getEditHashFromKeys;
-    common.getViewHashFromKeys = Hash.getViewHashFromKeys;
-    common.getFileHashFromKeys = Hash.getFileHashFromKeys;
-    common.getUserHrefFromKeys = Hash.getUserHrefFromKeys;
-    common.getSecrets = Hash.getSecrets;
-    common.getHashes = Hash.getHashes;
-    common.createChannelId = Hash.createChannelId;
-    common.findWeaker = Hash.findWeaker;
-    common.findStronger = Hash.findStronger;
-    common.serializeHash = Hash.serializeHash;
-    common.createInviteUrl = Hash.createInviteUrl;
+    //common.getEditHashFromKeys = Hash.getEditHashFromKeys;
+    //common.getViewHashFromKeys = Hash.getViewHashFromKeys;
+    //common.getFileHashFromKeys = Hash.getFileHashFromKeys;
+    //common.getUserHrefFromKeys = Hash.getUserHrefFromKeys;
+    //common.getSecrets = Hash.getSecrets;
+    //common.getHashes = Hash.getHashes;
+    //common.createChannelId = Hash.createChannelId;
+    //common.findWeaker = Hash.findWeaker;
+    //common.findStronger = Hash.findStronger;
+    //common.serializeHash = Hash.serializeHash;
+    //common.createInviteUrl = Hash.createInviteUrl;
 
     // Messaging
-    common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
-    common.inviteFromUserlist = Messaging.inviteFromUserlist;
-    common.getFriendList = Messaging.getFriendList;
-    common.getFriendChannelsList = Messaging.getFriendChannelsList;
-    common.createData = Messaging.createData;
-    common.getPendingInvites = Messaging.getPending;
-    common.getLatestMessages = Messaging.getLatestMessages;
-
-    // Realtime
-    var whenRealtimeSyncs = common.whenRealtimeSyncs = function (realtime, cb) {
-        Realtime.whenRealtimeSyncs(common, realtime, cb);
-    };
-
-    common.beginDetectingInfiniteSpinner = function (realtime) {
-        Realtime.beginDetectingInfiniteSpinner(common, realtime);
-    };
-
-    // Userlist
-    common.createUserList = UserList.create;
-
-    // Title
-    common.createTitle = Title.create;
-
-    // Metadata
-    common.createMetadata = Metadata.create;
-
-    // Files
-    common.createFileManager = function (config) { return Files.create(common, config); };
-
-    // History
-    common.getHistory = function (config) { return History.create(common, config); };
+    //common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
+    //common.inviteFromUserlist = Messaging.inviteFromUserlist;
+    //common.getFriendList = Messaging.getFriendList;
+    //common.getFriendChannelsList = Messaging.getFriendChannelsList;
+    //common.createData = Messaging.createData;
+    //common.getPendingInvites = Messaging.getPending;
+    //common.getLatestMessages = Messaging.getLatestMessages;
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -202,20 +120,16 @@ define([
         }
         return;
     };
+
+    // REFACTOR pull language directly
     common.getLanguage = function () {
         return Messages._languageUsed;
     };
     common.setLanguage = function (l, cb) {
         Language.setLanguage(l, null, cb);
     };
-    common.getUserlist = function () {
-        if (store) {
-            if (store.getProxy() && store.getProxy().info) {
-                return store.getProxy().info.userList;
-            }
-        }
-        return;
-    };
+
+    // REAFCTOR store.getProfile should be store.get(['profile'])
     common.getProfileUrl = function () {
         if (store && store.getProfile()) {
             return store.getProfile().view;
@@ -229,23 +143,24 @@ define([
     common.getDisplayName = function (cb) {
         var name;
         if (getProxy()) {
-            name = getProxy()[common.displayNameKey];
+            name = getProxy()[Constants.displayNameKey];
         }
         name = name || '';
         if (typeof cb === "function") { cb(null, name); }
         return name;
     };
     common.getAccountName = function () {
-        return localStorage[common.userNameKey];
+        return localStorage[Constants.userNameKey];
     };
 
+    // REFACTOR: move to util?
     var randomToken = function () {
         return Math.random().toString(16).replace(/0./, '');
     };
 
     common.isFeedbackAllowed = function () {
         try {
-            var entry = common.find(getProxy(), [
+            var entry = Util.find(getProxy(), [
                 'settings',
                 'general',
                 'allowUserFeedback'
@@ -319,9 +234,9 @@ define([
     common.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
-        hash = common.serializeHash(hash);
-        localStorage.setItem(userHashKey, hash);
-        localStorage.setItem(userNameKey, name);
+        hash = Hash.serializeHash(hash);
+        localStorage.setItem(Constants.userHashKey, hash);
+        localStorage.setItem(Constants.userNameKey, name);
         if (cb) { cb(); }
     };
 
@@ -342,8 +257,8 @@ define([
     var logoutHandlers = [];
     common.logout = function (cb) {
         [
-            userNameKey,
-            userHashKey,
+            Constants.userNameKey,
+            Constants.userHashKey,
             'loginToken',
             'plan',
         ].forEach(function (k) {
@@ -355,8 +270,8 @@ define([
         localForage.clear();
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
-        if (!localStorage[fileHashKey]) {
-            localStorage[fileHashKey] = common.createRandomHash();
+        if (!localStorage[Constants.fileHashKey]) {
+            localStorage[Constants.fileHashKey] = Hash.createRandomHash();
         }
         eraseTempSessionValues();
 
@@ -373,16 +288,16 @@ define([
     };
 
     var getUserHash = common.getUserHash = function () {
-        var hash = localStorage[userHashKey];
+        var hash = localStorage[Constants.userHashKey];
 
         if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
-            localStorage.removeItem(userHashKey);
+            localStorage.removeItem(Constants.userHashKey);
             return;
         }
 
         if (hash) {
-            var sHash = common.serializeHash(hash);
-            if (sHash !== hash) { localStorage[userHashKey] = sHash; }
+            var sHash = Hash.serializeHash(hash);
+            if (sHash !== hash) { localStorage[Constants.userHashKey] = sHash; }
         }
 
         return hash;
@@ -418,113 +333,26 @@ define([
     /*
      *  localStorage formatting
      */
-    /*
-        the first time this gets called, your local storage will migrate to a
-        new format. No more indices for values, everything is named now.
-
-        * href
-        * atime (access time)
-        * title
-        * ??? // what else can we put in here?
-    */
-    var checkObjectData = function (pad, cb) {
-        if (!pad.ctime) { pad.ctime = pad.atime; }
-        if (/^https*:\/\//.test(pad.href)) {
-            pad.href = common.getRelativeHref(pad.href);
-        }
-        var parsed = common.parsePadUrl(pad.href);
-        if (!parsed || !parsed.hash) { return; }
-        if (typeof(cb) === 'function') {
-            cb(parsed);
-        }
-        if (!pad.title) {
-            pad.title = common.getDefaultName(parsed);
-        }
-        return parsed.hashData;
-    };
-    // Migrate from legacy store (localStorage)
-    common.migrateRecentPads = function (pads) {
-        return pads.map(function (pad) {
-            var parsedHash;
-            if (Array.isArray(pad)) { // TODO DEPRECATE_F
-                return {
-                    href: pad[0],
-                    atime: pad[1],
-                    title: pad[2] || '',
-                    ctime: pad[1],
-                };
-            } else if (pad && typeof(pad) === 'object') {
-                parsedHash = checkObjectData(pad);
-                if (!parsedHash || !parsedHash.type) { return; }
-                return pad;
-            } else {
-                console.error("[Cryptpad.migrateRecentPads] pad had unexpected value");
-                console.log(pad);
-                return;
-            }
-        }).filter(function (x) { return x; });
-    };
-    // Remove everything from RecentPads that is not an object and check the objects
-    var checkRecentPads = common.checkRecentPads = function (pads) {
-        Object.keys(pads).forEach(function (id, i) {
-            var pad = pads[id];
-            if (pad && typeof(pad) === 'object') {
-                var parsedHash = checkObjectData(pad);
-                if (!parsedHash || !parsedHash.type) {
-                    console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
-                    getStore().removeData(i);
-                    return;
-                }
-                return pad;
-            }
-            console.error("[Cryptpad.checkRecentPads] pad had unexpected value", pad);
-            getStore().removeData(i);
-        });
-    };
-
-    // Create untitled documents when no name is given
-    var getLocaleDate = common.getLocaleDate = function () {
-        if (window.Intl && window.Intl.DateTimeFormat) {
-            var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
-            return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
-        }
-        return new Date().toString().split(' ').slice(0,4).join(' ');
-    };
-    var getDefaultName = common.getDefaultName = function (parsed) {
-        var type = parsed.type;
-        var name = (Messages.type)[type] + ' - ' + getLocaleDate();
-        return name;
-    };
-    common.isDefaultName = function (parsed, title) {
-        var name = getDefaultName(parsed);
-        return title === name;
-    };
-
     var makePad = common.makePad = function (href, title) {
         var now = +new Date();
         return {
             href: href,
             atime: now,
             ctime: now,
-            title: title || getDefaultName(parsePadUrl(href)),
+            title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
         };
-    };
-
-    /* Sort pads according to how recently they were accessed */
-    common.mostRecent = function (a, b) {
-        return new Date(b.atime).getTime() - new Date(a.atime).getTime();
     };
 
     // STORAGE
     common.setPadAttribute = function (attr, value, cb, href) {
-        href = getRelativeHref(href || window.location.href);
+        href = Hash.getRelativeHref(href || window.location.href);
         getStore().setPadAttribute(href, attr, value, cb);
     };
     common.setDisplayName = function (value, cb) {
         if (getProxy()) {
-            getProxy()[common.displayNameKey] = value;
+            getProxy()[Constants.displayNameKey] = value;
         }
-        if (typeof cb === "function") { whenRealtimeSyncs(getRealtime(), cb); }
+        if (typeof cb === "function") { Realtime.whenRealtimeSyncs(getRealtime(), cb); }
     };
     common.setAttribute = function (attr, value, cb) {
         getStore().setAttribute(attr, value, function (err, data) {
@@ -537,7 +365,7 @@ define([
 
     // STORAGE
     common.getPadAttribute = function (attr, cb) {
-        var href = getRelativeHref(window.location.href);
+        var href = Hash.getRelativeHref(window.location.href);
         getStore().getPadAttribute(href, attr, cb);
     };
     common.getAttribute = function (attr, cb) {
@@ -565,7 +393,7 @@ define([
         href = href || (window.location.pathname + window.location.hash);
         var id = store.getIdFromHref(href);
         if (!id) { return void cb('NO_ID'); }
-        var entry = common.find(getProxy(), [
+        var entry = Util.find(getProxy(), [
             'drive',
             'filesData',
             id
@@ -631,7 +459,7 @@ define([
     common.listAllTags = function (cb) {
         var all = [];
         var proxy = getProxy();
-        var files = common.find(proxy, ['drive', 'filesData']);
+        var files = Util.find(proxy, ['drive', 'filesData']);
 
         if (typeof(files) !== 'object') { return cb('invalid_drive'); }
         Object.keys(files).forEach(function (k) {
@@ -656,7 +484,7 @@ define([
         if (!type) { return allTemplates; }
 
         var templates = allTemplates.filter(function (f) {
-            var parsed = parsePadUrl(f.href);
+            var parsed = Hash.parsePadUrl(f.href);
             return parsed.type === type;
         });
         return templates;
@@ -669,48 +497,20 @@ define([
     };
 
     common.isTemplate = function (href) {
-        var rhref = getRelativeHref(href);
+        var rhref = Hash.getRelativeHref(href);
         var templates = listTemplates();
         return templates.some(function (t) {
             return t.href === rhref;
         });
     };
-    common.selectTemplate = function (type, rt, Crypt) {
-        if (!AppConfig.enableTemplates) { return; }
-        var temps = listTemplates(type);
-        if (temps.length === 0) { return; }
-        var $content = $('<div>');
-        $('<b>').text(Messages.selectTemplate).appendTo($content);
-        $('<p>', {id:"selectTemplate"}).appendTo($content);
-        common.alert($content.html(), null, true);
-        var $p = $('#selectTemplate');
-        temps.forEach(function (t, i) {
-            $('<a>', {href: t.href, title: t.title}).text(t.title).click(function (e) {
-                e.preventDefault();
-                var parsed = parsePadUrl(t.href);
-                if(!parsed) { throw new Error("Cannot get template hash"); }
-                common.addLoadingScreen({hideTips: true});
-                Crypt.get(parsed.hash, function (err, val) {
-                    if (err) { throw new Error(err); }
-                    var p = parsePadUrl(window.location.href);
-                    Crypt.put(p.hash, val, function () {
-                        common.findOKButton().click();
-                        common.removeLoadingScreen();
-                        common.feedback('TEMPLATE_USED');
-                    });
-                });
-            }).appendTo($p);
-            if (i !== temps.length) { $('<br>').appendTo($p); }
-        });
-        common.findOKButton().text(Messages.cancelButton);
-    };
+
     // Secure iframes
     common.useTemplate = function (href, Crypt, cb) {
-        var parsed = parsePadUrl(href);
+        var parsed = Hash.parsePadUrl(href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         Crypt.get(parsed.hash, function (err, val) {
             if (err) { throw new Error(err); }
-            var p = parsePadUrl(window.location.href);
+            var p = Hash.parsePadUrl(window.location.href);
             Crypt.put(p.hash, val, cb);
         });
     };
@@ -720,7 +520,6 @@ define([
     var getRecentPads = common.getRecentPads = function (cb) {
         getStore().getDrive('filesData', function (err, recentPads) {
             if (typeof(recentPads) === "object") {
-                checkRecentPads(recentPads);
                 cb(void 0, recentPads);
                 return;
             }
@@ -745,13 +544,12 @@ define([
         _onDisplayNameChanged.forEach(function (h) {
             h(newName, isLocal);
         });
-        common.clearTooltips();
     };
 
     // STORAGE
     common.forgetPad = function (href, cb) {
         if (typeof(getStore().forgetPad) === "function") {
-            getStore().forgetPad(common.getRelativeHref(href), cb);
+            getStore().forgetPad(Hash.getRelativeHref(href), cb);
             return;
         }
         cb ("store.forgetPad is not a function");
@@ -759,10 +557,10 @@ define([
 
     common.setPadTitle = function (name, padHref, cb) {
         var href = typeof padHref === "string" ? padHref : window.location.href;
-        var parsed = parsePadUrl(href);
+        var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return; }
         href = parsed.getUrl({present: parsed.present});
-        //href = getRelativeHref(href);
+        //href = Hash.getRelativeHref(href);
         // getRecentPads return the array from the drive, not a copy
         // We don't have to call "set..." at the end, everything is stored with listmap
         getRecentPads(function (err, recent) {
@@ -775,7 +573,7 @@ define([
             var contains;
             Object.keys(recent).forEach(function (id) {
                 var pad = recent[id];
-                var p = parsePadUrl(pad.href);
+                var p = Hash.parsePadUrl(pad.href);
 
                 if (p.type !== parsed.type) { return pad; }
 
@@ -830,9 +628,6 @@ define([
                 var data = makePad(href, name);
                 getStore().pushData(data, function (e, id) {
                     if (e) {
-                        if (e === 'E_OVER_LIMIT') {
-                            common.alert(Messages.pinLimitNotPinned, null, true);
-                        }
                         return void cb(e);
                     }
                     getStore().addPad(id, common.initialPath);
@@ -844,19 +639,6 @@ define([
         });
     };
 
-    var errorHandlers = [];
-    common.onError = function (h) {
-        if (typeof h !== "function") { return; }
-        errorHandlers.push(h);
-    };
-    common.storeError = function () {
-        errorHandlers.forEach(function (h) {
-            if (typeof h === "function") {
-                h({type: "store"});
-            }
-        });
-    };
-
     /*
      * Buttons
      */
@@ -864,8 +646,8 @@ define([
         if (title === null) { return; }
 
         if (title.trim() === "") {
-            var parsed = parsePadUrl(href || window.location.href);
-            title = getDefaultName(parsed);
+            var parsed = Hash.parsePadUrl(href || window.location.href);
+            title = Hash.getDefaultName(parsed);
         }
 
         common.setPadTitle(title, href, function (err) {
@@ -878,22 +660,6 @@ define([
         });
     };
 
-    common.getUserFilesList = function () {
-        var store = common.getStore();
-        var proxy = store.getProxy();
-        var fo = proxy.fo;
-        var hashes = [];
-        var list = fo.getFiles([fo.ROOT]).filter(function (id) {
-            var href = fo.getFileData(id).href;
-            var parsed = parsePadUrl(href);
-            if ((parsed.type === 'file' || parsed.type === 'media')
-                 && hashes.indexOf(parsed.hash) === -1) {
-                hashes.push(parsed.hash);
-                return true;
-            }
-        });
-        return list;
-    };
     // Needed for the secure filepicker app
     common.getSecureFilesList = function (query, cb) {
         var store = common.getStore();
@@ -918,7 +684,7 @@ define([
         };
         fo.getFiles(where).forEach(function (id) {
             var data = fo.getFileData(id);
-            var parsed = parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href);
             if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1)
                  && hashes.indexOf(parsed.hash) === -1) {
                 if (isFiltered(parsed.type, data)) { return; }
@@ -935,40 +701,40 @@ define([
         var fo = proxy.fo;
 
         // start with your userHash...
-        var userHash = localStorage && localStorage.User_hash;
+        var userHash = localStorage && localStorage[Constants.userHashKey];
         if (!userHash) { return null; }
 
-        var userParsedHash = common.parseTypeHash('drive', userHash);
+        var userParsedHash = Hash.parseTypeHash('drive', userHash);
         var userChannel = userParsedHash && userParsedHash.channel;
         if (!userChannel) { return null; }
 
         var list = fo.getFiles([fo.FILES_DATA]).map(function (id) {
-                return hrefToHexChannelId(fo.getFileData(id).href);
+                return Hash.hrefToHexChannelId(fo.getFileData(id).href);
             })
             .filter(function (x) { return x; });
 
         // Get the avatar
         var profile = store.getProfile();
         if (profile) {
-            var profileChan = profile.edit ? hrefToHexChannelId('/profile/#' + profile.edit) : null;
+            var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit) : null;
             if (profileChan) { list.push(profileChan); }
-            var avatarChan = profile.avatar ? hrefToHexChannelId(profile.avatar) : null;
+            var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar) : null;
             if (avatarChan) { list.push(avatarChan); }
         }
 
         if (getProxy().friends) {
-            var fList = common.getFriendChannelsList(common);
+            var fList = Messaging.getFriendChannelsList(common);
             list = list.concat(fList);
         }
 
-        list.push(common.base64ToHex(userChannel));
+        list.push(Util.base64ToHex(userChannel));
         list.sort();
 
         return list;
     };
 
     var getCanonicalChannelList = common.getCanonicalChannelList = function () {
-        return deduplicateString(getUserChannelList()).sort();
+        return Util.deduplicateString(getUserChannelList()).sort();
     };
 
     var pinsReady = common.pinsReady = function () {
@@ -1147,114 +913,9 @@ define([
         rpc.uploadCancel(cb);
     };
 
-
-    common.uploadFileSecure = Files.upload;
-
-    /*  Create a usage bar which keeps track of how much storage space is used
-        by your CryptDrive. The getPinnedUsage RPC is one of the heavier calls,
-        so we throttle its usage. Clients will not update more than once per
-        LIMIT_REFRESH_RATE. It will be update at least once every three such intervals
-        If changes are made to your drive in the interim, they will trigger an
-        update.
-    */
-    var LIMIT_REFRESH_RATE = 30000; // milliseconds
-    common.createUsageBar = function (cb) {
-        if (!isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
-        // getPinnedUsage updates common.account.usage, and other values
-        // so we can just use those and only check for errors
-        var $container = $('<span>', {'class':'limit-container'});
-        var todo;
-        var updateUsage = window.updateUsage = common.notAgainForAnother(function () {
-            common.getPinnedUsage(todo);
-        }, LIMIT_REFRESH_RATE);
-
-        todo = function (err) {
-            if (err) { return void console.error(err); }
-
-            $container.html('');
-            var unit = Util.magnitudeOfBytes(common.account.limit);
-
-            var usage = unit === 'GB'? Util.bytesToGigabytes(common.account.usage):
-                Util.bytesToMegabytes(common.account.usage);
-            var limit = unit === 'GB'? Util.bytesToGigabytes(common.account.limit):
-                Util.bytesToMegabytes(common.account.limit);
-
-            var $limit = $('<span>', {'class': 'cryptpad-limit-bar'}).appendTo($container);
-            var quota = usage/limit;
-            var $usage = $('<span>', {'class': 'usage'}).css('width', quota*100+'%');
-
-            var makeDonateButton = function () {
-                $('<a>', {
-                    'class': 'upgrade btn btn-success',
-                    href: common.donateURL,
-                    rel: "noreferrer noopener",
-                    target: "_blank",
-                }).text(Messages.supportCryptpad).appendTo($container);
-            };
-
-            var makeUpgradeButton = function () {
-                $('<a>', {
-                    'class': 'upgrade btn btn-success',
-                    href: common.upgradeURL,
-                    rel: "noreferrer noopener",
-                    target: "_blank",
-                }).text(Messages.upgradeAccount).appendTo($container);
-            };
-
-            if (!Config.removeDonateButton) {
-                if (!common.isLoggedIn() || !Config.allowSubscriptions) {
-                    // user is not logged in, or subscriptions are disallowed
-                    makeDonateButton();
-                } else if (!common.account.plan) {
-                    // user is logged in and subscriptions are allowed
-                    // and they don't have one. show upgrades
-                    makeUpgradeButton();
-                } else {
-                    // they have a plan. show nothing
-                }
-            }
-
-            var prettyUsage;
-            var prettyLimit;
-
-            if (unit === 'GB') {
-                prettyUsage = Messages._getKey('formattedGB', [usage]);
-                prettyLimit = Messages._getKey('formattedGB', [limit]);
-            } else {
-                prettyUsage = Messages._getKey('formattedMB', [usage]);
-                prettyLimit = Messages._getKey('formattedMB', [limit]);
-            }
-
-            if (quota < 0.8) { $usage.addClass('normal'); }
-            else if (quota < 1) { $usage.addClass('warning'); }
-            else { $usage.addClass('above'); }
-            var $text = $('<span>', {'class': 'usageText'});
-            $text.text(usage + ' / ' + prettyLimit);
-            $limit.append($usage).append($text);
-        };
-
-        setInterval(function () {
-            updateUsage();
-        }, LIMIT_REFRESH_RATE * 3);
-
-        updateUsage();
-        getProxy().on('change', ['drive'], function () {
-            updateUsage();
-        });
-        cb(null, $container);
-    };
-
-    var prepareFeedback = common.prepareFeedback = function (key) {
-        if (typeof(key) !== 'string') { return $.noop; }
-
-        var type = common.getAppType();
-        return function () {
-            feedback((key + (type? '_' + type: '')).toUpperCase());
-        };
-    };
-
     // Forget button
-    var moveToTrash = common.moveToTrash = function (cb, href) {
+    // TODO REFACTOR only used in sframe-common-outer
+    common.moveToTrash = function (cb, href) {
         href = href || window.location.href;
         common.forgetPad(href, function (err) {
             if (err) {
@@ -1266,7 +927,7 @@ define([
             var n = getNetwork();
             var r = getRealtime();
             if (n && r) {
-                whenRealtimeSyncs(r, function () {
+                Realtime.whenRealtimeSyncs(r, function () {
                     n.disconnect();
                     cb();
                 });
@@ -1275,261 +936,23 @@ define([
             }
         });
     };
-    var saveAsTemplate = common.saveAsTemplate = function (Cryptput, data, cb) {
-        var p = parsePadUrl(window.location.href);
+
+    // TODO REFACTOR only used in sframe-common-outer
+    common.saveAsTemplate = function (Cryptput, data, cb) {
+        var p = Hash.parsePadUrl(window.location.href);
         if (!p.type) { return; }
-        var hash = createRandomHash();
+        var hash = Hash.createRandomHash();
         var href = '/' + p.type + '/#' + hash;
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
             common.addTemplate(makePad(href, data.title));
-            whenRealtimeSyncs(getStore().getProxy().info.realtime, function () {
+            Realtime.whenRealtimeSyncs(getRealtime(), function () {
                 cb();
             });
         });
     };
-    common.createButton = function (type, rightside, data, callback) {
-        var button;
-        var size = "17px";
-        switch (type) {
-            case 'export':
-                button = $('<button>', {
-                    'class': 'fa fa-download',
-                    title: Messages.exportButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.exportButton));
 
-                button.click(prepareFeedback(type));
-                if (callback) {
-                    button.click(callback);
-                }
-                break;
-            case 'import':
-                button = $('<button>', {
-                    'class': 'fa fa-upload',
-                    title: Messages.importButtonTitle,
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.importButton));
-                if (callback) {
-                    button
-                    .click(prepareFeedback(type))
-                    .click(UI.importContent('text/plain', function (content, file) {
-                        callback(content, file);
-                    }, {accept: data ? data.accept : undefined}));
-                }
-                break;
-            case 'upload':
-                console.log('UPLOAD');
-                button = $('<button>', {
-                    'class': 'btn btn-primary new',
-                    title: Messages.uploadButtonTitle,
-                }).append($('<span>', {'class':'fa fa-upload'})).append(' '+Messages.uploadButton);
-                if (!data.FM) { return; }
-                var $input = $('<input>', {
-                    'type': 'file',
-                    'style': 'display: none;'
-                }).on('change', function (e) {
-                    var file = e.target.files[0];
-                    var ev = {
-                        target: data.target
-                    };
-                    if (data.filter && !data.filter(file)) {
-                        common.log('TODO: invalid avatar (type or size)');
-                        return;
-                    }
-                    data.FM.handleFile(file, ev);
-                    if (callback) { callback(); }
-                });
-                if (data.accept) { $input.attr('accept', data.accept); }
-                button.click(function () { $input.click(); });
-                break;
-            case 'template':
-                if (!AppConfig.enableTemplates) { return; }
-                button = $('<button>', {
-                    title: Messages.saveTemplateButton,
-                }).append($('<span>', {'class':'fa fa-bookmark', style: 'font:'+size+' FontAwesome'}));
-                if (data.rt && data.Crypt) {
-                    button
-                    .click(function () {
-                        var title = data.getTitle() || document.title;
-                        var todo = function (val) {
-                            if (typeof(val) !== "string") { return; }
-                            var toSave = data.rt.getUserDoc();
-                            if (val.trim()) {
-                                val = val.trim();
-                                title = val;
-                                try {
-                                    var parsed = JSON.parse(toSave);
-                                    var meta;
-                                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
-                                        meta = parsed[3].metadata; // pad
-                                    } else if (parsed.info) {
-                                        meta = parsed.info; // poll
-                                    } else {
-                                        meta = parsed.metadata;
-                                    }
-                                    if (typeof(meta) === "object") {
-                                        meta.title = val;
-                                        meta.defaultTitle = val;
-                                        delete meta.users;
-                                    }
-                                    toSave = JSON.stringify(parsed);
-                                } catch(e) {
-                                    console.error("Parse error while setting the title", e);
-                                }
-                            }
-                            saveAsTemplate(data.Crypt.put, {
-                                title: title,
-                                toSave: toSave
-                            }, function () {
-                                common.alert(Messages.templateSaved);
-                                common.feedback('TEMPLATE_CREATED');
-                            });
-                        };
-                        common.prompt(Messages.saveTemplatePrompt, title || document.title, todo);
-                    });
-                }
-                break;
-            case 'forget':
-                button = $('<button>', {
-                    id: 'cryptpad-forget',
-                    title: Messages.forgetButtonTitle,
-                    'class': "fa fa-trash cryptpad-forget",
-                    style: 'font:'+size+' FontAwesome'
-                });
-                getRecentPads(function (err, recent) {
-                    if (isNotStrongestStored(window.location.href, recent)) {
-                        button.addClass('hidden');
-                    }
-                });
-                if (callback) {
-                    button
-                    .click(prepareFeedback(type))
-                    .click(function() {
-                        var msg = isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
-                        common.confirm(msg, function (yes) {
-                            if (!yes) { return; }
-                            moveToTrash(function (err) {
-                                if (err) { return void callback(err); }
-                                var cMsg = isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                                common.alert(cMsg, undefined, true);
-                                callback();
-                                return;
-                            });
-                        });
 
-                    });
-                }
-                break;
-            case 'present':
-                button = $('<button>', {
-                    title: Messages.presentButtonTitle,
-                    'class': "fa fa-play-circle cryptpad-present-button", // class used in slide.js
-                    style: 'font:'+size+' FontAwesome'
-                });
-                break;
-            case 'source':
-                button = $('<button>', {
-                    title: Messages.sourceButtonTitle,
-                    'class': "fa fa-stop-circle cryptpad-source-button", // class used in slide.js
-                    style: 'font:'+size+' FontAwesome'
-                });
-                break;
-            case 'history':
-                if (!AppConfig.enableHistory) {
-                    button = $('<span>');
-                    break;
-                }
-                button = $('<button>', {
-                    title: Messages.historyButton,
-                    'class': "fa fa-history history",
-                }).append($('<span>', {'class': 'drawer'}).text(Messages.historyText));
-                if (data.histConfig) {
-                    button
-                    .click(prepareFeedback(type))
-                    .on('click', function () {
-                        common.getHistory(data.histConfig);
-                    });
-                }
-                break;
-            case 'more':
-                button = $('<button>', {
-                    title: Messages.moreActions || 'TODO',
-                    'class': "drawer-button fa fa-ellipsis-h",
-                    style: 'font:'+size+' FontAwesome'
-                });
-                break;
-            case 'savetodrive':
-                button = $('<button>', {
-                    'class': 'fa fa-cloud-upload',
-                    title: Messages.canvas_saveToDrive,
-                })
-                .click(prepareFeedback(type));
-                break;
-            case 'hashtag':
-                button = $('<button>', {
-                    'class': 'fa fa-hashtag',
-                })
-                .click(prepareFeedback(type))
-                .click(function () {
-                    // TODO fetch pad tags before presenting dialog to user
-                    var dialog = UI.dialog.tagPrompt([], function (tags) {
-                        if (!Array.isArray(tags)) { return; }
-                        console.error(tags);
-                        // TODO do something with the tags the user entered
-                    });
-                    document.body.appendChild(dialog);
-                });
-                break;
-            default:
-                button = $('<button>', {
-                    'class': "fa fa-question",
-                    style: 'font:'+size+' FontAwesome'
-                })
-                .click(prepareFeedback(type));
-        }
-        if (rightside) {
-            button.addClass('rightside-button');
-        }
-        return button;
-    };
-
-    var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
-    var isEmoji = function (str) {
-      return emoji_patt.test(str);
-    };
-    var emojiStringToArray = function (str) {
-      var split = str.split(emoji_patt);
-      var arr = [];
-      for (var i=0; i<split.length; i++) {
-        var char = split[i];
-        if (char !== "") {
-          arr.push(char);
-        }
-      }
-      return arr;
-    };
-    var getFirstEmojiOrCharacter = common.getFirstEmojiOrCharacter = function (str) {
-      if (!str || !str.trim()) { return '?'; }
-      var emojis = emojiStringToArray(str);
-      return isEmoji(emojis[0])? emojis[0]: str[0];
-    };
-
-    common.getMediatagScript = function () {
-        var origin = window.location.origin;
-        return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
-    };
-    common.getMediatagFromHref = function (href) {
-        var parsed = common.parsePadUrl(href);
-        var secret = common.getSecrets('file', parsed.hash);
-        if (secret.keys && secret.channel) {
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = common.base64ToHex(secret.channel);
-            var origin = Config.fileHost || window.location.origin;
-            var src = origin + common.getBlobPathFromHex(hexFileName);
-            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + cryptKey + '">' +
-                   '</media-tag>';
-        }
-        return;
-    };
     $(window.document).on('decryption', function (e) {
         var decrypted = e.originalEvent;
         if (decrypted.callback) {
@@ -1556,7 +979,7 @@ define([
                     size = decrypted.blob.size;
                 }
 
-                var sizeMb = common.bytesToMegabytes(size);
+                var sizeMb = Util.bytesToMegabytes(size);
 
                 var $btn = $(root).find('button');
                 $btn.addClass('btn btn-success')
@@ -1564,7 +987,7 @@ define([
                     .html(function () {
                         var text = Messages.download_mt_button + '<br>';
                         if (title) {
-                            text += '<b>' + common.fixHTML(title) + '</b><br>';
+                            text += '<b>' + Util.fixHTML(title) + '</b><br>';
                         }
                         if (size) {
                             text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
@@ -1574,529 +997,17 @@ define([
             });
         }
     });
-    common.avatarAllowedTypes = [
-        'image/png',
-        'image/jpeg',
-        'image/jpg',
-        'image/gif',
-    ];
-    // SFRAME: copied to sframe-common-interface.js
-    common.displayAvatar = function ($container, href, name, cb) {
-        var MutationObserver = window.MutationObserver;
-        var displayDefault = function () {
-            var text = getFirstEmojiOrCharacter(name);
-            var $avatar = $('<span>', {'class': 'default'}).text(text);
-            $container.append($avatar);
-            if (cb) { cb(); }
-        };
-
-        if (!href) { return void displayDefault(); }
-        var parsed = common.parsePadUrl(href);
-        var secret = common.getSecrets('file', parsed.hash);
-        if (secret.keys && secret.channel) {
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = common.base64ToHex(secret.channel);
-            var src = common.getBlobPathFromHex(hexFileName);
-            common.getFileSize(href, function (e, data) {
-                if (e) {
-                    displayDefault();
-                    return void console.error(e);
-                }
-                if (typeof data !== "number") { return void displayDefault(); }
-                if (common.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
-                var $img = $('<media-tag>').appendTo($container);
-                $img.attr('src', src);
-                $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
-                var observer = new MutationObserver(function(mutations) {
-                    mutations.forEach(function(mutation) {
-                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                            if (mutation.addedNodes.length > 1 ||
-                                mutation.addedNodes[0].nodeName !== 'IMG') {
-                                $img.remove();
-                                return void displayDefault();
-                            }
-                            var $image = $img.find('img');
-                            var onLoad = function () {
-                                var img = new Image();
-                                img.onload = function () {
-                                    var w = img.width;
-                                    var h = img.height;
-                                    if (w>h) {
-                                        $image.css('max-height', '100%');
-                                        $img.css('flex-direction', 'column');
-                                        if (cb) { cb($img); }
-                                        return;
-                                    }
-                                    $image.css('max-width', '100%');
-                                    $img.css('flex-direction', 'row');
-                                    if (cb) { cb($img); }
-                                };
-                                img.src = $image.attr('src');
-                            };
-                            if ($image[0].complete) { onLoad(); }
-                            $image.on('load', onLoad);
-                        }
-                    });
-                });
-                observer.observe($img[0], {
-                    attributes: false,
-                    childList: true,
-                    characterData: false
-                });
-                MediaTag($img[0]);
-            });
-        }
-    };
-
-    // This is duplicated in drive/main.js, it should be unified
-    var getFileIcon = common.getFileIcon = function (data) {
-        var $icon = common.getIcon();
-
-        if (!data) { return $icon; }
-
-        var href = data.href;
-        if (!href) { return $icon; }
-
-        var type = common.parsePadUrl(href).type;
-        $icon = common.getIcon(type);
-
-        return $icon;
-    };
-
-    common.createModal = function (cfg) {
-        var $body = cfg.$body || $('body');
-        var $blockContainer = $body.find('#'+cfg.id);
-        if (!$blockContainer.length) {
-            $blockContainer = $('<div>', {
-                'class': 'cp-modal-container',
-                'id': cfg.id
-            });
-        }
-        var hide = function () {
-            if (cfg.onClose) { return void cfg.onClose(); }
-            $blockContainer.hide();
-        };
-        $blockContainer.html('').appendTo($body);
-        var $block = $('<div>', {'class': 'cp-modal'}).appendTo($blockContainer);
-        $('<span>', {
-            'class': 'cp-modal-close fa fa-times',
-            'title': Messages.filePicker_close
-        }).click(hide).appendTo($block);
-        $body.click(hide);
-        $block.click(function (e) {
-            e.stopPropagation();
-        });
-        $body.keydown(function (e) {
-            if (e.which === 27) {
-                hide();
-            }
-        });
-        return $blockContainer;
-    };
-    common.createFileDialog = function (cfg) {
-        var $blockContainer = common.createModal({
-            id: 'fileDialog',
-            $body: cfg.$body
-        });
-        var $block = $blockContainer.find('.cp-modal');
-        var $description = $('<p>').text(Messages.filePicker_description);
-        $block.append($description);
-        var $filter = $('<p>', {'class': 'cp-modal-form'}).appendTo($block);
-        var $container = $('<span>', {'class': 'fileContainer'}).appendTo($block);
-        var updateContainer = function () {
-            $container.html('');
-            var filter = $filter.find('.filter').val().trim();
-            var list = common.getUserFilesList();
-            var fo = common.getFO();
-            list.forEach(function (id) {
-                var data = fo.getFileData(id);
-                var name = fo.getTitle(id);
-                if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
-                    return;
-                }
-                var $span = $('<span>', {
-                    'class': 'element',
-                    'title': name,
-                }).appendTo($container);
-                $span.append(getFileIcon(data));
-                $span.append(name);
-                $span.click(function () {
-                    if (typeof cfg.onSelect === "function") { cfg.onSelect(data.href); }
-                    $blockContainer.hide();
-                });
-            });
-        };
-        var to;
-        $('<input>', {
-            type: 'text',
-            'class': 'filter',
-            'placeholder': Messages.filePicker_filter
-        }).appendTo($filter).on('keypress', function () {
-            if (to) { window.clearTimeout(to); }
-            to = window.setTimeout(updateContainer, 300);
-        });
-        //$filter.append(' '+Messages.or+' ');
-        var data = {FM: cfg.data.FM};
-        $filter.append(common.createButton('upload', false, data, function () {
-            $blockContainer.hide();
-        }));
-        updateContainer();
-        $blockContainer.show();
-    };
-
-
-
-
-    // Create a button with a dropdown menu
-    // input is a config object with parameters:
-    //  - container (optional): the dropdown container (span)
-    //  - text (optional): the button text value
-    //  - options: array of {tag: "", attributes: {}, content: "string"}
-    //
-    // allowed options tags: ['a', 'hr', 'p']
-    var createDropdown = common.createDropdown = function (config) {
-        if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
-
-        var allowedTags = ['a', 'p', 'hr'];
-        var isValidOption = function (o) {
-            if (typeof o !== "object") { return false; }
-            if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
-            return true;
-        };
-
-        // Container
-        var $container = $(config.container);
-        var containerConfig = {
-            'class': 'cp-dropdown-container'
-        };
-        if (config.buttonTitle) {
-            containerConfig.title = config.buttonTitle;
-        }
-
-        if (!config.container) {
-            $container = $('<span>', containerConfig);
-        }
-
-        // Button
-        var $button = $('<button>', {
-            'class': ''
-        }).append($('<span>', {'class': 'cp-dropdown-button-title'}).html(config.text || ""));
-        /*$('<span>', {
-            'class': 'fa fa-caret-down',
-        }).appendTo($button);*/
-
-        // Menu
-        var $innerblock = $('<div>', {'class': 'cp-dropdown-content'});
-        if (config.left) { $innerblock.addClass('cp-dropdown-left'); }
-
-        config.options.forEach(function (o) {
-            if (!isValidOption(o)) { return; }
-            $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
-        });
-
-        $container.append($button).append($innerblock);
-
-        var value = config.initialValue || '';
-
-        var setActive = function ($el) {
-            if ($el.length !== 1) { return; }
-            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
-            $el.addClass('cp-dropdown-element-active');
-            var scroll = $el.position().top + $innerblock.scrollTop();
-            if (scroll < $innerblock.scrollTop()) {
-                $innerblock.scrollTop(scroll);
-            } else if (scroll > ($innerblock.scrollTop() + 280)) {
-                $innerblock.scrollTop(scroll-270);
-            }
-        };
-
-        var hide = function () {
-            window.setTimeout(function () { $innerblock.hide(); }, 0);
-        };
-
-        var show = function () {
-            $innerblock.show();
-            $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
-            if (config.isSelect && value) {
-                var $val = $innerblock.find('[data-value="'+value+'"]');
-                setActive($val);
-                $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
-            }
-            if (config.feedback && store) { common.feedback(config.feedback); }
-        };
-
-        $container.click(function (e) {
-            e.stopPropagation();
-            var state = $innerblock.is(':visible');
-            $('.cp-dropdown-content').hide();
-            try {
-                $('iframe').each(function (idx, ifrw) {
-                    $(ifrw).contents().find('.cp-dropdown-content').hide();
-                });
-            } catch (er) {
-                // empty try catch in case this iframe is problematic (cross-origin)
-            }
-            if (state) {
-                hide();
-                return;
-            }
-            show();
-        });
-
-        if (config.isSelect) {
-            var pressed = '';
-            var to;
-            $container.keydown(function (e) {
-                var $value = $innerblock.find('[data-value].cp-dropdown-element-active');
-                if (e.which === 38) { // Up
-                    if ($value.length) {
-                        var $prev = $value.prev();
-                        setActive($prev);
-                    }
-                }
-                if (e.which === 40) { // Down
-                    if ($value.length) {
-                        var $next = $value.next();
-                        setActive($next);
-                    }
-                }
-                if (e.which === 13) { //Enter
-                    if ($value.length) {
-                        $value.click();
-                        hide();
-                    }
-                }
-                if (e.which === 27) { // Esc
-                    hide();
-                }
-            });
-            $container.keypress(function (e) {
-                window.clearTimeout(to);
-                var c = String.fromCharCode(e.which);
-                pressed += c;
-                var $value = $innerblock.find('[data-value^="'+pressed+'"]:first');
-                if ($value.length) {
-                    setActive($value);
-                    $innerblock.scrollTop($value.position().top + $innerblock.scrollTop());
-                }
-                to = window.setTimeout(function () {
-                    pressed = '';
-                }, 1000);
-            });
-
-            $container.setValue = function (val, name) {
-                value = val;
-                var $val = $innerblock.find('[data-value="'+val+'"]');
-                var textValue = name || $val.html() || val;
-                $button.find('.cp-dropdown-button-title').html(textValue);
-            };
-            $container.getValue = function () {
-                return value || '';
-            };
-        }
-
-        return $container;
-    };
-
-    // Provide $container if you want to put the generated block in another element
-    // Provide $initBlock if you already have the menu block and you want the content inserted in it
-    common.createLanguageSelector = function ($container, $initBlock) {
-        var options = [];
-        var languages = Messages._languages;
-        var keys = Object.keys(languages).sort();
-        keys.forEach(function (l) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'class': 'languageValue',
-                    'data-value': l,
-                    'href': '#',
-                },
-                content: languages[l] // Pretty name of the language value
-            });
-        });
-        var dropdownConfig = {
-            text: Messages.language, // Button initial text
-            options: options, // Entries displayed in the menu
-            left: true, // Open to the left of the button
-            container: $initBlock, // optional
-            isSelect: true
-        };
-        var $block = createDropdown(dropdownConfig);
-        $block.attr('id', 'language-selector');
-
-        if ($container) {
-            $block.appendTo($container);
-        }
-
-        Language.initSelector($block);
-
-        return $block;
-    };
-
-    // SFRAME: moved to sframe-common-interface.js
-    common.createUserAdminMenu = function (config) {
-        var $displayedName = $('<span>', {'class': config.displayNameCls || 'displayName'});
-        var accountName = localStorage[common.userNameKey];
-        var account = isLoggedIn();
-        var $userName = $('<span>', {'class': 'userDisplayName'});
-        var options = [];
-        if (config.displayNameCls) {
-            var $userAdminContent = $('<p>');
-            if (account) {
-                var $userAccount = $('<span>', {'class': 'userAccount'}).append(Messages.user_accountName + ': ' + fixHTML(accountName));
-                $userAdminContent.append($userAccount);
-                $userAdminContent.append($('<br>'));
-            }
-            if (config.displayName) {
-                // Hide "Display name:" in read only mode
-                $userName.append(Messages.user_displayName + ': ');
-                $userName.append($displayedName.clone());
-            }
-            $userAdminContent.append($userName);
-            options.push({
-                tag: 'p',
-                attributes: {'class': 'accountData'},
-                content: $userAdminContent.html()
-            });
-        }
-        var parsed = parsePadUrl(window.location.href);
-        if (parsed && (!parsed.type || parsed.type && parsed.type !== 'drive')) {
-            options.push({
-                tag: 'a',
-                attributes: {
-                    'target': '_blank',
-                    'href': '/drive/'
-                },
-                content: Messages.login_accessDrive
-            });
-        }
-        // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': config.changeNameButtonCls},
-                content: Messages.user_rename
-            });
-        }
-        if (account) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'profile'},
-                content: Messages.profileButton
-            });
-        }
-        if (parsed && (!parsed.type || parsed.type !== 'settings')) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'settings'},
-                content: Messages.settingsButton
-            });
-        }
-        // Add login or logout button depending on the current status
-        if (account) {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'logout'},
-                content: Messages.logoutButton
-            });
-        } else {
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'login'},
-                content: Messages.login_login
-            });
-            options.push({
-                tag: 'a',
-                attributes: {'class': 'register'},
-                content: Messages.login_register
-            });
-        }
-        var $icon = $('<span>', {'class': 'fa fa-user-secret'});
-        //var $userbig = $('<span>', {'class': 'big'}).append($displayedName.clone());
-        var $userButton = $('<div>').append($icon);//.append($userbig);
-        if (account) {
-            $userButton = $('<div>').append(accountName);
-        }
-        /*if (account && config.displayNameCls) {
-            $userbig.append($('<span>', {'class': 'account-name'}).text('(' + accountName + ')'));
-        } else if (account) {
-            // If no display name, do not display the parentheses
-            $userbig.append($('<span>', {'class': 'account-name'}).text(accountName));
-        }*/
-        var dropdownConfigUser = {
-            text: $userButton.html(), // Button initial text
-            options: options, // Entries displayed in the menu
-            left: true, // Open to the left of the button
-            container: config.$initBlock, // optional
-            feedback: "USER_ADMIN",
-        };
-        var $userAdmin = createDropdown(dropdownConfigUser);
-
-        var oldUrl = '';
-        if (account && !config.static && store) {
-            var $avatar = $userAdmin.find('.cp-dropdown-button-title');
-            var updateButton = function (newName) {
-                var profile = store.getProfile();
-                var url = profile && profile.avatar;
-
-                if (oldUrl === url) { return; }
-                oldUrl = url;
-                $avatar.html('');
-                common.displayAvatar($avatar, url, newName || Messages.anonymous, function ($img) {
-                    if ($img) {
-                        $userAdmin.find('button').addClass('avatar');
-                    }
-                });
-            };
-            common.onDisplayNameChanged(updateButton);
-            updateButton(common.getDisplayName());
-        }
-
-        $userAdmin.find('a.logout').click(function () {
-            common.logout();
-            window.location.href = '/';
-        });
-        $userAdmin.find('a.settings').click(function () {
-            if (parsed && parsed.type) {
-                window.open('/settings/');
-            } else {
-                window.location.href = '/settings/';
-            }
-        });
-        $userAdmin.find('a.profile').click(function () {
-            if (parsed && parsed.type) {
-                window.open('/profile/');
-            } else {
-                window.location.href = '/profile/';
-            }
-        });
-        $userAdmin.find('a.login').click(function () {
-            if (window.location.pathname !== "/") {
-                sessionStorage.redirectTo = window.location.href;
-            }
-            window.location.href = '/login/';
-        });
-        $userAdmin.find('a.register').click(function () {
-            if (window.location.pathname !== "/") {
-                sessionStorage.redirectTo = window.location.href;
-            }
-            window.location.href = '/register/';
-        });
-
-        return $userAdmin;
-    };
 
     common.getShareHashes = function (secret, cb) {
         if (!window.location.hash) {
-            var hashes = common.getHashes(secret.channel, secret);
+            var hashes = Hash.getHashes(secret.channel, secret);
             return void cb(null, hashes);
         }
         common.getRecentPads(function (err, recent) {
-            var parsed = parsePadUrl(window.location.href);
+            var parsed = Hash.parsePadUrl(window.location.href);
             if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
             if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
-            var hashes = common.getHashes(secret.channel, secret);
+            var hashes = Hash.getHashes(secret.channel, secret);
 
             if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
                 // It means we're using an old hash
@@ -2104,9 +1015,9 @@ define([
             }
 
             // If we have a stronger version in drive, add it and add a redirect button
-            var stronger = recent && common.findStronger(null, recent);
+            var stronger = recent && Hash.findStronger(null, recent);
             if (stronger) {
-                var parsed2 = parsePadUrl(stronger);
+                var parsed2 = Hash.parsePadUrl(stronger);
                 hashes.editHash = parsed2.hash;
             }
 
@@ -2132,7 +1043,6 @@ define([
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) > parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
-        //common.alert(Messages._getKey('newVersion', [verArr.join('.')]), null, true);
         localStorage[CRYPTPAD_VERSION] = ver;
     };
 
@@ -2145,20 +1055,10 @@ define([
             return void setTimeout(function () { f(void 0, env); });
         }
 
-        if (sessionStorage[newPadNameKey]) {
-            common.initialName = sessionStorage[newPadNameKey];
-            delete sessionStorage[newPadNameKey];
+        if (sessionStorage[Constants.newPadPathKey]) {
+            common.initialPath = sessionStorage[Constants.newPadPathKey];
+            delete sessionStorage[Constants.newPadPathKey];
         }
-        if (sessionStorage[newPadPathKey]) {
-            common.initialPath = sessionStorage[newPadPathKey];
-            delete sessionStorage[newPadPathKey];
-        }
-        common.onFriendRequest = function (confirmText, cb) {
-            common.confirm(confirmText, cb, null, true);
-        };
-        common.onFriendComplete = function (data) {
-            common.log(data.logText);
-        };
 
         var proxy;
         var network;
@@ -2190,7 +1090,7 @@ define([
         Nthen(function (waitFor) {
             Store.ready(waitFor(function (err, storeObj) {
                 store = common.store = env.store = storeObj;
-                common.addDirectMessageHandler(common);
+                Messaging.addDirectMessageHandler(common);
                 proxy = getProxy();
                 network = getNetwork();
                 network.on('disconnect', function () {
@@ -2204,18 +1104,12 @@ define([
         }).nThen(function (waitFor) {
             $(waitFor());
         }).nThen(function (waitFor) {
-            // Race condition : if document.body is undefined when alertify.js is loaded, Alertify
-            // won't work. We have to reset it now to make sure it uses a correct "body"
-            UI.Alertify.reset();
-            // clear any tooltips that might get hung
-            setInterval(function () { common.clearTooltips(); }, 5000);
-
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;
             window.onhashchange = function () {
                 var newHref = document.location.href;
-                var parsedOld = parsePadUrl(oldHref).hashData;
-                var parsedNew = parsePadUrl(newHref).hashData;
+                var parsedOld = Hash.parsePadUrl(oldHref).hashData;
+                var parsedNew = Hash.parsePadUrl(newHref).hashData;
                 if (parsedOld && parsedNew && (
                       parsedOld.type !== parsedNew.type
                       || parsedOld.channel !== parsedNew.channel
@@ -2227,6 +1121,21 @@ define([
                 }
                 if (parsedNew) { oldHref = newHref; }
             };
+            // Listen for login/logout in other tabs
+            window.addEventListener('storage', function (e) {
+                if (e.key !== Constants.userHashKey) { return; }
+                var o = e.oldValue;
+                var n = e.newValue;
+                if (!o && n) {
+                    document.location.reload();
+                } else if (o && !n) {
+                    common.logout();
+                    if (getNetwork()) {
+                        getNetwork().disconnect();
+                    }
+                }
+            });
+
 
             if (PINNING_ENABLED && isLoggedIn()) {
                 console.log("logged in. pads will be pinned");
@@ -2295,7 +1204,7 @@ define([
             if (sessionStorage.createReadme) {
                 var w = waitFor();
                 require(['/common/cryptget.js'], function (Crypt) {
-                    var hash = common.createRandomHash();
+                    var hash = Hash.createRandomHash();
                     Crypt.put(hash, Messages.driveReadme, function (e) {
                         if (e) {
                             console.error("Error while creating the default pad:", e);
@@ -2305,8 +1214,8 @@ define([
                         var data = {
                             href: href,
                             title: Messages.driveReadmeTitle,
-                            atime: new Date().toISOString(),
-                            ctime: new Date().toISOString()
+                            atime: +new Date(),
+                            ctime: +new Date()
                         };
                         common.getFO().pushData(data, function (e, id) {
                             if (e) {
@@ -2333,7 +1242,6 @@ define([
             }
         }).nThen(function () {
             updateLocalVersion();
-            common.addTooltips();
             f(void 0, env);
             if (typeof(window.onhashchange) === 'function') { window.onhashchange(); }
         });

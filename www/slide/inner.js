@@ -1,12 +1,14 @@
 define([
     'jquery',
     'json.sortify',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/slide/slide.js',
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-interface.js',
+    '/customize/messages.js',
     'cm/lib/codemirror',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -42,16 +44,17 @@ define([
 ], function (
     $,
     JSONSortify,
-    Cryptpad,
     nThen,
     SFCommon,
     Slide,
     Framework,
     Util,
+    Hash,
+    UI,
+    Messages,
     CMeditor)
 {
     window.CodeMirror = CMeditor;
-    var Messages = Cryptpad.Messages;
 
     var SLIDE_BACKCOLOR_ID = "cp-app-slide-toolbar-backcolor";
     var SLIDE_COLOR_ID = "cp-app-slide-toolbar-color";
@@ -104,7 +107,7 @@ define([
             Slide.update(editor.getValue(), true);
             $print.html($content.html());
             // TODO use translation key
-            Cryptpad.confirm("Are you sure you want to print?", function (yes) {
+            UI.confirm("Are you sure you want to print?", function (yes) {
                 if (yes) {
                     window.focus();
                     window.print();
@@ -224,7 +227,7 @@ define([
                     slideOptionsTmp.style = '';
                     parseLess(mkLess(less), function (err, css) {
                         if (err) {
-                            Cryptpad.alert(
+                            UI.alert(
                                 '<strong>' + Messages.slide_invalidLess + '</strong>' +
                                 '<br>' +
                                 '<pre class="cp-slide-css-error">' + Util.fixHTML(
@@ -245,14 +248,14 @@ define([
                     updateLocalOptions(slideOptionsTmp);
                 }
                 $container.remove();
-                Cryptpad.stopListening(h);
+                UI.stopListening(h);
             };
             var todoCancel = function () {
                 $container.remove();
-                Cryptpad.stopListening(h);
+                UI.stopListening(h);
             };
 
-            h = Cryptpad.listenForKeys(todo, todoCancel);
+            h = UI.listenForKeys(todo, todoCancel);
 
             var $nav = $('<nav>').appendTo($div);
             $('<button>', {'class': 'cancel'}).text(Messages.cancelButton).appendTo($nav).click(todoCancel);
@@ -436,8 +439,8 @@ define([
                     //var cursor = editor.getCursor();
                     //var cleanName = data.name.replace(/[\[\]]/g, '');
                     //var text = '!['+cleanName+']('+data.url+')';
-                    var parsed = Cryptpad.parsePadUrl(data.url);
-                    var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
                     editor.replaceSelection(mt);

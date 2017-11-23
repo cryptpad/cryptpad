@@ -1,7 +1,6 @@
 define([
     'jquery',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/common/common-util.js',
     '/common/cryptget.js',
     '/bower_components/nthen/index.js',
@@ -13,9 +12,10 @@ define([
     '/poll/render.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
-    '/common/sframe-common-interface.js',
     '/common/common-thumbnail.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/common/common-interface.js',
+    '/customize/messages.js',
     'cm/lib/codemirror',
 
     'cm/addon/display/placeholder',
@@ -30,7 +30,6 @@ define([
 ], function (
     $,
     Toolbar,
-    Cryptpad,
     Util,
     Cryptget,
     nThen,
@@ -42,12 +41,12 @@ define([
     Renderer,
     DiffMd,
     SframeCM,
-    SFUI,
     Thumb,
     ChainPad,
+    UI,
+    Messages,
     CMeditor)
 {
-    var Messages = Cryptpad.Messages;
     var saveAs = window.saveAs;
 
     var APP = window.APP = {
@@ -56,10 +55,9 @@ define([
             col: []
         },
         readOnly: false,
-        Cryptpad: Cryptpad,
         mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
     };
-    var Render = Renderer(Cryptpad, APP);
+    var Render = Renderer(APP);
 
     var debug = $.noop; //console.log;
 
@@ -117,8 +115,8 @@ define([
     var exportFile = function () {
         var csv = getCSV();
         var suggestion = Title.suggestTitle(Title.defaultTitle);
-        Cryptpad.prompt(Messages.exportPrompt,
-            Cryptpad.fixFileName(suggestion) + '.csv', function (filename) {
+        UI.prompt(Messages.exportPrompt,
+            Util.fixFileName(suggestion) + '.csv', function (filename) {
             if (!(typeof(filename) === 'string' && filename)) { return; }
             var blob = new Blob([csv], {type: "application/csv;charset=utf-8"});
             saveAs(blob, filename);
@@ -331,7 +329,7 @@ define([
 
     /*  Any time the realtime object changes, call this function */
     var change = function (o, n, path, throttle, cb) {
-        if (path && !Cryptpad.isArray(path)) {
+        if (path && !Array.isArray(path)) {
             return;
         }
         if (path && path.join) {
@@ -494,7 +492,7 @@ define([
         var isLocked = span.className && span.className.split(' ').indexOf('fa-lock') !== -1;
         if (type === 'row') {
             if (isRemove) {
-                Cryptpad.confirm(Messages.poll_removeOption, function (res) {
+                UI.confirm(Messages.poll_removeOption, function (res) {
                     if (!res) { return; }
                     Render.removeRow(APP.proxy, id, function () {
                         change();
@@ -507,7 +505,7 @@ define([
             }
         } else if (type === 'col') {
             if (isRemove) {
-                Cryptpad.confirm(Messages.poll_removeUser, function (res) {
+                UI.confirm(Messages.poll_removeUser, function (res) {
                     if (!res) { return; }
                     Render.removeColumn(APP.proxy, id, function () {
                         change();
@@ -883,7 +881,7 @@ define([
                 (proxy.metadata && typeof(proxy.metadata.type) !== 'undefined' &&
                  proxy.metadata.type !== 'poll')) {
                 var errorText = Messages.typeError;
-                Cryptpad.errorLoadingScreen(errorText);
+                UI.errorLoadingScreen(errorText);
                 throw new Error(errorText);
             }
         } else {
@@ -1042,7 +1040,7 @@ define([
             publish(true);
         }
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
         if (isNew) {
             common.openTemplatePicker();
         }
@@ -1050,12 +1048,12 @@ define([
 
     var onDisconnect = function () {
         setEditable(false);
-        Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+        UI.alert(Messages.common_connectionLost, undefined, true);
     };
 
     var onReconnect = function () {
         setEditable(true);
-        Cryptpad.findOKButton().click();
+        UI.findOKButton().click();
     };
 
     var getHeadingText = function () {
@@ -1081,7 +1079,6 @@ define([
             metadataMgr: metadataMgr,
             readOnly: APP.readOnly,
             realtime: info.realtime,
-            common: Cryptpad,
             sfCommon: common,
             $container: APP.$bar,
             $contentContainer: APP.$content
@@ -1162,7 +1159,7 @@ define([
 
         nThen(function (waitFor) {
             $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
+                UI.addLoadingScreen();
                 var $div = $('<div>').append(Pages['/poll/']());
                 $('body').append($div.html());
             }));

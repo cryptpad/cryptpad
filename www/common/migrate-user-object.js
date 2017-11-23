@@ -80,5 +80,27 @@ define([], function () {
             Cryptpad.feedback('Migrate-4', true);
             userObject.version = version = 4;
         }
+
+
+
+        // Migration 5: dates to Number
+        var migrateDates = function () {
+            var data = userObject.drive && userObject.drive.filesData;
+            if (data) {
+                for (var id in data) {
+                    if (typeof data[id].ctime !== "number") {
+                        data[id].ctime = +new Date(data[id].ctime);
+                    }
+                    if (typeof data[id].atime !== "number") {
+                        data[id].atime = +new Date(data[id].atime);
+                    }
+                }
+            }
+        };
+        if (version < 5) {
+            migrateDates();
+            Cryptpad.feedback('Migrate-5', true);
+            userObject.version = version = 5;
+        }
     };
 });

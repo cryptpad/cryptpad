@@ -30,7 +30,6 @@ if (language && map[language]) { req.push('/customize/translations/messages.' + 
 define(req, function($, Default, Language) {
     map.en = 'English';
     var defaultLanguage = 'en';
-console.log(messages);
 
     if (!Language || language === defaultLanguage || !map[language]) {
         messages = $.extend(true, messages, Default);
@@ -39,7 +38,6 @@ console.log(messages);
         // Add the translated keys to the returned object
         messages = $.extend(true, messages, Default, Language);
     }
-console.log(messages);
 
     messages._languages = map;
     messages._languageUsed = language;
@@ -49,11 +47,13 @@ console.log(messages);
         var missing = [];
         var reqs = [];
         Object.keys(map).forEach(function (code) {
+            if (code === defaultLanguage) { return; }
             reqs.push('/customize/translations/messages.' + code + '.js');
         });
         require(reqs, function () {
             var langs = arguments;
             Object.keys(map).forEach(function (code, i) {
+                if (code === defaultLanguage) { return; }
                 var translation = langs[i];
                 var updated = {};
                 Object.keys(Default).forEach(function (k) {

@@ -105,6 +105,7 @@ define([
 
         var ctx = c2.getContext('2d');
         ctx.drawImage(canvas, D.x, D.y, D.w, D.h);
+
         cb(void 0, c2.toDataURL());
     };
 
@@ -124,19 +125,15 @@ define([
     Thumb.fromVideoBlob = function (blob, cb) {
         var url = URL.createObjectURL(blob);
         var video = document.createElement("VIDEO");
-
-        video.src = url;
-        video.addEventListener('loadedmetadata', function() {
-            video.currentTime = Number(Math.floor(Math.min(video.duration/10, 5)));
-            video.addEventListener('loadeddata', function() {
-                var D = getResizedDimensions(video, 'video');
-                Thumb.fromCanvas(video, D, cb);
-            });
-        });
+        video.addEventListener('loadeddata', function() {
+            var D = getResizedDimensions(video, 'video');
+            Thumb.fromCanvas(video, D, cb);
+        }, false);
         video.addEventListener('error', function (e) {
             console.error(e);
             cb('ERROR');
         });
+        video.src = url;
     };
     Thumb.fromPdfBlob = function (blob, cb) {
         require.config({paths: {'pdfjs-dist': '/common/pdfjs'}});

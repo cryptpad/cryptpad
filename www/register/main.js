@@ -4,31 +4,17 @@ define([
     '/common/cryptpad-common.js',
     '/common/test.js',
     '/common/credential.js', // preloaded for login.js
+    '/common/common-interface.js',
+    '/common/common-util.js',
+    '/common/common-realtime.js',
+    '/common/common-constants.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred) {
+], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
         var $main = $('#mainBlock');
-
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
-        $(window).click(function () {
-            $('.cp-dropdown-content').hide();
-        });
 
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');
@@ -82,7 +68,7 @@ define([
 
             Cryptpad.feedback('REGISTRATION', true);
 
-            Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+            Realtime.whenRealtimeSyncs(result.realtime, function () {
                 Cryptpad.login(result.userHash, result.userName, function () {
                     registering = false;
                     if (sessionStorage.redirectTo) {
@@ -118,28 +104,28 @@ define([
                 var warning = Messages._getKey('register_passwordTooShort', [
                     Cred.MINIMUM_PASSWORD_LENGTH
                 ]);
-                return void Cryptpad.alert(warning, function () {
+                return void UI.alert(warning, function () {
                     registering = false;
                 });
             }
 
             if (passwd !== confirmPassword) { // do their passwords match?
-                return void Cryptpad.alert(Messages.register_passwordsDontMatch);
+                return void UI.alert(Messages.register_passwordsDontMatch);
             }
 
             if (!doesAccept) { // do they accept the terms of service?
-                return void Cryptpad.alert(Messages.register_mustAcceptTerms);
+                return void UI.alert(Messages.register_mustAcceptTerms);
             }
 
             setTimeout(function () {
-            Cryptpad.confirm("<h2 class='bright msg'>" + Messages.register_warning + "</h2>",
+            UI.confirm("<h2 class='bright msg'>" + Messages.register_warning + "</h2>",
             function (yes) {
                 if (!yes) { return; }
 
                 registering = true;
                 // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
                 window.setTimeout(function () {
-                    Cryptpad.addLoadingScreen({
+                    UI.addLoadingScreen({
                         loadingText: Messages.login_hashing,
                         hideTips: true,
                     });
@@ -152,45 +138,45 @@ define([
                             if (err) {
                                 switch (err) {
                                     case 'NO_SUCH_USER':
-                                        Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_noSuchUser, function () {
+                                        UI.removeLoadingScreen(function () {
+                                            UI.alert(Messages.login_noSuchUser, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'INVAL_USER':
-                                        Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_invalUser, function () {
+                                        UI.removeLoadingScreen(function () {
+                                            UI.alert(Messages.login_invalUser, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'INVAL_PASS':
-                                        Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.alert(Messages.login_invalPass, function () {
+                                        UI.removeLoadingScreen(function () {
+                                            UI.alert(Messages.login_invalPass, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'PASS_TOO_SHORT':
-                                        Cryptpad.removeLoadingScreen(function () {
+                                        UI.removeLoadingScreen(function () {
                                             var warning = Messages._getKey('register_passwordTooShort', [
                                                 Cred.MINIMUM_PASSWORD_LENGTH
                                             ]);
-                                            Cryptpad.alert(warning, function () {
+                                            UI.alert(warning, function () {
                                                 registering = false;
                                             });
                                         });
                                         break;
                                     case 'ALREADY_REGISTERED':
                                         // logMeIn should reset registering = false
-                                        Cryptpad.removeLoadingScreen(function () {
-                                            Cryptpad.confirm(Messages.register_alreadyRegistered, function (yes) {
+                                        UI.removeLoadingScreen(function () {
+                                            UI.confirm(Messages.register_alreadyRegistered, function (yes) {
                                                 if (!yes) { return; }
                                                 proxy.login_name = uname;
 
-                                                if (!proxy[Cryptpad.displayNameKey]) {
-                                                    proxy[Cryptpad.displayNameKey] = uname;
+                                                if (!proxy[Constants.displayNameKey]) {
+                                                    proxy[Constants.displayNameKey] = uname;
                                                 }
                                                 Cryptpad.eraseTempSessionValues();
                                                 logMeIn(result);
@@ -199,7 +185,7 @@ define([
                                         break;
                                     default: // UNHANDLED ERROR
                                         registering = false;
-                                        Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                                        UI.errorLoadingScreen(Messages.login_unhandledError);
                                 }
                                 return;
                             }
@@ -212,7 +198,7 @@ define([
                             }
 
                             proxy.login_name = uname;
-                            proxy[Cryptpad.displayNameKey] = uname;
+                            proxy[Constants.displayNameKey] = uname;
                             sessionStorage.createReadme = 1;
 
                             logMeIn(result);
@@ -232,7 +218,7 @@ define([
             }, 150);
         });
 
-        var clickRegister = Cryptpad.notAgainForAnother(function () {
+        var clickRegister = Util.notAgainForAnother(function () {
             $register.click();
         }, 500);
 
@@ -258,7 +244,7 @@ define([
             $register.click();
 
             window.setTimeout(function () {
-                Cryptpad.findOKButton().click();
+                UI.findOKButton().click();
             }, 1000);
         });
     });

@@ -2,14 +2,15 @@ define([
     'jquery',
     '/customize/application_config.js',
     '/common/cryptpad-common.js',
-    '/customize/header.js',
-], function ($, Config, Cryptpad) {
+    '/common/common-interface.js',
+    '/common/common-realtime.js',
+    '/common/common-constants.js',
+    '/customize/messages.js',
+], function ($, Config, Cryptpad, UI, Realtime, Constants, Messages) {
 
     window.APP = {
         Cryptpad: Cryptpad,
     };
-
-    var Messages = Cryptpad.Messages;
 
     $(function () {
         var $main = $('#mainBlock');
@@ -33,7 +34,7 @@ define([
             $main.find('a[href="/drive/"] div.pad-button-text h4')
                 .text(Messages.main_yourCryptDrive);
 
-            var name = localStorage[Cryptpad.userNameKey] || sessionStorage[Cryptpad.userNameKey];
+            var name = localStorage[Constants.userNameKey] || sessionStorage[Constants.userNameKey];
             var $loggedInBlock = $main.find('#loggedIn');
             var $hello = $loggedInBlock.find('#loggedInHello');
             var $logout = $loggedInBlock.find('#loggedInLogOut');
@@ -57,34 +58,6 @@ define([
             $main.find('#userForm').removeClass('hidden');
             $('#name').focus();
         }
-
-        var displayCreateButtons = function () {
-            var $parent = $('#buttons');
-            var options = [];
-            var $container = $('<div>', {'class': 'cp-dropdown-container'}).appendTo($parent);
-            Config.availablePadTypes.forEach(function (el) {
-                if (el === 'drive') { return; }
-                if (!Cryptpad.isLoggedIn() && Config.registeredOnlyTypes &&
-                    Config.registeredOnlyTypes.indexOf(el) !== -1) { return; }
-                options.push({
-                    tag: 'a',
-                    attributes: {
-                        'class': 'newdoc',
-                        'href': '/' + el + '/',
-                        'target': '_blank'
-                    },
-                    content: Messages['button_new' + el] // Pretty name of the language value
-                });
-            });
-            var dropdownConfig = {
-                text: Messages.login_makeAPad, // Button initial text
-                options: options, // Entries displayed in the menu
-                container: $container
-            };
-            var $block = Cryptpad.createDropdown(dropdownConfig);
-            $block.find('button').addClass('btn').addClass('btn-primary');
-            $block.appendTo($parent);
-        };
 
         /* Log in UI */
         var Login;
@@ -116,7 +89,7 @@ define([
         $('button.login').click(function () {
             // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
-                Cryptpad.addLoadingScreen({loadingText: Messages.login_hashing});
+                UI.addLoadingScreen({loadingText: Messages.login_hashing});
                 // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
                 window.setTimeout(function () {
                     loginReady(function () {
@@ -135,7 +108,7 @@ define([
                                 proxy.edPrivate = result.edPrivate;
                                 proxy.edPublic = result.edPublic;
 
-                                Cryptpad.whenRealtimeSyncs(result.realtime, function () {
+                                Realtime.whenRealtimeSyncs(result.realtime, function () {
                                     Cryptpad.login(result.userHash, result.userName, function () {
                                         document.location.href = '/drive/';
                                     });
@@ -144,22 +117,22 @@ define([
                             }
                             switch (err) {
                                 case 'NO_SUCH_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_noSuchUser);
+                                    UI.removeLoadingScreen(function () {
+                                        UI.alert(Messages.login_noSuchUser);
                                     });
                                     break;
                                 case 'INVAL_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalUser);
+                                    UI.removeLoadingScreen(function () {
+                                        UI.alert(Messages.login_invalUser);
                                     });
                                     break;
                                 case 'INVAL_PASS':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalPass);
+                                    UI.removeLoadingScreen(function () {
+                                        UI.alert(Messages.login_invalPass);
                                     });
                                     break;
                                 default: // UNHANDLED ERROR
-                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
+                                    UI.errorLoadingScreen(Messages.login_unhandledError);
                             }
                         });
                     });
@@ -167,27 +140,6 @@ define([
             }, 100);
         });
         /* End Log in UI */
-
-        var addButtonHandlers = function () {
-            $('button.register').click(function () {
-                var username = $('#name').val();
-                var passwd = $('#password').val();
-                sessionStorage.login_user = username;
-                sessionStorage.login_pass = passwd;
-                document.location.href = '/register/';
-            });
-            $('button.gotodrive').click(function () {
-                document.location.href = '/drive/';
-            });
-
-            $('button#loggedInLogout').click(function () {
-                $('#user-menu .logout').click();
-            });
-        };
-
-        displayCreateButtons();
-
-        addButtonHandlers();
         console.log("ready");
     });
 });

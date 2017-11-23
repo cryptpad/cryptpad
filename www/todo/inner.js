@@ -3,10 +3,12 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/sframe-chainpad-listmap.js',
     '/common/toolbar3.js',
-    '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-interface.js',
+    '/common/common-hash.js',
     '/todo/todo.js',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -16,38 +18,30 @@ define([
     Crypto,
     Listmap,
     Toolbar,
-    Cryptpad,
     nThen,
     SFCommon,
-    Todo
+    UI,
+    Hash,
+    Todo,
+    Messages
     )
 {
-    var Messages = Cryptpad.Messages;
     var APP = window.APP = {};
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
-    };
 
     var common;
     var sFrameChan;
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        Cryptpad.onError(function (info) {
-            if (info && info.type === "store") {
-                onConnectError();
-            }
-        });
-
         var $body = $('body');
         var $list = $('#cp-app-todo-taskslist');
 
         var removeTips = function () {
-            Cryptpad.clearTooltips();
+            UI.clearTooltips();
         };
 
         var onReady = function () {
@@ -163,7 +157,7 @@ define([
                     "mtime": +new Date()
                 };
 
-                var id = Cryptpad.createChannelId();
+                var id = Hash.createChannelId();
                 todo.add(id, obj);
 
                 $input.val("");
@@ -188,12 +182,10 @@ define([
             editTask = editTask;
 
             display();
-            Cryptpad.removeLoadingScreen();
+            UI.removeLoadingScreen();
         };
 
         var onInit = function () {
-            Cryptpad.addLoadingScreen();
-
             $body.on('dragover', function (e) { e.preventDefault(); });
             $body.on('drop', function (e) { e.preventDefault(); });
 
@@ -202,7 +194,6 @@ define([
             var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
             var configTb = {
                 displayed: displayed,
-                common: Cryptpad,
                 sfCommon: common,
                 $container: $bar,
                 pageTitle: Messages.todo_title,

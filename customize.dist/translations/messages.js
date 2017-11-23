@@ -204,6 +204,7 @@ define(function () {
 
     out.cancel = "Cancel";
     out.cancelButton = 'Cancel (esc)';
+    out.doNotAskAgain = "Don't ask me again (Esc)";
 
     out.historyText = "History";
     out.historyButton = "Display the document history";
@@ -528,6 +529,9 @@ define(function () {
     out.settings_codeUseTabs = "Indent using tabs (instead of spaces)";
 
     out.upload_title = "File upload";
+    out.upload_rename = "Do you want to rename <b>{0}</b> before uploading it to the server?<br>" +
+                        "<em>The file extension ({1}) will be added automatically. "+
+                        "This name will be permanent and visible to other users.</em>";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
     out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";
