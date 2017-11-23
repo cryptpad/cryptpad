@@ -32,16 +32,7 @@ define([
 
         APP.$container = $('#container');
 
-        Cryptpad.ready(function () {
-            //if (!Cryptpad.getUserHash()) { return redirectToMain(); }
-
-            //var storeObj = Cryptpad.getStore().getProxy && Cryptpad.getStore().getProxy().proxy
-            //               ? Cryptpad.getStore().getProxy() : undefined;
-
-            //andThen(storeObj);
-            andThen();
-            Cryptpad.reportAppUsage();
-        });
+        andThen();
     });
 
 });

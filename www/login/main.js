@@ -4,9 +4,11 @@ define([
     '/common/login.js',
     '/common/common-interface.js',
     '/common/common-realtime.js',
+    '/common/common-feedback.js',
+    '/common/outer/local-store.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login, UI, Realtime) {
+], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore) {
     $(function () {
         var $main = $('#mainBlock');
         var Messages = Cryptpad.Messages;
@@ -17,7 +19,7 @@ define([
         // Make sure we don't display non-translated content (empty button)
         $main.find('#data').removeClass('hidden');
 
-        if (Cryptpad.isLoggedIn()) {
+        if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
@@ -83,9 +85,9 @@ define([
                                 proxy.curvePrivate = result.curvePrivate;
                                 proxy.curvePublic = result.curvePublic;
 
-                                Cryptpad.feedback('LOGIN', true);
+                                Feedback.send('LOGIN', true);
                                 Realtime.whenRealtimeSyncs(result.realtime, function() {
-                                    Cryptpad.login(result.userHash, result.userName, function () {
+                                    LocalStore.login(result.userHash, result.userName, function () {
                                         hashing = false;
                                         if (sessionStorage.redirectTo) {
                                             var h = sessionStorage.redirectTo;

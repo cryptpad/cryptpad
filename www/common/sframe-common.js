@@ -17,6 +17,7 @@ define([
     '/common/common-hash.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
+    '/common/common-feedback.js',
     '/bower_components/localforage/dist/localforage.min.js'
 ], function (
     $,
@@ -36,6 +37,7 @@ define([
     Hash,
     Thumb,
     UI,
+    Feedback,
     localForage
 ) {
     // Chainpad Netflux Inner
@@ -271,27 +273,12 @@ define([
     };
 
     // Feedback
-    funcs.feedback = function (action, force) {
-        if (force !== true) {
-            if (!action) { return; }
-            try {
-                if (!ctx.metadataMgr.getPrivateData().feedbackAllowed) { return; }
-            } catch (e) { return void console.error(e); }
-        }
-        var randomToken = Math.random().toString(16).replace(/0./, '');
-        //var origin = ctx.metadataMgr.getPrivateData().origin;
-        var href = /*origin +*/ '/common/feedback.html?' + action + '=' + randomToken;
-        $.ajax({
-            type: "HEAD",
-            url: href,
-        });
-    };
     funcs.prepareFeedback = function (key) {
         if (typeof(key) !== 'string') { return $.noop; }
 
         var type = ctx.metadataMgr.getMetadata().type;
         return function () {
-            funcs.feedback((key + (type? '_' + type: '')).toUpperCase());
+            Feedback.send((key + (type? '_' + type: '')).toUpperCase());
         };
     };
 
@@ -392,6 +379,13 @@ define([
                 var i = pendingFriends.indexOf(data.netfluxId);
                 if (i !== -1) { pendingFriends.splice(i, 1); }
                 UI.log(data.logText);
+            });
+
+            ctx.metadataMgr.onChange(function () {
+                try {
+                    var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
+                    Feedback.init(feedback);
+                } catch (e) { Feedback.init(false); }
             });
 
             ctx.sframeChan.ready();

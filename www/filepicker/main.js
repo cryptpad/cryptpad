@@ -37,10 +37,10 @@ define([
             };
             window.addEventListener('message', onMsg);
         }).nThen(function (/*waitFor*/) {
-            var Cryptpad;
+            var Cryptpad = config.modules.Cryptpad;
+            var Utils = config.modules.Utils;
 
             nThen(function (waitFor) {
-                Cryptpad = config.modules.Cryptpad;
                 config.modules.SFrameChannel.create($('#sbox-filePicker-iframe')[0].contentWindow,
                     waitFor(function (sfc) {
                         sframeChan = sfc;
@@ -67,10 +67,10 @@ define([
                                 netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
                             },
                             priv: {
-                                accountName: Cryptpad.getAccountName(),
+                                accountName: Utils.LocalStore.getAccountName(),
                                 origin: window.location.origin,
                                 pathname: window.location.pathname,
-                                feedbackAllowed: Cryptpad.isFeedbackAllowed(),
+                                feedbackAllowed: Utils.Feedback.state,
                                 friends: proxy.friends || {},
                                 settings: proxy.settings || {},
                                 types: config.types

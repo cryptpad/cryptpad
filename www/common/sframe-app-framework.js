@@ -11,6 +11,7 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-thumbnail.js',
+    '/common/common-feedback.js',
     '/customize/application_config.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
@@ -30,6 +31,7 @@ define([
     Util,
     UI,
     Thumb,
+    Feedback,
     AppConfig)
 {
     var SaveAs = window.saveAs;
@@ -330,7 +332,7 @@ define([
 
         var feedback = function (action, force) {
             if (state === STATE.DISCONNECTED || state === STATE.INITIALIZING) { return; }
-            common.feedback(action, force);
+            Feedback.send(action, force);
         };
 
         var createFilePicker = function () {

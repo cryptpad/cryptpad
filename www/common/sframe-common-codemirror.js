@@ -212,6 +212,7 @@ define([
                 left: true, // Open to the left of the button
                 isSelect: true,
                 feedback: 'CODE_LANGUAGE',
+                common: Common
             };
             var $block = exp.$language = UIElements.createDropdown(dropdownConfig);
             $block.find('button').attr('title', Messages.languageButtonTitle);
@@ -249,6 +250,7 @@ define([
                     isSelect: true,
                     initialValue: lastTheme,
                     feedback: 'CODE_THEME',
+                    common: Common
                 };
                 var $block = exp.$theme = UIElements.createDropdown(dropdownConfig);
                 $block.find('button').attr('title', Messages.themeButtonTitle);

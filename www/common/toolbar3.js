@@ -5,9 +5,10 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
+    '/common/common-feedback.js',
     '/customize/messages.js',
     '/common/clipboard.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Messages, Clipboard) {
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages, Clipboard) {
     var Common;
 
     var Bar = {
@@ -419,7 +420,7 @@ define([
             else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'userlist-drawer'], visible);
-            Common.feedback(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
+            Feedback.send(visible?'USERLIST_SHOW': 'USERLIST_HIDE');
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
@@ -498,6 +499,7 @@ define([
             text: $('<div>').append($shareIcon).html(),
             options: options,
             feedback: 'SHARE_MENU',
+            common: Common
         };
         var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
         $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
@@ -583,6 +585,7 @@ define([
             text: $('<div>').append($shareIcon).html(),
             options: options,
             feedback: 'FILESHARE_MENU',
+            common: Common
         };
         var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
         $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS);
@@ -868,6 +871,7 @@ define([
             left: true,
             feedback: /drive/.test(window.location.pathname)?
                 'DRIVE_NEWPAD': 'NEWPAD',
+            common: Common
         };
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
@@ -909,7 +913,7 @@ define([
             UI.prompt(Messages.changeNamePrompt, lastName || '', function (newName) {
                 if (newName === null && typeof(lastName) === "string") { return; }
                 if (newName === null) { newName = ''; }
-                else { Common.feedback('NAME_CHANGED'); }
+                else { Feedback.send('NAME_CHANGED'); }
                 setDisplayName(newName);
             });
         });

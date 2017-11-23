@@ -8,7 +8,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-constants.js',
-    '/common/cryptget.js',
+    '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
@@ -30,7 +30,7 @@ define([
     UIElements,
     UI,
     Constants,
-    Cryptget,
+    Feedback,
     nThen,
     SFCommon,
     CommonRealtime,
@@ -1417,7 +1417,7 @@ define([
                 setViewMode('list');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-list');
-                common.feedback('DRIVE_LIST_MODE');
+                Feedback.send('DRIVE_LIST_MODE');
             });
             $gridButton.click(function () {
                 $listButton.removeClass('cp-app-drive-toolbar-active');
@@ -1425,7 +1425,7 @@ define([
                 setViewMode('grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-list');
-                common.feedback('DRIVE_GRID_MODE');
+                Feedback.send('DRIVE_GRID_MODE');
             });
 
             if (getViewMode() === 'list') {
@@ -1548,6 +1548,7 @@ define([
                 text: $plusIcon.html() + '<span>'+Messages.fm_newButton+'</span>',
                 options: options,
                 feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
+                common: common
             };
             var $block = UIElements.createDropdown(dropdownConfig);
 
@@ -2946,7 +2947,7 @@ define([
         }).nThen(function (/* waitFor */) {
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;
-            if (!APP.loggedIn) { common.feedback('ANONYMOUS_DRIVE'); }
+            if (!APP.loggedIn) { Feedback.send('ANONYMOUS_DRIVE'); }
             APP.$body = $('body');
             APP.$bar = $('#cp-toolbar');
 

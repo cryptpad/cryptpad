@@ -1,17 +1,22 @@
 define([
     'jquery',
     '/api/config',
-    '/common/cryptpad-common.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-language.js',
     '/common/common-interface.js',
+    '/common/common-feedback.js',
     '/common/media-tag.js',
+    '/customize/messages.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Cryptpad, Util, Hash, Language, UI, MediaTag) {
+], function ($, Config, Util, Hash, Language, UI, Feedback, MediaTag, Messages) {
     var UIElements = {};
-    var Messages = Cryptpad.Messages;
+
+    // Configure MediaTags to use our local viewer
+    if (MediaTag && MediaTag.PdfPlugin) {
+        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
+    }
 
     UIElements.updateTags = function (common, href) {
         var sframeChan = common.getSframeChannel();
@@ -143,7 +148,7 @@ define([
                                 toSave: toSave
                             }, function () {
                                 UI.alert(Messages.templateSaved);
-                                common.feedback('TEMPLATE_CREATED');
+                                Feedback.send('TEMPLATE_CREATED');
                             });
                         };
                         UI.prompt(Messages.saveTemplatePrompt, title, todo);
@@ -236,6 +241,53 @@ define([
     };
 
     // Avatars
+
+    // Enable mediatags
+    $(window.document).on('decryption', function (e) {
+        var decrypted = e.originalEvent;
+        if (decrypted.callback) {
+            var cb = decrypted.callback;
+            cb(function (mediaObject) {
+                var root = mediaObject.element;
+                if (!root) { return; }
+
+                if (mediaObject.type === 'image') {
+                    $(root).data('blob', decrypted.blob);
+                }
+
+                if (mediaObject.type !== 'download') { return; }
+
+                var metadata = decrypted.metadata;
+
+                var title = '';
+                var size = 0;
+                if (metadata && metadata.name) {
+                    title = metadata.name;
+                }
+
+                if (decrypted.blob) {
+                    size = decrypted.blob.size;
+                }
+
+                var sizeMb = Util.bytesToMegabytes(size);
+
+                var $btn = $(root).find('button');
+                $btn.addClass('btn btn-success')
+                    .attr('type', 'download')
+                    .html(function () {
+                        var text = Messages.download_mt_button + '<br>';
+                        if (title) {
+                            text += '<b>' + Util.fixHTML(title) + '</b><br>';
+                        }
+                        if (size) {
+                            text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
+                        }
+                        return text;
+                    });
+            });
+        }
+    });
+
     UIElements.displayMediatagImage = function (Common, $tag, cb) {
         if (!$tag.length || !$tag.is('media-tag')) { return void cb('NOT_MEDIATAG'); }
         var observer = new MutationObserver(function(mutations) {
@@ -434,6 +486,7 @@ define([
     // allowed options tags: ['a', 'hr', 'p']
     UIElements.createDropdown = function (config) {
         if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
+        if (config.feedback && !config.common) { return void console.error("feedback in a dropdown requires sframe-common"); }
 
         var allowedTags = ['a', 'p', 'hr'];
         var isValidOption = function (o) {
@@ -500,7 +553,7 @@ define([
                 setActive($val);
                 $innerblock.scrollTop($val.position().top + $innerblock.scrollTop());
             }
-            if (config.feedback) { Cryptpad.feedback(config.feedback); }
+            if (config.feedback) { Feedback.send(config.feedback); }
         };
 
         $container.click(function (e) {
@@ -676,6 +729,7 @@ define([
             left: true, // Open to the left of the button
             container: config.$initBlock, // optional
             feedback: "USER_ADMIN",
+            common: Common
         };
         var $userAdmin = UIElements.createDropdown(dropdownConfigUser);
 
@@ -777,7 +831,8 @@ define([
             options: options, // Entries displayed in the menu
             //left: true, // Open to the left of the button
             container: $initBlock, // optional
-            isSelect: true
+            isSelect: true,
+            common: common
         };
         var $block = UIElements.createDropdown(dropdownConfig);
         $block.attr('id', 'cp-language-selector');
@@ -861,7 +916,7 @@ define([
                         sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
                             first = false;
                             UI.removeLoadingScreen();
-                            common.feedback('TEMPLATE_USED');
+                            Feedback.send('TEMPLATE_USED');
                         });
                         if (focus) { focus.focus(); }
                         return;

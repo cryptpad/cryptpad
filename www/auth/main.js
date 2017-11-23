@@ -1,9 +1,11 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
+    '/common/common-constants.js',
+    '/common/outer/local-store.js',
     '/common/test.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function ($, Cryptpad, Test) {
+], function ($, Cryptpad, Constants, LocalStore, Test) {
     var Nacl = window.nacl;
 
     var signMsg = function (msg, privKey) {
@@ -20,7 +22,8 @@ define([
     ];
 
     // Safari is weird about localStorage in iframes but seems to let sessionStorage slide.
-    localStorage.User_hash = localStorage.User_hash || sessionStorage.User_hash;
+    localStorage[Constants.userHashKey] = localStorage[Constants.userHashKey] ||
+                                          sessionStorage[Constants.userHashKey];
 
     Cryptpad.ready(function () {
         console.log('IFRAME READY');
@@ -40,7 +43,7 @@ define([
             } else if (data.cmd === 'SIGN') {
                 if (!AUTHORIZED_DOMAINS.filter(function (x) { return x.test(domain); }).length) {
                     ret.error = "UNAUTH_DOMAIN";
-                } else if (!Cryptpad.isLoggedIn()) {
+                } else if (!LocalStore.isLoggedIn()) {
                     ret.error = "NOT_LOGGED_IN";
                 } else {
                     var proxy = Cryptpad.getStore().getProxy().proxy;

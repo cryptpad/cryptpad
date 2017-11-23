@@ -5,9 +5,9 @@ define([
     'jquery',
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js',
-    '/common/cryptpad-common.js',
+    '/common/outer/network-config.js',
     '/bower_components/netflux-websocket/netflux-client.js',
-], function (nThen, ApiConfig, $, RequireConfig, SFCommonO, Cryptpad, Netflux) {
+], function (nThen, ApiConfig, $, RequireConfig, SFCommonO, NetConfig, Netflux) {
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
@@ -39,10 +39,11 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var getSecrets = function (Cryptpad, Utils) {
-            var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
+            var hash = window.location.hash.slice(1) || Utils.LocalStore.getUserHash() ||
+                        Utils.LocalStore.getFSHash();
             return Utils.Hash.getSecrets('drive', hash);
         };
-        Netflux.connect(Cryptpad.getWebsocketURL()).then(function (network) {
+        Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
             SFCommonO.start({
                 getSecrets: getSecrets,
                 newNetwork: network,

@@ -5,8 +5,9 @@ define([
     '/common/common-interface.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
+    '/common/outer/local-store.js',
     '/customize/messages.js',
-], function ($, Config, Cryptpad, UI, Realtime, Constants, Messages) {
+], function ($, Config, Cryptpad, UI, Realtime, Constants, LocalStore, Messages) {
 
     window.APP = {
         Cryptpad: Cryptpad,
@@ -25,7 +26,7 @@ define([
         // Make sure we don't display non-translated content (empty button)
         $main.find('#data').removeClass('hidden');
 
-        if (Cryptpad.isLoggedIn()) {
+        if (LocalStore.isLoggedIn()) {
             if (window.location.pathname === '/') {
                 window.location = '/drive/';
                 return;
@@ -47,7 +48,7 @@ define([
             $('#buttons').find('.nologin').hide();
 
             $logout.click(function () {
-                Cryptpad.logout(function () {
+                LocalStore.logout(function () {
                     window.location.reload();
                 });
             });
@@ -109,7 +110,7 @@ define([
                                 proxy.edPublic = result.edPublic;
 
                                 Realtime.whenRealtimeSyncs(result.realtime, function () {
-                                    Cryptpad.login(result.userHash, result.userName, function () {
+                                    LocalStore.login(result.userHash, result.userName, function () {
                                         document.location.href = '/drive/';
                                     });
                                 });
