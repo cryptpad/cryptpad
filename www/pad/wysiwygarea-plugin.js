@@ -487,16 +487,6 @@ define(['/api/config'], function (ApiConfig) {
 						CKEDITOR.tools.callFunction(fw._.frameLoadedHandler, _iframe.contentWindow);
                     }, 10);
                     return;
-
-					// Work around Firefox bug - error prune when called from XUL (http://dev.ckeditor.com/ticket/320),
-					// defer it thanks to the async nature of this method.
-					try {
-						doc.write( data );
-					} catch ( e ) {
-						setTimeout( function() {
-							doc.write( data );
-						}, 0 );
-					}
 				}
 			},
 
