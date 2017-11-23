@@ -579,6 +579,7 @@ define([
                 $input.on('keydown', function (e) { e.stopPropagation(); });
 
                 $input.on('keyup', function (e) {
+                    e.stopPropagation();
                     if (e.which === 13) {
                         removeInput(true);
                         filesOp.rename(path, $input.val(), refresh);
@@ -587,7 +588,7 @@ define([
                     if (e.which === 27) {
                         removeInput(true);
                     }
-                });
+                }).on('keypress', function (e) { e.stopPropagation(); });
                 //$element.parent().append($input);
                 $name.after($input);
                 $input.focus();
