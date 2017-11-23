@@ -43,11 +43,20 @@ define([
                         Utils.LocalStore.getFSHash();
             return Utils.Hash.getSecrets('drive', hash);
         };
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
+            sframeChan.on('EV_BURN_ANON_DRIVE', function () {
+                if (Utils.LocalStore.isLoggedIn()) { return; }
+                Utils.LocalStore.setFSHash('');
+                Utils.LocalStore.clearThumbnail();
+                window.location.reload();
+            });
+        };
         Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
             SFCommonO.start({
                 getSecrets: getSecrets,
                 newNetwork: network,
-                noHash: true
+                noHash: true,
+                addRpc: addRpc
             });
         }, function (err) { console.error(err); });
     });

@@ -1826,6 +1826,9 @@ define([
                 .appendTo($toolbar);
             var $hist = common.createButton('history', true, {histConfig: APP.histConfig});
             $rightside.append($hist);
+            if (APP.$burnThisDrive) {
+                $rightside.append(APP.$burnThisDrive);
+            }
             return $toolbar;
         };
 
@@ -2989,10 +2992,12 @@ define([
                 APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
 
                 /* add the usage */
-                common.createUsageBar(function (err, $limitContainer) {
-                    if (err) { return void logError(err); }
-                    APP.$limit = $limitContainer;
-                }, true);
+                if (APP.loggedIn) {
+                    common.createUsageBar(function (err, $limitContainer) {
+                        if (err) { return void logError(err); }
+                        APP.$limit = $limitContainer;
+                    }, true);
+                }
 
                 /* add a history button */
                 APP.histConfig = {
@@ -3008,6 +3013,18 @@ define([
                     },
                     $toolbar: APP.$bar,
                 };
+
+                // Add a "Burn this drive" button
+                if (!APP.loggedIn) {
+                    APP.$burnThisDrive = common.createButton(null, true).click(function () {
+                        UI.confirm(Messages.fm_burnThisDrive, function (yes) {
+                            if (!yes) { return; }
+                            common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
+                        }, null, true);
+                    }).attr('title', Messages.fm_burnThisDriveButton)
+                      .removeClass('fa-question')
+                      .addClass('fa-ban');
+                }
 
                 metadataMgr.onChange(function () {
                     var name = metadataMgr.getUserData().name || Messages.anonymous;
