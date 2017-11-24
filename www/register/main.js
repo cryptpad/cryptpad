@@ -60,7 +60,7 @@ define([
                 window.alert("Test passed!");
                 return;
             }
-            localStorage.User_hash = result.userHash;
+            LocalStore.setUserHash(result.userHash);
 
             var proxy = result.proxy;
             proxy.edPublic = result.edPublic;

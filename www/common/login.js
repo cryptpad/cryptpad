@@ -5,9 +5,11 @@ define([
     '/common/common-util.js',
     '/common/outer/network-config.js',
     '/common/credential.js',
+    '/bower_components/chainpad/chainpad.dist.js',
+
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
-], function ($, Listmap, Crypto, Util, NetConfig, Cred) {
+], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad) {
     var Exports = {
         Cred: Cred,
     };
@@ -64,6 +66,8 @@ define([
             validateKey: opt.keys.validateKey, // derived validation key
             crypto: Crypto.createEncryptor(opt.keys),
             logLevel: 1,
+            classic: true,
+            ChainPad: ChainPad,
         };
 
         var rt = opt.rt = Listmap.create(config);
@@ -133,7 +137,7 @@ define([
                     return void cb('ALREADY_REGISTERED', res);
                 }
 
-                cb(void 0, res);
+                setTimeout(function () { cb(void 0, res); });
             });
         });
     };
