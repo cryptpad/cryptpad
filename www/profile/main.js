@@ -48,7 +48,7 @@ define([
                 return Hash.getSecrets('profile', obj.profile.edit);
             }
             // 3rd case: profile creation (create a new random hash, store it later if needed)
-            if (!Cryptpad.isLoggedIn()) { return; }
+            if (!Utils.LocalStore.isLoggedIn()) { return; }
             var hash = Hash.createRandomHash();
             var secret = Hash.getSecrets('profile', hash);
             Cryptpad.pinPads([secret.channel], function (e) {

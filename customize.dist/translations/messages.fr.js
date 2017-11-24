@@ -395,6 +395,9 @@ define(function () {
     out.fm_viewGridButton = "Grille";
     out.fm_renamedPad = "Vous avez renommé ce pad dans votre Drive. Son titre est:<br><b>{0}</b>";
     out.fm_prop_tagsList = "Mots-clés";
+    out.fm_burnThisDriveButton = "Effacer toutes les informations stockées par CryptPad dans votre navigateur";
+    out.fm_burnThisDrive = "Êtes-vous sûr de vouloir supprimmer tout ce qui est stocké par CryptPad dans votre navigateur ?<br>" +
+                           "Cette action supprimera votre CryptDrive et son historique de votre navigateur, mais les pads existeront toujours (de manière chiffrée) sur notre serveur.";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";

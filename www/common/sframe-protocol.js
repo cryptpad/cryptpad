@@ -194,4 +194,7 @@ define({
 
     // Store the language selected in the iframe into localStorage outside
     'Q_LANGUAGE_SET': true,
+
+    // Anonymous users can empty their drive and remove FS_hash from localStorage
+    'EV_BURN_ANON_DRIVE': true,
 });

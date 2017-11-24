@@ -2,12 +2,12 @@ define([
     'jquery',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/cryptpad-common.js',
     '/common/common-util.js',
+    '/common/outer/network-config.js',
     '/common/credential.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
-], function ($, Listmap, Crypto, Cryptpad, Util, Cred) {
+], function ($, Listmap, Crypto, Util, NetConfig, Cred) {
     var Exports = {
         Cred: Cred,
     };
@@ -58,7 +58,7 @@ define([
 
     var loadUserObject = function (opt, cb) {
         var config = {
-            websocketURL: Cryptpad.getWebsocketURL(),
+            websocketURL: NetConfig.getWebsocketURL(),
             channel: opt.channelHex,
             data: {},
             validateKey: opt.keys.validateKey, // derived validation key

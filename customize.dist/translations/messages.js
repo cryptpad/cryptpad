@@ -397,6 +397,9 @@ define(function () {
     out.fm_viewGridButton = "Grid view";
     out.fm_renamedPad = "You've set a custom name for this pad. Its shared title is:<br><b>{0}</b>";
     out.fm_prop_tagsList = "Tags";
+    out.fm_burnThisDriveButton = "Erase all information stored by CryptPad in your browser";
+    out.fm_burnThisDrive = "Are you sure you want to remove everything stored by CryptPad in your browser?<br>" +
+                           "This will remove your CryptDrive and its history from your browser, but your pads will still exist (encrypted) on our server.";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";

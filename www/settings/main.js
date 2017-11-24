@@ -38,7 +38,7 @@ define([
     }).nThen(function (/*waitFor*/) {
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_THUMBNAIL_CLEAR', function (d, cb) {
-                Cryptpad.clearThumbnail(function (err, data) {
+                Utils.LocalStore.clearThumbnail(function (err, data) {
                     cb({err:err, data:data});
                 });
             });
@@ -49,9 +49,8 @@ define([
                 var sjson = JSON.stringify(data);
                 require([
                     '/common/cryptget.js',
-                    '/common/common-constants.js'
-                ], function (Crypt, Constants) {
-                    var k = Cryptpad.getUserHash() || localStorage[Constants.fileHashKey];
+                ], function (Crypt) {
+                    var k = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
                     Crypt.put(k, sjson, function (err) {
                         cb(err);
                     });
@@ -75,9 +74,8 @@ define([
                 var proxyData = Cryptpad.getStore().getProxy();
                 require([
                     '/common/mergeDrive.js',
-                    '/common/common-constants.js'
-                ], function (Merge, Constants) {
-                    Merge.anonDriveIntoUser(proxyData, localStorage[Constants.fileHashKey], cb);
+                ], function (Merge) {
+                    Merge.anonDriveIntoUser(proxyData, Utils.LocalStore.getFSHash(), cb);
                 });
             });
         };

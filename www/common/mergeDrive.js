@@ -1,9 +1,9 @@
 define([
-    '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/userObject.js',
     '/common/common-hash.js',
-], function (Cryptpad, Crypt, FO, Hash) {
+    '/common/outer/local-store.js',
+], function (Crypt, FO, Hash, LocalStore) {
     var exp = {};
 
     var getType = function (el) {
@@ -86,7 +86,7 @@ define([
 
     exp.anonDriveIntoUser = function (proxyData, fsHash, cb) {
         // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
-        if (!fsHash || !Cryptpad.isLoggedIn()) {
+        if (!fsHash || !LocalStore.isLoggedIn()) {
             if (typeof(cb) === "function") { return void cb(); }
         }
         // Get the content of FS_hash and then merge the objects, remove the migration key and cb
@@ -105,7 +105,7 @@ define([
             if (parsed) {
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
-                    loggedIn: Cryptpad.isLoggedIn()
+                    loggedIn: LocalStore.isLoggedIn()
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles();

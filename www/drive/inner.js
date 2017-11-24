@@ -7,7 +7,7 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-constants.js',
-    '/common/cryptget.js',
+    '/common/common-feedback.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
@@ -28,7 +28,7 @@ define([
     UIElements,
     UI,
     Constants,
-    Cryptget,
+    Feedback,
     nThen,
     SFCommon,
     CommonRealtime,
@@ -1416,7 +1416,7 @@ define([
                 setViewMode('list');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-list');
-                common.feedback('DRIVE_LIST_MODE');
+                Feedback.send('DRIVE_LIST_MODE');
             });
             $gridButton.click(function () {
                 $listButton.removeClass('cp-app-drive-toolbar-active');
@@ -1424,7 +1424,7 @@ define([
                 setViewMode('grid');
                 $('#' + FOLDER_CONTENT_ID).addClass('cp-app-drive-content-grid');
                 $('#' + FOLDER_CONTENT_ID).removeClass('cp-app-drive-content-list');
-                common.feedback('DRIVE_GRID_MODE');
+                Feedback.send('DRIVE_GRID_MODE');
             });
 
             if (getViewMode() === 'list') {
@@ -1547,6 +1547,7 @@ define([
                 text: $plusIcon.html() + '<span>'+Messages.fm_newButton+'</span>',
                 options: options,
                 feedback: 'DRIVE_NEWPAD_LOCALFOLDER',
+                common: common
             };
             var $block = UIElements.createDropdown(dropdownConfig);
 
@@ -1823,6 +1824,9 @@ define([
                 .appendTo($toolbar);
             var $hist = common.createButton('history', true, {histConfig: APP.histConfig});
             $rightside.append($hist);
+            if (APP.$burnThisDrive) {
+                $rightside.append(APP.$burnThisDrive);
+            }
             return $toolbar;
         };
 
@@ -2945,7 +2949,7 @@ define([
         }).nThen(function (/* waitFor */) {
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;
-            if (!APP.loggedIn) { common.feedback('ANONYMOUS_DRIVE'); }
+            if (!APP.loggedIn) { Feedback.send('ANONYMOUS_DRIVE'); }
             APP.$body = $('body');
             APP.$bar = $('#cp-toolbar');
 
@@ -2981,10 +2985,12 @@ define([
                 APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
 
                 /* add the usage */
-                common.createUsageBar(function (err, $limitContainer) {
-                    if (err) { return void logError(err); }
-                    APP.$limit = $limitContainer;
-                }, true);
+                if (APP.loggedIn) {
+                    common.createUsageBar(function (err, $limitContainer) {
+                        if (err) { return void logError(err); }
+                        APP.$limit = $limitContainer;
+                    }, true);
+                }
 
                 /* add a history button */
                 APP.histConfig = {
@@ -3000,6 +3006,18 @@ define([
                     },
                     $toolbar: APP.$bar,
                 };
+
+                // Add a "Burn this drive" button
+                if (!APP.loggedIn) {
+                    APP.$burnThisDrive = common.createButton(null, true).click(function () {
+                        UI.confirm(Messages.fm_burnThisDrive, function (yes) {
+                            if (!yes) { return; }
+                            common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
+                        }, null, true);
+                    }).attr('title', Messages.fm_burnThisDriveButton)
+                      .removeClass('fa-question')
+                      .addClass('fa-ban');
+                }
 
                 metadataMgr.onChange(function () {
                     var name = metadataMgr.getUserData().name || Messages.anonymous;

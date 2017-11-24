@@ -6,25 +6,18 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-messaging.js',
-    '/file/file-crypto.js',
     '/common/common-realtime.js',
     '/common/common-language.js',
     '/common/common-constants.js',
+    '/common/common-feedback.js',
+    '/common/outer/local-store.js',
 
-    '/common/clipboard.js',
     '/common/pinpad.js',
     '/customize/application_config.js',
-    '/common/media-tag.js',
     '/bower_components/nthen/index.js',
-    '/bower_components/localforage/dist/localforage.min.js',
 ], function ($, Config, Messages, Store, Util, Hash,
-            Messaging, FileCrypto, Realtime, Language, Constants, Clipboard,
-            Pinpad, AppConfig, MediaTag, Nthen, localForage) {
-
-    // Configure MediaTags to use our local viewer
-    if (MediaTag && MediaTag.PdfPlugin) {
-        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
-    }
+            Messaging, Realtime, Language, Constants, Feedback, LocalStore,
+            Pinpad, AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -36,11 +29,9 @@ define([
     var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
-        Clipboard: Clipboard,
         donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
         upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
         account: {},
-        MediaTag: MediaTag,
     };
 
     var PINNING_ENABLED = AppConfig.enablePinning;
@@ -48,55 +39,6 @@ define([
     var store;
     var rpc;
     var anon_rpc;
-
-    // import common utilities for export
-    //common.find = Util.find;
-    //common.hexToBase64 = Util.hexToBase64;
-    //common.base64ToHex = Util.base64ToHex;
-    //var deduplicateString = common.deduplicateString = Util.deduplicateString;
-    //common.uint8ArrayToHex = Util.uint8ArrayToHex;
-    //common.replaceHash = Util.replaceHash;
-    //common.getHash = Util.getHash;
-    //common.fixFileName = Util.fixFileName;
-    //common.bytesToMegabytes = Util.bytesToMegabytes;
-    //common.bytesToKilobytes = Util.bytesToKilobytes;
-    //common.fetch = Util.fetch;
-    //common.throttle = Util.throttle;
-    //common.createRandomInteger = Util.createRandomInteger;
-    //common.getAppType = Util.getAppType;
-    //common.notAgainForAnother = Util.notAgainForAnother;
-    //common.uid = Util.uid;
-    //common.slice = Util.slice;
-
-    // import hash utilities for export
-    //var createRandomHash = common.createRandomHash = Hash.createRandomHash;
-    //common.parseTypeHash = Hash.parseTypeHash;
-    //var parsePadUrl = common.parsePadUrl = Hash.parsePadUrl;
-    //common.isNotStrongestStored = Hash.isNotStrongestStored;
-    //var hrefToHexChannelId = common.hrefToHexChannelId = Hash.hrefToHexChannelId;
-    //var getRelativeHref = common.getRelativeHref = Hash.getRelativeHref;
-    //common.getBlobPathFromHex = Hash.getBlobPathFromHex;
-
-    //common.getEditHashFromKeys = Hash.getEditHashFromKeys;
-    //common.getViewHashFromKeys = Hash.getViewHashFromKeys;
-    //common.getFileHashFromKeys = Hash.getFileHashFromKeys;
-    //common.getUserHrefFromKeys = Hash.getUserHrefFromKeys;
-    //common.getSecrets = Hash.getSecrets;
-    //common.getHashes = Hash.getHashes;
-    //common.createChannelId = Hash.createChannelId;
-    //common.findWeaker = Hash.findWeaker;
-    //common.findStronger = Hash.findStronger;
-    //common.serializeHash = Hash.serializeHash;
-    //common.createInviteUrl = Hash.createInviteUrl;
-
-    // Messaging
-    //common.addDirectMessageHandler = Messaging.addDirectMessageHandler;
-    //common.inviteFromUserlist = Messaging.inviteFromUserlist;
-    //common.getFriendList = Messaging.getFriendList;
-    //common.getFriendChannelsList = Messaging.getFriendChannelsList;
-    //common.createData = Messaging.createData;
-    //common.getPendingInvites = Messaging.getPending;
-    //common.getLatestMessages = Messaging.getLatestMessages;
 
     var getStore = common.getStore = function () {
         if (store) { return store; }
@@ -149,62 +91,6 @@ define([
         if (typeof cb === "function") { cb(null, name); }
         return name;
     };
-    common.getAccountName = function () {
-        return localStorage[Constants.userNameKey];
-    };
-
-    // REFACTOR: move to util?
-    var randomToken = function () {
-        return Math.random().toString(16).replace(/0./, '');
-    };
-
-    common.isFeedbackAllowed = function () {
-        try {
-            var entry = Util.find(getProxy(), [
-                'settings',
-                'general',
-                'allowUserFeedback'
-            ]);
-            if (!entry) { return false; }
-            return true;
-        } catch (e) {
-            console.error(e);
-            return false;
-        }
-    };
-    var feedback = common.feedback = function (action, force) {
-        if (!action) { return; }
-        if (force !== true) {
-            try {
-                if (!common.isFeedbackAllowed()) { return; }
-            } catch (e) { return void console.error(e); }
-        }
-
-        var href = '/common/feedback.html?' + action + '=' + randomToken();
-        $.ajax({
-            type: "HEAD",
-            url: href,
-        });
-    };
-
-    common.reportAppUsage = function () {
-        var pattern = window.location.pathname.split('/')
-            .filter(function (x) { return x; }).join('.');
-        if (/^#\/1\/view\//.test(window.location.hash)) {
-            feedback(pattern + '_VIEW');
-        } else {
-            feedback(pattern);
-        }
-    };
-
-    common.reportScreenDimensions = function () {
-        var h = window.innerHeight;
-        var w = window.innerWidth;
-        feedback('DIMENSIONS:' + h + 'x' + w);
-    };
-    common.reportLanguage = function () {
-        feedback('LANG_' + Messages._languageUsed);
-    };
 
     common.getUid = function () {
         if (store && store.getProxy() && store.getProxy().proxy) {
@@ -217,94 +103,6 @@ define([
                 return store.getProxy().info.realtime;
         }
         return;
-    };
-
-    common.getWebsocketURL = function () {
-        if (!Config.websocketPath) { return Config.websocketURL; }
-        var path = Config.websocketPath;
-        if (/^ws{1,2}:\/\//.test(path)) { return path; }
-
-        var protocol = window.location.protocol.replace(/http/, 'ws');
-        var host = window.location.host;
-        var url = protocol + '//' + host + path;
-
-        return url;
-    };
-
-    common.login = function (hash, name, cb) {
-        if (!hash) { throw new Error('expected a user hash'); }
-        if (!name) { throw new Error('expected a user name'); }
-        hash = Hash.serializeHash(hash);
-        localStorage.setItem(Constants.userHashKey, hash);
-        localStorage.setItem(Constants.userNameKey, name);
-        if (cb) { cb(); }
-    };
-
-    var eraseTempSessionValues = common.eraseTempSessionValues = function () {
-        // delete sessionStorage values that might have been left over
-        // from the main page's /user redirect
-        [
-            'login',
-            'login_user',
-            'login_pass',
-            'login_rmb',
-            'register'
-        ].forEach(function (k) {
-            delete sessionStorage[k];
-        });
-    };
-
-    var logoutHandlers = [];
-    common.logout = function (cb) {
-        [
-            Constants.userNameKey,
-            Constants.userHashKey,
-            'loginToken',
-            'plan',
-        ].forEach(function (k) {
-            sessionStorage.removeItem(k);
-            localStorage.removeItem(k);
-            delete localStorage[k];
-            delete sessionStorage[k];
-        });
-        localForage.clear();
-        // Make sure we have an FS_hash in localStorage before reloading all the tabs
-        // so that we don't end up with tabs using different anon hashes
-        if (!localStorage[Constants.fileHashKey]) {
-            localStorage[Constants.fileHashKey] = Hash.createRandomHash();
-        }
-        eraseTempSessionValues();
-
-        logoutHandlers.forEach(function (h) {
-            if (typeof (h) === "function") { h(); }
-        });
-
-        if (cb) { cb(); }
-    };
-    common.onLogout = function (h) {
-        if (typeof (h) !== "function") { return; }
-        if (logoutHandlers.indexOf(h) !== -1) { return; }
-        logoutHandlers.push(h);
-    };
-
-    var getUserHash = common.getUserHash = function () {
-        var hash = localStorage[Constants.userHashKey];
-
-        if (['undefined', 'undefined/'].indexOf(hash) !== -1) {
-            localStorage.removeItem(Constants.userHashKey);
-            return;
-        }
-
-        if (hash) {
-            var sHash = Hash.serializeHash(hash);
-            if (sHash !== hash) { localStorage[Constants.userHashKey] = sHash; }
-        }
-
-        return hash;
-    };
-
-    var isLoggedIn = common.isLoggedIn = function () {
-        return typeof getUserHash() === "string";
     };
 
     common.hasSigningKeys = function (proxy) {
@@ -328,11 +126,6 @@ define([
         };
     };
 
-    common.isArray = $.isArray;
-
-    /*
-     *  localStorage formatting
-     */
     var makePad = common.makePad = function (href, title) {
         var now = +new Date();
         return {
@@ -359,9 +152,6 @@ define([
             if (cb) { cb(err, data); }
         });
     };
-    common.setLSAttribute = function (attr, value) {
-        localStorage[attr] = value;
-    };
 
     // STORAGE
     common.getPadAttribute = function (attr, cb) {
@@ -374,15 +164,6 @@ define([
         });
     };
 
-    common.setThumbnail = function (key, value, cb) {
-        localForage.setItem(key, value, cb);
-    };
-    common.getThumbnail = function (key, cb) {
-        localForage.getItem(key, cb);
-    };
-    common.clearThumbnail = function (cb) {
-        localForage.clear(cb);
-    };
 
     /*  this returns a reference to your proxy. changing it will change your drive.
     */
@@ -472,10 +253,6 @@ define([
             });
         });
         cb(void 0, all);
-    };
-
-    common.getLSAttribute = function (attr) {
-        return localStorage[attr];
     };
 
     // STORAGE - TEMPLATES
@@ -738,7 +515,7 @@ define([
     };
 
     var pinsReady = common.pinsReady = function () {
-        if (!isLoggedIn()) {
+        if (!LocalStore.isLoggedIn()) {
             return false;
         }
         if (!PINNING_ENABLED) {
@@ -875,7 +652,7 @@ define([
     };
 
     common.isOverPinLimit = function (cb) {
-        if (!common.isLoggedIn()) { return void cb(null, false); }
+        if (!LocalStore.isLoggedIn()) { return void cb(null, false); }
         var usage;
         var andThen = function (e, limit, plan) {
             if (e) { return void cb(e); }
@@ -952,52 +729,6 @@ define([
         });
     };
 
-
-    $(window.document).on('decryption', function (e) {
-        var decrypted = e.originalEvent;
-        if (decrypted.callback) {
-            var cb = decrypted.callback;
-            cb(function (mediaObject) {
-                var root = mediaObject.element;
-                if (!root) { return; }
-
-                if (mediaObject.type === 'image') {
-                    $(root).data('blob', decrypted.blob);
-                }
-
-                if (mediaObject.type !== 'download') { return; }
-
-                var metadata = decrypted.metadata;
-
-                var title = '';
-                var size = 0;
-                if (metadata && metadata.name) {
-                    title = metadata.name;
-                }
-
-                if (decrypted.blob) {
-                    size = decrypted.blob.size;
-                }
-
-                var sizeMb = Util.bytesToMegabytes(size);
-
-                var $btn = $(root).find('button');
-                $btn.addClass('btn btn-success')
-                    .attr('type', 'download')
-                    .html(function () {
-                        var text = Messages.download_mt_button + '<br>';
-                        if (title) {
-                            text += '<b>' + Util.fixHTML(title) + '</b><br>';
-                        }
-                        if (size) {
-                            text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
-                        }
-                        return text;
-                    });
-            });
-        }
-    });
-
     common.getShareHashes = function (secret, cb) {
         if (!window.location.hash) {
             var hashes = Hash.getHashes(secret.channel, secret);
@@ -1064,27 +795,42 @@ define([
         var network;
         var provideFeedback = function () {
             if (Object.keys(proxy).length === 1) {
-                feedback("FIRST_APP_USE", true);
+                Feedback.send("FIRST_APP_USE", true);
             }
 
             if (typeof(window.Proxy) === 'undefined') {
-                feedback("NO_PROXIES");
+                Feedback.send("NO_PROXIES");
             }
 
             var shimPattern = /CRYPTPAD_SHIM/;
             if (shimPattern.test(Array.isArray.toString())) {
-                feedback("NO_ISARRAY");
+                Feedback.send("NO_ISARRAY");
             }
 
             if (shimPattern.test(Array.prototype.fill.toString())) {
-                feedback("NO_ARRAYFILL");
+                Feedback.send("NO_ARRAYFILL");
             }
 
             if (typeof(Symbol) === 'undefined') {
-                feedback('NO_SYMBOL');
+                Feedback.send('NO_SYMBOL');
             }
-            common.reportScreenDimensions();
-            common.reportLanguage();
+            Feedback.reportScreenDimensions();
+            Feedback.reportLanguage();
+        };
+        var initFeedback = function () {
+            // Initialize feedback
+            try {
+                var entry = Util.find(getProxy(), [
+                    'settings',
+                    'general',
+                    'allowUserFeedback'
+                ]);
+                Feedback.init(entry);
+            } catch (e) {
+                console.error(e);
+                Feedback.init(false);
+            }
+            provideFeedback();
         };
 
         Nthen(function (waitFor) {
@@ -1099,7 +845,7 @@ define([
                 network.on('reconnect', function () {
                     Realtime.setConnectionState(true);
                 });
-                provideFeedback();
+                initFeedback();
             }), common);
         }).nThen(function (waitFor) {
             $(waitFor());
@@ -1129,15 +875,14 @@ define([
                 if (!o && n) {
                     document.location.reload();
                 } else if (o && !n) {
-                    common.logout();
+                    LocalStore.logout();
                     if (getNetwork()) {
                         getNetwork().disconnect();
                     }
                 }
             });
 
-
-            if (PINNING_ENABLED && isLoggedIn()) {
+            if (PINNING_ENABLED && LocalStore.isLoggedIn()) {
                 console.log("logged in. pads will be pinned");
                 var w0 = waitFor();
                 Pinpad.create(network, proxy, function (e, call) {
@@ -1233,7 +978,7 @@ define([
             if (sessionStorage.migrateAnonDrive) {
                 var w = waitFor();
                 require(['/common/mergeDrive.js'], function (Merge) {
-                    var hash = localStorage.FS_hash;
+                    var hash = LocalStore.getFSHash();
                     Merge.anonDriveIntoUser(getStore().getProxy(), hash, function () {
                         delete sessionStorage.migrateAnonDrive;
                         w();

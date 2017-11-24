@@ -81,7 +81,6 @@ define([
         APP.$container = $('#container');
 
         Cryptpad.ready(function () {
-            Cryptpad.reportAppUsage();
             andThen();
         });
     });

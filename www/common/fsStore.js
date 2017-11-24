@@ -5,10 +5,14 @@ define([
     '/common/userObject.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/common-constants.js',
     '/common/migrate-user-object.js',
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, Listmap, Crypto, /* TextPatcher, */ FO, UI, Hash, Constants, Migrate, ChainPad) {
+    '/common/outer/network-config.js',
+    '/common/outer/local-store.js',
+], function ($, Listmap, Crypto, FO, UI, Hash, Util, Constants, Migrate, ChainPad, NetConfig,
+    LocalStore) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
         asyncronous API. This is so that we can substitute other storage
@@ -192,7 +196,7 @@ define([
     var onReady = function (f, proxy, Cryptpad, exp) {
         var fo = exp.fo = FO.init(proxy.drive, {
             Cryptpad: Cryptpad,
-            loggedIn: Cryptpad.isLoggedIn()
+            loggedIn: LocalStore.isLoggedIn()
         });
         var todo = function () {
             fo.fixFiles();
@@ -207,7 +211,7 @@ define([
 
             var requestLogin = function () {
                 // log out so that you don't go into an endless loop...
-                Cryptpad.logout();
+                LocalStore.logout();
 
                 // redirect them to log in, and come back when they're done.
                 sessionStorage.redirectTo = window.location.href;
@@ -215,7 +219,7 @@ define([
             };
 
             var tokenKey = 'loginToken';
-            if (Cryptpad.isLoggedIn()) {
+            if (LocalStore.isLoggedIn()) {
     /*  This isn't truly secure, since anyone who can read the user's object can
         set their local loginToken to match that in the object. However, it exposes
         a UI that will work most of the time. */
@@ -254,7 +258,7 @@ define([
             }
 
             // if the user is logged in, but does not have signing keys...
-            if (Cryptpad.isLoggedIn() && (!Cryptpad.hasSigningKeys(proxy) ||
+            if (LocalStore.isLoggedIn() && (!Cryptpad.hasSigningKeys(proxy) ||
                 !Cryptpad.hasCurveKeys(proxy))) {
                 return void requestLogin();
             }
@@ -287,14 +291,14 @@ define([
         if (!Cryptpad || initialized) { return; }
         initialized = true;
 
-        var hash = Cryptpad.getUserHash() || localStorage.FS_hash || Hash.createRandomHash();
+        var hash = LocalStore.getUserHash() || LocalStore.getFSHash() || Hash.createRandomHash();
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
         }
         var secret = Hash.getSecrets('drive', hash);
         var listmapConfig = {
             data: {},
-            websocketURL: Cryptpad.getWebsocketURL(),
+            websocketURL: NetConfig.getWebsocketURL(),
             channel: secret.channel,
             readOnly: false,
             validateKey: secret.keys.validateKey || undefined,
@@ -313,8 +317,8 @@ define([
         exp.proxy = rt.proxy;
         rt.proxy.on('create', function (info) {
             exp.info = info;
-            if (!Cryptpad.getUserHash()) {
-                localStorage.FS_hash = Hash.getEditHashFromKeys(info.channel, secret.keys);
+            if (!LocalStore.getUserHash()) {
+                LocalStore.setFSHash(Hash.getEditHashFromKeys(info.channel, secret.keys));
             }
         }).on('ready', function () {
             if (store) { return; } // the store is already ready, it is a reconnection

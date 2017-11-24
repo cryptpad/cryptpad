@@ -1,10 +1,10 @@
-define([], function () {
+define(['/common/common-feedback.js'], function (Feedback) {
     // Start migration check
     // Versions:
     // 1: migrate pad attributes
     // 2: migrate indent settings (codemirror)
 
-    return function (userObject, Cryptpad) {
+    return function (userObject) {
         var version = userObject.version || 0;
 
         // DEPRECATED
@@ -46,7 +46,7 @@ define([], function () {
         };
         if (version < 2) {
             migrateAttributes();
-            Cryptpad.feedback('Migrate-2', true);
+            Feedback.send('Migrate-2', true);
             userObject.version = version = 2;
         }
 
@@ -60,7 +60,7 @@ define([], function () {
         };
         if (version < 3) {
             migrateLanguage();
-            Cryptpad.feedback('Migrate-3', true);
+            Feedback.send('Migrate-3', true);
             userObject.version = version = 3;
         }
 
@@ -77,7 +77,7 @@ define([], function () {
         };
         if (version < 4) {
             migrateFeedback();
-            Cryptpad.feedback('Migrate-4', true);
+            Feedback.send('Migrate-4', true);
             userObject.version = version = 4;
         }
 
@@ -99,7 +99,7 @@ define([], function () {
         };
         if (version < 5) {
             migrateDates();
-            Cryptpad.feedback('Migrate-5', true);
+            Feedback.send('Migrate-5', true);
             userObject.version = version = 5;
         }
     };

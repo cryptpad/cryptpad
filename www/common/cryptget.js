@@ -4,8 +4,8 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
-    //'/bower_components/textpatcher/TextPatcher.js'
-], function (Crypto, CPNetflux, Cryptpad, Util, Hash, Realtime) {
+    '/common/outer/network-config.js',
+], function (Crypto, CPNetflux, Util, Hash, Realtime, NetConfig) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb(err, doc);
@@ -25,7 +25,7 @@ define([
         var secret = Hash.getSecrets('pad', hash);
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
-            websocketURL: Cryptpad.getWebsocketURL(),
+            websocketURL: NetConfig.getWebsocketURL(),
             channel: secret.channel,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),

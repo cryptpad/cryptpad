@@ -5,9 +5,9 @@ define([
     'jquery',
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js',
-    '/common/cryptpad-common.js',
+    '/common/outer/network-config.js',
     '/bower_components/netflux-websocket/netflux-client.js',
-], function (nThen, ApiConfig, $, RequireConfig, SFCommonO, Cryptpad, Netflux) {
+], function (nThen, ApiConfig, $, RequireConfig, SFCommonO, NetConfig, Netflux) {
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
@@ -39,14 +39,24 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var getSecrets = function (Cryptpad, Utils) {
-            var hash = window.location.hash.slice(1) || Cryptpad.getUserHash() || localStorage.FS_hash;
+            var hash = window.location.hash.slice(1) || Utils.LocalStore.getUserHash() ||
+                        Utils.LocalStore.getFSHash();
             return Utils.Hash.getSecrets('drive', hash);
         };
-        Netflux.connect(Cryptpad.getWebsocketURL()).then(function (network) {
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
+            sframeChan.on('EV_BURN_ANON_DRIVE', function () {
+                if (Utils.LocalStore.isLoggedIn()) { return; }
+                Utils.LocalStore.setFSHash('');
+                Utils.LocalStore.clearThumbnail();
+                window.location.reload();
+            });
+        };
+        Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
             SFCommonO.start({
                 getSecrets: getSecrets,
                 newNetwork: network,
-                noHash: true
+                noHash: true,
+                addRpc: addRpc
             });
         }, function (err) { console.error(err); });
     });

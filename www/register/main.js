@@ -8,9 +8,11 @@ define([
     '/common/common-util.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
+    '/common/common-feedback.js',
+    '/common/outer/local-store.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants) {
+], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore) {
     var Messages = Cryptpad.Messages;
 
     $(function () {
@@ -22,7 +24,7 @@ define([
         // Make sure we don't display non-translated content (empty button)
         $main.find('#data').removeClass('hidden');
 
-        if (Cryptpad.isLoggedIn()) {
+        if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
@@ -66,10 +68,10 @@ define([
             proxy.curvePublic = result.curvePublic;
             proxy.curvePrivate = result.curvePrivate;
 
-            Cryptpad.feedback('REGISTRATION', true);
+            Feedback.send('REGISTRATION', true);
 
             Realtime.whenRealtimeSyncs(result.realtime, function () {
-                Cryptpad.login(result.userHash, result.userName, function () {
+                LocalStore.login(result.userHash, result.userName, function () {
                     registering = false;
                     if (sessionStorage.redirectTo) {
                         var h = sessionStorage.redirectTo;
@@ -178,7 +180,7 @@ define([
                                                 if (!proxy[Constants.displayNameKey]) {
                                                     proxy[Constants.displayNameKey] = uname;
                                                 }
-                                                Cryptpad.eraseTempSessionValues();
+                                                LocalStore.eraseTempSessionValues();
                                                 logMeIn(result);
                                             });
                                         });
@@ -192,7 +194,7 @@ define([
 
                             if (Test.testing) { return void logMeIn(result); }
 
-                            Cryptpad.eraseTempSessionValues();
+                            LocalStore.eraseTempSessionValues();
                             if (shouldImport) {
                                 sessionStorage.migrateAnonDrive = 1;
                             }

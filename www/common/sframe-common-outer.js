@@ -38,8 +38,12 @@ define([
                 '/common/common-hash.js',
                 '/common/common-util.js',
                 '/common/common-realtime.js',
+                '/common/common-constants.js',
+                '/common/common-feedback.js',
+                '/common/outer/local-store.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _FilePicker, _Messenger, _Messaging, _Notifier, _Hash, _Util, _Realtime) {
+            _FilePicker, _Messenger, _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _Constants, _Feedback, _LocalStore) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
@@ -52,6 +56,9 @@ define([
                 Utils.Hash = _Hash;
                 Utils.Util = _Util;
                 Utils.Realtime = _Realtime;
+                Utils.Constants = _Constants;
+                Utils.Feedback = _Feedback;
+                Utils.LocalStore = _LocalStore;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -135,14 +142,14 @@ define([
                         },
                         priv: {
                             edPublic: proxy.edPublic,
-                            accountName: Cryptpad.getAccountName(),
+                            accountName: Utils.LocalStore.getAccountName(),
                             origin: window.location.origin,
                             pathname: window.location.pathname,
                             fileHost: ApiConfig.fileHost,
                             readOnly: readOnly,
                             availableHashes: hashes,
                             isTemplate: Cryptpad.isTemplate(window.location.href),
-                            feedbackAllowed: Cryptpad.isFeedbackAllowed(),
+                            feedbackAllowed: Utils.Feedback.state,
                             friends: proxy.friends || {},
                             settings: proxy.settings || {},
                             isPresent: parsed.hashData && parsed.hashData.present,
@@ -164,7 +171,7 @@ define([
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
             proxy.on('change', 'settings', updateMeta);
 
-            Cryptpad.onLogout(function () {
+            Utils.LocalStore.onLogout(function () {
                 sframeChan.event('EV_LOGOUT');
             });
 
@@ -187,7 +194,7 @@ define([
                 });
 
                 sframeChan.on('Q_THUMBNAIL_GET', function (data, cb) {
-                    Cryptpad.getThumbnail(data.key, function (e, data) {
+                    Utils.LocalStore.getThumbnail(data.key, function (e, data) {
                         cb({
                             error: e,
                             data: data
@@ -195,7 +202,7 @@ define([
                     });
                 });
                 sframeChan.on('Q_THUMBNAIL_SET', function (data, cb) {
-                    Cryptpad.setThumbnail(data.key, data.value, function (e) {
+                    Utils.LocalStore.setThumbnail(data.key, data.value, function (e) {
                         cb({error:e});
                     });
                 });
@@ -240,7 +247,7 @@ define([
             });
 
             sframeChan.on('Q_LOGOUT', function (data, cb) {
-                Cryptpad.logout(cb);
+                Utils.LocalStore.logout(cb);
             });
 
             sframeChan.on('EV_NOTIFY', function () {
@@ -415,7 +422,8 @@ define([
                     config.addCommonRpc = addCommonRpc;
                     config.modules = {
                         Cryptpad: Cryptpad,
-                        SFrameChannel: SFrameChannel
+                        SFrameChannel: SFrameChannel,
+                        Utils: Utils
                     };
                     FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
                     FP.picker = FilePicker.create(config);
@@ -602,7 +610,7 @@ define([
 
             sframeChan.ready();
 
-            Cryptpad.reportAppUsage();
+            Utils.Feedback.reportAppUsage();
 
             if (!realtime) { return; }
 

@@ -9,6 +9,7 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/common-thumbnail.js',
+    '/common/common-feedback.js',
     '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js',
 
@@ -27,6 +28,7 @@ define([
     Util,
     UI,
     Thumb,
+    Feedback,
     AppConfig,
     ChainPad)
 {
@@ -328,7 +330,7 @@ define([
 
         var feedback = function (action, force) {
             if (state === STATE.DISCONNECTED || state === STATE.INITIALIZING) { return; }
-            common.feedback(action, force);
+            Feedback.send(action, force);
         };
 
         var createFilePicker = function () {
