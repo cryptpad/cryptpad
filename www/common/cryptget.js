@@ -5,7 +5,7 @@ define([
     '/common/common-hash.js',
     '/common/common-realtime.js',
     //'/bower_components/textpatcher/TextPatcher.js'
-], function (Crypto, CPNetflux, /* Cryptpad,*/ Util, Hash, Realtime) {
+], function (Crypto, CPNetflux, Cryptpad, Util, Hash, Realtime) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb(err, doc);

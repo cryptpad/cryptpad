@@ -4,8 +4,8 @@ define([
     //'/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, UI, JsonOT) {
-    var ChainPad = window.ChainPad;
+], function ($, UI, ChainPad /* JsonOT */) {
+    //var ChainPad = window.ChainPad;
     var History = {};
 
     var getStates = function (rt) {
