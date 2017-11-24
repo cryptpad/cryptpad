@@ -13,7 +13,7 @@ define([
     '/common/common-realtime.js',
     '/common/userObject.js',
     '/customize/application_config.js',
-    '/common/sframe-chainpad-listmap.js',
+    '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',

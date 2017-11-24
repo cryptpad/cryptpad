@@ -302,6 +302,7 @@ define([
             userName: 'fs',
             logLevel: 1,
             ChainPad: ChainPad,
+            classic: true,
         };
 
         var exp = {};

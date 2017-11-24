@@ -7,7 +7,7 @@ define([
     '/common/sframe-common.js',
     '/common/common-realtime.js',
     '/customize/application_config.js',
-    '/common/sframe-chainpad-listmap.js',
+    '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/pages.js',
     '/poll/render.js',
     '/common/diffMarked.js',
