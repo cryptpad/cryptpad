@@ -1,11 +1,13 @@
 define([
     'jquery',
     '/bower_components/hyperjson/hyperjson.js',
-    '/bower_components/textpatcher/TextPatcher.js',
+    '/common/text-cursor.js',
+    '/bower_components/chainpad/chainpad.dist.js',
     '/common/common-util.js',
     '/customize/messages.js',
-    '/bower_components/diff-dom/diffDOM.js',
-], function ($, Hyperjson, TextPatcher, Util, Messages) {
+
+    '/bower_components/diff-dom/diffDOM.js'
+], function ($, Hyperjson, TextCursor, ChainPad, Util, Messages) {
     var DiffDOM = window.diffDOM;
 
     var Example = {
@@ -401,10 +403,10 @@ var Renderer = function (APP) {
 
             var o = info.oldValue || '';
             var n = info.newValue || '';
-            var op = TextPatcher.diff(o, n);
+            var ops = ChainPad.Diff.diff(o, n);
 
             info.selection = ['selectionStart', 'selectionEnd'].map(function (attr) {
-                return TextPatcher.transformCursor(element[attr], op);
+                return TextCursor.transformCursor(element[attr], ops);
             });
         }
     };

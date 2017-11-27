@@ -2,16 +2,16 @@ define([
     'jquery',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
-    '/bower_components/textpatcher/TextPatcher.amd.js',
     '/common/userObject.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-constants.js',
     '/common/migrate-user-object.js',
+    '/bower_components/chainpad/chainpad.dist.js',
     '/common/outer/network-config.js',
     '/common/outer/local-store.js',
-], function ($, Listmap, Crypto, TextPatcher, FO, UI, Hash, Util, Constants, Migrate, NetConfig,
+], function ($, Listmap, Crypto, FO, UI, Hash, Util, Constants, Migrate, ChainPad, NetConfig,
     LocalStore) {
     /*
         This module uses localStorage, which is synchronous, but exposes an
@@ -305,6 +305,8 @@ define([
             crypto: Crypto.createEncryptor(secret.keys),
             userName: 'fs',
             logLevel: 1,
+            ChainPad: ChainPad,
+            classic: true,
         };
 
         var exp = {};

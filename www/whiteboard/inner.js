@@ -1,10 +1,8 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     'json.sortify',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/common-util.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -16,6 +14,7 @@ define([
     '/customize/application_config.js',
     '/common/common-thumbnail.js',
     '/whiteboard/colors.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -26,10 +25,8 @@ define([
 ], function (
     $,
     Crypto,
-    TextPatcher,
     Toolbar,
     JSONSortify,
-    JsonOT,
     Util,
     nThen,
     SFCommon,
@@ -40,7 +37,8 @@ define([
     Messages,
     AppConfig,
     Thumb,
-    Colors)
+    Colors,
+    ChainPad)
 {
     var saveAs = window.saveAs;
 
@@ -245,7 +243,7 @@ define([
 
         config = {
             readOnly: readOnly,
-            transformFunction: JsonOT.validate,
+            patchTransformer: ChainPad.NaiveJSONTransformer,
             // cryptpad debug logging (default is 1)
             // logLevel: 0,
             validateContent: function (content) {
@@ -347,7 +345,7 @@ define([
 
             var content = stringifyInner(canvas.toDatalessJSON());
 
-            APP.patchText(content);
+            APP.realtime.contentUpdate(content);
         };
 
         var addImageToCanvas = function (img) {
@@ -505,11 +503,7 @@ define([
 
         config.onReady = function (info) {
             if (APP.realtime !== info.realtime) {
-                var realtime = APP.realtime = info.realtime;
-                APP.patchText = TextPatcher.create({
-                    realtime: realtime,
-                    //logging: true
-                });
+                APP.realtime = info.realtime;
             }
 
             var userDoc = APP.realtime.getUserDoc();

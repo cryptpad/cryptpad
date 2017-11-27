@@ -1,15 +1,11 @@
 define([
-    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
     '/common/outer/network-config.js',
-    '/bower_components/textpatcher/TextPatcher.js'
-], function ($, Crypto, CPNetflux, Util, Hash, Realtime, NetConfig, TextPatcher) {
-    //var Messages = Cryptpad.Messages;
-    //var noop = function () {};
+], function (Crypto, CPNetflux, Util, Hash, Realtime, NetConfig) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb(err, doc);
@@ -75,9 +71,7 @@ define([
             var realtime = Session.session = info.realtime;
             Session.network = info.network;
 
-            TextPatcher.create({
-                realtime: realtime,
-            })(doc);
+            realtime.contentUpdate(doc);
 
             var to = window.setTimeout(function () {
                 cb(new Error("Timeout"));

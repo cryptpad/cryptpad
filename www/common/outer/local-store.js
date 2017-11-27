@@ -52,6 +52,11 @@ define([
         return hash;
     };
 
+    LocalStore.setUserHash = function (hash) {
+        var sHash = Hash.serializeHash(hash);
+        localStorage[Constants.userHashKey] = sHash;
+    };
+
     LocalStore.getAccountName = function () {
         return localStorage[Constants.userNameKey];
     };

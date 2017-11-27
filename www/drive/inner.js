@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     'json.sortify',
     '/common/common-util.js',
@@ -14,7 +13,7 @@ define([
     '/common/common-realtime.js',
     '/common/userObject.js',
     '/customize/application_config.js',
-    '/common/sframe-chainpad-listmap.js',
+    '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -22,7 +21,6 @@ define([
     'less!/customize/src/less2/main.less',
 ], function (
     $,
-    TextPatcher,
     Toolbar,
     JSONSortify,
     Util,
@@ -2967,12 +2965,7 @@ define([
             var rt = APP.rt = Listmap.create(listmapConfig);
             proxy = rt.proxy;
             var onCreate = function (info) {
-                var realtime = APP.realtime = info.realtime;
-
-                APP.patchText = TextPatcher.create({
-                    realtime: realtime,
-                    logging: true,
-                });
+                APP.realtime = info.realtime;
 
                 metadataMgr = common.getMetadataMgr();
 

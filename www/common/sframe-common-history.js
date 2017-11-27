@@ -1,11 +1,11 @@
 define([
     'jquery',
     '/common/common-interface.js',
-    '/bower_components/chainpad-json-validator/json-ot.js',
+    //'/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, UI, JsonOT) {
-    var ChainPad = window.ChainPad;
+], function ($, UI, ChainPad /* JsonOT */) {
+    //var ChainPad = window.ChainPad;
     var History = {};
 
     var getStates = function (rt) {
@@ -33,7 +33,9 @@ define([
                     }
                 },
                 initialState: '',
-                transformFunction: JsonOT.validate,
+                //patchTransformer: ChainPad.NaiveJSONTransformer,
+                //logLevel: 0,
+                //transformFunction: JsonOT.validate,
                 logLevel: config.debug ? 1 : 0,
                 noPrune: true
             });

@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     '/common/common-util.js',
     '/common/cryptget.js',
@@ -8,20 +7,20 @@ define([
     '/common/sframe-common.js',
     '/common/common-realtime.js',
     '/customize/application_config.js',
-    '/common/sframe-chainpad-listmap.js',
+    '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/pages.js',
     '/poll/render.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
+    '/bower_components/chainpad/chainpad.dist.js',
     '/common/common-interface.js',
     '/customize/messages.js',
-
     'cm/lib/codemirror',
+
     'cm/addon/display/placeholder',
     'cm/mode/markdown/markdown',
     'css!cm/lib/codemirror.css',
-
 
     '/bower_components/file-saver/FileSaver.min.js',
 
@@ -30,7 +29,6 @@ define([
     'less!/customize/src/less2/main.less',
 ], function (
     $,
-    TextPatcher,
     Toolbar,
     Util,
     Cryptget,
@@ -44,6 +42,7 @@ define([
     DiffMd,
     SframeCM,
     Thumb,
+    ChainPad,
     UI,
     Messages,
     CMeditor)
@@ -674,7 +673,7 @@ define([
     };
     var updateDescription = function (old, n) {
         var o = APP.editor.getValue();
-        SframeCM.setValueAndCursor(APP.editor, o, n, TextPatcher);
+        SframeCM.setValueAndCursor(APP.editor, o, n);
         updatePublishedDescription();
         common.notify();
     };
@@ -1067,10 +1066,6 @@ define([
 
         if (APP.realtime !== info.realtime) {
             APP.realtime = info.realtime;
-            APP.patchText = TextPatcher.create({
-                realtime: info.realtime,
-                logging: true,
-            });
         }
 
         metadataMgr = common.getMetadataMgr();

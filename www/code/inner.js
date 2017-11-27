@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/diffMarked.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -39,7 +38,6 @@ define([
 
 ], function (
     $,
-    TextPatcher,
     DiffMd,
     nThen,
     SFCommon,

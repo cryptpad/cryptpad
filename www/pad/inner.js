@@ -30,7 +30,7 @@ define([
     '/api/config',
     '/common/common-hash.js',
     '/common/common-util.js',
-    '/bower_components/chainpad-json-validator/json-ot.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -50,7 +50,7 @@ define([
     ApiConfig,
     Hash,
     Util,
-    JsonOT)
+    ChainPad)
 {
     var DiffDom = window.diffDOM;
 
@@ -537,7 +537,7 @@ define([
             Framework.create({
                 toolbarContainer: '#cke_1_toolbox',
                 contentContainer: '#cke_1_contents',
-                transformFunction: JsonOT.validate,
+                patchTransformer: ChainPad.NaiveJSONTransformer,
                 thumbnail: {
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
                     filter: function (el, before) {
