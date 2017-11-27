@@ -100,7 +100,6 @@ define([
                 'id': name+'Input',
                 placeholder: ph
             }).val(value);
-            var $icon = $('<span>', {'class': 'fa fa-pencil cp-app-profile-input-edit'});
             var editing = false;
             var todo = function () {
                 if (editing) { return; }
@@ -126,12 +125,11 @@ define([
                     $input.val(lastVal);
                 }
             });
-            $icon.click(function () { $input.focus(); });
             $input.focus(function () {
                 $input.width('');
             });
             $input.focusout(todo);
-            $block.append($input).append($icon);
+            $block.append($input);
         });
     };
 
@@ -354,6 +352,7 @@ define([
         var $spinner = $('<span>', {
             'class': 'cp-app-profile-description-spin fa fa-spinner fa-pulse'
         }).appendTo($block);
+
         var $textarea = $('<textarea>').val(APP.lm.proxy.description || '');
         $block.append($textarea);
         var editor = APP.editor = CodeMirror.fromTextArea($textarea[0], {
@@ -362,6 +361,9 @@ define([
             styleActiveLine : true,
             mode: "markdown",
         });
+
+        var markdownTb = common.createMarkdownToolbar(editor);
+        $block.prepend(markdownTb.toolbar);
 
         var onLocal = function () {
             $ok.hide();
