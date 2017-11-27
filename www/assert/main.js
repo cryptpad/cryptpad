@@ -1,16 +1,14 @@
 define([
     'jquery',
     '/bower_components/hyperjson/hyperjson.js',
-    '/bower_components/textpatcher/TextPatcher.amd.js',
     'json.sortify',
     '/drive/tests.js',
     '/common/test.js',
     '/common/common-hash.js',
     '/common/common-thumbnail.js',
     '/common/flat-dom.js',
-], function ($, Hyperjson, TextPatcher, Sortify, Drive, Test, Hash, Thumb, Flat) {
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Thumb, Flat) {
     window.Hyperjson = Hyperjson;
-    window.TextPatcher = TextPatcher;
     window.Sortify = Sortify;
 
     var assertions = 0;
@@ -94,18 +92,7 @@ define([
             // turn it back into stringified Hyperjson, but apply filters
             var shjson2 = Sortify(Hyperjson.fromDOM(DOM, elementFilter, attributeFilter));
 
-            var success = shjson === shjson2;
-
-            var op = TextPatcher.diff(shjson, shjson2);
-
-            var diff = TextPatcher.format(shjson, op);
-
-            if (success) {
-                return cb(true);
-            } else {
-                return  cb('<br><br>insert: ' + diff.insert + '<br><br>' +
-                        'remove: ' + diff.remove + '<br><br>');
-            }
+            return cb(shjson === shjson2);
         },  "expected hyperjson equality");
     };
 
@@ -116,21 +103,8 @@ define([
         assert(function (cb) {
             var hjson = Hyperjson.fromDOM(target);
             var cloned = Hyperjson.toDOM(hjson);
-            var success = cloned.outerHTML === target.outerHTML;
 
-            if (!success) {
-                var op = TextPatcher.diff(target.outerHTML, cloned.outerHTML);
-                window.DEBUG = {
-                    error: "Expected equality between A and B",
-                    A: target.outerHTML,
-                    B: cloned.outerHTML,
-                    diff: op
-                };
-                console.log("DIFF:");
-                TextPatcher.log(target.outerHTML, op);
-            }
-
-            return cb(success);
+            return cb(cloned.outerHTML === target.outerHTML);
         }, "Round trip serialization introduced artifacts.");
     };
 
