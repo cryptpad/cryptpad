@@ -345,8 +345,9 @@ define([
             var el = e.currentTarget;
             if (!el || el.nodeName !== 'A') { return; }
             var href = el.getAttribute('href');
-            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-            if (href) { ifrWindow.open(bounceHref, '_blank'); }
+            if (href) {
+                framework._.sfCommon.openUnsafeURL(href);
+            }
         };
 
         framework.onEditableChange(function (unlocked) {

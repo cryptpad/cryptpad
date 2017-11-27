@@ -1,6 +1,5 @@
 define([
     'jquery',
-    '/common/cryptpad-common.js',
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-interface.js',
@@ -8,35 +7,10 @@ define([
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
     '/common/media-tag.js',
-], function ($, Cryptpad, Messages, Util, UI, Notifier, h, Marked, MediaTag) {
+], function ($, Messages, Util, UI, Notifier, h, Marked, MediaTag) {
     'use strict';
 
     var MessengerUI = {};
-
-    var m = function (md) {
-        var d = h('div.cp-app-contacts-content');
-        try {
-            d.innerHTML = Marked(md || '');
-            var $d = $(d);
-            // remove potentially malicious elements
-            $d.find('script, iframe, object, applet, video, audio').remove();
-
-            // override link clicking, because we're in an iframe
-            $d.find('a').each(function () {
-                var href = $(this).click(function (e) {
-                    e.preventDefault();
-                    window.open(href);
-                }).attr('href');
-            });
-
-            // activate media-tags
-            $d.find('media-tag').each(function (i, e) { MediaTag(e); });
-        } catch (e) {
-            console.error(md);
-            console.error(e);
-        }
-        return d;
-    };
 
     var dataQuery = function (curvePublic) {
         return '[data-key="' + curvePublic + '"]';
@@ -79,6 +53,31 @@ define([
         };
         var unnotify = function (curvePublic) {
             find.inList(curvePublic).removeClass('cp-app-contacts-notify');
+        };
+
+        var m = function (md) {
+            var d = h('div.cp-app-contacts-content');
+            try {
+                d.innerHTML = Marked(md || '');
+                var $d = $(d);
+                // remove potentially malicious elements
+                $d.find('script, iframe, object, applet, video, audio').remove();
+
+                // override link clicking, because we're in an iframe
+                $d.find('a').each(function () {
+                    var href = $(this).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(href);
+                    }).attr('href');
+                });
+
+                // activate media-tags
+                $d.find('media-tag').each(function (i, e) { MediaTag(e); });
+            } catch (e) {
+                console.error(md);
+                console.error(e);
+            }
+            return d;
         };
 
         var markup = {};
@@ -510,7 +509,7 @@ define([
             console.error('TODO show something if that chatbox was active');
         });
 
-        Cryptpad.onDisplayNameChanged(function () {
+        common.getMetadataMgr().onChange(function () {
             //messenger.checkNewFriends();
             messenger.updateMyData();
         });

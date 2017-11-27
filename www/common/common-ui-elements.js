@@ -261,7 +261,7 @@ define([
         return button;
     };
 
-    var createMdToolbar = function (editor) {
+    var createMdToolbar = function (common, editor) {
         var $toolbar = $('<div>', {
             'class': 'cp-markdown-toolbar'
         });
@@ -359,13 +359,12 @@ define([
             title: Messages.mdToolbar_help
         }).click(function () {
             var href = Messages.mdToolbar_tutorial;
-            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-            window.open(bounceHref);
+            common.openUnsafeURL(href);
         }).appendTo($toolbar);
         return $toolbar;
     };
     UIElements.createMarkdownToolbar = function (common, editor) {
-        var $toolbar = createMdToolbar(editor);
+        var $toolbar = createMdToolbar(common, editor);
         var cfg = {
             title: Messages.mdToolbar_button,
             element: $toolbar

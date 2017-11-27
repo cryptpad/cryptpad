@@ -299,6 +299,10 @@ define([
 
     funcs.gotoURL = function (url) { ctx.sframeChan.event('EV_GOTO_URL', url); };
     funcs.openURL = function (url) { ctx.sframeChan.event('EV_OPEN_URL', url); };
+    funcs.openUnsafeURL = function (url) {
+        var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(url);
+        window.open(bounceHref);
+    };
 
     funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
