@@ -25,9 +25,12 @@ define([], function () {
     };
 
     Util.find = function (map, path) {
-        return (map && path.reduce(function (p, n) {
-            return typeof(p[n]) !== 'undefined' && p[n];
-        }, map));
+        var l = path.length;
+        for (var i = 0; i < l; i++) {
+            if (typeof(map[path[i]]) === 'undefined') { return; }
+            map = map[path[i]];
+        }
+        return map;
     };
 
     Util.uid = function () {
