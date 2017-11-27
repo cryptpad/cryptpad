@@ -144,13 +144,14 @@ define([
                     }
                 });
                 markdownTb.setState(true);
+                return;
             }
             $editorContainer.removeClass('cp-app-code-present');
             $previewButton.hide();
             $previewContainer.hide();
             $previewButton.removeClass('active');
             $codeMirrorContainer.addClass('cp-app-code-fullpage');
-            markdownTb.setState(true);
+            markdownTb.setState(false);
         };
 
         var isVisible = function () {

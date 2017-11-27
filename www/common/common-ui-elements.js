@@ -374,10 +374,13 @@ define([
                 if (e) { return void console.error(e); }
             });
         };
+
         var $toolbarButton = common.createButton('toggle', true, cfg, onClick);
+        var tbState = true;
         common.getAttribute(['general', 'markdown-help'], function (e, data) {
             if (e) { return void console.error(e); }
-            if (data === true && $toolbarButton) {
+            if (data === true && $toolbarButton.length && tbState) {
+                console.log($toolbar.is(':visible'));
                 $toolbarButton.click();
             }
         });
@@ -385,6 +388,7 @@ define([
         // setState provides the ability to disable the toolbar and the button in case we don't
         // have the markdown editor available (in code we can switch mode, in poll we can publish)
         var setState = function (state) {
+            tbState = state;
             if (!state) {
                 $toolbar.hide();
                 $toolbarButton.hide();
@@ -411,6 +415,7 @@ define([
             setState: setState
         };
     };
+
     // Avatars
 
     // Enable mediatags
