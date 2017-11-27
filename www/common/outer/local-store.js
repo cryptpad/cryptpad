@@ -52,7 +52,7 @@ define([
         return hash;
     };
 
-    var setUserHash = LocalStore.setUserHash = function (hash) {
+    LocalStore.setUserHash = function (hash) {
         var sHash = Hash.serializeHash(hash);
         localStorage[Constants.userHashKey] = sHash;
     };
