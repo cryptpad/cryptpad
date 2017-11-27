@@ -125,7 +125,7 @@ define([
                 e.preventDefault();
                 var $a = $t.is('a') ? $t : $t.parents('a').first();
                 var href = $a.attr('href');
-                window.open(href);
+                framework._.sfCommon.openUnsafeURL(href);
             }
         });
 

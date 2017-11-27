@@ -1206,7 +1206,7 @@ define([
                     var $a = $t.is('a') ? $t : $t.parents('a').first();
                     var href = $a.attr('href');
                     if (!href) { return; }
-                    window.open(href);
+                    common.openUnsafeURL(href);
                 }
             });
 

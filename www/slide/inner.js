@@ -358,7 +358,7 @@ define([
         });
     };
 
-    var activateLinks = function ($content) {
+    var activateLinks = function ($content, framework) {
         $content.click(function (e) {
             if (!e.target) { return; }
             var $t = $(e.target);
@@ -366,7 +366,7 @@ define([
                 e.preventDefault();
                 var $a = $t.is('a') ? $t : $t.parents('a').first();
                 var href = $a.attr('href');
-                window.open(href);
+                framework._.sfCommon.openUnsafeURL(href);
             }
         });
     };
@@ -389,7 +389,7 @@ define([
 
         var $toolbarDrawer = framework._.toolbar.$drawer;
 
-        activateLinks($content);
+        activateLinks($content, framework);
         Slide.setModal(framework._.sfCommon, $modal, $content, slideOptions, Messages.slideInitialState);
         mkPrintButton(framework, editor, $content, $print, $toolbarDrawer);
         mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
