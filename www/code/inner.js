@@ -67,10 +67,13 @@ define([
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
         var $editorContainer = $('#cp-app-code-editor');
+        var $codeMirrorContainer = $('#cp-app-code-container');
         var $codeMirror = $('.CodeMirror');
 
-        var $previewButton = framework._.sfCommon.createButton(null, true);
+        var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
+        $codeMirrorContainer.prepend(markdownTb.toolbar);
 
+        var $previewButton = framework._.sfCommon.createButton(null, true);
         var forceDrawPreview = function () {
             try {
                 DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
@@ -101,20 +104,21 @@ define([
             $previewContainer.toggle();
             if ($previewContainer.is(':visible')) {
                 forceDrawPreview();
-                $codeMirror.removeClass('cp-app-code-fullpage');
+                $codeMirrorContainer.removeClass('cp-app-code-fullpage');
                 $previewButton.addClass('cp-toolbar-button-active');
                 framework._.sfCommon.setPadAttribute('previewMode', true, function (e) {
                     if (e) { return console.log(e); }
                 });
             } else {
-                $codeMirror.addClass('cp-app-code-fullpage');
+                $codeMirrorContainer.addClass('cp-app-code-fullpage');
                 $previewButton.removeClass('cp-toolbar-button-active');
                 framework._.sfCommon.setPadAttribute('previewMode', false, function (e) {
                     if (e) { return console.log(e); }
                 });
             }
         });
-        framework._.toolbar.$rightside.append($previewButton);
+
+        framework._.toolbar.$rightside.append($previewButton).append(markdownTb.button);
 
         $preview.click(function (e) {
             if (!e.target) { return; }
@@ -135,19 +139,20 @@ define([
                     if (data !== false) {
                         $previewContainer.show();
                         $previewButton.addClass('cp-toolbar-button-active');
-                        $codeMirror.removeClass('cp-app-code-fullpage');
+                        $codeMirrorContainer.removeClass('cp-app-code-fullpage');
                         if (isPresentMode) {
                             $editorContainer.addClass('cp-app-code-present');
                         }
                     }
                 });
-                return;
+                markdownTb.setState(true);
             }
             $editorContainer.removeClass('cp-app-code-present');
             $previewButton.hide();
             $previewContainer.hide();
             $previewButton.removeClass('active');
-            $codeMirror.addClass('cp-app-code-fullpage');
+            $codeMirrorContainer.addClass('cp-app-code-fullpage');
+            markdownTb.setState(true);
         };
 
         var isVisible = function () {
@@ -164,7 +169,7 @@ define([
                 splitter.css('top', $preview.scrollTop() + 'px');
             });
 
-            var $target = $('.CodeMirror');
+            var $target = $codeMirrorContainer;
 
             splitter.on('mousedown', function (e) {
                 e.preventDefault();
@@ -372,7 +377,7 @@ define([
                 SFCommon.create(waitFor(function (c) { common = c; }));
             }).nThen(function () {
                 CodeMirror = common.initCodeMirrorApp(null, CMeditor);
-                $('.CodeMirror').addClass('cp-app-code-fullpage');
+                $('#cp-app-code-container').addClass('cp-app-code-fullpage');
                 editor = CodeMirror.editor;
             }).nThen(waitFor());
 

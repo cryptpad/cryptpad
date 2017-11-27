@@ -227,6 +227,27 @@ define([
                 .click(common.prepareFeedback(type))
                 .click(function () { UIElements.updateTags(common, null); });
                 break;
+            case 'toggle':
+                button = $('<button>', {
+                    'class': 'fa fa-caret-down',
+                })
+                .click(common.prepareFeedback(type));
+                window.setTimeout(function () {
+                    button.attr('title', data.title);
+                });
+                var updateIcon = function (isVisible) {
+                    button.removeClass('fa-caret-down').removeClass('fa-caret-up');
+                    if (!isVisible) { button.addClass('fa-caret-down'); }
+                    else { button.addClass('fa-caret-up'); }
+                };
+                button.click(function () {
+                    data.element.toggle();
+                    var isVisible = data.element.is(':visible');
+                    if (callback) { callback(isVisible); }
+                    updateIcon(isVisible);
+                });
+                updateIcon(data.element.is(':visible'));
+                break;
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
@@ -240,6 +261,157 @@ define([
         return button;
     };
 
+    var createMdToolbar = function (editor) {
+        var $toolbar = $('<div>', {
+            'class': 'cp-markdown-toolbar'
+        });
+        var clean = function (str) {
+            return str.replace(/^(\n)+/, '').replace(/(\n)+$/, '');
+        };
+        var actions = {
+            'bold': {
+                expr: '**{0}**',
+                icon: 'fa-bold'
+            },
+            'italic': {
+                expr: '_{0}_',
+                icon: 'fa-italic'
+            },
+            'strikethrough': {
+                expr: '~~{0}~~',
+                icon: 'fa-strikethrough'
+            },
+            'heading': {
+                apply: function (str) {
+                    return '\n'+clean(str).split('\n').map(function (line) {
+                        return '# '+line;
+                    }).join('\n')+'\n';
+                },
+                icon: 'fa-header'
+            },
+            'link': {
+                expr: '[{0}](http://)',
+                icon: 'fa-link'
+            },
+            'quote': {
+                apply: function (str) {
+                    return '\n\n'+str.split('\n').map(function (line) {
+                        return '> '+line;
+                    }).join('\n')+'\n\n';
+                },
+                icon: 'fa-quote-right'
+            },
+            'nlist': {
+                apply: function (str) {
+                    return '\n'+clean(str).split('\n').map(function (line) {
+                        return '1. '+line;
+                    }).join('\n')+'\n';
+                },
+                icon: 'fa-list-ol'
+            },
+            'list': {
+                apply: function (str) {
+                    return '\n'+clean(str).split('\n').map(function (line) {
+                        return '* '+line;
+                    }).join('\n')+'\n';
+                },
+                icon: 'fa-list-ul'
+            },
+            'check': {
+                apply: function (str) {
+                    return '\n' + clean(str).split('\n').map(function (line) {
+                        return '* [ ] ' + line;
+                    }).join('\n') + '\n';
+                },
+                icon: 'fa-check-square-o'
+            },
+            'code': {
+                apply: function (str) {
+                    if (str.indexOf('\n') !== -1) {
+                        return '\n```\n' + clean(str) + '\n```\n';
+                    }
+                    return '`' + str + '`';
+                },
+                icon: 'fa-code'
+            }
+        };
+        var onClick = function () {
+            var type = $(this).attr('data-type');
+            var texts = editor.getSelections();
+            var newTexts = texts.map(function (str) {
+                str = str || Messages.mdToolbar_defaultText;
+                if (actions[type].apply) {
+                    return actions[type].apply(str);
+                }
+                return actions[type].expr.replace('{0}', str);
+            });
+            editor.replaceSelections(newTexts, 'around');
+        };
+        for (var k in actions) {
+            $('<button>', {
+                'data-type': k,
+                'class': 'fa ' + actions[k].icon,
+                title: Messages['mdToolbar_' + k] || k
+            }).click(onClick).appendTo($toolbar);
+        }
+        $('<button>', {
+            'class': 'fa fa-question cp-markdown-help',
+            title: Messages.mdToolbar_help
+        }).click(function () {
+            var href = Messages.mdToolbar_tutorial;
+            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
+            window.open(bounceHref);
+        }).appendTo($toolbar);
+        return $toolbar;
+    };
+    UIElements.createMarkdownToolbar = function (common, editor) {
+        var $toolbar = createMdToolbar(editor);
+        var cfg = {
+            title: Messages.mdToolbar_button,
+            element: $toolbar
+        };
+        var onClick = function (visible) {
+            common.setAttribute(['general', 'markdown-help'], visible, function (e) {
+                if (e) { return void console.error(e); }
+            });
+        };
+        var $toolbarButton = common.createButton('toggle', true, cfg, onClick);
+        common.getAttribute(['general', 'markdown-help'], function (e, data) {
+            if (e) { return void console.error(e); }
+            if (data === true && $toolbarButton) {
+                $toolbarButton.click();
+            }
+        });
+
+        // setState provides the ability to disable the toolbar and the button in case we don't
+        // have the markdown editor available (in code we can switch mode, in poll we can publish)
+        var setState = function (state) {
+            if (!state) {
+                $toolbar.hide();
+                $toolbarButton.hide();
+                return;
+            }
+            common.getAttribute(['general', 'markdown-help'], function (e, data) {
+                if (e) { return void console.error(e); }
+                if (data === true && $toolbarButton) {
+                    // Show the toolbar using the button to make sure the icon in the button is
+                    // correct (caret-down / caret-up)
+                    $toolbar.hide();
+                    $toolbarButton.click();
+                    return;
+                }
+                $toolbar.show();
+                $toolbarButton.click();
+            });
+            $toolbarButton.show();
+        };
+
+        return {
+            toolbar: $toolbar,
+            button: $toolbarButton,
+            setState: setState
+        };
+    };
     // Avatars
 
     // Enable mediatags

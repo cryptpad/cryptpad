@@ -17,21 +17,27 @@
     max-height: 100%;
     min-height: auto;
 
-    .CodeMirror {
-        display: inline-block;
+    #cp-app-code-container {
+        display: inline-flex;
+        flex-flow: column;
         height: 100%;
         min-height: 100%;
         width: 50%;
         min-width: 20%;
         max-width: 80%;
         resize: horizontal;
-        font-size: initial;
+        overflow: hidden;
+        &.cp-app-code-fullpage {
+            max-width: 100%;
+            resize: none;
+            flex: 1;
+        }
+
     }
-    .CodeMirror.cp-app-code-fullpage {
-        //min-width: 100%;
-        max-width: 100%;
-        resize: none;
+    .CodeMirror {
         flex: 1;
+        font-size: initial;
+        width: 100%;
     }
     .CodeMirror-focused .cm-matchhighlight {
         background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
@@ -68,6 +74,7 @@
                 max-height:50vh;
             }
         }
+        .markdown_main();
     }
 
     #cp-app-code-preview-content {

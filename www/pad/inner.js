@@ -263,38 +263,20 @@ define([
 
     var addToolbarHideBtn = function (framework, $bar) {
         // Expand / collapse the toolbar
-        var $collapse = framework._.sfCommon.createButton(null, true);
-        $collapse.removeClass('fa-question');
-        var updateIcon = function (isVisible) {
-            $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
-            if (!isVisible) {
-                framework.feedback('HIDETOOLBAR_PAD');
-                $collapse.addClass('fa-caret-down');
-            }
-            else {
-                framework.feedback('SHOWTOOLBAR_PAD');
-                $collapse.addClass('fa-caret-up');
-            }
+        var cfg = {
+            element: $bar.find('.cke_toolbox_main')
         };
-        updateIcon();
-        $collapse.click(function () {
+        var onClick = function (visible) {
             $(window).trigger('resize');
-            $('.cke_toolbox_main').toggle();
             $(window).trigger('cryptpad-ck-toolbar');
-            var isVisible = $bar.find('.cke_toolbox_main').is(':visible');
-            framework._.sfCommon.setAttribute(['pad', 'showToolbar'], isVisible);
-            updateIcon(isVisible);
-        });
+            framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
+        };
         framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function (err, data) {
-            if (typeof(data) === "undefined" || data) {
-                $('.cke_toolbox_main').show();
-                updateIcon(true);
-                return;
-            }
-            $('.cke_toolbox_main').hide();
-            updateIcon(false);
+            if (typeof(data) === "undefined" || data) { $('.cke_toolbox_main').show(); }
+            else { $('.cke_toolbox_main').hide(); }
+            var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
+            framework._.toolbar.$rightside.append($collapse);
         });
-        framework._.toolbar.$rightside.append($collapse);
     };
 
     var displayMediaTags = function (framework, dom, mediaTagMap) {

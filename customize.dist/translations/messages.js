@@ -564,6 +564,22 @@ define(function () {
     // general warnings
     out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
 
+    // markdown toolbar
+    out.mdToolbar_button = "Show or hide the Markdown toolbar";
+    out.mdToolbar_defaultText = "Your text here";
+    out.mdToolbar_help = "Help";
+    out.mdToolbar_tutorial = "http://www.markdowntutorial.com/";
+    out.mdToolbar_bold = "Bold";
+    out.mdToolbar_italic = "Italic";
+    out.mdToolbar_strikethrough = "Strikethrough";
+    out.mdToolbar_heading = "Heading";
+    out.mdToolbar_link = "Link";
+    out.mdToolbar_quote = "Quote";
+    out.mdToolbar_nlist = "Ordered list";
+    out.mdToolbar_list = "Bullet list";
+    out.mdToolbar_check = "Task list";
+    out.mdToolbar_code = "Code";
+
     // index.html
 
 

@@ -87,6 +87,7 @@ define([
     funcs.createUsageBar = callWithCommon(UIElements.createUsageBar);
     funcs.updateTags = callWithCommon(UIElements.updateTags);
     funcs.createLanguageSelector = callWithCommon(UIElements.createLanguageSelector);
+    funcs.createMarkdownToolbar = callWithCommon(UIElements.createMarkdownToolbar);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);

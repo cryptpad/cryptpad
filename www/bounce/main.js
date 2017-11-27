@@ -6,5 +6,6 @@ define([], function () {
     }
     var bounceTo = decodeURIComponent(window.location.hash.slice(1));
     if (!bounceTo) { return; }
+    window.opener = null;
     window.location.href = bounceTo;
 });

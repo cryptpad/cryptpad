@@ -559,6 +559,22 @@ define(function () {
     // general warnings
     out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
 
+    // markdown toolbar
+    out.mdToolbar_button = "Afficher ou cacher la barre d'outils Markdown";
+    out.mdToolbar_defaultText = "Votre texte ici";
+    out.mdToolbar_help = "Aide";
+    out.mdToolbar_tutorial = "https://blog.wax-o.com/2014/04/tutoriel-un-guide-pour-bien-commencer-avec-markdown/";
+    out.mdToolbar_bold = "Gras";
+    out.mdToolbar_italic = "Italique";
+    out.mdToolbar_strikethrough = "Barré";
+    out.mdToolbar_heading = "Titre";
+    out.mdToolbar_link = "Lien";
+    out.mdToolbar_quote = "Citation";
+    out.mdToolbar_nlist = "Liste ordonnée";
+    out.mdToolbar_list = "Liste à puces";
+    out.mdToolbar_check = "Liste de tâches";
+    out.mdToolbar_code = "Code";
+
     // index.html
 
     //about.html
