@@ -1,3 +1,4 @@
+(function (window) {
 define([], function () {
     var Util = {};
 
@@ -210,3 +211,4 @@ define([], function () {
 
     return Util;
 });
+}(self));
