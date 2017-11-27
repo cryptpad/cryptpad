@@ -258,6 +258,7 @@ define([
     };
 
     var setTablePublished = function (bool) {
+        if (APP.markdownTb) { APP.markdownTb.setState(!bool); }
         if (bool) {
             if (APP.$publish) { APP.$publish.hide(); }
             if (APP.$admin) { APP.$admin.show(); }
@@ -992,6 +993,10 @@ define([
         updateDisplayedTable();
         updateDescription(null, APP.proxy.description || '');
         initThumbnails();
+
+        var markdownTb = APP.markdownTb = common.createMarkdownToolbar(APP.editor);
+        $('.CodeMirror').parent().prepend(markdownTb.toolbar);
+        APP.toolbar.$rightside.append(markdownTb.button);
 
         // Initialize author name for comments.
         // Disable name modification for logged in users

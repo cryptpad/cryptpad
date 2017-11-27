@@ -358,6 +358,13 @@ define([
         });
     };
 
+    var mkMarkdownToolbar = function (framework, editor) {
+        var $codeMirrorContainer = $('#cp-app-slide-editor-container');
+        var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
+        $codeMirrorContainer.prepend(markdownTb.toolbar);
+        framework._.toolbar.$rightside.append(markdownTb.button);
+    };
+
     var activateLinks = function ($content, framework) {
         $content.click(function (e) {
             if (!e.target) { return; }
@@ -396,6 +403,7 @@ define([
         mkColorConfiguration(framework, $modal);
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
+        mkMarkdownToolbar(framework, editor);
 
         CodeMirror.configureTheme();
 

@@ -33,9 +33,21 @@ h4 { font-size: 31px; }
 h5 { font-size: 27px; }
 h6 { font-size: 24px; }
 
-.CodeMirror {
+#cp-app-slide-editor-container {
+    display: inline-flex;
+    flex-flow: column;
     height: 100%;
     min-height: 100%;
+    width: 50%;
+    min-width: 20%;
+    max-width: 80%;
+    overflow: hidden;
+    max-width: 100%;
+    flex: 1;
+}
+.CodeMirror {
+    flex: 1;
+    width: 100%;
     font-size: initial;
 }
 .CodeMirror-focused .cm-matchhighlight {

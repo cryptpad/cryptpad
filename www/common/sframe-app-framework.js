@@ -253,6 +253,7 @@ define([
                 newContent = normalize(newContent);
                 contentUpdate(newContent);
             } else {
+                console.log('updating title');
                 title.updateTitle(title.defaultTitle);
                 evOnDefaultContentNeeded.fire();
             }
