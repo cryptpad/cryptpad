@@ -39,6 +39,8 @@ define([
         var getSecrets = function (Cryptpad, Utils) {
             var proxy = Cryptpad.getProxy();
             var hash = proxy.todo || Utils.Hash.createRandomHash();
+            if (!proxy.todo) { proxy.todo = hash; }
+
             return Utils.Hash.getSecrets('todo', hash);
         };
         SFCommonO.start({
