@@ -287,7 +287,7 @@ var getUploadSize = function (Env, channel, cb) {
     var paths = Env.paths;
     var path = makeFilePath(paths.blob, channel);
     if (!path) {
-        return cb('INVALID_UPLOAD_ID', path);
+        return cb('INVALID_UPLOAD_ID');
     }
 
     Fs.stat(path, function (err, stats) {
@@ -319,7 +319,7 @@ var getFileSize = function (Env, channel, cb) {
 
     // 'channel' refers to a file, so you need another API
     getUploadSize(Env, channel, function (e, size) {
-        if (!size) { return void cb(e); }
+        if (typeof(size) === 'undefined') { return void cb(e); }
         cb(void 0, size);
     });
 };
@@ -479,7 +479,7 @@ var getFreeSpace = function (Env, publicKey, cb) {
     getLimit(Env, publicKey, function (e, limit) {
         if (e) { return void cb(e); }
         getTotalSize(Env, publicKey, function (e, size) {
-            if (!size) { return void cb(e); }
+            if (typeof(size) === 'undefined') { return void cb(e); }
 
             var rem = limit[0] - size;
             if (typeof(rem) !== 'number') {
@@ -518,11 +518,11 @@ var pinChannel = function (Env, publicKey, channels, cb) {
         }
 
         getMultipleFileSize(Env, toStore, function (e, sizes) {
-            if (!sizes) { return void cb(e); }
+            if (typeof(sizes) === 'undefined') { return void cb(e); }
             var pinSize = sumChannelSizes(sizes);
 
             getFreeSpace(Env, publicKey, function (e, free) {
-                if (!free) {
+                if (typeof(free) === 'undefined') {
                     WARN('getFreeSpace', e);
                     return void cb(e);
                 }
@@ -586,7 +586,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
 
     var pins = {};
     getMultipleFileSize(Env, channelList, function (e, sizes) {
-        if (!sizes) { return void cb(e); }
+        if (typeof(sizes) === 'undefined') { return void cb(e); }
         var pinSize = sumChannelSizes(sizes);
 
 
