@@ -487,7 +487,6 @@ define([
 
         // FILES DATA
         exp.pushData = function (data, cb) {
-            // TODO: can only be called from outside atm
             if (!pinPads) { return; }
             if (typeof cb !== "function") { cb = function () {}; }
             var todo = function () {
@@ -498,8 +497,8 @@ define([
             if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
                 return void todo();
             }
-            pinPads([Hash.hrefToHexChannelId(data.href)], function (e) {
-                if (e) { return void cb(e); }
+            pinPads([Hash.hrefToHexChannelId(data.href)], function (obj) {
+                if (obj && obj.error) { return void cb(obj.error); }
                 todo();
             });
         };

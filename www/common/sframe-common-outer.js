@@ -170,6 +170,7 @@ define([
                     if (cfg.addData) {
                         cfg.addData(metaObj.priv, Cryptpad);
                     }
+
                     sframeChan.event('EV_METADATA_UPDATE', metaObj);
                 });
             };
@@ -228,7 +229,7 @@ define([
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
                 currentTitle = newTitle;
                 setDocumentTitle();
-                Cryptpad.renamePad(newTitle, undefined, function (err) {
+                Cryptpad.setPadTitle(newTitle, undefined, function (err) {
                     cb(err);
                 });
             });

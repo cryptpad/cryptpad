@@ -1,5 +1,4 @@
 define([
-    'jquery',
     '/api/config',
     '/customize/messages.js',
     '/common/common-util.js',
@@ -15,7 +14,7 @@ define([
     '/common/pinpad.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
-], function ($, Config, Messages, Util, Hash,
+], function (Config, Messages, Util, Hash,
             Messaging, Realtime, Language, Constants, Feedback, LocalStore, AStore,
             Pinpad, AppConfig, Nthen) {
 
@@ -238,13 +237,13 @@ define([
         postMessage("GET_TEMPLATES", null, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             if (!Array.isArray(obj)) { return void cb ('NOT_AN_ARRAY'); }
-            if (!type) { return void cb(obj); }
+            if (!type) { return void cb(null, obj); }
 
             var templates = obj.filter(function (f) {
                 var parsed = Hash.parsePadUrl(f.href);
                 return parsed.type === type;
             });
-            cb(templates);
+            cb(null, templates);
         });
     };
 
@@ -257,7 +256,8 @@ define([
             if (e) { throw new Error(e); }
             postMessage("ADD_PAD", {
                 href: href,
-                title: data.title
+                title: data.title,
+                path: ['template']
             }, function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
                 cb();
@@ -267,7 +267,7 @@ define([
 
     common.isTemplate = function (href, cb) {
         var rhref = Hash.getRelativeHref(href);
-        common.listTemplates(null, function (templates) {
+        common.listTemplates(null, function (err, templates) {
             cb(void 0, templates.some(function (t) {
                 return t.href === rhref;
             }));
@@ -321,22 +321,22 @@ define([
 
     common.pinPads = function (pads, cb) {
         postMessage("PIN_PADS", pads, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj.hash);
         });
     };
 
     common.unpinPads = function (pads, cb) {
         postMessage("UNPIN_PADS", pads, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj.hash);
         });
     };
 
     common.getPinnedUsage = function (cb) {
         postMessage("GET_PINNED_USAGE", null, function (obj) {
             if (obj.error) { return void cb(obj.error); }
-            cb();
+            cb(null, obj.bytes);
         });
     };
 
@@ -544,12 +544,6 @@ define([
             return void setTimeout(function () { f(void 0, env); });
         }
 
-        // TODO
-        if (sessionStorage[Constants.newPadPathKey]) {
-            common.initialPath = sessionStorage[Constants.newPadPathKey];
-            delete sessionStorage[Constants.newPadPathKey];
-        }
-
         var provideFeedback = function () {
             if (typeof(window.Proxy) === 'undefined') {
                 Feedback.send("NO_PROXIES");
@@ -581,8 +575,12 @@ define([
                 query: onMessage, // TODO temporary, will be replaced by a webworker channel
                 userHash: LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
-                localToken: localStorage.getItem(Constants.tokenKey)
+                localToken: tryParsing(localStorage.getItem(Constants.tokenKey))
             };
+            if (sessionStorage[Constants.newPadPathKey]) {
+                cfg.initialPath = sessionStorage[Constants.newPadPathKey];
+                delete sessionStorage[Constants.newPadPathKey];
+            }
             AStore.query("CONNECT", cfg, waitFor(function (data) {
                 if (data.error) { throw new Error(data.error); }
 
@@ -606,8 +604,6 @@ define([
                 //Messaging.addDirectMessageHandler(common);
                 initFeedback(data.feedback);
             }));
-        }).nThen(function (waitFor) {
-            $(waitFor());
         }).nThen(function (waitFor) {
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;

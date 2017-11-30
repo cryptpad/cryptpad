@@ -571,12 +571,7 @@ define([
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'cp-limit-container'});
-        var todo;
-        var updateUsage = Util.notAgainForAnother(function () {
-            common.getPinUsage(todo);
-        }, LIMIT_REFRESH_RATE);
-
-        todo = function (err, data) {
+        var todo = function (err, data) {
             if (err) { return void console.error(err); }
 
             var usage = data.usage;
@@ -644,6 +639,10 @@ define([
             $text.text(usage + ' / ' + prettyLimit);
             $limit.append($usage).append($text);
         };
+
+        var updateUsage = Util.notAgainForAnother(function () {
+            common.getPinUsage(todo);
+        }, LIMIT_REFRESH_RATE);
 
         setInterval(function () {
             updateUsage();

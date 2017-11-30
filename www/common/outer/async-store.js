@@ -300,7 +300,6 @@ define([
                 avatar: Util.find(store.proxy, ['profile', 'avatar']),
                 profile: Util.find(store.proxy, ['profile', 'view']),
                 curvePublic: store.proxy.curvePublic,
-                netfluxId: store.network.webChannels[0].myID
             },
             // "priv" is not shared with other users but is needed by the apps
             priv: {
@@ -458,7 +457,8 @@ define([
         var pad = makePad(data.href, data.title);
         store.userObject.pushData(pad, function (e, id) {
             if (e) { return void cb({error: "Error while adding a template:"+ e}); }
-            store.userObject.add(id, ['template']);
+            var path = data.path || ['root'];
+            store.userObject.add(id, path);
             onSync(cb);
         });
     };
@@ -546,7 +546,8 @@ define([
         if (!contains) {
             Store.addPad({
                 href: href,
-                title: title
+                title: title,
+                path: store.data && store.data.initialPath
             }, cb);
             return;
         }
@@ -599,7 +600,6 @@ define([
 
     // Messaging
     var getMessagingCfg = function () {
-        console.log(store, store.network);
         return {
             proxy: store.proxy,
             realtime: store.realtime,
@@ -624,7 +624,7 @@ define([
     var onReady = function (returned, cb) {
         var proxy = store.proxy;
         var userObject = store.userObject = UserObject.init(proxy.drive, {
-            pinPads: function (pads, cb) { Store.pinPads({pads: pads}, cb); },
+            pinPads: Store.pinPads,
             loggedIn: store.loggedIn
         });
         var todo = function () {

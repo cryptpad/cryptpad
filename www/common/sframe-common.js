@@ -122,7 +122,6 @@ define([
     funcs.getFileSize = function (href, cb) {
         var channelId = Hash.hrefToHexChannelId(href);
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
-            console.log(data);
             if (!data) { return void cb("No response"); }
             if (data.error) { return void cb(data.error); }
             if (data.response && data.response.length && typeof(data.response[0]) === 'number') {
@@ -329,7 +328,7 @@ define([
         nThen(function (waitFor) {
             SFrameChannel.create(window.parent, waitFor(function (sfc) { ctx.sframeChan = sfc; }), true);
             // CpNfInner.start() should be here....
-        }).nThen(function () {
+        }).nThen(function (waitFor) {
             localForage.clear();
 
             ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
@@ -390,6 +389,8 @@ define([
                 } catch (e) { Feedback.init(false); }
             });
 
+            ctx.metadataMgr.onReady(waitFor());
+        }).nThen(function () {
             ctx.sframeChan.ready();
             cb(funcs);
         });
