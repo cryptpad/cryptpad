@@ -294,7 +294,7 @@ var getUploadSize = function (Env, channel, cb) {
         if (err) {
             // if a file was deleted, its size is 0 bytes
             if (err.code === 'ENOENT') { return cb(void 0, 0); }
-            return void cb(err);
+            return void cb(err.code);
         }
         cb(void 0, stats.size);
     });
@@ -308,7 +308,7 @@ var getFileSize = function (Env, channel, cb) {
             return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
         }
 
-        return void Env.msgStore.getChannelSize(channel, function (e, size) {
+        return void Env.msgStore.getChannelSize(channel, function (e, size /*:number*/) {
             if (e) {
                 if (e === 'ENOENT') { return void cb(void 0, 0); }
                 return void cb(e.code);
@@ -317,9 +317,9 @@ var getFileSize = function (Env, channel, cb) {
         });
     }
 
-    // 'channel' refers to a file, so you need anoter API
+    // 'channel' refers to a file, so you need another API
     getUploadSize(Env, channel, function (e, size) {
-        if (e) { return void cb(e); }
+        if (!size) { return void cb(e); }
         cb(void 0, size);
     });
 };
@@ -398,7 +398,7 @@ var getHash = function (Env, publicKey, cb) {
 // The limits object contains storage limits for all the publicKey that have paid
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
 var limits = {};
-var updateLimits = function (config, publicKey, cb) {
+var updateLimits = function (config, publicKey, cb /*:(?string, ?any[])=>void*/) {
     if (config.adminEmail === false) {
         if (config.allowSubscriptions === false) { return; }
         throw new Error("allowSubscriptions must be false if adminEmail is false");
@@ -415,7 +415,7 @@ var updateLimits = function (config, publicKey, cb) {
 
     var body = JSON.stringify({
         domain: config.myDomain,
-        subdomain: config.mySubdomain,
+        subdomain: config.mySubdomain || null,
         adminEmail: config.adminEmail,
         version: Package.version
     });
@@ -479,7 +479,7 @@ var getFreeSpace = function (Env, publicKey, cb) {
     getLimit(Env, publicKey, function (e, limit) {
         if (e) { return void cb(e); }
         getTotalSize(Env, publicKey, function (e, size) {
-            if (e) { return void cb(e); }
+            if (!size) { return void cb(e); }
 
             var rem = limit[0] - size;
             if (typeof(rem) !== 'number') {
@@ -518,11 +518,11 @@ var pinChannel = function (Env, publicKey, channels, cb) {
         }
 
         getMultipleFileSize(Env, toStore, function (e, sizes) {
-            if (e) { return void cb(e); }
+            if (!sizes) { return void cb(e); }
             var pinSize = sumChannelSizes(sizes);
 
             getFreeSpace(Env, publicKey, function (e, free) {
-                if (e) {
+                if (!free) {
                     WARN('getFreeSpace', e);
                     return void cb(e);
                 }
@@ -586,7 +586,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
 
     var pins = {};
     getMultipleFileSize(Env, channelList, function (e, sizes) {
-        if (e) { return void cb(e); }
+        if (!sizes) { return void cb(e); }
         var pinSize = sumChannelSizes(sizes);
 
 
@@ -604,7 +604,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
 
                 They will not be able to pin additional pads until they upgrade
                 or delete enough files to go back under their limit. */
-            if (pinSize > limit && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
+            if (pinSize > limit[0] && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
             pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
                 function (e) {
                 if (e) { return void cb(e); }
@@ -646,7 +646,8 @@ var isPrivilegedUser = function (publicKey, cb) {
     });
 };
 var safeMkdir = function (path, cb) {
-    Fs.mkdir(path, function (e) {
+    // flow wants the mkdir call w/ 3 args, 0o777 is default for a directory.
+    Fs.mkdir(path, 0o777, function (e) {
         if (!e || e.code === 'EEXIST') { return void cb(); }
         cb(e);
     });
@@ -655,8 +656,15 @@ var safeMkdir = function (path, cb) {
 var makeFileStream = function (root, id, cb) {
     var stub = id.slice(0, 2);
     var full = makeFilePath(root, id);
+    if (!full) {
+        WARN('makeFileStream', 'invalid id ' + id);
+        return void cb('BAD_ID');
+    }
     safeMkdir(Path.join(root, stub), function (e) {
-        if (e) { return void cb(e); }
+        if (e || !full) { // !full for pleasing flow, it's already checked
+            WARN('makeFileStream', e);
+            return void cb(e ? e.message : 'INTERNAL_ERROR');
+        }
 
         try {
             var stream = Fs.createWriteStream(full, {
@@ -703,7 +711,7 @@ var upload = function (Env, publicKey, content, cb) {
     var paths = Env.paths;
     var dec;
     try { dec = Buffer.from(content, 'base64'); }
-    catch (e) { return void cb(e); }
+    catch (e) { return void cb('DECODE_BUFFER'); }
     var len = dec.length;
 
     var session = beginSession(Env.Sessions, publicKey);
@@ -721,7 +729,7 @@ var upload = function (Env, publicKey, content, cb) {
 
     if (!session.blobstage) {
         makeFileStream(paths.staging, publicKey, function (e, stream) {
-            if (e) { return void cb(e); }
+            if (!stream) { return void cb(e); }
 
             var blobstage = session.blobstage = stream;
             blobstage.write(dec);
@@ -776,14 +784,22 @@ var upload_complete = function (Env, publicKey, cb) {
     }
 
     var oldPath = makeFilePath(paths.staging, publicKey);
+    if (!oldPath) {
+        WARN('safeMkdir', "oldPath is null");
+        return void cb('RENAME_ERR');
+    }
 
     var tryRandomLocation = function (cb) {
         var id = createFileId();
         var prefix = id.slice(0, 2);
         var newPath = makeFilePath(paths.blob, id);
+        if (typeof(newPath) !== 'string') {
+            WARN('safeMkdir', "newPath is null");
+            return void cb('RENAME_ERR');
+        }
 
         safeMkdir(Path.join(paths.blob, prefix), function (e) {
-            if (e) {
+            if (e || !newPath) {
                 WARN('safeMkdir', e);
                 return void cb('RENAME_ERR');
             }
@@ -804,12 +820,15 @@ var upload_complete = function (Env, publicKey, cb) {
     var retries = 3;
 
     var handleMove = function (e, newPath, id) {
-        if (e) {
+        if (e || !oldPath || !newPath) {
             if (retries--) {
                 setTimeout(function () {
                     return tryRandomLocation(handleMove);
                 }, 750);
+            } else {
+                cb(e);
             }
+            return;
         }
 
         // lol wut handle ur errors
@@ -818,12 +837,12 @@ var upload_complete = function (Env, publicKey, cb) {
                 WARN('rename', e);
 
                 if (retries--) {
-                    return setTimeout(function () {
+                    return void setTimeout(function () {
                         tryRandomLocation(handleMove);
                     }, 750);
                 }
 
-                return cb(e);
+                return void cb('RENAME_ERR');
             }
             cb(void 0, id);
         });
@@ -844,7 +863,7 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     if (!filePath) { return void cb('E_INVALID_PATH'); }
 
     getFreeSpace(Env, publicKey, function (e, free) {
-        if (e) { return void cb(e); }
+        if (e || !filePath) { return void cb(e); } // !filePath for pleasing flow
         if (filesize >= free) { return cb('NOT_ENOUGH_SPACE'); }
         isFile(filePath, function (e, yes) {
             if (e) {

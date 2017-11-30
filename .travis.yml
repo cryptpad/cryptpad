@@ -16,6 +16,7 @@ node_js:
   - "6.6.0"
 before_script:
   - npm run-script lint
+  - npm run-script flow
   - cp config.example.js config.js
   - npm install bower
   - ./node_modules/bower/bin/bower install
