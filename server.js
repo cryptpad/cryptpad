@@ -156,6 +156,22 @@ app.get('/api/config', function(req, res){
     ].join(';\n'));
 });
 
+var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
+var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
+
+var send404 = function (res, path) {
+    if (!path && path !== four04_path) { path = four04_path; }
+    Fs.exists(path, function (exists) {
+        if (exists) { return Fs.createReadStream(path).pipe(res); }
+        send404(res);
+    });
+};
+
+app.use(function (req, res, next) {
+    res.status(404);
+    send404(res, custom_four04_path);
+});
+
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
 httpServer.listen(config.httpPort,config.httpAddress,function(){
