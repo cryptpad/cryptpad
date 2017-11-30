@@ -626,10 +626,11 @@ define([
             });
         };
 
+        // TODO displayName
         messenger.getMyInfo = function (cb) {
             cb(void 0, {
                 curvePublic: proxy.curvePublic,
-                displayName: common.getDisplayName(),
+                displayName: '' //common.getDisplayName(),
             });
         };
 

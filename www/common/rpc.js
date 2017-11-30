@@ -2,7 +2,7 @@ define([
     '/common/common-util.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function (Util) {
-    var Nacl = window.nacl;
+    var Nacl = self.nacl;
 
     var uid = Util.uid;
     var signMsg = function (data, signKey) {
@@ -140,7 +140,7 @@ types of messages:
 
         var send = ctx.send = function (type, msg, cb) {
             if (!ctx.connected && type !== 'COOKIE') {
-                return void window.setTimeout(function () {
+                return void self.setTimeout(function () {
                     cb('DISCONNECTED');
                 });
             }
@@ -185,7 +185,7 @@ types of messages:
 
         send.unauthenticated = function (type, msg, cb) {
             if (!ctx.connected) {
-                return void window.setTimeout(function () {
+                return void self.setTimeout(function () {
                     cb('DISCONNECTED');
                 });
             }
@@ -276,7 +276,7 @@ types of messages:
 
         var send = ctx.send = function (type, msg, cb) {
             if (!ctx.connected) {
-                return void window.setTimeout(function () {
+                return void self.setTimeout(function () {
                     cb('DISCONNECTED');
                 });
             }

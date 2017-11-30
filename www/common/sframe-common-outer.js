@@ -104,10 +104,16 @@ define([
                 });
             });
 
-            secret = cfg.getSecrets ? cfg.getSecrets(Cryptpad, Utils) : Utils.Hash.getSecrets();
-            if (!secret.channel) {
-                // New pad: create a new random channel id
-                secret.channel = Utils.Hash.createChannelId();
+            if (cfg.getSecrets) {
+                cfg.getSecrets(Cryptpad, Utils, waitFor(function (err, s) {
+                    secret = s;
+                }));
+            } else {
+                secret = Utils.Hash.getSecrets();
+                if (!secret.channel) {
+                    // New pad: create a new random channel id
+                    secret.channel = Utils.Hash.createChannelId();
+                }
             }
             Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
 
@@ -120,54 +126,46 @@ define([
             var proxy = Cryptpad.getProxy();
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
-                var name;
+                var metaObj, isTemplate;
                 nThen(function (waitFor) {
-                    Cryptpad.getLastName(waitFor(function (err, n) {
+                    Cryptpad.getMetadata(waitFor(function (err, m) {
                         if (err) { console.log(err); }
-                        name = n;
+                        metaObj = m;
+                    }));
+                    Cryptpad.isTemplate(window.location.href, waitFor(function (err, t) {
+                        if (err) { console.log(err); }
+                        isTemplate = t;
                     }));
                 }).nThen(function (/*waitFor*/) {
-                    var metaObj = {
-                        doc: {
-                            defaultTitle: defaultTitle,
-                            type: parsed.type
-                        },
-                        user: {
-                            name: name,
-                            uid: Cryptpad.getUid(),
-                            avatar: Cryptpad.getAvatarUrl(),
-                            profile: Cryptpad.getProfileUrl(),
-                            curvePublic: proxy.curvePublic,
-                            netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
-                        },
-                        priv: {
-                            edPublic: proxy.edPublic,
-                            accountName: Utils.LocalStore.getAccountName(),
-                            origin: window.location.origin,
-                            pathname: window.location.pathname,
-                            fileHost: ApiConfig.fileHost,
-                            readOnly: readOnly,
-                            availableHashes: hashes,
-                            isTemplate: Cryptpad.isTemplate(window.location.href),
-                            feedbackAllowed: Utils.Feedback.state,
-                            friends: proxy.friends || {},
-                            settings: proxy.settings || {},
-                            isPresent: parsed.hashData && parsed.hashData.present,
-                            isEmbed: parsed.hashData && parsed.hashData.embed,
-                            thumbnails: !((proxy.settings || {}).general || {}).disableThumbnails,
-                            accounts: {
-                                donateURL: Cryptpad.donateURL,
-                                upgradeURL: Cryptpad.upgradeURL
-                            }
+                    metaObj.doc: {
+                        defaultTitle: defaultTitle,
+                        type: parsed.type
+                    };
+                    var additionalPriv = {
+                        accountName: Utils.LocalStore.getAccountName(),
+                        origin: window.location.origin,
+                        pathname: window.location.pathname,
+                        fileHost: ApiConfig.fileHost,
+                        readOnly: readOnly,
+                        availableHashes: hashes,
+                        isTemplate: isTemplate,
+                        feedbackAllowed: Utils.Feedback.state,
+                        isPresent: parsed.hashData && parsed.hashData.present,
+                        isEmbed: parsed.hashData && parsed.hashData.embed,
+                        accounts: {
+                            donateURL: Cryptpad.donateURL,
+                            upgradeURL: Cryptpad.upgradeURL
                         }
                     };
+                    for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
+
                     if (cfg.addData) {
                         cfg.addData(metaObj.priv, Cryptpad);
                     }
                     sframeChan.event('EV_METADATA_UPDATE', metaObj);
                 });
             };
-            Cryptpad.onDisplayNameChanged(updateMeta);
+            Cryptpad.onMetadataChanged(updateMeta);
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
             proxy.on('change', 'settings', updateMeta);
 
@@ -445,8 +443,9 @@ define([
                 Cryptpad.useTemplate(href, Cryptget, cb);
             });
             sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
-                var hasTemplate = Cryptpad.listTemplates(type).length > 0;
-                cb(hasTemplate);
+                Cryptpad.listTemplates(type, function (err, templates) {
+                    cb(templates.length > 0);
+                });
             });
 
             sframeChan.on('EV_GOTO_URL', function (url) {

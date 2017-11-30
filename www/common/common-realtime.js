@@ -1,17 +1,17 @@
 define([
-    '/customize/application_config.js',
-    '/customize/messages.js',
-    '/common/common-interface.js',
-], function (AppConfig, Messages, UI) {
+    //'/customize/application_config.js',
+    //'/customize/messages.js',
+    //'/common/common-interface.js',
+], function (/*AppConfig, Messages, UI*/) {
     var common = {};
 
-    common.infiniteSpinnerDetected = false;
-    var BAD_STATE_TIMEOUT = typeof(AppConfig.badStateTimeout) === 'number'?
-        AppConfig.badStateTimeout: 30000;
+    //common.infiniteSpinnerDetected = false;
+    //var BAD_STATE_TIMEOUT = typeof(AppConfig.badStateTimeout) === 'number'?
+    //    AppConfig.badStateTimeout: 30000;
 
-    var connected = false;
-    var intr;
-    var infiniteSpinnerHandlers = [];
+    //var connected = false;
+    //var intr;
+    //var infiniteSpinnerHandlers = [];
 
     /*
         TODO make this not blow up when disconnected or lagging...
@@ -20,7 +20,7 @@ define([
         if (typeof(realtime.getAuthDoc) !== 'function') {
             return void console.error('improper use of this function');
         }
-        window.setTimeout(function () {
+        self.setTimeout(function () {
             if (realtime.getAuthDoc() === realtime.getUserDoc()) {
                 return void cb();
             } else {
@@ -29,6 +29,7 @@ define([
         }, 0);
     };
 
+    /*
     common.beginDetectingInfiniteSpinner = function (realtime) {
         if (intr) { return; }
         intr = window.setInterval(function () {
@@ -52,13 +53,14 @@ define([
             common.infiniteSpinnerDetected = true;
         }, 2000);
     };
+    */
 
-    common.onInfiniteSpinner = function (f) { infiniteSpinnerHandlers.push(f); };
+    //common.onInfiniteSpinner = function (f) { infiniteSpinnerHandlers.push(f); };
 
-    common.setConnectionState = function (bool) {
+    /*common.setConnectionState = function (bool) {
         if (typeof(bool) !== 'boolean') { return; }
         connected = bool;
-    };
+    };*/
 
     return common;
 });

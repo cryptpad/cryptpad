@@ -36,34 +36,41 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils) {
+        var getSecrets = function (Cryptpad, Utils, cb) {
             var Hash = Utils.Hash;
             // 1st case: visiting someone else's profile with hash in the URL
             if (window.location.hash) {
-                return Hash.getSecrets('profile', window.location.hash.slice(1));
+                return void cb(null, Hash.getSecrets('profile', window.location.hash.slice(1)));
             }
-            // 2nd case: visiting our own existing profile
-            var obj = Cryptpad.getProxy();
-            if (obj.profile && obj.profile.view && obj.profile.edit) {
-                return Hash.getSecrets('profile', obj.profile.edit);
-            }
-            // 3rd case: profile creation (create a new random hash, store it later if needed)
-            if (!Utils.LocalStore.isLoggedIn()) { return; }
-            var hash = Hash.createRandomHash();
-            var secret = Hash.getSecrets('profile', hash);
-            Cryptpad.pinPads([secret.channel], function (e) {
-                if (e) {
-                    if (e === 'E_OVER_LIMIT') {
-                        // TODO
-                    }
-                    return;
-                    //return void UI.log(Messages._getKey('profile_error', [e])) // TODO
+            var editHash;
+            nThen(function (waitFor) {
+                // 2nd case: visiting our own existing profile
+                Cryptpad.getProfileEditUrl(waitFor(function (hash) {
+                    editHash = hash;
+                }));
+            }).nThen(function () {
+                if (!editHash) {
+                    return void cb(null, Hash.getSecrets('profile', editHash));
                 }
-                obj.profile = {};
-                obj.profile.edit = Utils.Hash.getEditHashFromKeys(secret.channel, secret.keys);
-                obj.profile.view = Utils.Hash.getViewHashFromKeys(secret.channel, secret.keys);
+                // 3rd case: profile creation (create a new random hash, store it later if needed)
+                if (!Utils.LocalStore.isLoggedIn()) { return void cb(); }
+                var hash = Hash.createRandomHash();
+                var secret = Hash.getSecrets('profile', hash);
+                Cryptpad.pinPads([secret.channel], function (e) {
+                    if (e) {
+                        if (e === 'E_OVER_LIMIT') {
+                            // TODO
+                        }
+                        return;
+                        //return void UI.log(Messages._getKey('profile_error', [e])) // TODO
+                    }
+                    var profile = {};
+                    profile.edit = Utils.Hash.getEditHashFromKeys(secret.channel, secret.keys);
+                    profile.view = Utils.Hash.getViewHashFromKeys(secret.channel, secret.keys);
+                    Cryptpad.setNewProfile(profile);
+                });
+                cb(null, secret);
             });
-            return secret;
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             // Adding a new avatar from the profile: pin it and store it in the object

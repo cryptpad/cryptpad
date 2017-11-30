@@ -21,13 +21,13 @@ define([
 
     module.init = function (files, config) {
         var exp = {};
-        var Cryptpad = config.Cryptpad;
+        var pinPads = config.pinPads;
         var loggedIn = config.loggedIn;
 
         var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Constants.storageKey;
         var OLD_FILES_DATA = module.OLD_FILES_DATA = exp.OLD_FILES_DATA = Constants.oldStorageKey;
-        var NEW_FOLDER_NAME = Messages.fm_newFolder;
-        var NEW_FILE_NAME = Messages.fm_newFile;
+        var NEW_FOLDER_NAME = Messages.fm_newFolder || 'New folder';
+        var NEW_FILE_NAME = Messages.fm_newFile || 'New file';
 
         exp.ROOT = ROOT;
         exp.UNSORTED = UNSORTED;
@@ -488,7 +488,7 @@ define([
         // FILES DATA
         exp.pushData = function (data, cb) {
             // TODO: can only be called from outside atm
-            if (!Cryptpad) { return; }
+            if (!pinPads) { return; }
             if (typeof cb !== "function") { cb = function () {}; }
             var todo = function () {
                 var id = Util.createRandomInteger();
@@ -498,7 +498,7 @@ define([
             if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
                 return void todo();
             }
-            Cryptpad.pinPads([Hash.hrefToHexChannelId(data.href)], function (e) {
+            pinPads([Hash.hrefToHexChannelId(data.href)], function (e) {
                 if (e) { return void cb(e); }
                 todo();
             });

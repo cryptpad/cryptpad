@@ -70,7 +70,7 @@ define([
 
     module.test = function (assert) {
         var config = {
-            Cryptpad: Cryptpad,
+            pinPads: Cryptpad.pinPads,
             workgroup: false,
             testMode: true,
             loggedIn: false

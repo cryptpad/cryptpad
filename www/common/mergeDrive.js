@@ -2,8 +2,8 @@ define([
     '/common/cryptget.js',
     '/common/userObject.js',
     '/common/common-hash.js',
-    '/common/outer/local-store.js',
-], function (Crypt, FO, Hash, LocalStore) {
+    '/common/common-realtime.js',
+], function (Crypt, FO, Hash, Realtime) {
     var exp = {};
 
     var getType = function (el) {
@@ -86,7 +86,7 @@ define([
 
     exp.anonDriveIntoUser = function (proxyData, fsHash, cb) {
         // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
-        if (!fsHash || !LocalStore.isLoggedIn()) {
+        if (!fsHash || !proxyData.loggedIn) {
             if (typeof(cb) === "function") { return void cb(); }
         }
         // Get the content of FS_hash and then merge the objects, remove the migration key and cb
@@ -105,11 +105,11 @@ define([
             if (parsed) {
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
-                    loggedIn: LocalStore.isLoggedIn()
+                    loggedIn: proxyData.loggedIn
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles();
-                    var newFo = proxyData.fo;
+                    var newFo = proxyData.userObject;
                     var oldRecentPads = parsed.drive[newFo.FILES_DATA];
                     var newRecentPads = proxy.drive[newFo.FILES_DATA];
                     var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
@@ -154,7 +154,9 @@ define([
                         proxy.FS_hashes = [];
                     }
                     proxy.FS_hashes.push(fsHash);
-                    if (typeof(cb) === "function") { cb(); }
+                    if (typeof(cb) === "function") {
+                        Realtime.whenRealtimeSyncs(proxyData.realtime, cb);
+                    }
                 };
                 oldFo.migrate(onMigrated);
                 return;

@@ -43,7 +43,7 @@ define([
                 });
             });
             sframeChan.on('Q_SETTINGS_DRIVE_GET', function (d, cb) {
-                cb(Cryptpad.getProxy());
+                Cryptpad.getUserObject(cb);
             });
             sframeChan.on('Q_SETTINGS_DRIVE_SET', function (data, cb) {
                 var sjson = JSON.stringify(data);
@@ -57,26 +57,13 @@ define([
                 });
             });
             sframeChan.on('Q_SETTINGS_DRIVE_RESET', function (data, cb) {
-                var proxy = Cryptpad.getProxy();
-                var realtime = Cryptpad.getRealtime();
-                proxy.drive = Cryptpad.getStore().getEmptyObject();
-                Utils.Realtime.whenRealtimeSyncs(realtime, cb);
+                Cryptpad.resetDrive(cb);
             });
             sframeChan.on('Q_SETTINGS_LOGOUT', function (data, cb) {
-                var proxy = Cryptpad.getProxy();
-                var realtime = Cryptpad.getRealtime();
-                var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
-                localStorage.setItem('loginToken', token);
-                proxy.loginToken = token;
-                Utils.Realtime.whenRealtimeSyncs(realtime, cb);
+                Cryptpad.logoutFromAll(cb);
             });
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
-                var proxyData = Cryptpad.getStore().getProxy();
-                require([
-                    '/common/mergeDrive.js',
-                ], function (Merge) {
-                    Merge.anonDriveIntoUser(proxyData, Utils.LocalStore.getFSHash(), cb);
-                });
+                Cryptpad.mergeAnonDrive(cb);
             });
         };
         SFCommonO.start({
