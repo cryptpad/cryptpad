@@ -315,7 +315,7 @@ define([
 
         exp.realtime = rt.realtime;
         exp.proxy = rt.proxy;
-        exp.loggedIn = Cryptpad.isLoggedIn()
+        exp.loggedIn = Cryptpad.isLoggedIn();
         rt.proxy.on('create', function (info) {
             exp.info = info;
             if (!LocalStore.getUserHash()) {

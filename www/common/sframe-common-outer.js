@@ -9,6 +9,7 @@ define([
     common.start = function (cfg) {
         cfg = cfg || {};
         var realtime = !cfg.noRealtime;
+        var network;
         var secret;
         var hashes;
         var CpNfOuter;
@@ -18,7 +19,7 @@ define([
         var SFrameChannel;
         var sframeChan;
         var FilePicker;
-        var Messenger;
+        //var Messenger;
         var Messaging;
         var Notifier;
         var Utils = {};
@@ -32,7 +33,7 @@ define([
                 '/common/cryptget.js',
                 '/common/sframe-channel.js',
                 '/filepicker/main.js',
-                '/common/common-messenger.js',
+                //'/common/common-messenger.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
@@ -41,16 +42,18 @@ define([
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
+                '/common/outer/network-config.js',
+                '/bower_components/netflux-websocket/netflux-client.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _FilePicker, _Messenger, _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore) {
+            _FilePicker, /*_Messenger,*/ _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _Constants, _Feedback, _LocalStore, NetConfig, Netflux) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 FilePicker = _FilePicker;
-                Messenger = _Messenger;
+                //Messenger = _Messenger;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
@@ -85,6 +88,12 @@ define([
                     sframeChan = sfc;
                 }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
                 Cryptpad.ready(waitFor());
+
+                if (!cfg.newNetwork) {
+                    Netflux.connect(NetConfig.getWebsocketURL()).then(waitFor(function (nw) {
+                        network = nw;
+                    }));
+                }
             }));
         }).nThen(function (waitFor) {
             $('#sbox-iframe').focus();
@@ -123,7 +132,6 @@ define([
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
-            var proxy = Cryptpad.getProxy();
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj, isTemplate;
@@ -137,7 +145,7 @@ define([
                         isTemplate = t;
                     }));
                 }).nThen(function (/*waitFor*/) {
-                    metaObj.doc: {
+                    metaObj.doc = {
                         defaultTitle: defaultTitle,
                         type: parsed.type
                     };
@@ -167,7 +175,6 @@ define([
             };
             Cryptpad.onMetadataChanged(updateMeta);
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
-            proxy.on('change', 'settings', updateMeta);
 
             Utils.LocalStore.onLogout(function () {
                 sframeChan.event('EV_LOGOUT');
@@ -285,7 +292,6 @@ define([
             };
 
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
-                var network = Cryptpad.getNetwork();
                 var hkn = network.historyKeeper;
                 var crypto = Crypto.createEncryptor(secret.keys);
                 // Get the history messages and send them to the iframe
@@ -493,7 +499,8 @@ define([
             }
 
             if (cfg.messaging) {
-                var messenger = Messenger.messenger(Cryptpad);
+                // TODO make messenger work with async store
+                /*var messenger = Messenger.messenger(Cryptpad);
 
                 sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
                     messenger.getFriendList(function (e, keys) {
@@ -604,7 +611,7 @@ define([
                     sframeChan.event('EV_CONTACTS_UNFRIEND', {
                         curvePublic: curvePublic,
                     });
-                });
+                });*/
             }
 
             sframeChan.ready();
@@ -628,7 +635,7 @@ define([
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
-                network: cfg.newNetwork || Cryptpad.getNetwork(),
+                network: cfg.newNetwork || network,
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),

@@ -2,7 +2,6 @@ define([
     'jquery',
     '/api/config',
     '/customize/messages.js',
-    '/common/fsStore.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-messaging.js',
@@ -16,7 +15,7 @@ define([
     '/common/pinpad.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
-], function ($, Config, Messages, Store, Util, Hash,
+], function ($, Config, Messages, Util, Hash,
             Messaging, Realtime, Language, Constants, Feedback, LocalStore, AStore,
             Pinpad, AppConfig, Nthen) {
 
@@ -48,24 +47,6 @@ define([
     };
 
     var PINNING_ENABLED = AppConfig.enablePinning;
-
-    var store;
-    var rpc;
-    var anon_rpc;
-
-    var getProxy = common.getProxy = function () {
-        if (store && store.getProxy()) {
-            return store.getProxy().proxy;
-        }
-    };
-    var getNetwork = common.getNetwork = function () {
-        if (store) {
-            if (store.getProxy() && store.getProxy().info) {
-                return store.getProxy().info.network;
-            }
-        }
-        return;
-    };
 
     // RESTRICTED
     // Settings only
@@ -116,7 +97,27 @@ define([
             value: profile
         }, function () {});
     };
-
+    common.setAvatar = function (data, cb) {
+        var postData = {
+            key: ['profile', 'avatar']
+        };
+        // If we don't have "data", it means we want to remove the avatar and we should not have a
+        // "postData.value", even set to undefined (JSON.stringify transforms undefined to null)
+        if (data) { postData.value = data; }
+        postMessage("SET", postData, cb);
+    };
+    // Todo
+    common.getTodoHash = function (cb) {
+        postMessage("GET", ['todo'], function (obj) {
+            cb(obj);
+        });
+    };
+    common.setTodoHash = function (hash) {
+        postMessage("SET", {
+            key: ['todo'],
+            value: hash
+        }, function () {});
+    };
 
 
     // REFACTOR pull language directly?
@@ -127,43 +128,11 @@ define([
         Language.setLanguage(l, null, cb);
     };
 
-    // REAFCTOR store.getProfile should be store.get(['profile'])
     common.getMetadata = function (cb) {
         postMessage("GET_METADATA", null, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
-    };
-
-    var getRealtime = common.getRealtime = function () {
-        if (store && store.getProxy() && store.getProxy().info) {
-                return store.getProxy().info.realtime;
-        }
-        return;
-    };
-
-    // TODO not needed with async store
-    common.hasSigningKeys = function (proxy) {
-        return typeof(proxy) === 'object' &&
-            typeof(proxy.edPrivate) === 'string' &&
-            typeof(proxy.edPublic) === 'string';
-    };
-
-    // TODO not needed with async store
-    common.hasCurveKeys = function (proxy) {
-        return typeof(proxy) === 'object' &&
-            typeof(proxy.curvePrivate) === 'string' &&
-            typeof(proxy.curvePublic) === 'string';
-    };
-
-    var makePad = common.makePad = function (href, title) {
-        var now = +new Date();
-        return {
-            href: href,
-            atime: now,
-            ctime: now,
-            title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
-        };
     };
 
     common.setDisplayName = function (value, cb) {
@@ -214,7 +183,7 @@ define([
     // Tags
     common.resetTags = function (href, tags, cb) {
         // set pad attribute
-        cb = cb || $.noop;
+        cb = cb || function () {};
         if (!Array.isArray(tags)) { return void cb('INVALID_TAGS'); }
         common.setPadAttribute('tags', tags.slice(), cb, href);
     };
@@ -350,29 +319,15 @@ define([
         });
     };
 
-    common.arePinsSynced = function (cb) {
-        postMessage("ARE_PINS_SYNCED", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
-        });
-    };
-
-    common.resetPins = function (cb) {
-        postMessage("RESET_PINS", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
-        });
-    };
-
     common.pinPads = function (pads, cb) {
-        postMessage("PIN_PADS", {pads: pads}, function (obj) {
+        postMessage("PIN_PADS", pads, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb();
         });
     };
 
     common.unpinPads = function (pads, cb) {
-        postMessage("UNPIN_PADS", {pads: pads}, function (obj) {
+        postMessage("UNPIN_PADS", pads, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             cb();
         });
@@ -392,14 +347,14 @@ define([
             msg: msg,
             data: data
         }, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
         });
     };
 
     common.getFileSize = function (href, cb) {
         postMessage("GET_FILE_SIZE", {href: href}, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
+            if (obj && obj.error) { return void cb(obj.error); }
             cb(undefined, obj.size);
         });
     };
@@ -473,17 +428,29 @@ define([
         });
     };
 
+    // Messaging
+    common.inviteFromUserlist = function (netfluxId, cb) {
+        postMessage("INVITE_FROM_USERLIST", {
+            netfluxId: netfluxId,
+            href: window.location.href
+        }, function (obj) {
+            if (obj.error) { return void cb(obj.error); }
+            cb();
+        });
+    };
+
 
     // HERE
     common.getShareHashes = function (secret, cb) {
+        var hashes;
         if (!window.location.hash) {
-            var hashes = Hash.getHashes(secret.channel, secret);
+            hashes = Hash.getHashes(secret.channel, secret);
             return void cb(null, hashes);
         }
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
-        var hashes = Hash.getHashes(secret.channel, secret);
+        hashes = Hash.getHashes(secret.channel, secret);
 
         if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
             // It means we're using an old hash
@@ -492,7 +459,7 @@ define([
         }
 
         postMessage("GET_STRONGER_HASH", {
-            href: href
+            href: window.location.href
         }, function (hash) {
             if (hash) { hashes.editHash = hash; }
             cb(null, hashes);
@@ -553,6 +520,16 @@ define([
             case 'UPDATE_TOKEN': {
                 var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
                 if (localToken !== data.token) { requestLogin(); }
+                break;
+            }
+            case 'Q_FRIEND_REQUEST': {
+                if (!common.onFriendRequest) { break; }
+                common.onFriendRequest(data, cb);
+                break;
+            }
+            case 'EV_FRIEND_COMPLETE': {
+                if (!common.onFriendComplete) { break; }
+                common.onFriendComplete(data);
                 break;
             }
         }
@@ -664,8 +641,10 @@ define([
 
             if (PINNING_ENABLED && LocalStore.isLoggedIn()) {
                 console.log("logged in. pads will be pinned");
-                postMessage("INIT_RPC", null, waitFor(function () {
+                postMessage("INIT_RPC", null, waitFor(function (obj) {
                     console.log('RPC handshake complete');
+                    if (obj.error) { return; }
+                    localStorage.plan = obj.plan;
                 }));
             } else if (PINNING_ENABLED) {
                 console.log('not logged in. pads will not be pinned');
@@ -703,9 +682,9 @@ define([
     }());
 
     // MAGIC that happens implicitly
-    $(function () {
+    /*$(function () {
         Language.applyTranslation();
-    });
+    });*/
 
     return common;
 });

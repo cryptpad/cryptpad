@@ -40,12 +40,6 @@ define([
             case 'UPLOAD_CANCEL': {
                 Store.uploadCancel(data, cb); break;
             }
-            case 'ARE_PINS_SYNCED': {
-                Store.arePinsSynced(data, cb); break;
-            }
-            case 'RESET_PINS': {
-                Store.resetPins(data, cb); break;
-            }
             case 'PIN_PADS': {
                 Store.pinPads(data, cb); break;
             }
@@ -117,6 +111,11 @@ define([
             case 'GET_STRONGER_HASH': {
                 Store.getStrongerHash(data, cb); break;
             }
+            // Messaging
+            case 'INVITE_FROM_USERLIST': {
+                Store.inviteFromUserlist(data, cb); break;
+            }
+
             default: {
                 
                 break;

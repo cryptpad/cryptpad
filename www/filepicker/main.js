@@ -46,7 +46,6 @@ define([
                         sframeChan = sfc;
                     }));
             }).nThen(function () {
-                var proxy = Cryptpad.getProxy();
                 var updateMeta = function () {
                     //console.log('EV_METADATA_UPDATE');
                     var metaObj;
@@ -56,7 +55,7 @@ define([
                             metaObj = n;
                         }));
                     }).nThen(function (/*waitFor*/) {
-                        metaObj.doc: {};
+                        metaObj.doc = {};
                         var additionalPriv = {
                             accountName: Utils.LocalStore.getAccountName(),
                             origin: window.location.origin,
@@ -71,7 +70,6 @@ define([
                 };
                 Cryptpad.onMetadataChanged(updateMeta);
                 sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
-                proxy.on('change', 'settings', updateMeta);
 
                 config.addCommonRpc(sframeChan);
 

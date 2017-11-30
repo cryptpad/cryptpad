@@ -3,13 +3,13 @@ define([
 ], function (Rpc) {
     var create = function (network, proxy, cb) {
         if (!network) {
-            self.setTimeout(function () {
+            setTimeout(function () {
                 cb('INVALID_NETWORK');
             });
             return;
         }
         if (!proxy) {
-            self.setTimeout(function () {
+            setTimeout(function () {
                 cb('INVALID_PROXY');
             });
             return;
@@ -19,7 +19,7 @@ define([
         var edPublic = proxy.edPublic;
 
         if (!(edPrivate && edPublic)) {
-            self.setTimeout(function () {
+            setTimeout(function () {
                 cb('INVALID_KEYS');
             });
             return;
@@ -39,7 +39,7 @@ define([
             // you can ask the server to pin a particular channel for you
             exp.pin = function (channels, cb) {
                 if (!Array.isArray(channels)) {
-                    self.setTimeout(function () {
+                    setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
                     return;
@@ -50,7 +50,7 @@ define([
             // you can also ask to unpin a particular channel
             exp.unpin = function (channels, cb) {
                 if (!Array.isArray(channels)) {
-                    self.setTimeout(function () {
+                    setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
                     return;
@@ -71,7 +71,7 @@ define([
             // if local and remote hashes don't match, send a reset
             exp.reset = function (channels, cb) {
                 if (!Array.isArray(channels)) {
-                    self.setTimeout(function () {
+                    setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
                     return;
@@ -163,7 +163,7 @@ define([
 
             exp.uploadStatus = function (size, cb) {
                 if (typeof(size) !== 'number') {
-                    return void self.setTimeout(function () {
+                    return void setTimeout(function () {
                         cb('INVALID_SIZE');
                     });
                 }

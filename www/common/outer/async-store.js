@@ -6,24 +6,17 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/common-realtime.js',
+    '/common/common-messaging.js',
     '/common/outer/network-config.js',
 
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
-], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, NetConfig,
+], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, NetConfig,
              Crypto, ChainPad, Listmap) {
     var Store = {};
 
-    var postMessage = function (cmd, data, cb) {};
-    var tryParsing = function (x) {
-        try { return JSON.parse(x); }
-        catch (e) {
-            console.error(e);
-            return null;
-        }
-    };
-
+    var postMessage = function () {};
 
     var storeHash;
 
@@ -43,7 +36,11 @@ define([
         var key = path.pop();
         var obj = Util.find(store.proxy, path);
         if (!obj || typeof(obj) !== "object") { return void cb({error: 'INVALID_PATH'}); }
-        obj[key] = data.value;
+        if (typeof data.value === "undefined") {
+            delete obj[key];
+        } else {
+            obj[key] = data.value;
+        }
         onSync(cb);
     };
 
@@ -82,11 +79,10 @@ define([
             if (avatarChan) { list.push(avatarChan); }
         }
 
-        // TODO
-        /*if (store.proxy.friends) {
-            var fList = Messaging.getFriendChannelsList(common);
+        if (store.proxy.friends) {
+            var fList = Messaging.getFriendChannelsList(store.proxy);
             list = list.concat(fList);
-        }*/
+        }
 
         list.push(Util.base64ToHex(userChannel));
         list.sort();
@@ -102,34 +98,13 @@ define([
     /////////////////////// RPC //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
 
-    Store.arePinsSynced = function (cb) {
-        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-        var list = getCanonicalChannelList();
-        var local = Hash.hashChannelList(list);
-        store.rpc.getServerHash(function (e, hash) {
-            if (e) { return void cb({error: e}); }
-            cb({synced: hash === local});
-        });
-    };
-
-    Store.resetPins = function (data, cb) {
-        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-        var list = getCanonicalChannelList();
-        store.rpc.reset(list, function (e, hash) {
-            if (e) { return void cb({error: e}); }
-            cb({hash: hash});
-        });
-    };
-
     Store.pinPads = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         if (typeof(cb) !== 'function') {
             console.error('expected a callback');
         }
 
-        store.rpc.pin(data.pads, function (e, hash) {
+        store.rpc.pin(data, function (e, hash) {
             if (e) { return void cb({error: e}); }
             cb({hash: hash});
         });
@@ -138,7 +113,7 @@ define([
     Store.unpinPads = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
-        store.rpc.unpin(data.pads, function (e, hash) {
+        store.rpc.unpin(data, function (e, hash) {
             if (e) { return void cb({error: e}); }
             cb({hash: hash});
         });
@@ -158,7 +133,7 @@ define([
     };
 
     // Update for all users from accounts and return current user limits
-    Store.updatePinLimit = function (cb) {
+    Store.updatePinLimit = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.updatePinLimits(function (e, limit, plan, note) {
             if (e) { return void cb({error: e}); }
@@ -169,7 +144,7 @@ define([
         });
     };
     // Get current user limits
-    Store.getPinLimit = function (cb) {
+    Store.getPinLimit = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
         var ALWAYS_REVALIDATE = true;
@@ -189,42 +164,63 @@ define([
 
     Store.clearOwnedChannel = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        rpc.clearOwnedChannel(data.channel, cb);
+        store.rpc.clearOwnedChannel(data.channel, cb);
     };
 
     Store.uploadComplete = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        rpc.uploadComplete(cb);
+        store.rpc.uploadComplete(cb);
     };
 
     Store.uploadStatus = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        rpc.uploadStatus(data.size, cb);
+        store.rpc.uploadStatus(data.size, cb);
     };
 
     Store.uploadCancel = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        rpc.uploadCancel(cb);
+        store.rpc.uploadCancel(cb);
+    };
+
+    var arePinsSynced = function (cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+        var list = getCanonicalChannelList();
+        var local = Hash.hashChannelList(list);
+        store.rpc.getServerHash(function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(null, hash === local);
+        });
+    };
+
+    var resetPins = function (cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+        var list = getCanonicalChannelList();
+        store.rpc.reset(list, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(null, hash);
+        });
     };
 
     Store.initRpc = function (data, cb) {
-        require(['/common/pinpad.js', function (Pinpad) {
+        require(['/common/pinpad.js'], function (Pinpad) {
             Pinpad.create(store.network, store.proxy, function (e, call) {
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
 
-                common.getPinLimit(function (e, limit, plan, note) {
-                    if (e) { return void console.error(e); }
-                    common.account.limit = limit;
-                    localStorage.plan = common.account.plan = plan;
-                    common.account.note = note;
-                    cb();
+                Store.getPinLimit(null, function (obj) {
+                    if (obj.error) { console.error(obj.error); }
+                    account.limit = obj.limit;
+                    account.plan = obj.plan;
+                    account.note = obj.note;
+                    cb(obj);
                 });
 
-                common.arePinsSynced(function (err, yes) {
+                arePinsSynced(function (err, yes) {
                     if (!yes) {
-                        common.resetPins(function (err) {
+                        resetPins(function (err) {
                             if (err) { return console.error(err); }
                             console.log('RESET DONE');
                         });
@@ -239,10 +235,14 @@ define([
     //////////////////////////////////////////////////////////////////
     Store.anonRpcMsg = function (data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-        store.anon_rpc.send(data.msg, data.data, cb);
+        store.anon_rpc.send(data.msg, data.data, function (err, res) {
+            if (err) { return void cb({error: err}); }
+            cb(res);
+        });
     };
 
     Store.getFileSize = function (data, cb) {
+        console.log(data, cb);
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
 
         var channelId = Hash.hrefToHexChannelId(data.href);
@@ -367,19 +367,19 @@ define([
         if (typeof attr === "string") {
             console.error('DEPRECATED: use setAttribute with an array, not a string');
             return {
-                obj: storeObj.settings,
+                obj: store.proxy.settings,
                 key: attr
             };
         }
-        if (!Array.isArray(attr)) { throw new Error("Attribute must be string or array"); }
-        if (attr.length === 0) { throw new Error("Attribute can't be empty"); }
-        var obj = storeObj.settings;
+        if (!Array.isArray(attr)) { return void console.error("Attribute must be string or array"); }
+        if (attr.length === 0) { return void console.error("Attribute can't be empty"); }
+        var obj = store.proxy.settings;
         attr.forEach(function (el, i) {
             if (i === attr.length-1) { return; }
             if (!obj[el]) {
                 obj[el] = {};
             }
-            else if (typeof obj[el] !== "object") { throw new Error("Wrong attribute"); }
+            else if (typeof obj[el] !== "object") { return void console.error("Wrong attribute"); }
             obj = obj[el];
         });
         return {
@@ -402,12 +402,12 @@ define([
      *   - value (String)
      */
     Store.setPadAttribute = function (data, cb) {
-        store.userObject.setPadAttribute(data.href, date.attr, data.value, function () {
+        store.userObject.setPadAttribute(data.href, data.attr, data.value, function () {
             onSync(cb);
         });
     };
     Store.getPadAttribute = function (data, cb) {
-        filesOp.getPadAttribute(data.href, data.attr, function (err, val) {
+        store.userObject.getPadAttribute(data.href, data.attr, function (err, val) {
             if (err) { return void cb({error: err}); }
             cb(val);
         });
@@ -443,7 +443,7 @@ define([
         cb(all);
     };
 
-    var makePad = common.makePad = function (href, title) {
+    var makePad = function (href, title) {
         var now = +new Date();
         return {
             href: href,
@@ -465,13 +465,13 @@ define([
 
     // Templates
     Store.getTemplates = function (data, cb) {
-        var templateFiles = filesOp.getFiles(['template']);
+        var templateFiles = store.userObject.getFiles(['template']);
         var res = [];
         templateFiles.forEach(function (f) {
-            var data = filesOp.getFileData(f);
+            var data = store.userObject.getFileData(f);
             res.push(JSON.parse(JSON.stringify(data)));
         });
-        return res;
+        cb(res);
     };
 
     // Pads
@@ -496,7 +496,7 @@ define([
         // Update all pads that use the same channel but with a weaker hash
         // Edit > Edit (present) > View > View (present)
         for (var id in allPads) {
-            var pad = recent[id];
+            var pad = allPads[id];
             if (!pad.href) { continue; }
 
             var p2 = Hash.parsePadUrl(pad.href);
@@ -539,7 +539,7 @@ define([
         if (isStronger) {
             // If we have a stronger url, remove the possible weaker from the trash.
             // If all of the weaker ones were in the trash, add the stronger to ROOT
-            store.userObject.restoreHref(obj.n);
+            store.userObject.restoreHref(href);
         }
 
         // Add the pad if it does not exist in our drive
@@ -585,7 +585,7 @@ define([
     };
 
     // Get hashes for the share button
-    common.getStrongerHash = function (data, cb) {
+    Store.getStrongerHash = function (data, cb) {
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
 
         // If we have a stronger version in drive, add it and add a redirect button
@@ -597,6 +597,29 @@ define([
         cb();
     };
 
+    // Messaging
+    var getMessagingCfg = function () {
+        console.log(store, store.network);
+        return {
+            proxy: store.proxy,
+            realtime: store.realtime,
+            network: store.network,
+            updateMetadata: function () {
+                postMessage("UPDATE_METADATA");
+            },
+            pinPads: Store.pinPads,
+            friendComplete: function (data, cb) {
+                postMessage("Q_FRIEND_COMPLETE", data, cb);
+            },
+            friendRequest: function (data) {
+                postMessage("EV_FRIEND_REQUEST", data);
+            },
+        };
+    };
+    Store.inviteFromUserlist = function (data, cb) {
+        var messagingCfg = getMessagingCfg();
+        Messaging.inviteFromUserlist(messagingCfg, data, cb);
+    };
 
     var onReady = function (returned, cb) {
         var proxy = store.proxy;
@@ -605,9 +628,9 @@ define([
             loggedIn: store.loggedIn
         });
         var todo = function () {
-            fo.fixFiles();
+            userObject.fixFiles();
 
-            Migrate(proxy, Cryptpad);
+            Migrate(proxy);
 
             var requestLogin = function () {
                 postMessage("REQUEST_LOGIN");
@@ -624,7 +647,7 @@ define([
                 }
                 returned[Constants.tokenKey] = proxy[Constants.tokenKey];
 
-                if (store.data.localToken && store.data.localToken !== proxy[tokenKey]) {
+                if (store.data.localToken && store.data.localToken !== proxy[Constants.tokenKey]) {
                     // the local number doesn't match that in
                     // the user object, request that they reauthenticate.
                     return void requestLogin();
@@ -665,6 +688,9 @@ define([
                 // Trigger userlist update when the friendlist has changed
                 postMessage("UPDATE_METADATA");
             });
+            proxy.on('change', ['settings'], function () {
+                postMessage("UPDATE_METADATA");
+            });
             proxy.on('change', [Constants.tokenKey], function () {
                 postMessage("UPDATE_TOKEN", { data: proxy[Constants.tokenKey] });
             });
@@ -692,14 +718,13 @@ define([
             classic: true,
         };
         var rt = Listmap.create(listmapConfig);
-        store.proxy = rt.proxy,
-        store.realtime = rt.realtime;
-        store.network = rt.network;
+        store.proxy = rt.proxy;
         store.loggedIn = typeof(data.userHash) !== "undefined";
 
         var returned = {};
         rt.proxy.on('create', function (info) {
-            exp.info = info;
+            store.realtime = info.realtime;
+            store.network = info.network;
             if (!data.userHash) {
                 returned.anonHash = Hash.getEditHashFromKeys(info.channel, secret.keys);
             }
@@ -743,18 +768,24 @@ define([
             });
         }
         initialized = true;
-        postMessage = function (cmd, data, cb) {
+        postMessage = function (cmd, d, cb) {
             setTimeout(function () {
-                data.query(cmd, data, cb); // TODO temporary, will be rzplaced by webworker channel
+                data.query(cmd, d, cb); // TODO temporary, will be rzplaced by webworker channel
             });
         };
 
+        store.data = data;
         connect(data, function (ret) {
             if (Object.keys(store.proxy).length === 1) {
                 Feedback.send("FIRST_APP_USE", true);
             }
 
             callback(ret);
+
+            var messagingCfg = getMessagingCfg();
+            Messaging.addDirectMessageHandler(messagingCfg);
+
+
         });
     };
 

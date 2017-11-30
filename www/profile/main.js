@@ -78,18 +78,14 @@ define([
                 var chanId = Utils.Hash.hrefToHexChannelId(data);
                 Cryptpad.pinPads([chanId], function (e) {
                     if (e) { return void cb(e); }
-                    Cryptpad.getProxy().profile.avatar = data;
-                    Utils.Realtime.whenRealtimeSyncs(Cryptpad.getRealtime(), function () {
-                        cb();
-                    });
+                    Cryptpad.setAvatar(data, cb);
                 });
             });
             // Removing the avatar from the profile: unpin it
             sframeChan.on('Q_PROFILE_AVATAR_REMOVE', function (data, cb) {
                 var chanId = Utils.Hash.hrefToHexChannelId(data);
-                Cryptpad.unpinPads([chanId], function (e) {
-                    delete Cryptpad.getProxy().profile.avatar;
-                    cb(e);
+                Cryptpad.unpinPads([chanId], function () {
+                    Cryptpad.setAvatar(undefined, cb);
                 });
             });
         };
