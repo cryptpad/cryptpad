@@ -31,6 +31,9 @@ define([
             case 'CLEAR_OWNED_CHANNEL': {
                 Store.clearOwnedChannel(data, cb); break;
             }
+            case 'UPLOAD_CHUNK': {
+                Store.uploadChunk(data, cb); break;
+            }
             case 'UPLOAD_COMPLETE': {
                 Store.uploadComplete(data, cb); break;
             }

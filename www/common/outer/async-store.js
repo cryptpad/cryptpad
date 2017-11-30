@@ -29,7 +29,7 @@ define([
 
 
     Store.get = function (key, cb) {
-        cb({result: Util.find(store.proxy, key)});
+        cb(Util.find(store.proxy, key));
     };
     Store.set = function (data, cb) {
         var path = data.key.slice();
@@ -164,22 +164,34 @@ define([
 
     Store.clearOwnedChannel = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.clearOwnedChannel(data.channel, cb);
+        store.rpc.clearOwnedChannel(data.channel, function (err, res) {
+            if (err) { return void cb({error:err}); }
+            cb(res);
+        });
     };
 
     Store.uploadComplete = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.uploadComplete(cb);
+        store.rpc.uploadComplete(function (err, res) {
+            if (err) { return void cb({error:err}); }
+            cb(res);
+        });
     };
 
     Store.uploadStatus = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.uploadStatus(data.size, cb);
+        store.rpc.uploadStatus(data.size, function (err, res) {
+            if (err) { return void cb({error:err}); }
+            cb(res);
+        });
     };
 
     Store.uploadCancel = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.uploadCancel(cb);
+        store.rpc.uploadCancel(function (err, res) {
+            if (err) { return void cb({error:err}); }
+            cb(res);
+        });
     };
 
     var arePinsSynced = function (cb) {
@@ -200,6 +212,15 @@ define([
         store.rpc.reset(list, function (e, hash) {
             if (e) { return void cb(e); }
             cb(null, hash);
+        });
+    };
+
+    Store.uploadChunk = function (data, cb) {
+        store.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
+            cb({
+                error: e,
+                msg: msg
+            });
         });
     };
 
@@ -692,7 +713,7 @@ define([
                 postMessage("UPDATE_METADATA");
             });
             proxy.on('change', [Constants.tokenKey], function () {
-                postMessage("UPDATE_TOKEN", { data: proxy[Constants.tokenKey] });
+                postMessage("UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
             });
         };
         userObject.migrate(todo);

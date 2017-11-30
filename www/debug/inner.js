@@ -1,10 +1,8 @@
 define([
     'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/bower_components/textpatcher/TextPatcher.js',
     '/common/toolbar3.js',
     'json.sortify',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/common-util.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
@@ -22,10 +20,8 @@ define([
 ], function (
     $,
     Crypto,
-    TextPatcher,
     Toolbar,
     JSONSortify,
-    JsonOT,
     Util,
     nThen,
     SFCommon,
@@ -61,7 +57,6 @@ define([
 
         var config = APP.config = {
             readOnly: readOnly,
-            transformFunction: JsonOT.validate,
             // cryptpad debug logging (default is 1)
             // logLevel: 0,
             validateContent: function (content) {
@@ -123,11 +118,7 @@ define([
 
         config.onReady = function (info) {
             if (APP.realtime !== info.realtime) {
-                var realtime = APP.realtime = info.realtime;
-                APP.patchText = TextPatcher.create({
-                    realtime: realtime,
-                    //logging: true
-                });
+                APP.realtime = info.realtime;
             }
 
             var userDoc = APP.realtime.getUserDoc();

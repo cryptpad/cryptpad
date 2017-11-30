@@ -114,8 +114,13 @@ define([
             });
 
             if (cfg.getSecrets) {
+                var w = waitFor();
                 cfg.getSecrets(Cryptpad, Utils, waitFor(function (err, s) {
                     secret = s;
+                    Cryptpad.getShareHashes(secret, function (err, h) {
+                        hashes = h;
+                        w();
+                    });
                 }));
             } else {
                 secret = Utils.Hash.getSecrets();
@@ -123,8 +128,8 @@ define([
                     // New pad: create a new random channel id
                     secret.channel = Utils.Hash.createChannelId();
                 }
+                Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
             }
-            Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
 
         }).nThen(function () {
             var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -247,7 +252,7 @@ define([
                         cb('ERROR');
                         return;
                     }
-                    Cryptpad.changeDisplayName(newName, true);
+                    Cryptpad.changeMetadata();
                     cb();
                 });
             });

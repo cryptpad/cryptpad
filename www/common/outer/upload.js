@@ -20,7 +20,7 @@ define([
 
         var sendChunk = function (box, cb) {
             var enc = Nacl.util.encodeBase64(box);
-            common.rpc.send.unauthenticated('UPLOAD', enc, function (e, msg) {
+            common.uploadChunk(enc, function (e, msg) {
                 cb(e, msg);
             });
         };

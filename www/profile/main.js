@@ -49,7 +49,7 @@ define([
                     editHash = hash;
                 }));
             }).nThen(function () {
-                if (!editHash) {
+                if (editHash) {
                     return void cb(null, Hash.getSecrets('profile', editHash));
                 }
                 // 3rd case: profile creation (create a new random hash, store it later if needed)

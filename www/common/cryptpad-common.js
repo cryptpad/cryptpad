@@ -67,7 +67,7 @@ define([
             key: [Constants.tokenKey],
             value: token
         }, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
+            if (obj && obj.error) { return void cb(obj.error); }
             cb();
         });
     };
@@ -402,29 +402,36 @@ define([
 
     common.clearOwnedChannel = function (channel, cb) {
         postMessage("CLEAR_OWNED_CHANNEL", {channel: channel}, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    common.uploadChunk = function (data, cb) {
+        postMessage("UPLOAD_CHUNK", {chunk: data}, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
         });
     };
 
     common.uploadComplete = function (cb) {
         postMessage("UPLOAD_COMPLETE", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
         });
     };
 
     common.uploadStatus = function (size, cb) {
         postMessage("UPLOAD_STATUS", {size: size}, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
         });
     };
 
     common.uploadCancel = function (cb) {
         postMessage("UPLOAD_CANCEL", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb();
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
         });
     };
 
@@ -434,7 +441,7 @@ define([
             netfluxId: netfluxId,
             href: window.location.href
         }, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
+            if (obj && obj.error) { return void cb(obj.error); }
             cb();
         });
     };
