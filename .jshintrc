@@ -19,5 +19,8 @@
         "require",
         "module",
         "__dirname"
-    ]
+    ],
+    "globals": {
+        "self": true
+    }
 }
