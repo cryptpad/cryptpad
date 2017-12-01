@@ -815,7 +815,6 @@ define([
         store.proxy = rt.proxy;
         store.loggedIn = typeof(data.userHash) !== "undefined";
 
-        var returned = {};
         rt.proxy.on('create', function (info) {
             store.realtime = info.realtime;
             store.network = info.network;
@@ -858,7 +857,8 @@ define([
     Store.init = function (data, callback) {
         if (initialized) {
             return void callback({
-                error: 'ALREADY_INIT'
+                state: 'ALREADY_INIT',
+                returned: store.returned
             });
         }
         initialized = true;
@@ -873,6 +873,7 @@ define([
             if (Object.keys(store.proxy).length === 1) {
                 Feedback.send("FIRST_APP_USE", true);
             }
+            store.returned = ret;
 
             callback(ret);
 

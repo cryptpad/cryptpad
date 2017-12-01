@@ -4,6 +4,8 @@ define([
     '/common/cryptpad-common.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
+    '/common/common-interface.js',
+    '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -14,15 +16,16 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
+    UI,
+    Messages
     )
 {
-    var Messages = Cryptpad.Messages;
     var APP = window.APP = {};
 
     var common;
     var sFrameChan;
     nThen(function (waitFor) {
-        $(waitFor(Cryptpad.addLoadingScreen));
+        $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
         sFrameChan = common.getSframeChannel();
@@ -44,7 +47,7 @@ define([
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
 
-        Cryptpad.removeLoadingScreen();
+        UI.removeLoadingScreen();
         if (!window.Worker) {
             return void $container.text("WebWorkers not supported by your browser");
         }

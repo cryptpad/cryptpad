@@ -650,6 +650,9 @@ define([
             }
             AStore.query("CONNECT", cfg, waitFor(function (data) {
                 if (data.error) { throw new Error(data.error); }
+                if (data.state === 'ALREADY_INIT') {
+                    data = data.returned;
+                }
 
                 if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
