@@ -1,13 +1,33 @@
 define([
+    '/api/config',
     '/common/hyperscript.js',
+    '/common/outer/local-store.js',
+    '/customize/messages.js',
 
     'less!/customize/src/less2/pages/page-404.less',
-], function (h) {
-    var scramble = h('h2#cp-scramble', "We couldn't find the page you were looking for");
-    var title = h('h1#title', "404");
+], function (Config, h, LocalStore, Messages) {
+    var urlArgs = Config.requireConf.urlArgs;
+    var img = h('img#cp-logo', {
+        src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
+    });
+
+    var brand = h('h1#cp-brand', 'CryptPad');
+    var message = h('h2#cp-scramble', Messages.four04_pageNotFound);
+    var title = h('h2#cp-title', "404");
+
+    var loggedIn = LocalStore.isLoggedIn();
+    var link = h('a#cp-link', {
+        href: loggedIn? '/drive/': '/',
+    }, loggedIn? Messages.four04_goToDrive: Messages.four04_goToHome);
+
     var content = h('div#cp-main', [
+        img,
+        brand,
+        //h('h1#cp-brand', 'CryptPad'),
         title,
-        scramble
+        message,
+        //scramble,
+        link,
     ]);
     document.body.appendChild(content);
 
@@ -50,8 +70,10 @@ define([
         };
     };
 
+    makeDecryptor(brand, 90, 4, function () { })();
     makeDecryptor(title, 70, 17, function () { })();
-    makeDecryptor(scramble, 10, 8, function () {
+    makeDecryptor(link, 20, 12, function () {})();
+    makeDecryptor(scramble, 30, 8, function () {
         console.log('done');
     })();
 });
