@@ -328,7 +328,7 @@ define([
                 edPublic: store.proxy.edPublic,
                 friends: store.proxy.friends,
                 settings: store.proxy.settings,
-                thumbnails: !((store.proxy.settings || {}).general || {}).disableThumbnails
+                thumbnails: !Util.find(store.proxy, ['settings', 'general', 'disableThumbnails'])
             }
         };
         cb(JSON.parse(JSON.stringify(metadata)));

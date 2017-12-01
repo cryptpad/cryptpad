@@ -1,12 +1,11 @@
 define([
-    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/curve.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
-], function ($, Crypto, Curve, Hash, Util, Realtime, Constants) {
+], function (Crypto, Curve, Hash, Util, Realtime, Constants) {
     'use strict';
     var Msg = {
         inputs: [],
@@ -485,7 +484,7 @@ define([
             };
             var msg = ['GET_HISTORY', chan.id, cfg];
             network.sendto(network.historyKeeper, JSON.stringify(msg))
-              .then($.noop, function (err) {
+              .then(function () {}, function (err) {
                 throw new Error(err);
             });
         };
