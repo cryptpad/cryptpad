@@ -23,10 +23,8 @@ define([
     var content = h('div#cp-main', [
         img,
         brand,
-        //h('h1#cp-brand', 'CryptPad'),
         title,
         message,
-        //scramble,
         link,
     ]);
     document.body.appendChild(content);
@@ -73,7 +71,7 @@ define([
     makeDecryptor(brand, 90, 4, function () { })();
     makeDecryptor(title, 70, 17, function () { })();
     makeDecryptor(link, 20, 12, function () {})();
-    makeDecryptor(scramble, 30, 8, function () {
+    makeDecryptor(message, 12, 8, function () {
         console.log('done');
     })();
 });
