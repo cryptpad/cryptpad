@@ -5,7 +5,8 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-realtime.js',
-], function ($, Crypto, Curve, Hash, Util, Realtime) {
+    '/common/common-constants.js',
+], function ($, Crypto, Curve, Hash, Util, Realtime, Constants) {
     'use strict';
     var Msg = {
         inputs: [],
@@ -28,7 +29,7 @@ define([
     var createData = Msg.createData = function (proxy, hash) {
         return {
             channel: hash || Hash.createChannelId(),
-            displayName: proxy['cryptpad.username'],
+            displayName: proxy[Constants.displayNameKey],
             profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
             curvePublic: proxy.curvePublic,
@@ -56,7 +57,7 @@ define([
         });
     };
 
-    Msg.messenger = function (common) {
+    Msg.messenger = function (store) {
         var messenger = {
             handlers: {
                 message: [],
@@ -89,9 +90,9 @@ define([
         var joining = {};
 
         // declare common variables
-        var network = common.getNetwork();
-        var proxy = common.getProxy();
-        var realtime = common.getRealtime();
+        var network = store.network;
+        var proxy = store.proxy;
+        var realtime = store.realtime;
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(proxy);
 
@@ -626,18 +627,10 @@ define([
             });
         };
 
-        // TODO displayName
         messenger.getMyInfo = function (cb) {
             cb(void 0, {
                 curvePublic: proxy.curvePublic,
-                displayName: '' //common.getDisplayName(),
-            });
-        };
-
-        messenger.clearOwnedChannel = function (channel, cb) {
-            common.clearOwnedChannel(channel, function (e) {
-                if (e) { return void cb(e); }
-                cb();
+                displayName: proxy[Constants.displayNameKey]
             });
         };
 

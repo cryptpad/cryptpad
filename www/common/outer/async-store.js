@@ -7,12 +7,14 @@ define([
     '/common/common-feedback.js',
     '/common/common-realtime.js',
     '/common/common-messaging.js',
+    '/common/common-messenger.js',
     '/common/outer/network-config.js',
 
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
-], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, NetConfig,
+], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
+             NetConfig,
              Crypto, ChainPad, Listmap) {
     var Store = {};
 
@@ -164,9 +166,8 @@ define([
 
     Store.clearOwnedChannel = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.clearOwnedChannel(data.channel, function (err, res) {
-            if (err) { return void cb({error:err}); }
-            cb(res);
+        store.rpc.clearOwnedChannel(data, function (err) {
+            cb({error:err});
         });
     };
 
@@ -333,10 +334,25 @@ define([
         cb(JSON.parse(JSON.stringify(metadata)));
     };
 
-    // Reset the drive part of the userObject (from settings)
-    Store.resetDrive = function (data, cb) {
-        store.proxy.drive = store.fo.getStructure();
-        onSync(cb);
+    var makePad = function (href, title) {
+        var now = +new Date();
+        return {
+            href: href,
+            atime: now,
+            ctime: now,
+            title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
+        };
+    };
+
+    Store.addPad = function (data, cb) {
+        if (!data.href) { return void cb({error:'NO_HREF'}); }
+        var pad = makePad(data.href, data.title);
+        store.userObject.pushData(pad, function (e, id) {
+            if (e) { return void cb({error: "Error while adding a template:"+ e}); }
+            var path = data.path || ['root'];
+            store.userObject.add(id, path);
+            onSync(cb);
+        });
     };
 
     /**
@@ -414,6 +430,12 @@ define([
         onSync(cb);
     };
 
+    // Reset the drive part of the userObject (from settings)
+    Store.resetDrive = function (data, cb) {
+        store.proxy.drive = store.fo.getStructure();
+        onSync(cb);
+    };
+
     /**
      * Settings & pad attributes
      * data
@@ -461,27 +483,6 @@ define([
             });
         });
         cb(all);
-    };
-
-    var makePad = function (href, title) {
-        var now = +new Date();
-        return {
-            href: href,
-            atime: now,
-            ctime: now,
-            title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
-        };
-    };
-
-    Store.addPad = function (data, cb) {
-        if (!data.href) { return void cb({error:'NO_HREF'}); }
-        var pad = makePad(data.href, data.title);
-        store.userObject.pushData(pad, function (e, id) {
-            if (e) { return void cb({error: "Error while adding a template:"+ e}); }
-            var path = data.path || ['root'];
-            store.userObject.add(id, path);
-            onSync(cb);
-        });
     };
 
     // Templates
@@ -606,20 +607,7 @@ define([
         cb(list);
     };
 
-    // Get hashes for the share button
-    Store.getStrongerHash = function (data, cb) {
-        var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
-
-        // If we have a stronger version in drive, add it and add a redirect button
-        var stronger = Hash.findStronger(data.href, allPads);
-        if (stronger) {
-            var parsed2 = Hash.parsePadUrl(stronger);
-            return void cb(parsed2.hash);
-        }
-        cb();
-    };
-
-    // Messaging
+    // Messaging (manage friends from the userlist)
     var getMessagingCfg = function () {
         return {
             proxy: store.proxy,
@@ -640,6 +628,91 @@ define([
     Store.inviteFromUserlist = function (data, cb) {
         var messagingCfg = getMessagingCfg();
         Messaging.inviteFromUserlist(messagingCfg, data, cb);
+    };
+
+    // Messenger
+
+    // Get hashes for the share button
+    Store.getStrongerHash = function (data, cb) {
+        var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
+
+        // If we have a stronger version in drive, add it and add a redirect button
+        var stronger = Hash.findStronger(data.href, allPads);
+        if (stronger) {
+            var parsed2 = Hash.parsePadUrl(stronger);
+            return void cb(parsed2.hash);
+        }
+        cb();
+    };
+
+    Store.messenger = {
+        getFriendList: function (data, cb) {
+            store.messenger.getFriendList(function (e, keys) {
+                cb({
+                    error: e,
+                    data: keys,
+                });
+            });
+        },
+        getMyInfo: function (data, cb) {
+            store.messenger.getMyInfo(function (e, info) {
+                cb({
+                    error: e,
+                    data: info,
+                });
+            });
+        },
+        getFriendInfo: function (data, cb) {
+            store.messenger.getFriendInfo(data, function (e, info) {
+                cb({
+                    error: e,
+                    data: info,
+                });
+            });
+        },
+        removeFriend: function (data, cb) {
+            store.messenger.removeFriend(data, function (e, info) {
+                cb({
+                    error: e,
+                    data: info,
+                });
+            });
+        },
+        openFriendChannel: function (data, cb) {
+            store.messenger.openFriendChannel(data, function (e) {
+                cb({ error: e, });
+            });
+        },
+        getFriendStatus: function (data, cb) {
+            store.messenger.getStatus(data, function (e, online) {
+                cb({
+                    error: e,
+                    data: online,
+                });
+            });
+        },
+        getMoreHistory: function (data, cb) {
+            store.messenger.getMoreHistory(data.curvePublic, data.sig, data.count, function (e, history) {
+                cb({
+                    error: e,
+                    data: history,
+                });
+            });
+        },
+        sendMessage: function (data, cb) {
+            store.messenger.sendMessage(data.curvePublic, data.content, function (e) {
+                cb({
+                    error: e,
+                });
+            });
+        },
+        setChannelHead: function (data, cb) {
+            store.messenger.setChannelHead(data.curvePublic, data.sig, function (e) {
+                cb({
+                    error: e
+                });
+            });
+        }
     };
 
     var onReady = function (returned, cb) {
@@ -791,7 +864,7 @@ define([
         initialized = true;
         postMessage = function (cmd, d, cb) {
             setTimeout(function () {
-                data.query(cmd, d, cb); // TODO temporary, will be rzplaced by webworker channel
+                data.query(cmd, d, cb); // TODO temporary, will be replaced by webworker channel
             });
         };
 
@@ -806,7 +879,40 @@ define([
             var messagingCfg = getMessagingCfg();
             Messaging.addDirectMessageHandler(messagingCfg);
 
-
+            if (data.messenger) {
+                var messenger = store.messenger = Messenger.messenger(store); // TODO
+                messenger.on('message', function (message) {
+                    postMessage('CONTACTS_MESSAGE', message);
+                });
+                messenger.on('join', function (curvePublic, channel) {
+                    postMessage('CONTACTS_JOIN', {
+                        curvePublic: curvePublic,
+                        channel: channel,
+                    });
+                });
+                messenger.on('leave', function (curvePublic, channel) {
+                    postMessage('CONTACTS_LEAVE', {
+                        curvePublic: curvePublic,
+                        channel: channel,
+                    });
+                });
+                messenger.on('update', function (info, curvePublic) {
+                    postMessage('CONTACTS_UPDATE', {
+                        curvePublic: curvePublic,
+                        info: info,
+                    });
+                });
+                messenger.on('friend', function (curvePublic) {
+                    postMessage('CONTACTS_FRIEND', {
+                        curvePublic: curvePublic,
+                    });
+                });
+                messenger.on('unfriend', function (curvePublic) {
+                    postMessage('CONTACTS_UNFRIEND', {
+                        curvePublic: curvePublic,
+                    });
+                });
+            }
         });
     };
 

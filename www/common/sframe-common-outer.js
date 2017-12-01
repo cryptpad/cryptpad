@@ -33,7 +33,6 @@ define([
                 '/common/cryptget.js',
                 '/common/sframe-channel.js',
                 '/filepicker/main.js',
-                //'/common/common-messenger.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
@@ -45,7 +44,7 @@ define([
                 '/common/outer/network-config.js',
                 '/bower_components/netflux-websocket/netflux-client.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _FilePicker, /*_Messenger,*/ _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _FilePicker,  _Messaging, _Notifier, _Hash, _Util, _Realtime,
             _Constants, _Feedback, _LocalStore, NetConfig, Netflux) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
@@ -53,7 +52,6 @@ define([
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 FilePicker = _FilePicker;
-                //Messenger = _Messenger;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
@@ -87,7 +85,9 @@ define([
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
                 }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
-                Cryptpad.ready(waitFor());
+                Cryptpad.ready(waitFor(), {
+                    messenger: cfg.messaging
+                });
 
                 if (!cfg.newNetwork) {
                     Netflux.connect(NetConfig.getWebsocketURL()).then(waitFor(function (nw) {
@@ -505,119 +505,59 @@ define([
             }
 
             if (cfg.messaging) {
-                // TODO make messenger work with async store
-                /*var messenger = Messenger.messenger(Cryptpad);
-
                 sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
-                    messenger.getFriendList(function (e, keys) {
-                        cb({
-                            error: e,
-                            data: keys,
-                        });
-                    });
+                    Cryptpad.messenger.getFriendList(cb);
                 });
                 sframeChan.on('Q_CONTACTS_GET_MY_INFO', function (data, cb) {
-                    messenger.getMyInfo(function (e, info) {
-                        cb({
-                            error: e,
-                            data: info,
-                        });
-                    });
+                    Cryptpad.messenger.getMyInfo(cb);
                 });
                 sframeChan.on('Q_CONTACTS_GET_FRIEND_INFO', function (curvePublic, cb) {
-                    messenger.getFriendInfo(curvePublic, function (e, info) {
-                        cb({
-                            error: e,
-                            data: info,
-                        });
-                    });
+                    Cryptpad.messenger.getFriendInfo(curvePublic, cb);
                 });
                 sframeChan.on('Q_CONTACTS_REMOVE_FRIEND', function (curvePublic, cb) {
-                    messenger.removeFriend(curvePublic, function (e, info) {
-                        cb({
-                            error: e,
-                            data: info,
-                        });
-                    });
+                    Cryptpad.messenger.removeFriend(curvePublic, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
-                    messenger.openFriendChannel(curvePublic, function (e) {
-                        cb({ error: e, });
-                    });
+                    Cryptpad.messenger.openFriendChannel(curvePublic, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_GET_STATUS', function (curvePublic, cb) {
-                    messenger.getStatus(curvePublic, function (e, online) {
-                        cb({
-                            error: e,
-                            data: online,
-                        });
-                    });
+                    Cryptpad.messenger.getFriendStatus(curvePublic, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_GET_MORE_HISTORY', function (opt, cb) {
-                    messenger.getMoreHistory(opt.curvePublic, opt.sig, opt.count, function (e, history) {
-                        cb({
-                            error: e,
-                            data: history,
-                        });
-                    });
+                    Cryptpad.messenger.getMoreHistory(opt, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_SEND_MESSAGE', function (opt, cb) {
-                    messenger.sendMessage(opt.curvePublic, opt.content, function (e) {
-                        cb({
-                            error: e,
-                        });
-                    });
+                    Cryptpad.messenger.sendMessage(opt, cb);
                 });
                 sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
-                    messenger.setChannelHead(opt.curvePublic, opt.sig, function (e) {
-                        cb({
-                            error: e
-                        });
-                    });
+                    Cryptpad.messenger.setChannelHead(opt, cb);
                 });
                 sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
-                    messenger.clearOwnedChannel(channel, function (e) {
-                        cb({
-                            error: e,
-                        });
-                    });
+                    Cryptpad.clearOwnedChannel(channel, cb);
                 });
 
-                messenger.on('message', function (message) {
-                    sframeChan.event('EV_CONTACTS_MESSAGE', message);
+                Cryptpad.messenger.onMessageEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_MESSAGE', data);
                 });
-                messenger.on('join', function (curvePublic, channel) {
-                    sframeChan.event('EV_CONTACTS_JOIN', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
+                Cryptpad.messenger.onJoinEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_JOIN', data);
                 });
-                messenger.on('leave', function (curvePublic, channel) {
-                    sframeChan.event('EV_CONTACTS_LEAVE', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
+                Cryptpad.messenger.onLeaveEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_LEAVE', data);
                 });
-                messenger.on('update', function (info, curvePublic) {
-                    sframeChan.event('EV_CONTACTS_UPDATE', {
-                        curvePublic: curvePublic,
-                        info: info,
-                    });
+                Cryptpad.messenger.onUpdateEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_UPDATE', data);
                 });
-                messenger.on('friend', function (curvePublic) {
-                    sframeChan.event('EV_CONTACTS_FRIEND', {
-                        curvePublic: curvePublic,
-                    });
+                Cryptpad.messenger.onFriendEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_FRIEND', data);
                 });
-                messenger.on('unfriend', function (curvePublic) {
-                    sframeChan.event('EV_CONTACTS_UNFRIEND', {
-                        curvePublic: curvePublic,
-                    });
-                });*/
+                Cryptpad.messenger.onUnfriendEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_UNFRIEND', data);
+                });
             }
 
             sframeChan.ready();

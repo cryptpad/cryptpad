@@ -47,6 +47,15 @@ define([
 
     var PINNING_ENABLED = AppConfig.enablePinning;
 
+    // COMMON
+    common.getLanguage = function () {
+        return Messages._languageUsed;
+    };
+    common.setLanguage = function (l, cb) {
+        Language.setLanguage(l, null, cb);
+    };
+
+
     // RESTRICTED
     // Settings only
     common.getUserObject = function (cb) {
@@ -119,13 +128,124 @@ define([
     };
 
 
-    // REFACTOR pull language directly?
-    common.getLanguage = function () {
-        return Messages._languageUsed;
+    // RPC
+    common.pinPads = function (pads, cb) {
+        postMessage("PIN_PADS", pads, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj.hash);
+        });
     };
-    common.setLanguage = function (l, cb) {
-        Language.setLanguage(l, null, cb);
+
+    common.unpinPads = function (pads, cb) {
+        postMessage("UNPIN_PADS", pads, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj.hash);
+        });
     };
+
+    common.getPinnedUsage = function (cb) {
+        postMessage("GET_PINNED_USAGE", null, function (obj) {
+            if (obj.error) { return void cb(obj.error); }
+            cb(null, obj.bytes);
+        });
+    };
+
+    common.updatePinLimit = function (cb) {
+        postMessage("UPDATE_PIN_LIMIT", null, function (obj) {
+            if (obj.error) { return void cb(obj.error); }
+            cb(undefined, obj.limit, obj.plan, obj.note);
+        });
+    };
+
+    common.getPinLimit = function (cb) {
+        postMessage("GET_PIN_LIMIT", null, function (obj) {
+            if (obj.error) { return void cb(obj.error); }
+            cb(undefined, obj.limit, obj.plan, obj.note);
+        });
+    };
+
+    common.isOverPinLimit = function (cb) {
+        if (!LocalStore.isLoggedIn()) { return void cb(null, false); }
+        var usage;
+        var andThen = function (e, limit, plan) {
+            if (e) { return void cb(e); }
+            var data = {usage: usage, limit: limit, plan: plan};
+            if (usage > limit) {
+                return void cb (null, true, data);
+            }
+            return void cb (null, false, data);
+        };
+        var todo = function (e, used) {
+            if (e) { return void cb(e); }
+            usage = used;
+            common.getPinLimit(andThen);
+        };
+        common.getPinnedUsage(todo);
+    };
+
+    common.clearOwnedChannel = function (channel, cb) {
+        postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
+    };
+
+    common.uploadComplete = function (cb) {
+        postMessage("UPLOAD_COMPLETE", null, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    common.uploadStatus = function (size, cb) {
+        postMessage("UPLOAD_STATUS", {size: size}, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    common.uploadCancel = function (cb) {
+        postMessage("UPLOAD_CANCEL", null, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    common.uploadChunk = function (data, cb) {
+        postMessage("UPLOAD_CHUNK", {chunk: data}, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    // ANON RPC
+
+    // SFRAME: talk to anon_rpc from the iframe
+    common.anonRpcMsg = function (msg, data, cb) {
+        if (!msg) { return; }
+        postMessage("ANON_RPC_MESSAGE", {
+            msg: msg,
+            data: data
+        }, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    common.getFileSize = function (href, cb) {
+        postMessage("GET_FILE_SIZE", {href: href}, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(undefined, obj.size);
+        });
+    };
+
+    common.getMultipleFileSize = function (files, cb) {
+        postMessage("GET_MULTIPLE_FILE_SIZE", {files:files}, function (obj) {
+            if (obj.error) { return void cb(obj.error); }
+            cb(undefined, obj.size);
+        });
+    };
+
+    // Store
+
+
 
     common.getMetadata = function (cb) {
         postMessage("GET_METADATA", null, function (obj) {
@@ -138,7 +258,6 @@ define([
         postMessage("SET_DISPLAY_NAME", value, cb);
     };
 
-    // STORAGE
     common.setPadAttribute = function (attr, value, cb, href) {
         href = Hash.getRelativeHref(href || window.location.href);
         postMessage("SET_PAD_ATTRIBUTE", {
@@ -177,7 +296,6 @@ define([
             cb(null, obj);
         });
     };
-
 
     // Tags
     common.resetTags = function (href, tags, cb) {
@@ -320,123 +438,7 @@ define([
         });
     };
 
-    common.pinPads = function (pads, cb) {
-        postMessage("PIN_PADS", pads, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj.hash);
-        });
-    };
-
-    common.unpinPads = function (pads, cb) {
-        postMessage("UNPIN_PADS", pads, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj.hash);
-        });
-    };
-
-    common.getPinnedUsage = function (cb) {
-        postMessage("GET_PINNED_USAGE", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb(null, obj.bytes);
-        });
-    };
-
-    // SFRAME: talk to anon_rpc from the iframe
-    common.anonRpcMsg = function (msg, data, cb) {
-        if (!msg) { return; }
-        postMessage("ANON_RPC_MESSAGE", {
-            msg: msg,
-            data: data
-        }, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj);
-        });
-    };
-
-    common.getFileSize = function (href, cb) {
-        postMessage("GET_FILE_SIZE", {href: href}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.size);
-        });
-    };
-
-    // TODO not used anymore?
-    common.getMultipleFileSize = function (files, cb) {
-        postMessage("GET_MULTIPLE_FILE_SIZE", {files:files}, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.size);
-        });
-    };
-
-    common.updatePinLimit = function (cb) {
-        postMessage("UPDATE_PIN_LIMIT", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.limit, obj.plan, obj.note);
-        });
-    };
-
-    common.getPinLimit = function (cb) {
-        postMessage("GET_PIN_LIMIT", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
-            cb(undefined, obj.limit, obj.plan, obj.note);
-        });
-    };
-
-    common.isOverPinLimit = function (cb) {
-        if (!LocalStore.isLoggedIn()) { return void cb(null, false); }
-        var usage;
-        var andThen = function (e, limit, plan) {
-            if (e) { return void cb(e); }
-            var data = {usage: usage, limit: limit, plan: plan};
-            if (usage > limit) {
-                return void cb (null, true, data);
-            }
-            return void cb (null, false, data);
-        };
-        var todo = function (e, used) {
-            if (e) { return void cb(e); }
-            usage = used;
-            common.getPinLimit(andThen);
-        };
-        common.getPinnedUsage(todo);
-    };
-
-    common.clearOwnedChannel = function (channel, cb) {
-        postMessage("CLEAR_OWNED_CHANNEL", {channel: channel}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj);
-        });
-    };
-
-    common.uploadChunk = function (data, cb) {
-        postMessage("UPLOAD_CHUNK", {chunk: data}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj);
-        });
-    };
-
-    common.uploadComplete = function (cb) {
-        postMessage("UPLOAD_COMPLETE", null, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj);
-        });
-    };
-
-    common.uploadStatus = function (size, cb) {
-        postMessage("UPLOAD_STATUS", {size: size}, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj);
-        });
-    };
-
-    common.uploadCancel = function (cb) {
-        postMessage("UPLOAD_CANCEL", null, function (obj) {
-            if (obj && obj.error) { return void cb(obj.error); }
-            cb(null, obj);
-        });
-    };
-
-    // Messaging
+    // Messaging (manage friends from the userlist)
     common.inviteFromUserlist = function (netfluxId, cb) {
         postMessage("INVITE_FROM_USERLIST", {
             netfluxId: netfluxId,
@@ -447,6 +449,41 @@ define([
         });
     };
 
+    // Messenger
+    var messenger = common.messenger = {};
+    messenger.getFriendList = function (cb) {
+        postMessage("CONTACTS_GET_FRIEND_LIST", null, cb);
+    };
+    messenger.getMyInfo = function (cb) {
+        postMessage("CONTACTS_GET_MY_INFO", null, cb);
+    };
+    messenger.getFriendInfo = function (curvePublic, cb) {
+        postMessage("CONTACTS_GET_FRIEND_INFO", curvePublic, cb);
+    };
+    messenger.removeFriend = function (curvePublic, cb) {
+        postMessage("CONTACTS_REMOVE_FRIEND", curvePublic, cb);
+    };
+    messenger.openFriendChannel = function (curvePublic, cb) {
+        postMessage("CONTACTS_OPEN_FRIEND_CHANNEL", curvePublic, cb);
+    };
+    messenger.getFriendStatus = function (curvePublic, cb) {
+        postMessage("CONTACTS_GET_FRIEND_STATUS", curvePublic, cb);
+    };
+    messenger.getMoreHistory = function (data, cb) {
+        postMessage("CONTACTS_GET_MORE_HISTORY", data, cb);
+    };
+    messenger.sendMessage = function (data, cb) {
+        postMessage("CONTACTS_SEND_MESSAGE", data, cb);
+    };
+    messenger.setChannelHead = function (data, cb) {
+        postMessage("CONTACTS_SET_CHANNEL_HEAD", data, cb);
+    };
+    messenger.onMessageEvent = Util.mkEvent();
+    messenger.onJoinEvent = Util.mkEvent();
+    messenger.onLeaveEvent = Util.mkEvent();
+    messenger.onUpdateEvent = Util.mkEvent();
+    messenger.onFriendEvent = Util.mkEvent();
+    messenger.onUnfriendEvent = Util.mkEvent();
 
     // HERE
     common.getShareHashes = function (secret, cb) {
@@ -540,6 +577,25 @@ define([
                 common.onFriendComplete(data);
                 break;
             }
+            // Messenger
+            case 'CONTACTS_MESSAGE': {
+                common.messenger.onMessageEvent.fire(data); break;
+            }
+            case 'CONTACTS_JOIN': {
+                common.messenger.onJoinEvent.fire(data); break;
+            }
+            case 'CONTACTS_LEAVE': {
+                common.messenger.onLeaveEvent.fire(data); break;
+            }
+            case 'CONTACTS_UPDATE': {
+                common.messenger.onUpdateEvent.fire(data); break;
+            }
+            case 'CONTACTS_FRIEND': {
+                common.messenger.onFriendEvent.fire(data); break;
+            }
+            case 'CONTACTS_UNFRIEND': {
+                common.messenger.onUnfriendEvent.fire(data); break;
+            }
         }
     };
 
@@ -547,7 +603,7 @@ define([
         var env = {};
         var initialized = false;
 
-    return function (f) {
+    return function (f, rdyCfg) {
         if (initialized) {
             return void setTimeout(function () { f(void 0, env); });
         }
@@ -583,7 +639,9 @@ define([
                 query: onMessage, // TODO temporary, will be replaced by a webworker channel
                 userHash: LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
-                localToken: tryParsing(localStorage.getItem(Constants.tokenKey))
+                localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
+                language: common.getLanguage(),
+                messenger: rdyCfg.messenger
             };
             if (sessionStorage[Constants.newPadPathKey]) {
                 cfg.initialPath = sessionStorage[Constants.newPadPathKey];

@@ -118,7 +118,34 @@ define([
             case 'INVITE_FROM_USERLIST': {
                 Store.inviteFromUserlist(data, cb); break;
             }
-
+            // Messenger
+            case 'CONTACTS_GET_FRIEND_LIST': {
+                Store.messenger.getFriendList(data, cb); break;
+            }
+            case 'CONTACTS_GET_MY_INFO': {
+                Store.messenger.getMyInfo(data, cb); break;
+            }
+            case 'CONTACTS_GET_FRIEND_INFO': {
+                Store.messenger.getFriendInfo(data, cb); break;
+            }
+            case 'CONTACTS_REMOVE_FRIEND': {
+                Store.messenger.removeFriend(data, cb); break;
+            }
+            case 'CONTACTS_OPEN_FRIEND_CHANNEL': {
+                Store.messenger.openFriendChannel(data, cb); break;
+            }
+            case 'CONTACTS_GET_FRIEND_STATUS': {
+                Store.messenger.getFriendStatus(data, cb); break;
+            }
+            case 'CONTACTS_GET_MORE_HISTORY': {
+                Store.messenger.getMoreHistory(data, cb); break;
+            }
+            case 'CONTACTS_SEND_MESSAGE': {
+                Store.messenger.sendMessage(data, cb); break;
+            }
+            case 'CONTACTS_SET_CHANNEL_HEAD': {
+                Store.messenger.setChannelHead(data, cb); break;
+            }
             default: {
                 
                 break;

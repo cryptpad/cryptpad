@@ -209,6 +209,43 @@ define([], function () {
         xhr.send();
     };
 
+    // Check if an element is a plain object
+    Util.isObject = function (o) {
+        return typeof (o) === "object" &&
+               Object.prototype.toString.call(o) === '[object Object]';
+    };
+
+    Util.isCircular = function (o) {
+        try {
+            JSON.stringify(o);
+            return false;
+        } catch (e) { return true; }
+    };
+
+    /*  recursively adds the properties of an object 'b' to 'a'
+        arrays are only shallow copies, so references to the original
+        might still be present. Be mindful if you will modify 'a' in the future */
+    Util.extend = function (a, b) {
+        if (!Util.isObject(a) || !Util.isObject(b)) {
+            return void console.log("Extend only works with 2 objects");
+        }
+        if (Util.isCircular(b)) {
+            return void console.log("Extend doesn't accept circular objects");
+        }
+        for (var k in b) {
+            if (Util.isObject(b[k])) {
+                a[k] = {};
+                Util.extend(a[k], b[k]);
+                continue;
+            }
+            if (Array.isArray(b[k])) {
+                a[k] = b[k].slice();
+                continue;
+            }
+            a[k] = b[k];
+        }
+    };
+
     return Util;
 });
 }(self));
