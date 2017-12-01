@@ -36,12 +36,12 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils) {
-            var proxy = Cryptpad.getProxy();
-            var hash = proxy.todo || Utils.Hash.createRandomHash();
-            if (!proxy.todo) { proxy.todo = hash; }
-
-            return Utils.Hash.getSecrets('todo', hash);
+        var getSecrets = function (Cryptpad, Utils, cb) {
+            Cryptpad.getTodoHash(function (hash) {
+                var nHash = hash || Utils.Hash.createRandomHash();
+                if (!hash) { Cryptpad.setTodoHash(nHash); }
+                cb(null, Utils.Hash.getSecrets('todo', hash));
+            });
         };
         SFCommonO.start({
             getSecrets: getSecrets,

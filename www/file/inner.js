@@ -120,7 +120,6 @@ define([
                             decrypted.callback();
                         }
 
-                        console.log(decrypted);
                         $dlview.show();
                         $dlform.hide();
                         var $dlButton = $dlview.find('media-tag button');
@@ -174,7 +173,6 @@ define([
                         var progress = e.originalEvent;
                         var p = progress.percent +'%';
                         $progress.width(p);
-                        console.log(progress.percent);
                     });
 
                     /**

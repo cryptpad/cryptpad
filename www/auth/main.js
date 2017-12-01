@@ -4,8 +4,9 @@ define([
     '/common/common-constants.js',
     '/common/outer/local-store.js',
     '/common/test.js',
+    '/bower_components/nthen/index.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function ($, Cryptpad, Constants, LocalStore, Test) {
+], function ($, Cryptpad, Constants, LocalStore, Test, nThen) {
     var Nacl = window.nacl;
 
     var signMsg = function (msg, privKey) {
@@ -25,11 +26,18 @@ define([
     localStorage[Constants.userHashKey] = localStorage[Constants.userHashKey] ||
                                           sessionStorage[Constants.userHashKey];
 
-    Cryptpad.ready(function () {
+    var proxy;
+    nThen(function (waitFor) {
+        Cryptpad.ready(waitFor());
+    }).nThen(function (waitFor) {
+        Cryptpad.getUserObject(waitFor(function (obj) {
+            proxy = obj;
+        }));
+    }).nThen(function () {
         console.log('IFRAME READY');
         Test(function () {
             // This is only here to maybe trigger an error.
-            window.drive = Cryptpad.getStore().getProxy().proxy['drive'];
+            window.drive = proxy['drive'];
             Test.passed();
         });
         $(window).on("message", function (jqe) {
@@ -46,7 +54,6 @@ define([
                 } else if (!LocalStore.isLoggedIn()) {
                     ret.error = "NOT_LOGGED_IN";
                 } else {
-                    var proxy = Cryptpad.getStore().getProxy().proxy;
                     var sig = signMsg(data.data, proxy.edPrivate);
                     ret.res = {
                         uname: proxy.login_name,

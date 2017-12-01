@@ -10,5 +10,6 @@ define(function () {
         displayNameKey: 'cryptpad.username',
         oldStorageKey: 'CryptPad_RECENTPADS',
         storageKey: 'filesData',
+        tokenKey: 'loginToken',
     };
 });

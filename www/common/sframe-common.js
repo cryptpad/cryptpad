@@ -328,7 +328,7 @@ define([
         nThen(function (waitFor) {
             SFrameChannel.create(window.parent, waitFor(function (sfc) { ctx.sframeChan = sfc; }), true);
             // CpNfInner.start() should be here....
-        }).nThen(function () {
+        }).nThen(function (waitFor) {
             localForage.clear();
 
             ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
@@ -373,10 +373,6 @@ define([
                 });
             });
 
-            ctx.sframeChan.on('EV_RT_CONNECT', function () { CommonRealtime.setConnectionState(true); });
-            ctx.sframeChan.on('EV_RT_DISCONNECT', function () { CommonRealtime.setConnectionState(false); });
-
-
             ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
                 UI.confirm(confirmMsg, cb, null, true);
             });
@@ -393,6 +389,8 @@ define([
                 } catch (e) { Feedback.init(false); }
             });
 
+            ctx.metadataMgr.onReady(waitFor());
+        }).nThen(function () {
             ctx.sframeChan.ready();
             cb(funcs);
         });

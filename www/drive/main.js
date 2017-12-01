@@ -5,9 +5,7 @@ define([
     'jquery',
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js',
-    '/common/outer/network-config.js',
-    '/bower_components/netflux-websocket/netflux-client.js',
-], function (nThen, ApiConfig, $, RequireConfig, SFCommonO, NetConfig, Netflux) {
+], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
@@ -38,10 +36,10 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils) {
+        var getSecrets = function (Cryptpad, Utils, cb) {
             var hash = window.location.hash.slice(1) || Utils.LocalStore.getUserHash() ||
                         Utils.LocalStore.getFSHash();
-            return Utils.Hash.getSecrets('drive', hash);
+            cb(null, Utils.Hash.getSecrets('drive', hash));
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_BURN_ANON_DRIVE', function () {
@@ -51,13 +49,13 @@ define([
                 window.location.reload();
             });
         };
-        Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
+        //Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
             SFCommonO.start({
                 getSecrets: getSecrets,
-                newNetwork: network,
+                //newNetwork: network,
                 noHash: true,
                 addRpc: addRpc
             });
-        }, function (err) { console.error(err); });
+        //}, function (err) { console.error(err); });
     });
 });

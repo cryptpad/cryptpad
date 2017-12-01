@@ -194,8 +194,8 @@ define([
     };
 
     var onReady = function (f, proxy, Cryptpad, exp) {
-        var fo = exp.fo = FO.init(proxy.drive, {
-            Cryptpad: Cryptpad,
+        var fo = exp.userObject = exp.fo = FO.init(proxy.drive, {
+            pinPads: Cryptpad.pinPads,
             loggedIn: LocalStore.isLoggedIn()
         });
         var todo = function () {
@@ -265,15 +265,15 @@ define([
 
             proxy.on('change', [Constants.displayNameKey], function (o, n) {
                 if (typeof(n) !== "string") { return; }
-                Cryptpad.changeDisplayName(n);
+                Cryptpad.changeMetadata();
             });
             proxy.on('change', ['profile'], function () {
                 // Trigger userlist update when the avatar has changed
-                Cryptpad.changeDisplayName(proxy[Constants.displayNameKey]);
+                Cryptpad.changeMetadata();
             });
             proxy.on('change', ['friends'], function () {
-                // Trigger userlist update when the avatar has changed
-                Cryptpad.changeDisplayName(proxy[Constants.displayNameKey]);
+                // Trigger userlist update when the friendlist has changed
+                Cryptpad.changeMetadata();
             });
             proxy.on('change', [tokenKey], function () {
                 var localToken = tryParsing(localStorage.getItem(tokenKey));
@@ -315,6 +315,7 @@ define([
 
         exp.realtime = rt.realtime;
         exp.proxy = rt.proxy;
+        exp.loggedIn = Cryptpad.isLoggedIn();
         rt.proxy.on('create', function (info) {
             exp.info = info;
             if (!LocalStore.getUserHash()) {
