@@ -58,8 +58,7 @@ define([
 
                 if (noStore) { return void onComplete(href); }
 
-                common.initialPath = path;
-                common.renamePad(title || "", href, function (err) {
+                common.setPadTitle(title || "", href, path, function (err) {
                     if (err) { return void console.error(err); }
                     onComplete(href);
                     common.setPadAttribute('fileType', metadata.type, null, href);

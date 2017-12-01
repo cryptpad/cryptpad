@@ -1,12 +1,11 @@
 define([
-    'jquery',
     '/customize/application_config.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
     '/customize/messages.js'
-], function ($, AppConfig, Util, Hash, Realtime, Constants, Messages) {
+], function (AppConfig, Util, Hash, Realtime, Constants, Messages) {
     var module = {};
 
     var ROOT = module.ROOT = "root";
@@ -101,7 +100,7 @@ define([
             };
             for (var f in element) {
                 if (trashRoot) {
-                    if ($.isArray(element[f])) {
+                    if (Array.isArray(element[f])) {
                         element[f].forEach(addSubfolder);
                     }
                 } else {
@@ -119,7 +118,7 @@ define([
             };
             for (var f in element) {
                 if (trashRoot) {
-                    if ($.isArray(element[f])) {
+                    if (Array.isArray(element[f])) {
                         element[f].forEach(addFile);
                     }
                 } else {
@@ -148,14 +147,14 @@ define([
             return data.filename || data.title || NEW_FILE_NAME;
         };
         exp.getPadAttribute = function (href, attr, cb) {
-            cb = cb || $.noop;
+            cb = cb || function () {};
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb(null, undefined); }
             var data = getFileData(id);
             cb(null, clone(data[attr]));
         };
         exp.setPadAttribute = function (href, attr, value, cb) {
-            cb = cb || $.noop;
+            cb = cb || function () {};
             var id = exp.getIdFromHref(href);
             if (!id) { return void cb("E_INVAL_HREF"); }
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
@@ -167,7 +166,7 @@ define([
         // PATHS
 
         var comparePath  = exp.comparePath = function (a, b) {
-            if (!a || !b || !$.isArray(a) || !$.isArray(b)) { return false; }
+            if (!a || !b || !Array.isArray(a) || !Array.isArray(b)) { return false; }
             if (a.length !== b.length) { return false; }
             var result = true;
             var i = a.length - 1;
@@ -265,7 +264,7 @@ define([
                 }
             };
             for (var e in root) {
-                if (!$.isArray(root[e])) {
+                if (!Array.isArray(root[e])) {
                     error("Trash contains a non-array element");
                     return;
                 }
@@ -967,7 +966,7 @@ define([
                 var addToClean = function (obj, idx, el) {
                     if (typeof(obj) !== "object") { toClean.push(idx); return; }
                     if (!isFile(obj.element, true) && !isFolder(obj.element)) { toClean.push(idx); return; }
-                    if (!$.isArray(obj.path)) { toClean.push(idx); return; }
+                    if (!Array.isArray(obj.path)) { toClean.push(idx); return; }
                     if (typeof obj.element === "string") {
                         // We have an old file (href) which is not in filesData: add it
                         var id = Util.createRandomInteger();

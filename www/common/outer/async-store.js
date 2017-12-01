@@ -568,7 +568,7 @@ define([
             Store.addPad({
                 href: href,
                 title: title,
-                path: store.data && store.data.initialPath
+                path: data.path || (store.data && store.data.initialPath)
             }, cb);
             return;
         }

@@ -234,7 +234,7 @@ define([
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
                 currentTitle = newTitle;
                 setDocumentTitle();
-                Cryptpad.setPadTitle(newTitle, undefined, function (err) {
+                Cryptpad.setPadTitle(newTitle, undefined, undefined, function (err) {
                     cb(err);
                 });
             });

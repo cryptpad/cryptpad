@@ -129,7 +129,7 @@ define([
 
     common.getMetadata = function (cb) {
         postMessage("GET_METADATA", null, function (obj) {
-            if (obj.error) { return void cb(obj.error); }
+            if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
     };
@@ -291,7 +291,7 @@ define([
     };
 
     // When opening a new pad or renaming it, store the new title
-    common.setPadTitle = function (title, padHref, cb) {
+    common.setPadTitle = function (title, padHref, path, cb) {
         var href = padHref || window.location.href;
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return; }
@@ -302,7 +302,8 @@ define([
 
         postMessage("SET_PAD_TITLE", {
             href: href,
-            title: title
+            title: title,
+            path: path
         }, function (obj) {
             if (obj && obj.error) {
                 console.log("unable to set pad title");
