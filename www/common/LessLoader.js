@@ -1,5 +1,8 @@
 /*@flow*/
-/*:: const define = () => {}; */
+/*::
+const define = (x:any, y:any) => {};
+const require = define;
+*/
 define([
     '/api/config'
 ], function (Config) { /*::});module.exports = (function() {
@@ -31,8 +34,10 @@ define([
     };
     var cachePut = function (k, v, cb) {
         if (window.cryptpadCache) { return void window.cryptpadCache.put(k, v, cb); }
-        cb = cb || function () { };
-        setTimeout(function () { localStorage['LESS_CACHE|' + key + '|' + k] = v; cb(); });
+        setTimeout(function () {
+            localStorage['LESS_CACHE|' + key + '|' + k] = v;
+            if (cb) { cb(); }
+        });
     };
 
     var fixURL = function (url, parent) {
@@ -49,7 +54,7 @@ define([
         return out;
     };
 
-    var inject = function (cssText, url) {
+    var inject = function (cssText /*:string*/, url) {
         var curStyle = document.createElement('style');
         curStyle.setAttribute('data-original-src', url);
         curStyle.type = 'text/css';
@@ -58,7 +63,7 @@ define([
         document.head.appendChild(curStyle);
     };
 
-    var fixAllURLs = function (source, parent) {
+    var fixAllURLs = function (source /*:string*/, parent) {
         var urlRegEx = /@import\s*("([^"]*)"|'([^']*)')|url\s*\(\s*(\s*"([^"]*)"|'([^']*)'|[^\)]*\s*)\s*\)/ig;
         var result, url;
 
@@ -120,7 +125,7 @@ define([
             }
             console.log('CACHE MISS ' + url);
             ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
-                if (err) { console.error(err); }
+                if (!css) { return void console.error(err); }
                 var output = fixAllURLs(css, url);
                 cachePut(url, output);
                 inject(output, url);
