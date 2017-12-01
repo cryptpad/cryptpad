@@ -5,7 +5,6 @@ define([
     '/common/common-hash.js',
     '/common/common-messaging.js',
     '/common/common-realtime.js',
-    '/common/common-language.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
@@ -15,7 +14,7 @@ define([
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Realtime, Language, Constants, Feedback, LocalStore, AStore,
+            Messaging, Realtime, Constants, Feedback, LocalStore, AStore,
             Pinpad, AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -52,7 +51,9 @@ define([
         return Messages._languageUsed;
     };
     common.setLanguage = function (l, cb) {
-        Language.setLanguage(l, null, cb);
+        var LS_LANG = "CRYPTPAD_LANG";
+        localStorage.setItem(LS_LANG, l);
+        cb();
     };
 
 
@@ -742,11 +743,6 @@ define([
     };
 
     }());
-
-    // MAGIC that happens implicitly
-    /*$(function () {
-        Language.applyTranslation();
-    });*/
 
     return common;
 });

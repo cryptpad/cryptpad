@@ -2,14 +2,14 @@
 define([
     '/bower_components/nthen/index.js',
     '/api/config',
-    'jquery',
+    '/common/dom-ready.js',
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js'
-], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
+], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
     nThen(function (waitFor) {
-        $(waitFor());
+        DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
         var req = {
             cfg: requireConfig,
@@ -18,7 +18,7 @@ define([
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
-        $('#sbox-iframe').attr('src',
+        document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
                 requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
 
