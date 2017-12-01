@@ -486,7 +486,6 @@ define([
 
         // FILES DATA
         exp.pushData = function (data, cb) {
-            if (!pinPads) { return; }
             if (typeof cb !== "function") { cb = function () {}; }
             var todo = function () {
                 var id = Util.createRandomInteger();
@@ -496,6 +495,7 @@ define([
             if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
                 return void todo();
             }
+            if (!pinPads) { return; }
             pinPads([Hash.hrefToHexChannelId(data.href)], function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
                 todo();
