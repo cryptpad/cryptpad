@@ -69,9 +69,9 @@ define([
     };
 
     makeDecryptor(brand, 90, 4, function () { })();
-    makeDecryptor(title, 70, 17, function () { })();
-    makeDecryptor(link, 20, 12, function () {})();
-    makeDecryptor(message, 12, 8, function () {
+    makeDecryptor(title, 50, 14, function () { })();
+    makeDecryptor(link, 20, 10, function () {})();
+    makeDecryptor(message, 12, 5, function () {
         console.log('done');
     })();
 });
