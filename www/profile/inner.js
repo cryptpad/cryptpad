@@ -11,7 +11,6 @@ define([
     '/customize/messages.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
-    '/bower_components/croppie/croppie.min.js',
 
     'cm/mode/markdown/markdown',
 
@@ -21,6 +20,7 @@ define([
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
+    '/bower_components/croppie/croppie.min.js',
     'css!/bower_components/croppie/croppie.css',
 ], function (
     $,
@@ -34,8 +34,7 @@ define([
     Realtime,
     Messages,
     Marked,
-    CodeMirror,
-    Croppie
+    CodeMirror
     )
 {
     var APP = window.APP = {
