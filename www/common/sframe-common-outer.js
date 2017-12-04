@@ -9,6 +9,7 @@ define([
     common.start = function (cfg) {
         cfg = cfg || {};
         var realtime = !cfg.noRealtime;
+        var network;
         var secret;
         var hashes;
         var CpNfOuter;
@@ -18,7 +19,7 @@ define([
         var SFrameChannel;
         var sframeChan;
         var FilePicker;
-        var Messenger;
+        //var Messenger;
         var Messaging;
         var Notifier;
         var Utils = {};
@@ -32,7 +33,6 @@ define([
                 '/common/cryptget.js',
                 '/common/sframe-channel.js',
                 '/filepicker/main.js',
-                '/common/common-messenger.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
                 '/common/common-hash.js',
@@ -41,16 +41,17 @@ define([
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
+                '/common/outer/network-config.js',
+                '/bower_components/netflux-websocket/netflux-client.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
-            _FilePicker, _Messenger, _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore) {
+            _FilePicker,  _Messaging, _Notifier, _Hash, _Util, _Realtime,
+            _Constants, _Feedback, _LocalStore, NetConfig, Netflux) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 FilePicker = _FilePicker;
-                Messenger = _Messenger;
                 Messaging = _Messaging;
                 Notifier = _Notifier;
                 Utils.Hash = _Hash;
@@ -84,7 +85,15 @@ define([
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
                 }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
-                Cryptpad.ready(waitFor());
+                Cryptpad.ready(waitFor(), {
+                    messenger: cfg.messaging
+                });
+
+                if (!cfg.newNetwork) {
+                    Netflux.connect(NetConfig.getWebsocketURL()).then(waitFor(function (nw) {
+                        network = nw;
+                    }));
+                }
             }));
         }).nThen(function (waitFor) {
             $('#sbox-iframe').focus();
@@ -104,12 +113,23 @@ define([
                 });
             });
 
-            secret = cfg.getSecrets ? cfg.getSecrets(Cryptpad, Utils) : Utils.Hash.getSecrets();
-            if (!secret.channel) {
-                // New pad: create a new random channel id
-                secret.channel = Utils.Hash.createChannelId();
+            if (cfg.getSecrets) {
+                var w = waitFor();
+                cfg.getSecrets(Cryptpad, Utils, waitFor(function (err, s) {
+                    secret = s;
+                    Cryptpad.getShareHashes(secret, function (err, h) {
+                        hashes = h;
+                        w();
+                    });
+                }));
+            } else {
+                secret = Utils.Hash.getSecrets();
+                if (!secret.channel) {
+                    // New pad: create a new random channel id
+                    secret.channel = Utils.Hash.createChannelId();
+                }
+                Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
             }
-            Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
 
         }).nThen(function () {
             var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -117,59 +137,50 @@ define([
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
-            var proxy = Cryptpad.getProxy();
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
-                var name;
+                var metaObj, isTemplate;
                 nThen(function (waitFor) {
-                    Cryptpad.getLastName(waitFor(function (err, n) {
+                    Cryptpad.getMetadata(waitFor(function (err, m) {
                         if (err) { console.log(err); }
-                        name = n;
+                        metaObj = m;
+                    }));
+                    Cryptpad.isTemplate(window.location.href, waitFor(function (err, t) {
+                        if (err) { console.log(err); }
+                        isTemplate = t;
                     }));
                 }).nThen(function (/*waitFor*/) {
-                    var metaObj = {
-                        doc: {
-                            defaultTitle: defaultTitle,
-                            type: parsed.type
-                        },
-                        user: {
-                            name: name,
-                            uid: Cryptpad.getUid(),
-                            avatar: Cryptpad.getAvatarUrl(),
-                            profile: Cryptpad.getProfileUrl(),
-                            curvePublic: proxy.curvePublic,
-                            netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
-                        },
-                        priv: {
-                            edPublic: proxy.edPublic,
-                            accountName: Utils.LocalStore.getAccountName(),
-                            origin: window.location.origin,
-                            pathname: window.location.pathname,
-                            fileHost: ApiConfig.fileHost,
-                            readOnly: readOnly,
-                            availableHashes: hashes,
-                            isTemplate: Cryptpad.isTemplate(window.location.href),
-                            feedbackAllowed: Utils.Feedback.state,
-                            friends: proxy.friends || {},
-                            settings: proxy.settings || {},
-                            isPresent: parsed.hashData && parsed.hashData.present,
-                            isEmbed: parsed.hashData && parsed.hashData.embed,
-                            thumbnails: !((proxy.settings || {}).general || {}).disableThumbnails,
-                            accounts: {
-                                donateURL: Cryptpad.donateURL,
-                                upgradeURL: Cryptpad.upgradeURL
-                            }
+                    metaObj.doc = {
+                        defaultTitle: defaultTitle,
+                        type: parsed.type
+                    };
+                    var additionalPriv = {
+                        accountName: Utils.LocalStore.getAccountName(),
+                        origin: window.location.origin,
+                        pathname: window.location.pathname,
+                        fileHost: ApiConfig.fileHost,
+                        readOnly: readOnly,
+                        availableHashes: hashes,
+                        isTemplate: isTemplate,
+                        feedbackAllowed: Utils.Feedback.state,
+                        isPresent: parsed.hashData && parsed.hashData.present,
+                        isEmbed: parsed.hashData && parsed.hashData.embed,
+                        accounts: {
+                            donateURL: Cryptpad.donateURL,
+                            upgradeURL: Cryptpad.upgradeURL
                         }
                     };
+                    for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
+
                     if (cfg.addData) {
                         cfg.addData(metaObj.priv, Cryptpad);
                     }
+
                     sframeChan.event('EV_METADATA_UPDATE', metaObj);
                 });
             };
-            Cryptpad.onDisplayNameChanged(updateMeta);
+            Cryptpad.onMetadataChanged(updateMeta);
             sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
-            proxy.on('change', 'settings', updateMeta);
 
             Utils.LocalStore.onLogout(function () {
                 sframeChan.event('EV_LOGOUT');
@@ -223,7 +234,7 @@ define([
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
                 currentTitle = newTitle;
                 setDocumentTitle();
-                Cryptpad.renamePad(newTitle, undefined, function (err) {
+                Cryptpad.setPadTitle(newTitle, undefined, undefined, function (err) {
                     cb(err);
                 });
             });
@@ -241,7 +252,7 @@ define([
                         cb('ERROR');
                         return;
                     }
-                    Cryptpad.changeDisplayName(newName, true);
+                    Cryptpad.changeMetadata();
                     cb();
                 });
             });
@@ -287,7 +298,6 @@ define([
             };
 
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
-                var network = Cryptpad.getNetwork();
                 var hkn = network.historyKeeper;
                 var crypto = Crypto.createEncryptor(secret.keys);
                 // Get the history messages and send them to the iframe
@@ -445,8 +455,9 @@ define([
                 Cryptpad.useTemplate(href, Cryptget, cb);
             });
             sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
-                var hasTemplate = Cryptpad.listTemplates(type).length > 0;
-                cb(hasTemplate);
+                Cryptpad.listTemplates(type, function (err, templates) {
+                    cb(templates.length > 0);
+                });
             });
 
             sframeChan.on('EV_GOTO_URL', function (url) {
@@ -494,117 +505,58 @@ define([
             }
 
             if (cfg.messaging) {
-                var messenger = Messenger.messenger(Cryptpad);
-
                 sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
-                    messenger.getFriendList(function (e, keys) {
-                        cb({
-                            error: e,
-                            data: keys,
-                        });
-                    });
+                    Cryptpad.messenger.getFriendList(cb);
                 });
                 sframeChan.on('Q_CONTACTS_GET_MY_INFO', function (data, cb) {
-                    messenger.getMyInfo(function (e, info) {
-                        cb({
-                            error: e,
-                            data: info,
-                        });
-                    });
+                    Cryptpad.messenger.getMyInfo(cb);
                 });
                 sframeChan.on('Q_CONTACTS_GET_FRIEND_INFO', function (curvePublic, cb) {
-                    messenger.getFriendInfo(curvePublic, function (e, info) {
-                        cb({
-                            error: e,
-                            data: info,
-                        });
-                    });
+                    Cryptpad.messenger.getFriendInfo(curvePublic, cb);
                 });
                 sframeChan.on('Q_CONTACTS_REMOVE_FRIEND', function (curvePublic, cb) {
-                    messenger.removeFriend(curvePublic, function (e, info) {
-                        cb({
-                            error: e,
-                            data: info,
-                        });
-                    });
+                    Cryptpad.messenger.removeFriend(curvePublic, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
-                    messenger.openFriendChannel(curvePublic, function (e) {
-                        cb({ error: e, });
-                    });
+                    Cryptpad.messenger.openFriendChannel(curvePublic, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_GET_STATUS', function (curvePublic, cb) {
-                    messenger.getStatus(curvePublic, function (e, online) {
-                        cb({
-                            error: e,
-                            data: online,
-                        });
-                    });
+                    Cryptpad.messenger.getFriendStatus(curvePublic, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_GET_MORE_HISTORY', function (opt, cb) {
-                    messenger.getMoreHistory(opt.curvePublic, opt.sig, opt.count, function (e, history) {
-                        cb({
-                            error: e,
-                            data: history,
-                        });
-                    });
+                    Cryptpad.messenger.getMoreHistory(opt, cb);
                 });
 
                 sframeChan.on('Q_CONTACTS_SEND_MESSAGE', function (opt, cb) {
-                    messenger.sendMessage(opt.curvePublic, opt.content, function (e) {
-                        cb({
-                            error: e,
-                        });
-                    });
+                    Cryptpad.messenger.sendMessage(opt, cb);
                 });
                 sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
-                    messenger.setChannelHead(opt.curvePublic, opt.sig, function (e) {
-                        cb({
-                            error: e
-                        });
-                    });
+                    Cryptpad.messenger.setChannelHead(opt, cb);
                 });
                 sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
-                    messenger.clearOwnedChannel(channel, function (e) {
-                        cb({
-                            error: e,
-                        });
-                    });
+                    Cryptpad.clearOwnedChannel(channel, cb);
                 });
 
-                messenger.on('message', function (message) {
-                    sframeChan.event('EV_CONTACTS_MESSAGE', message);
+                Cryptpad.messenger.onMessageEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_MESSAGE', data);
                 });
-                messenger.on('join', function (curvePublic, channel) {
-                    sframeChan.event('EV_CONTACTS_JOIN', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
+                Cryptpad.messenger.onJoinEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_JOIN', data);
                 });
-                messenger.on('leave', function (curvePublic, channel) {
-                    sframeChan.event('EV_CONTACTS_LEAVE', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
+                Cryptpad.messenger.onLeaveEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_LEAVE', data);
                 });
-                messenger.on('update', function (info, curvePublic) {
-                    sframeChan.event('EV_CONTACTS_UPDATE', {
-                        curvePublic: curvePublic,
-                        info: info,
-                    });
+                Cryptpad.messenger.onUpdateEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_UPDATE', data);
                 });
-                messenger.on('friend', function (curvePublic) {
-                    sframeChan.event('EV_CONTACTS_FRIEND', {
-                        curvePublic: curvePublic,
-                    });
+                Cryptpad.messenger.onFriendEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_FRIEND', data);
                 });
-                messenger.on('unfriend', function (curvePublic) {
-                    sframeChan.event('EV_CONTACTS_UNFRIEND', {
-                        curvePublic: curvePublic,
-                    });
+                Cryptpad.messenger.onUnfriendEvent.reg(function (data) {
+                    sframeChan.event('EV_CONTACTS_UNFRIEND', data);
                 });
             }
 
@@ -629,7 +581,7 @@ define([
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
-                network: cfg.newNetwork || Cryptpad.getNetwork(),
+                network: cfg.newNetwork || network,
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),

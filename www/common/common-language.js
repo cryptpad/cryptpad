@@ -10,7 +10,6 @@ define([
 
     // Add handler to the language selector
     Msg.setLanguage = function (l, sframeChan, cb) {
-        console.log(sframeChan);
         if (sframeChan) {
             // We're in the sandbox
             sframeChan.query("Q_LANGUAGE_SET", l, cb);

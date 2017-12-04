@@ -70,7 +70,7 @@ define([
 
     module.test = function (assert) {
         var config = {
-            Cryptpad: Cryptpad,
+            pinPads: Cryptpad.pinPads,
             workgroup: false,
             testMode: true,
             loggedIn: false
@@ -325,7 +325,12 @@ define([
             var fo = FO.init(files, config);
             fo.fixFiles();
 
-            var data = Cryptpad.makePad(href5, 'Title5');
+            var data = {
+                href: href5,
+                title: 'Title5',
+                atime: +new Date(),
+                ctime: +new Date()
+            };
             var res;
             var id5;
             // pushData is synchronous in test mode (no pinning)
