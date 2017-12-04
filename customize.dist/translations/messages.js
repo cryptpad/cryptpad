@@ -301,6 +301,8 @@ define(function () {
     out.profile_namePlaceholder = 'Name displayed in your profile';
     out.profile_avatar = "Avatar";
     out.profile_upload = " Upload a new avatar";
+    out.profile_uploadSizeError = "Error: your avatar must be smaller than {0}";
+    out.profile_uploadTypeError = "Error: your avatar type is not allowed. Allowed types are: {0}";
     out.profile_error = "Error while creating your profile: {0}";
     out.profile_register = "You have to sign up to create a profile!";
     out.profile_create = "Create a profile";
