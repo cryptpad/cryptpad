@@ -18,7 +18,7 @@ define([
     var loggedIn = LocalStore.isLoggedIn();
     var link = h('a#cp-link', {
         href: loggedIn? '/drive/': '/',
-    }, loggedIn? Messages.four04_goToDrive: Messages.four04_goToHome);
+    }, loggedIn? Messages.header_logoTitle: Messages.header_homeTitle);
 
     var content = h('div#cp-main', [
         img,
