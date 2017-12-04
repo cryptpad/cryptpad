@@ -5,10 +5,11 @@ define([
     '/drive/tests.js',
     '/common/test.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/common-thumbnail.js',
     '/common/wire.js',
     '/common/flat-dom.js',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Thumb, Wire, Flat) {
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
 
@@ -248,9 +249,13 @@ define([
                     }
                 };
 
-                var respond;
+
+                var evt = Util.mkEvent();
+                var respond = function (e, out) {
+                    evt.fire(e, out);
+                };
                 cb(void 0, {
-                    send: function (raw, cb) {
+                    send: function (raw /*, cb */) {
                         try {
                             var parsed = JSON.parse(raw);
                             var txid = parsed.txid;
@@ -267,7 +272,7 @@ define([
                         } catch (e) { console.error("PEWPEW"); }
                     },
                     receive: function (f) {
-                        respond = f;
+                        evt.reg(f);
                     },
                 });
             },

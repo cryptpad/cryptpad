@@ -82,7 +82,7 @@ opt = {
                     var cb = pending[txid];
                     if (data.error) { return void cb(data.error); }
                     cb(void 0, data.content);
-                } catch (e) { console.error("UNHANDLED_MESSAGE", data); }
+                } catch (e) { console.error("UNHANDLED_MESSAGE", raw); }
             });
 
             cb(void 0, rpc);
