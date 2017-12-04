@@ -6,8 +6,9 @@ define([
     '/common/test.js',
     '/common/common-hash.js',
     '/common/common-thumbnail.js',
+    '/common/wire.js',
     '/common/flat-dom.js',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Thumb, Flat) {
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Thumb, Wire, Flat) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
 
@@ -30,7 +31,7 @@ define([
 
         ASSERTS.forEach(function (f, index) {
             f(function (err) {
-                console.log("test " + index);
+                //console.log("test " + index);
                 done(err, index);
             }, index);
         });
@@ -234,6 +235,50 @@ define([
         // TODO
         return cb(true);
     }, "version 2 hash failed to parse correctly");
+
+    assert(function (cb) {
+        Wire.create({
+            constructor: function (cb) {
+                var service = function (type, data, cb) {
+                    switch (type) {
+                        case "HEY_BUDDY":
+                            return cb(void 0, "SALUT!");
+                        default:
+                            cb("ERROR");
+                    }
+                };
+
+                var respond;
+                cb(void 0, {
+                    send: function (raw, cb) {
+                        try {
+                            var parsed = JSON.parse(raw);
+                            var txid = parsed.txid;
+                            var message = parsed.message;
+                            setTimeout(function () {
+                                service(message.command, message.content, function (e, result) {
+                                    respond(JSON.stringify({
+                                        txid: txid,
+                                        error: e,
+                                        content: result,
+                                    }));
+                                });
+                            });
+                        } catch (e) { console.error("PEWPEW"); }
+                    },
+                    receive: function (f) {
+                        respond = f;
+                    },
+                });
+            },
+        }, function (e, rpc) {
+            if (e) { return cb(false); }
+            rpc.send('HEY_BUDDY', null, function (e, out) {
+                if (e) { return void cb(false); }
+                if (out === 'SALUT!') { cb(true); }
+            });
+        });
+    }, "Test rpc factory");
 
 /*
     assert(function (cb) {
