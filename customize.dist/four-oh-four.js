@@ -68,10 +68,10 @@ define([
         };
     };
 
-    makeDecryptor(brand, 90, 4, function () { })();
+    makeDecryptor(brand, 70, 2, function () { })();
     makeDecryptor(title, 50, 14, function () { })();
-    makeDecryptor(link, 20, 10, function () {})();
-    makeDecryptor(message, 12, 5, function () {
+    makeDecryptor(link, 20, 4, function () {})();
+    makeDecryptor(message, 12, 3, function () {
         console.log('done');
     })();
 });

@@ -690,7 +690,7 @@ define(function () {
 
     out.four04_pageNotFound = "We couldn't find the page you were looking for.";
     out.four04_goToHome = "Go to the home page.";
-    out.four04_goToDrive = "Go to my CryptDrive.";
+    out.four04_goToDrive = "Go to your CryptDrive";
 
     // BottomBar.html
 
