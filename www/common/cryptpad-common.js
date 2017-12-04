@@ -486,7 +486,20 @@ define([
     messenger.onFriendEvent = Util.mkEvent();
     messenger.onUnfriendEvent = Util.mkEvent();
 
-    // HERE
+    // Pad RPC
+    var pad = common.padRpc = {};
+    pad.joinPad = function (data, cb) {
+        postMessage("JOIN_PAD", data, cb);
+    };
+    pad.sendPadMsg = function (data, cb) {
+        postMessage("SEND_PAD_MSG", data, cb);
+    };
+    pad.onReadyEvent = Util.mkEvent();
+    pad.onMessageEvent = Util.mkEvent();
+    pad.onJoinEvent = Util.mkEvent();
+    pad.onLeaveEvent = Util.mkEvent();
+    pad.onDisconnectEvent = Util.mkEvent();
+
     common.getShareHashes = function (secret, cb) {
         var hashes;
         if (!window.location.hash) {
@@ -596,6 +609,22 @@ define([
             }
             case 'CONTACTS_UNFRIEND': {
                 common.messenger.onUnfriendEvent.fire(data); break;
+            }
+            // Pad
+            case 'PAD_READY': {
+                common.padRpc.onReadyEvent.fire(); break;
+            }
+            case 'PAD_MESSAGE': {
+                common.padRpc.onMessageEvent.fire(data); break;
+            }
+            case 'PAD_JOIN': {
+                common.padRpc.onJoinEvent.fire(data); break;
+            }
+            case 'PAD_LEAVE': {
+                common.padRpc.onLeaveEvent.fire(data); break;
+            }
+            case 'PAD_DISCONNECT': {
+                common.padRpc.onDisconnectEvent.fire(data); break;
             }
         }
     };

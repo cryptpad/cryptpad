@@ -1,3 +1,5 @@
+/* jshint ignore:start */
+
 var window = self;
 importScripts('/bower_components/requirejs/require.js');
 

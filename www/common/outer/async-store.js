@@ -8,13 +8,14 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/common-messenger.js',
+    '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
 
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
 ], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             NetConfig,
+             CpNfWorker, NetConfig,
              Crypto, ChainPad, Listmap) {
     var Store = {};
 
@@ -95,7 +96,6 @@ define([
     var getCanonicalChannelList = function () {
         return Util.deduplicateString(getUserChannelList()).sort();
     };
-
     //////////////////////////////////////////////////////////////////
     /////////////////////// RPC //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
@@ -715,6 +715,66 @@ define([
         }
     };
 
+    //////////////////////////////////////////////////////////////////
+    /////////////////////// PAD //////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+
+    // TODO with sharedworker
+    // channel will be an object storing the webchannel associated to each browser tab
+    var channel = {
+        queue: []
+    };
+    Store.joinPad = function (data, cb) {
+        var conf = {
+            onReady: function () {
+                postMessage("PAD_READY");
+            }, // post EV_PAD_READY
+            onMessage: function (m) {
+                postMessage("PAD_MESSAGE", m);
+            }, // post EV_PAD_MESSAGE
+            onJoin: function (m) {
+                postMessage("PAD_JOIN", m);
+            }, // post EV_PAD_JOIN
+            onLeave: function (m) {
+                postMessage("PAD_LEAVE", m);
+            }, // post EV_PAD_LEAVE
+            onDisconnect: function () {
+                postMessage("PAD_DISCONNECT");
+            }, // post EV_PAD_DISCONNECT
+            channel: data.channel,
+            validateKey: data.validateKey,
+            network: store.network,
+            readOnly: data.readOnly,
+            onConnect: function (wc, sendMessage) {
+                channel.sendMessage = sendMessage;
+                channel.wc = wc;
+                channel.queue.forEach(function (data) {
+                    sendMessage(data.message);
+                });
+                cb({
+                    myID: wc.myID,
+                    id: wc.id,
+                    members: wc.members
+                });
+            }
+        };
+        CpNfWorker.start(conf);
+    };
+    Store.sendPadMsg = function (data, cb) {
+        if (!channel.wc) { channel.queue.push(data); }
+        channel.sendMessage(data, cb);
+    };
+
+    // TODO
+    // GET_FULL_HISTORY from sframe-common-outer
+
+    // TODO with sharedworker
+    // when the tab is closed, leave the pad
+
+    //////////////////////////////////////////////////////////////////
+    /////////////////////// Init /////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+
     var onReady = function (returned, cb) {
         var proxy = store.proxy;
         var userObject = store.userObject = UserObject.init(proxy.drive, {
@@ -815,6 +875,7 @@ define([
         store.proxy = rt.proxy;
         store.loggedIn = typeof(data.userHash) !== "undefined";
 
+        var returned = {};
         rt.proxy.on('create', function (info) {
             store.realtime = info.realtime;
             store.network = info.network;

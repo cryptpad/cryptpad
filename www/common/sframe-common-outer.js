@@ -581,7 +581,7 @@ define([
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
-                network: cfg.newNetwork || network,
+                padRpc: Cryptpad.padRpc,
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),

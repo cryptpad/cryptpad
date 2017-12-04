@@ -1,3 +1,5 @@
+/* jshint ignore:start */
+
 var window = self;
 var localStorage = {
     setItem: function (k, v) { localStorage[k] = v; },

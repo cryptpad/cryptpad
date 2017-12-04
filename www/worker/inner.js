@@ -16,8 +16,8 @@ define([
     Cryptpad,
     nThen,
     SFCommon,
-    UI,
-    Messages
+    UI
+    /*Messages*/
     )
 {
     var APP = window.APP = {};
@@ -31,7 +31,6 @@ define([
         sFrameChan = common.getSframeChannel();
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
-        var $body = $('body');
         var $container = $('#cp-app-worker-container');
         var $bar = $('.cp-toolbar-container');
 

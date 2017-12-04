@@ -146,6 +146,13 @@ define([
             case 'CONTACTS_SET_CHANNEL_HEAD': {
                 Store.messenger.setChannelHead(data, cb); break;
             }
+            // Pad
+            case 'SEND_PAD_MSG': {
+                Store.sendPadMsg(data, cb); break;
+            }
+            case 'JOIN_PAD': {
+                Store.joinPad(data, cb); break;
+            }
             default: {
                 
                 break;
