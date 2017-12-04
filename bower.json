@@ -44,7 +44,8 @@
     "open-sans-fontface": "^1.4.2",
     "bootstrap-tokenfield": "^0.12.1",
     "localforage": "^1.5.2",
-    "html2canvas": "^0.4.1"
+    "html2canvas": "^0.4.1",
+    "croppie": "^2.5.0"
   },
   "resolutions": {
     "bootstrap": "v4.0.0-alpha.6"

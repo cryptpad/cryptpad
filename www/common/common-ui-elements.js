@@ -98,7 +98,13 @@ define([
                         target: data.target
                     };
                     if (data.filter && !data.filter(file)) {
-                        UI.log('Invalid avatar (type or size)');
+                        return;
+                    }
+                    if (data.transformer) {
+                        data.transformer(file, function (newFile) {
+                            data.FM.handleFile(newFile, ev);
+                            if (callback) { callback(); }
+                        });
                         return;
                     }
                     data.FM.handleFile(file, ev);

@@ -298,6 +298,8 @@ define(function () {
     out.profile_namePlaceholder = 'Nom ou pseudo pour le profil';
     out.profile_avatar = "Avatar";
     out.profile_upload = " Importer un nouvel avatar";
+    out.profile_uploadSizeError = "Erreur : votre avatar doit avoir une taille inférieure à {0}";
+    out.profile_uploadTypeError = "Erreur : le format de votre avatar est invalide. Les formats autorisés sont : {0}";
     out.profile_error = "Erreur lors de la création du profil : {0}";
     out.profile_register = "Vous devez vous inscrire pour pouvoir créer un profil !";
     out.profile_create = "Créer un profil";
