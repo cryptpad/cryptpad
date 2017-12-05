@@ -436,6 +436,7 @@ var updateLimits = function (config, publicKey, cb /*:(?string, ?any[])=>void*/)
             k.replace(/\/([^\/]+)$/, function (all, safeKey) {
                 var id = unescapeKeyCharacters(safeKey || '');
                 limits[id] = custom[k];
+                return '';
             });
         });
         return limits;
