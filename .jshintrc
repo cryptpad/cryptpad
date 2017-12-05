@@ -7,7 +7,6 @@
     "iterator": true,
     "latedef": true,
     "nocomma": true,
-    "notypeof": true,
     "shadow": false,
     "undef": true,
     "unused": true,
