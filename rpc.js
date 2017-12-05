@@ -10,6 +10,7 @@ var Fs = require("fs");
 var Path = require("path");
 var Https = require("https");
 const Package = require('./package.json');
+const Pinned = require('./pinned');
 
 var RPC = module.exports;
 
@@ -212,7 +213,6 @@ var checkSignature = function (signedMsg, signature, publicKey) {
 };
 
 var loadUserPins = function (Env, publicKey, cb) {
-    var pinStore = Env.pinStore;
     var session = beginSession(Env.Sessions, publicKey);
 
     if (session.channels) {
@@ -230,7 +230,7 @@ var loadUserPins = function (Env, publicKey, cb) {
         pins[channel] = false;
     };
 
-    pinStore.getMessages(publicKey, function (msg) {
+    Env.pinStore.getMessages(publicKey, function (msg) {
         // handle messages...
         var parsed;
         try {
@@ -325,9 +325,8 @@ var getFileSize = function (Env, channel, cb) {
 };
 
 var getMultipleFileSize = function (Env, channels, cb) {
-    var msgStore = Env.msgStore;
     if (!Array.isArray(channels)) { return cb('INVALID_PIN_LIST'); }
-    if (typeof(msgStore.getChannelSize) !== 'function') {
+    if (typeof(Env.msgStore.getChannelSize) !== 'function') {
         return cb('GET_CHANNEL_SIZE_UNSUPPORTED');
     }
 
@@ -499,6 +498,54 @@ var sumChannelSizes = function (sizes) {
         .reduce(function (a, b) { return a + b; }, 0);
 };
 
+// inform that the
+var loadChannelPins = function (Env) {
+    Pinned.load(function (data) {
+        Env.pinnedPads = data;
+        Env.evPinnedPadsReady.fire();
+    });
+};
+var addPinned = function (
+    Env,
+    publicKey /*:string*/,
+    channelList /*Array<string>*/,
+    cb /*:()=>void*/)
+{
+    Env.evPinnedPadsReady.reg(() => {
+        channelList.forEach((c) => {
+            const x = Env.pinnedPads[c];
+            if (!x) { return; }
+            delete x[publicKey];
+        });
+        cb();
+    });
+};
+var removePinned = function (
+    Env,
+    publicKey /*:string*/,
+    channelList /*Array<string>*/,
+    cb /*:()=>void*/)
+{
+    Env.evPinnedPadsReady.reg(() => {
+        channelList.forEach((c) => {
+            const x = Env.pinnedPads[c];
+            if (!x) { return; }
+            delete x[publicKey];
+        });
+        cb();
+    });
+};
+var isChannelPinned = function (Env, channel, cb) {
+    Env.evPinnedPadsReady.reg(() => {
+        if (Env.pinnedPads[channel] && Object.keys(Env.pinnedPads[channel]).length) {
+            cb(true);
+        } else {
+            delete Env.pinnedPads[channel];
+            cb(false);
+        }
+    });
+};
+
 var pinChannel = function (Env, publicKey, channels, cb) {
     if (!channels && channels.filter) {
         return void cb('INVALID_PIN_LIST');
@@ -534,6 +581,7 @@ var pinChannel = function (Env, publicKey, channels, cb) {
                     toStore.forEach(function (channel) {
                         session.channels[channel] = true;
                     });
+                    addPinned(Env, publicKey, toStore, () => {});
                     getHash(Env, publicKey, cb);
                 });
             });
@@ -542,7 +590,6 @@ var pinChannel = function (Env, publicKey, channels, cb) {
 };
 
 var unpinChannel = function (Env, publicKey, channels, cb) {
-    var pinStore = Env.pinStore;
     if (!channels && channels.filter) {
         // expected array
         return void cb('INVALID_PIN_LIST');
@@ -560,13 +607,13 @@ var unpinChannel = function (Env, publicKey, channels, cb) {
             return void getHash(Env, publicKey, cb);
         }
 
-        pinStore.message(publicKey, JSON.stringify(['UNPIN', toStore]),
+        Env.pinStore.message(publicKey, JSON.stringify(['UNPIN', toStore]),
             function (e) {
             if (e) { return void cb(e); }
             toStore.forEach(function (channel) {
                 delete session.channels[channel];
             });
-
+            removePinned(Env, publicKey, toStore, () => {});
             getHash(Env, publicKey, cb);
         });
     });
@@ -574,7 +621,6 @@ var unpinChannel = function (Env, publicKey, channels, cb) {
 
 var resetUserPins = function (Env, publicKey, channelList, cb) {
     if (!Array.isArray(channelList)) { return void cb('INVALID_PIN_LIST'); }
-    var pinStore = Env.pinStore;
     var session = beginSession(Env.Sessions, publicKey);
 
     if (!channelList.length) {
@@ -605,11 +651,16 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
                 They will not be able to pin additional pads until they upgrade
                 or delete enough files to go back under their limit. */
             if (pinSize > limit[0] && session.hasPinned) { return void(cb('E_OVER_LIMIT')); }
-            pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
+            Env.pinStore.message(publicKey, JSON.stringify(['RESET', channelList]),
                 function (e) {
                 if (e) { return void cb(e); }
                 channelList.forEach(function (channel) {
                     pins[channel] = true;
+                });
+
+                var oldChannels = Object.keys(session.channels);
+                removePinned(Env, publicKey, oldChannels, () => {
+                    addPinned(Env, publicKey, channelList, ()=>{});
                 });
 
                 // update in-memory cache IFF the reset was allowed.
@@ -879,6 +930,7 @@ var isUnauthenticatedCall = function (call) {
     return [
         'GET_FILE_SIZE',
         'GET_MULTIPLE_FILE_SIZE',
+        'IS_CHANNEL_PINNED',
     ].indexOf(call) !== -1;
 };
 
@@ -894,8 +946,29 @@ var isAuthenticatedCall = function (call) {
         'GET_LIMIT',
         'UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
-        'EXPIRE_SESSION',
+        'EXPIRE_SESSION'
     ].indexOf(call) !== -1;
+};
+
+const mkEvent = function (once) {
+    var handlers = [];
+    var fired = false;
+    return {
+        reg: function (cb) {
+            if (once && fired) { return void setTimeout(cb); }
+            handlers.push(cb);
+        },
+        unreg: function (cb) {
+            if (handlers.indexOf(cb) === -1) { throw new Error("Not registered"); }
+            handlers.splice(handlers.indexOf(cb), 1);
+        },
+        fire: function () {
+            if (once && fired) { return; }
+            fired = true;
+            var args = Array.prototype.slice.call(arguments);
+            handlers.forEach(function (h) { h.apply(null, args); });
+        }
+    };
 };
 
 /*::const ConfigType = require('./config.example.js');*/
@@ -909,14 +982,19 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         return typeof(config[key]) === 'string'? config[key]: def;
     };
 
-    var Env = {};
-    Env.defaultStorageLimit = config.defaultStorageLimit;
+    var Env = {
+        defaultStorageLimit: config.defaultStorageLimit,
+        maxUploadSize: config.maxUploadSize || (20 * 1024 * 1024),
+        Sessions: {},
+        paths: {},
+        msgStore: (undefined /*:any*/),
+        pinStore: (undefined /*:any*/),
+        pinnedPads: {},
+        evPinnedPadsReady: mkEvent(true)
+    };
 
-    Env.maxUploadSize = config.maxUploadSize || (20 * 1024 * 1024);
-
-    var Sessions = Env.Sessions = {};
-
-    var paths = Env.paths = {};
+    var Sessions = Env.Sessions;
+    var paths = Env.paths;
     var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
@@ -942,6 +1020,10 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                         return respond(e);
                     }
                     respond(e, [null, dict, null]);
+                });
+            case 'IS_CHANNEL_PINNED':
+                return void isChannelPinned(Env, msg[1], function (isPinned) {
+                    respond(null, [null, isPinned, null]);
                 });
             default:
                 console.error("unsupported!");
@@ -1173,6 +1255,8 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     };
     updateLimitDaily();
     setInterval(updateLimitDaily, 24*3600*1000);
+
+    loadChannelPins(Env);
 
     Store.create({
         filePath: pinPath,

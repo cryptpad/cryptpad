@@ -461,7 +461,16 @@ define([
                 getHeadingText: function () { return titleRecommender(); }
             }, onLocal);
             var configTb = {
-                displayed: ['userlist', 'title', 'useradmin', 'spinner', 'newpad', 'share', 'limit'],
+                displayed: [
+                    'userlist',
+                    'title',
+                    'useradmin',
+                    'spinner',
+                    'newpad',
+                    'share',
+                    'limit',
+                    'unpinnedWarning'
+                ],
                 title: title.getTitleConfig(),
                 metadataMgr: cpNfInner.metadataMgr,
                 readOnly: readOnly,
