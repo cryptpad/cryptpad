@@ -33,7 +33,7 @@ define([], function () {
                 data.map[id] = el.textContent;
                 return id;
             }
-            if (!el || !el.attributes) { return void console.error(el); }
+            if (!el || !el.attributes) { return; }
             id = uid();
             data.map[id] = [
                 el.tagName,

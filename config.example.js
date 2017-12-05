@@ -160,6 +160,24 @@ module.exports = {
     defaultStorageLimit: 50 * 1024 * 1024,
 
     /*
+     *  CryptPad allows administrators to give custom limits to their friends.
+     *  add an entry for each friend, identified by their user id,
+     *  which can be found on the settings page. Include a 'limit' (number of bytes),
+     *  a 'plan' (string), and a 'note' (string).
+     *
+     *  hint: 1GB is 1024 * 1024 * 1024 bytes
+     */
+    customLimits: {
+        /*
+        "https://my.awesome.website/user/#/1/cryptpad-user/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=": {
+            limit: 20 * 1024 * 1024 * 1024,
+            plan: 'insider',
+            note: 'storage space donated by my.awesome.website'
+        }
+        */
+    },
+
+    /*
      *  By default, CryptPad also contacts our accounts server once a day to check for changes in
      *  the people who have accounts. This check-in will also send the version of your CryptPad
      *  instance and your email so we can reach you if we are aware of a serious problem. We will

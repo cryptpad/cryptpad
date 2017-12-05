@@ -20,6 +20,8 @@ define([
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
+    '/bower_components/croppie/croppie.min.js',
+    'css!/bower_components/croppie/croppie.css',
 ], function (
     $,
     Crypto,
@@ -253,12 +255,44 @@ define([
         createEditableInput($block, LINK_ID, placeholder, getValue, setValue);
     };
 
+    var AVATAR_SIZE_LIMIT = 0.5;
     var allowedMediaTypes = [
         'image/png',
         'image/jpeg',
         'image/jpg',
         'image/gif',
     ];
+    var transformAvatar = function (file, cb) {
+        if (file.type === 'image/gif') { return void cb(file); }
+        var $croppie = $('<div>', {
+            'class': 'cp-app-profile-resizer'
+        });
+
+        var todo = function () {
+            UI.confirm($croppie[0], function (yes) {
+                if (!yes) { return; }
+                $croppie.croppie('result', {
+                    type: 'blob',
+                    size: {width: 300, height: 300}
+                }).then(function(blob) {
+                    blob.lastModifiedDate = new Date();
+                    blob.name = 'avatar';
+                    cb(blob);
+                });
+            });
+        };
+
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            $croppie.croppie({
+                url: e.target.result,
+                viewport: { width: 100, height: 100 },
+                boundary: { width: 400, height: 300 },
+            });
+            todo();
+        };
+        reader.readAsDataURL(file);
+    };
     var addAvatar = function ($container) {
         var $block = $('<div>', {id: AVATAR_ID}).appendTo($container);
         var $span = $('<span>').appendTo($block);
@@ -318,14 +352,30 @@ define([
             }
         };
         APP.FM = common.createFileManager(fmConfig);
+        var accepted = ".gif,.jpg,.jpeg,.png";
         var data = {
             FM: APP.FM,
             filter: function (file) {
                 var sizeMB = Util.bytesToMegabytes(file.size);
                 var type = file.type;
-                return sizeMB <= 0.5 && allowedMediaTypes.indexOf(type) !== -1;
+                // We can't resize .gif so we have to display an error if it is too big
+                if (sizeMB > AVATAR_SIZE_LIMIT && type === 'image/gif') {
+                    UI.log(Messages._getKey('profile_uploadSizeError', [
+                        Messages._getKey('formattedMB', [AVATAR_SIZE_LIMIT])
+                    ]));
+                    return false;
+                }
+                // Display an error if the image type is not allowed
+                if (allowedMediaTypes.indexOf(type) === -1) {
+                    UI.log(Messages._getKey('profile_uploadTypeError', [
+                        accepted.split(',').join(', ')
+                    ]));
+                    return false;
+                }
+                return true;
             },
-            accept: ".gif,.jpg,.jpeg,.png"
+            transformer: transformAvatar,
+            accept: accepted
         };
         var $upButton = common.createButton('upload', false, data);
         $upButton.text(Messages.profile_upload);
@@ -394,15 +444,6 @@ define([
 
     var onReady = function () {
         APP.$container.find('#'+CREATE_ID).remove();
-
-        /*var obj = APP.lm && APP.lm.proxy;
-        if (!APP.readOnly) {
-            var pubKeys = Cryptpad.getPublicKeys();
-            if (pubKeys && pubKeys.curve) {
-                obj.curveKey = pubKeys.curve;
-                obj.edKey = pubKeys.ed;
-            }
-        }*/
 
         if (!APP.initialized) {
             var $header = $('<div>', {id: HEADER_ID}).appendTo(APP.$rightside);

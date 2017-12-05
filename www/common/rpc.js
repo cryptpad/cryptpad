@@ -140,7 +140,7 @@ types of messages:
 
         var send = ctx.send = function (type, msg, cb) {
             if (!ctx.connected && type !== 'COOKIE') {
-                return void window.setTimeout(function () {
+                return void setTimeout(function () {
                     cb('DISCONNECTED');
                 });
             }
@@ -185,7 +185,7 @@ types of messages:
 
         send.unauthenticated = function (type, msg, cb) {
             if (!ctx.connected) {
-                return void window.setTimeout(function () {
+                return void setTimeout(function () {
                     cb('DISCONNECTED');
                 });
             }
@@ -276,7 +276,7 @@ types of messages:
 
         var send = ctx.send = function (type, msg, cb) {
             if (!ctx.connected) {
-                return void window.setTimeout(function () {
+                return void setTimeout(function () {
                     cb('DISCONNECTED');
                 });
             }

@@ -12,7 +12,7 @@ var map = {
 
 var messages = {};
 var LS_LANG = "CRYPTPAD_LANG";
-var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
+var getStoredLanguage = function () { return localStorage && localStorage.getItem(LS_LANG); };
 var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
 var getLanguage = messages._getLanguage = function () {
     if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
@@ -24,19 +24,17 @@ var getLanguage = messages._getLanguage = function () {
 };
 var language = getLanguage();
 
-var req = ['jquery', '/customize/translations/messages.js'];
+var req = ['/common/common-util.js', '/customize/translations/messages.js'];
 if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
 
-define(req, function($, Default, Language) {
+define(req, function(Util, Default, Language) {
     map.en = 'English';
     var defaultLanguage = 'en';
 
-    if (!Language || language === defaultLanguage || !map[language]) {
-        messages = $.extend(true, messages, Default);
-    }
-    else {
+    Util.extend(messages, Default);
+    if (Language && language !== defaultLanguage) {
         // Add the translated keys to the returned object
-        messages = $.extend(true, messages, Default, Language);
+        Util.extend(messages, Language);
     }
 
     messages._languages = map;

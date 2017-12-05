@@ -46,41 +46,30 @@ define([
                         sframeChan = sfc;
                     }));
             }).nThen(function () {
-                var proxy = Cryptpad.getProxy();
                 var updateMeta = function () {
                     //console.log('EV_METADATA_UPDATE');
-                    var name;
+                    var metaObj;
                     nThen(function (waitFor) {
-                        Cryptpad.getLastName(waitFor(function (err, n) {
+                        Cryptpad.getMetadata(waitFor(function (err, n) {
                             if (err) { console.log(err); }
-                            name = n;
+                            metaObj = n;
                         }));
                     }).nThen(function (/*waitFor*/) {
-                        sframeChan.event('EV_METADATA_UPDATE', {
-                            doc: {},
-                            user: {
-                                name: name,
-                                uid: Cryptpad.getUid(),
-                                avatar: Cryptpad.getAvatarUrl(),
-                                profile: Cryptpad.getProfileUrl(),
-                                curvePublic: proxy.curvePublic,
-                                netfluxId: Cryptpad.getNetwork().webChannels[0].myID,
-                            },
-                            priv: {
-                                accountName: Utils.LocalStore.getAccountName(),
-                                origin: window.location.origin,
-                                pathname: window.location.pathname,
-                                feedbackAllowed: Utils.Feedback.state,
-                                friends: proxy.friends || {},
-                                settings: proxy.settings || {},
-                                types: config.types
-                            }
-                        });
+                        metaObj.doc = {};
+                        var additionalPriv = {
+                            accountName: Utils.LocalStore.getAccountName(),
+                            origin: window.location.origin,
+                            pathname: window.location.pathname,
+                            feedbackAllowed: Utils.Feedback.state,
+                            types: config.types
+                        };
+                        for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
+
+                        sframeChan.event('EV_METADATA_UPDATE', metaObj);
                     });
                 };
-                Cryptpad.onDisplayNameChanged(updateMeta);
+                Cryptpad.onMetadataChanged(updateMeta);
                 sframeChan.onReg('EV_METADATA_UPDATE', updateMeta);
-                proxy.on('change', 'settings', updateMeta);
 
                 config.addCommonRpc(sframeChan);
 

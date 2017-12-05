@@ -302,6 +302,8 @@ define(function () {
     out.profile_namePlaceholder = 'Name displayed in your profile';
     out.profile_avatar = "Avatar";
     out.profile_upload = " Upload a new avatar";
+    out.profile_uploadSizeError = "Error: your avatar must be smaller than {0}";
+    out.profile_uploadTypeError = "Error: your avatar type is not allowed. Allowed types are: {0}";
     out.profile_error = "Error while creating your profile: {0}";
     out.profile_register = "You have to sign up to create a profile!";
     out.profile_create = "Create a profile";
@@ -689,10 +691,13 @@ define(function () {
     out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
     out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
 
+    // 404 page
+    out.four04_pageNotFound = "We couldn't find the page you were looking for.";
+
     // BottomBar.html
 
-    out.bottom_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">Made with <img class="bottom-bar-heart" src="/customize/heart.png" alt="love" /> in <img class="bottom-bar-fr" src="/customize/fr.png" alt="France" /></a>';
-    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">An <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs Project </a> with the support of <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+    //out.bottom_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">Made with <img class="bottom-bar-heart" src="/customize/heart.png" alt="love" /> in <img class="bottom-bar-fr" src="/customize/fr.png" alt="France" /></a>';
+    //out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">An <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs Project </a> with the support of <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
 
     // Header.html
 

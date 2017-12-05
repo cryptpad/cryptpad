@@ -1,15 +1,12 @@
 define([
-    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
-    '/common/curve.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-constants.js',
     '/customize/messages.js',
 
-    '/bower_components/marked/marked.min.js',
     '/common/common-realtime.js',
-], function ($, Crypto, Curve, Hash, Util, Constants, Messages, Marked, Realtime) {
+], function (Crypto, Hash, Util, Constants, Messages, Realtime) {
     var Msg = {
         inputs: [],
     };
@@ -51,9 +48,8 @@ define([
         });
     };
 
-    Msg.getFriendChannelsList = function (common) {
+    Msg.getFriendChannelsList = function (proxy) {
         var list = [];
-        var proxy = common.getProxy();
         eachFriend(proxy.friends, function (friend) {
             list.push(friend.channel);
         });
@@ -61,7 +57,7 @@ define([
     };
 
     // TODO make this internal to the messenger
-    var channels = Msg.channels  = window.channels = {};
+    var channels = Msg.channels = {};
 
     Msg.getLatestMessages = function () {
         Object.keys(channels).forEach(function (id) {
@@ -74,8 +70,8 @@ define([
 
     // Invitation
     // FIXME there are too many functions with this name
-    var addToFriendList = Msg.addToFriendList = function (common, data, cb) {
-        var proxy = common.getProxy();
+    var addToFriendList = Msg.addToFriendList = function (cfg, data, cb) {
+        var proxy = cfg.proxy;
         var friends = getFriendList(proxy);
         var pubKey = data.curvePublic; // todo validata data
 
@@ -83,19 +79,19 @@ define([
 
         friends[pubKey] = data;
 
-        Realtime.whenRealtimeSyncs(common.getRealtime(), function () {
+        Realtime.whenRealtimeSyncs(cfg.realtime, function () {
             cb();
-            common.pinPads([data.channel], function (e) {
-                if (e) { console.error(e); }
+            cfg.pinPads([data.channel], function (res) {
+                if (res.error) { console.error(res.error); }
             });
         });
-        common.changeDisplayName(proxy[Constants.displayNameKey]);
+        cfg.updateMetadata();
     };
 
     /*  Used to accept friend requests within apps other than /contacts/ */
-    Msg.addDirectMessageHandler = function (common) {
-        var network = common.getNetwork();
-        var proxy = common.getProxy();
+    Msg.addDirectMessageHandler = function (cfg) {
+        var network = cfg.network;
+        var proxy = cfg.proxy;
         if (!network) { return void console.error('Network not ready'); }
         network.on('message', function (message, sender) {
             var msg;
@@ -138,8 +134,7 @@ define([
                     var confirmMsg = Messages._getKey('contacts_request', [
                         Util.fixHTML(msgData.displayName)
                     ]);
-                    common.onFriendRequest(confirmMsg, todo);
-                    //UI.confirm(confirmMsg, todo, null, true);
+                    cfg.friendRequest(confirmMsg, todo);
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_OK") {
@@ -147,14 +142,14 @@ define([
                     if (idx !== -1) { pendingRequests.splice(idx, 1); }
 
                     // FIXME clarify this function's name
-                    addToFriendList(common, msgData, function (err) {
+                    addToFriendList(cfg, msgData, function (err) {
                         if (err) {
-                            return void common.onFriendComplete({
+                            return void cfg.friendComplete({
                                 logText: Messages.contacts_addError,
                                 netfluxId: sender
                             });
                         }
-                        common.onFriendComplete({
+                        cfg.friendComplete({
                             logText: Messages.contacts_added,
                             netfluxId: sender
                         });
@@ -167,24 +162,24 @@ define([
                 if (msg[0] === "FRIEND_REQ_NOK") {
                     var i = pendingRequests.indexOf(sender);
                     if (i !== -1) { pendingRequests.splice(i, 1); }
-                    common.onFriendComplete({
+                    cfg.friendComplete({
                         logText: Messages.contacts_rejected,
                         netfluxId: sender
                     });
-                    common.changeDisplayName(proxy[Constants.displayNameKey]);
+                    cfg.updateMetadata();
                     return;
                 }
                 if (msg[0] === "FRIEND_REQ_ACK") {
                     var data = pending[sender];
                     if (!data) { return; }
-                    addToFriendList(common, data, function (err) {
+                    addToFriendList(cfg, data, function (err) {
                         if (err) {
-                            return void common.onFriendComplete({
+                            return void cfg.friendComplete({
                                 logText: Messages.contacts_addError,
                                 netfluxId: sender
                             });
                         }
-                        common.onFriendComplete({
+                        cfg.friendComplete({
                             logText: Messages.contacts_added,
                             netfluxId: sender
                         });
@@ -198,17 +193,14 @@ define([
         });
     };
 
-    Msg.getPending = function () {
-        return pendingRequests;
-    };
-
-    Msg.inviteFromUserlist = function (common, netfluxId) {
-        var network = common.getNetwork();
-        var parsed = Hash.parsePadUrl(window.location.href);
+    Msg.inviteFromUserlist = function (cfg, data, cb) {
+        var network = cfg.network;
+        var netfluxId = data.netfluxId;
+        var parsed = Hash.parsePadUrl(data.href);
         if (!parsed.hashData) { return; }
         // Message
         var chan = parsed.hashData.channel;
-        var myData = createData(common.getProxy());
+        var myData = createData(cfg.proxy);
         var msg = ["FRIEND_REQ", chan, myData];
         // Encryption
         var keyStr = parsed.hashData.key;
@@ -218,12 +210,10 @@ define([
         // Send encrypted message
         if (pendingRequests.indexOf(netfluxId) === -1) {
             pendingRequests.push(netfluxId);
-            var proxy = common.getProxy();
-            // this redraws the userlist after a change has occurred
-            // TODO rename this function to reflect its purpose
-            common.changeDisplayName(proxy[Constants.displayNameKey]);
+            cfg.updateMetadata(); // redraws the userlist in pad
         }
         network.sendto(netfluxId, msgStr);
+        cb();
     };
 
     return Msg;

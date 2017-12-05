@@ -2,15 +2,15 @@
 define([
     '/bower_components/nthen/index.js',
     '/api/config',
-    'jquery',
+    '/common/dom-ready.js',
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js'
-], function (nThen, ApiConfig, $, RequireConfig, SFCommonO) {
+], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO) {
     var requireConfig = RequireConfig();
 
     // Loaded in load #2
     nThen(function (waitFor) {
-        $(waitFor());
+        DomReady.onReady(waitFor());
     }).nThen(function (waitFor) {
         var req = {
             cfg: requireConfig,
@@ -19,7 +19,7 @@ define([
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
-        $('#sbox-iframe').attr('src',
+        document.getElementById('sbox-iframe').setAttribute('src',
             ApiConfig.httpSafeOrigin + '/todo/inner.html?' + requireConfig.urlArgs +
                 '#' + encodeURIComponent(JSON.stringify(req)));
 
@@ -36,12 +36,12 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils) {
-            var proxy = Cryptpad.getProxy();
-            var hash = proxy.todo || Utils.Hash.createRandomHash();
-            if (!proxy.todo) { proxy.todo = hash; }
-
-            return Utils.Hash.getSecrets('todo', hash);
+        var getSecrets = function (Cryptpad, Utils, cb) {
+            Cryptpad.getTodoHash(function (hash) {
+                var nHash = hash || Utils.Hash.createRandomHash();
+                if (!hash) { Cryptpad.setTodoHash(nHash); }
+                cb(null, Utils.Hash.getSecrets('todo', hash));
+            });
         };
         SFCommonO.start({
             getSecrets: getSecrets,

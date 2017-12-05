@@ -73,12 +73,12 @@ define([
 
             realtime.contentUpdate(doc);
 
-            var to = window.setTimeout(function () {
+            var to = setTimeout(function () {
                 cb(new Error("Timeout"));
             }, 5000);
 
             Realtime.whenRealtimeSyncs(realtime, function () {
-                window.clearTimeout(to);
+                clearTimeout(to);
                 realtime.abort();
                 finish(Session, void 0);
             });

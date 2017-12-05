@@ -298,6 +298,8 @@ define(function () {
     out.profile_namePlaceholder = 'Nom ou pseudo pour le profil';
     out.profile_avatar = "Avatar";
     out.profile_upload = " Importer un nouvel avatar";
+    out.profile_uploadSizeError = "Erreur : votre avatar doit avoir une taille inférieure à {0}";
+    out.profile_uploadTypeError = "Erreur : le format de votre avatar est invalide. Les formats autorisés sont : {0}";
     out.profile_error = "Erreur lors de la création du profil : {0}";
     out.profile_register = "Vous devez vous inscrire pour pouvoir créer un profil !";
     out.profile_create = "Créer un profil";
@@ -681,10 +683,8 @@ define(function () {
     out.tos_logs = "Les meta-données fournies par votre navigateur au serveur peuvent être enregistrées dans le but de maintenir le service.";
     out.tos_3rdparties = "Nous ne fournissons aucune donnée individuelle à des tierces parties à moins d'y être contraints par la loi.";
 
-    // BottomBar.html
-
-    out.bottom_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" alt="amour" /> en <img class="bottom-bar-fr" src="/customize/fr.png" alt="France" /></a>';
-    out.bottom_support = '<a href="http://labs.xwiki.com/" title="XWiki Labs" target="_blank" rel="noopener noreferrer">Un projet <img src="/customize/logo-xwiki2.png" alt="XWiki SAS" class="bottom-bar-xwiki"/> Labs</a> avec le soutien de <a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
+    // 404 page
+    out.four04_pageNotFound = "Nous n'avons pas trouvé la page que vous cherchez.";
 
     // Header.html
 

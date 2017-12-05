@@ -212,7 +212,9 @@ define([
             queue.next();
         };
 
-        var showNamePrompt = true;
+        // Don't show the rename prompt if we don't want to store the file in the drive (avatar)
+        var showNamePrompt = !config.noStore;
+
         var promptName = function (file, cb) {
             var extIdx = file.name.lastIndexOf('.');
             var name = extIdx !== -1 ? file.name.slice(0,extIdx) : file.name;
