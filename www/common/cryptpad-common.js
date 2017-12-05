@@ -605,6 +605,7 @@ define([
         var initialized = false;
 
     return function (f, rdyCfg) {
+        rdyCfg = rdyCfg || {};
         if (initialized) {
             return void setTimeout(function () { f(void 0, env); });
         }
