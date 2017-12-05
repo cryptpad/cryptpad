@@ -62,18 +62,21 @@ define([
             Cryptpad.onNetworkReconnect.reg(function (data) {
                 sframeChan.event('EV_NETWORK_RECONNECT', data);
             });
-            Cryptpad.onDriveLog.reg(function (msg) {
+            Cryptpad.drive.onLog.reg(function (msg) {
                 sframeChan.event('EV_DRIVE_LOG', msg);
             });
-            // History?
-        };
-        //Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
-            SFCommonO.start({
-                getSecrets: getSecrets,
-                //newNetwork: network,
-                noHash: true,
-                addRpc: addRpc
+            Cryptpad.drive.onChange.reg(function (data) {
+                sframeChan.event('EV_DRIVE_CHANGE', data);
             });
-        //}, function (err) { console.error(err); });
+            Cryptpad.drive.onRemove.reg(function (data) {
+                sframeChan.event('EV_DRIVE_REMOVE', data);
+            });
+        };
+        SFCommonO.start({
+            getSecrets: getSecrets,
+            noHash: true,
+            driveEvents: true,
+            addRpc: addRpc
+        });
     });
 });

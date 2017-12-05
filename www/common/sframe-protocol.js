@@ -203,6 +203,9 @@ define({
     'Q_DRIVE_GETOBJECT': true,
     // Store's userObject need to send log messages to inner to display them in the UI
     'EV_DRIVE_LOG': true,
+    // Refresh the drive when the drive has changed ('change' or 'remove' events)
+    'EV_DRIVE_CHANGE': true,
+    'EV_DRIVE_REMOVE': true,
 
     // Notifications about connection and disconnection from the network
     'EV_NETWORK_DISCONNECT': true,

@@ -2869,9 +2869,10 @@ define([
                 onRefresh.to = window.setTimeout(refresh, 500);
             }
         };
-        /*proxy.on('change', [], function () {
+
+        sframeChan.on('EV_DRIVE_CHANGE', function (data) {
             if (history.isHistoryMode) { return; }
-            var path = arguments[2];
+            var path = data.path;
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
             var cPath = currentPath.slice();
@@ -2884,26 +2885,21 @@ define([
             }
             APP.resetTree();
             return false;
-        }).on('remove', [], function () {
+        });
+        sframeChan.on('EV_DRIVE_REMOVE', function (data) {
             if (history.isHistoryMode) { return; }
-            var path = arguments[1];
+            var path = data.path;
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
             var cPath = currentPath.slice();
             if ((filesOp.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
                     (path.length >= cPath.length && filesOp.isSubpath(path, cPath))) {
                 // Reload after a few to make sure all the change events have been received
-                onRefresh.to = window.setTimeout(refresh, 500);
+                onRefresh.refresh();
             }
             APP.resetTree();
             return false;
-        }).on('change', ['drive', 'migrate'], function () {
-            var path = arguments[2];
-            var value = arguments[1];
-            if (path[1] === "migrate" && value === 1) {
-                if (APP.onDisconnect) { APP.onDisconnect(true); }
-            }
-        });*/
+        });
 
         history.onEnterHistory = function (obj) {
             var files = obj.drive;

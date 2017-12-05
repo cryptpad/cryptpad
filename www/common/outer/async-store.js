@@ -264,7 +264,6 @@ define([
     };
 
     Store.getFileSize = function (data, cb) {
-        console.log(data, cb);
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
 
         var channelId = Hash.hrefToHexChannelId(data.href);
@@ -930,7 +929,7 @@ define([
             ChainPad: ChainPad,
             classic: true,
         };
-        var rt = Listmap.create(listmapConfig);
+        var rt = window.rt = Listmap.create(listmapConfig);
         store.proxy = rt.proxy;
         store.loggedIn = typeof(data.userHash) !== "undefined";
 
@@ -959,6 +958,7 @@ define([
             if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
                 rt.network.disconnect();
                 rt.realtime.abort();
+                postMessage('NETWORK_DISCONNECT');
             }
         });
 
@@ -1006,6 +1006,23 @@ define([
 
             var messagingCfg = getMessagingCfg();
             Messaging.addDirectMessageHandler(messagingCfg);
+
+            // Send events whenever there is a change or a removal in the drive
+            if (data.driveEvents) {
+                store.proxy.on('change', [], function (o, n, p) {
+                    postMessage('DRIVE_CHANGE', {
+                        old: o,
+                        new: n,
+                        path: p
+                    })
+                });
+                store.proxy.on('remove', [], function (o, p) {
+                    postMessage('DRIVE_REMOVE', {
+                        old: o,
+                        path: p
+                    })
+                });
+            }
 
             if (data.messenger) {
                 var messenger = store.messenger = Messenger.messenger(store); // TODO

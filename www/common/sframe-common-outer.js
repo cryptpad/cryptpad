@@ -86,7 +86,8 @@ define([
                     sframeChan = sfc;
                 }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
                 Cryptpad.ready(waitFor(), {
-                    messenger: cfg.messaging
+                    messenger: cfg.messaging,
+                    driveEvents: cfg.driveEvents
                 });
 
                 if (!cfg.newNetwork) {

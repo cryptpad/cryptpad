@@ -99,7 +99,10 @@ define([
     common.userObjectCommand = function (data, cb) {
         postMessage("DRIVE_USEROBJECT", data, cb);
     };
-    common.onDriveLog = Util.mkEvent();
+    common.drive = {};
+    common.drive.onLog = Util.mkEvent();
+    common.drive.onChange = Util.mkEvent();
+    common.drive.onRemove = Util.mkEvent();
     // Profile
     common.getProfileEditUrl = function (cb) {
         postMessage("GET", ['profile', 'edit'], function (obj) {
@@ -649,7 +652,13 @@ define([
             }
             // Drive
             case 'DRIVE_LOG': {
-                common.onDriveLog.fire(data);
+                common.drive.onLog.fire(data);
+            }
+            case 'DRIVE_CHANGE': {
+                common.drive.onChange.fire(data);
+            }
+            case 'DRIVE_REMOVE': {
+                common.drive.onRemove.fire(data);
             }
         }
     };
@@ -696,7 +705,8 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
                 language: common.getLanguage(),
-                messenger: rdyCfg.messenger
+                messenger: rdyCfg.messenger,
+                driveEvents: rdyCfg.driveEvents
             };
             if (sessionStorage[Constants.newPadPathKey]) {
                 cfg.initialPath = sessionStorage[Constants.newPadPathKey];
