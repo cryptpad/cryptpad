@@ -428,6 +428,27 @@ var updateLimits = function (config, publicKey, cb /*:(?string, ?any[])=>void*/)
             "Content-Length": Buffer.byteLength(body)
         }
     };
+
+    // read custom limits from the config
+    var customLimits = (function (custom) {
+        var limits = {};
+        Object.keys(custom).forEach(function (k) {
+            k.replace(/\/([^\/]+)$/, function (all, safeKey) {
+                var id = unescapeKeyCharacters(safeKey || '');
+                limits[id] = custom[k];
+            });
+        });
+        return limits;
+    }(config.customLimits || {}));
+
+    var isLimit = function (o) {
+        var valid = o && typeof(o) === 'object' &&
+            typeof(o.limit) === 'number' &&
+            typeof(o.plan) === 'string' &&
+            typeof(o.note) === 'string';
+        return valid;
+    };
+
     var req = Https.request(options, function (response) {
         if (!('' + response.statusCode).match(/^2\d\d$/)) {
             return void cb('SERVER ERROR ' + response.statusCode);
@@ -442,6 +463,11 @@ var updateLimits = function (config, publicKey, cb /*:(?string, ?any[])=>void*/)
             try {
                 var json = JSON.parse(str);
                 limits = json;
+                Object.keys(customLimits).forEach(function (k) {
+                    if (!isLimit(customLimits[k])) { return; }
+                    limits[k] = customLimits[k];
+                });
+
                 var l;
                 if (userId) {
                     var limit = limits[userId];
