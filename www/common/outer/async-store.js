@@ -1014,18 +1014,18 @@ define([
                         old: o,
                         new: n,
                         path: p
-                    })
+                    });
                 });
                 store.proxy.on('remove', [], function (o, p) {
                     postMessage('DRIVE_REMOVE', {
                         old: o,
                         path: p
-                    })
+                    });
                 });
             }
 
             if (data.messenger) {
-                var messenger = store.messenger = Messenger.messenger(store); // TODO
+                var messenger = store.messenger = Messenger.messenger(store);
                 messenger.on('message', function (message) {
                     postMessage('CONTACTS_MESSAGE', message);
                 });

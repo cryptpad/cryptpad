@@ -652,13 +652,13 @@ define([
             }
             // Drive
             case 'DRIVE_LOG': {
-                common.drive.onLog.fire(data);
+                common.drive.onLog.fire(data); break;
             }
             case 'DRIVE_CHANGE': {
-                common.drive.onChange.fire(data);
+                common.drive.onChange.fire(data); break;
             }
             case 'DRIVE_REMOVE': {
-                common.drive.onRemove.fire(data);
+                common.drive.onRemove.fire(data); break;
             }
         }
     };
