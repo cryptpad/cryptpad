@@ -153,6 +153,13 @@ define([
             case 'JOIN_PAD': {
                 Store.joinPad(data, cb); break;
             }
+            case 'GET_FULL_HISTORY': {
+                Store.getFullHistory(data, cb); break;
+            }
+            // Drive
+            case 'DRIVE_USEROBJECT': {
+                Store.userObjectCommand(data, cb); break;
+            }
             default: {
                 
                 break;

@@ -15,8 +15,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([], function () {
-    var USE_HISTORY = true;
-
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
 
@@ -81,7 +79,6 @@ define([], function () {
 
         var onOpen = function(data) {
             // Add the existing peers in the userList
-            console.log(data);
             onConnect(data.id);
             onConnect = function () {};
 

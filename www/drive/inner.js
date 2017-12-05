@@ -185,11 +185,25 @@ define([
         isHistoryMode: false,
     };
 
+    var copyObjectValue = function (objRef, objToCopy) {
+        for (var k in objRef) { delete objRef[k]; }
+        $.extend(true, objRef, objToCopy);
+    };
+    var updateObject = function (sframeChan, obj, cb) {
+        sframeChan.query('Q_DRIVE_GETOBJECT', null, function (err, newObj) {
+            copyObjectValue(obj, newObj);
+            cb();
+        });
+    };
+
     var andThen = function (common, proxy) {
         var files = proxy.drive;
         var metadataMgr = common.getMetadataMgr();
+        var sframeChan = common.getSframeChannel();
         var priv = metadataMgr.getPrivateData();
         var user = metadataMgr.getUserData();
+
+        APP.origin = priv.origin;
         var isOwnDrive = function () {
             return true; // TODO
         };
@@ -198,12 +212,10 @@ define([
         };
         config.workgroup = isWorkgroup();
         config.loggedIn = APP.loggedIn;
+        config.sframeChan = sframeChan;
 
-        APP.origin = priv.origin;
 
         var filesOp = FO.init(files, config);
-        filesOp.fixFiles();
-
         var error = filesOp.error;
 
         var $tree = APP.$tree = $("#cp-app-drive-tree");
@@ -2056,7 +2068,7 @@ define([
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
-        var displayDirectory = APP.displayDirectory = function (path, force) {
+        var _displayDirectory = function (path, force) {
             APP.hideMenu();
             if (!APP.editable) { debug("Read-only mode"); }
             if (!appStatus.isReady && !force) { return; }
@@ -2065,7 +2077,7 @@ define([
             if (!path || displayedCategories.indexOf(path[0]) === -1) {
                 log(Messages.categoryError);
                 currentPath = [ROOT];
-                displayDirectory(currentPath);
+                _displayDirectory(currentPath);
                 return;
             }
             appStatus.ready(false);
@@ -2092,7 +2104,7 @@ define([
                 debug("Unable to locate the selected directory: ", path);
                 var parentPath = path.slice();
                 parentPath.pop();
-                displayDirectory(parentPath, true);
+                _displayDirectory(parentPath, true);
                 return;
             }
             if (!isSearch) { delete APP.Search.oldLocation; }
@@ -2219,6 +2231,12 @@ define([
 
             $content.scrollTop(s);
             appStatus.ready(true);
+        };
+        var displayDirectory = APP.displayDirectory = function (path, force) {
+            updateObject(sframeChan, proxy, function () {
+                copyObjectValue(files, proxy.drive);
+                _displayDirectory(path, force);
+            });
         };
 
         var createTreeElement = function (name, $icon, path, draggable, droppable, collapsable, active) {
@@ -2851,7 +2869,7 @@ define([
                 onRefresh.to = window.setTimeout(refresh, 500);
             }
         };
-        proxy.on('change', [], function () {
+        /*proxy.on('change', [], function () {
             if (history.isHistoryMode) { return; }
             var path = arguments[2];
             if (path[0] !== 'drive') { return false; }
@@ -2885,7 +2903,7 @@ define([
             if (path[1] === "migrate" && value === 1) {
                 if (APP.onDisconnect) { APP.onDisconnect(true); }
             }
-        });
+        });*/
 
         history.onEnterHistory = function (obj) {
             var files = obj.drive;
@@ -2922,7 +2940,7 @@ define([
 
     var main = function () {
         var common;
-        var proxy;
+        var proxy = {};
         var readOnly;
 
         nThen(function (waitFor) {
@@ -2942,11 +2960,11 @@ define([
             }
             metadataMgr.onChange(function () {
                 if (typeof(metadataMgr.getPrivateData().readOnly) === 'boolean') {
-                    readOnly = metadataMgr.getPrivateData().readOnly;
+                    readOnly = APP.readOnly = metadataMgr.getPrivateData().readOnly;
                     privReady();
                 }
             });
-        }).nThen(function (/* waitFor */) {
+        }).nThen(function (waitFor) {
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;
             if (!APP.loggedIn) { Feedback.send('ANONYMOUS_DRIVE'); }
@@ -2955,85 +2973,79 @@ define([
 
             common.setTabTitle(Messages.type.drive);
 
-            var listmapConfig = {
+            /*var listmapConfig = {
                 data: {},
                 common: common,
                 logging: false
+            };*/
+
+            var sframeChan = common.getSframeChannel();
+            updateObject(sframeChan, proxy, waitFor());
+        }).nThen(function () {
+            var sframeChan = common.getSframeChannel();
+            var metadataMgr = common.getMetadataMgr();
+            var configTb = {
+                displayed: ['useradmin', 'pageTitle', 'newpad', 'limit'],
+                pageTitle: Messages.type.drive,
+                metadataMgr: metadataMgr,
+                readOnly: readOnly,
+                sfCommon: common,
+                $container: APP.$bar
+            };
+            var toolbar = APP.toolbar = Toolbar.create(configTb);
+
+            var $rightside = toolbar.$rightside;
+            $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
+            APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
+
+            /* add the usage */
+            if (APP.loggedIn) {
+                common.createUsageBar(function (err, $limitContainer) {
+                    if (err) { return void logError(err); }
+                    APP.$limit = $limitContainer;
+                }, true);
+            }
+
+            /* add a history button */
+            APP.histConfig = {
+                onLocal: function () {
+                    proxy.drive = history.currentObj.drive;
+                },
+                onRemote: function () {},
+                setHistory: setHistory,
+                applyVal: function (val) {
+                    var obj = JSON.parse(val || '{}');
+                    history.currentObj = obj;
+                    history.onEnterHistory(obj);
+                },
+                $toolbar: APP.$bar,
             };
 
-            var metadataMgr;
-            var rt = APP.rt = Listmap.create(listmapConfig);
-            proxy = rt.proxy;
-            var onCreate = function (info) {
-                APP.realtime = info.realtime;
+            // Add a "Burn this drive" button
+            if (!APP.loggedIn) {
+                APP.$burnThisDrive = common.createButton(null, true).click(function () {
+                    UI.confirm(Messages.fm_burnThisDrive, function (yes) {
+                        if (!yes) { return; }
+                        common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
+                    }, null, true);
+                }).attr('title', Messages.fm_burnThisDriveButton)
+                  .removeClass('fa-question')
+                  .addClass('fa-ban');
+            }
 
-                metadataMgr = common.getMetadataMgr();
+            metadataMgr.onChange(function () {
+                var name = metadataMgr.getUserData().name || Messages.anonymous;
+                APP.$displayName.text(name);
+            });
 
-                var configTb = {
-                    displayed: ['useradmin', 'pageTitle', 'newpad', 'limit'],
-                    pageTitle: Messages.type.drive,
-                    metadataMgr: metadataMgr,
-                    readOnly: readOnly,
-                    realtime: info.realtime,
-                    sfCommon: common,
-                    $container: APP.$bar
-                };
-                var toolbar = APP.toolbar = Toolbar.create(configTb);
+            $('body').css('display', '');
+            APP.files = proxy;
+            if (!proxy.drive || typeof(proxy.drive) !== 'object') {
+                throw new Error("Corrupted drive");
+            }
+            andThen(common, proxy);
+            UI.removeLoadingScreen();
 
-                var $rightside = toolbar.$rightside;
-                $rightside.html(''); // Remove the drawer if we don't use it to hide the toolbar
-                APP.$displayName = APP.$bar.find('.' + Toolbar.constants.username);
-
-                /* add the usage */
-                if (APP.loggedIn) {
-                    common.createUsageBar(function (err, $limitContainer) {
-                        if (err) { return void logError(err); }
-                        APP.$limit = $limitContainer;
-                    }, true);
-                }
-
-                /* add a history button */
-                APP.histConfig = {
-                    onLocal: function () {
-                        proxy.drive = history.currentObj.drive;
-                    },
-                    onRemote: function () {},
-                    setHistory: setHistory,
-                    applyVal: function (val) {
-                        var obj = JSON.parse(val || '{}');
-                        history.currentObj = obj;
-                        history.onEnterHistory(obj);
-                    },
-                    $toolbar: APP.$bar,
-                };
-
-                // Add a "Burn this drive" button
-                if (!APP.loggedIn) {
-                    APP.$burnThisDrive = common.createButton(null, true).click(function () {
-                        UI.confirm(Messages.fm_burnThisDrive, function (yes) {
-                            if (!yes) { return; }
-                            common.getSframeChannel().event('EV_BURN_ANON_DRIVE');
-                        }, null, true);
-                    }).attr('title', Messages.fm_burnThisDriveButton)
-                      .removeClass('fa-question')
-                      .addClass('fa-ban');
-                }
-
-                metadataMgr.onChange(function () {
-                    var name = metadataMgr.getUserData().name || Messages.anonymous;
-                    APP.$displayName.text(name);
-                });
-            };
-            var firstConnection = true;
-            var onReady = function () {
-                if (!firstConnection) { return; } // TODO fix this issue in listmap
-                firstConnection = false;
-                $('body').css('display', '');
-                APP.files = proxy;
-                if (!proxy.drive || typeof(proxy.drive) !== 'object') { proxy.drive = {}; }
-                andThen(common, proxy);
-                UI.removeLoadingScreen();
-            };
             var onDisconnect = APP.onDisconnect = function (noAlert) {
                 setEditable(false);
                 if (APP.refresh) { APP.refresh(); }
@@ -3047,16 +3059,15 @@ define([
                 UI.findOKButton().click();
             };
 
-            proxy.on('create', function (info) {
-                onCreate(info);
-            }).on('ready', function () {
-                onReady();
+            sframeChan.on('EV_DRIVE_LOG', function (msg) {
+                UI.log(msg);
             });
-            proxy.on('disconnect', function () {
+            sframeChan.on('EV_NETWORK_DISCONNECT', function () {
                 onDisconnect();
             });
-            proxy.on('reconnect', function (info) {
-                onReconnect(info);
+            sframeChan.on('EV_NETWORK_RECONNECT', function (data) {
+                // data.myId;
+                onReconnect(data);
             });
             common.onLogout(function () { setEditable(false); });
         });

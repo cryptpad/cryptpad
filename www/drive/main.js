@@ -48,6 +48,24 @@ define([
                 Utils.LocalStore.clearThumbnail();
                 window.location.reload();
             });
+            sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
+                Cryptpad.userObjectCommand(data, cb);
+            });
+            sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
+                Cryptpad.getUserObject(function (obj) {
+                    cb(obj);
+                });
+            });
+            Cryptpad.onNetworkDisconnect.reg(function () {
+                sframeChan.event('EV_NETWORK_DISCONNECT');
+            });
+            Cryptpad.onNetworkReconnect.reg(function (data) {
+                sframeChan.event('EV_NETWORK_RECONNECT', data);
+            });
+            Cryptpad.onDriveLog.reg(function (msg) {
+                sframeChan.event('EV_DRIVE_LOG', msg);
+            });
+            // History?
         };
         //Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
             SFCommonO.start({

@@ -767,9 +767,65 @@ define([
 
     // TODO
     // GET_FULL_HISTORY from sframe-common-outer
+    Store.getFullHistory = function (data, cb) {
+        var network = store.network;
+        var hkn = network.historyKeeper;
+        //var crypto = Crypto.createEncryptor(data.keys);
+        // Get the history messages and send them to the iframe
+        var parse = function (msg) {
+            try {
+                return JSON.parse(msg);
+            } catch (e) {
+                return null;
+            }
+        };
+        var msgs = [];
+        var onMsg = function (msg) {
+            var parsed = parse(msg);
+            if (parsed[0] === 'FULL_HISTORY_END') {
+                cb(msgs);
+                return;
+            }
+            if (parsed[0] !== 'FULL_HISTORY') { return; }
+            if (parsed[1] && parsed[1].validateKey) { // First message
+                return;
+            }
+            if (parsed[1][3] !== data.channel) { return; }
+            msg = parsed[1][4];
+            if (msg) {
+                msg = msg.replace(/^cp\|/, '');
+                //var decryptedMsg = crypto.decrypt(msg, true);
+                msgs.push(msg);
+            }
+        };
+        network.on('message', onMsg);
+        network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
+    };
 
     // TODO with sharedworker
     // when the tab is closed, leave the pad
+
+    // Drive
+    Store.userObjectCommand = function (cmdData, cb) {
+        if (!cmdData || !cmdData.cmd) { return; }
+        var data = cmdData.data;
+        switch (cmdData.cmd) {
+            case 'move':
+                store.userObject.move(data.paths, data.newPath, cb); break;
+            case 'restore':
+                store.userObject.restore(data.path, cb); break;
+            case 'addFolder':
+                store.userObject.addFolder(data.path, data.name, cb); break;
+            case 'delete':
+                store.userObject.delete(data.paths, cb, data.nocheck); break;
+            case 'emptyTrash':
+                store.userObject.emptyTrash(cb); break;
+            case 'rename':
+                store.userObject.rename(data.path, data.newName, cb); break;
+            default:
+                cb();
+        }
+    };
 
     //////////////////////////////////////////////////////////////////
     /////////////////////// Init /////////////////////////////////////
@@ -779,7 +835,10 @@ define([
         var proxy = store.proxy;
         var userObject = store.userObject = UserObject.init(proxy.drive, {
             pinPads: Store.pinPads,
-            loggedIn: store.loggedIn
+            loggedIn: store.loggedIn,
+            log: function (msg) {
+                postMessage("DRIVE_LOG", msg);
+            }
         });
         var todo = function () {
             userObject.fixFiles();
@@ -901,6 +960,13 @@ define([
                 rt.network.disconnect();
                 rt.realtime.abort();
             }
+        });
+
+        rt.proxy.on('disconnect', function () {
+            postMessage('NETWORK_DISCONNECT');
+        });
+        rt.proxy.on('reconnect', function (info) {
+            postMessage('NETWORK_RECONNECT', {myId: info.myId});
         });
     };
 

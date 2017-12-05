@@ -197,4 +197,14 @@ define({
 
     // Anonymous users can empty their drive and remove FS_hash from localStorage
     'EV_BURN_ANON_DRIVE': true,
+
+    // Inner drive needs to send command and receive updates from the async store
+    'Q_DRIVE_USEROBJECT': true,
+    'Q_DRIVE_GETOBJECT': true,
+    // Store's userObject need to send log messages to inner to display them in the UI
+    'EV_DRIVE_LOG': true,
+
+    // Notifications about connection and disconnection from the network
+    'EV_NETWORK_DISCONNECT': true,
+    'EV_NETWORK_RECONNECT': true
 });

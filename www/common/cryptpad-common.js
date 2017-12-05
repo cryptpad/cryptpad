@@ -59,11 +59,6 @@ define([
 
     // RESTRICTED
     // Settings only
-    common.getUserObject = function (cb) {
-        postMessage("GET", [], function (obj) {
-            cb(obj);
-        });
-    };
     common.resetDrive = function (cb) {
         postMessage("RESET_DRIVE", null, function (obj) {
             if (obj.error) { return void cb(obj.error); }
@@ -81,6 +76,12 @@ define([
             cb();
         });
     };
+    // Settings and drive
+    common.getUserObject = function (cb) {
+        postMessage("GET", [], function (obj) {
+            cb(obj);
+        });
+    };
     // Settings and auth
     common.getUserObject = function (cb) {
         postMessage("GET", [], function (obj) {
@@ -94,6 +95,11 @@ define([
         };
         postMessage("MIGRATE_ANON_DRIVE", data, cb);
     };
+    // Drive
+    common.userObjectCommand = function (data, cb) {
+        postMessage("DRIVE_USEROBJECT", data, cb);
+    };
+    common.onDriveLog = Util.mkEvent();
     // Profile
     common.getProfileEditUrl = function (cb) {
         postMessage("GET", ['profile', 'edit'], function (obj) {
@@ -450,6 +456,10 @@ define([
         });
     };
 
+    // Network
+    common.onNetworkDisconnect = Util.mkEvent();
+    common.onNetworkReconnect = Util.mkEvent();
+
     // Messenger
     var messenger = common.messenger = {};
     messenger.getFriendList = function (cb) {
@@ -499,6 +509,10 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+
+    common.getFullHistory = function (data, cb) {
+        postMessage("GET_FULL_HISTORY", data, cb);
+    };
 
     common.getShareHashes = function (secret, cb) {
         var hashes;
@@ -591,6 +605,13 @@ define([
                 common.onFriendComplete(data);
                 break;
             }
+            // Network
+            case 'NETWORK_DISCONNECT': {
+                common.onNetworkDisconnect.fire(); break;
+            }
+            case 'NETWORK_RECONNECT': {
+                common.onNetworkReconnect.fire(data); break;
+            }
             // Messenger
             case 'CONTACTS_MESSAGE': {
                 common.messenger.onMessageEvent.fire(data); break;
@@ -625,6 +646,10 @@ define([
             }
             case 'PAD_DISCONNECT': {
                 common.padRpc.onDisconnectEvent.fire(data); break;
+            }
+            // Drive
+            case 'DRIVE_LOG': {
+                common.onDriveLog.fire(data);
             }
         }
     };
