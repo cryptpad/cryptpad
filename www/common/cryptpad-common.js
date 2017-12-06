@@ -626,6 +626,14 @@ define([
             if (typeof(Symbol) === 'undefined') {
                 Feedback.send('NO_SYMBOL');
             }
+
+            if (typeof(SharedWorker) === "undefined") {
+                Feedback.send('NO_SHAREDWORKER');
+            }
+            if (typeof(Worker) === "undefined") {
+                Feedback.send('NO_WEBWORKER');
+            }
+
             Feedback.reportScreenDimensions();
             Feedback.reportLanguage();
         };
