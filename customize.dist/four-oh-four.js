@@ -18,7 +18,7 @@ define([
     var loggedIn = LocalStore.isLoggedIn();
     var link = h('a#cp-link', {
         href: loggedIn? '/drive/': '/',
-    }, loggedIn? Messages.four04_goToDrive: Messages.four04_goToHome);
+    }, loggedIn? Messages.header_logoTitle: Messages.header_homeTitle);
 
     var content = h('div#cp-main', [
         img,
@@ -68,10 +68,10 @@ define([
         };
     };
 
-    makeDecryptor(brand, 90, 4, function () { })();
+    makeDecryptor(brand, 70, 2, function () { })();
     makeDecryptor(title, 50, 14, function () { })();
-    makeDecryptor(link, 20, 10, function () {})();
-    makeDecryptor(message, 12, 5, function () {
+    makeDecryptor(link, 20, 4, function () {})();
+    makeDecryptor(message, 12, 3, function () {
         console.log('done');
     })();
 });

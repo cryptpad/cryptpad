@@ -31,6 +31,7 @@ define(function () {
     out.typeError = "This pad is not compatible with the selected application";
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
+    out.padNotPinned = 'This pad will expire in 3 months, <a href="{0}" target="blank">login</a> or <a href="{1}" target="blank">register</a> to preserve it.';
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -690,9 +691,8 @@ define(function () {
     out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
     out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
 
+    // 404 page
     out.four04_pageNotFound = "We couldn't find the page you were looking for.";
-    out.four04_goToHome = "Go to the home page.";
-    out.four04_goToDrive = "Go to my CryptDrive.";
 
     // BottomBar.html
 

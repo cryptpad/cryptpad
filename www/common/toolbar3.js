@@ -719,6 +719,26 @@ define([
         return $titleContainer;
     };
 
+    var createUnpinnedWarning = function (toolbar, config) {
+        if (Common.isLoggedIn()) { return; }
+        var pd = config.metadataMgr.getPrivateData();
+        var o = pd.origin;
+        var hashes = pd.availableHashes;
+        var url = pd.origin + pd.pathname + '#' + (hashes.editHash || hashes.viewHash);
+        var cid = Hash.hrefToHexChannelId(url);
+        Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
+            if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
+            if (x.response[0] === true) { return; }
+            var msg = $('<span>', {
+                'class': 'cp-pad-not-pinned',
+            }).append(
+                Messages._getKey('padNotPinned', [o + '/login', o + '/register'])
+            );
+            $('.cp-toolbar-title').append(msg);
+            console.log("This pad is not pinned");
+        });
+    };
+
     var createPageTitle = function (toolbar, config) {
         if (config.title || !config.pageTitle) { return; }
         var $titleContainer = $('<span>', {
@@ -1087,6 +1107,7 @@ define([
         tb['upgrade'] = $.noop;
         tb['newpad'] = createNewPad;
         tb['useradmin'] = createUserAdmin;
+        tb['unpinnedWarning'] = createUnpinnedWarning;
 
         var addElement = toolbar.addElement = function (arr, additionnalCfg, init) {
             if (typeof additionnalCfg === "object") { $.extend(true, config, additionnalCfg); }

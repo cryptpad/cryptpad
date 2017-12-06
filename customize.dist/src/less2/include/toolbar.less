@@ -7,6 +7,7 @@
 @import (once) "./icon-colors.less";
 @import (once) "./tools.less";
 
+@_cp-toolbar-color-warn: black;
 
 .toolbar_main () {
 
@@ -224,6 +225,7 @@
             }
             .cp-toolbar-limit {
                 text-shadow: -1px 0 @color, 0 1px @color, 1px 0 @color, 0 -1px @color;
+                color: @_cp-toolbar-color-warn;
             }
             .cp-toolbar-leftside, .cp-toolbar-rightside {
                 background-color: lighten(@bgcolor, 8%);
@@ -236,6 +238,19 @@
                     flex-wrap: wrap;
                     height: auto;
                     width: 100%;
+                }
+            }
+            .cp-pad-not-pinned {
+                padding-left: 20px;
+                font-size: @colortheme_app-font-size;
+                color: @_cp-toolbar-color-warn;
+                a {
+                    font-size: @colortheme_app-font-size;
+                    font-weight: bold;
+                    color: @_cp-toolbar-color-warn;
+                    &:hover {
+                        text-decoration: underline;
+                    }
                 }
             }
             .cp-toolbar-title-hoverable:hover {
@@ -383,7 +398,6 @@
             vertical-align: middle;
             line-height: @toolbar_top-height;
             span {
-                color: red;
                 cursor: pointer;
                 margin: auto;
                 font-size: 20px;
