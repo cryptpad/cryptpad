@@ -743,8 +743,6 @@ define([
                     }
                 }
 
-                // TODO ww
-                //Messaging.addDirectMessageHandler(common);
                 initFeedback(data.feedback);
             }));
         }).nThen(function (waitFor) {
