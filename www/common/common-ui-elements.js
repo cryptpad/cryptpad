@@ -387,7 +387,6 @@ define([
         common.getAttribute(['general', 'markdown-help'], function (e, data) {
             if (e) { return void console.error(e); }
             if (data === true && $toolbarButton.length && tbState) {
-                console.log($toolbar.is(':visible'));
                 $toolbarButton.click();
             }
         });
@@ -1118,6 +1117,82 @@ define([
                 });
             }
         });
+    };
+
+    UIElements.getPadCreationScreen = function (common, Toolbar, cb) {
+        if (!common.isLoggedIn()) { return void cb(); }
+        var sframeChan = common.getSframeChannel();
+        var metadataMgr = common.getMetadataMgr();
+
+        var $body = $('body');
+        var $creation = $('<div>', { id: 'cp-creation' }).appendTo($body);
+        var $bar = $('<div>', {'class': 'cp-toolbar'}).appendTo($creation);
+
+        // Create a toolbar?
+        var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];
+        var configTb = {
+            displayed: displayed,
+            hideDisplayName: true,
+            $container: $bar,
+            metadataMgr: metadataMgr,
+            sfCommon: common,
+            pageTitle: 'Pad creation BETA'
+        };
+        var toolbar = Toolbar.create(configTb);
+        toolbar.$rightside.html('');
+
+        // Create the pad
+        var create = function (template) {
+            sframeChan.query("Q_CREATE_PAD", {
+                owned: true, // TODO
+                expire: false, // TODO
+                template: template
+            }, function () {
+                $creation.remove();
+                cb();
+            });
+        };
+
+        // Pick a template?
+        var type = metadataMgr.getMetadataLazy().type;
+        sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
+            if (!data) { return; }
+            var $templateButton = $('<button>').text('Create pad from template')
+                                               .appendTo($creation);
+
+            var pickerCfg = {
+                types: [type],
+                where: ['template'],
+                hidden: true
+            };
+            common.openFilePicker(pickerCfg);
+
+            $templateButton.click(function () {
+                // Show the template picker
+                delete pickerCfg.hidden;
+                common.openFilePicker(pickerCfg);
+                var first = true; // We can only pick a template once (for a new document)
+                var fileDialogCfg = {
+                    onSelect: function (data) {
+                        if (data.type === type && first) {
+                            //UI.addLoadingScreen({hideTips: true});
+                            create(data.href);
+                            first = false;
+                            /*sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                                UI.removeLoadingScreen();
+                                Feedback.send('TEMPLATE_USED');
+                            });*/
+                            //if (focus) { focus.focus(); }
+                            //return;
+                        }
+                    }
+                };
+                common.initFilePicker(fileDialogCfg);
+            });
+        });
+
+        var $button = $('<button>').text('Create pad').appendTo($creation);
+        $button.click();
     };
 
     return UIElements;

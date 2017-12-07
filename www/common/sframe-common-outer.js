@@ -12,6 +12,7 @@ define([
         var network;
         var secret;
         var hashes;
+        var isNewFile;
         var CpNfOuter;
         var Cryptpad;
         var Crypto;
@@ -19,10 +20,10 @@ define([
         var SFrameChannel;
         var sframeChan;
         var FilePicker;
-        //var Messenger;
         var Messaging;
         var Notifier;
         var Utils = {};
+        var AppConfig;
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -41,11 +42,12 @@ define([
                 '/common/common-constants.js',
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
+                '/customize/application_config.js',
                 '/common/outer/network-config.js',
                 '/bower_components/netflux-websocket/netflux-client.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _FilePicker,  _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore, NetConfig, Netflux) {
+            _Constants, _Feedback, _LocalStore, _AppConfig, NetConfig, Netflux) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
@@ -60,6 +62,7 @@ define([
                 Utils.Constants = _Constants;
                 Utils.Feedback = _Feedback;
                 Utils.LocalStore = _LocalStore;
+                AppConfig = _AppConfig;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -131,13 +134,25 @@ define([
                 }
                 Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
             }
-
+        }).nThen(function (waitFor) {
+            // Check if the pad exists on server
+            if (!window.location.hash) { isNewFile = true; return; }
+            Cryptpad.getFileSize(window.location.href, waitFor(function (err, size) {
+                console.log(size);
+                if (size) {
+                    isNewFile = false;
+                    return;
+                }
+                isNewFile = true;
+            }));
         }).nThen(function () {
+            console.log(isNewFile);
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             if (!secret.keys) { secret.keys = secret.key; }
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
+            var edPublic;
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj, isTemplate;
@@ -145,6 +160,7 @@ define([
                     Cryptpad.getMetadata(waitFor(function (err, m) {
                         if (err) { console.log(err); }
                         metaObj = m;
+                        edPublic = metaObj.priv.edPublic; // needed to create an owned pad
                     }));
                     Cryptpad.isTemplate(window.location.href, waitFor(function (err, t) {
                         if (err) { console.log(err); }
@@ -169,7 +185,8 @@ define([
                         accounts: {
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
-                        }
+                        },
+                        isNewFile: isNewFile
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -540,43 +557,94 @@ define([
                 });
             }
 
+
+
+            // Join the netflux channel
+            var rtStarted = false;
+            var startRealtime = function () {
+                rtStarted = true;
+                var replaceHash = function (hash) {
+                    if (window.history && window.history.replaceState) {
+                        if (!/^#/.test(hash)) { hash = '#' + hash; }
+                        void window.history.replaceState({}, window.document.title, hash);
+                        if (typeof(window.onhashchange) === 'function') {
+                            window.onhashchange();
+                        }
+                        return;
+                    }
+                    window.location.hash = hash;
+                };
+
+                CpNfOuter.start({
+                    sframeChan: sframeChan,
+                    channel: secret.channel,
+                    padRpc: Cryptpad.padRpc,
+                    validateKey: secret.keys.validateKey || undefined,
+                    readOnly: readOnly,
+                    crypto: Crypto.createEncryptor(secret.keys),
+                    onConnect: function (wc) {
+                        if (window.location.hash && window.location.hash !== '#') {
+                            window.location = parsed.getUrl({
+                                present: parsed.hashData.present,
+                                embed: parsed.hashData.embed
+                            });
+                            return;
+                        }
+                        if (readOnly || cfg.noHash) { return; }
+                        replaceHash(Utils.Hash.getEditHashFromKeys(wc, secret.keys));
+                    }
+                });
+            };
+
+            sframeChan.on('Q_CREATE_PAD', function (data, cb) {
+                if (!isNewFile || rtStarted) { return; }
+                // Create a new hash
+                var newHash = Utils.Hash.createRandomHash();
+                secret = Utils.Hash.getSecrets(parsed.type, newHash);
+
+                // Update the hash in the address bar
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location.hash = newHash;
+                window.onhashchange = ohc;
+                ohc({reset: true});
+
+                // Update metadata values and send new metadata inside
+                parsed = Utils.Hash.parsePadUrl(window.location.href);
+                defaultTitle = Utils.Hash.getDefaultName(parsed);
+                readOnly = false;
+                updateMeta();
+
+                var rtConfig = {};
+                console.log(edPublic);
+                if (data.owned) {
+                    //rtConfig.owners = [edPublic];
+                }
+
+                if (data.template) {
+                    // Pass rtConfig to useTemplate because Cryptput will create the file and
+                    // we need to have the owners and expiration time in the first line on the
+                    // server
+                    Cryptpad.useTemplate(data.template, Cryptget, function () {
+                        startRealtime();
+                        cb();
+                    }, rtConfig);
+                    return;
+                };
+                // Start realtime outside the iframe and callback
+                console.log(data);
+                startRealtime(rtConfig);
+                cb();
+            });
+
             sframeChan.ready();
 
             Utils.Feedback.reportAppUsage();
 
             if (!realtime) { return; }
+            if (isNewFile && AppConfig.displayCreationScreen) { return; }
 
-            var replaceHash = function (hash) {
-                if (window.history && window.history.replaceState) {
-                    if (!/^#/.test(hash)) { hash = '#' + hash; }
-                    void window.history.replaceState({}, window.document.title, hash);
-                    if (typeof(window.onhashchange) === 'function') {
-                        window.onhashchange();
-                    }
-                    return;
-                }
-                window.location.hash = hash;
-            };
-
-            CpNfOuter.start({
-                sframeChan: sframeChan,
-                channel: secret.channel,
-                padRpc: Cryptpad.padRpc,
-                validateKey: secret.keys.validateKey || undefined,
-                readOnly: readOnly,
-                crypto: Crypto.createEncryptor(secret.keys),
-                onConnect: function (wc) {
-                    if (window.location.hash && window.location.hash !== '#') {
-                        window.location = parsed.getUrl({
-                            present: parsed.hashData.present,
-                            embed: parsed.hashData.embed
-                        });
-                        return;
-                    }
-                    if (readOnly || cfg.noHash) { return; }
-                    replaceHash(Utils.Hash.getEditHashFromKeys(wc, secret.keys));
-                }
-            });
+            startRealtime();
         });
     };
 

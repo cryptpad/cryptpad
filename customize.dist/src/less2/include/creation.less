@@ -1,0 +1,36 @@
+@import (once) "./colortheme-all.less";
+
+.creation_main() {
+    #cp-creation {
+        position: fixed;
+        z-index: 10000000; // #loading
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        background: @colortheme_loading-bg;
+        color: @colortheme_loading-color;
+        text-align: center;
+        font-size: 1.5em;
+        .cp-loading-container {
+            margin-top: 50vh;
+            transform: translateY(-50%);
+        }
+        .cp-loading-cryptofist {
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            margin-bottom: 2em;
+            @media screen and (max-height: @browser_media-short-screen) {
+                display: none;
+            }
+        }
+        .cp-loading-spinner-container {
+            position: relative;
+            height: 100px;
+            > div {
+                height: 100px;
+            }
+        }
+    }
+}
