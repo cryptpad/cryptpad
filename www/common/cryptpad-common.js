@@ -693,6 +693,8 @@ define([
 
             if (typeof(SharedWorker) === "undefined") {
                 Feedback.send('NO_SHAREDWORKER');
+            } else {
+                Feedback.send('SHAREDWORKER');
             }
             if (typeof(Worker) === "undefined") {
                 Feedback.send('NO_WEBWORKER');
