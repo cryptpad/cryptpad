@@ -1,9 +1,3 @@
-// Defaults to avoid breaking existing themes
-
-@colortheme_poll-th-bg: #005bef;
-@colortheme_poll-th-fg: #fff;
-@colortheme_poll-help-bg: #bbffbb;
-
 @import (once) "../../customize/src/less2/include/browser.less";
 @import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) "../../customize/src/less2/include/markdown.less";
@@ -13,9 +7,11 @@
 @import (once) '../../customize/src/less2/include/tools.less';
 @import (once) '../../customize/src/less2/include/avatar.less';
 
-@_cp-toolbar-color-warn: @colortheme_poll-warn;
-
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_poll-bg,
+    @warn-color: @colortheme_poll-warn,
+    @color: @colortheme_poll-color
+);
 .fileupload_main();
 .alertify_main();
 .tokenfield_main();

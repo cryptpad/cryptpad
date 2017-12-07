@@ -7,8 +7,11 @@
 @import (once) '../../customize/src/less2/include/avatar.less';
 @import (once) '../../customize/src/less2/include/sidebar-layout.less';
 
-
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_profile-bg,
+    @warn-color: @colortheme_profile-warn,
+    @color: @colortheme_profile-color
+);
 .fileupload_main();
 .alertify_main();
 .sidebar-layout_main();

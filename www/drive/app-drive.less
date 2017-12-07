@@ -8,9 +8,11 @@
 @import (once) "../../customize/src/less2/include/limit-bar.less";
 @import (once) "../../customize/src/less2/include/tokenfield.less";
 
-@_cp-toolbar-color-warn: @colortheme_drive-warn;
-
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_drive-bg,
+    @warn-color: @colortheme_drive-warn,
+    @color: @colortheme_drive-color
+);
 .fileupload_main();
 .alertify_main();
 .limit-bar_main();
