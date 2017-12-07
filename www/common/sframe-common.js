@@ -18,6 +18,7 @@ define([
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
+    '/common/common-language.js',
     '/bower_components/localforage/dist/localforage.min.js'
 ], function (
     $,
@@ -38,6 +39,7 @@ define([
     Thumb,
     UI,
     Feedback,
+    Language,
     localForage
 ) {
     // Chainpad Netflux Inner
@@ -330,6 +332,7 @@ define([
             // CpNfInner.start() should be here....
         }).nThen(function (waitFor) {
             localForage.clear();
+            Language.applyTranslation();
 
             ctx.metadataMgr = MetadataMgr.create(ctx.sframeChan);
 
