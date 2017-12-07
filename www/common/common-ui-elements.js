@@ -352,6 +352,7 @@ define([
                 return actions[type].expr.replace('{0}', str);
             });
             editor.replaceSelections(newTexts, 'around');
+            editor.focus();
         };
         for (var k in actions) {
             $('<button>', {
