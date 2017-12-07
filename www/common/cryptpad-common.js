@@ -59,11 +59,6 @@ define([
 
     // RESTRICTED
     // Settings only
-    common.getUserObject = function (cb) {
-        postMessage("GET", [], function (obj) {
-            cb(obj);
-        });
-    };
     common.resetDrive = function (cb) {
         postMessage("RESET_DRIVE", null, function (obj) {
             if (obj.error) { return void cb(obj.error); }
@@ -81,6 +76,12 @@ define([
             cb();
         });
     };
+    // Settings and drive
+    common.getUserObject = function (cb) {
+        postMessage("GET", [], function (obj) {
+            cb(obj);
+        });
+    };
     // Settings and auth
     common.getUserObject = function (cb) {
         postMessage("GET", [], function (obj) {
@@ -94,6 +95,14 @@ define([
         };
         postMessage("MIGRATE_ANON_DRIVE", data, cb);
     };
+    // Drive
+    common.userObjectCommand = function (data, cb) {
+        postMessage("DRIVE_USEROBJECT", data, cb);
+    };
+    common.drive = {};
+    common.drive.onLog = Util.mkEvent();
+    common.drive.onChange = Util.mkEvent();
+    common.drive.onRemove = Util.mkEvent();
     // Profile
     common.getProfileEditUrl = function (cb) {
         postMessage("GET", ['profile', 'edit'], function (obj) {
@@ -450,6 +459,10 @@ define([
         });
     };
 
+    // Network
+    common.onNetworkDisconnect = Util.mkEvent();
+    common.onNetworkReconnect = Util.mkEvent();
+
     // Messenger
     var messenger = common.messenger = {};
     messenger.getFriendList = function (cb) {
@@ -486,7 +499,24 @@ define([
     messenger.onFriendEvent = Util.mkEvent();
     messenger.onUnfriendEvent = Util.mkEvent();
 
-    // HERE
+    // Pad RPC
+    var pad = common.padRpc = {};
+    pad.joinPad = function (data, cb) {
+        postMessage("JOIN_PAD", data, cb);
+    };
+    pad.sendPadMsg = function (data, cb) {
+        postMessage("SEND_PAD_MSG", data, cb);
+    };
+    pad.onReadyEvent = Util.mkEvent();
+    pad.onMessageEvent = Util.mkEvent();
+    pad.onJoinEvent = Util.mkEvent();
+    pad.onLeaveEvent = Util.mkEvent();
+    pad.onDisconnectEvent = Util.mkEvent();
+
+    common.getFullHistory = function (data, cb) {
+        postMessage("GET_FULL_HISTORY", data, cb);
+    };
+
     common.getShareHashes = function (secret, cb) {
         var hashes;
         if (!window.location.hash) {
@@ -578,6 +608,13 @@ define([
                 common.onFriendComplete(data);
                 break;
             }
+            // Network
+            case 'NETWORK_DISCONNECT': {
+                common.onNetworkDisconnect.fire(); break;
+            }
+            case 'NETWORK_RECONNECT': {
+                common.onNetworkReconnect.fire(data); break;
+            }
             // Messenger
             case 'CONTACTS_MESSAGE': {
                 common.messenger.onMessageEvent.fire(data); break;
@@ -596,6 +633,32 @@ define([
             }
             case 'CONTACTS_UNFRIEND': {
                 common.messenger.onUnfriendEvent.fire(data); break;
+            }
+            // Pad
+            case 'PAD_READY': {
+                common.padRpc.onReadyEvent.fire(); break;
+            }
+            case 'PAD_MESSAGE': {
+                common.padRpc.onMessageEvent.fire(data); break;
+            }
+            case 'PAD_JOIN': {
+                common.padRpc.onJoinEvent.fire(data); break;
+            }
+            case 'PAD_LEAVE': {
+                common.padRpc.onLeaveEvent.fire(data); break;
+            }
+            case 'PAD_DISCONNECT': {
+                common.padRpc.onDisconnectEvent.fire(data); break;
+            }
+            // Drive
+            case 'DRIVE_LOG': {
+                common.drive.onLog.fire(data); break;
+            }
+            case 'DRIVE_CHANGE': {
+                common.drive.onChange.fire(data); break;
+            }
+            case 'DRIVE_REMOVE': {
+                common.drive.onRemove.fire(data); break;
             }
         }
     };
@@ -651,7 +714,8 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
                 language: common.getLanguage(),
-                messenger: rdyCfg.messenger
+                messenger: rdyCfg.messenger,
+                driveEvents: rdyCfg.driveEvents
             };
             if (sessionStorage[Constants.newPadPathKey]) {
                 cfg.initialPath = sessionStorage[Constants.newPadPathKey];
@@ -659,6 +723,9 @@ define([
             }
             AStore.query("CONNECT", cfg, waitFor(function (data) {
                 if (data.error) { throw new Error(data.error); }
+                if (data.state === 'ALREADY_INIT') {
+                    data = data.returned;
+                }
 
                 if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 

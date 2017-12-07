@@ -86,7 +86,8 @@ define([
                     sframeChan = sfc;
                 }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
                 Cryptpad.ready(waitFor(), {
-                    messenger: cfg.messaging
+                    messenger: cfg.messaging,
+                    driveEvents: cfg.driveEvents
                 });
 
                 if (!cfg.newNetwork) {
@@ -298,36 +299,15 @@ define([
             };
 
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
-                var hkn = network.historyKeeper;
                 var crypto = Crypto.createEncryptor(secret.keys);
-                // Get the history messages and send them to the iframe
-                var parse = function (msg) {
-                    try {
-                        return JSON.parse(msg);
-                    } catch (e) {
-                        return null;
-                    }
-                };
-                var msgs = [];
-                var onMsg = function (msg) {
-                    var parsed = parse(msg);
-                    if (parsed[0] === 'FULL_HISTORY_END') {
-                        cb(msgs);
-                        return;
-                    }
-                    if (parsed[0] !== 'FULL_HISTORY') { return; }
-                    if (parsed[1] && parsed[1].validateKey) { // First message
-                        return;
-                    }
-                    msg = parsed[1][4];
-                    if (msg) {
-                        msg = msg.replace(/^cp\|/, '');
-                        var decryptedMsg = crypto.decrypt(msg, true);
-                        msgs.push(decryptedMsg);
-                    }
-                };
-                network.on('message', onMsg);
-                network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', secret.channel, secret.keys.validateKey]));
+                Cryptpad.getFullHistory({
+                    channel: secret.channel,
+                    validateKey: secret.keys.validateKey
+                }, function (encryptedMsgs) {
+                    cb(encryptedMsgs.map(function (msg) {
+                        return crypto.decrypt(msg, true);
+                    }));
+                });
             });
 
             sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
@@ -581,7 +561,7 @@ define([
             CpNfOuter.start({
                 sframeChan: sframeChan,
                 channel: secret.channel,
-                network: cfg.newNetwork || network,
+                padRpc: Cryptpad.padRpc,
                 validateKey: secret.keys.validateKey || undefined,
                 readOnly: readOnly,
                 crypto: Crypto.createEncryptor(secret.keys),
@@ -594,7 +574,7 @@ define([
                         return;
                     }
                     if (readOnly || cfg.noHash) { return; }
-                    replaceHash(Utils.Hash.getEditHashFromKeys(wc.id, secret.keys));
+                    replaceHash(Utils.Hash.getEditHashFromKeys(wc, secret.keys));
                 }
             });
         });

@@ -1,0 +1,40 @@
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/toolbar.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) '../../customize/src/less2/include/fileupload.less';
+@import (once) '../../customize/src/less2/include/alertify.less';
+//@import (once) '../../customize/src/less/mixins.less';
+//@import (once) '../../customize/src/less/variables.less";
+
+@import (once) '../../customize/src/less2/include/avatar.less';
+
+
+.toolbar_main();
+.fileupload_main();
+.alertify_main();
+
+// body
+&.cp-app-worker {
+    display: flex;
+    flex-flow: column;
+
+    #cp-toolbar {
+        display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+    }
+
+    .cp-cryptpad-toolbar {
+        padding: 0px;
+        display: inline-block;
+    }
+
+    #cp-app-worker-container {
+        display: flex;
+        flex: 1;
+        flex-flow: column;
+        padding: 20px;
+        align-items: center;
+        background-color: lighten(@colortheme_todo-bg, 15%);
+        min-height: 0;
+    }
+}
+
