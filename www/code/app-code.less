@@ -5,9 +5,11 @@
 @import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/tokenfield.less';
 
-@_cp-toolbar-color-warn: @colortheme_code-warn;
-
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_code-bg,
+    @warn-color: @colortheme_code-warn,
+    @color: @colortheme_code-color
+);
 .fileupload_main();
 .alertify_main();
 .tokenfield_main();

@@ -6,10 +6,12 @@
 @import (once) "../../customize/src/less2/include/mediatag.less";
 @import (once) '../../customize/src/less2/include/tokenfield.less';
 
-@_cp-toolbar-color-warn: @colortheme_slide-warn;
-
 .mediatag_base();
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_slide-bg,
+    @warn-color: @colortheme_slide-warn,
+    @color: @colortheme_slide-color
+);
 .fileupload_main();
 .alertify_main();
 .tokenfield_main();

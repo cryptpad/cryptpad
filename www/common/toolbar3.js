@@ -729,11 +729,20 @@ define([
         Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
             if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
             if (x.response[0] === true) { return; }
+            var pnpTitle = Messages._getKey('padNotPinned', ['','','','']);
+            var pnpMsg = Messages._getKey('padNotPinned', [
+                '<a href="' + o + '/login" target="blank" title>',
+                '</a>',
+                '<a href="' + o + '/register" target="blank" title>',
+                '</a>'
+            ]);
             var msg = $('<span>', {
                 'class': 'cp-pad-not-pinned',
-            }).append(
-                Messages._getKey('padNotPinned', [o + '/login', o + '/register'])
-            );
+                'title': pnpTitle
+            }).append([
+                $('<span>', {'class': 'fa fa-exclamation-triangle'}),
+                $('<span>', {'class': 'cp-pnp-msg'}).append(pnpMsg)
+            ]);
             $('.cp-toolbar-title').append(msg);
             console.log("This pad is not pinned");
         });

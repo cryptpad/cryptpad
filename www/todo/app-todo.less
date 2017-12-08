@@ -8,8 +8,11 @@
 
 @import (once) '../../customize/src/less2/include/avatar.less';
 
-
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_todo-bg,
+    @warn-color: @colortheme_todo-warn,
+    @color: @colortheme_todo-color
+);
 .fileupload_main();
 .alertify_main();
 

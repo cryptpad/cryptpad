@@ -8,9 +8,11 @@
 
 @import (once) '../../customize/src/less2/include/avatar.less';
 
-@_cp-toolbar-color-warn: @colortheme_friends-warn;;
-
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_friends-bg,
+    @warn-color: @colortheme_friends-warn,
+    @color: @colortheme_friends-color
+);
 .fileupload_main();
 .alertify_main();
 

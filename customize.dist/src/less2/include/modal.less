@@ -1,12 +1,12 @@
-@import (once) "./colortheme.less";
-@import (once) "./modal-theme.less";
+@import (once) "./colortheme-all.less";
+@import (once) "./variables.less";
 
 .modal_base() {
     font-family: @colortheme_font;
 
     background-color: @colortheme_modal-bg;
     color: @colortheme_modal-fg;
-    box-shadow: @modal_shadow;
+    box-shadow: @variables_shadow;
 
     a {
         color: @colortheme_modal-link;
@@ -31,9 +31,9 @@
     .cp-modal {
         background-color: @colortheme_modal-bg;
         color: @colortheme_modal-fg;
-        box-shadow: @modal_shadow;
+        box-shadow: @variables_shadow;
 
-        padding: @modal_padding;
+        padding: @variables_padding;
 
         position: absolute;
         top: 15vh; bottom: 15vh;
@@ -71,7 +71,7 @@
             position: absolute;
             top: 0;
             right: 0;
-            margin: @modal_padding;
+            margin: @variables_padding;
             cursor: pointer;
         }
     }

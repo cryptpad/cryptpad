@@ -1,6 +1,6 @@
-@import (once) "./colortheme.less";
+@import (once) "./colortheme-all.less";
 @import (once) "./browser.less";
-@import (once) "./modal-theme.less";
+@import (once) "./variables.less";
 
 .alertify_main () {
     @max-z-index: 2147483647;
@@ -21,8 +21,8 @@
     @alertify-input-bg: @colortheme_modal-input;
     @alertify-input-fg: @colortheme_modal-fg;
 
-    @alertify_padding-base: @modal_padding;
-    @alertify_box-shadow: @modal_shadow;
+    @alertify_padding-base: @variables_padding;
+    @alertify_box-shadow: @variables_shadow;
 
     // Logs to show that something has happened
     // These show only once

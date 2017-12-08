@@ -6,9 +6,11 @@
 @import (once) '../../customize/src/less2/include/sidebar-layout.less';
 @import (once) "../../customize/src/less2/include/limit-bar.less";
 
-@_cp-toolbar-color-warn: @colortheme_settings-warn;
-
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_settings-bg,
+    @warn-color: @colortheme_settings-warn,
+    @color: @colortheme_settings-color
+);
 .alertify_main();
 .sidebar-layout_main();
 .limit-bar_main();
