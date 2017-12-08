@@ -2,30 +2,59 @@
     "fileExtensions": [".less"],
 
     // These rules are almost certainly crap and will not catch bugs (Caleb)
-    "finalNewline": false,
-    "newlineAfterBlock": false,
-    "spaceAroundOperator": false,
-    "hexLength": false,
-    "hexNotation": false,
-    "propertyOrdering": false,
-    "stringQuotes": false,
-    "importPath": false,
-    "qualifyingElement": false,
-    "decimalZero": false,
-    "borderZero": false,
+    "newlineAfterBlock": { "enabled": false }, // not just a newline but an entire empty line after each block
+    "spaceAroundOperator": { "enabled": false }, // disallow calc(10px+10px);
+    "hexLength": { "enabled": false }, // require long hex color codes or require short where possible
+    "hexNotation": { "enabled": false }, // require hex lowercase
+    "propertyOrdering": { "enabled": false }, // require attributes to be in alphabetical order D:
+    "stringQuotes": { "enabled": false }, // force quoting of strings with ' or " (silly)
+    "importPath": { "enabled": false }, // require imports to not have .less, ridiculous
+    "qualifyingElement": { "enabled": false }, // disallow div.xxx and require .xxx
+    "decimalZero": { "enabled": false }, // disallow .5em
+    "borderZero": { "enabled": false }, // disallow border: none;
+    "selectorNaming": { "enabled": false }, // this would be crap because classes are what they are.
 
     // These rules should be discussed, if they're crap then they should be moved up.
-    "zeroUnit": false,
-    "spaceAroundComma": false,
-    "singleLinePerProperty": false,
-    "importantRule": false,
-    "idSelector": false,
-    "singleLinePerSelector": false,
-    "spaceAfterPropertyColon": false,
-    "spaceBetweenParens": false,
-    "spaceBeforeBrace": false,
-    "universalSelector": false,
+    "zeroUnit": { "enabled": false },
+    "spaceAroundComma": { "enabled": false },
+    "singleLinePerProperty": { "enabled": false },
+    "_singleLinePerProperty": {
+        "enabled": true,
+        "allowSingleLineRules": true
+    },
+    "importantRule": { "enabled": false },
+    "idSelector": { "enabled": false },
+    "singleLinePerSelector": { "enabled": false },
+    "spaceAfterPropertyColon": { "enabled": false },
+    "spaceBetweenParens": { "enabled": false },
+    "universalSelector": { "enabled": false },
+    "maxCharPerLine": { "enabled": false }, // using lesshint flags can cause long lines
+    "colorVariables": { "enabled": false }, // require all colors to be stored as variables first...
+    "comment": { "enabled": false }, // ban multi-line comments ?
+    "variableValue": { "enabled": false }, // any attribute types which should always be variables ?  color?
+    "finalNewline": { "enabled": true }, // require an emprty line at the end of the file (enabled for now)
+    "spaceBeforeBrace": { "enabled": false },//{ "enabled": true, "style": "one_space" },
 
-    // These rules are really good rules to have around IMO (Caleb) but they're not being honored.
-    "maxCharPerLine": false
+    // Turn everything else on
+    "attributeQuotes": { "enabled": true },
+    "depthLevel": {
+        "depth": 1 // TODO(cjd) This is obviously not triggering, even with 1
+    },
+    "duplicateProperty": { "enabled": true },
+    "emptyRule": { "enabled": true },
+    "hexValidation": { "enabled": true }, // disallow actual garbage color hex codes (e.g. #ab)
+    "propertyUnits": {
+        "valid": ["rem", "vw", "em", "px"], // These units are allowed for all properties
+        "invalid": ["pt"],      // The 'pt' unit is not allowed under any circumstances
+        "properties": {
+            //"line-height": []   // No units are allowed for line-height
+        }
+    },
+    "spaceAfterPropertyName": { "enabled": true, "style": "no_space" },
+    "spaceAfterPropertyValue": { "enabled": true, "style": "no_space" },
+    "spaceAroundBang": { "enabled": true, "style": "before" },
+    "trailingSemicolon": { "enabled": true },
+    "trailingWhitespace": { "enabled": true },
+    "urlFormat": { "enabled": true, "style": "relative" },
+    "urlQuotes": { "enabled": true }
 }
