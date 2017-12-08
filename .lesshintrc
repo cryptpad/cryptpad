@@ -1,0 +1,35 @@
+{
+    "fileExtensions": [".less"],
+
+    // These rules are almost certainly crap and will not catch bugs (Caleb)
+    "finalNewline": false,
+    "newlineAfterBlock": false,
+    "spaceAroundOperator": false,
+    "hexLength": false,
+    "hexNotation": false,
+    "propertyOrdering": false,
+    "stringQuotes": false,
+    "importPath": false,
+    "qualifyingElement": false,
+    "decimalZero": false,
+    "borderZero": false,
+
+    // These rules should be discussed, if they're crap then they should be moved up.
+    "zeroUnit": false,
+    "spaceAroundComma": false,
+    "singleLinePerProperty": false,
+    "importantRule": false,
+    "idSelector": false,
+    "singleLinePerSelector": false,
+    "spaceAfterPropertyColon": false,
+    "spaceBetweenParens": false,
+    "spaceBeforeBrace": false,
+    "universalSelector": false,
+
+    // These rules are really good rules to have around IMO (Caleb) but they're not being honored.
+    "duplicateProperty": false,
+    "trailingSemicolon": false,
+    "emptyRule": false,
+    "maxCharPerLine": false,
+    "trailingWhitespace": false
+}
