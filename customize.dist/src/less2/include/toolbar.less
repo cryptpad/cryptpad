@@ -421,10 +421,45 @@
         height: @toolbar_top-height;
         position: relative;
         width: 100%;
+
+        .cp-pad-not-pinned {
+            order: 4;
+            flex: 1;
+
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+
+            align-self: center;
+            padding-left: 20px;
+            padding-right: 5px;
+            font-size: @colortheme_app-font-size;
+            color: @warn-color;
+            .cp-pnp-msg {
+                padding-left: 5px;
+                font-family: @colortheme_font;
+                font-size: @colortheme_app-font-size;
+                a {
+                    font-size: @colortheme_app-font-size;
+                    font-weight: bold;
+                    color: @warn-color;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+                @media screen and (max-width: (@browser_media-not-big)) {
+                    display: none;
+                }
+            }
+            @media screen and (max-width: (@browser_media-not-big)) {
+                overflow: visible;
+                max-width: 20px;
+            }
+        }
         .cp-toolbar-top-filler {
             height: @toolbar_top-height;
             display: inline-block;
-            order: 4;
+            order: 5;
             //flex: 1;
         }
         .cp-toolbar-title {
@@ -503,35 +538,6 @@
                 font-size: 20px;
                 padding: 5px 5px;
                 height: 40px;
-            }
-            .cp-pad-not-pinned {
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-    
-                align-self: right;
-                padding-left: 20px;
-                padding-left: 5px;
-                font-size: @colortheme_app-font-size;
-                color: @warn-color;
-                .cp-pnp-msg {
-                    padding-left: 5px;
-                    a {
-                        font-size: @colortheme_app-font-size;
-                        font-weight: bold;
-                        color: @warn-color;
-                        &:hover {
-                            text-decoration: underline;
-                        }
-                    }
-                    @media screen and (max-width: (@browser_media-not-big)) {
-                        display: none;
-                    }
-                }
-                @media screen and (max-width: (@browser_media-not-big)) {
-                    overflow: visible;
-                }
-    
             }
         }
         .cp-toolbar-link, .cp-toolbar-new {
@@ -615,7 +621,7 @@
         .cp-toolbar-user {
             height: @toolbar_top-height;
             display: inline-flex;
-            order: 5;
+            order: 6;
             line-height: @toolbar_top-height;
             color: white;
             .cp-toolbar-new { order: 2; }

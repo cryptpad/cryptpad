@@ -731,20 +731,31 @@ define([
             if (x.response[0] === true) { return; }
             var pnpTitle = Messages._getKey('padNotPinned', ['','','','']);
             var pnpMsg = Messages._getKey('padNotPinned', [
-                '<a href="' + o + '/login" target="blank" title>',
+                '<a href="' + o + '/login" class="cp-pnp-login" target="blank" title>',
                 '</a>',
-                '<a href="' + o + '/register" target="blank" title>',
+                '<a href="' + o + '/register" class="cp-pnp-register" target="blank" title>',
                 '</a>'
             ]);
-            var msg = $('<span>', {
-                'class': 'cp-pad-not-pinned',
-                'title': pnpTitle
+            var $msg = $('<span>', {
+                'class': 'cp-pad-not-pinned'
             }).append([
-                $('<span>', {'class': 'fa fa-exclamation-triangle'}),
+                $('<span>', {'class': 'fa fa-exclamation-triangle', 'title': pnpTitle}),
                 $('<span>', {'class': 'cp-pnp-msg'}).append(pnpMsg)
             ]);
-            $('.cp-toolbar-title').append(msg);
-            console.log("This pad is not pinned");
+            $msg.find('a.cp-pnp-login').click(function (ev) {
+                ev.preventDefault();
+                Common.setLoginRedirect(function () {
+                    window.parent.location = o + '/login/';
+                });
+            });
+            $msg.find('a.cp-pnp-register').click(function (ev) {
+                ev.preventDefault();
+                Common.setLoginRedirect(function () {
+                    window.parent.location = o + '/register/';
+                });
+            });
+            $('.cp-toolbar-top').append($msg);
+            UI.addTooltips();
         });
     };
 
