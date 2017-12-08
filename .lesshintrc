@@ -29,7 +29,5 @@
     // These rules are really good rules to have around IMO (Caleb) but they're not being honored.
     "duplicateProperty": false,
     "trailingSemicolon": false,
-    "emptyRule": false,
-    "maxCharPerLine": false,
-    "trailingWhitespace": false
+    "maxCharPerLine": false
 }
