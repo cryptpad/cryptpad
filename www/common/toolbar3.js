@@ -719,7 +719,7 @@ define([
         return $titleContainer;
     };
 
-    var createUnpinnedWarning = function (toolbar, config) {
+    var createUnpinnedWarning0 = function (toolbar, config) {
         if (Common.isLoggedIn()) { return; }
         var pd = config.metadataMgr.getPrivateData();
         var o = pd.origin;
@@ -728,7 +728,11 @@ define([
         var cid = Hash.hrefToHexChannelId(url);
         Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
             if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
-            if (x.response[0] === true) { return; }
+            if (x.response[0] === true) {
+                $('.cp-pad-not-pinned').remove();
+                return;
+            }
+            if ($('.cp-pad-not-pinned').length) { return; }
             var pnpTitle = Messages._getKey('padNotPinned', ['','','','']);
             var pnpMsg = Messages._getKey('padNotPinned', [
                 '<a href="' + o + '/login" class="cp-pnp-login" target="blank" title>',
@@ -757,6 +761,13 @@ define([
             $('.cp-toolbar-top').append($msg);
             UI.addTooltips();
         });
+    };
+
+    var createUnpinnedWarning = function (toolbar, config) {
+        config.metadataMgr.onChange(function () {
+            createUnpinnedWarning0(toolbar, config);
+        });
+        createUnpinnedWarning0(toolbar, config);
     };
 
     var createPageTitle = function (toolbar, config) {
