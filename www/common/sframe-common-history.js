@@ -36,7 +36,7 @@ define([
                 //patchTransformer: ChainPad.NaiveJSONTransformer,
                 //logLevel: 0,
                 //transformFunction: JsonOT.validate,
-                logLevel: config.debug ? 1 : 0,
+                logLevel: config.debug ? 2 : 0,
                 noPrune: true
             });
         };

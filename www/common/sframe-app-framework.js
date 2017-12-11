@@ -374,12 +374,19 @@ define([
             UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
+            common.getSframeChannel().onReady(waitFor());
+        }).nThen(function (waitFor) {
+            if (!AppConfig.displayCreationScreen) { return; }
+            if (common.getMetadataMgr().getPrivateData().isNewFile) {
+                common.getPadCreationScreen(waitFor());
+            }
+        }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform
                 patchTransformer: options.patchTransformer || ChainPad.SmartJSONTransformer,
 
                 // cryptpad debug logging (default is 1)
-                // logLevel: 0,
+                // logLevel: 2,
                 validateContent: options.validateContent || function (content) {
                     try {
                         JSON.parse(content);

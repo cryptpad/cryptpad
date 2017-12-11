@@ -4,6 +4,7 @@
 @import (once) '../../customize/src/less2/include/fileupload.less';
 @import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/tokenfield.less';
+@import (once) '../../customize/src/less2/include/creation.less';
 
 .toolbar_main(
     @bg-color: @colortheme_code-bg,
@@ -13,6 +14,7 @@
 .fileupload_main();
 .alertify_main();
 .tokenfield_main();
+.creation_main();
 
 // body
 &.cp-app-code {
@@ -100,7 +102,7 @@
     }
 
     @media (max-width: @browser_media-medium-screen) {
-        .CodeMirror {
+        #cp-app-code-container {
             flex: 1;
             max-width: 100%;
             resize: none;
@@ -108,6 +110,6 @@
         #cp-app-code-preview {
             display: none !important;
         }
-}
+    }
 }
 

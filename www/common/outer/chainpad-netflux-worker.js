@@ -33,6 +33,9 @@ define([], function () {
         var onLeave = conf.onLeave;
         var onReady = conf.onReady;
         var onDisconnect = conf.onDisconnect;
+        var owners = conf.owners;
+        var password = conf.password;
+        var expire = conf.expire;
         conf = undefined;
 
         var initializing = true;
@@ -177,10 +180,15 @@ define([], function () {
                 });
                 network.historyKeeper = hk;
 
-                var msg = ['GET_HISTORY', wc.id];
+                var cfg = {
+                    validateKey: validateKey,
+                    lastKnownHash: lastKnownHash,
+                    owners: owners,
+                    expire: expire,
+                    password: password
+                };
+                var msg = ['GET_HISTORY', wc.id, cfg];
                 // Add the validateKey if we are the channel creator and we have a validateKey
-                msg.push(validateKey);
-                msg.push(lastKnownHash);
                 if (hk) { network.sendto(hk, JSON.stringify(msg)); }
             } else {
                 onRdy();

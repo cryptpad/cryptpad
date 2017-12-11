@@ -110,9 +110,13 @@ define([
         chan.whenReg('EV_REGISTER_HANDLER', evReady.fire);
 
         // Make sure both iframes are ready
+        var isReady  =false;
         chan.onReady = function (h) {
+            if (isReady) {
+                return void h();
+            }
             if (typeof(h) !== "function") { return; }
-            chan.on('EV_RPC_READY', function () { h(); });
+            chan.on('EV_RPC_READY', function () { isReady = true; h(); });
         };
         chan.ready = function () {
             chan.whenReg('EV_RPC_READY', function () {

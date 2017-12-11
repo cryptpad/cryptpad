@@ -27,6 +27,9 @@ define([], function () {
         var readOnly = conf.readOnly || false;
         var padRpc = conf.padRpc;
         var sframeChan = conf.sframeChan;
+        var password = conf.password;
+        var owners = conf.owners;
+        var expire = conf.expire;
         var onConnect = conf.onConnect || function () { };
         conf = undefined;
 
@@ -98,7 +101,10 @@ define([], function () {
         padRpc.joinPad({
             channel: channel || null,
             validateKey: validateKey,
-            readOnly: readOnly
+            readOnly: readOnly,
+            owners: owners,
+            password: password,
+            expire: expire
         }, function(data) {
             onOpen(data);
         });
