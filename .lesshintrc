@@ -13,29 +13,29 @@
     "decimalZero": { "enabled": false }, // disallow .5em
     "borderZero": { "enabled": false }, // disallow border: none;
     "selectorNaming": { "enabled": false }, // this would be crap because classes are what they are.
-
-    // These rules should be discussed, if they're crap then they should be moved up.
     "zeroUnit": { "enabled": false },
-    "spaceAroundComma": { "enabled": false },
     "singleLinePerProperty": { "enabled": false },
     "_singleLinePerProperty": {
         "enabled": true,
         "allowSingleLineRules": true
     },
+    "spaceAroundComma": { "enabled": false },
     "importantRule": { "enabled": false },
+    "universalSelector": { "enabled": false },
     "idSelector": { "enabled": false },
     "singleLinePerSelector": { "enabled": false },
-    "spaceAfterPropertyColon": { "enabled": false },
     "spaceBetweenParens": { "enabled": false },
-    "universalSelector": { "enabled": false },
     "maxCharPerLine": { "enabled": false }, // using lesshint flags can cause long lines
-    "colorVariables": { "enabled": false }, // require all colors to be stored as variables first...
     "comment": { "enabled": false }, // ban multi-line comments ?
+
+    // These rules should be discussed, if they're crap then they should be moved up.
+    "colorVariables": { "enabled": false }, // require all colors to be stored as variables first...
     "variableValue": { "enabled": false }, // any attribute types which should always be variables ?  color?
-    "finalNewline": { "enabled": true }, // require an emprty line at the end of the file (enabled for now)
-    "spaceBeforeBrace": { "enabled": false },//{ "enabled": true, "style": "one_space" },
+    "spaceBeforeBrace": { "enabled": true },//{ "enabled": true, "style": "one_space" },
 
     // Turn everything else on
+    "spaceAfterPropertyColon": { "enabled": true },
+    "finalNewline": { "enabled": true }, // require an empty line at the end of the file (enabled for now)
     "attributeQuotes": { "enabled": true },
     "depthLevel": {
         "depth": 1 // TODO(cjd) This is obviously not triggering, even with 1
