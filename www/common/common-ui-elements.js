@@ -1231,7 +1231,7 @@ define([
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
 
-            // TODO remove these lines
+            // XXX TODO remove these lines
             ownedVal = undefined;
             expire = undefined;
 
@@ -1240,7 +1240,7 @@ define([
                 expire: expireVal,
                 template: template
             }, function () {
-                $creation.remove();
+                $creationContainer.remove();
                 cb();
             });
         };
