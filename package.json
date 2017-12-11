@@ -22,6 +22,8 @@
     "dev": "DEV=1 node server.js",
     "fresh": "FRESH=1 node server.js",
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "lint:js": "jshint --config .jshintrc --exclude-path .jshintignore .",
+    "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "flow": "./node_modules/.bin/flow",
     "test": "node TestSelenium.js",
     "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../what-is-cryptpad.html ../../www/login/index.html ../../www/register/index.html ../../www/settings/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;"
