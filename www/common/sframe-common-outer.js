@@ -644,7 +644,8 @@ define([
             Utils.Feedback.reportAppUsage();
 
             if (!realtime) { return; }
-            if (isNewFile && AppConfig.displayCreationScreen) { return; }
+            if (isNewFile && Utils.LocalStore.isLoggedIn()
+                && AppConfig.displayCreationScreen) { return; }
 
             startRealtime();
         });
