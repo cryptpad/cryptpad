@@ -20,6 +20,7 @@
   "scripts": {
     "start": "node server.js",
     "dev": "DEV=1 node server.js",
+    "fresh": "FRESH=1 node server.js",
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "flow": "./node_modules/.bin/flow",
     "test": "node TestSelenium.js",
