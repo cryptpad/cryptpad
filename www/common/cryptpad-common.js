@@ -402,13 +402,15 @@ define([
         });
     };
 
-    common.useTemplate = function (href, Crypt, cb) {
+    common.useTemplate = function (href, Crypt, cb, opts) {
+        // opts is used to overrides options for chainpad-netflux in cryptput
+        // it allows us to add owners and expiration time if it is a new file
         var parsed = Hash.parsePadUrl(href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         Crypt.get(parsed.hash, function (err, val) {
             if (err) { throw new Error(err); }
             var p = Hash.parsePadUrl(window.location.href);
-            Crypt.put(p.hash, val, cb);
+            Crypt.put(p.hash, val, cb, opts);
         });
     };
 
@@ -750,7 +752,8 @@ define([
         }).nThen(function (waitFor) {
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;
-            window.onhashchange = function () {
+            window.onhashchange = function (ev) {
+                if (ev && ev.reset) { oldHref = document.location.href; return; }
                 var newHref = document.location.href;
                 var parsedOld = Hash.parsePadUrl(oldHref).hashData;
                 var parsedNew = Hash.parsePadUrl(newHref).hashData;

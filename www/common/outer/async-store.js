@@ -742,6 +742,9 @@ define([
             }, // post EV_PAD_DISCONNECT
             channel: data.channel,
             validateKey: data.validateKey,
+            owners: data.owners,
+            password: data.password,
+            expire: data.expire,
             network: store.network,
             readOnly: data.readOnly,
             onConnect: function (wc, sendMessage) {

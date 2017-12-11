@@ -209,5 +209,8 @@ define({
 
     // Notifications about connection and disconnection from the network
     'EV_NETWORK_DISCONNECT': true,
-    'EV_NETWORK_RECONNECT': true
+    'EV_NETWORK_RECONNECT': true,
+
+    // Pad creation screen: create a pad with the selected attributes (owned, expire)
+    'Q_CREATE_PAD': true,
 });

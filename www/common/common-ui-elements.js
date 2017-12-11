@@ -6,11 +6,12 @@ define([
     '/common/common-language.js',
     '/common/common-interface.js',
     '/common/common-feedback.js',
+    '/common/hyperscript.js',
     '/common/media-tag.js',
     '/customize/messages.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Util, Hash, Language, UI, Feedback, MediaTag, Messages) {
+], function ($, Config, Util, Hash, Language, UI, Feedback, h, MediaTag, Messages) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -387,7 +388,6 @@ define([
         common.getAttribute(['general', 'markdown-help'], function (e, data) {
             if (e) { return void console.error(e); }
             if (data === true && $toolbarButton.length && tbState) {
-                console.log($toolbar.is(':visible'));
                 $toolbarButton.click();
             }
         });
@@ -1117,6 +1117,170 @@ define([
                     cancel: Messages.useTemplateCancel,
                 });
             }
+        });
+    };
+
+    UIElements.getPadCreationScreen = function (common, cb) {
+        if (!common.isLoggedIn()) { return void cb(); }
+        var sframeChan = common.getSframeChannel();
+        var metadataMgr = common.getMetadataMgr();
+        var type = metadataMgr.getMetadataLazy().type;
+
+        var $body = $('body');
+        var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
+        var $creation = $('<div>', { id: 'cp-creation' }).appendTo($creationContainer);
+
+        var setHTML = function (e, html) {
+            e.innerHTML = html;
+            return e;
+        };
+
+        // Title
+        $creation.append(h('h1.cp-creation-title', Messages['button_new'+type]));
+
+        // Deleted pad warning
+        if (metadataMgr.getPrivateData().isDeleted) {
+            $creation.append(h('div.cp-creation-deleted', Messages.creation_404));
+        }
+
+        var createHelper = function (text) {
+            var q = h('span.cp-creation-help.fa.fa-question', {
+                title: text
+            });
+            return q;
+        };
+
+        // Owned pads
+        var owned = h('div.cp-creation-owned', [
+            h('h2', [
+                Messages.creation_ownedTitle,
+                createHelper(Messages.creation_owned1 + '\n' + Messages.creation_owned2)
+            ]),
+            setHTML(h('p'), Messages.creation_owned1 + '<br>' + Messages.creation_owned2),
+            h('input#cp-creation-owned-true.cp-creation-owned-value', {
+                type: 'radio',
+                name: 'cp-creation-owned',
+                value: 1,
+                checked: 'checked'
+            }),
+            h('label', { 'for': 'cp-creation-owned-true' }, Messages.creation_ownedTrue),
+            h('input#cp-creation-owned-false.cp-creation-owned-value', {
+                type: 'radio',
+                name: 'cp-creation-owned',
+                value: 0
+            }),
+            h('label', { 'for': 'cp-creation-owned-false' }, Messages.creation_ownedFalse)
+        ]);
+        $creation.append(owned);
+
+        // Life time
+        var expire = h('div.cp-creation-expire', [
+            h('h2', [
+                Messages.creation_expireTitle,
+                createHelper(Messages.creation_expire1, Messages.creation_expire2)
+            ]),
+            setHTML(h('p'), Messages.creation_expire1 + '<br>' + Messages.creation_expire2),
+            h('input#cp-creation-expire-false.cp-creation-expire-value', {
+                type: 'radio',
+                name: 'cp-creation-expire',
+                value: 0,
+                checked: 'checked'
+            }),
+            h('label', { 'for': 'cp-creation-expire-false' }, Messages.creation_expireFalse),
+            h('input#cp-creation-expire-true.cp-creation-expire-value', {
+                type: 'radio',
+                name: 'cp-creation-expire',
+                value: 1
+            }),
+            h('label', { 'for': 'cp-creation-expire-true' }, [
+                Messages.creation_expireTrue,
+                h('span.cp-creation-expire-picker', [
+                    h('input#cp-creation-expire-val', {
+                        type: "number",
+                        min: 1,
+                        max: 100,
+                        value: 3
+                    }),
+                    h('select#cp-creation-expire-unit', [
+                        h('option', { value: 'hour' }, Messages.creation_expireHours),
+                        h('option', { value: 'day' }, Messages.creation_expireDays),
+                        h('option', {
+                            value: 'month',
+                            selected: 'selected'
+                        }, Messages.creation_expireMonths)
+                    ])
+                ])
+            ])
+        ]);
+        $creation.append(expire);
+
+        // Create the pad
+        var create = function (template) {
+            // Type of pad
+            var ownedVal = parseInt($('input[name="cp-creation-owned"]:checked').val());
+            // Life time
+            var expireVal = 0;
+            if(parseInt($('input[name="cp-creation-expire"]:checked').val())) {
+                var unit = 0;
+                switch ($('#cp-creation-expire-unit').val()) {
+                    case "hour" : unit = 3600;           break;
+                    case "day"  : unit = 3600 * 24;      break;
+                    case "month": unit = 3600 * 24 * 30; break;
+                    default: unit = 0;
+                }
+                expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
+            }
+
+            // TODO remove these lines
+            ownedVal = undefined;
+            expire = undefined;
+
+            sframeChan.query("Q_CREATE_PAD", {
+                owned: ownedVal,
+                expire: expireVal,
+                template: template
+            }, function () {
+                $creation.remove();
+                cb();
+            });
+        };
+
+        var $create = $(h('div.cp-creation-create', [
+            h('h2', Messages.creation_createTitle)
+        ])).appendTo($creation);
+        // Pick a template?
+        sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
+            if (!data) { return; }
+            var $templateButton = $('<button>').text(Messages.creation_createFromTemplate)
+                                               .appendTo($create);
+
+            var pickerCfg = {
+                types: [type],
+                where: ['template'],
+                hidden: true
+            };
+            common.openFilePicker(pickerCfg);
+
+            $templateButton.click(function () {
+                // Show the template picker
+                delete pickerCfg.hidden;
+                common.openFilePicker(pickerCfg);
+                var first = true; // We can only pick a template once (for a new document)
+                var fileDialogCfg = {
+                    onSelect: function (data) {
+                        if (data.type === type && first) {
+                            create(data.href);
+                            first = false;
+                        }
+                    }
+                };
+                common.initFilePicker(fileDialogCfg);
+            });
+        });
+
+        var $button = $('<button>').text(Messages.creation_createFromScratch).appendTo($create);
+        $button.click(function () {
+            create();
         });
     };
 
