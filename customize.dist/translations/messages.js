@@ -787,5 +787,24 @@ define(function () {
     out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";
     out.feedback_optout = "If you would like to opt out, visit <a href='/settings/'>your user settings page</a>, where you'll find a checkbox to enable or disable user feedback";
 
+    // Creation page
+    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad";
+    out.creation_ownedTitle = "Type of pad";
+    out.creation_ownedTrue = "Owned pad";
+    out.creation_ownedFalse = "Open pad";
+    out.creation_owned1 = "An <b>owned</b> pad is a pad that you can delete from the server whenever you want. Once it is deleted, no one else can access it, even if it is stored in their CryptDrive.";
+    out.creation_owned2 = "An <b>open</b> pad doesn't have any owner and thus, it can't be deleted from the server unless it has reached its expiration time.";
+    out.creation_expireTitle = "Life time";
+    out.creation_expireTrue = "Add a life time";
+    out.creation_expireFalse = "Unlimited";
+    out.creation_expireHours = "Hours";
+    out.creation_expireDays = "Days";
+    out.creation_expireMonths = "Months";
+    out.creation_expire1 = "By default, a pad stored by a registered users will never be removed from the server, unless it is requested by its owner.";
+    out.creation_expire2 = "If you prefer, you can set a life time to make sure the pad will be permanently deleted from the server and unavailable after the specified date.";
+    out.creation_createTitle = "Create a pad";
+    out.creation_createFromTemplate = "From template";
+    out.creation_createFromScratch = "From scratch";
+
     return out;
 });

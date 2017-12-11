@@ -374,10 +374,11 @@ define([
             UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
+            common.getSframeChannel().onReady(waitFor());
+        }).nThen(function (waitFor) {
             if (!AppConfig.displayCreationScreen) { return; }
             if (common.getMetadataMgr().getPrivateData().isNewFile) {
-                console.log('newFile');
-                common.getPadCreationScreen(Toolbar, waitFor());
+                common.getPadCreationScreen(waitFor());
             }
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({

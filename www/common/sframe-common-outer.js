@@ -186,7 +186,8 @@ define([
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
                         },
-                        isNewFile: isNewFile
+                        isNewFile: isNewFile,
+                        isDeleted: window.location.hash.length > 0
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -619,6 +620,9 @@ define([
                 console.log(edPublic);
                 if (data.owned) {
                     //rtConfig.owners = [edPublic];
+                }
+                if (data.expire) {
+                    //rtConfig.expire = data.expire;
                 }
 
                 if (data.template) {
