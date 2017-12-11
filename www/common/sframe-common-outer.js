@@ -634,7 +634,7 @@ define([
                         cb();
                     }, rtConfig);
                     return;
-                };
+                }
                 // Start realtime outside the iframe and callback
                 console.log(data);
                 startRealtime(rtConfig);

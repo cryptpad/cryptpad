@@ -187,10 +187,8 @@ define([], function () {
                     expire: expire,
                     password: password
                 };
-                var msg = ['GET_HISTORY', wc.id];
+                var msg = ['GET_HISTORY', wc.id, cfg];
                 // Add the validateKey if we are the channel creator and we have a validateKey
-                msg.push(validateKey);
-                msg.push(lastKnownHash);
                 if (hk) { network.sendto(hk, JSON.stringify(msg)); }
             } else {
                 onRdy();
