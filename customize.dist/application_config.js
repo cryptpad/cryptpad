@@ -65,7 +65,7 @@ define(function() {
         contacts: 'fa-users',
     };
 
-    config.displayCreationScreen = true;
+    config.displayCreationScreen = false;
 
     return config;
 });
