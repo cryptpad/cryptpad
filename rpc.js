@@ -540,9 +540,8 @@ var addPinned = function (
 {
     Env.evPinnedPadsReady.reg(() => {
         channelList.forEach((c) => {
-            const x = Env.pinnedPads[c];
-            if (!x) { return; }
-            delete x[publicKey];
+            const x = Env.pinnedPads[c] = Env.pinnedPads[c] || {};
+            x[publicKey] = 1;
         });
         cb();
     });

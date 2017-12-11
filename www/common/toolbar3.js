@@ -719,7 +719,7 @@ define([
         return $titleContainer;
     };
 
-    var createUnpinnedWarning = function (toolbar, config) {
+    var createUnpinnedWarning0 = function (toolbar, config) {
         if (Common.isLoggedIn()) { return; }
         var pd = config.metadataMgr.getPrivateData();
         var o = pd.origin;
@@ -728,15 +728,46 @@ define([
         var cid = Hash.hrefToHexChannelId(url);
         Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
             if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
-            if (x.response[0] === true) { return; }
-            var msg = $('<span>', {
-                'class': 'cp-pad-not-pinned',
-            }).append(
-                Messages._getKey('padNotPinned', [o + '/login', o + '/register'])
-            );
-            $('.cp-toolbar-title').append(msg);
-            console.log("This pad is not pinned");
+            if (x.response[0] === true) {
+                $('.cp-pad-not-pinned').remove();
+                return;
+            }
+            if ($('.cp-pad-not-pinned').length) { return; }
+            var pnpTitle = Messages._getKey('padNotPinned', ['','','','']);
+            var pnpMsg = Messages._getKey('padNotPinned', [
+                '<a href="' + o + '/login" class="cp-pnp-login" target="blank" title>',
+                '</a>',
+                '<a href="' + o + '/register" class="cp-pnp-register" target="blank" title>',
+                '</a>'
+            ]);
+            var $msg = $('<span>', {
+                'class': 'cp-pad-not-pinned'
+            }).append([
+                $('<span>', {'class': 'fa fa-exclamation-triangle', 'title': pnpTitle}),
+                $('<span>', {'class': 'cp-pnp-msg'}).append(pnpMsg)
+            ]);
+            $msg.find('a.cp-pnp-login').click(function (ev) {
+                ev.preventDefault();
+                Common.setLoginRedirect(function () {
+                    window.parent.location = o + '/login/';
+                });
+            });
+            $msg.find('a.cp-pnp-register').click(function (ev) {
+                ev.preventDefault();
+                Common.setLoginRedirect(function () {
+                    window.parent.location = o + '/register/';
+                });
+            });
+            $('.cp-toolbar-top').append($msg);
+            UI.addTooltips();
         });
+    };
+
+    var createUnpinnedWarning = function (toolbar, config) {
+        config.metadataMgr.onChange(function () {
+            createUnpinnedWarning0(toolbar, config);
+        });
+        createUnpinnedWarning0(toolbar, config);
     };
 
     var createPageTitle = function (toolbar, config) {

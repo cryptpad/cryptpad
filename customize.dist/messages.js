@@ -93,7 +93,7 @@ define(req, function(Util, Default, Language) {
         var text = messages[key];
         if (typeof(text) === 'string') {
             return text.replace(/\{(\d+)\}/g, function (str, p1) {
-                return argArray[p1] || null;
+                return typeof(argArray[p1]) === 'string' ? argArray[p1] : '';
             });
         } else {
             return text;

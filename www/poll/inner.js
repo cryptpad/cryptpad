@@ -1079,7 +1079,16 @@ define([
         Title = common.createTitle(titleCfg);
 
         var configTb = {
-            displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
+            displayed: [
+                'userlist',
+                'title',
+                'useradmin',
+                'spinner',
+                'newpad',
+                'share',
+                'limit',
+                'unpinnedWarning'
+            ],
             title: Title.getTitleConfig(),
             metadataMgr: metadataMgr,
             readOnly: APP.readOnly,
