@@ -617,7 +617,6 @@ define([
                 updateMeta();
 
                 var rtConfig = {};
-                console.log(edPublic);
                 if (data.owned) {
                     //rtConfig.owners = [edPublic];
                 }
@@ -636,7 +635,6 @@ define([
                     return;
                 }
                 // Start realtime outside the iframe and callback
-                console.log(data);
                 startRealtime(rtConfig);
                 cb();
             });

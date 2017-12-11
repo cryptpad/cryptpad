@@ -278,7 +278,7 @@ define([
                 }
             }
 
-            if (newPad) {
+            if (newPad && !AppConfig.displayCreationScreen) {
                 common.openTemplatePicker();
             }
         };
