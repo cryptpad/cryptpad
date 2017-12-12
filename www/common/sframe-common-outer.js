@@ -150,6 +150,7 @@ define([
             if (!secret.keys) {
                 isNewHash = false;
                 secret.keys = secret.key;
+                readOnly = false;
             }
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
