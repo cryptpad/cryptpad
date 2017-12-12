@@ -137,7 +137,8 @@ define([
         var secret = Hash.parsePadUrl('/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
         return cb(secret.hashData.channel === "67b8385b07352be53e40746d2be6ccd7" &&
             secret.hashData.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
-            secret.hashData.version === 0);
+            secret.hashData.version === 0 &&
+            typeof(secret.hashData.getURL) === 'function');
     }, "Old hash failed to parse");
 
     // make sure version 1 hashes parse correctly
