@@ -26,4 +26,5 @@ addons:
   sauce_connect:
     username: "cjdelisle"
     access_key:
-      secure: "pgGh8YGXLPq6fpdwwK2jnjRtwXPbVWQ/HIFvwX7E6HBpzxxcF2edE8sCdonWW9TP2LQisZFmVLqoSnZWMnjBr2CBAMKMFvaHQDJDQCo4v3BXkID7KgqyKmNcwW+FPfSJ5MxNBro8/GE/awkhZzJLYGUTS5zi/gVuIUwdi6cHI8s="
+      secure: "pgGh8YGXLPq6fpdwwK2jnjRtwXPbVWQ/HIFvwX7E6HBpzxxcF2edE8sCdonWW9TP2LQisZFmVLqoSnZWMnjBr2CBAMKMFvaHQDJDQCo4v3BXkID7KgqyKmNcwW+FPfSJ5MxNBro8/GE/awkhZzJLYGUTS5zi/gVuIUwdi6cHI8s="i
+    tunnel_domains: localhost
