@@ -138,7 +138,6 @@ define([
             // Check if the pad exists on server
             if (!window.location.hash) { isNewFile = true; return; }
             Cryptpad.getFileSize(window.location.href, waitFor(function (err, size) {
-                console.log(size);
                 if (size) {
                     isNewFile = false;
                     return;
@@ -146,9 +145,12 @@ define([
                 isNewFile = true;
             }));
         }).nThen(function () {
-            console.log(isNewFile);
             var readOnly = secret.keys && !secret.keys.editKeyStr;
-            if (!secret.keys) { secret.keys = secret.key; }
+            var isNewHash = true;
+            if (!secret.keys) {
+                isNewHash = false;
+                secret.keys = secret.key;
+            }
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
@@ -581,6 +583,7 @@ define([
                     channel: secret.channel,
                     padRpc: Cryptpad.padRpc,
                     validateKey: secret.keys.validateKey || undefined,
+                    isNewHash: isNewHash,
                     readOnly: readOnly,
                     crypto: Crypto.createEncryptor(secret.keys),
                     onConnect: function (wc) {

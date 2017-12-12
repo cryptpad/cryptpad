@@ -24,6 +24,7 @@ define([], function () {
         var channel = conf.channel;
         var Crypto = conf.crypto;
         var validateKey = conf.validateKey;
+        var isNewHash = conf.isNewHash;
         var readOnly = conf.readOnly || false;
         var padRpc = conf.padRpc;
         var sframeChan = conf.sframeChan;
@@ -40,7 +41,7 @@ define([], function () {
         // shim between chainpad and netflux
         var msgIn = function (msg) {
             try {
-                var decryptedMsg = Crypto.decrypt(msg, validateKey);
+                var decryptedMsg = Crypto.decrypt(msg, isNewHash);
                 return decryptedMsg;
             } catch (err) {
                 console.error(err);
