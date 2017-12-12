@@ -4,18 +4,17 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-messaging.js',
-    '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/outer/store-rpc.js',
 
-    '/common/pinpad.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Realtime, Constants, Feedback, LocalStore, AStore,
-            Pinpad, AppConfig, Nthen) {
+            Messaging, Constants, Feedback, LocalStore, AStore,
+            AppConfig, Nthen) {
+
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
