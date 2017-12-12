@@ -1057,11 +1057,9 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         }
     };
 
-    var rpc = function (
-        ctx /*:{ store: Object }*/,
-        data /*:Array<Array<any>>*/,
-        respond /*:(?string, ?Array<any>)=>void*/)
-    {
+    var rpc0 = function (ctx, data, respond) {
+        if (!Env.msgStore) { Env.msgStore = ctx.store; }
+
         if (!Array.isArray(data)) {
             return void respond('INVALID_ARG_FORMAT');
         }
@@ -1139,8 +1137,6 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         var deny = function () {
             Respond('E_ACCESS_DENIED');
         };
-
-        if (!Env.msgStore) { Env.msgStore = ctx.store; }
 
         var handleMessage = function (privileged) {
             if (config.logRPC) { console.log(msg[0]); }
@@ -1270,6 +1266,19 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
 
         // if authenticated, proceed
         handleMessage(session.privilege);
+    };
+
+    var rpc = function (
+        ctx /*:{ store: Object }*/,
+        data /*:Array<Array<any>>*/,
+        respond /*:(?string, ?Array<any>)=>void*/)
+    {
+        try {
+            return rpc0(ctx, data, respond);
+        } catch (e) {
+            console.log("Error from RPC with data " + JSON.stringify(data));
+            console.log(e.stack);
+        }
     };
 
     var updateLimitDaily = function () {
