@@ -253,6 +253,13 @@ define([
                 newContent = normalize(newContent);
                 contentUpdate(newContent);
             } else {
+                if (!cpNfInner.metadataMgr.getPrivateData().isNewFile) {
+                    // We're getting 'new pad' but there is an existing file
+                    // We don't know exactly why this can happen but under no circumstances
+                    // should we overwrite the content, so lets just try again.
+                    common.gotoURL();
+                    return;
+                }
                 console.log('updating title');
                 title.updateTitle(title.defaultTitle);
                 evOnDefaultContentNeeded.fire();

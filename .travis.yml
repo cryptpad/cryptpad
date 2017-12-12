@@ -22,8 +22,3 @@ before_script:
   - ./node_modules/bower/bin/bower install
   - node ./server.js &
   - sleep 2
-addons:
-  sauce_connect:
-    username: "cjdelisle"
-    access_key:
-      secure: "pgGh8YGXLPq6fpdwwK2jnjRtwXPbVWQ/HIFvwX7E6HBpzxxcF2edE8sCdonWW9TP2LQisZFmVLqoSnZWMnjBr2CBAMKMFvaHQDJDQCo4v3BXkID7KgqyKmNcwW+FPfSJ5MxNBro8/GE/awkhZzJLYGUTS5zi/gVuIUwdi6cHI8s="
