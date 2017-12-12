@@ -837,6 +837,7 @@ define([
         var proxy = store.proxy;
         var userObject = store.userObject = UserObject.init(proxy.drive, {
             pinPads: Store.pinPads,
+            unpinPads: Store.unpinPads,
             loggedIn: store.loggedIn,
             log: function (msg) {
                 postMessage("DRIVE_LOG", msg);
