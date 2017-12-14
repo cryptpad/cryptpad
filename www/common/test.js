@@ -1,7 +1,7 @@
 define([], function () {
     var out = function () { };
     out.passed = out.failed = out;
-    if (window.location.hash.indexOf("?test=test") > -1) {
+    if (window.location.hash.indexOf("test=auto") > -1) {
         var cpt = window.__CRYPTPAD_TEST__ = {
             data: [],
             getData: function () {
@@ -68,8 +68,43 @@ define([], function () {
                 error: { message: e.message, stack: e.stack }
             });
         };
+
+        out.registerInner = function (sframeChan) {
+            sframeChan.whenReg('EV_TESTDATA', function () {
+                cpt.data.forEach(function (x) { sframeChan.fire('EV_TESTDATA', x); });
+                // override cpt.data.push() with a function which will send the content to the
+                // outside where it will go on the outer window cpt.data array.
+                cpt = window.__CRYPTPAD_TEST__ = {
+                    data: {
+                        push: function (elem) {
+                            sframeChan.fire('EV_TESTDATA', elem);
+                        }
+                    },
+                    getData: function () {
+                        throw new Error('getData should never be called from the inside');
+                    }
+                };
+            });
+        };
+        out.registerOuter = function (sframeChan) {
+            sframeChan.on('EV_TESTDATA', function (data) { cpt.data.push(data); });
+        };
+
+    } else if (window.location.hash.indexOf("test=manual") > -1) {
+        out = function (f) { f(); };
+        out.testing = true;
+        out.passed = function () {
+            window.alert("Test passed");
+        };
+        out.failed = function (reason) {
+            window.alert("Test failed [" + reason + "]");
+        };
+        out.registerInner = function () { };
+        out.registerOuter = function () { };
     } else {
         out.testing = false;
+        out.registerInner = function () { };
+        out.registerOuter = function () { };
     }
     return out;
 });

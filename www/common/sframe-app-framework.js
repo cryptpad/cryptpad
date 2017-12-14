@@ -12,6 +12,7 @@ define([
     '/common/common-feedback.js',
     '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/common/test.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -30,7 +31,8 @@ define([
     Thumb,
     Feedback,
     AppConfig,
-    ChainPad)
+    ChainPad,
+    Test)
 {
     var SaveAs = window.saveAs;
 
@@ -383,6 +385,10 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
+            if (common.getMetadataMgr().getPrivateData().isTesting) {
+                Test.registerInner(common.getSframeChannel());
+            }
+
             if (!AppConfig.displayCreationScreen) { return; }
             if (common.getMetadataMgr().getPrivateData().isNewFile) {
                 common.getPadCreationScreen(waitFor());
