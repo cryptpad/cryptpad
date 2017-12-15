@@ -13,6 +13,9 @@ define([
     };
 
     module.init = function (config, exp, files) {
+        var unpinPads = config.unpinPads || function () {
+            console.error("unpinPads was not provided");
+        };
         var pinPads = config.pinPads;
         var loggedIn = config.loggedIn;
         var workgroup = config.workgroup;
@@ -83,10 +86,20 @@ define([
             if (workgroup || (!loggedIn && !config.testMode)) { return; }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
+            var toClean = [];
             exp.getFiles([FILES_DATA]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
+                    var fd = exp.getFileData(id);
+                    if (fd && fd.href) {
+                        toClean.push(Hash.hrefToHexChannelId(fd.href));
+                    }
                     spliceFileData(id);
                 }
+            });
+            if (!toClean.length) { return; }
+            unpinPads(toClean, function (response) {
+                if (response && response.error) { return console.error(response.error); }
+                // console.error(response);
             });
         };
         var deleteHrefs = function (ids) {
