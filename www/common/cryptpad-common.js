@@ -464,6 +464,11 @@ define([
     common.onNetworkDisconnect = Util.mkEvent();
     common.onNetworkReconnect = Util.mkEvent();
 
+    // Messaging
+    var messaging = common.messaging = {};
+    messaging.onFriendRequest = Util.mkEvent();
+    messaging.onFriendComplete = Util.mkEvent();
+
     // Messenger
     var messenger = common.messenger = {};
     messenger.getFriendList = function (cb) {
@@ -600,13 +605,11 @@ define([
                 break;
             }
             case 'Q_FRIEND_REQUEST': {
-                if (!common.onFriendRequest) { break; }
-                common.onFriendRequest(data, cb);
+                common.messaging.onFriendRequest.fire(data, cb);
                 break;
             }
             case 'EV_FRIEND_COMPLETE': {
-                if (!common.onFriendComplete) { break; }
-                common.onFriendComplete(data);
+                common.messaging.onFriendComplete.fire(data);
                 break;
             }
             // Network
