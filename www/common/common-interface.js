@@ -55,6 +55,7 @@ define([
     };
 
     var stopListening = UI.stopListening = function (handler) {
+        if (!handler) { return; } // we don't want to stop all the 'keyup' listeners
         $(window).off('keyup', handler);
     };
 
@@ -210,7 +211,7 @@ define([
         var $cancel = findCancelButton(tagger).click(function (e) {
             close(null, e);
         });
-        listenForKeys(function () {
+        listener = listenForKeys(function () {
             $ok.click();
         }, function () {
             $cancel.click();
