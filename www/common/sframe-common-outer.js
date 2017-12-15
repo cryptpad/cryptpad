@@ -307,17 +307,16 @@ define([
             });
 
             sframeChan.on('Q_SEND_FRIEND_REQUEST', function (netfluxId, cb) {
-                Messaging.inviteFromUserlist(Cryptpad, netfluxId);
-                cb();
+                Cryptpad.inviteFromUserlist(netfluxId, cb);
             });
-            Cryptpad.onFriendRequest = function (confirmText, cb) {
+            Cryptpad.messaging.onFriendRequest.reg(function (confirmText, cb) {
                 sframeChan.query('Q_INCOMING_FRIEND_REQUEST', confirmText, function (err, data) {
                     cb(data);
                 });
-            };
-            Cryptpad.onFriendComplete = function (data) {
+            });
+            Cryptpad.messaging.onFriendComplete.reg(function (data) {
                 sframeChan.event('EV_FRIEND_REQUEST', data);
-            };
+            });
 
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                 var crypto = Crypto.createEncryptor(secret.keys);

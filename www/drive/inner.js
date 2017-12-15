@@ -2233,6 +2233,9 @@ define([
             appStatus.ready(true);
         };
         var displayDirectory = APP.displayDirectory = function (path, force) {
+            if (history.isHistoryMode) {
+                return void _displayDirectory(path, force);
+            }
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
                 _displayDirectory(path, force);
@@ -2635,6 +2638,10 @@ define([
             APP.hideMenu();
         });
 
+        if (!APP.loggedIn) {
+            $defaultContextMenu.find('.cp-app-drive-context-delete').text(Messages.fc_remove)
+                .attr('data-icon', 'fa-eraser');
+        }
         $defaultContextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $(this).data('paths');
@@ -2902,14 +2909,12 @@ define([
         });
 
         history.onEnterHistory = function (obj) {
-            var files = obj.drive;
-            filesOp = FO.init(files, config);
+            copyObjectValue(files, obj.drive);
             appStatus.isReady = true;
             refresh();
         };
         history.onLeaveHistory = function () {
-            var files = proxy.drive;
-            filesOp = FO.init(files, config);
+            copyObjectValue(files, proxy.drive);
             refresh();
         };
 

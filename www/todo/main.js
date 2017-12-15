@@ -40,7 +40,7 @@ define([
             Cryptpad.getTodoHash(function (hash) {
                 var nHash = hash || Utils.Hash.createRandomHash();
                 if (!hash) { Cryptpad.setTodoHash(nHash); }
-                cb(null, Utils.Hash.getSecrets('todo', hash));
+                cb(null, Utils.Hash.getSecrets('todo', nHash));
             });
         };
         SFCommonO.start({

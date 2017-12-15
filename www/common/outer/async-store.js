@@ -616,11 +616,11 @@ define([
                 postMessage("UPDATE_METADATA");
             },
             pinPads: Store.pinPads,
-            friendComplete: function (data, cb) {
-                postMessage("Q_FRIEND_COMPLETE", data, cb);
+            friendComplete: function (data) {
+                postMessage("EV_FRIEND_COMPLETE", data);
             },
-            friendRequest: function (data) {
-                postMessage("EV_FRIEND_REQUEST", data);
+            friendRequest: function (data, cb) {
+                postMessage("Q_FRIEND_REQUEST", data, cb);
             },
         };
     };
