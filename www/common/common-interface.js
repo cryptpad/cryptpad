@@ -1,4 +1,4 @@
-define([
+/efine([
     'jquery',
     '/customize/messages.js',
     '/common/common-util.js',
@@ -130,10 +130,19 @@ define([
             element: target || h('input'),
         };
         var $t = t.tokenfield = $(t.element).tokenfield();
-        t.getTokens = function () {
-            return $t.tokenfield('getTokens').map(function (token) {
+
+        t.getTokens = function (ignorePending) {
+            var tokens = $t.tokenfield('getTokens').map(function (token) {
                 return token.value.toLowerCase();
             });
+            if (ignorePending) { return tokens; }
+
+            var $pendingEl = $($t.parent().find('.token-input')[0]);
+            var val = ($pendingEl.val() || "").trim();
+            if (val && tokens.indexOf(val) === -1) {
+                return tokens.concat(val);
+            }
+            return tokens;
         };
 
         var $root = $t.parent();
@@ -145,7 +154,7 @@ define([
             $t.on('tokenfield:createtoken', function (ev) {
                 var val;
                 ev.attrs.value = ev.attrs.value.toLowerCase();
-                if (t.getTokens().some(function (t) {
+                if (t.getTokens(true).some(function (t) {
                     if (t === ev.attrs.value) { return ((val = t)); }
                 })) {
                     ev.preventDefault();
