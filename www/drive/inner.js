@@ -2638,6 +2638,10 @@ define([
             APP.hideMenu();
         });
 
+        if (!APP.loggedIn) {
+            $defaultContextMenu.find('.cp-app-drive-context-delete').text(Messages.fc_remove)
+                .attr('data-icon', 'fa-eraser');
+        }
         $defaultContextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $(this).data('paths');

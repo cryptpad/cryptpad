@@ -342,6 +342,7 @@ define([
         };
 
         var createFilePicker = function () {
+            if (!common.isLoggedIn()) { return; }
             common.initFilePicker({
                 onSelect: function (data) {
                     if (data.type !== 'file') {
@@ -369,6 +370,7 @@ define([
             }).appendTo(toolbar.$rightside).hide();
         };
         var setMediaTagEmbedder = function (mte) {
+            if (!common.isLoggedIn()) { return; }
             if (!mte || readOnly) {
                 $embedButton.hide();
                 return;
