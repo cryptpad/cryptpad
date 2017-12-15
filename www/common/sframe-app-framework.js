@@ -290,6 +290,12 @@ define([
             if (newPad && !AppConfig.displayCreationScreen) {
                 common.openTemplatePicker();
             }
+
+            if (Test.testing) {
+                cpNfInner.chainpad.onSettle(function () {
+                    Test.passed();
+                });
+            }
         };
         var onConnectionChange = function (info) {
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);
@@ -385,10 +391,7 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
-            if (common.getMetadataMgr().getPrivateData().isTesting) {
-                Test.registerInner(common.getSframeChannel());
-            }
-
+            Test.registerInner(common.getSframeChannel());
             if (!AppConfig.displayCreationScreen) { return; }
             if (common.getMetadataMgr().getPrivateData().isNewFile) {
                 common.getPadCreationScreen(waitFor());
