@@ -20,7 +20,9 @@ if (process.env.SAUCE_USERNAME !== undefined) {
         "accessKey": process.env.SAUCE_ACCESS_KEY,
     }).forBrowser(browserArray[0], browserArray[1], browserArray[2]).build();
 } else {
-    driver = new WebDriver.Builder().withCapabilities({ browserName: "chrome" }).build();
+    driver = new WebDriver.Builder().withCapabilities({
+        browserName: process.env.BROWSER || "chrome"
+    }).build();
 }
 
 var SC_GET_DATA = "return (window.__CRYPTPAD_TEST__) ? window.__CRYPTPAD_TEST__.getData() : '[]'";

@@ -291,11 +291,11 @@ define([
                 common.openTemplatePicker();
             }
 
-            if (Test.testing) {
+            Test(function () {
                 cpNfInner.chainpad.onSettle(function () {
                     Test.passed();
                 });
-            }
+            });
         };
         var onConnectionChange = function (info) {
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);
