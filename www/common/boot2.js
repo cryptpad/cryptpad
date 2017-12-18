@@ -22,24 +22,6 @@ define([
     }
 
     var failStore = function () {
-        if (document.cookie.indexOf('test=') === 0) {
-            // We're testing in safari and safaridriver runs everything in a private window
-            // However, for our tests nothing lasts more than a single page load so we can
-            // stub the localStorage
-
-            // This is shamelessly copy/pasted from sframe-boot2.js :(
-            var mkFakeStore = function () {
-                var fakeStorage = {
-                    getItem: function (k) { return fakeStorage[k]; },
-                    setItem: function (k, v) { fakeStorage[k] = v; return v; },
-                    removeItem: function (k) { delete fakeStorage[k]; }
-                };
-                return fakeStorage;
-            };
-            window.__defineGetter__('localStorage', function () { return mkFakeStore(); });
-            window.__defineGetter__('sessionStorage', function () { return mkFakeStore(); });
-            return;
-        }
         console.error(new Error('wut'));
         require(['jquery'], function ($) {
             $.ajax({
