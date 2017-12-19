@@ -51,12 +51,9 @@ run('npm', ['install'], () => {
     const nThen = require('nthen');
     nThen((waitFor) => {
         if (process.platform === 'darwin') {
-            run('bash', [
-                'ps', '-ef', '|' ,
-                'grep', '-v', 'grep', '|',
-                'grep', 'Google Chrome.app/Contents/MacOS/Google Chrome', '|',
-                'awk', '{print $2}', '|',
-                'while', 'read', 'x;', 'do', 'kill', '$x;', 'done'
+            run('bash', ['-c',
+                'ps -ef | grep -v grep | grep \'Google Chrome.app/Contents/MacOS/Google Chrome\'' +
+                ' | awk \'{print $2}\' | while read x; do kill $x; done'
             ], waitFor());
         }
     }).nThen((waitFor) => {
