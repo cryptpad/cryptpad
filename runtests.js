@@ -1,4 +1,4 @@
-// jshint esversion: 6
+// jshint esversion: 6, browser: false, node: true
 // This file is for automated testing, it should probably not be invoked for any other purpose.
 // It will:
 // 1. npm install
@@ -53,7 +53,5 @@ run('npm', ['install'], () => {
     }).nThen((waitFor) => {
         run('npm', ['run', 'fresh'], ()=>{});
         run('node', ['./TestSelenium.js'], waitFor());
-    }).nThen((waitFor) => {
-        killAll();
-    });
+    }).nThen(killAll);
 });
