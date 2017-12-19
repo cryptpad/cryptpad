@@ -259,9 +259,11 @@ define([
                     // We're getting 'new pad' but there is an existing file
                     // We don't know exactly why this can happen but under no circumstances
                     // should we overwrite the content, so lets just try again.
-                    console.log("userDoc is '' but this is not a new pad, something is " +
-                        "terribly wrong, reloading.");
-                    common.gotoURL();
+                    console.log("userDoc is '' but this is not a new pad.");
+                    console.log("Either this is an empty document which has not been touched");
+                    console.log("Or else something is terribly wrong, reloading.");
+                    Feedback.send("NON_EMPTY_NEWDOC");
+                    setTimeout(function () { common.gotoURL(); }, 1000);
                     return;
                 }
                 console.log('updating title');
