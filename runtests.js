@@ -55,6 +55,11 @@ run('npm', ['install'], () => {
                 'ps -ef | grep -v grep | grep \'Google Chrome.app/Contents/MacOS/Google Chrome\'' +
                 ' | awk \'{print $2}\' | while read x; do kill $x; done'
             ], waitFor());
+
+            run('bash', ['-c',
+                'ps -ef | grep -v grep | grep \'/usr/bin/safaridriver\'' +
+                ' | awk \'{print $2}\' | while read x; do kill $x; done'
+            ], waitFor());
         }
     }).nThen((waitFor) => {
         run('bower', ['install'], waitFor());
