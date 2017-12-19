@@ -8,13 +8,14 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/common-messenger.js',
+    '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
 
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
 ], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             NetConfig,
+             CpNfWorker, NetConfig,
              Crypto, ChainPad, Listmap) {
     var Store = {};
 
@@ -95,7 +96,6 @@ define([
     var getCanonicalChannelList = function () {
         return Util.deduplicateString(getUserChannelList()).sort();
     };
-
     //////////////////////////////////////////////////////////////////
     /////////////////////// RPC //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
@@ -264,7 +264,6 @@ define([
     };
 
     Store.getFileSize = function (data, cb) {
-        console.log(data, cb);
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
 
         var channelId = Hash.hrefToHexChannelId(data.href);
@@ -617,11 +616,11 @@ define([
                 postMessage("UPDATE_METADATA");
             },
             pinPads: Store.pinPads,
-            friendComplete: function (data, cb) {
-                postMessage("Q_FRIEND_COMPLETE", data, cb);
+            friendComplete: function (data) {
+                postMessage("EV_FRIEND_COMPLETE", data);
             },
-            friendRequest: function (data) {
-                postMessage("EV_FRIEND_REQUEST", data);
+            friendRequest: function (data, cb) {
+                postMessage("Q_FRIEND_REQUEST", data, cb);
             },
         };
     };
@@ -715,11 +714,134 @@ define([
         }
     };
 
+    //////////////////////////////////////////////////////////////////
+    /////////////////////// PAD //////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+
+    // TODO with sharedworker
+    // channel will be an object storing the webchannel associated to each browser tab
+    var channel = {
+        queue: []
+    };
+    Store.joinPad = function (data, cb) {
+        var conf = {
+            onReady: function () {
+                postMessage("PAD_READY");
+            }, // post EV_PAD_READY
+            onMessage: function (m) {
+                postMessage("PAD_MESSAGE", m);
+            }, // post EV_PAD_MESSAGE
+            onJoin: function (m) {
+                postMessage("PAD_JOIN", m);
+            }, // post EV_PAD_JOIN
+            onLeave: function (m) {
+                postMessage("PAD_LEAVE", m);
+            }, // post EV_PAD_LEAVE
+            onDisconnect: function () {
+                postMessage("PAD_DISCONNECT");
+            }, // post EV_PAD_DISCONNECT
+            channel: data.channel,
+            validateKey: data.validateKey,
+            owners: data.owners,
+            password: data.password,
+            expire: data.expire,
+            network: store.network,
+            readOnly: data.readOnly,
+            onConnect: function (wc, sendMessage) {
+                channel.sendMessage = sendMessage;
+                channel.wc = wc;
+                channel.queue.forEach(function (data) {
+                    sendMessage(data.message);
+                });
+                cb({
+                    myID: wc.myID,
+                    id: wc.id,
+                    members: wc.members
+                });
+            }
+        };
+        CpNfWorker.start(conf);
+    };
+    Store.sendPadMsg = function (data, cb) {
+        if (!channel.wc) { channel.queue.push(data); }
+        channel.sendMessage(data, cb);
+    };
+
+    // TODO
+    // GET_FULL_HISTORY from sframe-common-outer
+    Store.getFullHistory = function (data, cb) {
+        var network = store.network;
+        var hkn = network.historyKeeper;
+        //var crypto = Crypto.createEncryptor(data.keys);
+        // Get the history messages and send them to the iframe
+        var parse = function (msg) {
+            try {
+                return JSON.parse(msg);
+            } catch (e) {
+                return null;
+            }
+        };
+        var msgs = [];
+        var onMsg = function (msg) {
+            var parsed = parse(msg);
+            if (parsed[0] === 'FULL_HISTORY_END') {
+                cb(msgs);
+                return;
+            }
+            if (parsed[0] !== 'FULL_HISTORY') { return; }
+            if (parsed[1] && parsed[1].validateKey) { // First message
+                return;
+            }
+            if (parsed[1][3] !== data.channel) { return; }
+            msg = parsed[1][4];
+            if (msg) {
+                msg = msg.replace(/^cp\|/, '');
+                //var decryptedMsg = crypto.decrypt(msg, true);
+                msgs.push(msg);
+            }
+        };
+        network.on('message', onMsg);
+        network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
+    };
+
+    // TODO with sharedworker
+    // when the tab is closed, leave the pad
+
+    // Drive
+    Store.userObjectCommand = function (cmdData, cb) {
+        if (!cmdData || !cmdData.cmd) { return; }
+        var data = cmdData.data;
+        switch (cmdData.cmd) {
+            case 'move':
+                store.userObject.move(data.paths, data.newPath, cb); break;
+            case 'restore':
+                store.userObject.restore(data.path, cb); break;
+            case 'addFolder':
+                store.userObject.addFolder(data.path, data.name, cb); break;
+            case 'delete':
+                store.userObject.delete(data.paths, cb, data.nocheck); break;
+            case 'emptyTrash':
+                store.userObject.emptyTrash(cb); break;
+            case 'rename':
+                store.userObject.rename(data.path, data.newName, cb); break;
+            default:
+                cb();
+        }
+    };
+
+    //////////////////////////////////////////////////////////////////
+    /////////////////////// Init /////////////////////////////////////
+    //////////////////////////////////////////////////////////////////
+
     var onReady = function (returned, cb) {
         var proxy = store.proxy;
         var userObject = store.userObject = UserObject.init(proxy.drive, {
             pinPads: Store.pinPads,
-            loggedIn: store.loggedIn
+            unpinPads: Store.unpinPads,
+            loggedIn: store.loggedIn,
+            log: function (msg) {
+                postMessage("DRIVE_LOG", msg);
+            }
         });
         var todo = function () {
             userObject.fixFiles();
@@ -811,7 +933,7 @@ define([
             ChainPad: ChainPad,
             classic: true,
         };
-        var rt = Listmap.create(listmapConfig);
+        var rt = window.rt = Listmap.create(listmapConfig);
         store.proxy = rt.proxy;
         store.loggedIn = typeof(data.userHash) !== "undefined";
 
@@ -840,7 +962,15 @@ define([
             if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
                 rt.network.disconnect();
                 rt.realtime.abort();
+                postMessage('NETWORK_DISCONNECT');
             }
+        });
+
+        rt.proxy.on('disconnect', function () {
+            postMessage('NETWORK_DISCONNECT');
+        });
+        rt.proxy.on('reconnect', function (info) {
+            postMessage('NETWORK_RECONNECT', {myId: info.myId});
         });
     };
 
@@ -858,7 +988,8 @@ define([
     Store.init = function (data, callback) {
         if (initialized) {
             return void callback({
-                error: 'ALREADY_INIT'
+                state: 'ALREADY_INIT',
+                returned: store.returned
             });
         }
         initialized = true;
@@ -873,14 +1004,32 @@ define([
             if (Object.keys(store.proxy).length === 1) {
                 Feedback.send("FIRST_APP_USE", true);
             }
+            store.returned = ret;
 
             callback(ret);
 
             var messagingCfg = getMessagingCfg();
             Messaging.addDirectMessageHandler(messagingCfg);
 
+            // Send events whenever there is a change or a removal in the drive
+            if (data.driveEvents) {
+                store.proxy.on('change', [], function (o, n, p) {
+                    postMessage('DRIVE_CHANGE', {
+                        old: o,
+                        new: n,
+                        path: p
+                    });
+                });
+                store.proxy.on('remove', [], function (o, p) {
+                    postMessage('DRIVE_REMOVE', {
+                        old: o,
+                        path: p
+                    });
+                });
+            }
+
             if (data.messenger) {
-                var messenger = store.messenger = Messenger.messenger(store); // TODO
+                var messenger = store.messenger = Messenger.messenger(store);
                 messenger.on('message', function (message) {
                     postMessage('CONTACTS_MESSAGE', message);
                 });

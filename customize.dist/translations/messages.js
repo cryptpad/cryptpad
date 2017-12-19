@@ -31,6 +31,7 @@ define(function () {
     out.typeError = "This pad is not compatible with the selected application";
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
+    out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -785,6 +786,25 @@ define(function () {
     out.feedback_about = "If you're reading this, you were probably curious why CryptPad is requesting web pages when you perform certain actions";
     out.feedback_privacy = "We care about your privacy, and at the same time we want CryptPad to be very easy to use.  We use this file to figure out which UI features matter to our users, by requesting it along with a parameter specifying which action was taken.";
     out.feedback_optout = "If you would like to opt out, visit <a href='/settings/'>your user settings page</a>, where you'll find a checkbox to enable or disable user feedback";
+
+    // Creation page
+    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad";
+    out.creation_ownedTitle = "Type of pad";
+    out.creation_ownedTrue = "Owned pad";
+    out.creation_ownedFalse = "Open pad";
+    out.creation_owned1 = "An <b>owned</b> pad is a pad that you can delete from the server whenever you want. Once it is deleted, no one else can access it, even if it is stored in their CryptDrive.";
+    out.creation_owned2 = "An <b>open</b> pad doesn't have any owner and thus, it can't be deleted from the server unless it has reached its expiration time.";
+    out.creation_expireTitle = "Life time";
+    out.creation_expireTrue = "Add a life time";
+    out.creation_expireFalse = "Unlimited";
+    out.creation_expireHours = "Hours";
+    out.creation_expireDays = "Days";
+    out.creation_expireMonths = "Months";
+    out.creation_expire1 = "By default, a pad stored by a registered users will never be removed from the server, unless it is requested by its owner.";
+    out.creation_expire2 = "If you prefer, you can set a life time to make sure the pad will be permanently deleted from the server and unavailable after the specified date.";
+    out.creation_createTitle = "Create a pad";
+    out.creation_createFromTemplate = "From template";
+    out.creation_createFromScratch = "From scratch";
 
     return out;
 });

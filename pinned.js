@@ -1,0 +1,74 @@
+/* jshint esversion: 6, node: true */
+const Fs = require('fs');
+const Semaphore = require('saferphore');
+const nThen = require('nthen');
+
+const sema = Semaphore.create(20);
+
+let dirList;
+const fileList = [];
+const pinned = {};
+
+const hashesFromPinFile = (pinFile, fileName) => {
+    var pins = {};
+    pinFile.split('\n').filter((x)=>(x)).map((l) => JSON.parse(l)).forEach((l) => {
+        switch (l[0]) {
+            case 'RESET': {
+                pins = {};
+                //jshint -W086
+                // fallthrough
+            }
+            case 'PIN': {
+                l[1].forEach((x) => { pins[x] = 1; });
+                break;
+            }
+            case 'UNPIN': {
+                l[1].forEach((x) => { delete pins[x]; });
+                break;
+            }
+            default: throw new Error(JSON.stringify(l) + '  ' + fileName);
+        }
+    });
+    return Object.keys(pins);
+};
+
+module.exports.load = function (cb) {
+    nThen((waitFor) => {
+        Fs.readdir('./pins', waitFor((err, list) => {
+            if (err) { throw err; }
+            dirList = list;
+        }));
+    }).nThen((waitFor) => {
+        fileList.splice(0, fileList.length);
+        dirList.forEach((f) => {
+            sema.take((returnAfter) => {
+                Fs.readdir('./pins/' + f, waitFor(returnAfter((err, list2) => {
+                    if (err) { throw err; }
+                    list2.forEach((ff) => { fileList.push('./pins/' + f + '/' + ff); });
+                })));
+            });
+        });
+    }).nThen((waitFor) => {
+        fileList.forEach((f) => {
+            sema.take((returnAfter) => {
+                Fs.readFile(f, waitFor(returnAfter((err, content) => {
+                    if (err) { throw err; }
+                    const hashes = hashesFromPinFile(content.toString('utf8'), f);
+                    hashes.forEach((x) => {
+                        (pinned[x] = pinned[x] || {})[f.replace(/.*\/([^/]*).ndjson$/, (x, y)=>y)] = 1;
+                    });
+                })));
+            });
+        });
+    }).nThen(() => {
+        cb(pinned);
+    });
+};
+
+if (!module.parent) {
+    module.exports.load(function (data) {
+        Object.keys(data).forEach(function (x) {
+            console.log(x + ' ' + JSON.stringify(data[x]));
+        });
+    });
+}

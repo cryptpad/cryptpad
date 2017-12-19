@@ -393,7 +393,16 @@ define([
             Title = common.createTitle({});
 
             var configTb = {
-                displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
+                displayed: [
+                    'userlist',
+                    'title',
+                    'useradmin',
+                    'spinner',
+                    'newpad',
+                    'share',
+                    'limit',
+                    'unpinnedWarning'
+                ],
                 title: Title.getTitleConfig(),
                 metadataMgr: metadataMgr,
                 readOnly: readOnly,
@@ -461,36 +470,39 @@ define([
                     .click(function () {
                         $('<input>', {type:'file'}).on('change', onUpload).click();
                     }).appendTo($rightside);
-                var fileDialogCfg = {
-                    onSelect: function (data) {
-                        if (data.type === 'file') {
-                            var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                            common.displayMediatagImage($(mt), function (err, $image) {
-                                Util.blobURLToImage($image.attr('src'), function (imgSrc) {
-                                    var img = new Image();
-                                    img.onload = function () { addImageToCanvas(img); };
-                                    img.src = imgSrc;
+
+                if (common.isLoggedIn()) {
+                    var fileDialogCfg = {
+                        onSelect: function (data) {
+                            if (data.type === 'file') {
+                                var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                                common.displayMediatagImage($(mt), function (err, $image) {
+                                    Util.blobURLToImage($image.attr('src'), function (imgSrc) {
+                                        var img = new Image();
+                                        img.onload = function () { addImageToCanvas(img); };
+                                        img.src = imgSrc;
+                                    });
                                 });
-                            });
-                            return;
-                        }
-                    }
-                };
-                common.initFilePicker(fileDialogCfg);
-                APP.$mediaTagButton = $('<button>', {
-                    title: Messages.filePickerButton,
-                    'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                    style: 'font-size: 17px'
-                }).click(function () {
-                    var pickerCfg = {
-                        types: ['file'],
-                        where: ['root'],
-                        filter: {
-                            fileType: ['image/']
+                                return;
+                            }
                         }
                     };
-                    common.openFilePicker(pickerCfg);
-                }).appendTo($rightside);
+                    common.initFilePicker(fileDialogCfg);
+                    APP.$mediaTagButton = $('<button>', {
+                        title: Messages.filePickerButton,
+                        'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                        style: 'font-size: 17px'
+                    }).click(function () {
+                        var pickerCfg = {
+                            types: ['file'],
+                            where: ['root'],
+                            filter: {
+                                fileType: ['image/']
+                            }
+                        };
+                        common.openFilePicker(pickerCfg);
+                    }).appendTo($rightside);
+                }
             }
 
             metadataMgr.onChange(function () {

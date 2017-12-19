@@ -169,8 +169,13 @@ module.exports = {
      */
     customLimits: {
         /*
-        "https://my.awesome.website/user/#/1/cryptpad-user/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=": {
+        "https://my.awesome.website/user/#/1/cryptpad-user1/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=": {
             limit: 20 * 1024 * 1024 * 1024,
+            plan: 'insider',
+            note: 'storage space donated by my.awesome.website'
+        },
+        "https://my.awesome.website/user/#/1/cryptpad-user2/GdflkgdlkjeworijfkldfsdflkjeEAsdlEnkbx1vVOo=": {
+            limit: 10 * 1024 * 1024 * 1024,
             plan: 'insider',
             note: 'storage space donated by my.awesome.website'
         }

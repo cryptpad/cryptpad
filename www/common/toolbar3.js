@@ -719,6 +719,58 @@ define([
         return $titleContainer;
     };
 
+    var createUnpinnedWarning0 = function (toolbar, config) {
+        if (true) { return; } // stub this call since it won't make it into the next release
+        if (Common.isLoggedIn()) { return; }
+        var pd = config.metadataMgr.getPrivateData();
+        var o = pd.origin;
+        var hashes = pd.availableHashes;
+        var url = pd.origin + pd.pathname + '#' + (hashes.editHash || hashes.viewHash);
+        var cid = Hash.hrefToHexChannelId(url);
+        Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
+            if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
+            if (x.response[0] === true) {
+                $('.cp-pad-not-pinned').remove();
+                return;
+            }
+            if ($('.cp-pad-not-pinned').length) { return; }
+            var pnpTitle = Messages._getKey('padNotPinned', ['','','','']);
+            var pnpMsg = Messages._getKey('padNotPinned', [
+                '<a href="' + o + '/login" class="cp-pnp-login" target="blank" title>',
+                '</a>',
+                '<a href="' + o + '/register" class="cp-pnp-register" target="blank" title>',
+                '</a>'
+            ]);
+            var $msg = $('<span>', {
+                'class': 'cp-pad-not-pinned'
+            }).append([
+                $('<span>', {'class': 'fa fa-exclamation-triangle', 'title': pnpTitle}),
+                $('<span>', {'class': 'cp-pnp-msg'}).append(pnpMsg)
+            ]);
+            $msg.find('a.cp-pnp-login').click(function (ev) {
+                ev.preventDefault();
+                Common.setLoginRedirect(function () {
+                    window.parent.location = o + '/login/';
+                });
+            });
+            $msg.find('a.cp-pnp-register').click(function (ev) {
+                ev.preventDefault();
+                Common.setLoginRedirect(function () {
+                    window.parent.location = o + '/register/';
+                });
+            });
+            $('.cp-toolbar-top').append($msg);
+            UI.addTooltips();
+        });
+    };
+
+    var createUnpinnedWarning = function (toolbar, config) {
+        config.metadataMgr.onChange(function () {
+            createUnpinnedWarning0(toolbar, config);
+        });
+        createUnpinnedWarning0(toolbar, config);
+    };
+
     var createPageTitle = function (toolbar, config) {
         if (config.title || !config.pageTitle) { return; }
         var $titleContainer = $('<span>', {
@@ -1087,6 +1139,7 @@ define([
         tb['upgrade'] = $.noop;
         tb['newpad'] = createNewPad;
         tb['useradmin'] = createUserAdmin;
+        tb['unpinnedWarning'] = createUnpinnedWarning;
 
         var addElement = toolbar.addElement = function (arr, additionnalCfg, init) {
             if (typeof additionnalCfg === "object") { $.extend(true, config, additionnalCfg); }

@@ -253,6 +253,13 @@ define([
                 newContent = normalize(newContent);
                 contentUpdate(newContent);
             } else {
+                if (!cpNfInner.metadataMgr.getPrivateData().isNewFile) {
+                    // We're getting 'new pad' but there is an existing file
+                    // We don't know exactly why this can happen but under no circumstances
+                    // should we overwrite the content, so lets just try again.
+                    common.gotoURL();
+                    return;
+                }
                 console.log('updating title');
                 title.updateTitle(title.defaultTitle);
                 evOnDefaultContentNeeded.fire();
@@ -278,7 +285,7 @@ define([
                 }
             }
 
-            if (newPad) {
+            if (newPad && !AppConfig.displayCreationScreen) {
                 common.openTemplatePicker();
             }
         };
@@ -335,6 +342,7 @@ define([
         };
 
         var createFilePicker = function () {
+            if (!common.isLoggedIn()) { return; }
             common.initFilePicker({
                 onSelect: function (data) {
                     if (data.type !== 'file') {
@@ -362,6 +370,7 @@ define([
             }).appendTo(toolbar.$rightside).hide();
         };
         var setMediaTagEmbedder = function (mte) {
+            if (!common.isLoggedIn()) { return; }
             if (!mte || readOnly) {
                 $embedButton.hide();
                 return;
@@ -374,12 +383,19 @@ define([
             UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
         }).nThen(function (waitFor) {
+            common.getSframeChannel().onReady(waitFor());
+        }).nThen(function (waitFor) {
+            if (!AppConfig.displayCreationScreen) { return; }
+            if (common.getMetadataMgr().getPrivateData().isNewFile) {
+                common.getPadCreationScreen(waitFor());
+            }
+        }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform
                 patchTransformer: options.patchTransformer || ChainPad.SmartJSONTransformer,
 
                 // cryptpad debug logging (default is 1)
-                // logLevel: 0,
+                // logLevel: 2,
                 validateContent: options.validateContent || function (content) {
                     try {
                         JSON.parse(content);
@@ -461,7 +477,16 @@ define([
                 getHeadingText: function () { return titleRecommender(); }
             }, onLocal);
             var configTb = {
-                displayed: ['userlist', 'title', 'useradmin', 'spinner', 'newpad', 'share', 'limit'],
+                displayed: [
+                    'userlist',
+                    'title',
+                    'useradmin',
+                    'spinner',
+                    'newpad',
+                    'share',
+                    'limit',
+                    'unpinnedWarning'
+                ],
                 title: title.getTitleConfig(),
                 metadataMgr: cpNfInner.metadataMgr,
                 readOnly: readOnly,

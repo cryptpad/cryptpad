@@ -32,6 +32,13 @@ if (DEV_MODE) {
     console.log("DEV MODE ENABLED");
 }
 
+var FRESH_MODE = !!process.env.FRESH;
+var FRESH_KEY = '';
+if (FRESH_MODE) {
+    console.log("FRESH MODE ENABLED");
+    FRESH_KEY = +new Date();
+}
+
 const clone = (x) => (JSON.parse(JSON.stringify(x)));
 
 var setHeaders = (function () {
@@ -102,6 +109,7 @@ app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
+app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));
 app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
@@ -135,7 +143,7 @@ app.get('/api/config', function(req, res){
         'var obj = ' + JSON.stringify({
             requireConf: {
                 waitSeconds: 60,
-                urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
+                urlArgs: 'ver=' + Package.version + (FRESH_KEY? '-' + FRESH_KEY: '') + (DEV_MODE? '-' + (+new Date()): ''),
             },
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),

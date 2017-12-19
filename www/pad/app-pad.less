@@ -1,12 +1,10 @@
-// Defaults to avoid breaking existing themes
+@import (once) "../../customize/src/less2/include/framework.less";
 
-@colortheme_pad-toolbar-bg: #c1e7ff;
-
-@import (once) "../../customize/src/less2/include/toolbar.less";
-@import (once) '../../customize/src/less2/include/alertify.less';
-@import (once) '../../customize/src/less2/include/tokenfield.less';
-
-.toolbar_main();
+.framework_main(
+    @bg-color: @colortheme_pad-bg,
+    @warn-color: @colortheme_pad-warn,
+    @color: @colortheme_pad-color
+);
 .alertify_main();
 
 // body

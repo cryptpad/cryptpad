@@ -137,7 +137,8 @@ define([
         var secret = Hash.parsePadUrl('/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
         return cb(secret.hashData.channel === "67b8385b07352be53e40746d2be6ccd7" &&
             secret.hashData.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
-            secret.hashData.version === 0);
+            secret.hashData.version === 0 &&
+            typeof(secret.hashData.getURL) === 'function');
     }, "Old hash failed to parse");
 
     // make sure version 1 hashes parse correctly
@@ -249,7 +250,6 @@ define([
                     }
                 };
 
-
                 var evt = Util.mkEvent();
                 var respond = function (e, out) {
                     evt.fire(e, out);
@@ -259,9 +259,8 @@ define([
                         try {
                             var parsed = JSON.parse(raw);
                             var txid = parsed.txid;
-                            var message = parsed.message;
                             setTimeout(function () {
-                                service(message.command, message.content, function (e, result) {
+                                service(parsed.q, parsed.content, function (e, result) {
                                     respond(JSON.stringify({
                                         txid: txid,
                                         error: e,
@@ -285,33 +284,56 @@ define([
         });
     }, "Test rpc factory");
 
-/*
     assert(function (cb) {
-        var getBlob = function (url, cb) {
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url, true);
-            xhr.responseType = "blob";
-            xhr.onload = function () {
-                cb(void 0, this.response);
-            };
-            xhr.send();
-        };
+        require([
+            '/assert/frame/frame.js',
+        ], function (Frame) {
+            Frame.create(document.body, '/assert/frame/frame.html', function (e, frame) {
+                if (e) { return cb(false); }
 
-        var $img = $('img#thumb-orig');
-        getBlob($img.attr('src'), function (e, blob) {
-            console.log(e, blob);
-            Thumb.fromImageBlob(blob, function (e, thumb) {
-                console.log(thumb);
-                var th = new Image();
-                th.src = URL.createObjectURL(thumb);
-                th.onload = function () {
-                    $(document.body).append($(th).addClass('thumb'));
-                    cb(th.width === Thumb.dimension && th.height === Thumb.dimension);
-                };
+                var channel = Frame.open(frame, [
+                    /.*/i,
+                ], 5000);
+
+                channel.send('HELO', null, function (e, res) {
+                    if (res === 'EHLO') { return cb(true); }
+                    cb(false);
+                });
             });
         });
-    });
-*/
+    }, "PEWPEW");
+
+    (function () {
+        var guid = Wire.uid();
+
+        var t = Wire.tracker({
+            timeout: 1000,
+            hook: function (txid, q, content) {
+                console.info(JSON.stringify({
+                    guid: guid,
+                    txid: txid,
+                    q: q,
+                    content: content,
+                }));
+            },
+        });
+
+        assert(function (cb) {
+            t.call('SHOULD_TIMEOUT', null, function (e) {
+                if (e === 'TIMEOUT') { return cb(true); }
+                cb(false);
+            });
+        }, 'tracker should timeout');
+
+        assert(function (cb) {
+            var id = t.call('SHOULD_NOT_TIMEOUT', null, function (e, out) {
+                if (e) { return cb(false); }
+                if (out === 'YES') { return cb(true); }
+                cb(false);
+            });
+            t.respond(id, void 0, 'YES');
+        }, "tracker should not timeout");
+    }());
 
     Drive.test(assert);
 

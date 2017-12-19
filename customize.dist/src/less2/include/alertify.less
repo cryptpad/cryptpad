@@ -1,6 +1,6 @@
-@import (once) "./colortheme.less";
+@import (once) "./colortheme-all.less";
 @import (once) "./browser.less";
-@import (once) "./modal-theme.less";
+@import (once) "./variables.less";
 
 .alertify_main () {
     @max-z-index: 2147483647;
@@ -21,14 +21,14 @@
     @alertify-input-bg: @colortheme_modal-input;
     @alertify-input-fg: @colortheme_modal-fg;
 
-    @alertify_padding-base: @modal_padding;
-    @alertify_box-shadow: @modal_shadow;
+    @alertify_padding-base: @variables_padding;
+    @alertify_box-shadow: @variables_shadow;
 
     // Logs to show that something has happened
     // These show only once
 
     .alertify-logs {
-        z-index:10000; // alertify logs
+        z-index: 10000; // alertify logs
         @media print {
             visibility: hidden;
         }
@@ -152,16 +152,13 @@
 
             input:not(.form-control), textarea {
                 background-color: @alertify-input-bg;
-                color: @alertify-input-fg; 
+                color: @alertify-input-fg;
                 border: 0px;
 
                 margin-bottom: 15px;
                 width: 100%;
                 font-size: 100%;
                 padding: @alertify_padding-base;
-                &:focus {
-                    //outline-offset: -2px;
-                }
             }
 
             input[type="checkbox"] {
@@ -180,7 +177,6 @@
                     box-sizing: border-box;
                     position: relative;
                     outline: 0;
-                    border: 0;
                     display: inline-block;
                     align-items: center;
                     padding: 0 6px;
@@ -226,7 +222,7 @@
                         border: 1px dotted @alertify-base;
                     }
                     &::-moz-focus-inner {
-                        border:0;
+                        border: 0;
                     }
                 }
 
@@ -244,7 +240,7 @@
 
         &.bottom, &:not(.top) {
             bottom: 16px;
-            // Bottom left placement. Default. Use for transitions.
+            /* // Bottom left placement. Default. Use for transitions.
             &.left, &:not(.right) {
                 > * {
 
@@ -255,7 +251,7 @@
                 > * {
 
                 }
-            }
+            }*/
         }
 
         // All left positions.
@@ -293,7 +289,7 @@
 
         &.top {
             top: 0;
-            // Top left placement, use for transitions.
+            /* // Top left placement, use for transitions.
             &.left, &:not(.right) {
                 > * {
 
@@ -304,7 +300,7 @@
                 > * {
 
                 }
-            }
+            }*/
         }
 
         > * {

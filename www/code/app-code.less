@@ -1,14 +1,13 @@
 @import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) "../../customize/src/less2/include/markdown.less";
-@import (once) '../../customize/src/less2/include/fileupload.less';
-@import (once) '../../customize/src/less2/include/alertify.less';
-@import (once) '../../customize/src/less2/include/tokenfield.less';
+@import (once) "../../customize/src/less2/include/framework.less";
 
-.toolbar_main();
-.fileupload_main();
-.alertify_main();
-.tokenfield_main();
+
+.framework_main(
+    @bg-color: @colortheme_code-bg,
+    @warn-color: @colortheme_code-warn,
+    @color: @colortheme_code-color
+);
 
 // body
 &.cp-app-code {
@@ -51,7 +50,7 @@
         height: 100%;
         overflow: hidden;
         &.cp-app-code-present {
-            .CodeMirror { display: none; }
+            #cp-app-code-container { display: none; }
             #cp-app-code-preview { border: 0; }
         }
     }
@@ -96,7 +95,7 @@
     }
 
     @media (max-width: @browser_media-medium-screen) {
-        .CodeMirror {
+        #cp-app-code-container {
             flex: 1;
             max-width: 100%;
             resize: none;
@@ -104,6 +103,6 @@
         #cp-app-code-preview {
             display: none !important;
         }
-}
+    }
 }
 

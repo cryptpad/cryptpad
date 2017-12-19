@@ -6,7 +6,11 @@
 @import (once) '../../customize/src/less2/include/tools.less';
 @import (once) '../../customize/src/less2/include/tokenfield.less';
 
-.toolbar_main();
+.toolbar_main(
+    @bg-color: @colortheme_whiteboard-bg,
+    @warn-color: @colortheme_whiteboard-warn,
+    @color: @colortheme_whiteboard-color
+);
 .fileupload_main();
 .alertify_main();
 .tokenfield_main();

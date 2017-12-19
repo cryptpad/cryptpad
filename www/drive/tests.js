@@ -362,7 +362,7 @@ define([
                 return cb();
             }
             var path;
-            fo.addFolder(["root", "Folder2"], "subsub", function (e, o) { path = o.newPath; });
+            fo.addFolder(["root", "Folder2"], "subsub", function (o) { path = o.newPath; });
             if (!files.root.Folder2.subsub || path.length !== 3) {
                 console.log("DRIVE operations: add folder");
                 return cb();

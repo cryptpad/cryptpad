@@ -1079,7 +1079,16 @@ define([
         Title = common.createTitle(titleCfg);
 
         var configTb = {
-            displayed: ['title', 'useradmin', 'spinner', 'share', 'userlist', 'newpad', 'limit'],
+            displayed: [
+                'userlist',
+                'title',
+                'useradmin',
+                'spinner',
+                'newpad',
+                'share',
+                'limit',
+                'unpinnedWarning'
+            ],
             title: Title.getTitleConfig(),
             metadataMgr: metadataMgr,
             readOnly: APP.readOnly,
@@ -1133,27 +1142,29 @@ define([
         APP.$publishButton = $publish;
         updatePublishButton();
 
-        var fileDialogCfg = {
-            onSelect: function (data) {
-                if (data.type === 'file' && APP.editor) {
-                    var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
-                    APP.editor.replaceSelection(mt);
-                    return;
+        if (common.isLoggedIn()) {
+            var fileDialogCfg = {
+                onSelect: function (data) {
+                    if (data.type === 'file' && APP.editor) {
+                        var mt = '<media-tag src="' + data.src + '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>';
+                        APP.editor.replaceSelection(mt);
+                        return;
+                    }
                 }
-            }
-        };
-        common.initFilePicker(fileDialogCfg);
-        APP.$mediaTagButton = $('<button>', {
-            title: Messages.filePickerButton,
-            'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-            style: 'font-size: 17px'
-        }).click(function () {
-            var pickerCfg = {
-                types: ['file'],
-                where: ['root']
             };
-            common.openFilePicker(pickerCfg);
-        }).appendTo($rightside);
+            common.initFilePicker(fileDialogCfg);
+            APP.$mediaTagButton = $('<button>', {
+                title: Messages.filePickerButton,
+                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
+                style: 'font-size: 17px'
+            }).click(function () {
+                var pickerCfg = {
+                    types: ['file'],
+                    where: ['root']
+                };
+                common.openFilePicker(pickerCfg);
+            }).appendTo($rightside);
+        }
 
         var $tags = common.createButton('hashtag', true);
         $rightside.append($tags);

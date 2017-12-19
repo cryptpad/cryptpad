@@ -4,18 +4,17 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-messaging.js',
-    '/common/common-realtime.js',
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/outer/store-rpc.js',
 
-    '/common/pinpad.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Realtime, Constants, Feedback, LocalStore, AStore,
-            Pinpad, AppConfig, Nthen) {
+            Messaging, Constants, Feedback, LocalStore, AStore,
+            AppConfig, Nthen) {
+
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -59,11 +58,6 @@ define([
 
     // RESTRICTED
     // Settings only
-    common.getUserObject = function (cb) {
-        postMessage("GET", [], function (obj) {
-            cb(obj);
-        });
-    };
     common.resetDrive = function (cb) {
         postMessage("RESET_DRIVE", null, function (obj) {
             if (obj.error) { return void cb(obj.error); }
@@ -81,6 +75,12 @@ define([
             cb();
         });
     };
+    // Settings and drive
+    common.getUserObject = function (cb) {
+        postMessage("GET", [], function (obj) {
+            cb(obj);
+        });
+    };
     // Settings and auth
     common.getUserObject = function (cb) {
         postMessage("GET", [], function (obj) {
@@ -94,6 +94,14 @@ define([
         };
         postMessage("MIGRATE_ANON_DRIVE", data, cb);
     };
+    // Drive
+    common.userObjectCommand = function (data, cb) {
+        postMessage("DRIVE_USEROBJECT", data, cb);
+    };
+    common.drive = {};
+    common.drive.onLog = Util.mkEvent();
+    common.drive.onChange = Util.mkEvent();
+    common.drive.onRemove = Util.mkEvent();
     // Profile
     common.getProfileEditUrl = function (cb) {
         postMessage("GET", ['profile', 'edit'], function (obj) {
@@ -270,8 +278,8 @@ define([
             cb();
         });
     };
-    common.getPadAttribute = function (attr, cb) {
-        var href = Hash.getRelativeHref(window.location.href);
+    common.getPadAttribute = function (attr, cb, href) {
+        href = Hash.getRelativeHref(href || window.location.href);
         postMessage("GET_PAD_ATTRIBUTE", {
             href: href,
             attr: attr,
@@ -393,13 +401,15 @@ define([
         });
     };
 
-    common.useTemplate = function (href, Crypt, cb) {
+    common.useTemplate = function (href, Crypt, cb, opts) {
+        // opts is used to overrides options for chainpad-netflux in cryptput
+        // it allows us to add owners and expiration time if it is a new file
         var parsed = Hash.parsePadUrl(href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         Crypt.get(parsed.hash, function (err, val) {
             if (err) { throw new Error(err); }
             var p = Hash.parsePadUrl(window.location.href);
-            Crypt.put(p.hash, val, cb);
+            Crypt.put(p.hash, val, cb, opts);
         });
     };
 
@@ -450,6 +460,15 @@ define([
         });
     };
 
+    // Network
+    common.onNetworkDisconnect = Util.mkEvent();
+    common.onNetworkReconnect = Util.mkEvent();
+
+    // Messaging
+    var messaging = common.messaging = {};
+    messaging.onFriendRequest = Util.mkEvent();
+    messaging.onFriendComplete = Util.mkEvent();
+
     // Messenger
     var messenger = common.messenger = {};
     messenger.getFriendList = function (cb) {
@@ -486,7 +505,24 @@ define([
     messenger.onFriendEvent = Util.mkEvent();
     messenger.onUnfriendEvent = Util.mkEvent();
 
-    // HERE
+    // Pad RPC
+    var pad = common.padRpc = {};
+    pad.joinPad = function (data, cb) {
+        postMessage("JOIN_PAD", data, cb);
+    };
+    pad.sendPadMsg = function (data, cb) {
+        postMessage("SEND_PAD_MSG", data, cb);
+    };
+    pad.onReadyEvent = Util.mkEvent();
+    pad.onMessageEvent = Util.mkEvent();
+    pad.onJoinEvent = Util.mkEvent();
+    pad.onLeaveEvent = Util.mkEvent();
+    pad.onDisconnectEvent = Util.mkEvent();
+
+    common.getFullHistory = function (data, cb) {
+        postMessage("GET_FULL_HISTORY", data, cb);
+    };
+
     common.getShareHashes = function (secret, cb) {
         var hashes;
         if (!window.location.hash) {
@@ -569,14 +605,19 @@ define([
                 break;
             }
             case 'Q_FRIEND_REQUEST': {
-                if (!common.onFriendRequest) { break; }
-                common.onFriendRequest(data, cb);
+                common.messaging.onFriendRequest.fire(data, cb);
                 break;
             }
             case 'EV_FRIEND_COMPLETE': {
-                if (!common.onFriendComplete) { break; }
-                common.onFriendComplete(data);
+                common.messaging.onFriendComplete.fire(data);
                 break;
+            }
+            // Network
+            case 'NETWORK_DISCONNECT': {
+                common.onNetworkDisconnect.fire(); break;
+            }
+            case 'NETWORK_RECONNECT': {
+                common.onNetworkReconnect.fire(data); break;
             }
             // Messenger
             case 'CONTACTS_MESSAGE': {
@@ -596,6 +637,32 @@ define([
             }
             case 'CONTACTS_UNFRIEND': {
                 common.messenger.onUnfriendEvent.fire(data); break;
+            }
+            // Pad
+            case 'PAD_READY': {
+                common.padRpc.onReadyEvent.fire(); break;
+            }
+            case 'PAD_MESSAGE': {
+                common.padRpc.onMessageEvent.fire(data); break;
+            }
+            case 'PAD_JOIN': {
+                common.padRpc.onJoinEvent.fire(data); break;
+            }
+            case 'PAD_LEAVE': {
+                common.padRpc.onLeaveEvent.fire(data); break;
+            }
+            case 'PAD_DISCONNECT': {
+                common.padRpc.onDisconnectEvent.fire(data); break;
+            }
+            // Drive
+            case 'DRIVE_LOG': {
+                common.drive.onLog.fire(data); break;
+            }
+            case 'DRIVE_CHANGE': {
+                common.drive.onChange.fire(data); break;
+            }
+            case 'DRIVE_REMOVE': {
+                common.drive.onRemove.fire(data); break;
             }
         }
     };
@@ -627,6 +694,16 @@ define([
             if (typeof(Symbol) === 'undefined') {
                 Feedback.send('NO_SYMBOL');
             }
+
+            if (typeof(SharedWorker) === "undefined") {
+                Feedback.send('NO_SHAREDWORKER');
+            } else {
+                Feedback.send('SHAREDWORKER');
+            }
+            if (typeof(Worker) === "undefined") {
+                Feedback.send('NO_WEBWORKER');
+            }
+
             Feedback.reportScreenDimensions();
             Feedback.reportLanguage();
         };
@@ -643,7 +720,8 @@ define([
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
                 language: common.getLanguage(),
-                messenger: rdyCfg.messenger
+                messenger: rdyCfg.messenger,
+                driveEvents: rdyCfg.driveEvents
             };
             if (sessionStorage[Constants.newPadPathKey]) {
                 cfg.initialPath = sessionStorage[Constants.newPadPathKey];
@@ -651,6 +729,9 @@ define([
             }
             AStore.query("CONNECT", cfg, waitFor(function (data) {
                 if (data.error) { throw new Error(data.error); }
+                if (data.state === 'ALREADY_INIT') {
+                    data = data.returned;
+                }
 
                 if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
@@ -668,14 +749,13 @@ define([
                     }
                 }
 
-                // TODO ww
-                //Messaging.addDirectMessageHandler(common);
                 initFeedback(data.feedback);
             }));
         }).nThen(function (waitFor) {
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;
-            window.onhashchange = function () {
+            window.onhashchange = function (ev) {
+                if (ev && ev.reset) { oldHref = document.location.href; return; }
                 var newHref = document.location.href;
                 var parsedOld = Hash.parsePadUrl(oldHref).hashData;
                 var parsedNew = Hash.parsePadUrl(newHref).hashData;

@@ -105,7 +105,8 @@ define([
             if (parsed) {
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
-                    loggedIn: proxyData.loggedIn
+                    loggedIn: proxyData.loggedIn,
+                    pinPads: function () {} // without pinPads /outer/userObject.js won't be loaded
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles();

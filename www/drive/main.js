@@ -48,14 +48,35 @@ define([
                 Utils.LocalStore.clearThumbnail();
                 window.location.reload();
             });
-        };
-        //Netflux.connect(NetConfig.getWebsocketURL()).then(function (network) {
-            SFCommonO.start({
-                getSecrets: getSecrets,
-                //newNetwork: network,
-                noHash: true,
-                addRpc: addRpc
+            sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
+                Cryptpad.userObjectCommand(data, cb);
             });
-        //}, function (err) { console.error(err); });
+            sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
+                Cryptpad.getUserObject(function (obj) {
+                    cb(obj);
+                });
+            });
+            Cryptpad.onNetworkDisconnect.reg(function () {
+                sframeChan.event('EV_NETWORK_DISCONNECT');
+            });
+            Cryptpad.onNetworkReconnect.reg(function (data) {
+                sframeChan.event('EV_NETWORK_RECONNECT', data);
+            });
+            Cryptpad.drive.onLog.reg(function (msg) {
+                sframeChan.event('EV_DRIVE_LOG', msg);
+            });
+            Cryptpad.drive.onChange.reg(function (data) {
+                sframeChan.event('EV_DRIVE_CHANGE', data);
+            });
+            Cryptpad.drive.onRemove.reg(function (data) {
+                sframeChan.event('EV_DRIVE_REMOVE', data);
+            });
+        };
+        SFCommonO.start({
+            getSecrets: getSecrets,
+            noHash: true,
+            driveEvents: true,
+            addRpc: addRpc
+        });
     });
 });

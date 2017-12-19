@@ -86,6 +86,7 @@ define([
         };
 
         var fixSelection = cursor.fixSelection = function (sel, range) {
+            try {
             if (Tree.contains(Range.start.el, inner) && Tree.contains(Range.end.el, inner)) {
                 var order = Tree.orderOfNodes(Range.start.el, Range.end.el, inner);
                 var backward;
@@ -118,6 +119,7 @@ define([
                 console.error(errText);
                 return errText;
             }
+            } catch (e) { console.error(e); }
         };
 
         cursor.pushDelta = function (oldVal, newVal) {
