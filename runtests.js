@@ -50,6 +50,16 @@ const run = (cmd, args, cb) => {
 run('npm', ['install'], () => {
     const nThen = require('nthen');
     nThen((waitFor) => {
+        if (process.platform === 'darwin') {
+            run('bash', [
+                'ps', '-ef', '|' ,
+                'grep', '-v', 'grep', '|',
+                'grep', 'Google Chrome.app/Contents/MacOS/Google Chrome', '|',
+                'awk', '{print $2}', '|',
+                'while', 'read', 'x;', 'do', 'kill', '$x;', 'done'
+            ], waitFor());
+        }
+    }).nThen((waitFor) => {
         run('bower', ['install'], waitFor());
     }).nThen((waitFor) => {
         run('npm', ['run', 'fresh'], ()=>{});
