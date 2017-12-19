@@ -527,8 +527,10 @@ define([
                 stateChange(STATE.FORGOTTEN);
             }));
 
-            var $tags = common.createButton('hashtag', true);
-            toolbar.$rightside.append($tags);
+            if (common.isLoggedIn()) {
+                var $tags = common.createButton('hashtag', true);
+                toolbar.$rightside.append($tags);
+            }
 
             createFilePicker();
 

@@ -1164,10 +1164,10 @@ define([
                 };
                 common.openFilePicker(pickerCfg);
             }).appendTo($rightside);
-        }
 
-        var $tags = common.createButton('hashtag', true);
-        $rightside.append($tags);
+            var $tags = common.createButton('hashtag', true);
+            $rightside.append($tags);
+        }
     };
 
 

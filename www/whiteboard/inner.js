@@ -439,6 +439,8 @@ define([
                         APP.upload(name);
                     });
                 }).appendTo($rightside);
+
+                common.createButton('hashtag', true).appendTo($rightside);
             }
 
             var $forget = common.createButton('forget', true, {}, function (err) {
@@ -446,7 +448,6 @@ define([
                 setEditable(false);
             });
             $rightside.append($forget);
-            common.createButton('hashtag', true).appendTo($rightside);
 
             if (!readOnly) {
                 makeColorButton($rightside);
