@@ -278,8 +278,8 @@ define([
             cb();
         });
     };
-    common.getPadAttribute = function (attr, cb) {
-        var href = Hash.getRelativeHref(window.location.href);
+    common.getPadAttribute = function (attr, cb, href) {
+        href = Hash.getRelativeHref(href || window.location.href);
         postMessage("GET_PAD_ATTRIBUTE", {
             href: href,
             attr: attr,

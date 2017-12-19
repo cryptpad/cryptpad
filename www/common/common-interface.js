@@ -1,4 +1,4 @@
-/efine([
+define([
     'jquery',
     '/customize/messages.js',
     '/common/common-util.js',
