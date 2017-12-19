@@ -134,7 +134,7 @@ define([
 
     // check that old hashes parse correctly
     assert(function (cb) {
-        if (1) { return; } // TODO(cjd): This is a test failure which is a known bug
+        if (1) { return cb(1); } // TODO(cjd): This is a test failure which is a known bug
         var secret = Hash.parsePadUrl('/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
         return cb(secret.hashData.channel === "67b8385b07352be53e40746d2be6ccd7" &&
             secret.hashData.key === "XAYSuJYYqa9NfmInyHci7LNy" &&
