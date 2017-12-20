@@ -64,6 +64,11 @@ run('npm', ['install'], () => {
                 'ps -ef | grep -v grep | grep \'/Applications/Firefox.app/Contents/MacOS/firefox-bin\'' +
                 ' | awk \'{print $2}\' | while read x; do kill $x; done'
             ], waitFor());
+
+            run('bash', ['-c',
+                'lsof | grep \'TCP .*:hbci (LISTEN)\'' +
+                ' | awk \'{print $2}\' | while read x; do kill $x; done'
+            ], waitFor());
         }
     }).nThen((waitFor) => {
         run('bower', ['install'], waitFor());
