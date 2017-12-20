@@ -1,5 +1,4 @@
 // jshint esversion: 6, browser: false, node: true
-
 // This file is for automated testing, it should probably not be invoked for any other purpose.
 // It will:
 // 1. npm install
@@ -58,6 +57,11 @@ run('npm', ['install'], () => {
 
             run('bash', ['-c',
                 'ps -ef | grep -v grep | grep \'/usr/bin/safaridriver\'' +
+                ' | awk \'{print $2}\' | while read x; do kill $x; done'
+            ], waitFor());
+
+            run('bash', ['-c',
+                'ps -ef | grep -v grep | grep \'/Applications/Firefox.app/Contents/MacOS/firefox-bin\'' +
                 ' | awk \'{print $2}\' | while read x; do kill $x; done'
             ], waitFor());
         }
