@@ -1,6 +1,38 @@
 define([], function () {
     if (window.__CRYPTPAD_TEST_OBJ_) { return window.__CRYPTPAD_TEST_OBJ_; }
-    var out = window.__CRYPTPAD_TEST_OBJ__ = function (f) { if (out.testing) { f(); } };
+
+    var locks = [];
+    var tests = [];
+    var failed = false;
+    var out = window.__CRYPTPAD_TEST_OBJ__ = function (f) {
+        if (!out.testing) { return; }
+        tests.push(f);
+        var runLock = function (lock) {
+            lock(function () { setTimeout(function () { runLock(locks.shift()); }); });
+        };
+        f({
+            pass: function () {
+                if (failed) { return; }
+                var i = tests.indexOf(f);
+                if (i === -1) {
+                    throw new Error("Pass called on an unknown test (called multiple times?)");
+                }
+                tests.splice(i, 1);
+                if (!tests.length) { out.passed(); }
+            },
+            fail: function (reason) {
+                failed = true;
+                out.failed(reason);
+            },
+            lock: function (f) {
+                locks.push(f);
+                if (locks.length === 1) {
+                    runLock(locks.shift());
+                }
+            }
+        });
+    };
+
     out.passed = out.failed = out;
     var enableAuto = function () {
         console.log("Enable auto testing 1 " + window.origin);

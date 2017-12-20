@@ -74,6 +74,15 @@ define([
         var contentContainer = options.contentContainer ||
             (function () { throw new Error("contentContainer must be specified"); }());
 
+        Test(function (t) {
+            console.log("Here is the test");
+            evOnReady.reg(function () {
+                cpNfInner.chainpad.onSettle(function () {
+                    console.log("The test has passed")
+                    t.pass();
+                });
+            });
+        });
 
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
@@ -294,12 +303,6 @@ define([
             if (newPad && !AppConfig.displayCreationScreen) {
                 common.openTemplatePicker();
             }
-
-            Test(function () {
-                cpNfInner.chainpad.onSettle(function () {
-                    Test.passed();
-                });
-            });
         };
         var onConnectionChange = function (info) {
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);

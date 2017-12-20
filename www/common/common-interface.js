@@ -9,10 +9,12 @@ define([
     '/common/tippy.min.js',
     '/customize/pages.js',
     '/common/hyperscript.js',
+    '/common/test.js',
+
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/common/tippy.css',
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, Pages, h) {
+            Alertify, Tippy, Pages, h, Test) {
     var UI = {};
 
     /*
@@ -449,6 +451,10 @@ define([
         }
     };
     UI.removeLoadingScreen = function (cb) {
+        // Release the test blocker, hopefully every test has been registered.
+        // This test is created in sframe-boot2.js
+        if (Test.__ASYNC_BLOCKER__) { Test.__ASYNC_BLOCKER__.pass(); }
+
         $('#' + LOADING).fadeOut(750, cb);
         var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
