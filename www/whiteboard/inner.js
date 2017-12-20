@@ -504,6 +504,9 @@ define([
                         common.openFilePicker(pickerCfg);
                     }).appendTo($rightside);
                 }
+            } else {
+                $colors.hide();
+                $controls.hide();
             }
 
             metadataMgr.onChange(function () {
