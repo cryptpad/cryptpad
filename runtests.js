@@ -77,5 +77,9 @@ run('npm', ['install'], () => {
     }).nThen((waitFor) => {
         run('npm', ['run', 'fresh'], ()=>{});
         run('node', ['./TestSelenium.js'], waitFor());
+    }).nThen((waitFor) => {
+        if (process.platform === 'darwin') {
+            run('bash', ['-c', 'pmset displaysleepnow'], waitFor());
+        }
     }).nThen(killAll);
 });
