@@ -372,6 +372,15 @@ define([
         return $toolbar;
     };
     UIElements.createMarkdownToolbar = function (common, editor) {
+        var readOnly = common.getMetadataMgr().getPrivateData().readOnly;
+        if (readOnly) {
+            return {
+                toolbar: $(),
+                button: $(),
+                setState: function () {}
+            };
+        }
+
         var $toolbar = createMdToolbar(common, editor);
         var cfg = {
             title: Messages.mdToolbar_button,

@@ -428,6 +428,10 @@ define([
                 cursor.setToStart();
             }
 
+            if (framework.isReadOnly()) {
+                $(inner).attr('contenteditable', 'false');
+            }
+
             var fmConfig = {
                 ckeditor: editor,
                 body: $('body'),

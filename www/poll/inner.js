@@ -258,6 +258,7 @@ define([
     };
 
     var setTablePublished = function (bool) {
+        if (APP.locked) { bool = true; }
         if (APP.markdownTb) { APP.markdownTb.setState(!bool); }
         if (bool) {
             if (APP.$publish) { APP.$publish.hide(); }
@@ -369,7 +370,7 @@ define([
             var colsOrder = sortColumns(displayedObj.content.colsOrder, APP.userid);
             var conf = {
                 cols: colsOrder,
-                readOnly: APP.readOnly
+                readOnly: APP.locked
             };
             var f = getFocus();
             APP.$createRow.detach();
@@ -452,7 +453,7 @@ define([
     };
 
     var hideInputs = function (id) {
-        if (APP.readOnly) { return; }
+        if (APP.locked) { return; }
         if (id) {
             var type = Render.typeofId(id);
             if (type === 'col') { return void lockColumn(id); }
@@ -538,7 +539,7 @@ define([
     };
 
     var handleClick = function (e, isKeyup) {
-        if (APP.readOnly) { return; }
+        if (APP.locked) { return; }
 
         e.stopPropagation();
 
@@ -617,6 +618,7 @@ define([
             // If readOnly, always put the app in published mode
             bool = true;
         }
+        console.log(bool);
         $(APP.$mediaTagButton).toggle(!bool);
         setTablePublished(bool);
         /*['textarea'].forEach(function (sel) {
@@ -650,7 +652,7 @@ define([
     };
 
     var setEditable = function (editable) {
-        APP.readOnly = !editable;
+        APP.locked = APP.readOnly || !editable;
 
         if (editable === false) {
             // disable all the things
@@ -897,20 +899,18 @@ define([
         var uncommitted = APP.uncommitted = {};
         prepareProxy(proxy, copyObject(Render.Example));
         prepareProxy(uncommitted, copyObject(Render.Example));
-        if (!APP.readOnly) {
-            var coluid = Render.coluid();
-            if (userid) {
-                // If userid exists, it means the user already has a pinned column
-                // and we should unlock it
-                unlockColumn(userid);
-            }
-            uncommitted.content.colsOrder.push(coluid);
-            unlockColumn(coluid);
-
-            var rowuid = Render.rowuid();
-            uncommitted.content.rowsOrder.push(rowuid);
-            unlockRow(rowuid);
+        var coluid = Render.coluid();
+        if (userid) {
+            // If userid exists, it means the user already has a pinned column
+            // and we should unlock it
+            unlockColumn(userid);
         }
+        uncommitted.content.colsOrder.push(coluid);
+        unlockColumn(coluid);
+
+        var rowuid = Render.rowuid();
+        uncommitted.content.rowsOrder.push(rowuid);
+        unlockRow(rowuid);
 
         /*
             Extract uncommitted data (row or column) and create a new uncommitted row or column
@@ -1181,19 +1181,10 @@ define([
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (waitFor) {
-            var privReady = Util.once(waitFor());
-            var metadataMgr = common.getMetadataMgr();
-            if (JSON.stringify(metadataMgr.getPrivateData()) !== '{}') {
-                privReady();
-                return;
-            }
-            metadataMgr.onChange(function () {
-                if (typeof(metadataMgr.getPrivateData().readOnly) === 'boolean') {
-                    APP.readOnly = metadataMgr.getPrivateData().readOnly;
-                    privReady();
-                }
-            });
+            common.getSframeChannel().onReady(waitFor());
         }).nThen(function (/* waitFor */) {
+            var metadataMgr = common.getMetadataMgr();
+            APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;
 
@@ -1235,6 +1226,7 @@ define([
             if (APP.readOnly) {
                 $('#cp-app-poll-create-user, #cp-app-poll-create-option, #cp-app-poll-comments-add')
                     .remove();
+                $('#cp-app-poll-comments-add-title').remove();
             }
 
             var rt = APP.rt = Listmap.create(listmapConfig);

@@ -237,7 +237,7 @@ define([
             var $rightCol = $('<span>', {'class': 'cp-toolbar-userlist-rightcol'});
             var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).text(name).appendTo($rightCol);
             var isMe = data.uid === user.uid;
-            if (isMe) {
+            if (isMe && !priv.readOnly) {
                 $nameSpan.html('');
                 var $nameValue = $('<span>', {
                     'class': 'cp-toolbar-userlist-name-value'
@@ -292,7 +292,8 @@ define([
                                                  editingUserName.select[1]);
                     setTimeout(function () { $nameInput.focus(); });
                 }
-            } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]) {
+            } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]
+                && !priv.readOnly) {
                 if (pendingFriends.indexOf(data.netfluxId) !== -1) {
                     $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
                         .appendTo($rightCol);
