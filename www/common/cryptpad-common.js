@@ -703,6 +703,9 @@ define([
             if (typeof(Worker) === "undefined") {
                 Feedback.send('NO_WEBWORKER');
             }
+            if (typeof(ServiceWorker) === "undefined") {
+                Feedback.send('NO_SERVICEWORKER');
+            }
 
             Feedback.reportScreenDimensions();
             Feedback.reportLanguage();
