@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config ) {
     // document itself and causes problems when it's sent across the wire and reflected back
     config.removePlugins= 'resize,elementspath';
     config.resize_enabled= false; //bottom-bar
-    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag';
+    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print';
     config.toolbarGroups= [
         // {"name":"clipboard","groups":["clipboard","undo"]},
         //{"name":"editing","groups":["find","selection"]},
@@ -23,7 +23,8 @@ CKEDITOR.editorConfig = function( config ) {
         {"name":"basicstyles","groups":["basicstyles","cleanup"]},
         {"name":"paragraph","groups":["list","indent","blocks","align","bidi"]},
         {"name":"styles"},
-        {"name":"colors"}];
+        {"name":"colors"},
+        {"name":"print"}];
 
     config.font_defaultLabel = 'Arial';
     config.fontSize_defaultLabel = '16';
