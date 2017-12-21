@@ -78,7 +78,7 @@ define([
             console.log("Here is the test");
             evOnReady.reg(function () {
                 cpNfInner.chainpad.onSettle(function () {
-                    console.log("The test has passed")
+                    console.log("The test has passed");
                     t.pass();
                 });
             });
