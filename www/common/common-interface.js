@@ -430,7 +430,7 @@ define([
     UI.addLoadingScreen = function (config) {
         config = config || {};
         var loadingText = config.loadingText;
-        var hideTips = config.hideTips;
+        var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
         var hideLogo = config.hideLogo;
         var $loading, $container;
         if ($('#' + LOADING).length) {
