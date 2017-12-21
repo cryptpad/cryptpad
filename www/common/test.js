@@ -4,9 +4,11 @@ define([], function () {
     var locks = [];
     var tests = [];
     var failed = false;
+    var totalTests = 0;
     var out = window.__CRYPTPAD_TEST_OBJ__ = function (f) {
         if (!out.testing) { return; }
         tests.push(f);
+        totalTests++;
         var runLock = function (lock) {
             lock(function () { setTimeout(function () { runLock(locks.shift()); }); });
         };
@@ -18,7 +20,10 @@ define([], function () {
                     throw new Error("Pass called on an unknown test (called multiple times?)");
                 }
                 tests.splice(i, 1);
-                if (!tests.length) { out.passed(); }
+                if (!tests.length) {
+                    console.log("Completed " + totalTests + " successfully");
+                    out.passed();
+                }
             },
             fail: function (reason) {
                 failed = true;
