@@ -69,6 +69,8 @@ run('npm', ['install'], () => {
                 'lsof | grep \'TCP .*:hbci (LISTEN)\'' +
                 ' | awk \'{print $2}\' | while read x; do kill $x; done'
             ], waitFor());
+
+            run('bash', ['-c', 'caffeinate -u -t 2'], waitFor());
         }
     }).nThen((waitFor) => {
         run('bower', ['install'], waitFor());
