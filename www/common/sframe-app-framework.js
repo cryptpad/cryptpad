@@ -12,6 +12,7 @@ define([
     '/common/common-feedback.js',
     '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/common/test.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -30,7 +31,8 @@ define([
     Thumb,
     Feedback,
     AppConfig,
-    ChainPad)
+    ChainPad,
+    Test)
 {
     var SaveAs = window.saveAs;
 
@@ -72,6 +74,15 @@ define([
         var contentContainer = options.contentContainer ||
             (function () { throw new Error("contentContainer must be specified"); }());
 
+        Test(function (t) {
+            console.log("Here is the test");
+            evOnReady.reg(function () {
+                cpNfInner.chainpad.onSettle(function () {
+                    console.log("The test has passed");
+                    t.pass();
+                });
+            });
+        });
 
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
@@ -257,7 +268,11 @@ define([
                     // We're getting 'new pad' but there is an existing file
                     // We don't know exactly why this can happen but under no circumstances
                     // should we overwrite the content, so lets just try again.
-                    common.gotoURL();
+                    console.log("userDoc is '' but this is not a new pad.");
+                    console.log("Either this is an empty document which has not been touched");
+                    console.log("Or else something is terribly wrong, reloading.");
+                    Feedback.send("NON_EMPTY_NEWDOC");
+                    setTimeout(function () { common.gotoURL(); }, 1000);
                     return;
                 }
                 console.log('updating title');
@@ -385,6 +400,7 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
+            Test.registerInner(common.getSframeChannel());
             if (!AppConfig.displayCreationScreen) { return; }
             if (common.getMetadataMgr().getPrivateData().isNewFile) {
                 common.getPadCreationScreen(waitFor());

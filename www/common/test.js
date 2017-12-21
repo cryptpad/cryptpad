@@ -1,7 +1,47 @@
 define([], function () {
-    var out = function () { };
+    if (window.__CRYPTPAD_TEST_OBJ_) { return window.__CRYPTPAD_TEST_OBJ_; }
+
+    var locks = [];
+    var tests = [];
+    var failed = false;
+    var totalTests = 0;
+    var out = window.__CRYPTPAD_TEST_OBJ__ = function (f) {
+        if (!out.testing) { return; }
+        tests.push(f);
+        totalTests++;
+        var runLock = function (lock) {
+            lock(function () { setTimeout(function () { runLock(locks.shift()); }); });
+        };
+        f({
+            pass: function () {
+                if (failed) { return; }
+                var i = tests.indexOf(f);
+                if (i === -1) {
+                    throw new Error("Pass called on an unknown test (called multiple times?)");
+                }
+                tests.splice(i, 1);
+                if (!tests.length) {
+                    console.log("Completed " + totalTests + " successfully");
+                    out.passed();
+                }
+            },
+            fail: function (reason) {
+                failed = true;
+                out.failed(reason);
+            },
+            lock: function (f) {
+                locks.push(f);
+                if (locks.length === 1) {
+                    runLock(locks.shift());
+                }
+            }
+        });
+    };
+
     out.passed = out.failed = out;
-    if (window.location.hash.indexOf("?test=test") > -1) {
+    var enableAuto = function () {
+        console.log("Enable auto testing 1 " + window.origin);
+        if (window.__CRYPTPAD_TEST__) { return; }
         var cpt = window.__CRYPTPAD_TEST__ = {
             data: [],
             getData: function () {
@@ -51,8 +91,7 @@ define([], function () {
                 error: { message: e.message, stack: e.stack }
             });
         };
-        out = function (f) { f(); };
-        out.testing = true;
+        out.testing = 'auto';
         out.passed = function () {
             cpt.data.push({
                 type: 'report',
@@ -68,8 +107,59 @@ define([], function () {
                 error: { message: e.message, stack: e.stack }
             });
         };
-    } else {
-        out.testing = false;
+
+        out.registerInner = function (sframeChan) {
+            sframeChan.whenReg('EV_TESTDATA', function () {
+                cpt.data.forEach(function (x) { sframeChan.event('EV_TESTDATA', x); });
+                // override cpt.data.push() with a function which will send the content to the
+                // outside where it will go on the outer window cpt.data array.
+                cpt = window.__CRYPTPAD_TEST__ = {
+                    data: {
+                        push: function (elem) {
+                            sframeChan.event('EV_TESTDATA', elem);
+                        }
+                    },
+                    getData: function () {
+                        throw new Error('getData should never be called from the inside');
+                    }
+                };
+            });
+        };
+        out.registerOuter = function (sframeChan) {
+            sframeChan.on('EV_TESTDATA', function (data) { cpt.data.push(data); });
+        };
+    };
+    var enableManual = function () {
+        out.testing = 'manual';
+        out.passed = function () {
+            window.alert("Test passed");
+        };
+        out.failed = function (reason) {
+            window.alert("Test failed [" + reason + "]");
+        };
+        out.registerInner = function () { };
+        out.registerOuter = function () { };
+    };
+
+    out.options = {};
+    out.testing = false;
+    out.registerInner = function () { };
+    out.registerOuter = function () { };
+
+    if (window.location.hash.indexOf("test=auto") > -1) {
+        enableAuto();
+    } else if (window.location.hash.indexOf("test=manual") > -1) {
+        enableManual();
+    } else if (document.cookie.indexOf('test=') === 0) {
+        try {
+            var x = JSON.parse(decodeURIComponent(document.cookie.replace('test=', '')));
+            if (x.test === 'auto') {
+                out.options = x.opts;
+                enableAuto('auto');
+            }
+            console.log("Enable auto testing " + window.origin);
+        } catch (e) { }
     }
+
     return out;
 });

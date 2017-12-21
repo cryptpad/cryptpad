@@ -15,7 +15,7 @@
     "jshint": "~2.9.1",
     "less": "2.7.1",
     "lesshint": "^4.5.0",
-    "selenium-webdriver": "^2.53.1"
+    "selenium-webdriver": "^3.6.0"
   },
   "scripts": {
     "start": "node server.js",
