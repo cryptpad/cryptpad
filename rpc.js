@@ -310,7 +310,7 @@ var getFileSize = function (Env, channel, cb) {
 
         return void Env.msgStore.getChannelSize(channel, function (e, size /*:number*/) {
             if (e) {
-                if (e === 'ENOENT') { return void cb(void 0, 0); }
+                if (e.code === 'ENOENT') { return void cb(void 0, 0); }
                 return void cb(e.code);
             }
             cb(void 0, size);

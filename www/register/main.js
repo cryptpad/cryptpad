@@ -57,7 +57,6 @@ define([
         var logMeIn = function (result) {
             if (Test.testing) {
                 Test.passed();
-                window.alert("Test passed!");
                 return;
             }
             LocalStore.setUserHash(result.userHash);

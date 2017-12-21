@@ -24,6 +24,7 @@ define([
         var Notifier;
         var Utils = {};
         var AppConfig;
+        var Test;
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -45,9 +46,10 @@ define([
                 '/customize/application_config.js',
                 '/common/outer/network-config.js',
                 '/bower_components/netflux-websocket/netflux-client.js',
+                '/common/test.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _FilePicker,  _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore, _AppConfig, NetConfig, Netflux) {
+            _Constants, _Feedback, _LocalStore, _AppConfig, NetConfig, Netflux, _Test) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
@@ -63,6 +65,7 @@ define([
                 Utils.Feedback = _Feedback;
                 Utils.LocalStore = _LocalStore;
                 AppConfig = _AppConfig;
+                Test = _Test;
 
                 if (localStorage.CRYPTPAD_URLARGS !== ApiConfig.requireConf.urlArgs) {
                     console.log("New version, flushing cache");
@@ -207,6 +210,8 @@ define([
             Utils.LocalStore.onLogout(function () {
                 sframeChan.event('EV_LOGOUT');
             });
+
+            Test.registerOuter(sframeChan);
 
             // Put in the following function the RPC queries that should also work in filepicker
             var addCommonRpc = function (sframeChan) {
