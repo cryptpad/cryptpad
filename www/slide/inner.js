@@ -106,13 +106,8 @@ define([
         }).click(function () {
             Slide.update(editor.getValue(), true);
             $print.html($content.html());
-            // TODO use translation key
-            UI.confirm("Are you sure you want to print?", function (yes) {
-                if (yes) {
-                    window.focus();
-                    window.print();
-                }
-            }, {ok: Messages.printButton});
+            window.focus();
+            window.print();
             framework.feedback('PRINT_SLIDES');
         }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
         $toolbarDrawer.append($printButton);
