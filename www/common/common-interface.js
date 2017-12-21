@@ -434,7 +434,8 @@ define([
         var hideLogo = config.hideLogo;
         var $loading, $container;
         if ($('#' + LOADING).length) {
-            $loading = $('#' + LOADING).show();
+            $loading = $('#' + LOADING); //.show();
+            $loading.removeClass('cp-loading-hidden');
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);
             }
@@ -465,7 +466,8 @@ define([
         // This test is created in sframe-boot2.js
         if (Test.__ASYNC_BLOCKER__) { Test.__ASYNC_BLOCKER__.pass(); }
 
-        $('#' + LOADING).fadeOut(750, cb);
+        $('#' + LOADING).addClass("cp-loading-hidden");
+        //$('#' + LOADING).fadeOut(750, cb);
         var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
         // and               transition: opacity $fadeout-time

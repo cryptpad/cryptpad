@@ -7,6 +7,9 @@ The CSS inside of loading.js is precompiled in order to save 200ish milliseconds
 @import (once) "./include/browser.less";
 
 #cp-loading {
+    transition: opacity 0.75s, visibility 0s 0.75s;
+    visibility: visible;
+    opacity: 1;
     position: fixed;
     z-index: 10000000; // #loading
     top: 0px;
@@ -36,6 +39,10 @@ The CSS inside of loading.js is precompiled in order to save 200ish milliseconds
         > div {
             height: 100px;
         }
+    }
+    &.cp-loading-hidden {
+        opacity: 0;
+        visibility: hidden;
     }
 }
 #cp-loading-tip {

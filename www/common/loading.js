@@ -1,6 +1,8 @@
 define([], function () {
     var loadingStyle = (function(){/*
 #cp-loading {
+  transition: opacity 0.75s, visibility 0s 0.75s;
+  visibility: visible;
   position: fixed;
   z-index: 10000000;
   top: 0px;
@@ -11,6 +13,11 @@ define([], function () {
   color: #fafafa;
   text-align: center;
   font-size: 1.5em;
+  opacity: 1;
+}
+#cp-loading.cp-loading-hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 #cp-loading .cp-loading-container {
   margin-top: 50vh;
