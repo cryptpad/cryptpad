@@ -254,6 +254,12 @@ define([
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var key = Nacl.util.decodeBase64(cryptKey);
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
+                if (e) {
+                    if (e === 'XHR_ERROR') { return; }
+                    return console.error(e);
+                }
+                if (!metadata) { return console.error("NO_METADATA"); }
+
                 var v = metadata.thumbnail;
                 if (!v) {
                     v = 'EMPTY';
