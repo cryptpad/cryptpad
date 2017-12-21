@@ -13,6 +13,7 @@ define(function() {
      */
     config.notificationTimeout = 5000;
     config.disableUserlistNotifications = false;
+    config.hideLoadingScreenTips = false;
 
     config.enablePinning = true;
 
