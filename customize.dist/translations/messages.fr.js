@@ -472,6 +472,7 @@ define(function () {
     out.settings_cat_account = "Compte";
     out.settings_cat_drive = "CryptDrive";
     out.settings_cat_code = "Code";
+    out.settings_cat_pad = "Documents texte";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
 
@@ -527,6 +528,10 @@ define(function () {
 
     out.settings_codeIndentation = "Indentation dans l'éditeur de code (nombre d'espaces)";
     out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
+
+    out.settings_padWidth = "Largeur de l'éditeur de texte";
+    out.settings_padWidthHint = "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.";
+    out.settings_padWidthLabel = "Réduire la largeur de l'éditeur";
 
     out.upload_title = "Hébergement de fichiers";
     out.upload_rename = "Souhaitez-vous renommer <b>{0}</b> avant son stockage en ligne ?<br>" +

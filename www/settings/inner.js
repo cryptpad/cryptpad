@@ -46,6 +46,9 @@ define([
             'cp-settings-import-local-pads',
             'cp-settings-reset-drive'
         ],
+        'pad': [
+            'cp-settings-pad-width',
+        ],
         'code': [
             'cp-settings-indent-unit',
             'cp-settings-indent-type'
@@ -120,6 +123,7 @@ define([
 
         return $div;
     };
+
     var createIndentUnitSelector = function () {
         var $div = $('<div>', {
             'class': 'cp-settings-indent-unit cp-sidebarlayout-element'
@@ -179,6 +183,47 @@ define([
         common.getAttribute(['codemirror', key], function (e, val) {
             if (e) { return void console.error(e); }
             $input[0].checked = !!val;
+        });
+        return $div;
+    };
+
+    var createPadWidthSelector = function () {
+        var $div = $('<div>', {
+            'class': 'cp-settings-pad-width cp-sidebarlayout-element'
+        });
+        $('<span>', {'class': 'label'}).text(Messages.settings_padWidth).appendTo($div);
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_padWidthHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $label = $('<label>', { 'for': 'cp-settings-padwidth', 'class': 'noTitle' })
+                    .text(Messages.settings_padWidthLabel);
+        var $input = $('<input>', {
+            type: 'checkbox',
+            id: 'cp-settings-padwidth'
+        }).on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $input.is(':checked');
+            common.setAttribute(['pad', 'width'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        }).appendTo($div);
+        $label.appendTo($div);
+
+        $ok.hide().appendTo($div);
+        $spinner.hide().appendTo($div);
+
+
+        common.getAttribute(['pad', 'width'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $input.attr('checked', 'checked');
+            }
         });
         return $div;
     };
@@ -468,6 +513,7 @@ define([
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
             if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
+            if (key === 'pad') { $category.append($('<span>', {'class': 'fa fa-file-word-o' })); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
@@ -530,6 +576,7 @@ define([
         $rightside.append(createImportLocalPads());
         $rightside.append(createResetDrive());
         $rightside.append(createUserFeedbackToggle());
+        $rightside.append(createPadWidthSelector());
 
         // TODO RPC
         //obj.proxy.on('change', [], refresh);

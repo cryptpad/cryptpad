@@ -444,6 +444,13 @@ define([
                 }
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
+
+            framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
+                if (data) {
+                    var $iframe = $('html').find('iframe').contents();
+                    $iframe.find('html').addClass('cke_body_width');
+                }
+            });
         });
 
         framework.onDefaultContentNeeded(function () {
@@ -585,6 +592,12 @@ define([
                 }
                 // Used in ckeditor-config.js
                 Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
+                var newCss = '.cke_body_width { background: #666; height: 100%; }' +
+                    '.cke_body_width body {' +
+                        'max-width: 50em; padding: 10px 30px; margin: 0 auto; min-height: 100%;'+
+                        'box-sizing: border-box;'+
+                    '}';
+                Ckeditor.addCss(newCss);
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',

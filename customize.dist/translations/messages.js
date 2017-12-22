@@ -478,6 +478,7 @@ define(function () {
     out.settings_cat_account = "Account";
     out.settings_cat_drive = "CryptDrive";
     out.settings_cat_code = "Code";
+    out.settings_cat_pad = "Rich text";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
@@ -533,6 +534,10 @@ define(function () {
 
     out.settings_codeIndentation = 'Code editor indentation (spaces)';
     out.settings_codeUseTabs = "Indent using tabs (instead of spaces)";
+
+    out.settings_padWidth = "Editor's maximum width";
+    out.settings_padWidthHint = "Rich text pads use by default the maximum available width on your screen and it can be difficult to read. You can reduce the editor's width here.";
+    out.settings_padWidthLabel = "Reduce the editor's width";
 
     out.upload_title = "File upload";
     out.upload_rename = "Do you want to rename <b>{0}</b> before uploading it to the server?<br>" +
