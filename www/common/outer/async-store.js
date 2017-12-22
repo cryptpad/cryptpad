@@ -277,6 +277,21 @@ define([
         });
     };
 
+    Store.isNewChannel = function (data, cb) {
+        if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
+        var channelId = Hash.hrefToHexChannelId(data.href);
+        store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
+            if (e) { return void cb({error: e}); }
+            if (response && response.length && typeof(response[0]) === 'boolean') {
+                return void cb({
+                    isNew: response[0]
+                });
+            } else {
+                cb({error: 'INVALID_RESPONSE'});
+            }
+        });
+    };
+
     Store.getMultipleFileSize = function (data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
         if (!Array.isArray(data.files)) {

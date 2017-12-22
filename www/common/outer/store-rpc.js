@@ -160,8 +160,13 @@ define([
             case 'DRIVE_USEROBJECT': {
                 Store.userObjectCommand(data, cb); break;
             }
+
+            case 'IS_NEW_CHANNEL': {
+                Store.isNewChannel(data, cb); break;
+            }
             default: {
-                
+                console.error("UNHANDLED_STORE_RPC");
+
                 break;
             }
         }
