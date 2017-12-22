@@ -5,7 +5,10 @@ define(['/api/config'], function (ApiConfig) {
         return;
     }
     var bounceTo = decodeURIComponent(window.location.hash.slice(1));
-    if (!bounceTo) { return; }
+    if (!bounceTo) {
+        window.alert('The bounce application must only be used with a valid href to visit');
+        return;
+    }
     window.opener = null;
     window.location.href = bounceTo;
 });
