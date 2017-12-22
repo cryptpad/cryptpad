@@ -1188,6 +1188,10 @@ define([
             APP.loggedIn = common.isLoggedIn();
             APP.SFCommon = common;
 
+            if (APP.readOnly) {
+                $('#cp-app-poll-form').addClass('cp-app-poll-readonly');
+            }
+
             APP.origin = common.getMetadataMgr().getPrivateData().origin;
 
             APP.$body = $('body');

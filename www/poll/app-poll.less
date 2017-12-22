@@ -57,7 +57,7 @@ overflow-x: hidden;
     #cp-app-poll-form {
         flex: 1;
         overflow-y: auto;
-        &.cp-app-poll-published {
+        &.cp-app-poll-readonly {
             #cp-app-poll-table-scroll {
                 max-width: ~"calc(75% - 30px - 100px)";
             }
@@ -67,13 +67,15 @@ overflow-x: hidden;
             table tr td:last-child {
                 margin-left: 0; // uncommitted is hidden
             }
+            td.cp-app-poll-table-uncommitted {
+                display: none;
+            }
+        }
+        &.cp-app-poll-published {
             #cp-app-poll-create-option {
                 display: none;
             }
             .cp-app-poll-table-remove[data-rt-id^="y"], .cp-app-poll-table-edit[data-rt-id^="y"] {
-                display: none;
-            }
-            td.cp-app-poll-table-uncommitted {
                 display: none;
             }
             tr.cp-app-poll-table-uncommitted {
