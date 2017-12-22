@@ -252,6 +252,14 @@ define([
         });
     };
 
+    common.isNewChannel = function (href, cb) {
+        postMessage('IS_NEW_CHANNEL', {href: href}, function (obj) {
+            if (obj.error) { return void cb(obj.error); }
+            if (!obj) { return void cb('INVALID_RESPONSE'); }
+            cb(undefined, obj.isNew);
+        });
+    };
+
     // Store
 
 

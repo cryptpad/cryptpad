@@ -952,11 +952,38 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     });
 };
 
+var isNewChannel = function (Env, channel, cb) {
+    if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
+    if (channel.length !== 32) { return void cb('INVALID_CHAN'); }
+
+    var count = 0;
+    var done = false;
+    Env.msgStore.getMessages(channel, function (msg) {
+        if (done) { return; }
+        var parsed;
+        try {
+            parsed = JSON.parse(msg);
+            if (parsed && typeof(parsed) === 'object') { count++; }
+            if (count >= 2) {
+                done = true;
+                cb(void 0, false); // it is not a new file
+            }
+        } catch (e) {
+            WARN('invalid message read from store', e);
+        }
+    }, function () {
+        if (done) { return; }
+        // no more messages...
+        cb(void 0, true);
+    });
+};
+
 var isUnauthenticatedCall = function (call) {
     return [
         'GET_FILE_SIZE',
         'GET_MULTIPLE_FILE_SIZE',
         'IS_CHANNEL_PINNED',
+        'IS_NEW_CHANNEL',
     ].indexOf(call) !== -1;
 };
 
@@ -1050,6 +1077,10 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             case 'IS_CHANNEL_PINNED':
                 return void isChannelPinned(Env, msg[1], function (isPinned) {
                     respond(null, [null, isPinned, null]);
+                });
+            case 'IS_NEW_CHANNEL':
+                return void isNewChannel(Env, msg[1], function (e, isNew) {
+                    respond(null, [null, isNew, null]);
                 });
             default:
                 console.error("unsupported!");
