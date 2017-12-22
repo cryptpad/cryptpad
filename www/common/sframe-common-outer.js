@@ -141,7 +141,7 @@ define([
             // Check if the pad exists on server
             if (!window.location.hash) { isNewFile = true; return; }
             Cryptpad.getFileSize(window.location.href, waitFor(function (err, size) {
-                if (size) {
+                if (typeof(size) === 'number' && size >= 108) {
                     isNewFile = false;
                     return;
                 }
