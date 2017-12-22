@@ -467,6 +467,7 @@ define([
         if (Test.__ASYNC_BLOCKER__) { Test.__ASYNC_BLOCKER__.pass(); }
 
         $('#' + LOADING).addClass("cp-loading-hidden");
+        setTimeout(cb, 750);
         //$('#' + LOADING).fadeOut(750, cb);
         var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
