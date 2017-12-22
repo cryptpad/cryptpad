@@ -103,7 +103,7 @@ define([
         });
         sframeChan.on('Q_RT_MESSAGE', function (content, cb) {
             if (isReady) {
-                onLocal(); // should be onBeforeMessage
+                onLocal(true); // should be onBeforeMessage
             }
             chainpad.message(content);
             cb('OK');
