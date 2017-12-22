@@ -23,8 +23,8 @@ define([
     var mediaMap = {};
 
     // Tasks list
-    var checkedTaskItemPtn = /^\s*\[x\]\s*/;
-    var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
+    var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
+    var uncheckedTaskItemPtn = /^\s*(<p>)?\[ ?\](<\/p>)?\s*/;
     renderer.listitem = function (text) {
         var isCheckedTaskItem = checkedTaskItemPtn.test(text);
         var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
