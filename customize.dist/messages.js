@@ -8,7 +8,7 @@ var map = {
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
     'zh': '繁體中文',
-	'el': 'Ελληνικά',
+    'el': 'Ελληνικά',
 };
 
 var messages = {};
@@ -94,7 +94,11 @@ define(req, function(Util, Default, Language) {
         var text = messages[key];
         if (typeof(text) === 'string') {
             return text.replace(/\{(\d+)\}/g, function (str, p1) {
-                return argArray[p1] || null;
+                if (typeof(argArray[p1]) === 'string' || typeof(argArray[p1]) === "number") {
+                    return argArray[p1];
+                }
+                console.error("Only strings and numbers can be used in _getKey params!");
+                return '';
             });
         } else {
             return text;
