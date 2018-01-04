@@ -153,6 +153,11 @@ define(function () {
     out.printTitle = "Afficher le titre du pad";
     out.printCSS = "Personnaliser l'apparence (CSS):";
     out.printTransition = "Activer les animations de transition";
+    out.printBackground = "Utiliser une image d'arrière-plan";
+    out.printBackgroundButton = "Choisir une image";
+    out.printBackgroundValue = "<b>Arrière-plan actuel:</b> <em>{0}</em>";
+    out.printBackgroundNoValue = "<em>Aucun arrière-plan affiché</em>";
+    out.printBackgroundRemove = "Supprimer cet arrière-plan";
 
     out.filePickerButton = "Intégrer un fichier stocké dans CryptDrive";
     out.filePicker_close = "Fermer";

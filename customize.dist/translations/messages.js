@@ -156,6 +156,11 @@ define(function () {
     out.printTitle = "Display the pad title";
     out.printCSS = "Custom style rules (CSS):";
     out.printTransition = "Enable transition animations";
+    out.printBackground = "Use a background image";
+    out.printBackgroundButton = "Pick an image";
+    out.printBackgroundValue = "<b>Current background:</b> <em>{0}</em>";
+    out.printBackgroundNoValue = "<em>No background image displayed</em>";
+    out.printBackgroundRemove = "Remove this background image";
 
     out.filePickerButton = "Embed a file stored in CryptDrive";
     out.filePicker_close = "Close";
