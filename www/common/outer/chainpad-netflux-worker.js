@@ -182,13 +182,14 @@ define([], function () {
                 });
                 network.historyKeeper = hk;
 
-                var cfg = padData = {
+                var cfg = {
                     validateKey: validateKey,
                     lastKnownHash: lastKnownHash,
                     owners: owners,
                     expire: expire,
                     password: password
                 };
+                padData = cfg;
                 var msg = ['GET_HISTORY', wc.id, cfg];
                 // Add the validateKey if we are the channel creator and we have a validateKey
                 if (hk) { network.sendto(hk, JSON.stringify(msg)); }

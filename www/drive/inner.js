@@ -2755,13 +2755,13 @@ define([
             else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
                 // TODO
                 // Remove owned pad from drive and remove from server
-                var pathsList = [];
-                paths.forEach(function (p) { pathsList.push(p.path); });
-                var msg = Messages._getKey("fm_deleteOwnedPads"); // XXX
-                UI.confirm(msg, function(res) {
+                var pathsListD = [];
+                paths.forEach(function (p) { pathsListD.push(p.path); });
+                var msgD = Messages._getKey("fm_deleteOwnedPads"); // XXX
+                UI.confirm(msgD, function(res) {
                     $(window).focus();
                     if (!res) { return; }
-                    filesOp.delete(pathsList, refresh);
+                    filesOp.delete(pathsListD, refresh);
                     // TODO HERE
                     // RPC to delete from server?
                 });
