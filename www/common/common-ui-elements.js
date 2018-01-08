@@ -1241,8 +1241,8 @@ define([
             }
 
             // XXX TODO remove these lines
-            ownedVal = undefined;
-            expire = undefined;
+            //ownedVal = undefined;
+            //expire = undefined;
 
             sframeChan.query("Q_CREATE_PAD", {
                 owned: ownedVal,

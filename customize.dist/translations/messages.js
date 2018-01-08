@@ -353,6 +353,7 @@ define(function () {
     out.fm_templateName = "Templates";
     out.fm_searchName = "Search";
     out.fm_recentPadsName = "Recent pads";
+    out.fm_ownedPadsName = "Owned";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";

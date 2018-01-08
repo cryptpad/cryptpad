@@ -361,6 +361,7 @@ define([
     Store.addPad = function (data, cb) {
         if (!data.href) { return void cb({error:'NO_HREF'}); }
         var pad = makePad(data.href, data.title);
+        if (data.owners) { pad.owners = data.owners; }
         store.userObject.pushData(pad, function (e, id) {
             if (e) { return void cb({error: "Error while adding a template:"+ e}); }
             var path = data.path || ['root'];
@@ -522,6 +523,11 @@ define([
         var p = Hash.parsePadUrl(href);
         var h = p.hashData;
 
+        var owners;
+        if (Store.channel && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+            owners = Store.channel.data.owners || undefined;
+        }
+
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
         var isStronger;
 
@@ -583,6 +589,7 @@ define([
             Store.addPad({
                 href: href,
                 title: title,
+                owners: owners,
                 path: data.path || (store.data && store.data.initialPath)
             }, cb);
             return;
@@ -735,12 +742,14 @@ define([
 
     // TODO with sharedworker
     // channel will be an object storing the webchannel associated to each browser tab
-    var channel = {
-        queue: []
+    var channel = Store.channel = {
+        queue: [],
+        data: {}
     };
     Store.joinPad = function (data, cb) {
         var conf = {
-            onReady: function () {
+            onReady: function (padData) {
+                channel.data = padData || {};
                 postMessage("PAD_READY");
             }, // post EV_PAD_READY
             onMessage: function (m) {

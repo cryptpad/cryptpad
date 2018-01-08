@@ -567,7 +567,8 @@ define([
 
             // Join the netflux channel
             var rtStarted = false;
-            var startRealtime = function () {
+            var startRealtime = function (rtConfig) {
+                rtConfig = rtConfig || {};
                 rtStarted = true;
                 var replaceHash = function (hash) {
                     if (window.history && window.history.replaceState) {
@@ -581,7 +582,7 @@ define([
                     window.location.hash = hash;
                 };
 
-                CpNfOuter.start({
+                var cfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
                     padRpc: Cryptpad.padRpc,
@@ -600,7 +601,11 @@ define([
                         if (readOnly || cfg.noHash) { return; }
                         replaceHash(Utils.Hash.getEditHashFromKeys(wc, secret.keys));
                     }
+                };
+                Object.keys(rtConfig).forEach(function (k) {
+                    cfg[k] = rtConfig[k];
                 });
+                CpNfOuter.start(cfg);
             };
 
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
@@ -624,12 +629,11 @@ define([
 
                 var rtConfig = {};
                 if (data.owned) {
-                    //rtConfig.owners = [edPublic];
+                    rtConfig.owners = [edPublic];
                 }
                 if (data.expire) {
-                    //rtConfig.expire = data.expire;
+                    rtConfig.expire = data.expire;
                 }
-
                 if (data.template) {
                     // Pass rtConfig to useTemplate because Cryptput will create the file and
                     // we need to have the owners and expiration time in the first line on the
@@ -651,7 +655,7 @@ define([
 
             if (!realtime) { return; }
             if (isNewFile && Utils.LocalStore.isLoggedIn()
-                && AppConfig.displayCreationScreen) { return; }
+                && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
 
             startRealtime();
         });

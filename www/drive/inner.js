@@ -60,6 +60,8 @@ define([
     var TRASH_NAME = Messages.fm_trashName;
     var RECENT = "recent";
     var RECENT_NAME = Messages.fm_recentPadsName;
+    var OWNED = "owned";
+    var OWNED_NAME = Messages.fm_ownedPadsName;
 
     var LS_LAST = "app-drive-lastOpened";
     var LS_OPENED = "app-drive-openedFolders";
@@ -180,6 +182,8 @@ define([
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa fa-eye"});
+    var $ownedIcon = $('<span>', {"class": "fa fa-id-card-o"});
+    var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
 
     var history = {
         isHistoryMode: false,
@@ -202,6 +206,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var priv = metadataMgr.getPrivateData();
         var user = metadataMgr.getUserData();
+        var edPublic = priv.edPublic;
 
         APP.origin = priv.origin;
         var isOwnDrive = function () {
@@ -255,9 +260,10 @@ define([
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
         var displayedCategories = [ROOT, TRASH, SEARCH, RECENT];
+        if (AppConfig.displayCreationScreen) { displayedCategories.push(OWNED); }
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
-        var virtualCategories = [SEARCH, RECENT];
+        var virtualCategories = [SEARCH, RECENT, OWNED];
 
         if (!APP.loggedIn) {
             displayedCategories = [FILES_DATA];
@@ -652,13 +658,18 @@ define([
                 if (!isOwnDrive()) {
                     hide.push($menu.find('a.cp-app-drive-context-own'));
                 }
+                if ($element.is('.cp-app-drive-element-owned')) {
+                    hide.push($menu.find('a.cp-app-drive-context-delete'));
+                } else {
+                    hide.push($menu.find('a.cp-app-drive-context-deleteowned'));
+                }
                 if ($element.is('.cp-app-drive-element-file')) {
                     // No folder in files
                     hide.push($menu.find('a.cp-app-drive-context-newfolder'));
-                    if ($element.is('.cp-app-drive-readonly')) {
+                    if ($element.is('.cp-app-drive-element-readonly')) {
                         // Keep only open readonly
                         hide.push($menu.find('a.cp-app-drive-context-open'));
-                    } else if ($element.is('.cp-app-drive-noreadonly')) {
+                    } else if ($element.is('.cp-app-drive-element-noreadonly')) {
                         // Keep only open readonly
                         hide.push($menu.find('a.cp-app-drive-context-openro'));
                     }
@@ -1169,6 +1180,13 @@ define([
                 var $renamed = $renamedIcon.clone().appendTo($state);
                 $renamed.attr('title', Messages._getKey('fm_renamedPad', [data.title]));
             }
+            if (data.owners && data.owners.indexOf(edPublic) !== -1) {
+                var $owned = $ownedIcon.clone().appendTo($state);
+                $owned.attr('title', Messages.fm_padIsOwned || 'TODO: owned pad'); // XXX
+            } else if (data.owners && data.owners.length) {
+                var $owner = $ownerIcon.clone().appendTo($state);
+                $owner.attr('title', Messages.fm_padIsOwned || 'TODO: owned pad'); // XXX
+            }
 
             var name = filesOp.getTitle(element);
 
@@ -1390,6 +1408,9 @@ define([
                     break;
                 case RECENT:
                     msg = Messages.fm_info_recent;
+                    break;
+                case OWNED:
+                    msg = 'TODO: files deleted here are actually removed from the server...'; // XXX
                     break;
                 default:
                     msg = undefined;
@@ -1702,10 +1723,10 @@ define([
         };
 
         var sortElements = function (folder, path, oldkeys, prop, asc, useId) {
-            var root = filesOp.find(path);
+            var root = path && filesOp.find(path);
             var test = folder ? filesOp.isFolder : filesOp.isFile;
             var keys = oldkeys.filter(function (e) {
-                return useId ? test(e) : test(root[e]);
+                return useId ? test(e) : (path && test(root[e]));
             });
             if (keys.length < 2) { return keys; }
             var mult = asc ? 1 : -1;
@@ -2065,6 +2086,41 @@ define([
             });
         };
 
+        // Owned pads category
+        var displayOwned = function ($container) {
+            var list = filesOp.getOwnedPads(edPublic);
+            if (list.length === 0) { return; }
+            var $fileHeader = getFileListHeader(false);
+            $container.append($fileHeader);
+            var sortedFiles = sortElements(false, false, list, APP.store[SORT_FILE_BY], !getSortFileDesc(), true);
+            sortedFiles.forEach(function (id) {
+                var paths = filesOp.findFile(id);
+                if (!paths.length) { return; }
+                var path = paths[0];
+                var $icon = getFileIcon(id);
+                var ro = filesOp.isReadOnlyFile(id);
+                // ro undefined maens it's an old hash which doesn't support read-only
+                var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
+                    ro ? ' cp-app-drive-element-readonly' : '';
+                var $element = $('<li>', {
+                    'class': 'cp-app-drive-element cp-app-drive-element-owned cp-app-drive-element-file cp-app-drive-element-row' + roClass
+                });
+                $element.prepend($icon).dblclick(function () {
+                    openFile(id);
+                });
+                addFileData(id, $element);
+                $element.data('path', path);
+                $element.data('element', id);
+                $element.click(function(e) {
+                    e.stopPropagation();
+                    onElementClick(e, $element);
+                });
+                $element.contextmenu(openDefaultContextMenu);
+                $element.data('context', $defaultContextMenu);
+                $container.append($element);
+            });
+        };
+
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
@@ -2096,6 +2152,7 @@ define([
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
             var isSearch = path[0] === SEARCH;
             var isRecent = path[0] === RECENT;
+            var isOwned = path[0] === OWNED;
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
 
             var root = isVirtual ? undefined : filesOp.find(path);
@@ -2194,6 +2251,8 @@ define([
                 displaySearch($list, path[1]);
             } else if (isRecent) {
                 displayRecent($list);
+            } else if (isOwned) {
+                displayOwned($list);
             } else {
                 $dirContent.contextmenu(openContentContextMenu);
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
@@ -2374,6 +2433,15 @@ define([
             $container.append($list);
         };
 
+        var createOwned = function ($container, path) {
+            var $icon = $ownedIcon.clone(); // TODO
+            var isOpened = filesOp.comparePath(path, currentPath);
+            var $element = createTreeElement(OWNED_NAME, $icon, [OWNED], false, false, false, isOpened);
+            $element.addClass('root');
+            var $list = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($element);
+            $container.append($list);
+        };
+
         var search = APP.Search = {};
         var createSearch = function ($container) {
             var isInSearch = currentPath[0] === SEARCH;
@@ -2437,6 +2505,7 @@ define([
             var $div = $('<div>', {'class': 'cp-app-drive-tree-categories-container'})
                 .appendTo($tree);
             if (displayedCategories.indexOf(RECENT) !== -1) { createRecent($div, [RECENT]); }
+            if (displayedCategories.indexOf(OWNED) !== -1) { createOwned($div, [OWNED]); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($div, [ROOT]); }
             if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($div, [TEMPLATE]); }
             if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($div, [FILES_DATA]); }
@@ -2682,6 +2751,21 @@ define([
                     return;
                 }
                 moveElements(pathsList, [TRASH], false, refresh);
+            }
+            else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
+                // TODO
+                // Remove owned pad from drive and remove from server
+                var pathsList = [];
+                paths.forEach(function (p) { pathsList.push(p.path); });
+                var msg = Messages._getKey("fm_deleteOwnedPads"); // XXX
+                UI.confirm(msg, function(res) {
+                    $(window).focus();
+                    if (!res) { return; }
+                    filesOp.delete(pathsList, refresh);
+                    // TODO HERE
+                    // RPC to delete from server?
+                });
+                return;
             }
             else if ($(this).hasClass("cp-app-drive-context-properties")) {
                 if (paths.length !== 1) { return; }
