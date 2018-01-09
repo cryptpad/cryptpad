@@ -183,8 +183,10 @@ define([
                 allowTaint: true,
                 onrendered: function (canvas) {
                     if (opts.filter) { opts.filter(element, false); }
-                    var D = getResizedDimensions(canvas, 'pad');
-                    Thumb.fromCanvas(canvas, D, cb);
+                    setTimeout(function () {
+                        var D = getResizedDimensions(canvas, 'pad');
+                        Thumb.fromCanvas(canvas, D, cb);
+                    }, 10);
                 }
             });
         };
