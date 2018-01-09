@@ -9,7 +9,6 @@ define([
     common.start = function (cfg) {
         cfg = cfg || {};
         var realtime = !cfg.noRealtime;
-        var network;
         var secret;
         var hashes;
         var isNewFile;
@@ -44,12 +43,10 @@ define([
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
                 '/customize/application_config.js',
-                '/common/outer/network-config.js',
-                '/bower_components/netflux-websocket/netflux-client.js',
                 '/common/test.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _FilePicker,  _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore, _AppConfig, NetConfig, Netflux, _Test) {
+            _Constants, _Feedback, _LocalStore, _AppConfig, _Test) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
@@ -95,12 +92,6 @@ define([
                     messenger: cfg.messaging,
                     driveEvents: cfg.driveEvents
                 });
-
-                if (!cfg.newNetwork) {
-                    Netflux.connect(NetConfig.getWebsocketURL()).then(waitFor(function (nw) {
-                        network = nw;
-                    }));
-                }
             }));
         }).nThen(function (waitFor) {
             $('#sbox-iframe').focus();
