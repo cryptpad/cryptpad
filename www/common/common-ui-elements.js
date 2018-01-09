@@ -9,9 +9,12 @@ define([
     '/common/hyperscript.js',
     '/common/media-tag.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
+    '/bower_components/nthen/index.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Util, Hash, Language, UI, Feedback, h, MediaTag, Messages) {
+], function ($, Config, Util, Hash, Language, UI, Feedback, h, MediaTag, Messages, AppConfig,
+             NThen) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -52,6 +55,112 @@ define([
                 reader.readAsText(file, type);
             });
         };
+    };
+
+    var getPropertiesData = function (common, cb) {
+        var data = {};
+        NThen(function (waitFor) {
+            common.getPadAttribute('href', waitFor(function (err, val) {
+                var base = common.getMetadataMgr().getPrivateData().origin;
+
+                var parsed = Hash.parsePadUrl(val);
+                if (parsed.hashData.mode === "view") {
+                    data.roHref = base + val;
+                    return;
+                }
+
+                // We're not in a read-only pad
+                data.href = base + val;
+                // Get Read-only href
+                if (parsed.hashData.type !== "pad") { return; }
+                var i = data.href.indexOf('#') + 1;
+                var hBase = data.href.slice(0, i);
+                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
+                if (!hrefsecret.keys) { return; }
+                var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+                data.roHref = hBase + viewHash;
+            }));
+            common.getPadAttribute('atime', waitFor(function (err, val) {
+                data.atime = val;
+            }));
+            common.getPadAttribute('ctime', waitFor(function (err, val) {
+                data.ctime = val;
+            }));
+            common.getPadAttribute('tags', waitFor(function (err, val) {
+                data.tags = val;
+            }));
+        }).nThen(function () {
+            cb(void 0, data);
+        });
+    };
+    UIElements.getProperties = function (common, data, cb) {
+        var $d = $('<div>');
+        $('<strong>').text(Messages.fc_prop).appendTo($d);
+
+        if (!data || !data.href) { return void cb(void 0, $d); }
+
+        $('<br>').appendTo($d);
+        if (data.href) {
+            $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
+            $d.append(UI.dialog.selectable(data.href, {
+                id: 'cp-app-prop-link',
+            }));
+        }
+
+        if (data.roHref) {
+            $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
+            $d.append(UI.dialog.selectable(data.roHref, {
+                id: 'cp-app-prop-rolink',
+            }));
+        }
+
+        if (data.tags && Array.isArray(data.tags)) {
+            $('<label>', {'for': 'cp-app-prop-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
+            $d.append(UI.dialog.selectable(data.tags.join(', '), {
+                id: 'cp-app-prop-tags',
+            }));
+        }
+
+        $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
+            .appendTo($d);
+        $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+            id: 'cp-app-prop-ctime',
+        }));
+
+        $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
+            .appendTo($d);
+        $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
+            id: 'cp-app-prop-atime',
+        }));
+
+        if (common.isLoggedIn() && AppConfig.enablePinning) {
+            // check the size of this file...
+            common.getFileSize(data.href, function (e, bytes) {
+                if (e) {
+                    // there was a problem with the RPC
+                    console.error(e);
+
+                    // but we don't want to break the interface.
+                    // continue as if there was no RPC
+                    return void cb(void 0, $d);
+                }
+                var KB = Util.bytesToKilobytes(bytes);
+
+                var formatted = Messages._getKey('formattedKB', [KB]);
+                $('<br>').appendTo($d);
+
+                $('<label>', {
+                    'for': 'cp-app-prop-size'
+                }).text(Messages.fc_sizeInKilobytes).appendTo($d);
+
+                $d.append(UI.dialog.selectable(formatted, {
+                    id: 'cp-app-prop-size',
+                }));
+                cb(void 0, $d);
+            });
+        } else {
+            cb(void 0, $d);
+        }
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
@@ -254,6 +363,23 @@ define([
                     updateIcon(isVisible);
                 });
                 updateIcon(data.element.is(':visible'));
+                break;
+            case 'properties':
+                button = $('<button>', {
+                    'class': 'fa fa-info-circle',
+                    title: Messages.propertiesButtonTitle,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
+                .text(Messages.propertiesButton))
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    getPropertiesData(common, function (e, data) {
+                        if (e) { return void console.error(e); }
+                        UIElements.getProperties(common, data, function (e, $prop) {
+                            if (e) { return void console.error(e); }
+                            UI.alert($prop[0], undefined, true);
+                        });
+                    });
+                });
                 break;
             default:
                 button = $('<button>', {

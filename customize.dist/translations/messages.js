@@ -147,6 +147,9 @@ define(function () {
     out.backgroundButtonTitle = 'Change the background color in the presentation';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
+    out.propertiesButton = "Properties";
+    out.propertiesButtonTitle = 'Get pad properties';
+
     out.printText = "Print";
     out.printButton = "Print (enter)";
     out.printButtonTitle = "Print your slides or export them as a PDF file";

@@ -144,6 +144,9 @@ define(function () {
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
+    out.propertiesButton = "Propriétés";
+    out.propertiesButtonTitle = 'Voir les propriétés de ce pad';
+
     out.printText = "Imprimer";
     out.printButton = "Imprimer (Entrée)";
     out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";

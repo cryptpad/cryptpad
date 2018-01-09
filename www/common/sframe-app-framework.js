@@ -548,6 +548,9 @@ define([
                 toolbar.$rightside.append($tags);
             }
 
+            var $properties = common.createButton('properties', true);
+            toolbar.$drawer.append($properties);
+
             createFilePicker();
 
             cb(Object.freeze({

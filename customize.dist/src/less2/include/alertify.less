@@ -125,6 +125,8 @@
                         width: 100%;
                     }
                 }
+                display: flex;
+                flex-flow: column;
             }
 
             width: 100%;
@@ -132,6 +134,8 @@
             position: relative;
             top: 50%;
             transform: translateY(-50%);
+            max-height: 100%;
+            display: flex;
 
             > * {
                 width: 100%;
@@ -148,6 +152,7 @@
                 padding: @alertify_padding-base;
                 margin-bottom: @alertify_padding-base;
                 margin: 0;
+                overflow: auto;
             }
 
             input:not(.form-control), textarea {

@@ -2568,86 +2568,22 @@ define([
             }
             var ro = filesOp.isReadOnlyFile(el);
             var base = APP.origin;
-            var $d = $('<div>');
-            $('<strong>').text(Messages.fc_prop).appendTo($d);
-
-            var data = filesOp.getFileData(el);
-            if (!data || !data.href) { return void cb(void 0, $d); }
-
-            $('<br>').appendTo($d);
-            if (!ro) {
-                $('<label>', {'for': 'cp-app-drive-prop-link'}).text(Messages.editShare).appendTo($d);
-                $d.append(UI.dialog.selectable(base + data.href, {
-                    id: 'cp-app-drive-prop-link',
-                }));
-            }
-
-            var parsed = Hash.parsePadUrl(data.href);
-            if (parsed.hashData && parsed.hashData.type === 'pad') {
-                var roLink = ro ? base + data.href : base + getReadOnlyUrl(el);
-                if (roLink) {
-                    $('<label>', {'for': 'cp-app-drive-prop-rolink'}).text(Messages.viewShare).appendTo($d);
-                    $d.append(UI.dialog.selectable(roLink, {
-                        id: 'cp-app-drive-prop-rolink',
-                    }));
-                }
-            }
-
-            if (data.tags && Array.isArray(data.tags)) {
-                $('<label>', {'for': 'cp-app-drive-prop-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
-                $d.append(UI.dialog.selectable(data.tags.join(', '), {
-                    id: 'cp-app-drive-prop-tags',
-                }));
-            }
-
-            $('<label>', {'for': 'cp-app-drive-prop-ctime'}).text(Messages.fm_creation)
-                .appendTo($d);
-            $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
-                id: 'cp-app-drive-prop-ctime',
-            }));
-
-            $('<label>', {'for': 'cp-app-drive-prop-atime'}).text(Messages.fm_lastAccess)
-                .appendTo($d);
-            $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
-                id: 'cp-app-drive-prop-atime',
-            }));
-
-            if (APP.loggedIn && AppConfig.enablePinning) {
-                // check the size of this file...
-                common.getFileSize(data.href, function (e, bytes) {
-                    if (e) {
-                        // there was a problem with the RPC
-                        logError(e);
-
-                        // but we don't want to break the interface.
-                        // continue as if there was no RPC
-
-                        return void cb(void 0, $d);
-                    }
-                    var KB = Util.bytesToKilobytes(bytes);
-
-                    var formatted = Messages._getKey('formattedKB', [KB]);
-                    $('<br>').appendTo($d);
-
-                    $('<label>', {
-                        'for': 'cp-app-drive-prop-size'
-                    }).text(Messages.fc_sizeInKilobytes).appendTo($d);
-
-                    $d.append(UI.dialog.selectable(formatted, {
-                        id: 'cp-app-drive-prop-size',
-                    }));
-                    cb(void 0, $d);
-                });
+            var data = JSON.parse(JSON.stringify(filesOp.getFileData(el)));
+            if (!data || !data.href) { return void cb('INVALID_FILE'); }
+            data.href = base + data.href;
+            if (ro) {
+                data.roHref = data.href;
+                delete data.href;
             } else {
-                cb(void 0, $d);
+                data.roHref = base + getReadOnlyUrl(el);
             }
+
+            UIElements.getProperties(common, data, cb);
         };
 
         $contextMenu.on("click", "a", function(e) {
             e.stopPropagation();
             var paths = $(this).data('paths');
-            //var path = $(this).data('path');
-            //var $element = $(this).data('element');
 
             var el;
             if (paths.length === 0) {
