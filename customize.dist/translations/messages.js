@@ -380,6 +380,7 @@ define(function () {
     out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
+    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently this pad from the server?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
@@ -394,6 +395,7 @@ define(function () {
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
+    out.fm_info_owned = "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.";
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
@@ -412,6 +414,8 @@ define(function () {
     out.fm_burnThisDriveButton = "Erase all information stored by CryptPad in your browser";
     out.fm_burnThisDrive = "Are you sure you want to remove everything stored by CryptPad in your browser?<br>" +
                            "This will remove your CryptDrive and its history from your browser, but your pads will still exist (encrypted) on our server.";
+    out.fm_padIsOwned = "You are the owner of this pad";
+    out.fm_padIsOwnedOther = "This pad is owned by another user";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -819,6 +823,12 @@ define(function () {
     out.creation_createTitle = "Create a pad";
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
+    // Properties about creation data
+    out.creation_owners = "Owners";
+    out.creation_ownedByOther = "Owned by another user";
+    out.creation_noOwner = "No owner";
+    out.creation_expiration = "Expiration time";
+    out.creation_propertiesTitle = "Availability";
 
     return out;
 });

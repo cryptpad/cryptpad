@@ -153,6 +153,41 @@
                 margin-bottom: @alertify_padding-base;
                 margin: 0;
                 overflow: auto;
+                .alertify-tabs {
+                    .alertify-tabs-titles {
+                        height: 30px;
+                        display: flex;
+                        border-bottom: 1px solid @alertify-fore;
+                        margin-bottom: 20px;
+                        box-sizing: content-box;
+                        span {
+                            font-size: 20px;
+                            height: 30px;
+                            line-height: 30px;
+                            box-sizing: border-box;
+                            padding: 0 15px;
+                            border-left: 1px solid lighten(@alertify-base, 10%);
+                            border-right: 1px solid lighten(@alertify-base, 10%);
+                            cursor: pointer;
+                        }
+                        span.alertify-tabs-active {
+                            background-color: @alertify-fore;
+                            border-left: 1px solid @alertify-fore;
+                            border-right: 1px solid @alertify-fore;
+                            color: @alertify-base;
+                            font-weight: bold;
+                            cursor: default;
+                        }
+                    }
+                    .alertify-tabs-contents {
+                        & > div {
+                            display: none;
+                        }
+                        & > div.alertify-tabs-content-active {
+                            display: block;
+                        }
+                    }
+                }
             }
 
             input:not(.form-control), textarea {

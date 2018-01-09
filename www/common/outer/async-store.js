@@ -362,6 +362,7 @@ define([
         if (!data.href) { return void cb({error:'NO_HREF'}); }
         var pad = makePad(data.href, data.title);
         if (data.owners) { pad.owners = data.owners; }
+        if (data.expire) { pad.expire = data.expire; }
         store.userObject.pushData(pad, function (e, id) {
             if (e) { return void cb({error: "Error while adding a template:"+ e}); }
             var path = data.path || ['root'];
@@ -527,6 +528,10 @@ define([
         if (Store.channel && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
             owners = Store.channel.data.owners || undefined;
         }
+        var expire;
+        if (Store.channel && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+            expire = +Store.channel.data.expire || undefined;
+        }
 
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
         var isStronger;
@@ -590,6 +595,7 @@ define([
                 href: href,
                 title: title,
                 owners: owners,
+                expire: expire,
                 path: data.path || (store.data && store.data.initialPath)
             }, cb);
             return;

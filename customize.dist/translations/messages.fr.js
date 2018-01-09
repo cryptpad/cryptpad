@@ -375,6 +375,7 @@ define(function () {
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?";
     out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?";
+    out.fm_deleteOwnedPads = "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";
@@ -391,6 +392,7 @@ define(function () {
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
     out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
                             '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
+    out.fm_info_owned = "Vous êtes propriétaire des pads affichés dans cette catégorie. Cela signifie que vous pouvez choisir de les supprimer définitivement du serveur à n'importe quel moment. Ils seront alors inaccessibles pour tous les autres utilisateurs.";
     out.fm_alert_backupUrl = "Lien de secours pour ce CryptDrive.<br>" +
                              "Il est <strong>fortement recommandé</strong> de garder ce lien pour vous-même.<br>" +
                              "Il vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
@@ -409,6 +411,8 @@ define(function () {
     out.fm_burnThisDriveButton = "Effacer toutes les informations stockées par CryptPad dans votre navigateur";
     out.fm_burnThisDrive = "Êtes-vous sûr de vouloir supprimmer tout ce qui est stocké par CryptPad dans votre navigateur ?<br>" +
                            "Cette action supprimera votre CryptDrive et son historique de votre navigateur, mais les pads existeront toujours (de manière chiffrée) sur notre serveur.";
+    out.fm_padIsOwned = "Vous êtes le propriétaire de ce pad";
+    out.fm_padIsOwnedOther = "Ce pad est la propriété d'un autre utilisateur";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -784,6 +788,14 @@ define(function () {
     out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
     out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
     out.feedback_optout = "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience.";
+
+    // Creation page
+    // Properties about creation data
+    out.creation_owners = "Propriétaires";
+    out.creation_ownedByOther = "Possédé par un autre utilisateur";
+    out.creation_noOwner = "Pad de propriétaire";
+    out.creation_expiration = "Date d'expiration";
+    out.creation_propertiesTitle = "Disponibilité";
 
     return out;
 });

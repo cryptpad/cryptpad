@@ -89,17 +89,50 @@ define([
             common.getPadAttribute('tags', waitFor(function (err, val) {
                 data.tags = val;
             }));
+            common.getPadAttribute('owners', waitFor(function (err, val) {
+                data.owners = val;
+            }));
+            common.getPadAttribute('expire', waitFor(function (err, val) {
+                data.expire = val;
+            }));
         }).nThen(function () {
             cb(void 0, data);
         });
     };
-    UIElements.getProperties = function (common, data, cb) {
+    var getRightsProperties = function (common, data, cb) {
         var $d = $('<div>');
-        $('<strong>').text(Messages.fc_prop).appendTo($d);
+        if (!data) { return void cb(void 0, $d); }
 
+        $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
+            .appendTo($d);
+        var owners = Messages.creation_noOwner;
+        var edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+        if (data.owners && data.owners.length) {
+            if (data.owners.indexOf(edPublic) !== -1) {
+                owners = Messages.yourself;
+            } else {
+                owners = Messages.creation_ownedByOther;
+            }
+        }
+        $d.append(UI.dialog.selectable(owners, {
+            id: 'cp-app-prop-owners',
+        }));
+
+        var expire = Messages.creation_expireFalse;
+        if (data.expire && typeof (data.expire) === "number") {
+            expire = new Date(data.expire).toLocaleString();
+        }
+        $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+            .appendTo($d);
+        $d.append(UI.dialog.selectable(expire, {
+            id: 'cp-app-prop-expire',
+        }));
+        cb(void 0, $d);
+    };
+    var getPadProperties = function (common, data, cb) {
+        var $d = $('<div>');
         if (!data || !data.href) { return void cb(void 0, $d); }
 
-        $('<br>').appendTo($d);
         if (data.href) {
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
             $d.append(UI.dialog.selectable(data.href, {
@@ -161,6 +194,27 @@ define([
         } else {
             cb(void 0, $d);
         }
+    };
+    UIElements.getProperties = function (common, data, cb) {
+        var c1;
+        var c2;
+        NThen(function (waitFor) {
+            getPadProperties(common, data, waitFor(function (e, c) {
+                c1 = c[0];
+            }));
+            getRightsProperties(common, data, waitFor(function (e, c) {
+                c2 = c[0];
+            }));
+        }).nThen(function () {
+            var tabs = UI.dialog.tabs([{
+                title: Messages.fc_prop,
+                content: c1
+            }, {
+                title: Messages.creation_propertiesTitle,
+                content: c2
+            }]);
+            cb (void 0, $(tabs));
+        });
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
@@ -1261,6 +1315,8 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
 
+        // XXX check text for pad creation screen + translate it in French
+
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var $creation = $('<div>', { id: 'cp-creation' }).appendTo($creationContainer);
@@ -1365,10 +1421,6 @@ define([
                 }
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
-
-            // XXX TODO remove these lines
-            //ownedVal = undefined;
-            //expire = undefined;
 
             sframeChan.query("Q_CREATE_PAD", {
                 owned: ownedVal,

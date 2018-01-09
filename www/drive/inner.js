@@ -1182,10 +1182,10 @@ define([
             }
             if (data.owners && data.owners.indexOf(edPublic) !== -1) {
                 var $owned = $ownedIcon.clone().appendTo($state);
-                $owned.attr('title', Messages.fm_padIsOwned || 'TODO: owned pad'); // XXX
+                $owned.attr('title', Messages.fm_padIsOwned);
             } else if (data.owners && data.owners.length) {
                 var $owner = $ownerIcon.clone().appendTo($state);
-                $owner.attr('title', Messages.fm_padIsOwned || 'TODO: owned pad'); // XXX
+                $owner.attr('title', Messages.fm_padIsOwnedOther);
             }
 
             var name = filesOp.getTitle(element);
@@ -1410,7 +1410,7 @@ define([
                     msg = Messages.fm_info_recent;
                     break;
                 case OWNED:
-                    msg = 'TODO: files deleted here are actually removed from the server...'; // XXX
+                    msg = Messages.fm_info_owned;
                     break;
                 default:
                     msg = undefined;
@@ -2693,13 +2693,13 @@ define([
                 // Remove owned pad from drive and remove from server
                 var pathsListD = [];
                 paths.forEach(function (p) { pathsListD.push(p.path); });
-                var msgD = Messages._getKey("fm_deleteOwnedPads"); // XXX
+                var msgD = Messages.fm_deleteOwnedPads;
                 UI.confirm(msgD, function(res) {
                     $(window).focus();
                     if (!res) { return; }
                     filesOp.delete(pathsListD, refresh);
-                    // TODO HERE
-                    // RPC to delete from server?
+                    // TODO XXX HERE
+                    // RPC to delete from server
                 });
                 return;
             }
