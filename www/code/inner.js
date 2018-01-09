@@ -268,11 +268,11 @@ define([
         ////
 
         framework.onContentUpdate(function (newContent) {
-            CodeMirror.contentUpdate(newContent);
             var highlightMode = newContent.highlightMode;
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
+            CodeMirror.contentUpdate(newContent);
             previewPane.draw();
         });
 
