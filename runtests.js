@@ -51,6 +51,9 @@ run('npm', ['install'], () => {
     nThen((waitFor) => {
         if (process.platform === 'darwin') {
             run('bash', ['-c',
+                'echo hi > ~/run_from_pr'
+            ], waitFor());
+            run('bash', ['-c',
                 'ps -ef | grep -v grep | grep \'Google Chrome.app/Contents/MacOS/Google Chrome\'' +
                 ' | awk \'{print $2}\' | while read x; do kill $x; done'
             ], waitFor());
