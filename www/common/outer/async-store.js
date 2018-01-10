@@ -525,11 +525,11 @@ define([
         var h = p.hashData;
 
         var owners;
-        if (Store.channel && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+        if (Store.channel && Store.channel.wc && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
             owners = Store.channel.data.owners || undefined;
         }
         var expire;
-        if (Store.channel && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+        if (Store.channel && Store.channel.wc && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
             expire = +Store.channel.data.expire || undefined;
         }
 
