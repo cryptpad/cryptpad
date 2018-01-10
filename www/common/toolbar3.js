@@ -499,6 +499,8 @@ define([
         if (typeof(Config.customizeShareOptions) === 'function') {
             Config.customizeShareOptions(hashes, options, {
                 type: 'DEFAULT',
+                origin: origin,
+                pathname: pathname
             });
         }
         var dropdownConfigShare = {
@@ -590,7 +592,9 @@ define([
 
         if (typeof(Config.customizeShareOptions) === 'function') {
             Config.customizeShareOptions(hashes, options, {
-                type: 'FILE'
+                type: 'FILE',
+                origin: origin,
+                pathname: pathname
             });
         }
 
