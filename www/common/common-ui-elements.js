@@ -859,9 +859,14 @@ define([
         if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
         if (config.feedback && !config.common) { return void console.error("feedback in a dropdown requires sframe-common"); }
 
+        var isElement = function (o) {
+            return /HTML/.test(Object.prototype.toString.call(o)) &&
+                typeof(o.tagName) === 'string';
+        };
         var allowedTags = ['a', 'p', 'hr'];
         var isValidOption = function (o) {
             if (typeof o !== "object") { return false; }
+            if (isElement(o)) { return true; }
             if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
             return true;
         };
@@ -893,6 +898,7 @@ define([
 
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
+            if (isElement(o)) { return $innerblock.append($(o)); }
             $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
         });
 

@@ -8,7 +8,8 @@ define([
     '/common/common-feedback.js',
     '/customize/messages.js',
     '/common/clipboard.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages, Clipboard) {
+    '/common/hyperscript.js',
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages, Clipboard, h) {
     var Common;
 
     var Bar = {
@@ -495,6 +496,9 @@ define([
                 },
                 content: '<span class="fa fa-eye"></span> ' + Messages.getEmbedCode
             });
+        }
+        if (typeof(Config.customizeShareOptions) === 'function') {
+            Config.customizeShareOptions(hashes, options);
         }
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
