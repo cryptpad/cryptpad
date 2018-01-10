@@ -4,7 +4,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/common-util.js',
     '/common/outer/network-config.js',
-    '/common/credential.js',
+    '/customize/credential.js',
     '/bower_components/chainpad/chainpad.dist.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',

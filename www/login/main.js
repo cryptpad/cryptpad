@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
-    '/common/login.js',
+    '/customize/login.js',
     '/common/common-interface.js',
     '/common/common-realtime.js',
     '/common/common-feedback.js',
