@@ -1,9 +1,9 @@
 define([
     'jquery',
-    '/common/login.js',
+    '/customize/login.js',
     '/common/cryptpad-common.js',
     '/common/test.js',
-    '/common/credential.js', // preloaded for login.js
+    '/customize/credential.js', // preloaded for login.js
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-realtime.js',
