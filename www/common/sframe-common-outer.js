@@ -494,6 +494,10 @@ define([
                 Cryptpad.setLanguage(data, cb);
             });
 
+            sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
+                Cryptpad.clearOwnedChannel(channel, cb);
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
@@ -529,9 +533,6 @@ define([
                 });
                 sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
                     Cryptpad.messenger.setChannelHead(opt, cb);
-                });
-                sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
-                    Cryptpad.clearOwnedChannel(channel, cb);
                 });
 
                 Cryptpad.messenger.onMessageEvent.reg(function (data) {

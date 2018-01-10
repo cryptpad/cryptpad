@@ -419,6 +419,7 @@ define(function () {
     out.fc_open = "Ouvrir";
     out.fc_open_ro = "Ouvrir (lecture seule)";
     out.fc_delete = "Déplacer vers la corbeille";
+    out.fc_delete_owned = "Supprimer du serveur";
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer de votre CryptDrive";
     out.fc_empty = "Vider la corbeille";

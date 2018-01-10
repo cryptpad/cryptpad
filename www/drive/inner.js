@@ -658,10 +658,11 @@ define([
                 if (!isOwnDrive()) {
                     hide.push($menu.find('a.cp-app-drive-context-own'));
                 }
-                if ($element.is('.cp-app-drive-element-owned')) {
-                    hide.push($menu.find('a.cp-app-drive-context-delete'));
-                } else {
+                if (!$element.is('.cp-app-drive-element-owned')) {
                     hide.push($menu.find('a.cp-app-drive-context-deleteowned'));
+                }
+                if ($element.is('.cp-app-drive-element-notrash')) {
+                    hide.push($menu.find('a.cp-app-drive-context-delete'));
                 }
                 if ($element.is('.cp-app-drive-element-file')) {
                     // No folder in files
@@ -1183,6 +1184,7 @@ define([
             if (data.owners && data.owners.indexOf(edPublic) !== -1) {
                 var $owned = $ownedIcon.clone().appendTo($state);
                 $owned.attr('title', Messages.fm_padIsOwned);
+                $span.addClass('cp-app-drive-element-owned');
             } else if (data.owners && data.owners.length) {
                 var $owner = $ownerIcon.clone().appendTo($state);
                 $owner.attr('title', Messages.fm_padIsOwnedOther);
@@ -2065,7 +2067,7 @@ define([
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                                 ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'cp-app-drive-element cp-app-drive-element-file cp-app-drive-element-row' + roClass,
+                    'class': 'cp-app-drive-element cp-app-drive-element-notrash cp-app-drive-element-file cp-app-drive-element-row' + roClass,
                 });
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
@@ -2103,7 +2105,8 @@ define([
                 var roClass = typeof(ro) === 'undefined' ? ' cp-app-drive-element-noreadonly' :
                     ro ? ' cp-app-drive-element-readonly' : '';
                 var $element = $('<li>', {
-                    'class': 'cp-app-drive-element cp-app-drive-element-owned cp-app-drive-element-file cp-app-drive-element-row' + roClass
+                    'class': 'cp-app-drive-element cp-app-drive-element-notrash ' +
+                             'cp-app-drive-element-file cp-app-drive-element-row' + roClass
                 });
                 $element.prepend($icon).dblclick(function () {
                     openFile(id);
@@ -2600,6 +2603,30 @@ define([
                 paths.forEach(function (p) { pathsList.push(p.path); });
                 moveElements(pathsList, [TRASH], false, refresh);
             }
+            else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
+                var pathsListD = [];
+                var msgD = Messages.fm_deleteOwnedPads;
+                UI.confirm(msgD, function(res) {
+                    $(window).focus();
+                    if (!res) { return; }
+                    // Try to delete each selected pad from server, and delete from drive if no error
+                    var n = nThen(function () {});
+                    paths.forEach(function (p) {
+                        var el = filesOp.find(p.path);
+                        var data = filesOp.getFileData(el);
+                        var parsed = Hash.parsePadUrl(data.href);
+                        var channel = Util.base64ToHex(parsed.hashData.channel);
+                        n = n.nThen(function (waitFor) {
+                            sframeChan.query('Q_CONTACTS_CLEAR_OWNED_CHANNEL', channel,
+                                             waitFor(function (e) {
+                                if (e) { return void console.error(e); }
+                                filesOp.delete([p.path], refresh);
+                            }));
+                        });
+                    });
+                });
+                return;
+            }
             else if ($(this).hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
                     var $element = p.element;
@@ -2689,17 +2716,26 @@ define([
                 moveElements(pathsList, [TRASH], false, refresh);
             }
             else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
-                // TODO
-                // Remove owned pad from drive and remove from server
                 var pathsListD = [];
-                paths.forEach(function (p) { pathsListD.push(p.path); });
                 var msgD = Messages.fm_deleteOwnedPads;
                 UI.confirm(msgD, function(res) {
                     $(window).focus();
                     if (!res) { return; }
-                    filesOp.delete(pathsListD, refresh);
-                    // TODO XXX HERE
-                    // RPC to delete from server
+                    // Try to delete each selected pad from server, and delete from drive if no error
+                    var n = nThen(function () {});
+                    paths.forEach(function (p) {
+                        var el = filesOp.find(p.path);
+                        var data = filesOp.getFileData(el);
+                        var parsed = Hash.parsePadUrl(data.href);
+                        var channel = Util.base64ToHex(parsed.hashData.channel);
+                        n = n.nThen(function (waitFor) {
+                            sframeChan.query('Q_CONTACTS_CLEAR_OWNED_CHANNEL', channel,
+                                             waitFor(function (e) {
+                                if (e) { return void console.error(e); }
+                                filesOp.delete([p.path], refresh);
+                            }));
+                        });
+                    });
                 });
                 return;
             }

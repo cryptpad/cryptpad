@@ -107,9 +107,11 @@ define([
             .appendTo($d);
         var owners = Messages.creation_noOwner;
         var edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+        var owned = false;
         if (data.owners && data.owners.length) {
             if (data.owners.indexOf(edPublic) !== -1) {
                 owners = Messages.yourself;
+                owned = true;
             } else {
                 owners = Messages.creation_ownedByOther;
             }
@@ -117,6 +119,12 @@ define([
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
         }));
+        /* TODO
+        if (owned) {
+            var $deleteOwned = $('button').text(Messages.fc_delete_owned).click(function () {
+            });
+            $d.append($deleteOwned);
+        }*/
 
         var expire = Messages.creation_expireFalse;
         if (data.expire && typeof (data.expire) === "number") {
