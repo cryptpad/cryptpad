@@ -8,8 +8,7 @@ define([
     '/common/common-feedback.js',
     '/customize/messages.js',
     '/common/clipboard.js',
-    '/common/hyperscript.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages, Clipboard, h) {
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages, Clipboard) {
     var Common;
 
     var Bar = {
@@ -498,7 +497,9 @@ define([
             });
         }
         if (typeof(Config.customizeShareOptions) === 'function') {
-            Config.customizeShareOptions(hashes, options);
+            Config.customizeShareOptions(hashes, options, {
+                type: 'DEFAULT',
+            });
         }
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
@@ -586,6 +587,13 @@ define([
             attributes: {title: Messages.fileEmbedTitle, 'class': 'cp-toolbar-share-file-embed'},
             content: '<span class="fa fa-file"></span> ' + Messages.getEmbedCode
         });
+
+        if (typeof(Config.customizeShareOptions) === 'function') {
+            Config.customizeShareOptions(hashes, options, {
+                type: 'FILE'
+            });
+        }
+
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
             options: options,
