@@ -326,8 +326,8 @@ define([
 
         var $owned = $(owned);
 
-        var $ok = $owned.find('.fa-check');
-        var $spinner = $owned.find('.fa-spinner');
+        var $ok = $owned.find('.fa-check').hide();
+        var $spinner = $owned.find('.fa-spinner').hide();
 
         $owned.find('input').change(function () {
             $spinner.show();
@@ -392,8 +392,8 @@ define([
 
         var $expire = $(expire);
 
-        var $ok = $expire.find('.fa-check');
-        var $spinner = $expire.find('.fa-spinner');
+        var $ok = $expire.find('.fa-check').hide();
+        var $spinner = $expire.find('.fa-spinner').hide();
 
         var getValue = function () {
             if(!parseInt($expire.find('[name="cp-creation-expire"]:checked').val())) { return 0; }
@@ -447,8 +447,8 @@ define([
 
         var $div = $(skip);
 
-        var $ok = $div.find('.fa-check');
-        var $spinner = $div.find('.fa-spinner');
+        var $ok = $div.find('.fa-check').hide();
+        var $spinner = $div.find('.fa-spinner').hide();
 
         $div.find('input').change(function () {
             $spinner.show();
@@ -504,8 +504,8 @@ define([
 
         var $div = $(skip);
 
-        var $ok = $div.find('.fa-check');
-        var $spinner = $div.find('.fa-spinner');
+        var $ok = $div.find('.fa-check').hide();
+        var $spinner = $div.find('.fa-spinner').hide();
 
         $div.find('input').change(function () {
             $spinner.show();
