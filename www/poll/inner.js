@@ -967,7 +967,6 @@ define([
         });
         APP.$createRow = $('#cp-app-poll-create-option').click(function () {
             var uncommittedCopy = { content: getUncommitted('row') };
-            console.log(uncommittedCopy);
             mergeUncommitted(proxy, uncommittedCopy, true);
             change(null, null, null, null, function() {
                 var newId = APP.uncommitted.content.rowsOrder[0];
@@ -1111,7 +1110,7 @@ define([
                 }).nThen(function (waitFor) {
                     $('#cp-app-poll-create-user').click();
                     setTimeout(waitFor());
-                }).nThen(function (waitFor) {
+                }).nThen(function (/*waitFor*/) {
                     passIfOk(t);
                 });
             });
@@ -1257,6 +1256,7 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (/* waitFor */) {
+            Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
             APP.loggedIn = common.isLoggedIn();
