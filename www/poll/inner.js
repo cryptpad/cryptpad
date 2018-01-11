@@ -17,6 +17,7 @@ define([
     '/common/common-interface.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
+    '/common/test.js',
 
     'cm/addon/display/placeholder',
     'cm/mode/markdown/markdown',
@@ -45,7 +46,8 @@ define([
     ChainPad,
     UI,
     Messages,
-    CMeditor)
+    CMeditor,
+    Test)
 {
     var saveAs = window.saveAs;
 
@@ -1045,6 +1047,77 @@ define([
             publish(true);
         }
 
+        var passIfOk = function (t) {
+            t.assert($('#cp-app-poll-description-published').text().indexOf(
+                "Content for the description") === 0);
+            t.assert($('.cp-app-poll-comments-list-data-name').text().indexOf(
+                "Mr.Me") === 0);
+            t.assert($('.cp-app-poll-comments-list-msg-text').text().indexOf(
+                "Example comment yay") === 0);
+            t.assert($('input[value="Candy"]').length === 1);
+            t.assert($('input[value="IceCream"]').length === 1);
+            t.assert($('input[value="Soda"]').length === 1);
+            t.assert($('input[value="Meeee"]').length === 1);
+            t.pass();
+        };
+
+        if (!APP.readOnly) {
+            console.log("Here is the test");
+            Test(function (t) {
+                if ($('input[value="Candy"]').length) {
+                    t.fail("Test has already been performed");
+                    return;
+                }
+                nThen(function (waitFor) {
+                    console.log("Here is the test1");
+                    APP.editor.setValue("Content for the description");
+                    $('.cp-app-poll-table-editing .cp-app-poll-table-text-cell input').val(
+                        'Candy').keyup();
+                    $('#cp-app-poll-create-option').click();
+                    // TODO(cjd): Need to click outside to lock the first option we create.. bug?
+                    $(window).trigger({ type: "click", which: 1 });
+                    setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    $('.cp-app-poll-table-editing .cp-app-poll-table-text-cell input').val(
+                        'IceCream').keyup();
+                    $('#cp-app-poll-create-option').click();
+                    setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    $('.cp-app-poll-table-editing .cp-app-poll-table-text-cell input').val(
+                        'Soda').keyup();
+                    $('#cp-app-poll-create-option').click();
+                    setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    // Switch to non-admin mode
+                    $('.cp-toolbar-rightside-button.fa-check').click();
+                    setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    $('.cp-app-poll-comments-add-name').val("Mr.Me").keyup();
+                    $('.cp-app-poll-comments-add-msg').val("Example comment yay").keyup();
+                    setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    $('.cp-app-poll-comments-add-submit').click();
+                    setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    $('#cp-app-poll-create-user').parent().find('input').val('Meeee').keyup();
+                    [1,3,2].forEach(function (num, i) {
+                        var x = $($('.cp-app-poll-table-checkbox-contain label')[i]);
+                        for (var ii = 0; ii < num; ii++) {
+                            x.trigger({ type: 'click', which: 1 });
+                        }
+                    });
+                    setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    $('#cp-app-poll-create-user').click();
+                    setTimeout(waitFor());
+                }).nThen(function (/*waitFor*/) {
+                    passIfOk(t);
+                });
+            });
+        } else {
+            Test(passIfOk);
+        }
+
         UI.removeLoadingScreen();
         if (isNew) {
             common.openTemplatePicker();
@@ -1183,6 +1256,7 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (/* waitFor */) {
+            Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
             APP.loggedIn = common.isLoggedIn();

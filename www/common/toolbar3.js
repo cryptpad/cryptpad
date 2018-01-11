@@ -496,6 +496,13 @@ define([
                 content: '<span class="fa fa-eye"></span> ' + Messages.getEmbedCode
             });
         }
+        if (typeof(Config.customizeShareOptions) === 'function') {
+            Config.customizeShareOptions(hashes, options, {
+                type: 'DEFAULT',
+                origin: origin,
+                pathname: pathname
+            });
+        }
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
             options: options,
@@ -582,6 +589,15 @@ define([
             attributes: {title: Messages.fileEmbedTitle, 'class': 'cp-toolbar-share-file-embed'},
             content: '<span class="fa fa-file"></span> ' + Messages.getEmbedCode
         });
+
+        if (typeof(Config.customizeShareOptions) === 'function') {
+            Config.customizeShareOptions(hashes, options, {
+                type: 'FILE',
+                origin: origin,
+                pathname: pathname
+            });
+        }
+
         var dropdownConfigShare = {
             text: $('<div>').append($shareIcon).html(),
             options: options,
