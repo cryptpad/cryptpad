@@ -1317,7 +1317,29 @@ define([
         });
     };
 
-    UIElements.getPadCreationScreen = function (common, cb) {
+    UIElements.setExpirationValue = function (val, $expire) {
+        if (val && typeof (val) === "number") {
+            $expire.find('#cp-creation-expire-true').attr('checked', true);
+            if (val % (3600 * 24 * 30) === 0) {
+                $expire.find('#cp-creation-expire-unit').val("month");
+                $expire.find('#cp-creation-expire-val').val(val / (3600 * 24 * 30));
+                return;
+            }
+            if (val % (3600 * 24) === 0) {
+                $expire.find('#cp-creation-expire-unit').val("day");
+                $expire.find('#cp-creation-expire-val').val(val / (3600 * 24));
+                return;
+            }
+            if (val % 3600 === 0) {
+                $expire.find('#cp-creation-expire-unit').val("hour");
+                $expire.find('#cp-creation-expire-val').val(val / 3600);
+                return;
+            }
+            // if we're here, it means we don't have a valid value so we should check unlimited
+            $expire.find('#cp-creation-expire-false').attr('checked', true);
+        }
+    };
+    UIElements.getPadCreationScreen = function (common, cfg, cb) {
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
@@ -1372,6 +1394,11 @@ define([
         ]);
         $creation.append(owned);
 
+        // If set to "open pad" or not set, check "open pad"
+        if (!cfg.owned && typeof cfg.owned !== "undefined") {
+            $creation.find('#cp-creation-owned-false').attr('checked', true);
+        }
+
         // Life time
         var expire = h('div.cp-creation-expire', [
             h('h2', [
@@ -1413,6 +1440,8 @@ define([
         ]);
         $creation.append(expire);
 
+        UIElements.setExpirationValue(cfg.expire, $creation);
+
         // Create the pad
         var create = function (template) {
             // Type of pad
@@ -1430,7 +1459,7 @@ define([
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
 
-            sframeChan.query("Q_CREATE_PAD", {
+            common.createPad({
                 owned: ownedVal,
                 expire: expireVal,
                 template: template

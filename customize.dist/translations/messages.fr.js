@@ -487,6 +487,7 @@ define(function () {
     out.settings_cat_drive = "CryptDrive";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Documents texte";
+    out.settings_cat_creation = "Nouveau pad";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
 
@@ -546,6 +547,14 @@ define(function () {
     out.settings_padWidth = "Largeur de l'éditeur de texte";
     out.settings_padWidthHint = "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.";
     out.settings_padWidthLabel = "Réduire la largeur de l'éditeur";
+
+    out.settings_creationSkip = "Passer l'écran de création de pad";
+    out.settings_creationSkipHint = "L'écran de création de pad offre de nouvelles options pour créer un pad, permettant d'avoir plus de contrôle et de sécurité concernant vos données. Toutefois, il peut ralentir votre travail en ajoutant une étape supplémentaire et donc, ici, vous avez la possibilité de choisir de passer cet écran et d'utiliser les paramètres par défaut choisis au-dessus.";
+    out.settings_creationSkipTrue = "Passer";
+    out.settings_creationSkipFalse = "Afficher";
+
+    out.settings_templateSkip = "Passer la fenêtre de choix d'un modèle";
+    out.settings_templateSkipHint = "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.";
 
     out.upload_title = "Hébergement de fichiers";
     out.upload_rename = "Souhaitez-vous renommer <b>{0}</b> avant son stockage en ligne ?<br>" +

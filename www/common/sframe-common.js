@@ -165,6 +165,14 @@ define([
     };
 
     // Store
+    funcs.createPad = function (cfg, cb) {
+        ctx.sframeChan.query("Q_CREATE_PAD", {
+            owned: cfg.owned,
+            expire: cfg.expire,
+            template: cfg.template
+        }, cb);
+    };
+
     funcs.sendAnonRpcMsg = function (msg, content, cb) {
         ctx.sframeChan.query('Q_ANON_RPC_MESSAGE', {
             msg: msg,

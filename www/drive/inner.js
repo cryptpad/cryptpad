@@ -2604,7 +2604,6 @@ define([
                 moveElements(pathsList, [TRASH], false, refresh);
             }
             else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
-                var pathsListD = [];
                 var msgD = Messages.fm_deleteOwnedPads;
                 UI.confirm(msgD, function(res) {
                     $(window).focus();
@@ -2716,7 +2715,6 @@ define([
                 moveElements(pathsList, [TRASH], false, refresh);
             }
             else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
-                var pathsListD = [];
                 var msgD = Messages.fm_deleteOwnedPads;
                 UI.confirm(msgD, function(res) {
                     $(window).focus();
