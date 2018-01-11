@@ -49,6 +49,9 @@ var nt = nThen(function (waitFor) {
     ['/slide/#/1/edit/uwKqgj8Ezh2dRaFUWSlrRQ/JkJtAb-hNzfESZEHreAeULU1/', {}],
     ['/slide/#/1/view/uwKqgj8Ezh2dRaFUWSlrRQ/Xa8jXl+jWMpwep41mlrhkqbRuVKGxlueH80Pbgeu5Go/', {}],
 
+    ['/poll/#/1/edit/lHhnKHSs0HBsl2UGfSJoLw/ZXSsAq4BORIixuFaLVBFcxoq/', {}],
+    ['/poll/#/1/view/lHhnKHSs0HBsl2UGfSJoLw/TGul8PhswwLh1klHpBto6yEntWtKES2+tetYrrYec4M/', {}]
+
 ].forEach(function (x) {
     if (failed) { return; }
     var url = 'http://localhost:3000' + x[0];

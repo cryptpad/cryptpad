@@ -34,6 +34,11 @@ define([], function () {
                 if (locks.length === 1) {
                     runLock(locks.shift());
                 }
+            },
+            assert: function (expr) {
+                if (expr || failed) { return; }
+                failed = true;
+                out.failed("Failed assertion");
             }
         });
     };
@@ -131,10 +136,12 @@ define([], function () {
     };
     var enableManual = function () {
         out.testing = 'manual';
+        console.log('manual testing enabled');
         out.passed = function () {
             window.alert("Test passed");
         };
         out.failed = function (reason) {
+            try { throw new Error(reason); } catch (err) { console.log(err.stack); }
             window.alert("Test failed [" + reason + "]");
         };
         out.registerInner = function () { };
@@ -146,18 +153,18 @@ define([], function () {
     out.registerInner = function () { };
     out.registerOuter = function () { };
 
-    if (window.location.hash.indexOf("test=auto") > -1) {
-        enableAuto();
-    } else if (window.location.hash.indexOf("test=manual") > -1) {
-        enableManual();
-    } else if (document.cookie.indexOf('test=') === 0) {
+    if (document.cookie.indexOf('test=') === 0) {
         try {
             var x = JSON.parse(decodeURIComponent(document.cookie.replace('test=', '')));
             if (x.test === 'auto') {
                 out.options = x.opts;
                 enableAuto('auto');
+                console.log("Enable auto testing " + window.origin);
+            } else if (x.test === 'manual') {
+                out.options = x.opts;
+                enableManual();
+                console.log("Enable manual testing " + window.origin);
             }
-            console.log("Enable auto testing " + window.origin);
         } catch (e) { }
     }
 
