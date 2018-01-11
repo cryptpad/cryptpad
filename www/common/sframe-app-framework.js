@@ -300,7 +300,9 @@ define([
                 }
             }
 
-            if (newPad && !AppConfig.displayCreationScreen) {
+            var skipTemp = Util.find(privateDat, ['settings', 'general', 'creation', 'noTemplate']);
+            var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
+            if (newPad && (!skipTemp && skipCreation)) {
                 common.openTemplatePicker();
             }
         };
@@ -402,8 +404,11 @@ define([
         }).nThen(function (waitFor) {
             Test.registerInner(common.getSframeChannel());
             if (!AppConfig.displayCreationScreen) { return; }
-            if (common.getMetadataMgr().getPrivateData().isNewFile) {
-                common.getPadCreationScreen(waitFor());
+            var priv = common.getMetadataMgr().getPrivateData();
+            if (priv.isNewFile) {
+                var c = (priv.settings.general && priv.settings.general.creation) || {};
+                if (c.skip) { return void common.createPad(c, waitFor()); }
+                common.getPadCreationScreen(c, waitFor());
             }
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({

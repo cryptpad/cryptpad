@@ -422,6 +422,7 @@ define(function () {
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
     out.fc_delete = "Move to trash";
+    out.fc_delete_owned = "Delete from the server";
     out.fc_restore = "Restore";
     out.fc_remove = "Remove from your CryptDrive";
     out.fc_empty = "Empty the trash";
@@ -492,6 +493,7 @@ define(function () {
     out.settings_cat_drive = "CryptDrive";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Rich text";
+    out.settings_cat_creation = "New pad";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
@@ -551,6 +553,14 @@ define(function () {
     out.settings_padWidth = "Editor's maximum width";
     out.settings_padWidthHint = "Rich text pads use by default the maximum available width on your screen and it can be difficult to read. You can reduce the editor's width here.";
     out.settings_padWidthLabel = "Reduce the editor's width";
+
+    out.settings_creationSkip = "Skip the pad creation screen";
+    out.settings_creationSkipHint = "The pad creation screen offers new options to create a pad, providing you more control and security over your data. However, it may slow down your workflow by adding one additionnal step so, here, you have the option to skip this screen and use the default settings selected above.";
+    out.settings_creationSkipTrue = "Skip";
+    out.settings_creationSkipFalse = "Display";
+
+    out.settings_templateSkip = "Skip the template selection modal";
+    out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
     out.upload_title = "File upload";
     out.upload_rename = "Do you want to rename <b>{0}</b> before uploading it to the server?<br>" +
@@ -818,7 +828,7 @@ define(function () {
     out.creation_expireHours = "Hours";
     out.creation_expireDays = "Days";
     out.creation_expireMonths = "Months";
-    out.creation_expire1 = "By default, a pad stored by a registered users will never be removed from the server, unless it is requested by its owner.";
+    out.creation_expire1 = "By default, a pad stored by a registered user will never be removed from the server, unless it is requested by its owner.";
     out.creation_expire2 = "If you prefer, you can set a life time to make sure the pad will be permanently deleted from the server and unavailable after the specified date.";
     out.creation_createTitle = "Create a pad";
     out.creation_createFromTemplate = "From template";

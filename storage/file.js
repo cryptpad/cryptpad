@@ -45,7 +45,7 @@ var getChannelMetadata = function (Env, channelId, cb) {
 };
 
 var closeChannel = function (env, channelName, cb) {
-    if (!env.channels[channelName]) { return; }
+    if (!env.channels[channelName]) { return void cb(); }
     try {
         env.channels[channelName].writeStream.close();
         delete env.channels[channelName];
