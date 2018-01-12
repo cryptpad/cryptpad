@@ -13,7 +13,6 @@ define([
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
-    '/bower_components/chainpad/chainpad.dist.js',
     '/common/common-interface.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
@@ -43,7 +42,6 @@ define([
     DiffMd,
     SframeCM,
     Thumb,
-    ChainPad,
     UI,
     Messages,
     CMeditor,
@@ -1110,6 +1108,8 @@ define([
                 }).nThen(function (waitFor) {
                     $('#cp-app-poll-create-user').click();
                     setTimeout(waitFor());
+                }).nThen(function (waitFor) {
+                    APP.rt.realtime.onSettle(waitFor());
                 }).nThen(function (/*waitFor*/) {
                     passIfOk(t);
                 });

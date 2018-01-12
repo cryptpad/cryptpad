@@ -91,6 +91,7 @@ define([
     funcs.createLanguageSelector = callWithCommon(UIElements.createLanguageSelector);
     funcs.createMarkdownToolbar = callWithCommon(UIElements.createMarkdownToolbar);
     funcs.getPadCreationScreen = callWithCommon(UIElements.getPadCreationScreen);
+    funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);

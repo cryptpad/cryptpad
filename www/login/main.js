@@ -6,9 +6,10 @@ define([
     '/common/common-realtime.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
+    '/common/test.js',
 
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore) {
+], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Test) {
     $(function () {
         var $main = $('#mainBlock');
         var Messages = Cryptpad.Messages;
@@ -53,6 +54,7 @@ define([
         });
 
         var hashing = false;
+        var test;
         $('button.login').click(function () {
             if (hashing) { return void console.log("hashing is already in progress"); }
 
@@ -89,6 +91,11 @@ define([
                                 Realtime.whenRealtimeSyncs(result.realtime, function() {
                                     LocalStore.login(result.userHash, result.userName, function () {
                                         hashing = false;
+                                        if (test) {
+                                            localStorage.clear();
+                                            test.pass();
+                                            return;
+                                        }
                                         if (sessionStorage.redirectTo) {
                                             var h = sessionStorage.redirectTo;
                                             var parser = document.createElement('a');
@@ -144,6 +151,13 @@ define([
                 }
             }
             window.location.href = '/register/';
+        });
+
+        Test(function (t) {
+            $uname.val('testuser');
+            $passwd.val('testtest');
+            test = t;
+            $('button.login').click();
         });
     });
 });

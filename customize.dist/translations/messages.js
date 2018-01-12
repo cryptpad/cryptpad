@@ -839,6 +839,9 @@ define(function () {
     out.creation_noOwner = "No owner";
     out.creation_expiration = "Expiration time";
     out.creation_propertiesTitle = "Availability";
+    out.creation_appMenuName = "Advanced mode (Ctrl + E)";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiration pad, etc.).";
+    out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     return out;
 });

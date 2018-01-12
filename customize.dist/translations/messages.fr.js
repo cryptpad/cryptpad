@@ -803,9 +803,12 @@ define(function () {
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Possédé par un autre utilisateur";
-    out.creation_noOwner = "Pad de propriétaire";
+    out.creation_noOwner = "Pas de propriétaire";
     out.creation_expiration = "Date d'expiration";
     out.creation_propertiesTitle = "Disponibilité";
+    out.creation_appMenuName = "Mode avancé (Ctrl + E)";
+    out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez cocher la case pour afficher l'écran de création de pads";
+    out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
 
     return out;
 });
