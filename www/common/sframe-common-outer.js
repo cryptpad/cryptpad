@@ -578,7 +578,7 @@ define([
                     window.location.hash = hash;
                 };
 
-                var cfg = {
+                var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
                     padRpc: Cryptpad.padRpc,
@@ -599,9 +599,9 @@ define([
                     }
                 };
                 Object.keys(rtConfig).forEach(function (k) {
-                    cfg[k] = rtConfig[k];
+                    cpNfCfg[k] = rtConfig[k];
                 });
-                CpNfOuter.start(cfg);
+                CpNfOuter.start(cpNfCfg);
             };
 
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {

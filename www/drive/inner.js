@@ -1922,6 +1922,10 @@ define([
         };
 
         var displayAllFiles = function ($container) {
+            if (AppConfig.disableAnonymousStore && !APP.loggedIn) {
+                $container.append(Messages.anonymousStoreDisabled);
+                return;
+            }
             var allfiles = files[FILES_DATA];
             if (allfiles.length === 0) { return; }
             var $fileHeader = getFileListHeader(false);

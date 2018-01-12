@@ -751,7 +751,7 @@ define([
             }).appendTo($msg);
 
             // Actions
-            if (!c.profile || c.profile === profile) {
+            if (!APP.readOnly && (!c.profile || c.profile === profile)) {
                 $('<button>', {
                     'class': 'btn btn-secondary fa fa-times',
                     'title': Messages.poll_comment_remove,

@@ -29,6 +29,8 @@ define(function () {
     out.typeError = "Ce pad n'est pas compatible avec l'application sélectionnée";
     out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
     out.wrongApp = "Impossible d'afficher le contenu de ce document temps-réel dans votre navigateur. Vous pouvez essayer de recharger la page.";
+    out.padNotPinned = 'Ce pad va expirer dans 3 mois, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
+    out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
 
     out.loading = "Chargement...";
     out.error = "Erreur";
