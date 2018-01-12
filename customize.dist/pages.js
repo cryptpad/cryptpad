@@ -2,8 +2,9 @@ define([
     '/api/config',
     '/common/hyperscript.js',
     '/customize/messages.js',
-    'jquery'
-], function (Config, h, Msg, $) {
+    'jquery',
+    '/customize/application_config.js',
+], function (Config, h, Msg, $, AppConfig) {
     var Pages = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -374,8 +375,61 @@ define([
         ]);
     };
 
+    var isAvailableType = function (x) {
+        if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
+        return AppConfig.availablePadTypes.some(function (type, i) {
+            return x.indexOf(type) > -1;
+        });
+    };
+
     Pages['/'] = Pages['/index.html'] = function () {
         var showingMore = false;
+
+        var icons = [
+                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
+                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
+                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
+                [ 'poll', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
+                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
+                [ 'recent', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
+            ].filter(function (x) {
+                return isAvailableType(x[1]);
+            })
+            .map(function (x, i) {
+                var s = 'div.bs-callout.cp-callout-' + x[0];
+                if (i > 2) { s += '.cp-more.cp-hidden'; }
+                return h('a', [
+                    { href: x[1] },
+                    h(s, [
+                        h('i.fa.' + x[3]),
+                        h('div.pad-button-text', [ h('h4', x[2]) ])
+                    ])
+                ]);
+            });
+
+        var more = icons.length < 4? undefined: h('div.bs-callout.cp-callout-more', [
+                h('div.cp-callout-more-lessmsg.cp-hidden', [
+                    "see less ",
+                    h('i.fa.fa-caret-up')
+                ]),
+                h('div.cp-callout-more-moremsg', [
+                    "see more ",
+                    h('i.fa.fa-caret-down')
+                ]),
+                {
+                    onclick: function () {
+                        if (showingMore) {
+                            $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
+                            $('.cp-callout-more-moremsg').removeClass('cp-hidden');
+                        } else {
+                            $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
+                            $('.cp-callout-more-moremsg').addClass('cp-hidden');
+                        }
+                        showingMore = !showingMore;
+                    }
+                }
+            ]);
+
         return [
             h('div#cp-main', [
                 infopageTopbar(),
@@ -387,44 +441,8 @@ define([
                             h('p', Msg.main_catch_phrase)
                         ]),
                         h('div.col-12.col-sm-6', [
-                            [
-                                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
-                                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
-                                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
-                                [ 'poll.cp-more.cp-hidden', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
-                                [ 'whiteboard.cp-more.cp-hidden', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
-                                [ 'recent.cp-more.cp-hidden', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
-                            ].map(function (x) {
-                                return h('a', [
-                                    { href: x[1] },
-                                    h('div.bs-callout.cp-callout-' + x[0], [
-                                        h('i.fa.' + x[3]),
-                                        h('div.pad-button-text', [ h('h4', x[2]) ])
-                                    ])
-                                ]);
-                            }),
-                            h('div.bs-callout.cp-callout-more', [
-                                h('div.cp-callout-more-lessmsg.cp-hidden', [
-                                    "see less ",
-                                    h('i.fa.fa-caret-up')
-                                ]), 
-                                h('div.cp-callout-more-moremsg', [
-                                    "see more ",
-                                    h('i.fa.fa-caret-down')
-                                ]),
-                                {
-                                    onclick: function () {
-                                        if (showingMore) {
-                                            $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
-                                            $('.cp-callout-more-moremsg').removeClass('cp-hidden');
-                                        } else {
-                                            $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
-                                            $('.cp-callout-more-moremsg').addClass('cp-hidden');
-                                        }
-                                        showingMore = !showingMore;
-                                    }
-                                }
-                            ])
+                            icons,
+                            more
                         ])
                     ])
                 ]),
