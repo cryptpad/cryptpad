@@ -12,6 +12,7 @@ define([
 ], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Test) {
     $(function () {
         var $main = $('#mainBlock');
+        var $checkImport = $('#import-recent');
         var Messages = Cryptpad.Messages;
 
         // main block is hidden in case javascript is disabled
@@ -59,6 +60,7 @@ define([
             if (hashing) { return void console.log("hashing is already in progress"); }
 
             hashing = true;
+            var shouldImport = $checkImport[0].checked;
 
             // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
             window.setTimeout(function () {
@@ -95,6 +97,9 @@ define([
                                             localStorage.clear();
                                             test.pass();
                                             return;
+                                        }
+                                        if (shouldImport) {
+                                            sessionStorage.migrateAnonDrive = 1;
                                         }
                                         if (sessionStorage.redirectTo) {
                                             var h = sessionStorage.redirectTo;
