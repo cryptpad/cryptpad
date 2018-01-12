@@ -10,12 +10,13 @@ define([
     '/common/common-messenger.js',
     '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
+    '/customize/application_config.js',
 
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
 ], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             CpNfWorker, NetConfig,
+             CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap) {
     var Store = {};
 
@@ -523,6 +524,8 @@ define([
         var href = data.href;
         var p = Hash.parsePadUrl(href);
         var h = p.hashData;
+
+        if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
 
         var owners;
         if (Store.channel && Store.channel.wc && Util.base64ToHex(h.channel) === Store.channel.wc.id) {

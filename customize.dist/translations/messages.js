@@ -32,6 +32,7 @@ define(function () {
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
+    out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
 
     out.loading = "Loading...";
     out.error = "Error";
