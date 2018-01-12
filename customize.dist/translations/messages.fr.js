@@ -803,7 +803,7 @@ define(function () {
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Possédé par un autre utilisateur";
-    out.creation_noOwner = "Pad de propriétaire";
+    out.creation_noOwner = "Pas de propriétaire";
     out.creation_expiration = "Date d'expiration";
     out.creation_propertiesTitle = "Disponibilité";
     out.creation_appMenuName = "Mode avancé (Ctrl + E)";

@@ -9,6 +9,7 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/customize/application_config.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -24,7 +25,8 @@ define([
     Util,
     Hash,
     Messages,
-    h
+    h,
+    AppConfig
     )
 {
     var saveAs = window.saveAs;
@@ -64,6 +66,10 @@ define([
             'cp-settings-code-indent-type'
         ]
     };
+
+    if (!AppConfig.dislayCreationScreen) {
+        delete categories.creation;
+    }
 
     var create = {};
 
