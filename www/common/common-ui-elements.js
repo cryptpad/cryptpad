@@ -5,6 +5,7 @@ define([
     '/common/common-hash.js',
     '/common/common-language.js',
     '/common/common-interface.js',
+    '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/hyperscript.js',
     '/common/media-tag.js',
@@ -13,8 +14,8 @@ define([
     '/bower_components/nthen/index.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Util, Hash, Language, UI, Feedback, h, MediaTag, Messages, AppConfig,
-             NThen) {
+], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Messages,
+             AppConfig, NThen) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -1262,6 +1263,64 @@ define([
         return $blockContainer;
     };
 
+    UIElements.createNewPadModal = function (common) {
+        var $modal = UIElements.createModal({
+            id: 'cp-app-toolbar-creation-dialog',
+            $body: $('body')
+        });
+        var $title = $('<h3>').text(Messages.fm_newFile);
+        var $description = $('<p>').text(Messages.creation_newPadModalDescription);
+        $modal.find('.cp-modal').append($title);
+        $modal.find('.cp-modal').append($description);
+
+        var $advanced;
+
+        var $advancedContainer = $('<div>');
+        if (common.isLoggedIn()) {
+            $advanced = $('<input>', {
+                type: 'checkbox',
+                checked: 'checked',
+                id: 'cp-app-toolbar-creation-advanced'
+            }).appendTo($advancedContainer);
+            $('<label>', {
+                for: 'cp-app-toolbar-creation-advanced'
+            }).text(Messages.creation_newPadModalAdvanced).appendTo($advancedContainer);
+        }
+
+        var $container = $('<div>');
+        AppConfig.availablePadTypes.forEach(function (p) {
+            if (p === 'drive') { return; }
+            if (p === 'contacts') { return; }
+            if (p === 'todo') { return; }
+            if (p === 'file') { return; }
+            if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
+                AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
+            var $element = $('<li>', {
+                'class': 'cp-icons-element'
+            }).prepend(UI.getIcon(p)).appendTo($container);
+            $element.append($('<span>', {'class': 'cp-icons-name'})
+                .text(Messages.type[p]));
+            $element.attr('data-type', p);
+            $element.click(function () {
+                $modal.hide();
+                if ($advanced && $advanced.is(':checked')) {
+                    common.sessionStorage.put(Constants.displayPadCreationScreen, true, function () {
+                        common.openURL('/' + p + '/');
+                    });
+                    return;
+                }
+                common.sessionStorage.put(Constants.displayPadCreationScreen, "", function () {
+                    common.openURL('/' + p + '/');
+                });
+            });
+        });
+
+
+        /*var $content = createNewPadIcons($modal, isInRoot);*/
+        $modal.find('.cp-modal').append($container).append($advancedContainer);
+        window.setTimeout(function () { $modal.show(); });
+        //addNewPadHandlers($modal, isInRoot);
+    };
 
     UIElements.initFilePicker = function (common, cfg) {
         var onSelect = cfg.onSelect || $.noop;

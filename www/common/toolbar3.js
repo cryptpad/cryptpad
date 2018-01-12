@@ -933,6 +933,14 @@ define([
                 content: $('<div>').append(UI.getIcon(p)).html() + Messages.type[p]
             });
         });
+        pads_options.push({
+            tag: 'a',
+            attributes: {
+                id: 'cp-app-toolbar-creation-advanced',
+                href: origin
+            },
+            content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
+        });
         var dropdownConfig = {
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
@@ -945,6 +953,10 @@ define([
         var $newPadBlock = UIElements.createDropdown(dropdownConfig);
         $newPadBlock.find('button').attr('title', Messages.newButtonTitle);
         $newPadBlock.find('button').addClass('fa fa-th');
+        $newPadBlock.find('#cp-app-toolbar-creation-advanced').click(function (e) {
+            e.preventDefault();
+            Common.createNewPadModal();
+        });
         return $newPadBlock;
     };
 

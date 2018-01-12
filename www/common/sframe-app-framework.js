@@ -407,7 +407,7 @@ define([
             var priv = common.getMetadataMgr().getPrivateData();
             if (priv.isNewFile) {
                 var c = (priv.settings.general && priv.settings.general.creation) || {};
-                if (c.skip) { return void common.createPad(c, waitFor()); }
+                if (c.skip && !priv.forceCreationScreen) { return void common.createPad(c, waitFor()); }
                 common.getPadCreationScreen(c, waitFor());
             }
         }).nThen(function (waitFor) {

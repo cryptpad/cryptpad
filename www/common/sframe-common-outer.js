@@ -148,6 +148,9 @@ define([
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
             var edPublic;
+            var forceCreationScreen = cfg.useCreationScreen &&
+                                      sessionStorage[Utils.Constants.displayPadCreationScreen];
+            delete sessionStorage[Utils.Constants.displayPadCreationScreen];
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj, isTemplate;
@@ -182,7 +185,8 @@ define([
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: window.location.hash.length > 0
+                        isDeleted: window.location.hash.length > 0,
+                        forceCreationScreen: forceCreationScreen
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 

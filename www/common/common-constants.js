@@ -11,5 +11,6 @@ define(function () {
         oldStorageKey: 'CryptPad_RECENTPADS',
         storageKey: 'filesData',
         tokenKey: 'loginToken',
+        displayPadCreationScreen: 'displayPadCreationScreen'
     };
 });
