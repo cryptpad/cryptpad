@@ -36,7 +36,10 @@ var nt = nThen(function (waitFor) {
 }).nThen;
 
 [
+    // login test must happen after register test
     ['/register/', {}],
+    ['/login/', {}],
+
     ['/assert/', {}],
     ['/auth/', {}],
 
