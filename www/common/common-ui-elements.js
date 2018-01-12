@@ -771,6 +771,7 @@ define([
     */
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     UIElements.createUsageBar = function (common, cb) {
+        if (AppConfig.hideUsageBar) { return cb('USAGE_BAR_HIDDEN'); }
         if (!common.isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
