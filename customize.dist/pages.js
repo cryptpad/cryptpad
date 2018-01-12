@@ -377,7 +377,7 @@ define([
 
     var isAvailableType = function (x) {
         if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
-        return AppConfig.availablePadTypes.some(function (type, i) {
+        return AppConfig.availablePadTypes.some(function (type) {
             return x.indexOf(type) > -1;
         });
     };
