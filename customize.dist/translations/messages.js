@@ -464,7 +464,7 @@ define(function () {
     out.login_invalPass = 'Password required';
     out.login_unhandledError = 'An unexpected error occurred :(';
 
-    out.register_importRecent = "Import pad history (Recommended)";
+    out.register_importRecent = "Import pads from your anonymous session";
     out.register_acceptTerms = "I accept <a href='/terms.html' tabindex='-1'>the terms of service</a>";
     out.register_passwordsDontMatch = "Passwords do not match!";
     out.register_passwordTooShort = "Passwords must be at least {0} characters long.";

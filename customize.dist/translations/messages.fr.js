@@ -462,7 +462,7 @@ define(function () {
     out.login_invalPass = 'Mot de passe requis';
     out.login_unhandledError = "Une erreur inattendue s'est produite :(";
 
-    out.register_importRecent = "Importer l'historique (Recommandé)";
+    out.register_importRecent = "Importer les pads de votre session anonyme";
     out.register_acceptTerms = "J'accepte <a href='/terms.html' tabindex='-1'>les conditions d'utilisation</a>";
     out.register_passwordsDontMatch = "Les mots de passe doivent être identiques!";
     out.register_passwordTooShort = "Les mots de passe doivent contenir au moins {0} caractères.";
