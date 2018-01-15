@@ -496,6 +496,7 @@ define([
     UI.removeLoadingScreen = function (cb) {
         // Release the test blocker, hopefully every test has been registered.
         // This test is created in sframe-boot2.js
+        cb = cb || function () {};
         if (Test.__ASYNC_BLOCKER__) { Test.__ASYNC_BLOCKER__.pass(); }
 
         $('#' + LOADING).addClass("cp-loading-hidden");
@@ -508,9 +509,9 @@ define([
                 'opacity': 0,
                 'pointer-events': 'none',
             });
-            setTimeout(function () {
-                $tip.remove();
-            }, 3750);
+        window.setTimeout(function () {
+            $tip.remove();
+        }, 3750);
         // jquery.fadeout can get stuck
     };
     UI.errorLoadingScreen = function (error, transparent) {

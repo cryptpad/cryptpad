@@ -377,7 +377,7 @@ define([
 
     var isAvailableType = function (x) {
         if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
-        return AppConfig.availablePadTypes.some(function (type, i) {
+        return AppConfig.availablePadTypes.some(function (type) {
             return x.indexOf(type) > -1;
         });
     };
@@ -570,6 +570,19 @@ define([
                             'name': 'password',
                             placeholder: Msg.login_password,
                         }),
+                        h('div.checkbox-container', [
+                            h('input#import-recent', {
+                                name: 'import-recent',
+                                type: 'checkbox',
+                                checked: true
+                            }),
+                            // hscript doesn't generate for on label for some
+                            // reason... use jquery as a temporary fallback
+                            setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
+                            /*h('label', {
+                                'for': 'import-recent',
+                            }, Msg.register_importRecent),*/
+                        ]),
                         h('div.extra', [
                             h('button.login.first.btn', Msg.login_login)
                         ])

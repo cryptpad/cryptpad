@@ -68,7 +68,7 @@ define(function() {
 
     config.displayCreationScreen = false;
 
-    config.disableAnonymousStore = true;
+    config.disableAnonymousStore = false;
 
     return config;
 });
