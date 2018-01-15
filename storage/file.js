@@ -177,13 +177,13 @@ var getChannel = function (env, id, callback) {
             }, env.channelExpirationMs / 2);
         });
     }
-
+    var path = mkPath(env, id);
     var channel = env.channels[id] = {
         atime: +new Date(),
-        messages: [],
         writeStream: undefined,
         whenLoaded: [ callback ],
-        onError: [ ]
+        onError: [ ],
+        path: path
     };
     var complete = function (err) {
         var whenLoaded = channel.whenLoaded;
@@ -195,7 +195,6 @@ var getChannel = function (env, id, callback) {
         }
         whenLoaded.forEach(function (wl) { wl(err, (err) ? undefined : channel); });
     };
-    var path = mkPath(env, id);
     var fileExists;
     var errorState;
     nThen(function (waitFor) {
@@ -206,17 +205,6 @@ var getChannel = function (env, id, callback) {
                 return;
             }
             fileExists = exists;
-        }));
-    }).nThen(function (waitFor) {
-        if (errorState) { return; }
-        if (!fileExists) { return; }
-        readMessages(path, function (msg) {
-            channel.messages.push(msg);
-        }, waitFor(function (err) {
-            if (err) {
-                errorState = true;
-                complete(err);
-            }
         }));
     }).nThen(function (waitFor) {
         if (errorState) { return; }
@@ -255,7 +243,7 @@ var message = function (env, chanName, msg, cb) {
         chan.writeStream.write(msg + '\n', function () {
             chan.onError.splice(chan.onError.indexOf(complete) - 1, 1);
             if (!cb) { return; }
-            chan.messages.push(msg);
+            //chan.messages.push(msg);
             chan.atime = +new Date();
             complete();
         });
@@ -268,19 +256,25 @@ var getMessages = function (env, chanName, handler, cb) {
             cb(err);
             return;
         }
+        var errorState = false;
         try {
-            chan.messages
-                .forEach(function (message) {
-                    if (!message) { return; }
-                    handler(message);
-                });
+            readMessages(chan.path, function (msg) {
+                if (!msg || errorState) { return; }
+                //console.log(msg);
+                handler(msg);
+            }, function (err) {
+                if (err) {
+                    errorState = true;
+                    return void cb(err);
+                }
+                chan.atime = +new Date();
+                cb();
+            });
         } catch (err2) {
             console.error(err2);
             cb(err2);
             return;
         }
-        chan.atime = +new Date();
-        cb();
     });
 };
 
