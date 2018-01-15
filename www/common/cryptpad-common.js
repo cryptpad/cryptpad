@@ -276,6 +276,7 @@ define([
     };
 
     common.setPadAttribute = function (attr, value, cb, href) {
+        cb = cb || function () {};
         href = Hash.getRelativeHref(href || window.location.href);
         postMessage("SET_PAD_ATTRIBUTE", {
             href: href,
@@ -297,6 +298,7 @@ define([
         });
     };
     common.setAttribute = function (attr, value, cb) {
+        cb = cb || function () {};
         postMessage("SET_ATTRIBUTE", {
             attr: attr,
             value: value

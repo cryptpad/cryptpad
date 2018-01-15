@@ -128,6 +128,38 @@ define([
         ]);
     };
 
+    /**
+     * tabs is an array containing objects
+     * each object must have the following attributes:
+     *  - title: String
+     *  - content: DOMElement
+     */
+    dialog.tabs = function (tabs) {
+        var contents = [];
+        var titles = [];
+        tabs.forEach(function (tab) {
+            if (!tab.content || !tab.title) { return; }
+            var content = tab.content;
+            var title = h('span.alertify-tabs-title', tab.title);
+            $(title).click(function () {
+                titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
+                contents.forEach(function (c) { $(c).removeClass('alertify-tabs-content-active'); });
+                $(title).addClass('alertify-tabs-active');
+                $(content).addClass('alertify-tabs-content-active');
+            });
+            titles.push(title);
+            contents.push(content);
+        });
+        if (contents.length) {
+            $(contents[0]).addClass('alertify-tabs-content-active');
+            $(titles[0]).addClass('alertify-tabs-active');
+        }
+        return h('div.alertify-tabs', [
+            h('div.alertify-tabs-titles', titles),
+            h('div.alertify-tabs-contents', contents),
+        ]);
+    };
+
     UI.tokenField = function (target) {
         var t = {
             element: target || h('input'),
@@ -464,6 +496,7 @@ define([
     UI.removeLoadingScreen = function (cb) {
         // Release the test blocker, hopefully every test has been registered.
         // This test is created in sframe-boot2.js
+        cb = cb || function () {};
         if (Test.__ASYNC_BLOCKER__) { Test.__ASYNC_BLOCKER__.pass(); }
 
         $('#' + LOADING).addClass("cp-loading-hidden");
@@ -476,9 +509,9 @@ define([
                 'opacity': 0,
                 'pointer-events': 'none',
             });
-            setTimeout(function () {
-                $tip.remove();
-            }, 3750);
+        window.setTimeout(function () {
+            $tip.remove();
+        }, 3750);
         // jquery.fadeout can get stuck
     };
     UI.errorLoadingScreen = function (error, transparent) {

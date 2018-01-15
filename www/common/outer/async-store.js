@@ -10,12 +10,13 @@ define([
     '/common/common-messenger.js',
     '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
+    '/customize/application_config.js',
 
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
 ], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             CpNfWorker, NetConfig,
+             CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap) {
     var Store = {};
 
@@ -361,6 +362,8 @@ define([
     Store.addPad = function (data, cb) {
         if (!data.href) { return void cb({error:'NO_HREF'}); }
         var pad = makePad(data.href, data.title);
+        if (data.owners) { pad.owners = data.owners; }
+        if (data.expire) { pad.expire = data.expire; }
         store.userObject.pushData(pad, function (e, id) {
             if (e) { return void cb({error: "Error while adding a template:"+ e}); }
             var path = data.path || ['root'];
@@ -522,6 +525,17 @@ define([
         var p = Hash.parsePadUrl(href);
         var h = p.hashData;
 
+        if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
+
+        var owners;
+        if (Store.channel && Store.channel.wc && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+            owners = Store.channel.data.owners || undefined;
+        }
+        var expire;
+        if (Store.channel && Store.channel.wc && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+            expire = +Store.channel.data.expire || undefined;
+        }
+
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
         var isStronger;
 
@@ -583,6 +597,8 @@ define([
             Store.addPad({
                 href: href,
                 title: title,
+                owners: owners,
+                expire: expire,
                 path: data.path || (store.data && store.data.initialPath)
             }, cb);
             return;
@@ -735,12 +751,14 @@ define([
 
     // TODO with sharedworker
     // channel will be an object storing the webchannel associated to each browser tab
-    var channel = {
-        queue: []
+    var channel = Store.channel = {
+        queue: [],
+        data: {}
     };
     Store.joinPad = function (data, cb) {
         var conf = {
-            onReady: function () {
+            onReady: function (padData) {
+                channel.data = padData || {};
                 postMessage("PAD_READY");
             }, // post EV_PAD_READY
             onMessage: function (m) {

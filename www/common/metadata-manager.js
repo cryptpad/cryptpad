@@ -97,6 +97,8 @@ define(['json.sortify'], function (Sortify) {
             change(true);
         });
         sframeChan.on('EV_RT_JOIN', function (ev) {
+            var idx = members.indexOf(ev);
+            if (idx !== -1) { console.log('Error: ' + ev + ' is already in members'); return; }
             members.push(ev);
             if (!meta.user) { return; }
             change(false);

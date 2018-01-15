@@ -35,6 +35,8 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        SFCommonO.start();
+        SFCommonO.start({
+            useCreationScreen: true
+        });
     });
 });

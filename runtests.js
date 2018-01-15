@@ -70,6 +70,8 @@ run('npm', ['install'], () => {
                 ' | awk \'{print $2}\' | while read x; do kill $x; done'
             ], waitFor());
 
+            run('bash', ['-c', 'rm -rf ./blob ./blobstage ./datastore'], waitFor());
+
             run('bash', ['-c', 'caffeinate -u -t 2'], waitFor());
         }
     }).nThen((waitFor) => {

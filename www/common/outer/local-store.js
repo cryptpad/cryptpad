@@ -2,7 +2,8 @@ define([
     '/common/common-constants.js',
     '/common/common-hash.js',
     '/bower_components/localforage/dist/localforage.min.js',
-], function (Constants, Hash, localForage) {
+    '/customize/application_config.js',
+], function (Constants, Hash, localForage, AppConfig) {
     var LocalStore = {};
 
     LocalStore.setThumbnail = function (key, value, cb) {
@@ -115,6 +116,10 @@ define([
             if (typeof (h) === "function") { h(); }
         });
 
+        if (typeof(AppConfig.customizeLogout) === 'function') {
+            return void AppConfig.customizeLogout(cb);
+        }
+
         if (cb) { cb(); }
     };
     LocalStore.onLogout = function (h) {
@@ -122,7 +127,6 @@ define([
         if (logoutHandlers.indexOf(h) !== -1) { return; }
         logoutHandlers.push(h);
     };
-
 
 
 

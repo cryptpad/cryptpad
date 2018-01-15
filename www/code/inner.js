@@ -268,11 +268,11 @@ define([
         ////
 
         framework.onContentUpdate(function (newContent) {
-            CodeMirror.contentUpdate(newContent);
             var highlightMode = newContent.highlightMode;
             if (highlightMode && highlightMode !== CodeMirror.highlightMode) {
                 CodeMirror.setMode(highlightMode, evModeChange.fire);
             }
+            CodeMirror.contentUpdate(newContent);
             previewPane.draw();
         });
 
@@ -357,7 +357,7 @@ define([
                     getContainer: getThumbnailContainer,
                     filter: function (el, before) {
                         if (before) {
-                            $(el).parents().css('overflow', 'visible');
+                            //$(el).parents().css('overflow', 'visible');
                             $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
                             return;
                         }

@@ -32,6 +32,7 @@ define(function () {
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
+    out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -147,6 +148,9 @@ define(function () {
     out.backgroundButtonTitle = 'Change the background color in the presentation';
     out.colorButtonTitle = 'Change the text color in presentation mode';
 
+    out.propertiesButton = "Properties";
+    out.propertiesButtonTitle = 'Get pad properties';
+
     out.printText = "Print";
     out.printButton = "Print (enter)";
     out.printButtonTitle = "Print your slides or export them as a PDF file";
@@ -156,6 +160,11 @@ define(function () {
     out.printTitle = "Display the pad title";
     out.printCSS = "Custom style rules (CSS):";
     out.printTransition = "Enable transition animations";
+    out.printBackground = "Use a background image";
+    out.printBackgroundButton = "Pick an image";
+    out.printBackgroundValue = "<b>Current background:</b> <em>{0}</em>";
+    out.printBackgroundNoValue = "<em>No background image displayed</em>";
+    out.printBackgroundRemove = "Remove this background image";
 
     out.filePickerButton = "Embed a file stored in CryptDrive";
     out.filePicker_close = "Close";
@@ -348,6 +357,7 @@ define(function () {
     out.fm_templateName = "Templates";
     out.fm_searchName = "Search";
     out.fm_recentPadsName = "Recent pads";
+    out.fm_ownedPadsName = "Owned";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
@@ -371,6 +381,7 @@ define(function () {
     out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
+    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently this pad from the server?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
@@ -385,6 +396,7 @@ define(function () {
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
+    out.fm_info_owned = "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.";
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
                              "You can use it to retrieve all your files in case your browser memory got erased.<br>" +
@@ -403,12 +415,15 @@ define(function () {
     out.fm_burnThisDriveButton = "Erase all information stored by CryptPad in your browser";
     out.fm_burnThisDrive = "Are you sure you want to remove everything stored by CryptPad in your browser?<br>" +
                            "This will remove your CryptDrive and its history from your browser, but your pads will still exist (encrypted) on our server.";
+    out.fm_padIsOwned = "You are the owner of this pad";
+    out.fm_padIsOwnedOther = "This pad is owned by another user";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
     out.fc_delete = "Move to trash";
+    out.fc_delete_owned = "Delete from the server";
     out.fc_restore = "Restore";
     out.fc_remove = "Remove from your CryptDrive";
     out.fc_empty = "Empty the trash";
@@ -479,6 +494,7 @@ define(function () {
     out.settings_cat_drive = "CryptDrive";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Rich text";
+    out.settings_cat_creation = "New pad";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
@@ -538,6 +554,14 @@ define(function () {
     out.settings_padWidth = "Editor's maximum width";
     out.settings_padWidthHint = "Rich text pads use by default the maximum available width on your screen and it can be difficult to read. You can reduce the editor's width here.";
     out.settings_padWidthLabel = "Reduce the editor's width";
+
+    out.settings_creationSkip = "Skip the pad creation screen";
+    out.settings_creationSkipHint = "The pad creation screen offers new options to create a pad, providing you more control and security over your data. However, it may slow down your workflow by adding one additionnal step so, here, you have the option to skip this screen and use the default settings selected above.";
+    out.settings_creationSkipTrue = "Skip";
+    out.settings_creationSkipFalse = "Display";
+
+    out.settings_templateSkip = "Skip the template selection modal";
+    out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
     out.upload_title = "File upload";
     out.upload_rename = "Do you want to rename <b>{0}</b> before uploading it to the server?<br>" +
@@ -805,11 +829,20 @@ define(function () {
     out.creation_expireHours = "Hours";
     out.creation_expireDays = "Days";
     out.creation_expireMonths = "Months";
-    out.creation_expire1 = "By default, a pad stored by a registered users will never be removed from the server, unless it is requested by its owner.";
+    out.creation_expire1 = "By default, a pad stored by a registered user will never be removed from the server, unless it is requested by its owner.";
     out.creation_expire2 = "If you prefer, you can set a life time to make sure the pad will be permanently deleted from the server and unavailable after the specified date.";
     out.creation_createTitle = "Create a pad";
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
+    // Properties about creation data
+    out.creation_owners = "Owners";
+    out.creation_ownedByOther = "Owned by another user";
+    out.creation_noOwner = "No owner";
+    out.creation_expiration = "Expiration time";
+    out.creation_propertiesTitle = "Availability";
+    out.creation_appMenuName = "Advanced mode (Ctrl + E)";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiration pad, etc.).";
+    out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     return out;
 });

@@ -9,7 +9,6 @@ define([
     common.start = function (cfg) {
         cfg = cfg || {};
         var realtime = !cfg.noRealtime;
-        var network;
         var secret;
         var hashes;
         var isNewFile;
@@ -44,12 +43,10 @@ define([
                 '/common/common-feedback.js',
                 '/common/outer/local-store.js',
                 '/customize/application_config.js',
-                '/common/outer/network-config.js',
-                '/bower_components/netflux-websocket/netflux-client.js',
                 '/common/test.js',
             ], waitFor(function (_CpNfOuter, _Cryptpad, _Crypto, _Cryptget, _SFrameChannel,
             _FilePicker,  _Messaging, _Notifier, _Hash, _Util, _Realtime,
-            _Constants, _Feedback, _LocalStore, _AppConfig, NetConfig, Netflux, _Test) {
+            _Constants, _Feedback, _LocalStore, _AppConfig, _Test) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
                 Crypto = _Crypto;
@@ -95,12 +92,6 @@ define([
                     messenger: cfg.messaging,
                     driveEvents: cfg.driveEvents
                 });
-
-                if (!cfg.newNetwork) {
-                    Netflux.connect(NetConfig.getWebsocketURL()).then(waitFor(function (nw) {
-                        network = nw;
-                    }));
-                }
             }));
         }).nThen(function (waitFor) {
             $('#sbox-iframe').focus();
@@ -157,6 +148,9 @@ define([
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
             var edPublic;
+            var forceCreationScreen = cfg.useCreationScreen &&
+                                      sessionStorage[Utils.Constants.displayPadCreationScreen];
+            delete sessionStorage[Utils.Constants.displayPadCreationScreen];
             var updateMeta = function () {
                 //console.log('EV_METADATA_UPDATE');
                 var metaObj, isTemplate;
@@ -191,7 +185,8 @@ define([
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: window.location.hash.length > 0
+                        isDeleted: window.location.hash.length > 0,
+                        forceCreationScreen: forceCreationScreen
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -503,6 +498,10 @@ define([
                 Cryptpad.setLanguage(data, cb);
             });
 
+            sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
+                Cryptpad.clearOwnedChannel(channel, cb);
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
@@ -539,9 +538,6 @@ define([
                 sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
                     Cryptpad.messenger.setChannelHead(opt, cb);
                 });
-                sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
-                    Cryptpad.clearOwnedChannel(channel, cb);
-                });
 
                 Cryptpad.messenger.onMessageEvent.reg(function (data) {
                     sframeChan.event('EV_CONTACTS_MESSAGE', data);
@@ -567,7 +563,8 @@ define([
 
             // Join the netflux channel
             var rtStarted = false;
-            var startRealtime = function () {
+            var startRealtime = function (rtConfig) {
+                rtConfig = rtConfig || {};
                 rtStarted = true;
                 var replaceHash = function (hash) {
                     if (window.history && window.history.replaceState) {
@@ -581,7 +578,7 @@ define([
                     window.location.hash = hash;
                 };
 
-                CpNfOuter.start({
+                var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,
                     padRpc: Cryptpad.padRpc,
@@ -600,7 +597,11 @@ define([
                         if (readOnly || cfg.noHash) { return; }
                         replaceHash(Utils.Hash.getEditHashFromKeys(wc, secret.keys));
                     }
+                };
+                Object.keys(rtConfig).forEach(function (k) {
+                    cpNfCfg[k] = rtConfig[k];
                 });
+                CpNfOuter.start(cpNfCfg);
             };
 
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
@@ -624,12 +625,11 @@ define([
 
                 var rtConfig = {};
                 if (data.owned) {
-                    //rtConfig.owners = [edPublic];
+                    rtConfig.owners = [edPublic];
                 }
                 if (data.expire) {
-                    //rtConfig.expire = data.expire;
+                    rtConfig.expire = data.expire;
                 }
-
                 if (data.template) {
                     // Pass rtConfig to useTemplate because Cryptput will create the file and
                     // we need to have the owners and expiration time in the first line on the
@@ -651,7 +651,7 @@ define([
 
             if (!realtime) { return; }
             if (isNewFile && Utils.LocalStore.isLoggedIn()
-                && AppConfig.displayCreationScreen) { return; }
+                && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
 
             startRealtime();
         });

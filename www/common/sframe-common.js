@@ -91,6 +91,7 @@ define([
     funcs.createLanguageSelector = callWithCommon(UIElements.createLanguageSelector);
     funcs.createMarkdownToolbar = callWithCommon(UIElements.createMarkdownToolbar);
     funcs.getPadCreationScreen = callWithCommon(UIElements.getPadCreationScreen);
+    funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -165,6 +166,14 @@ define([
     };
 
     // Store
+    funcs.createPad = function (cfg, cb) {
+        ctx.sframeChan.query("Q_CREATE_PAD", {
+            owned: cfg.owned,
+            expire: cfg.expire,
+            template: cfg.template
+        }, cb);
+    };
+
     funcs.sendAnonRpcMsg = function (msg, content, cb) {
         ctx.sframeChan.query('Q_ANON_RPC_MESSAGE', {
             msg: msg,

@@ -75,7 +75,11 @@ define([
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
-        var m = '<span class="cp-app-slide-container"><span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container"><span class="'+slideClass+'">')+'</span></span>';
+        var mediatagBg = '';
+        if (options.background && options.background.mt) {
+            mediatagBg = options.background.mt;
+        }
+        var m = '<span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'">'+DiffMd.render(c).replace(separatorReg, '</span></span><span class="cp-app-slide-container">' + mediatagBg + '<span class="'+slideClass+'">')+'</span></span>';
 
         try { DiffMd.apply(m, $content); } catch (e) { return console.error(e); }
 

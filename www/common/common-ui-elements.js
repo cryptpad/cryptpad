@@ -5,13 +5,17 @@ define([
     '/common/common-hash.js',
     '/common/common-language.js',
     '/common/common-interface.js',
+    '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/hyperscript.js',
     '/common/media-tag.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
+    '/bower_components/nthen/index.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Util, Hash, Language, UI, Feedback, h, MediaTag, Messages) {
+], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Messages,
+             AppConfig, NThen) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -52,6 +56,174 @@ define([
                 reader.readAsText(file, type);
             });
         };
+    };
+
+    var getPropertiesData = function (common, cb) {
+        var data = {};
+        NThen(function (waitFor) {
+            common.getPadAttribute('href', waitFor(function (err, val) {
+                var base = common.getMetadataMgr().getPrivateData().origin;
+
+                var parsed = Hash.parsePadUrl(val);
+                if (parsed.hashData.mode === "view") {
+                    data.roHref = base + val;
+                    return;
+                }
+
+                // We're not in a read-only pad
+                data.href = base + val;
+                // Get Read-only href
+                if (parsed.hashData.type !== "pad") { return; }
+                var i = data.href.indexOf('#') + 1;
+                var hBase = data.href.slice(0, i);
+                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
+                if (!hrefsecret.keys) { return; }
+                var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+                data.roHref = hBase + viewHash;
+            }));
+            common.getPadAttribute('atime', waitFor(function (err, val) {
+                data.atime = val;
+            }));
+            common.getPadAttribute('ctime', waitFor(function (err, val) {
+                data.ctime = val;
+            }));
+            common.getPadAttribute('tags', waitFor(function (err, val) {
+                data.tags = val;
+            }));
+            common.getPadAttribute('owners', waitFor(function (err, val) {
+                data.owners = val;
+            }));
+            common.getPadAttribute('expire', waitFor(function (err, val) {
+                data.expire = val;
+            }));
+        }).nThen(function () {
+            cb(void 0, data);
+        });
+    };
+    var getRightsProperties = function (common, data, cb) {
+        var $d = $('<div>');
+        if (!data) { return void cb(void 0, $d); }
+
+        $('<label>', {'for': 'cp-app-prop-owners'}).text(Messages.creation_owners)
+            .appendTo($d);
+        var owners = Messages.creation_noOwner;
+        var edPublic = common.getMetadataMgr().getPrivateData().edPublic;
+        var owned = false;
+        if (data.owners && data.owners.length) {
+            if (data.owners.indexOf(edPublic) !== -1) {
+                owners = Messages.yourself;
+                owned = true;
+            } else {
+                owners = Messages.creation_ownedByOther;
+            }
+        }
+        $d.append(UI.dialog.selectable(owners, {
+            id: 'cp-app-prop-owners',
+        }));
+        /* TODO
+        if (owned) {
+            var $deleteOwned = $('button').text(Messages.fc_delete_owned).click(function () {
+            });
+            $d.append($deleteOwned);
+        }*/
+
+        var expire = Messages.creation_expireFalse;
+        if (data.expire && typeof (data.expire) === "number") {
+            expire = new Date(data.expire).toLocaleString();
+        }
+        $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+            .appendTo($d);
+        $d.append(UI.dialog.selectable(expire, {
+            id: 'cp-app-prop-expire',
+        }));
+        cb(void 0, $d);
+    };
+    var getPadProperties = function (common, data, cb) {
+        var $d = $('<div>');
+        if (!data || !data.href) { return void cb(void 0, $d); }
+
+        if (data.href) {
+            $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
+            $d.append(UI.dialog.selectable(data.href, {
+                id: 'cp-app-prop-link',
+            }));
+        }
+
+        if (data.roHref) {
+            $('<label>', {'for': 'cp-app-prop-rolink'}).text(Messages.viewShare).appendTo($d);
+            $d.append(UI.dialog.selectable(data.roHref, {
+                id: 'cp-app-prop-rolink',
+            }));
+        }
+
+        if (data.tags && Array.isArray(data.tags)) {
+            $('<label>', {'for': 'cp-app-prop-tags'}).text(Messages.fm_prop_tagsList).appendTo($d);
+            $d.append(UI.dialog.selectable(data.tags.join(', '), {
+                id: 'cp-app-prop-tags',
+            }));
+        }
+
+        $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
+            .appendTo($d);
+        $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+            id: 'cp-app-prop-ctime',
+        }));
+
+        $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
+            .appendTo($d);
+        $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
+            id: 'cp-app-prop-atime',
+        }));
+
+        if (common.isLoggedIn() && AppConfig.enablePinning) {
+            // check the size of this file...
+            common.getFileSize(data.href, function (e, bytes) {
+                if (e) {
+                    // there was a problem with the RPC
+                    console.error(e);
+
+                    // but we don't want to break the interface.
+                    // continue as if there was no RPC
+                    return void cb(void 0, $d);
+                }
+                var KB = Util.bytesToKilobytes(bytes);
+
+                var formatted = Messages._getKey('formattedKB', [KB]);
+                $('<br>').appendTo($d);
+
+                $('<label>', {
+                    'for': 'cp-app-prop-size'
+                }).text(Messages.fc_sizeInKilobytes).appendTo($d);
+
+                $d.append(UI.dialog.selectable(formatted, {
+                    id: 'cp-app-prop-size',
+                }));
+                cb(void 0, $d);
+            });
+        } else {
+            cb(void 0, $d);
+        }
+    };
+    UIElements.getProperties = function (common, data, cb) {
+        var c1;
+        var c2;
+        NThen(function (waitFor) {
+            getPadProperties(common, data, waitFor(function (e, c) {
+                c1 = c[0];
+            }));
+            getRightsProperties(common, data, waitFor(function (e, c) {
+                c2 = c[0];
+            }));
+        }).nThen(function () {
+            var tabs = UI.dialog.tabs([{
+                title: Messages.fc_prop,
+                content: c1
+            }, {
+                title: Messages.creation_propertiesTitle,
+                content: c2
+            }]);
+            cb (void 0, $(tabs));
+        });
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
@@ -254,6 +426,23 @@ define([
                     updateIcon(isVisible);
                 });
                 updateIcon(data.element.is(':visible'));
+                break;
+            case 'properties':
+                button = $('<button>', {
+                    'class': 'fa fa-info-circle',
+                    title: Messages.propertiesButtonTitle,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
+                .text(Messages.propertiesButton))
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    getPropertiesData(common, function (e, data) {
+                        if (e) { return void console.error(e); }
+                        UIElements.getProperties(common, data, function (e, $prop) {
+                            if (e) { return void console.error(e); }
+                            UI.alert($prop[0], undefined, true);
+                        });
+                    });
+                });
                 break;
             default:
                 button = $('<button>', {
@@ -583,6 +772,7 @@ define([
     */
     var LIMIT_REFRESH_RATE = 30000; // milliseconds
     UIElements.createUsageBar = function (common, cb) {
+        if (AppConfig.hideUsageBar) { return cb('USAGE_BAR_HIDDEN'); }
         if (!common.isLoggedIn()) { return cb("NOT_LOGGED_IN"); }
         // getPinnedUsage updates common.account.usage, and other values
         // so we can just use those and only check for errors
@@ -679,9 +869,14 @@ define([
         if (typeof config !== "object" || !Array.isArray(config.options)) { return; }
         if (config.feedback && !config.common) { return void console.error("feedback in a dropdown requires sframe-common"); }
 
+        var isElement = function (o) {
+            return /HTML/.test(Object.prototype.toString.call(o)) &&
+                typeof(o.tagName) === 'string';
+        };
         var allowedTags = ['a', 'p', 'hr'];
         var isValidOption = function (o) {
             if (typeof o !== "object") { return false; }
+            if (isElement(o)) { return true; }
             if (!o.tag || allowedTags.indexOf(o.tag) === -1) { return false; }
             return true;
         };
@@ -713,6 +908,7 @@ define([
 
         config.options.forEach(function (o) {
             if (!isValidOption(o)) { return; }
+            if (isElement(o)) { return $innerblock.append($(o)); }
             $('<' + o.tag + '>', o.attributes || {}).html(o.content || '').appendTo($innerblock);
         });
 
@@ -1068,6 +1264,64 @@ define([
         return $blockContainer;
     };
 
+    UIElements.createNewPadModal = function (common) {
+        var $modal = UIElements.createModal({
+            id: 'cp-app-toolbar-creation-dialog',
+            $body: $('body')
+        });
+        var $title = $('<h3>').text(Messages.fm_newFile);
+        var $description = $('<p>').text(Messages.creation_newPadModalDescription);
+        $modal.find('.cp-modal').append($title);
+        $modal.find('.cp-modal').append($description);
+
+        var $advanced;
+
+        var $advancedContainer = $('<div>');
+        if (common.isLoggedIn()) {
+            $advanced = $('<input>', {
+                type: 'checkbox',
+                checked: 'checked',
+                id: 'cp-app-toolbar-creation-advanced'
+            }).appendTo($advancedContainer);
+            $('<label>', {
+                for: 'cp-app-toolbar-creation-advanced'
+            }).text(Messages.creation_newPadModalAdvanced).appendTo($advancedContainer);
+        }
+
+        var $container = $('<div>');
+        AppConfig.availablePadTypes.forEach(function (p) {
+            if (p === 'drive') { return; }
+            if (p === 'contacts') { return; }
+            if (p === 'todo') { return; }
+            if (p === 'file') { return; }
+            if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
+                AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
+            var $element = $('<li>', {
+                'class': 'cp-icons-element'
+            }).prepend(UI.getIcon(p)).appendTo($container);
+            $element.append($('<span>', {'class': 'cp-icons-name'})
+                .text(Messages.type[p]));
+            $element.attr('data-type', p);
+            $element.click(function () {
+                $modal.hide();
+                if ($advanced && $advanced.is(':checked')) {
+                    common.sessionStorage.put(Constants.displayPadCreationScreen, true, function () {
+                        common.openURL('/' + p + '/');
+                    });
+                    return;
+                }
+                common.sessionStorage.put(Constants.displayPadCreationScreen, "", function () {
+                    common.openURL('/' + p + '/');
+                });
+            });
+        });
+
+
+        /*var $content = createNewPadIcons($modal, isInRoot);*/
+        $modal.find('.cp-modal').append($container).append($advancedContainer);
+        window.setTimeout(function () { $modal.show(); });
+        //addNewPadHandlers($modal, isInRoot);
+    };
 
     UIElements.initFilePicker = function (common, cfg) {
         var onSelect = cfg.onSelect || $.noop;
@@ -1129,11 +1383,35 @@ define([
         });
     };
 
-    UIElements.getPadCreationScreen = function (common, cb) {
+    UIElements.setExpirationValue = function (val, $expire) {
+        if (val && typeof (val) === "number") {
+            $expire.find('#cp-creation-expire-true').attr('checked', true);
+            if (val % (3600 * 24 * 30) === 0) {
+                $expire.find('#cp-creation-expire-unit').val("month");
+                $expire.find('#cp-creation-expire-val').val(val / (3600 * 24 * 30));
+                return;
+            }
+            if (val % (3600 * 24) === 0) {
+                $expire.find('#cp-creation-expire-unit').val("day");
+                $expire.find('#cp-creation-expire-val').val(val / (3600 * 24));
+                return;
+            }
+            if (val % 3600 === 0) {
+                $expire.find('#cp-creation-expire-unit').val("hour");
+                $expire.find('#cp-creation-expire-val').val(val / 3600);
+                return;
+            }
+            // if we're here, it means we don't have a valid value so we should check unlimited
+            $expire.find('#cp-creation-expire-false').attr('checked', true);
+        }
+    };
+    UIElements.getPadCreationScreen = function (common, cfg, cb) {
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
+
+        // XXX check text for pad creation screen + translate it in French
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
@@ -1182,6 +1460,11 @@ define([
         ]);
         $creation.append(owned);
 
+        // If set to "open pad" or not set, check "open pad"
+        if (!cfg.owned && typeof cfg.owned !== "undefined") {
+            $creation.find('#cp-creation-owned-false').attr('checked', true);
+        }
+
         // Life time
         var expire = h('div.cp-creation-expire', [
             h('h2', [
@@ -1223,6 +1506,8 @@ define([
         ]);
         $creation.append(expire);
 
+        UIElements.setExpirationValue(cfg.expire, $creation);
+
         // Create the pad
         var create = function (template) {
             // Type of pad
@@ -1240,11 +1525,7 @@ define([
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
 
-            // XXX TODO remove these lines
-            ownedVal = undefined;
-            expire = undefined;
-
-            sframeChan.query("Q_CREATE_PAD", {
+            common.createPad({
                 owned: ownedVal,
                 expire: expireVal,
                 template: template

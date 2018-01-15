@@ -1,7 +1,7 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "1.23.0",
+  "version": "1.24.0",
   "dependencies": {
     "chainpad-server": "^1.0.1",
     "express": "~4.10.1",

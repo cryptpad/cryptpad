@@ -300,7 +300,9 @@ define([
                 }
             }
 
-            if (newPad && !AppConfig.displayCreationScreen) {
+            var skipTemp = Util.find(privateDat, ['settings', 'general', 'creation', 'noTemplate']);
+            var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
+            if (newPad && (!skipTemp && skipCreation)) {
                 common.openTemplatePicker();
             }
         };
@@ -368,9 +370,9 @@ define([
                     if (data.type !== 'file') { console.log('unhandled embed type ' + data.type); return; } 
                     var privateDat = cpNfInner.metadataMgr.getPrivateData();
                     var origin = privateDat.fileHost || privateDat.origin;
-                    var src = origin + data.src;
+                    var src = data.src = origin + data.src;
                     mediaTagEmbedder($('<media-tag src="' + src +
-                        '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'));
+                        '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
                 }
             });
             $embedButton = $('<button>', {
@@ -402,8 +404,11 @@ define([
         }).nThen(function (waitFor) {
             Test.registerInner(common.getSframeChannel());
             if (!AppConfig.displayCreationScreen) { return; }
-            if (common.getMetadataMgr().getPrivateData().isNewFile) {
-                common.getPadCreationScreen(waitFor());
+            var priv = common.getMetadataMgr().getPrivateData();
+            if (priv.isNewFile) {
+                var c = (priv.settings.general && priv.settings.general.creation) || {};
+                if (c.skip && !priv.forceCreationScreen) { return void common.createPad(c, waitFor()); }
+                common.getPadCreationScreen(c, waitFor());
             }
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
@@ -547,6 +552,9 @@ define([
                 var $tags = common.createButton('hashtag', true);
                 toolbar.$rightside.append($tags);
             }
+
+            var $properties = common.createButton('properties', true);
+            toolbar.$drawer.append($properties);
 
             createFilePicker();
 

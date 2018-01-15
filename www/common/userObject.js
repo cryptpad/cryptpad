@@ -453,6 +453,12 @@ define([
                 .map(function (str) { return Number(str); });
             return sorted;
         };
+        exp.getOwnedPads = function (edPub) {
+            var allFiles = files[FILES_DATA];
+            return Object.keys(allFiles).filter(function (id) {
+                return allFiles[id].owners && allFiles[id].owners.indexOf(edPub) !== -1;
+            }).map(function (k) { return Number(k); });
+        };
 
         /**
          * OPERATIONS

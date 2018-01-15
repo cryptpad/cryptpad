@@ -29,6 +29,8 @@ define(function () {
     out.typeError = "Ce pad n'est pas compatible avec l'application sélectionnée";
     out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
     out.wrongApp = "Impossible d'afficher le contenu de ce document temps-réel dans votre navigateur. Vous pouvez essayer de recharger la page.";
+    out.padNotPinned = 'Ce pad va expirer dans 3 mois, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
+    out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
 
     out.loading = "Chargement...";
     out.error = "Erreur";
@@ -144,6 +146,9 @@ define(function () {
     out.backgroundButtonTitle = 'Changer la couleur de fond de la présentation';
     out.colorButtonTitle = 'Changer la couleur du texte en mode présentation';
 
+    out.propertiesButton = "Propriétés";
+    out.propertiesButtonTitle = 'Voir les propriétés de ce pad';
+
     out.printText = "Imprimer";
     out.printButton = "Imprimer (Entrée)";
     out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";
@@ -153,6 +158,11 @@ define(function () {
     out.printTitle = "Afficher le titre du pad";
     out.printCSS = "Personnaliser l'apparence (CSS):";
     out.printTransition = "Activer les animations de transition";
+    out.printBackground = "Utiliser une image d'arrière-plan";
+    out.printBackgroundButton = "Choisir une image";
+    out.printBackgroundValue = "<b>Arrière-plan actuel:</b> <em>{0}</em>";
+    out.printBackgroundNoValue = "<em>Aucun arrière-plan affiché</em>";
+    out.printBackgroundRemove = "Supprimer cet arrière-plan";
 
     out.filePickerButton = "Intégrer un fichier stocké dans CryptDrive";
     out.filePicker_close = "Fermer";
@@ -345,6 +355,7 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_searchName = "Recherche";
     out.fm_recentPadsName = "Pads récents";
+    out.fm_ownedPadsName = "Possédés";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
@@ -366,6 +377,7 @@ define(function () {
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?";
     out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?";
+    out.fm_deleteOwnedPads = "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";
@@ -382,6 +394,7 @@ define(function () {
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
     out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
                             '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
+    out.fm_info_owned = "Vous êtes propriétaire des pads affichés dans cette catégorie. Cela signifie que vous pouvez choisir de les supprimer définitivement du serveur à n'importe quel moment. Ils seront alors inaccessibles pour tous les autres utilisateurs.";
     out.fm_alert_backupUrl = "Lien de secours pour ce CryptDrive.<br>" +
                              "Il est <strong>fortement recommandé</strong> de garder ce lien pour vous-même.<br>" +
                              "Il vous servira en cas de perte des données de votre navigateur afin de retrouver vos fichiers.<br>" +
@@ -400,12 +413,15 @@ define(function () {
     out.fm_burnThisDriveButton = "Effacer toutes les informations stockées par CryptPad dans votre navigateur";
     out.fm_burnThisDrive = "Êtes-vous sûr de vouloir supprimmer tout ce qui est stocké par CryptPad dans votre navigateur ?<br>" +
                            "Cette action supprimera votre CryptDrive et son historique de votre navigateur, mais les pads existeront toujours (de manière chiffrée) sur notre serveur.";
+    out.fm_padIsOwned = "Vous êtes le propriétaire de ce pad";
+    out.fm_padIsOwnedOther = "Ce pad est la propriété d'un autre utilisateur";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";
     out.fc_open_ro = "Ouvrir (lecture seule)";
     out.fc_delete = "Déplacer vers la corbeille";
+    out.fc_delete_owned = "Supprimer du serveur";
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer de votre CryptDrive";
     out.fc_empty = "Vider la corbeille";
@@ -473,6 +489,7 @@ define(function () {
     out.settings_cat_drive = "CryptDrive";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Documents texte";
+    out.settings_cat_creation = "Nouveau pad";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
 
@@ -532,6 +549,14 @@ define(function () {
     out.settings_padWidth = "Largeur de l'éditeur de texte";
     out.settings_padWidthHint = "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.";
     out.settings_padWidthLabel = "Réduire la largeur de l'éditeur";
+
+    out.settings_creationSkip = "Passer l'écran de création de pad";
+    out.settings_creationSkipHint = "L'écran de création de pad offre de nouvelles options pour créer un pad, permettant d'avoir plus de contrôle et de sécurité concernant vos données. Toutefois, il peut ralentir votre travail en ajoutant une étape supplémentaire et donc, ici, vous avez la possibilité de choisir de passer cet écran et d'utiliser les paramètres par défaut choisis au-dessus.";
+    out.settings_creationSkipTrue = "Passer";
+    out.settings_creationSkipFalse = "Afficher";
+
+    out.settings_templateSkip = "Passer la fenêtre de choix d'un modèle";
+    out.settings_templateSkipHint = "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.";
 
     out.upload_title = "Hébergement de fichiers";
     out.upload_rename = "Souhaitez-vous renommer <b>{0}</b> avant son stockage en ligne ?<br>" +
@@ -775,6 +800,17 @@ define(function () {
     out.feedback_about = "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous realisez certaines actions.";
     out.feedback_privacy = "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.";
     out.feedback_optout = "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience.";
+
+    // Creation page
+    // Properties about creation data
+    out.creation_owners = "Propriétaires";
+    out.creation_ownedByOther = "Possédé par un autre utilisateur";
+    out.creation_noOwner = "Pas de propriétaire";
+    out.creation_expiration = "Date d'expiration";
+    out.creation_propertiesTitle = "Disponibilité";
+    out.creation_appMenuName = "Mode avancé (Ctrl + E)";
+    out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez cocher la case pour afficher l'écran de création de pads";
+    out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
 
     return out;
 });

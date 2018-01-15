@@ -79,6 +79,28 @@ h6 { font-size: 24px; }
         }
     }
 }
+.cp-app-slide-shown {
+    .cp-app-slide-container {
+        position: relative;
+        &> media-tag {
+            position: absolute;
+            top:0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            &> img {
+                width: 100vw;
+                height: 56.25vw; // height:width ratio = 9/16 = .5625
+                max-height: 100vh;
+                max-width: 177.78vh; // 16/9 = 1.778
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
+        }
+    }
+}
 .cp-app-slide-preview {
     .cp-app-slide-viewer {
         width: 50vw;
@@ -91,6 +113,26 @@ h6 { font-size: 24px; }
             display: block;
             height: 100%;
             #cp-app-slide-modal-content {
+                .cp-app-slide-container {
+                    position: relative;
+                    &> media-tag {
+                        position: absolute;
+                        top:0; right: 0; bottom: 0; left: 0;
+                        z-index: -1;
+                        &> img {
+                            width: 50vw;
+                            height: 28.125vw;
+                            max-height: ~"calc(100vh - 96px)";
+                            max-width: ~"calc(16 / 9 * (100vh - 96px))";
+                            position: absolute;
+                            left: 0;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
+                            margin: auto;
+                        }
+                    }
+                }
                 .cp-app-slide-container {
                     width: 100%;
                 }
@@ -115,6 +157,11 @@ h6 { font-size: 24px; }
 
 /* Slide position (print mode) */
 @ratio:0.9;
+@media print {
+    #cp-app-slide-editor-container {
+        display: none;
+    }
+}
 #cp-app-slide-print {
     position: relative;
     display: none;
@@ -138,6 +185,24 @@ h6 { font-size: 24px; }
             padding-top: 0;
         }
 
+    }
+    .cp-app-slide-container {
+        position: relative;
+        &> media-tag {
+            position: absolute;
+            top:0; right: 0; bottom: 0; left: 0;
+            z-index: -1;
+            &> img {
+                width: 90vw;
+                height: 50.625vw;
+                position: absolute;
+                left: 0;
+                right: 0;
+                top: 0;
+                bottom: 0;
+                margin: auto;
+            }
+        }
     }
     .cp-app-slide-container {
         width: 90vw;

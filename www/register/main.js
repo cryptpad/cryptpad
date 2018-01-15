@@ -1,9 +1,9 @@
 define([
     'jquery',
-    '/common/login.js',
+    '/customize/login.js',
     '/common/cryptpad-common.js',
     '/common/test.js',
-    '/common/credential.js', // preloaded for login.js
+    '/customize/credential.js', // preloaded for login.js
     '/common/common-interface.js',
     '/common/common-util.js',
     '/common/common-realtime.js',
@@ -54,11 +54,8 @@ define([
         var $register = $('button#register');
 
         var registering = false;
+        var test;
         var logMeIn = function (result) {
-            if (Test.testing) {
-                Test.passed();
-                return;
-            }
             LocalStore.setUserHash(result.userHash);
 
             var proxy = result.proxy;
@@ -72,6 +69,11 @@ define([
             Realtime.whenRealtimeSyncs(result.realtime, function () {
                 LocalStore.login(result.userHash, result.userName, function () {
                     registering = false;
+                    if (test) {
+                        localStorage.clear();
+                        test.pass();
+                        return;
+                    }
                     if (sessionStorage.redirectTo) {
                         var h = sessionStorage.redirectTo;
                         var parser = document.createElement('a');
@@ -236,8 +238,9 @@ define([
             }
         });
 
-        Test(function () {
-            $uname.val('test' + Math.random());
+        Test(function (t) {
+            test = t;
+            $uname.val('testuser');
             $passwd.val('testtest');
             $confirm.val('testtest');
             $checkImport[0].checked = true;

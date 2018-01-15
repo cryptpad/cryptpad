@@ -113,11 +113,16 @@ define([
         $toolbarDrawer.append($printButton);
     };
 
+    // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
+    var Background = {
+        isBackground: false
+    };
+
     var mkSlideOptionsButton = function (framework, slideOptions, $toolbarDrawer) {
         var metadataMgr = framework._.cpNfInner.metadataMgr;
         var updateSlideOptions = function (newOpt) {
             if (JSONSortify(newOpt) !== JSONSortify(slideOptions)) {
-                $.extend(slideOptions, newOpt);
+                $.extend(true, slideOptions, newOpt);
                 // TODO: manage realtime + cursor in the "options" modal ??
                 Slide.updateOptions();
             }
@@ -129,17 +134,19 @@ define([
             metadataMgr.updateMetadata(metadata);
             framework.localChange();
         };
+        var common = framework._.sfCommon;
         var createPrintDialog = function (invalidStyle) {
             var slideOptionsTmp = {
                 title: false,
                 slide: false,
                 date: false,
+                background: false,
                 transition: true,
                 style: '',
                 styleLess: ''
             };
 
-            $.extend(slideOptionsTmp, slideOptions);
+            $.extend(true, slideOptionsTmp, slideOptions);
             var $container = $('<div class="alertify">');
             var $container2 = $('<div class="dialog">').appendTo($container);
             var $div = $('<div id="printOptions">').appendTo($container2);
@@ -193,6 +200,55 @@ define([
             }).appendTo($p).css('width', 'auto');
             $('<label>', {'for': 'cp-app-slide-options-transition'}).text(Messages.printTransition)
                 .appendTo($p);
+            $p.append($('<br>'));
+            $p.append($('<br>'));
+            // Background image
+            $('<label>', {'for': 'cp-app-slide-options-bg'}).text(Messages.printBackground)
+                .appendTo($p);
+            if (common.isLoggedIn()) {
+                $p.append($('<br>'));
+                $('<button>', {
+                    title: Messages.filePickerButton,
+                    'class': '',
+                    style: 'font-size: 17px',
+                    id: 'cp-app-slide-options-bg'
+                }).click(function () {
+                    Background.isBackground = true;
+                    var pickerCfg = {
+                        types: ['file'],
+                        where: ['root'],
+                        filter: {
+                            fileType: ['image/']
+                        }
+                    };
+                    common.openFilePicker(pickerCfg);
+                }).text(Messages.printBackgroundButton).appendTo($p);
+            }
+            $p.append($('<br>'));
+            var $bgValue = $('<div>').appendTo($p);
+            var refreshValue = function () {
+                $bgValue.html('');
+                if (slideOptionsTmp.background && slideOptionsTmp.background.name) {
+                    $bgValue.append(Messages._getKey("printBackgroundValue", [slideOptionsTmp.background.name]));
+                    $('<button>', {
+                        'class': 'fa fa-times',
+                        title: Messages.printBackgroundRemove
+                    }).click(function () {
+                        slideOptionsTmp.background = false;
+                        refreshValue();
+                    }).appendTo($bgValue);
+                } else {
+                    $bgValue.append(Messages.printBackgroundNoValue);
+                }
+            };
+            refreshValue();
+            if (common.isLoggedIn()) {
+                Background.todo = function (newData) {
+                    slideOptionsTmp.background = newData;
+                    refreshValue();
+                };
+            }
+            $p.append($('<br>'));
             $p.append($('<br>'));
             // CSS
             $('<label>', {'for': 'cp-app-slide-options-css'}).text(Messages.printCSS).appendTo($p);
@@ -348,7 +404,15 @@ define([
     };
 
     var mkFilePicker = function (framework, editor) {
-        framework.setMediaTagEmbedder(function (mt) {
+        framework.setMediaTagEmbedder(function (mt, data) {
+            if (Background.isBackground) {
+                if (data.type === 'file') {
+                    data.mt = mt[0].outerHTML;
+                    Background.todo(data);
+                }
+                Background.isBackground = false;
+                return;
+            }
             editor.replaceSelection($(mt)[0].outerHTML);
         });
     };

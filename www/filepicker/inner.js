@@ -45,6 +45,7 @@ define([
                 sframeChan.event("EV_FILE_PICKED", {
                     type: parsed.type,
                     src: src,
+                    name: data.name,
                     key: parsed.hashData.key
                 });
                 return;
@@ -52,6 +53,7 @@ define([
             sframeChan.event("EV_FILE_PICKED", {
                 type: parsed.type,
                 href: data.url,
+                name: data.name
             });
         };
 
@@ -66,8 +68,8 @@ define([
         APP.FM = common.createFileManager(fmConfig);
 
         // Create file picker
-        var onSelect = function (url) {
-            onFilePicked({url: url});
+        var onSelect = function (url, name) {
+            onFilePicked({url: url, name: name});
         };
         var data = {
             FM: APP.FM
@@ -132,7 +134,7 @@ define([
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         $span.click(function () {
-                            if (typeof onSelect === "function") { onSelect(data.href); }
+                            if (typeof onSelect === "function") { onSelect(data.href, name); }
                         });
 
                         // Add thumbnail if it exists

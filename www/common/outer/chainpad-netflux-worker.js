@@ -36,6 +36,7 @@ define([], function () {
         var owners = conf.owners;
         var password = conf.password;
         var expire = conf.expire;
+        var padData;
         conf = undefined;
 
         var initializing = true;
@@ -43,11 +44,11 @@ define([], function () {
 
         var messageFromOuter = function () {};
 
-        var onRdy = function () {
+        var onRdy = function (padData) {
             // Trigger onReady only if not ready yet. This is important because the history keeper sends a direct
             // message through "network" when it is synced, and it triggers onReady for each channel joined.
             if (!initializing) { return; }
-            onReady();
+            onReady(padData);
             //sframeChan.event('EV_RT_READY', null);
             // we're fully synced
             initializing = false;
@@ -92,13 +93,14 @@ define([], function () {
                     if (parsed.channel === wc.id && !validateKey) {
                         validateKey = parsed.validateKey;
                     }
+                    padData = parsed;
                     // We have to return even if it is not the current channel:
                     // we don't want to continue with other channels messages here
                     return;
                 }
                 if (parsed.state && parsed.state === 1 && parsed.channel) {
                     if (parsed.channel === wc.id) {
-                        onRdy();
+                        onRdy(padData);
                     }
                     // We have to return even if it is not the current channel:
                     // we don't want to continue with other channels messages here

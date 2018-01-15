@@ -81,6 +81,7 @@ define([], function () {
             sframeChan.query('Q_RT_MESSAGE', message, function () { });
         };
 
+        var firstConnection = true;
         var onOpen = function(data) {
             // Add the existing peers in the userList
             onConnect(data.id);
@@ -88,10 +89,13 @@ define([], function () {
 
             sframeChan.event('EV_RT_CONNECT', { myID: data.myID, members: data.members, readOnly: readOnly });
 
-            // Add the handlers to the WebChannel
-            padRpc.onMessageEvent.reg(function (msg) { onMessage(msg); });
-            padRpc.onJoinEvent.reg(function (m) { sframeChan.event('EV_RT_JOIN', m); });
-            padRpc.onLeaveEvent.reg(function (m) { sframeChan.event('EV_RT_LEAVE', m); });
+            if (firstConnection) {
+                firstConnection = false;
+                // Add the handlers to the WebChannel
+                padRpc.onMessageEvent.reg(function (msg) { onMessage(msg); });
+                padRpc.onJoinEvent.reg(function (m) { sframeChan.event('EV_RT_JOIN', m); });
+                padRpc.onLeaveEvent.reg(function (m) { sframeChan.event('EV_RT_LEAVE', m); });
+            }
         };
 
         padRpc.onDisconnectEvent.reg(function () {

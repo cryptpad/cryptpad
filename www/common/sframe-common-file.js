@@ -240,7 +240,7 @@ define([
             inProgress: false
         };
         var handleFile = File.handleFile = function (file, e) {
-            //if (handleFileState.inProgress) { return void handleFileState.queue.push(file); }
+            if (handleFileState.inProgress) { return void handleFileState.queue.push([file, e]); }
             handleFileState.inProgress = true;
 
             var thumb;
@@ -258,7 +258,10 @@ define([
                     dropEvent: e
                 });
                 handleFileState.inProgress = false;
-                if (handleFileState.queue.length) { handleFile(handleFileState.queue.shift()); }
+                if (handleFileState.queue.length) {
+                    var next = handleFileState.queue.shift();
+                    handleFile(next[0], next[1]);
+                }
             };
             var getName = function () {
                 if (!showNamePrompt) { return void finish(); }

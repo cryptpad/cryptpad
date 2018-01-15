@@ -74,7 +74,6 @@ define([
                 config.addCommonRpc(sframeChan);
 
                 sframeChan.on('Q_GET_FILES_LIST', function (types, cb) {
-                    console.error("TODO: make sure Q_GET_FILES_LIST is only available from filepicker");
                     Cryptpad.getSecureFilesList(types, function (err, data) {
                         cb({
                             error: err,

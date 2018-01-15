@@ -6,6 +6,8 @@
 @import (once) "./toolbar-history.less";
 @import (once) "./icon-colors.less";
 @import (once) "./tools.less";
+@import (once) "./icons.less";
+@import (once) "./modal.less";
 
 .toolbar_main (
     @color: @colortheme_default-color, // Color of the text for the toolbar
@@ -170,6 +172,68 @@
         .cp-toolbar-userlist-friend {
             display: inline-block;
             width: 20px;
+        }
+    }
+
+    #cp-app-toolbar-creation-dialog.cp-modal-container {
+        .icons_main();
+
+        li:hover {
+            border: 1px solid white;
+        }
+        .cp-modal {
+            display: flex;
+            flex-flow: column;
+            li, li .fa {
+                cursor: pointer;
+            }
+            &> p {
+                margin: 50px;
+            }
+            &> div {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-content: center;
+                overflow-y: auto;
+            }
+        }
+
+        .cp-creation-icons-name {
+            white-space: nowrap;
+        }
+
+        #cp-app-toolbar-creation-advanced {
+            width: auto;
+            margin: 0;
+            padding: 0;
+        }
+        label[for="cp-app-toolbar-creation-advanced"] {
+            margin: 0;
+            margin-left: 5px;
+        }
+
+        @media screen and (max-height: @browser_media-not-big) {
+            .cp-modal {
+                & > p {
+                    display: none;
+                }
+                & > div {
+                    align-content: unset;
+                    li {
+                        height: 40px;
+                        width: 200px;
+                        display: flex;
+                        align-items: center;
+                        .fa {
+                            font-size: 32px;
+                        }
+                        .cp-icons-name {
+                            height: auto;
+                        }
+                    }
+                }
+            }
         }
     }
 
