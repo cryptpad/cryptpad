@@ -26,6 +26,14 @@ define([
         Number.MAX_SAFE_INTEGER = 9007199254740991;
     }
 
+    if (typeof(window.Symbol) !== 'function') {
+        var idCounter = 0;
+        var Symbol = window.Symbol = function Symbol(key) {
+            return '__' + key + '_' + Math.floor(Math.random() * 1e9) + '_' + (++idCounter) + '__';
+        };
+        Symbol.iterator = Symbol('Symbol.iterator');
+    }
+
     var failStore = function () {
         console.error(new Error('wut'));
         require(['jquery'], function ($) {
