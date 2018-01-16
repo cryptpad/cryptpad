@@ -5,6 +5,7 @@ define([
     '/common/sframe-common.js',
     '/slide/slide.js',
     '/common/sframe-app-framework.js',
+    '/common/sframe-common-codemirror.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
@@ -48,6 +49,7 @@ define([
     SFCommon,
     Slide,
     Framework,
+    SFCodeMirror,
     Util,
     Hash,
     UI,
@@ -464,7 +466,7 @@ define([
         mkSlidePreviewPane(framework, $contentContainer);
         mkMarkdownToolbar(framework, editor);
 
-        CodeMirror.configureTheme();
+        CodeMirror.configureTheme(common);
 
         framework.onContentUpdate(function (newContent) {
             CodeMirror.contentUpdate(newContent);
@@ -550,7 +552,6 @@ define([
     var main = function () {
         var CodeMirror;
         var editor;
-        var common;
         var framework;
 
         nThen(function (waitFor) {
@@ -573,20 +574,14 @@ define([
 
             nThen(function (waitFor) {
                 $(waitFor());
-                // TODO(cjd): This is crap but we cannot bring up codemirror until after
-                //            the CryptPad Common is up and we can't bring up framework
-                //            without codemirror.
-                SFCommon.create(waitFor(function (c) { common = c; }));
             }).nThen(function () {
-                CodeMirror = common.initCodeMirrorApp(null, CMeditor);
+                CodeMirror = SFCodeMirror.create(null, CMeditor);
                 $('.CodeMirror').addClass('fullPage');
                 editor = CodeMirror.editor;
             }).nThen(waitFor());
 
-        }).nThen(function (waitFor) {
-            common.getSframeChannel().onReady(waitFor());
         }).nThen(function (/*waitFor*/) {
-            common.isPresentUrl(function (err, val) {
+            framework._.sfCommon.isPresentUrl(function (err, val) {
                 andThen2(editor, CodeMirror, framework, val);
             });
         });
