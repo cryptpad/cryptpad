@@ -141,7 +141,7 @@ define([
             mode: defaultMode || "javascript",
             readOnly: true
         });
-        editor.setValue(Messages.codeInitialState);
+        //editor.setValue(Messages.codeInitialState);
         editor.focus();
 
         var setMode = exp.setMode = function (mode, cb) {
@@ -311,7 +311,7 @@ define([
 
 
         exp.contentUpdate = function (newContent) {
-            var oldDoc = canonicalize($textarea.val());
+            var oldDoc = canonicalize(editor.getValue());
             var remoteDoc = newContent.content;
             // setValueAndCursor triggers onLocal, even if we don't make any change to the content
             // and it may revert other changes (metadata)
@@ -321,7 +321,7 @@ define([
 
         exp.getContent = function () {
             editor.save();
-            return { content: canonicalize($textarea.val()) };
+            return { content: canonicalize(editor.getValue()) };
         };
 
         exp.mkFileManager = function (framework) {
