@@ -40,7 +40,7 @@ define([
         var patchTransformer = config.patchTransformer;
         var validateContent = config.validateContent;
         var avgSyncMilliseconds = config.avgSyncMilliseconds;
-        var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 1;
+        var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 2;
         var readOnly = config.readOnly || false;
         var sframeChan = config.sframeChan;
         var metadataMgr = config.metadataMgr;

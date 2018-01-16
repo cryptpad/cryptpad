@@ -3,6 +3,13 @@
     globals module
 */
 var domain = ' http://localhost:3000/';
+
+// You can `kill -USR2` the node process and it will write out a heap dump.
+// If your system doesn't support dumping, comment this out and install with
+// `npm install --production`
+// See: https://strongloop.github.io/strongloop.com/strongblog/how-to-heap-snapshots/
+require('heapdump');
+
 module.exports = {
 
     // the address you want to bind to, :: means all ipv4 and ipv6 addresses

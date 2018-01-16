@@ -257,24 +257,23 @@ var getMessages = function (env, chanName, handler, cb) {
             return;
         }
         var errorState = false;
-        try {
-            readMessages(chan.path, function (msg) {
-                if (!msg || errorState) { return; }
-                //console.log(msg);
+        readMessages(chan.path, function (msg) {
+            if (!msg || errorState) { return; }
+            //console.log(msg);
+            try {
                 handler(msg);
-            }, function (err) {
-                if (err) {
-                    errorState = true;
-                    return void cb(err);
-                }
-                chan.atime = +new Date();
-                cb();
-            });
-        } catch (err2) {
-            console.error(err2);
-            cb(err2);
-            return;
-        }
+            } catch (e) {
+                errorState = true;
+                return void cb(err);
+            }
+        }, function (err) {
+            if (err) {
+                errorState = true;
+                return void cb(err);
+            }
+            chan.atime = +new Date();
+            cb();
+        });
     });
 };
 
