@@ -329,13 +329,10 @@ define([
     Object.freeze(funcs);
     return { create: function (cb) {
 
-        // TODO(cjd): This is crap but this gets loaded multiple places by /code/ and it is
-        //            not ok with being loaded more than once.
         if (window.CryptPad_sframe_common) {
-            setTimeout(function () { cb(window.CryptPad_sframe_common); });
-            return;
+            throw new Error("Sframe-common should only be created once");
         }
-        window.CryptPad_sframe_common = funcs;
+        window.CryptPad_sframe_common = true;
 
         nThen(function (waitFor) {
             SFrameChannel.create(window.parent, waitFor(function (sfc) { ctx.sframeChan = sfc; }), true);

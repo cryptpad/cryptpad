@@ -103,7 +103,7 @@ define([
         return text.trim();
     };
 
-    module.create = function (Common, defaultMode, CMeditor) {
+    module.create = function (defaultMode, CMeditor) {
         var exp = {};
 
         var CodeMirror = exp.CodeMirror = CMeditor;
@@ -195,7 +195,7 @@ define([
             return module.getHeadingText(editor);
         };
 
-        exp.configureLanguage = function (cb, onModeChanged) {
+        exp.configureLanguage = function (Common, cb, onModeChanged) {
             var options = [];
             Modes.list.forEach(function (l) {
                 options.push({
@@ -227,7 +227,7 @@ define([
             if (cb) { cb(); }
         };
 
-        exp.configureTheme = function (cb) {
+        exp.configureTheme = function (Common, cb) {
             /*  Remember the user's last choice of theme using localStorage */
             var themeKey = ['codemirror', 'theme'];
 

@@ -4,6 +4,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
+    '/common/sframe-common-codemirror.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/modes.js',
@@ -42,6 +43,7 @@ define([
     nThen,
     SFCommon,
     Framework,
+    SFCodeMirror,
     Util,
     Hash,
     Modes,
@@ -258,11 +260,11 @@ define([
         mkFilePicker(framework, editor, evModeChange);
 
         if (!framework.isReadOnly()) {
-            CodeMirror.configureTheme(function () {
-                CodeMirror.configureLanguage(null, evModeChange.fire);
+            CodeMirror.configureTheme(common, function () {
+                CodeMirror.configureLanguage(common, null, evModeChange.fire);
             });
         } else {
-            CodeMirror.configureTheme();
+            CodeMirror.configureTheme(common);
         }
 
         ////
@@ -345,7 +347,6 @@ define([
     var main = function () {
         var CodeMirror;
         var editor;
-        var common;
         var framework;
 
         nThen(function (waitFor) {
@@ -370,20 +371,14 @@ define([
 
             nThen(function (waitFor) {
                 $(waitFor());
-                // TODO(cjd): This is crap but we cannot bring up codemirror until after
-                //            the CryptPad Common is up and we can't bring up framework
-                //            without codemirror.
-                SFCommon.create(waitFor(function (c) { common = c; }));
             }).nThen(function () {
-                CodeMirror = common.initCodeMirrorApp(null, CMeditor);
+                CodeMirror = SFCodeMirror.create(null, CMeditor);
                 $('#cp-app-code-container').addClass('cp-app-code-fullpage');
                 editor = CodeMirror.editor;
             }).nThen(waitFor());
 
-        }).nThen(function (waitFor) {
-            common.getSframeChannel().onReady(waitFor());
         }).nThen(function (/*waitFor*/) {
-            common.isPresentUrl(function (err, val) {
+            framework._.sfCommon.isPresentUrl(function (err, val) {
                 andThen2(editor, CodeMirror, framework, val);
             });
         });
