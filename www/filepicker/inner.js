@@ -122,7 +122,7 @@ define([
                     if (err) { return void console.error(err); }
                     Object.keys(list).forEach(function (id) {
                         var data = list[id];
-                        var name = data.title || '?';
+                        var name = data.filename || data.title || '?';
                         if (filter && name.toLowerCase().indexOf(filter.toLowerCase()) === -1) {
                             return;
                         }
