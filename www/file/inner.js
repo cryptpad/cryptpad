@@ -91,7 +91,12 @@ define([
             var key = Nacl.util.decodeBase64(cryptKey);
 
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
-                if (e) { return void console.error(e); }
+                if (e) {
+                    if (e === 'XHR_ERROR') {
+                        return void UI.errorLoadingScreen(Messages.download_resourceNotAvailable);
+                    }
+                    return void console.error(e);
+                }
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
@@ -238,10 +243,9 @@ define([
         }
 
         // we're in upload mode
-
         if (!common.isLoggedIn()) {
+            UI.removeLoadingScreen();
             return UI.alert(Messages.upload_mustLogin, function () {
-                UI.errorLoadingScreen(Messages.upload_mustLogin);
                 common.setLoginRedirect(function () {
                     common.gotoURL('/login/');
                 });
