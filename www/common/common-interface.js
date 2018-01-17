@@ -55,6 +55,15 @@ define([
         $(el || window).keydown(handler);
         return handler;
     };
+    var customListenForKeys = function (keys, cb, el) {
+        if (!keys || typeof cb !== "function") { return; }
+        var handler = function (e) {
+            e.stopPropagation();
+            if (keys.indexOf(e.which) !== -1) { cb(); }
+        };
+        $(el || window).keydown(handler);
+        return handler;
+    };
 
     var stopListening = UI.stopListening = function (handler) {
         if (!handler) { return; } // we don't want to stop all the 'keyup' listeners
@@ -139,7 +148,7 @@ define([
         var titles = [];
         tabs.forEach(function (tab) {
             if (!tab.content || !tab.title) { return; }
-            var content = tab.content;
+            var content = h('div.alertify-tabs-content', tab.content);
             var title = h('span.alertify-tabs-title', tab.title);
             $(title).click(function () {
                 titles.forEach(function (t) { $(t).removeClass('alertify-tabs-active'); });
@@ -272,6 +281,70 @@ define([
         });
 
         return tagger;
+    };
+
+    dialog.customModal = function (msg, opt) {
+        var force = false;
+        if (typeof(opt) === 'object') {
+            force = opt.force || false;
+        } else if (typeof(opt) === 'boolean') {
+            force = opt;
+        }
+        if (typeof(opt) !== 'object') {
+            opt = {};
+        }
+
+        var message;
+        if (typeof(msg) === 'string') {
+            // sanitize
+            if (!force) { msg = Util.fixHTML(msg); }
+            message = dialog.message();
+            message.innerHTML = msg;
+        } else {
+            message = dialog.message(msg);
+        }
+
+        var close = Util.once(function (el) {
+            var $el = $(el).fadeOut(150, function () {
+                $el.remove();
+            });
+        });
+
+        var navs = [];
+        opt.buttons.forEach(function (b) {
+            if (!b.name || !b.onClick) { return; }
+            var button = h('button', { tabindex: '1' }, b.name);
+            $(button).click(function () {
+                b.onClick();
+                close($(this).parents('.alertify').first());
+            });
+            if (b.keys && b.keys.length) { $(button).attr('data-keys', b.keys.join(',')); }
+            navs.push(button);
+        });
+        var frame = h('div', [
+            message,
+            dialog.nav(navs),
+        ]);
+
+        if (opt.forefront) { $(frame).addClass('forefront'); }
+        return frame;
+    };
+    UI.openCustomModal = function (content) {
+        var frame = dialog.frame([
+            content
+        ]);
+        $(frame).find('button[data-keys]').each(function (i, el) {
+            var keys = $(el).attr('data-keys');
+            customListenForKeys(keys, function () {
+                if (!$(el).is(':visible')) { return; }
+                $(el).click();
+            }, frame);
+        });
+        document.body.appendChild(frame);
+        $(frame).focus();
+        setTimeout(function () {
+            Notifier.notify();
+        });
     };
 
     UI.alert = function (msg, cb, opt) {

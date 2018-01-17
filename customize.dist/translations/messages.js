@@ -844,5 +844,19 @@ define(function () {
     out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiration pad, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
+    // New share modal
+    out.share_linkCategory = "Share link";
+    out.share_linkAccess = "Access rights";
+    out.share_linkEdit = "Edit";
+    out.share_linkView = "View";
+    out.share_linkOptions = "Link options";
+    out.share_linkEmbed = "Embed mode (toolbar and userlist hidden)";
+    out.share_linkPresent = "Present mode (editable sections hidden)";
+    out.share_linkOpen = "Open in new tab";
+    out.share_linkCopy = "Copy to clipboard";
+    out.share_embedCategory = "Embed";
+    out.share_mediatagCopy = "Copy mediatag to clipboard";
+
+
     return out;
 });

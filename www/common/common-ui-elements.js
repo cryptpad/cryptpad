@@ -9,13 +9,14 @@ define([
     '/common/common-feedback.js',
     '/common/hyperscript.js',
     '/common/media-tag.js',
+    '/common/clipboard.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 
     'css!/common/tippy.css',
-], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Messages,
-             AppConfig, NThen) {
+], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
+             Messages, AppConfig, NThen) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -224,6 +225,223 @@ define([
             }]);
             cb (void 0, $(tabs));
         });
+    };
+
+    UIElements.createShareModal = function (config) {
+        var origin = config.origin;
+        var pathname = config.pathname;
+        var hashes = config.hashes;
+        var common = config.common;
+
+        // Share link tab
+        var link = h('div.cp-share-modal', [
+            h('label', Messages.share_linkAccess),
+            h('br'),
+            h('input#cp-share-editable-true.cp-share-editable-value', {
+                type: 'radio',
+                name: 'cp-share-editable',
+                value: 1,
+                checked: 'checked'
+            }),
+            h('label', { 'for': 'cp-share-editable-true' }, Messages.share_linkEdit),
+            h('input#cp-share-editable-false.cp-share-editable-value', {
+                type: 'radio',
+                name: 'cp-share-editable',
+                value: 0
+            }),
+            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),
+            h('br'),
+            h('br'),
+            h('label', Messages.share_linkOptions),
+            h('br'),
+            h('input#cp-share-embed', {
+                type: 'checkbox',
+                name: 'cp-share-embed'
+            }),
+            h('label', { 'for': 'cp-share-embed' }, Messages.share_linkEmbed),
+            h('br'),
+            h('input#cp-share-present', {
+                type: 'checkbox',
+                name: 'cp-share-present'
+            }),
+            h('label', { 'for': 'cp-share-present' }, Messages.share_linkPresent),
+            h('br'),
+            h('br'),
+            UI.dialog.selectable('', { id: 'cp-share-link-preview' })
+        ]);
+        if (!hashes.editHash) {
+            $(link).find('#cp-share-editable-false').attr('checked', true);
+            $(link).find('#cp-share-editable-true').attr('disabled', true);
+        }
+        var saveValue = function () {
+            var edit = $(link).find('#cp-share-editable-true').is(':checked');
+            var embed = $(link).find('#cp-share-embed').is(':checked');
+            var present = $(link).find('#cp-share-present').is(':checked');
+            common.setAttribute(['general', 'share'], {
+                edit: edit,
+                embed: embed,
+                present: present
+            });
+        };
+        var getLinkValue = function () {
+            var edit = $(link).find('#cp-share-editable-true').is(':checked');
+            var embed = $(link).find('#cp-share-embed').is(':checked');
+            var present = $(link).find('#cp-share-present').is(':checked');
+
+            var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
+            var href = origin + pathname + '#' + hash;
+            var parsed = Hash.parsePadUrl(href);
+            return origin + parsed.getUrl({embed: embed, present: present});
+        };
+        $(link).find('#cp-share-link-preview').val(getLinkValue());
+        $(link).find('input[type="radio"], input[type="checkbox"]').on('change', function () {
+            $(link).find('#cp-share-link-preview').val(getLinkValue());
+        });
+        var linkButtons = [{
+            name: Messages.share_linkCopy,
+            onClick: function () {
+                saveValue();
+                var v = getLinkValue();
+                var success = Clipboard.copy(v);
+                if (success) { UI.log(Messages.shareSuccess); }
+            }
+        }, {
+            name: Messages.share_linkOpen,
+            onClick: function () {
+                saveValue();
+                var v = getLinkValue();
+                window.open(v);
+            }
+        }, {
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }];
+        var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
+
+        // Embed tab
+        var getEmbedValue = function () {
+            var hash = hashes.viewHash || hashes.editHash;
+            var href = origin + pathname + '#' + hash;
+            var parsed = Hash.parsePadUrl(href);
+            var url = origin + parsed.getUrl({embed: true, present: true});
+            return '<iframe src="' + url + '"></iframe>';
+        };
+        var embed = h('div.cp-share-modal', [
+            h('h3', Messages.viewEmbedTitle),
+            h('p', Messages.viewEmbedTag),
+            h('br'),
+            UI.dialog.selectable(getEmbedValue())
+        ]);
+        var embedButtons = [{
+            name: Messages.share_linkCopy,
+            onClick: function () {
+                var v = getEmbedValue();
+                var success = Clipboard.copy(v);
+                if (success) { UI.log(Messages.shareSuccess); }
+            }
+        }, {
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }];
+        var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
+
+        // Create modal
+        var tabs = UI.dialog.tabs([{
+            title: Messages.share_linkCategory,
+            content: frameLink
+        }, {
+            title: Messages.share_embedCategory,
+            content: frameEmbed
+        }]);
+        if (typeof(AppConfig.customizeShareOptions) === 'function') {
+            Config.customizeShareOptions(hashes, tabs, {
+                type: 'DEFAULT',
+                origin: origin,
+                pathname: pathname
+            });
+        }
+        common.getAttribute(['general', 'share'], function (err, val) {
+            val = val || {};
+            if (val.edit === false) {
+                $(link).find('#cp-share-editable-false').attr('checked', true);
+            }
+            if (val.embed) { $(link).find('#cp-share-embed').attr('checked', true); }
+            if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
+            UI.openCustomModal(tabs);
+        });
+    };
+    UIElements.createFileShareModal = function (config) {
+        var origin = config.origin;
+        var pathname = config.pathname;
+        var hashes = config.hashes;
+        var common = config.common;
+
+        if (!hashes.fileHash) { throw new Error("You must provide a file hash"); }
+        var url = origin + pathname + '#' + hashes.fileHash;
+
+
+        // Share link tab
+        var link = h('div.cp-share-modal', [
+            UI.dialog.selectable('', { id: 'cp-share-link-preview' })
+        ]);
+        var getLinkValue = function () { return url; };
+        $(link).find('#cp-share-link-preview').val(getLinkValue());
+        var linkButtons = [{
+            name: Messages.share_linkCopy,
+            onClick: function () {
+                var v = getLinkValue();
+                var success = Clipboard.copy(v);
+                if (success) { UI.log(Messages.shareSuccess); }
+            }
+        }, {
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }];
+        var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
+
+        // Embed tab
+        var embed = h('div.cp-share-modal', [
+            h('h3', Messages.fileEmbedTitle),
+            h('p', Messages.fileEmbedScript),
+            h('br'),
+            UI.dialog.selectable(common.getMediatagScript()),
+            h('p', Messages.fileEmbedTag),
+            h('br'),
+            UI.dialog.selectable(common.getMediatagFromHref(url)),
+        ]);
+        var embedButtons = [{
+            name: Messages.share_mediatagCopy,
+            onClick: function () {
+                var v = common.getMediatagFromHref(url);
+                var success = Clipboard.copy(v);
+                if (success) { UI.log(Messages.shareSuccess); }
+            }
+        }, {
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }];
+        var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
+
+        // Create modal
+        var tabs = UI.dialog.tabs([{
+            title: Messages.share_linkCategory,
+            content: frameLink
+        }, {
+            title: Messages.share_embedCategory,
+            content: frameEmbed
+        }]);
+        if (typeof(AppConfig.customizeShareOptions) === 'function') {
+            Config.customizeShareOptions(hashes, tabs, {
+                type: 'FILE',
+                origin: origin,
+                pathname: pathname
+            });
+        }
+        UI.openCustomModal(tabs);
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
