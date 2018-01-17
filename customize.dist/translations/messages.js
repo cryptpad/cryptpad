@@ -581,6 +581,7 @@ define(function () {
     out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
     out.download_mt_button = "Download";
+    out.download_resourceNotAvailable = "The requested resource was not available...";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Describe your task...";
