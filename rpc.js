@@ -935,6 +935,7 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     if (typeof(filesize) !== 'number' &&
         filesize >= 0) { return void cb('E_INVALID_SIZE'); }
 
+    if (filesize >= Env.maxUploadSize) { return cb('TOO_LARGE'); }
     // validate that the provided path is not junk
     var filePath = makeFilePath(paths.staging, publicKey);
     if (!filePath) { return void cb('E_INVALID_PATH'); }

@@ -131,11 +131,11 @@ define([
                 queue.inProgress = false;
                 queue.next();
                 if (e === 'TOO_LARGE') {
-                    // TODO update table to say too big?
+                    $pv.text(Messages.upload_tooLargeBrief);
                     return void UI.alert(Messages.upload_tooLarge);
                 }
                 if (e === 'NOT_ENOUGH_SPACE') {
-                    // TODO update table to say not enough space?
+                    $pv.text(Messages.upload_notEnoughSpaceBrief);
                     return void UI.alert(Messages.upload_notEnoughSpace);
                 }
                 console.error(e);
