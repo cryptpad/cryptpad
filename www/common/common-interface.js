@@ -57,12 +57,9 @@ define([
     };
     var customListenForKeys = function (keys, cb, el) {
         if (!keys || !keys.length || typeof cb !== "function") { return; }
-        console.log(keys);
         var handler = function (e) {
-            console.log('keydown', e.which);
             e.stopPropagation();
             keys.some(function (k) {
-                console.log(k);
                 // k is number or array
                 // if it's an array, it should be [keyCode, "{ctrl|alt|shift|meta}"]
                 if (Array.isArray(k) && e.which === k[0] && e[k[1] + 'Key']) {

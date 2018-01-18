@@ -351,15 +351,15 @@ define([
         var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
 
         // Create modal
-        var tabs = UI.dialog.tabs([{
+        var tabs = [{
             title: Messages.share_linkCategory,
             content: frameLink
         }, {
             title: Messages.share_embedCategory,
             content: frameEmbed
-        }]);
+        }];
         if (typeof(AppConfig.customizeShareOptions) === 'function') {
-            Config.customizeShareOptions(hashes, tabs, {
+            AppConfig.customizeShareOptions(hashes, tabs, {
                 type: 'DEFAULT',
                 origin: origin,
                 pathname: pathname
@@ -372,7 +372,7 @@ define([
             }
             if (val.embed) { $(link).find('#cp-share-embed').attr('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
-            UI.openCustomModal(tabs);
+            UI.openCustomModal(UI.dialog.tabs(tabs));
         });
     };
     UIElements.createFileShareModal = function (config) {
@@ -432,21 +432,21 @@ define([
         var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
 
         // Create modal
-        var tabs = UI.dialog.tabs([{
+        var tabs = [{
             title: Messages.share_linkCategory,
             content: frameLink
         }, {
             title: Messages.share_embedCategory,
             content: frameEmbed
-        }]);
+        }];
         if (typeof(AppConfig.customizeShareOptions) === 'function') {
-            Config.customizeShareOptions(hashes, tabs, {
+            AppConfig.customizeShareOptions(hashes, tabs, {
                 type: 'FILE',
                 origin: origin,
                 pathname: pathname
             });
         }
-        UI.openCustomModal(tabs);
+        UI.openCustomModal(UI.dialog.tabs(tabs));
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
