@@ -243,13 +243,13 @@ define([
                 value: 1,
                 checked: 'checked'
             }),
-            h('label', { 'for': 'cp-share-editable-true' }, Messages.share_linkEdit),
+            h('label', { 'for': 'cp-share-editable-true' }, Messages.share_linkEdit),
             h('input#cp-share-editable-false.cp-share-editable-value', {
                 type: 'radio',
                 name: 'cp-share-editable',
                 value: 0
             }),
-            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),
+            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),
             h('br'),
             h('br'),
             h('label', Messages.share_linkOptions),
@@ -258,13 +258,13 @@ define([
                 type: 'checkbox',
                 name: 'cp-share-embed'
             }),
-            h('label', { 'for': 'cp-share-embed' }, Messages.share_linkEmbed),
+            h('label', { 'for': 'cp-share-embed' }, Messages.share_linkEmbed),
             h('br'),
             h('input#cp-share-present', {
                 type: 'checkbox',
                 name: 'cp-share-present'
             }),
-            h('label', { 'for': 'cp-share-present' }, Messages.share_linkPresent),
+            h('label', { 'for': 'cp-share-present' }, Messages.share_linkPresent),
             h('br'),
             h('br'),
             UI.dialog.selectable('', { id: 'cp-share-link-preview' })
@@ -366,7 +366,7 @@ define([
             });
         }
         common.getAttribute(['general', 'share'], function (err, val) {
-            val = val || {};
+            val = val || {};
             if (val.edit === false) {
                 $(link).find('#cp-share-editable-false').attr('checked', true);
             }
@@ -530,7 +530,7 @@ define([
                                     var meta;
                                     if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
                                         meta = parsed[3].metadata; // pad
-                                    } else if (parsed.info) {
+                                    } else if (parsed.info) {
                                         meta = parsed.info; // poll
                                     } else {
                                         meta = parsed.metadata;
@@ -572,7 +572,7 @@ define([
                         UI.confirm(msg, function (yes) {
                             if (!yes) { return; }
                             sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
-                                if (err) { return void callback(err); }
+                                if (err) { return void callback(err); }
                                 var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
                                 UI.alert(cMsg, undefined, true);
                                 callback();
@@ -702,7 +702,7 @@ define([
             },
             'heading': {
                 apply: function (str) {
-                    return '\n'+clean(str).split('\n').map(function (line) {
+                    return '\n'+clean(str).split('\n').map(function (line) {
                         return '# '+line;
                     }).join('\n')+'\n';
                 },
@@ -714,7 +714,7 @@ define([
             },
             'quote': {
                 apply: function (str) {
-                    return '\n\n'+str.split('\n').map(function (line) {
+                    return '\n\n'+str.split('\n').map(function (line) {
                         return '> '+line;
                     }).join('\n')+'\n\n';
                 },
@@ -722,7 +722,7 @@ define([
             },
             'nlist': {
                 apply: function (str) {
-                    return '\n'+clean(str).split('\n').map(function (line) {
+                    return '\n'+clean(str).split('\n').map(function (line) {
                         return '1. '+line;
                     }).join('\n')+'\n';
                 },
@@ -730,7 +730,7 @@ define([
             },
             'list': {
                 apply: function (str) {
-                    return '\n'+clean(str).split('\n').map(function (line) {
+                    return '\n'+clean(str).split('\n').map(function (line) {
                         return '* '+line;
                     }).join('\n')+'\n';
                 },
@@ -738,8 +738,8 @@ define([
             },
             'check': {
                 apply: function (str) {
-                    return '\n' + clean(str).split('\n').map(function (line) {
-                        return '* [ ] ' + line;
+                    return '\n' + clean(str).split('\n').map(function (line) {
+                        return '* [ ] ' + line;
                     }).join('\n') + '\n';
                 },
                 icon: 'fa-check-square-o'
@@ -1673,13 +1673,13 @@ define([
                 value: 1,
                 checked: 'checked'
             }),
-            h('label', { 'for': 'cp-creation-owned-true' }, Messages.creation_ownedTrue),
+            h('label', { 'for': 'cp-creation-owned-true' }, Messages.creation_ownedTrue),
             h('input#cp-creation-owned-false.cp-creation-owned-value', {
                 type: 'radio',
                 name: 'cp-creation-owned',
                 value: 0
             }),
-            h('label', { 'for': 'cp-creation-owned-false' }, Messages.creation_ownedFalse)
+            h('label', { 'for': 'cp-creation-owned-false' }, Messages.creation_ownedFalse)
         ]);
         $creation.append(owned);
 
@@ -1701,13 +1701,13 @@ define([
                 value: 0,
                 checked: 'checked'
             }),
-            h('label', { 'for': 'cp-creation-expire-false' }, Messages.creation_expireFalse),
+            h('label', { 'for': 'cp-creation-expire-false' }, Messages.creation_expireFalse),
             h('input#cp-creation-expire-true.cp-creation-expire-value', {
                 type: 'radio',
                 name: 'cp-creation-expire',
                 value: 1
             }),
-            h('label', { 'for': 'cp-creation-expire-true' }, [
+            h('label', { 'for': 'cp-creation-expire-true' }, [
                 Messages.creation_expireTrue,
                 h('span.cp-creation-expire-picker', [
                     h('input#cp-creation-expire-val', {

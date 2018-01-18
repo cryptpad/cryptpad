@@ -146,6 +146,7 @@ define([
 
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
+            if (mode === 'markdown') { mode = 'gfm'; }
             if (mode !== "text") {
                 CMeditor.autoLoadMode(editor, mode);
             }

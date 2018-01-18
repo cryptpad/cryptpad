@@ -15,7 +15,7 @@ define([
     'css!cm/addon/dialog/dialog.css',
     'css!cm/addon/fold/foldgutter.css',
 
-    'cm/mode/markdown/markdown',
+    'cm/mode/gfm/gfm',
     'cm/addon/mode/loadmode',
     'cm/mode/meta',
     'cm/addon/mode/overlay',
@@ -80,7 +80,7 @@ define([
             } catch (e) { console.error(e); }
         };
         var drawPreview = Util.throttle(function () {
-            if (CodeMirror.highlightMode !== 'markdown') { return; }
+            if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) { return; }
             if (!$previewButton.is('.cp-toolbar-button-active')) { return; }
             forceDrawPreview();
         }, 150);
@@ -98,7 +98,7 @@ define([
             previewTo = setTimeout(function () {
                 $codeMirror.removeClass('transition');
             }, 500);
-            if (CodeMirror.highlightMode !== 'markdown') {
+            if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) {
                 $previewContainer.show();
             }
             $previewContainer.toggle();
@@ -132,7 +132,7 @@ define([
         });
 
         var modeChange = function (mode) {
-            if (mode === "markdown") {
+            if (['markdown', 'gfm'].indexOf(mode) !== -1) {
                 $previewButton.show();
                 framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }
@@ -293,7 +293,7 @@ define([
 
         framework.onReady(function (newPad) {
             if (newPad && !CodeMirror.highlightMode) {
-                CodeMirror.setMode('markdown', evModeChange.fire);
+                CodeMirror.setMode('gfm', evModeChange.fire);
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
             }
 
