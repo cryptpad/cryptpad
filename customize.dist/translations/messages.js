@@ -571,7 +571,9 @@ define(function () {
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
     out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";
     out.upload_notEnoughSpace = "There is not enough space for this file in your CryptDrive.";
+    out.upload_notEnoughSpaceBrief = "Not enough space";
     out.upload_tooLarge = "This file exceeds the maximum upload size.";
+    out.upload_tooLargeBrief = 'File too large';
     out.upload_choose = "Choose a file";
     out.upload_pending = "Pending";
     out.upload_cancelled = "Cancelled";
