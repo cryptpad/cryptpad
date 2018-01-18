@@ -951,6 +951,7 @@ define([
             $container.append($avatar);
             if (cb) { cb(); }
         };
+        if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
         if (!href) { return void displayDefault(); }
         var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('file', parsed.hash);
