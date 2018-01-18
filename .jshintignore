@@ -15,3 +15,5 @@ www/pad/mediatag-plugin.js
 www/pad/mediatag-plugin-dialog.js
 
 www/common/media-tag-nacl.min.js
+
+customize/
