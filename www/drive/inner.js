@@ -2280,7 +2280,7 @@ define([
                     $element.appendTo($list);
                 });
 
-                createGhostIcon($list);
+                if (!inTrash) { createGhostIcon($list); }
             }
             $content.append($info).append($dirContent);
 
