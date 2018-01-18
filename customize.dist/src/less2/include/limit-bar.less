@@ -8,17 +8,19 @@
         width: 100%;
         margin-top: 20px;
         .cp-limit-bar {
+            padding: 5px;
+
             display: inline-block;
             max-width: 100%;
             margin: 3px;
             box-sizing: border-box;
-            border: 1px solid #999;
+            border-top: 1px solid #999;
             background: white;
             position: relative;
             text-align: center;
             vertical-align: middle;
             width: ~"calc(100% - 6px)";
-            height: 25px;
+            height: 35px;
             line-height: 25px;
             overflow: hidden;
             .cp-limit-usage {
@@ -40,7 +42,7 @@
             }
             .cp-limit-usage-text {
                 position: relative;
-                color: black;
+                color: grey;
                 text-shadow: 1px 0 2px white, 0 1px 2px white, -1px 0 2px white, 0 -1px 2px white;
                 z-index: 2; // .usageText
                 font-size: @colortheme_app-font-size;
