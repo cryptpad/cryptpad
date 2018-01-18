@@ -56,10 +56,21 @@ define([
         return handler;
     };
     var customListenForKeys = function (keys, cb, el) {
-        if (!keys || typeof cb !== "function") { return; }
+        if (!keys || !keys.length || typeof cb !== "function") { return; }
         var handler = function (e) {
             e.stopPropagation();
-            if (keys.indexOf(e.which) !== -1) { cb(); }
+            keys.some(function (k) {
+                // k is number or array
+                // if it's an array, it should be [keyCode, "{ctrl|alt|shift|meta}"]
+                if (Array.isArray(k) && e.which === k[0] && e[k[1] + 'Key']) {
+                    cb();
+                    return true;
+                }
+                if (e.which === k && !e.shiftKey && !e.altKey && !e.metaKey && !e.ctrlKey) {
+                    cb();
+                    return true;
+                }
+            });
         };
         $(el || window).keydown(handler);
         return handler;
@@ -318,7 +329,7 @@ define([
                 b.onClick();
                 close($(this).parents('.alertify').first());
             });
-            if (b.keys && b.keys.length) { $(button).attr('data-keys', b.keys.join(',')); }
+            if (b.keys && b.keys.length) { $(button).attr('data-keys', JSON.stringify(b.keys)); }
             navs.push(button);
         });
         var frame = h('div', [
@@ -334,7 +345,7 @@ define([
             content
         ]);
         $(frame).find('button[data-keys]').each(function (i, el) {
-            var keys = $(el).attr('data-keys');
+            var keys = JSON.parse($(el).attr('data-keys'));
             customListenForKeys(keys, function () {
                 if (!$(el).is(':visible')) { return; }
                 $(el).click();
