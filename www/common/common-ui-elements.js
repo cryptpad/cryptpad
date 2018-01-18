@@ -298,24 +298,26 @@ define([
             $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
         var linkButtons = [{
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
             name: Messages.share_linkCopy,
             onClick: function () {
                 saveValue();
                 var v = getLinkValue();
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }
-            }
+            },
+            keys: [13]
         }, {
             name: Messages.share_linkOpen,
             onClick: function () {
                 saveValue();
                 var v = getLinkValue();
                 window.open(v);
-            }
-        }, {
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]
+            },
+            keys: [[13, 'ctrl']]
         }];
         var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
 
@@ -334,16 +336,17 @@ define([
             UI.dialog.selectable(getEmbedValue())
         ]);
         var embedButtons = [{
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
             name: Messages.share_linkCopy,
             onClick: function () {
                 var v = getEmbedValue();
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }
-            }
-        }, {
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]
+            },
+            keys: [13]
         }];
         var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
 
@@ -389,16 +392,17 @@ define([
         var getLinkValue = function () { return url; };
         $(link).find('#cp-share-link-preview').val(getLinkValue());
         var linkButtons = [{
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
             name: Messages.share_linkCopy,
             onClick: function () {
                 var v = getLinkValue();
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }
-            }
-        }, {
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]
+            },
+            keys: [13]
         }];
         var frameLink = UI.dialog.customModal(link, {buttons: linkButtons});
 
@@ -413,16 +417,17 @@ define([
             UI.dialog.selectable(common.getMediatagFromHref(url)),
         ]);
         var embedButtons = [{
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
             name: Messages.share_mediatagCopy,
             onClick: function () {
                 var v = common.getMediatagFromHref(url);
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }
-            }
-        }, {
-            name: Messages.cancel,
-            onClick: function () {},
-            keys: [27]
+            },
+            keys: [13]
         }];
         var frameEmbed = UI.dialog.customModal(embed, { buttons: embedButtons});
 
