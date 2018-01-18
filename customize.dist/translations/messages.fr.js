@@ -812,5 +812,18 @@ define(function () {
     out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez cocher la case pour afficher l'écran de création de pads";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
 
+    // New share modal
+    out.share_linkCategory = "Partage";
+    out.share_linkAccess = "Droits d'accès";
+    out.share_linkEdit = "Édition";
+    out.share_linkView = "Lecture-seule";
+    out.share_linkOptions = "Options du lien";
+    out.share_linkEmbed = "Mode intégration (barre d'outils cachée)";
+    out.share_linkPresent = "Mode présentation (sections d'édition cachées)";
+    out.share_linkOpen = "Ouvrir le lien";
+    out.share_linkCopy = "Copier le lien";
+    out.share_embedCategory = "Intégration";
+    out.share_mediatagCopy = "Copier le mediatag";
+
     return out;
 });

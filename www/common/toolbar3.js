@@ -7,8 +7,7 @@ define([
     '/common/common-hash.js',
     '/common/common-feedback.js',
     '/customize/messages.js',
-    '/common/clipboard.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages, Clipboard) {
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages) {
     var Common;
 
     var Bar = {
@@ -27,9 +26,6 @@ define([
 
     // Userlist
     var USERLIST_CLS = Bar.constants.userlist = "cp-toolbar-users";
-    var EDITSHARE_CLS = Bar.constants.editShare = "cp-toolbar-share-edit";
-    var VIEWSHARE_CLS = Bar.constants.viewShare = "cp-toolbar-share-view";
-    var SHARE_CLS = Bar.constants.viewShare = "cp-toolbar-share";
 
     // Top parts
     var USER_CLS = Bar.constants.userAdmin = "cp-toolbar-user";
@@ -441,124 +437,19 @@ define([
         var origin = config.metadataMgr.getPrivateData().origin;
         var pathname = config.metadataMgr.getPrivateData().pathname;
         var hashes = metadataMgr.getPrivateData().availableHashes;
-        var readOnly = metadataMgr.getPrivateData().readOnly;
 
-        var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-        var options = [];
-
-        if (hashes.editHash) {
-            options.push({
-                tag: 'a',
-                attributes: {title: Messages.editShareTitle, 'class': 'cp-toolbar-share-edit-copy'},
-                content: '<span class="fa fa-users"></span> ' + Messages.editShare
-            });
-            if (readOnly) {
-                // We're in view mode, display the "open editing link" button
-                options.push({
-                    tag: 'a',
-                    attributes: {
-                        title: Messages.editOpenTitle,
-                        'class': 'cp-toolbar-share-edit-open',
-                        href: origin + pathname + '#' + hashes.editHash,
-                        target: '_blank'
-                    },
-                    content: '<span class="fa fa-users"></span> ' + Messages.editOpen
-                });
-            }
-            options.push({tag: 'hr'});
-        }
-        if (hashes.viewHash) {
-            options.push({
-                tag: 'a',
-                attributes: {title: Messages.viewShareTitle, 'class': 'cp-toolbar-share-view-copy'},
-                content: '<span class="fa fa-eye"></span> ' + Messages.viewShare
-            });
-            if (!readOnly) {
-                // We're in edit mode, display the "open readonly" button
-                options.push({
-                    tag: 'a',
-                    attributes: {
-                        title: Messages.viewOpenTitle,
-                        'class': 'cp-toolbar-share-view-open',
-                        href: origin + pathname + '#' + hashes.viewHash,
-                        target: '_blank'
-                    },
-                    content: '<span class="fa fa-eye"></span> ' + Messages.viewOpen
-                });
-            }
-            options.push({tag: 'hr'});
-            options.push({
-                tag: 'a',
-                attributes: {
-                    title: Messages.viewEmbedTitle,
-                    'class': 'cp-toolbar-share-view-embed',
-                },
-                content: '<span class="fa fa-eye"></span> ' + Messages.getEmbedCode
-            });
-        }
-        if (typeof(Config.customizeShareOptions) === 'function') {
-            Config.customizeShareOptions(hashes, options, {
-                type: 'DEFAULT',
+        var $shareBlock = $('<button>', {
+            'class': 'fa fa-share-alt cp-toolbar-share-button',
+            title: Messages.shareButton
+        });
+        $shareBlock.click(function () {
+            UIElements.createShareModal({
                 origin: origin,
-                pathname: pathname
+                pathname: pathname,
+                hashes: hashes,
+                common: Common
             });
-        }
-        var dropdownConfigShare = {
-            text: $('<div>').append($shareIcon).html(),
-            options: options,
-            feedback: 'SHARE_MENU',
-            common: Common
-        };
-        var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
-        $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS).addClass(EDITSHARE_CLS).addClass(VIEWSHARE_CLS);
-        $shareBlock.addClass('cp-toolbar-share-button');
-        $shareBlock.find('button').attr('title', Messages.shareButton);
-
-        if (hashes.editHash) {
-            $shareBlock.find('a.cp-toolbar-share-edit-copy').click(function () {
-                /*Common.storeLinkToClipboard(false, function (err) {
-                    if (!err) { UI.log(Messages.shareSuccess); }
-                });*/
-                var url = origin + pathname + '#' + hashes.editHash;
-                var success = Clipboard.copy(url);
-                if (success) { UI.log(Messages.shareSuccess); }
-            });
-        }
-        if (hashes.viewHash) {
-            $shareBlock.find('a.cp-toolbar-share-view-copy').click(function () {
-                /*Common.storeLinkToClipboard(true, function (err) {
-                    if (!err) { UI.log(Messages.shareSuccess); }
-                });*/
-                var url = origin + pathname + '#' + hashes.viewHash;
-                var success = Clipboard.copy(url);
-                if (success) { UI.log(Messages.shareSuccess); }
-            });
-            $shareBlock.find('a.cp-toolbar-share-view-embed').click(function () {
-                var url = origin + pathname + '#' + hashes.viewHash;
-                var parsed = Hash.parsePadUrl(url);
-                url = origin + parsed.getUrl({embed: true, present: true});
-                // Alertify content
-                var $content = $('<div>');
-                $('<input>', {'style':'display:none;'}).appendTo($content);
-                $('<h3>').text(Messages.viewEmbedTitle).appendTo($content);
-                var $tag = $('<p>').text(Messages.viewEmbedTag).appendTo($content);
-                $('<br>').appendTo($tag);
-                var iframeId = uid();
-                var iframeEmbed = '<iframe src="' + url + '"></iframe>';
-                $('<input>', {
-                    type: 'text',
-                    id: iframeId,
-                    readonly: 'readonly',
-                    value: iframeEmbed,
-                }).appendTo($tag);
-                UI.alert($content.html(), null, true);
-                $('#'+iframeId).click(function () {
-                    this.select();
-                });
-                //var success = Clipboard.copy(url);
-                //if (success) { UI.log(Messages.shareSuccess); }
-            });
-        }
+        });
 
         toolbar.$leftside.append($shareBlock);
         toolbar.share = $shareBlock;
@@ -574,57 +465,18 @@ define([
         var origin = config.metadataMgr.getPrivateData().origin;
         var pathname = config.metadataMgr.getPrivateData().pathname;
         var hashes = metadataMgr.getPrivateData().availableHashes;
-        var url = origin + pathname + '#' + hashes.fileHash;
 
-
-        var $shareIcon = $('<span>', {'class': 'fa fa-share-alt'});
-        var options = [];
-        options.push({
-            tag: 'a',
-            attributes: {title: Messages.editShareTitle, 'class': 'cp-toolbar-share-file-copy'},
-            content: '<span class="fa fa-file"></span> ' + Messages.fileShare
+        var $shareBlock = $('<button>', {
+            'class': 'fa fa-share-alt cp-toolbar-share-button',
+            title: Messages.shareButton
         });
-        options.push({
-            tag: 'a',
-            attributes: {title: Messages.fileEmbedTitle, 'class': 'cp-toolbar-share-file-embed'},
-            content: '<span class="fa fa-file"></span> ' + Messages.getEmbedCode
-        });
-
-        if (typeof(Config.customizeShareOptions) === 'function') {
-            Config.customizeShareOptions(hashes, options, {
-                type: 'FILE',
+        $shareBlock.click(function () {
+            UIElements.createFileShareModal({
                 origin: origin,
-                pathname: pathname
+                pathname: pathname,
+                hashes: hashes,
+                common: Common
             });
-        }
-
-        var dropdownConfigShare = {
-            text: $('<div>').append($shareIcon).html(),
-            options: options,
-            feedback: 'FILESHARE_MENU',
-            common: Common
-        };
-        var $shareBlock = UIElements.createDropdown(dropdownConfigShare);
-        $shareBlock.find('.cp-dropdown-content').addClass(SHARE_CLS);
-        $shareBlock.addClass('cp-toolbar-share-button');
-        $shareBlock.find('button').attr('title', Messages.shareButton);
-
-        // Add handlers
-        $shareBlock.find('a.cp-toolbar-share-file-copy').click(function () {
-            var success = Clipboard.copy(url);
-            if (success) { UI.log(Messages.shareSuccess); }
-        });
-        $shareBlock.find('a.cp-toolbar-share-file-embed').click(function () {
-            var $content = $('<div>');
-            $('<input>', {'style':'display:none;'}).appendTo($content);
-            $('<h3>').text(Messages.fileEmbedTitle).appendTo($content);
-            var $script = $('<p>').text(Messages.fileEmbedScript).appendTo($content);
-            $('<br>').appendTo($script);
-            $script.append(UI.dialog.selectable(Common.getMediatagScript()));
-            var $tag = $('<p>').text(Messages.fileEmbedTag).appendTo($content);
-            $('<br>').appendTo($tag);
-            $tag.append(UI.dialog.selectable(Common.getMediatagFromHref(url)));
-            UI.alert($content[0], null, true);
         });
 
         toolbar.$leftside.append($shareBlock);
