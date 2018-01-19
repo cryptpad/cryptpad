@@ -571,7 +571,6 @@ define([
         // RENAME
         exp.rename = function (path, newName, cb) {
             if (sframeChan) {
-                console.log(path, newName);
                 return void sframeChan.query("Q_DRIVE_USEROBJECT", {
                     cmd: "rename",
                     data: {
