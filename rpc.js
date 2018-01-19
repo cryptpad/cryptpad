@@ -773,12 +773,33 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
         if (e) { return cb(e); }
         if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
-        // Confirm that the channel is owned by the user is question
+        // Confirm that the channel is owned by the user in question
         if (metadata.owners.indexOf(unsafeKey) === -1) {
             return void cb('INSUFFICIENT_PERMISSIONS');
         }
 
         return void Env.msgStore.clearChannel(channelId, function (e) {
+            cb(e);
+        });
+    });
+};
+
+var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
+    if (typeof(channelId) !== 'string' || channelId.length !== 32) {
+        return cb('INVALID_ARGUMENTS');
+    }
+
+    if (!(Env.msgStore && Env.msgStore.removeChannel && Env.msgStore.getChannelMetadata)) {
+        return cb("E_NOT_IMPLEMENTED");
+    }
+
+    Env.msgStore.getChannelMetadata(channelId, function (e, metadata) {
+        if (e) { return cb(e); }
+        if (!(metadata && Array.isArray(metadata.owners))) { return void cb('E_NO_OWNERS'); }
+        if (metadata.owners.indexOf(unsafeKey) === -1) {
+            return void cb('INSUFFICIENT_PERMISSIONS');
+        }
+        return void Env.msgStore.removeChannel(channelId, function (e) {
             cb(e);
         });
     });
@@ -998,9 +1019,12 @@ var isAuthenticatedCall = function (call) {
         'GET_TOTAL_SIZE',
         'UPDATE_LIMITS',
         'GET_LIMIT',
+        'UPLOAD_STATUS',
         'UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
-        'EXPIRE_SESSION'
+        'EXPIRE_SESSION',
+        'CLEAR_OWNED_CHANNEL',
+        'REMOVE_OWNED_CHANNEL',
     ].indexOf(call) !== -1;
 };
 
@@ -1140,6 +1164,9 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
             if (checkSignature(serialized, signature, publicKey) !== true) {
                 return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
             }
+        } else if (msg[1] !== 'UPLOAD') {
+            console.error("INVALID_RPC CALL:", msg[1]);
+            return void respond("INVALID_RPC_CALL");
         }
 
         var safeKey = escapeKeyCharacters(publicKey);
@@ -1238,6 +1265,12 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
                 });
             case 'CLEAR_OWNED_CHANNEL':
                 return void clearOwnedChannel(Env, msg[1], publicKey, function (e, response) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, response);
+                });
+
+            case 'REMOVE_OWNED_CHANNEL':
+                return void removeOwnedChannel(Env, msg[1], publicKey, function (e, response) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, response);
                 });
