@@ -1,11 +1,12 @@
 define([
+    'jquery',
     '/api/config',
     '/common/hyperscript.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
 
     'less!/customize/src/less2/pages/page-404.less',
-], function (Config, h, LocalStore, Messages) {
+], function ($, Config, h, LocalStore, Messages) {
     var urlArgs = Config.requireConf.urlArgs;
     var img = h('img#cp-logo', {
         src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
@@ -19,6 +20,14 @@ define([
     var link = h('a#cp-link', {
         href: loggedIn? '/drive/': '/',
     }, loggedIn? Messages.header_logoTitle: Messages.header_homeTitle);
+
+    if (Config.httpUnsafeOrigin && Config.httpUnsafeOrigin !== window.location.origin
+        && window.parent) {
+        $(link).click(function (e) {
+            e.preventDefault();
+            window.parent.location = Config.httpUnsafeOrigin + $(link).attr('href').slice(1);
+        });
+    }
 
     var content = h('div#cp-main', [
         img,
