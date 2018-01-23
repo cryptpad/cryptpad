@@ -387,11 +387,15 @@ export type ChainPadServer_Storage_t = {
     getChannelMetadata: (channelName:string, cb:(err:?Error|string, data:?any)=>void)=>void,
     clearChannel: (channelName:string, (err:?Error)=>void)=>void
 };
-const flow_Config = require('../config.example.js');
-type Config_t = typeof(flow_Config);
+export type ChainPadServer_Config_t = {
+    verbose?: boolean,
+    filePath?: string,
+    channelExpirationMs?: number,
+    openFileLimit?: number
+};
 */
 module.exports.create = function (
-    conf /*:Config_t*/,
+    conf /*:ChainPadServer_Config_t*/,
     cb /*:(store:ChainPadServer_Storage_t)=>void*/
 ) {
     var env = {
