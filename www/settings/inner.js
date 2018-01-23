@@ -70,6 +70,10 @@ define([
     if (!AppConfig.dislayCreationScreen) {
         delete categories.creation;
     }
+    if (AppConfig.disableFeedback) {
+        var feedbackIdx = categories.account.indexOf('cp-settings-userfeedback');
+        categories.account.splice(feedbackIdx, 1);
+    }
 
     var create = {};
 

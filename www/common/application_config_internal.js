@@ -22,6 +22,7 @@ define(function() {
 
     config.enablePinning = true;
 
+    // Update the default colors available in the whiteboard application
     config.whiteboardPalette = [
         '#000000', // black
         '#FFFFFF', // white
@@ -41,8 +42,11 @@ define(function() {
         '#800080', // purple
     ];
 
+    // Set enableTemplates to false to remove the button allowing users to save a pad as a template
+    // and remove the template category in CryptDrive
     config.enableTemplates = true;
 
+    // Set enableHistory to false to remove the "History" button in all the apps.
     config.enableHistory = true;
 
     /*  user passwords are hashed with scrypt, and salted with their username.
@@ -58,8 +62,11 @@ define(function() {
     config.loginSalt = '';
     config.minimumPasswordLength = 8;
 
+    // Amount of time (ms) before aborting the session when the algorithm cannot synchronize the pad
     config.badStateTimeout = 30000;
 
+    // Customize the icon used for each application.
+    // You can update the colors by making a copy of /customize.dist/src/less2/include/colortheme.less
     config.applicationsIcon = {
         file: 'fa-file-text-o',
         pad: 'fa-file-word-o',
@@ -71,9 +78,33 @@ define(function() {
         contacts: 'fa-users',
     };
 
+    // EXPERIMENTAL: Enabling "displayCreationScreen" may cause UI issues and possible loss of data
     config.displayCreationScreen = false;
 
+    // Prevent anonymous users from storing pads in their drive
     config.disableAnonymousStore = false;
+
+    // Hide the usage bar in settings and drive
+    //config.hideUsageBar = true;
+
+    // Disable feedback for all the users and hide the settings part about feedback
+    config.disableFeedback = true;
+
+    // Add new options in the share modal (extend an existing tab or add a new tab).
+    // More info about how to use it on the wiki:
+    // https://github.com/xwiki-labs/cryptpad/wiki/Application-config#configcustomizeshareoptions
+    //config.customizeShareOptions = function (hashes, tabs, config) {};
+
+    // Add code to be executed on every page before loading the user object. `isLoggedIn` is a boolean
+    // indicating if the user is registered or anonymous. Here you can change the way anonymous users
+    // work in CryptPad, use an external SSO or even force registration
+    // *NOTE*: You have to call the `callback` function to continue the loading process
+    //config.beforeLogin = function(isLoggedIn, callback) {};
+
+    // Add code to be executed on every page after the user object is loaded (also work for
+    // unregistered users). This allows you to interact with your users' drive
+    // *NOTE*: You have to call the `callback` function to continue the loading process
+    //config.afterLogin = function(api, callback) {};
 
     return config;
 });
