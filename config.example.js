@@ -91,6 +91,8 @@ module.exports = {
     // cross-domain iframe. It can simply host the same content as CryptPad.
     // httpSafeOrigin: "https://some-other-domain.xyz",
 
+    httpUnsafeOrigin: domain,
+
     /*  your server's websocket url is configurable
      *  (default: '/cryptpad_websocket')
      *
