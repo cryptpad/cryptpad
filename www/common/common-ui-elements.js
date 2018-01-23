@@ -302,6 +302,7 @@ define([
             onClick: function () {},
             keys: [27]
         }, {
+            className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {
                 saveValue();
@@ -311,6 +312,7 @@ define([
             },
             keys: [13]
         }, {
+            className: 'primary',
             name: Messages.share_linkOpen,
             onClick: function () {
                 saveValue();
@@ -340,6 +342,7 @@ define([
             onClick: function () {},
             keys: [27]
         }, {
+            className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {
                 var v = getEmbedValue();
@@ -396,6 +399,7 @@ define([
             onClick: function () {},
             keys: [27]
         }, {
+            className: 'primary',
             name: Messages.share_linkCopy,
             onClick: function () {
                 var v = getLinkValue();
@@ -421,6 +425,7 @@ define([
             onClick: function () {},
             keys: [27]
         }, {
+            className: 'primary',
             name: Messages.share_mediatagCopy,
             onClick: function () {
                 var v = common.getMediatagFromHref(url);

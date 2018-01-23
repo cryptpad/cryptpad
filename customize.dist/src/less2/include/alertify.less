@@ -268,6 +268,14 @@
                         }
                     }
 
+                    &.primary {
+                        background-color: @colortheme_alertify-primary;
+                        color: @colortheme_alertify-primary-text;
+                        &:hover, &:active {
+                            background-color: darken(@colortheme_alertify-primary, 10%);
+                        }
+                    }
+
                     &:hover, &:active {
                         background-color: @alertify-btn-bg-hover;
                     }

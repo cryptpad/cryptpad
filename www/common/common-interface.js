@@ -112,7 +112,7 @@ define([
     };
 
     dialog.okButton = function (content) {
-        return h('button.ok', { tabindex: '2', }, content || Messages.okButton);
+        return h('button.ok.primary', { tabindex: '2', }, content || Messages.okButton);
     };
 
     dialog.cancelButton = function (content) {
@@ -324,7 +324,7 @@ define([
         var navs = [];
         opt.buttons.forEach(function (b) {
             if (!b.name || !b.onClick) { return; }
-            var button = h('button', { tabindex: '1' }, b.name);
+            var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
             $(button).click(function () {
                 b.onClick();
                 close($(this).parents('.alertify').first());
