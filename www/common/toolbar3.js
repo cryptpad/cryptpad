@@ -238,55 +238,57 @@ define([
                 var $nameValue = $('<span>', {
                     'class': 'cp-toolbar-userlist-name-value'
                 }).text(name).appendTo($nameSpan);
-                var $button = $('<button>', {
-                    'class': 'fa fa-pencil cp-toolbar-userlist-name-edit',
-                    title: Messages.user_rename
-                }).appendTo($nameSpan);
-                $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
-                $button.mouseenter(function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.setTimeout(function () {
-                        $button.parents().mouseleave();
+                if (!Config.disableProfile) {
+                    var $button = $('<button>', {
+                        'class': 'fa fa-pencil cp-toolbar-userlist-name-edit',
+                        title: Messages.user_rename
+                    }).appendTo($nameSpan);
+                    $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
+                    $button.mouseenter(function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.setTimeout(function () {
+                            $button.parents().mouseleave();
+                        });
                     });
-                });
-                var $nameInput = $('<input>', {
-                    'class': 'cp-toolbar-userlist-name-input'
-                }).val(name).appendTo($rightCol);
-                $button.click(function (e) {
-                    e.stopPropagation();
-                    $nameSpan.hide();
-                    $nameInput.show().focus().select();
-                    editingUserName.state = true;
-                    editingUserName.oldName = $nameInput.val();
-                });
-                $nameInput.click(function (e) {
-                    e.stopPropagation();
-                });
-                $nameInput.on('keydown', function (e) {
-                    if (e.which === 13 || e.which === 27) {
-                        $nameInput.hide();
-                        $nameSpan.show();
-                        $button.show();
-                        editingUserName.state = false;
+                    var $nameInput = $('<input>', {
+                        'class': 'cp-toolbar-userlist-name-input'
+                    }).val(name).appendTo($rightCol);
+                    $button.click(function (e) {
+                        e.stopPropagation();
+                        $nameSpan.hide();
+                        $nameInput.show().focus().select();
+                        editingUserName.state = true;
+                        editingUserName.oldName = $nameInput.val();
+                    });
+                    $nameInput.click(function (e) {
+                        e.stopPropagation();
+                    });
+                    $nameInput.on('keydown', function (e) {
+                        if (e.which === 13 || e.which === 27) {
+                            $nameInput.hide();
+                            $nameSpan.show();
+                            $button.show();
+                            editingUserName.state = false;
+                        }
+                        if (e.which === 13) {
+                            var newName = $nameInput.val(); // TODO clean
+                            $nameValue.text(newName);
+                            setDisplayName(newName);
+                            return;
+                        }
+                        if (e.which === 27) {
+                            $nameValue.text(editingUserName.oldName);
+                            return;
+                        }
+                    });
+                    if (editingUserName.state) {
+                        $button.click();
+                        $nameInput.val(editingUserName.value);
+                        $nameInput[0].setSelectionRange(editingUserName.select[0],
+                                                     editingUserName.select[1]);
+                        setTimeout(function () { $nameInput.focus(); });
                     }
-                    if (e.which === 13) {
-                        var newName = $nameInput.val(); // TODO clean
-                        $nameValue.text(newName);
-                        setDisplayName(newName);
-                        return;
-                    }
-                    if (e.which === 27) {
-                        $nameValue.text(editingUserName.oldName);
-                        return;
-                    }
-                });
-                if (editingUserName.state) {
-                    $button.click();
-                    $nameInput.val(editingUserName.value);
-                    $nameInput[0].setSelectionRange(editingUserName.select[0],
-                                                 editingUserName.select[1]);
-                    setTimeout(function () { $nameInput.focus(); });
                 }
             } else if (Common.isLoggedIn() && data.curvePublic && !friends[data.curvePublic]
                 && !priv.readOnly) {

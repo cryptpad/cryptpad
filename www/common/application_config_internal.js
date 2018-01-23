@@ -88,14 +88,14 @@ define(function() {
     //config.hideUsageBar = true;
 
     // Disable feedback for all the users and hide the settings part about feedback
-    config.disableFeedback = true;
+    //config.disableFeedback = true;
 
     // Add new options in the share modal (extend an existing tab or add a new tab).
     // More info about how to use it on the wiki:
     // https://github.com/xwiki-labs/cryptpad/wiki/Application-config#configcustomizeshareoptions
     //config.customizeShareOptions = function (hashes, tabs, config) {};
 
-    // Add code to be executed on every page before loading the user object. `isLoggedIn` is a boolean
+    // Add code to be executed on every page before loading the user object. `isLoggedIn` (bool) is
     // indicating if the user is registered or anonymous. Here you can change the way anonymous users
     // work in CryptPad, use an external SSO or even force registration
     // *NOTE*: You have to call the `callback` function to continue the loading process
@@ -105,6 +105,11 @@ define(function() {
     // unregistered users). This allows you to interact with your users' drive
     // *NOTE*: You have to call the `callback` function to continue the loading process
     //config.afterLogin = function(api, callback) {};
+
+    // Disabling the profile app allows you to import the profile informations (display name, avatar)
+    // from an external source and make sure the users can't change them from CryptPad.
+    // You can use config.afterLogin to import these values in the users' drive.
+    //config.disableProfile = true;
 
     return config;
 });
