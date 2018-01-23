@@ -29,7 +29,7 @@ var WARN = function (e, output) {
 };
 
 var isValidId = function (chan) {
-    return chan && chan.length && /^[a-fA-F0-9]/.test(chan) &&
+    return chan && chan.length && /^[a-zA-Z0-9=+-]*$/.test(chan) &&
         [32, 48].indexOf(chan.length) > -1;
 };
 
@@ -1006,6 +1006,7 @@ var isUnauthenticatedCall = function (call) {
         'GET_MULTIPLE_FILE_SIZE',
         'IS_CHANNEL_PINNED',
         'IS_NEW_CHANNEL',
+        'GET_HISTORY_OFFSET'
     ].indexOf(call) !== -1;
 };
 
@@ -1049,8 +1050,21 @@ const mkEvent = function (once) {
     };
 };
 
-/*::const ConfigType = require('./config.example.js');*/
-RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)=>void*/) {
+/*::
+const flow_Config = require('./config.example.js');
+type Config_t = typeof(flow_Config);
+import type { ChainPadServer_Storage_t } from './storage/file.js'
+type NetfluxWebsocketSrvContext_t = {
+    store: ChainPadServer_Storage_t,
+    getHistoryOffset: (
+        ctx: NetfluxWebsocketSrvContext_t,
+        channelName: string,
+        lastKnownHash: ?string,
+        cb: (err: ?Error, offset: ?number)=>void
+    )=>void
+};
+*/
+RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) {
     // load pin-store...
     console.log('loading rpc module...');
 
@@ -1081,8 +1095,24 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
     };
 
-    var handleUnauthenticatedMessage = function (msg, respond) {
+    var handleUnauthenticatedMessage = function (msg, respond, nfwssCtx) {
         switch (msg[0]) {
+            case 'GET_HISTORY_OFFSET': {
+                if (typeof(msg[1]) !== 'object' || typeof(msg[1].channelName) !== 'string') {
+                    return respond('INVALID_ARG_FORMAT', msg);
+                }
+                const msgHash = typeof(msg[1].msgHash) === 'string' ? msg[1].msgHash : undefined;
+                nfwssCtx.getHistoryOffset(nfwssCtx, msg[1].channelName, msgHash, (e, ret) => {
+                    if (e) {
+                        if (e.code !== 'ENOENT') {
+                            WARN(e.stack, msg);
+                        }
+                        return respond(e.message);
+                    }
+                    respond(e, [null, ret, null]);
+                });
+                break;
+            }
             case 'GET_FILE_SIZE':
                 return void getFileSize(Env, msg[1], function (e, size) {
                     if (e) {
@@ -1133,7 +1163,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
         }
 
         if (isUnauthenticateMessage(msg)) {
-            return handleUnauthenticatedMessage(msg, respond);
+            return handleUnauthenticatedMessage(msg, respond, ctx);
         }
 
         var signature = msg.shift();
@@ -1334,7 +1364,7 @@ RPC.create = function (config /*:typeof(ConfigType)*/, cb /*:(?Error, ?Function)
     };
 
     var rpc = function (
-        ctx /*:{ store: Object }*/,
+        ctx /*:NetfluxWebsocketSrvContext_t*/,
         data /*:Array<Array<any>>*/,
         respond /*:(?string, ?Array<any>)=>void*/)
     {

@@ -24,7 +24,7 @@ define([
 
     var storeHash;
 
-    var store = {};
+    var store = window.CryptPad_AsyncStore = {};
 
 
     var onSync = function (cb) {
