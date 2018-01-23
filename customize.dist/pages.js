@@ -228,6 +228,116 @@ define([
         ]);
     };
 
+    Pages['/features.html'] = function () {
+        return h('div#cp-main', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.features_title)),
+                h('table#cp-features-table', [
+                    h('thead', h('tr', [
+                        h('th', Msg.features_feature),
+                        h('th', Msg.features_anon),
+                        h('th', Msg.features_registered),
+                        h('th', Msg.features_notes)
+                    ])),
+                    h('tbody', [
+                        h('tr', [
+                            h('td', Msg.features_f_pad),
+                            h('td.yes', '✔'),// u2714, u2715
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_pad_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_history),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_history_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_export),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_export_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_todo),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_viewFiles),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_drive),
+                            h('td.part', '~'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_drive_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_uploadFiles),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_embedFiles),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_multiple),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_multiple_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_logoutEverywhere),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_logoutEverywhere_notes || '')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_templates),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_templates_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_profile),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_profile_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_tags),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_tags_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_contacts),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_contacts_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_storage),
+                            h('td.no', Msg.features_f_storage_anon),
+                            setHTML(h('td.yes.left'), Msg.features_f_storage_registered),
+                            h('td')
+                        ]),
+                    ])
+                ])
+            ]),
+            infopageFooter()
+        ]);
+    };
+
     Pages['/privacy.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),

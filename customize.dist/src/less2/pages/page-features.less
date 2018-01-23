@@ -1,0 +1,52 @@
+@import (once) "../include/infopages.less";
+@import (once) "../include/colortheme-all.less";
+
+.infopages_main();
+.infopages_topbar();
+
+@features_th-bg: #555;
+@features_th-fg: #fff;
+@features_tr-bg-alt: #ddd;
+@features_notes: #333;
+@features_yes: #c4ffca;
+@features_no: #ffc4bc;
+@features_part: #faffd3;
+
+table#cp-features-table {
+    width: 100%;
+    th {
+        background-color: @features_th-bg;
+        color: @features_th-fg;
+        padding: 10px;
+        border: 1px solid @features_th-bg;
+    }
+    tbody {
+        td {
+            height: 32px;
+            line-height: 32px;
+            padding: 5px;
+            border: 1px solid @features_th-bg;
+        }
+        tr:nth-child(odd) {
+            background-color: @features_tr-bg-alt;
+        }
+    }
+    td:nth-child(4) {
+        color: @features_notes;
+        font-size: 14px;
+        font-style: italic;
+    }
+    td:first-child {
+        font-weight: bold;
+    }
+    .yes, .no, .part {
+        text-align: center;
+    }
+    .yes { background-color: @features_yes; }
+    .no { background-color: @features_no; }
+    .part { background-color: @features_part; }
+    .left {
+        text-align: left;
+    }
+}
+

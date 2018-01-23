@@ -714,6 +714,41 @@ define(function () {
     out.policy_choices_vpn = 'If you want to use our hosted instance, but don\'t want to expose your IP address, you can protect your IP using the <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads from the Tor project" target="_blank" rel="noopener noreferrer">Tor browser bundle</a>, or a <a href="https://riseup.net/en/vpn" title="VPNs provided by Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
     out.policy_choices_ads = 'If you just want to block our analytics platform, you can use adblocking tools like <a href="https://www.eff.org/privacybadger" title="download privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a>.';
 
+    // features.html
+
+    out.features_title = "Features table";
+    out.features_feature = "Feature";
+    out.features_anon = "Anonymous user";
+    out.features_registered = "Registered user";
+    out.features_notes = "Notes";
+    out.features_f_pad = "Create/edit/view a pad";
+    out.features_f_pad_notes = "Rich Text, Code, Slide, Poll and Whiteboard applications";
+    out.features_f_history = "History";
+    out.features_f_history_notes = "View and restore any version of your pads";
+    out.features_f_todo = "Create a TODO-list";
+    out.features_f_drive = "CryptDrive";
+    out.features_f_drive_notes = "Basic features for anonymous users";
+    out.features_f_export = "Export/Import";
+    out.features_f_export_notes = "For pads and CryptDrive";
+    out.features_f_viewFiles = "View files";
+    out.features_f_uploadFiles = "Upload files";
+    out.features_f_embedFiles = "Embed files";
+    out.features_f_embedFiles_notes = "Embed a file stored in CryptDrive in a pad";
+    out.features_f_multiple = "Use on multiple devices";
+    out.features_f_multiple_notes = "Easy way to access your pads from any device";
+    out.features_f_logoutEverywhere = "Log out from other devices";
+    out.features_f_templates = "Use templates";
+    out.features_f_templates_notes = "Create templates and create new pads from your templates";
+    out.features_f_profile = "Create a profile";
+    out.features_f_profile_notes = "Personal page including an avatar and a description";
+    out.features_f_tags = "Use tags";
+    out.features_f_tags_notes = "Allow users to search by tags in CryptDrive";
+    out.features_f_contacts = "Contacts application";
+    out.features_f_contacts_notes = "Add contacts and chat with them in an encrypted session";
+    out.features_f_storage = "Storage";
+    out.features_f_storage_anon = "Pads deleted after 3 months";
+    out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
+
     // terms.html
 
     out.tos_title = "CryptPad Terms of Service";

@@ -704,6 +704,42 @@ define(function () {
     out.policy_choices_vpn = 'Si vous souhaitez utiliser notre instance hébergée (cryptpad.fr) mais que vous ne souhaitez pas exposer votre adresse IP, vous pouvez la protéger en utilisant le <a href="https://www.torproject.org/projects/torbrowser.html.en" title="téléchargements du projet Tor" target="_blank" rel="noopener noreferrer">navigateur Tor</a>, ou un <a href="https://riseup.net/fr/vpn" title="VPNs fournis par Riseup" target="_blank" rel="noopener noreferrer">VPN</a>.';
     out.policy_choices_ads = 'Si vous souhaitez uniquement bloquer notre plateforme d\'analytique, vous pouvez utiliser un bloqueur de publicités tel que <a href="https://www.eff.org/fr/privacybadger" title="télécharger privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a>.';
 
+    // features.html
+
+    out.features_title = "Tableau des fonctionnalités";
+    out.features_feature = "Fonctionnalité";
+    out.features_anon = "Utilisateur anonyme";
+    out.features_registered = "Utilisateur enregistré";
+    out.features_notes = "Notes";
+    out.features_f_pad = "Créer/modifier/voir un pad";
+    out.features_f_pad_notes = "Texte, Code, Présentation, Sondage et Tableau blanc";
+    out.features_f_history = "Historique";
+    out.features_f_history_notes = "Voir et restaurer n'importe quelle version d'un pad";
+    out.features_f_todo = "Créer une TODO-list";
+    out.features_f_drive = "CryptDrive";
+    out.features_f_drive_notes = "Fonctionnalités basiques pour les utilisateurs anonymes";
+    out.features_f_export = "Export/Import";
+    out.features_f_export_notes = "Pour les pads et CryptDrive";
+    out.features_f_viewFiles = "Voir des fichiers";
+    out.features_f_uploadFiles = "Importer des fichiers";
+    out.features_f_embedFiles = "Intégrer des fichiers";
+    out.features_f_embedFiles_notes = "Intégrer un fichier de CryptDrive dans un pad";
+    out.features_f_multiple = "Appareils multiples";
+    out.features_f_multiple_notes = "Moyen facile de voir vos pads depuis n'importe quel appareil";
+    out.features_f_logoutEverywhere = "Se déconnecter partout";
+    out.features_f_logoutEverywhere_notes = "Se déconnecter des autres appareils utilisés";
+    out.features_f_templates = "Modèles";
+    out.features_f_templates_notes = "Créer des modèles et créer des pads basés sur ces modèles";
+    out.features_f_profile = "Créer un profil";
+    out.features_f_profile_notes = "Page personnelle contenant un avatar et une description";
+    out.features_f_tags = "Utiliser les tags";
+    out.features_f_tags_notes = "Permet la recherche de documents par tags dans CryptDrive";
+    out.features_f_contacts = "Application Contacts";
+    out.features_f_contacts_notes = "Ajouter des contacts et discuter avec eux de manière sécurisée";
+    out.features_f_storage = "Stockage";
+    out.features_f_storage_anon = "Pads supprimés après 3 mois";
+    out.features_f_storage_registered = "Gratuit: 50Mo<br>Premium: 5Go/20Go/50Go";
+
     // terms.html
 
     out.tos_title = "Conditions d'utilisation de CryptPad";
