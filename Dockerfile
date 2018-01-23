@@ -4,7 +4,7 @@ COPY . /cryptpad
 WORKDIR /cryptpad
 
 RUN apk add --no-cache git tini \
-   && npm install \
+   && npm install --production \
    && npm install -g bower \
    && bower install --allow-root
 
