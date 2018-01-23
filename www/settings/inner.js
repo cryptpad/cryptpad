@@ -70,6 +70,14 @@ define([
     if (!AppConfig.dislayCreationScreen) {
         delete categories.creation;
     }
+    if (AppConfig.disableFeedback) {
+        var feedbackIdx = categories.account.indexOf('cp-settings-userfeedback');
+        categories.account.splice(feedbackIdx, 1);
+    }
+    if (AppConfig.disableProfile) {
+        var displaynameIdx = categories.account.indexOf('cp-settings-displayname');
+        categories.account.splice(displaynameIdx, 1);
+    }
 
     var create = {};
 
@@ -155,8 +163,7 @@ define([
     create['logout-everywhere'] = function () {
         if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-logout-everywhere cp-sidebarlayout-element'});
-        $('<label>', { 'for': 'cp-settings-logout-everywhere'})
-            .text(Messages.settings_logoutEverywhereTitle).appendTo($div);
+        $('<label>').text(Messages.settings_logoutEverywhereTitle).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .text(Messages.settings_logoutEverywhere).appendTo($div);
         var $button = $('<button>', {

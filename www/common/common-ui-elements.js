@@ -953,7 +953,32 @@ define([
         };
         if (!window.Symbol) { return void displayDefault(); } // IE doesn't have Symbol
         if (!href) { return void displayDefault(); }
+
+        var centerImage = function ($img, $image, img) {
+            var w = img.width;
+            var h = img.height;
+            if (w>h) {
+                $image.css('max-height', '100%');
+                $img.css('flex-direction', 'column');
+                if (cb) { cb($img); }
+                return;
+            }
+            $image.css('max-width', '100%');
+            $img.css('flex-direction', 'row');
+            if (cb) { cb($img); }
+        };
+
         var parsed = Hash.parsePadUrl(href);
+        if (parsed.type !== "file" || parsed.hashData.type !== "file") {
+            var $img = $('<media-tag>').appendTo($container);
+            var img = new Image();
+            $(img).attr('src', href);
+            img.onload = function () {
+                centerImage($img, $(img), img);
+                $(img).appendTo($img);
+            };
+            return;
+        }
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
@@ -971,17 +996,7 @@ define([
                 $img.attr('data-crypto-key', 'cryptpad:' + cryptKey);
                 UIElements.displayMediatagImage(Common, $img, function (err, $image, img) {
                     if (err) { return void console.error(err); }
-                    var w = img.width;
-                    var h = img.height;
-                    if (w>h) {
-                        $image.css('max-height', '100%');
-                        $img.css('flex-direction', 'column');
-                        if (cb) { cb($img); }
-                        return;
-                    }
-                    $image.css('max-width', '100%');
-                    $img.css('flex-direction', 'row');
-                    if (cb) { cb($img); }
+                    centerImage($img, $image,  img);
                 });
             });
         }
@@ -1259,7 +1274,7 @@ define([
                 $userAdminContent.append($userAccount).append(Util.fixHTML(accountName));
                 $userAdminContent.append($('<br>'));
             }
-            if (config.displayName) {
+            if (config.displayName && !AppConfig.disableProfile) {
                 // Hide "Display name:" in read only mode
                 $userName.append(Messages.user_displayName + ': ');
                 $userName.append($displayedName);
@@ -1282,14 +1297,14 @@ define([
             });
         }
         // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName) {
+        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
                 attributes: {'class': config.changeNameButtonCls},
                 content: Messages.user_rename
             });
         }
-        if (accountName) {
+        if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-profile'},

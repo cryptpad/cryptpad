@@ -727,6 +727,10 @@ define([
         };
 
         Nthen(function (waitFor) {
+            if (AppConfig.beforeLogin) {
+                AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
+            }
+        }).nThen(function (waitFor) {
             var cfg = {
                 query: onMessage, // TODO temporary, will be replaced by a webworker channel
                 userHash: LocalStore.getUserHash(),
@@ -763,6 +767,7 @@ define([
                 }
 
                 initFeedback(data.feedback);
+                initialized = true;
             }));
         }).nThen(function (waitFor) {
             // Load the new pad when the hash has changed
@@ -828,6 +833,10 @@ define([
                 common.mergeAnonDrive(waitFor(function() {
                     delete sessionStorage.migrateAnonDrive;
                 }));
+            }
+        }).nThen(function (waitFor) {
+            if (AppConfig.afterLogin) {
+                AppConfig.afterLogin(common, waitFor());
             }
         }).nThen(function () {
             updateLocalVersion();

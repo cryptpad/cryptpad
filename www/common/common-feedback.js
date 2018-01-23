@@ -1,4 +1,7 @@
-define(['/customize/messages.js'], function (Messages) {
+define([
+    '/customize/messages.js',
+    '/customize/application_config.js'
+], function (Messages, AppConfig) {
     var Feedback = {};
 
     Feedback.init = function (state) {
@@ -19,6 +22,7 @@ define(['/customize/messages.js'], function (Messages) {
         http.send();
     };
     Feedback.send = function (action, force) {
+        if (AppConfig.disableFeedback) { return; }
         if (!action) { return; }
         if (force !== true) {
             if (!Feedback.state) { return; }
