@@ -341,7 +341,7 @@ define([
             // "priv" is not shared with other users but is needed by the apps
             priv: {
                 edPublic: store.proxy.edPublic,
-                friends: store.proxy.friends,
+                friends: store.proxy.friends || {},
                 settings: store.proxy.settings,
                 thumbnails: !Util.find(store.proxy, ['settings', 'general', 'disableThumbnails'])
             }
