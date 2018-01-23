@@ -9,6 +9,7 @@ define([
     '/common/common-interface.js',
     '/common/common-realtime.js',
     '/customize/messages.js',
+    '/customize/application_config.js',
     '/bower_components/marked/marked.min.js',
     'cm/lib/codemirror',
 
@@ -33,6 +34,7 @@ define([
     UI,
     Realtime,
     Messages,
+    AppConfig,
     Marked,
     CodeMirror
     )
@@ -478,6 +480,10 @@ define([
         $(waitFor(UI.addLoadingScreen));
         SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
     }).nThen(function (waitFor) {
+        if (AppConfig.disableProfile) {
+            common.gotoURL('/drive/');
+            return;
+        }
         APP.$container = $('#cp-sidebarlayout-container');
         APP.$toolbar = $('#cp-toolbar');
         APP.$leftside = $('<div>', {id: 'cp-sidebarlayout-leftside'}).appendTo(APP.$container);

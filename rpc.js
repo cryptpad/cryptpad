@@ -95,8 +95,7 @@ var unescapeKeyCharacters = function (key) {
     return key.replace(/\-/g, '/');
 };
 
-//  TODO Rename to getSession ?
-var beginSession = function (Sessions, key) {
+var getSession = function (Sessions, key) {
     var safeKey = escapeKeyCharacters(key);
     if (Sessions[safeKey]) {
         Sessions[safeKey].atime = +new Date();
@@ -136,7 +135,7 @@ var expireSessions = function (Sessions) {
 var addTokenForKey = function (Sessions, publicKey, token) {
     if (!Sessions[publicKey]) { throw new Error('undefined user'); }
 
-    var user = beginSession(Sessions, publicKey);
+    var user = getSession(Sessions, publicKey);
     user.tokens.push(token);
     user.atime = +new Date();
     if (user.tokens.length > 2) { user.tokens.shift(); }
@@ -158,7 +157,7 @@ var isValidCookie = function (Sessions, publicKey, cookie) {
         return false;
     }
 
-    var user = beginSession(Sessions, publicKey);
+    var user = getSession(Sessions, publicKey);
     if (!user) { return false; }
 
     var idx = user.tokens.indexOf(parsed.seq);
@@ -213,7 +212,7 @@ var checkSignature = function (signedMsg, signature, publicKey) {
 };
 
 var loadUserPins = function (Env, publicKey, cb) {
-    var session = beginSession(Env.Sessions, publicKey);
+    var session = getSession(Env.Sessions, publicKey);
 
     if (session.channels) {
         return cb(session.channels);
@@ -579,7 +578,7 @@ var pinChannel = function (Env, publicKey, channels, cb) {
 
     // get channel list ensures your session has a cached channel list
     getChannelList(Env, publicKey, function (pinned) {
-        var session = beginSession(Env.Sessions, publicKey);
+        var session = getSession(Env.Sessions, publicKey);
 
         // only pin channels which are not already pinned
         var toStore = channels.filter(function (channel) {
@@ -622,7 +621,7 @@ var unpinChannel = function (Env, publicKey, channels, cb) {
     }
 
     getChannelList(Env, publicKey, function (pinned) {
-        var session = beginSession(Env.Sessions, publicKey);
+        var session = getSession(Env.Sessions, publicKey);
 
         // only unpin channels which are pinned
         var toStore = channels.filter(function (channel) {
@@ -647,7 +646,7 @@ var unpinChannel = function (Env, publicKey, channels, cb) {
 
 var resetUserPins = function (Env, publicKey, channelList, cb) {
     if (!Array.isArray(channelList)) { return void cb('INVALID_PIN_LIST'); }
-    var session = beginSession(Env.Sessions, publicKey);
+    var session = getSession(Env.Sessions, publicKey);
 
     if (!channelList.length) {
         return void getHash(Env, publicKey, function (e, hash) {
@@ -812,7 +811,7 @@ var upload = function (Env, publicKey, content, cb) {
     catch (e) { return void cb('DECODE_BUFFER'); }
     var len = dec.length;
 
-    var session = beginSession(Env.Sessions, publicKey);
+    var session = getSession(Env.Sessions, publicKey);
 
     if (typeof(session.currentUploadSize) !== 'number' ||
         typeof(session.currentUploadSize) !== 'number') {
@@ -844,7 +843,7 @@ var upload = function (Env, publicKey, content, cb) {
 var upload_cancel = function (Env, publicKey, cb) {
     var paths = Env.paths;
 
-    var session = beginSession(Env.Sessions, publicKey);
+    var session = getSession(Env.Sessions, publicKey);
     delete session.currentUploadSize;
     delete session.pendingUploadSize;
     if (session.blobstage) { session.blobstage.close(); }
@@ -874,7 +873,7 @@ var isFile = function (filePath, cb) {
 
 var upload_complete = function (Env, publicKey, cb) {
     var paths = Env.paths;
-    var session = beginSession(Env.Sessions, publicKey);
+    var session = getSession(Env.Sessions, publicKey);
 
     if (session.blobstage && session.blobstage.close) {
         session.blobstage.close();
@@ -1171,7 +1170,7 @@ RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) 
 
         // make sure a user object is initialized in the cookie jar
         if (publicKey) {
-            beginSession(Sessions, publicKey);
+            getSession(Sessions, publicKey);
         } else {
             console.log("No public key");
         }
@@ -1317,7 +1316,7 @@ RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) 
                 return void upload_status(Env, safeKey, msg[1], function (e, yes) {
                     if (!e && !yes) {
                         // no pending uploads, set the new size
-                        var user = beginSession(Sessions, safeKey);
+                        var user = getSession(Sessions, safeKey);
                         user.pendingUploadSize = filesize;
                         user.currentUploadSize = 0;
                     }
@@ -1351,7 +1350,7 @@ RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) 
         }
 
         // if session has not been authenticated, do so
-        var session = beginSession(Sessions, safeKey);
+        var session = getSession(Sessions, safeKey);
         if (typeof(session.privilege) !== 'boolean') {
             return void isPrivilegedUser(publicKey, function (yes) {
                 session.privilege = yes;

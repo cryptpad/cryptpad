@@ -1274,7 +1274,7 @@ define([
                 $userAdminContent.append($userAccount).append(Util.fixHTML(accountName));
                 $userAdminContent.append($('<br>'));
             }
-            if (config.displayName) {
+            if (config.displayName && !AppConfig.disableProfile) {
                 // Hide "Display name:" in read only mode
                 $userName.append(Messages.user_displayName + ': ');
                 $userName.append($displayedName);
@@ -1297,14 +1297,14 @@ define([
             });
         }
         // Add the change display name button if not in read only mode
-        if (config.changeNameButtonCls && config.displayChangeName) {
+        if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
                 attributes: {'class': config.changeNameButtonCls},
                 content: Messages.user_rename
             });
         }
-        if (accountName) {
+        if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
                 attributes: {'class': 'cp-toolbar-menu-profile'},
