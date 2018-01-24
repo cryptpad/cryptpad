@@ -111,12 +111,14 @@ define([
         return input;
     };
 
-    dialog.okButton = function (content) {
-        return h('button.ok.primary', { tabindex: '2', }, content || Messages.okButton);
+    dialog.okButton = function (content, classString) {
+        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary'
+        return h(sel, { tabindex: '2', }, content || Messages.okButton);
     };
 
-    dialog.cancelButton = function (content) {
-        return h('button.cancel', { tabindex: '1'}, content || Messages.cancelButton);
+    dialog.cancelButton = function (content, classString) {
+        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.cancel'
+        return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
     };
 
     dialog.message = function (text) {
@@ -464,8 +466,8 @@ define([
             message = dialog.message(msg);
         }
 
-        var ok = dialog.okButton(opt.ok);
-        var cancel = dialog.cancelButton(opt.cancel);
+        var ok = dialog.okButton(opt.ok, opt.okClass);
+        var cancel = dialog.cancelButton(opt.cancel, opt.cancelClass);
 
         var frame = dialog.frame([
             message,
