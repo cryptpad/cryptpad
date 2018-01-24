@@ -112,12 +112,12 @@ define([
     };
 
     dialog.okButton = function (content, classString) {
-        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary'
+        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary';
         return h(sel, { tabindex: '2', }, content || Messages.okButton);
     };
 
     dialog.cancelButton = function (content, classString) {
-        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.cancel'
+        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.cancel';
         return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
     };
 
