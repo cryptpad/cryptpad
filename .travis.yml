@@ -9,3 +9,4 @@ node_js:
 script:
   - npm run-script lint
   - npm run-script flow
+  - docker build -t xwiki/cryptpad .
