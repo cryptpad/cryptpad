@@ -444,13 +444,14 @@ define([
             'class': 'fa fa-share-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
+        var modal = UIElements.createShareModal({
+            origin: origin,
+            pathname: pathname,
+            hashes: hashes,
+            common: Common
+        });
         $shareBlock.click(function () {
-            UIElements.createShareModal({
-                origin: origin,
-                pathname: pathname,
-                hashes: hashes,
-                common: Common
-            });
+            UI.openCustomModal(UI.dialog.tabs(modal));
         });
 
         toolbar.$leftside.append($shareBlock);
@@ -472,13 +473,14 @@ define([
             'class': 'fa fa-share-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
+        var modal = UIElements.createFileShareModal({
+            origin: origin,
+            pathname: pathname,
+            hashes: hashes,
+            common: Common
+        });
         $shareBlock.click(function () {
-            UIElements.createFileShareModal({
-                origin: origin,
-                pathname: pathname,
-                hashes: hashes,
-                common: Common
-            });
+            UI.openCustomModal(UI.dialog.tabs(modal));
         });
 
         toolbar.$leftside.append($shareBlock);

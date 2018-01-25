@@ -375,8 +375,8 @@ define([
             }
             if (val.embed) { $(link).find('#cp-share-embed').attr('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
-            UI.openCustomModal(UI.dialog.tabs(tabs));
         });
+        return tabs;
     };
     UIElements.createFileShareModal = function (config) {
         var origin = config.origin;
@@ -451,7 +451,7 @@ define([
                 pathname: pathname
             });
         }
-        UI.openCustomModal(UI.dialog.tabs(tabs));
+        return tabs;
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
