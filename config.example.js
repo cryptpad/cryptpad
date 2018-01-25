@@ -8,7 +8,9 @@ var domain = ' http://localhost:3000/';
 // If your system doesn't support dumping, comment this out and install with
 // `npm install --production`
 // See: https://strongloop.github.io/strongloop.com/strongblog/how-to-heap-snapshots/
-require('heapdump');
+
+// to enable this feature, uncomment the line below:
+// require('heapdump');
 
 module.exports = {
 
