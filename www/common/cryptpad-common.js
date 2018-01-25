@@ -196,6 +196,13 @@ define([
         postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
     };
 
+    common.getDeletedPads = function (cb) {
+        postMessage("GET_DELETED_PADS", null, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
     common.uploadComplete = function (cb) {
         postMessage("UPLOAD_COMPLETE", null, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }

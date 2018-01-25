@@ -94,9 +94,27 @@ define([
         return list;
     };
 
-    var getCanonicalChannelList = function () {
-        return Util.deduplicateString(getUserChannelList()).sort();
+    var getExpirableChannelList = function () {
+        var list = [];
+        store.userObject.getFiles([store.userObject.FILES_DATA]).forEach(function (id) {
+            var data = store.userObject.getFileData(id);
+            var edPublic = store.proxy.edPublic;
+
+            // Push channels owned by someone else or channel that should have expired
+            // because of the expiration time
+            if ((data.owners && data.owners.indexOf(edPublic) === -1) ||
+                    data.expire < (+new Date())) {
+                list.push(Hash.hrefToHexChannelId(data.href));
+            }
+        });
+        return list;
     };
+
+    var getCanonicalChannelList = function (expirable) {
+        var list = expirable ? getExpirableChannelList() : getUserChannelList();
+        return Util.deduplicateString(list).sort();
+    };
+
     //////////////////////////////////////////////////////////////////
     /////////////////////// RPC //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
@@ -172,6 +190,37 @@ define([
         });
     };
 
+    var arePinsSynced = function (cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+        var list = getCanonicalChannelList(false);
+        var local = Hash.hashChannelList(list);
+        store.rpc.getServerHash(function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(null, hash === local);
+        });
+    };
+
+    var resetPins = function (cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+        var list = getCanonicalChannelList(false);
+        store.rpc.reset(list, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(null, hash);
+        });
+    };
+
+    Store.getDeletedPads = function (data, cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+        //var list = getCanonicalChannelList(true);
+
+        // TODO: rpc to get the deleted pads here and send this list in the callback
+
+        cb([]);
+    };
+
     Store.uploadComplete = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.uploadComplete(function (err, res) {
@@ -193,27 +242,6 @@ define([
         store.rpc.uploadCancel(function (err, res) {
             if (err) { return void cb({error:err}); }
             cb(res);
-        });
-    };
-
-    var arePinsSynced = function (cb) {
-        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-        var list = getCanonicalChannelList();
-        var local = Hash.hashChannelList(list);
-        store.rpc.getServerHash(function (e, hash) {
-            if (e) { return void cb(e); }
-            cb(null, hash === local);
-        });
-    };
-
-    var resetPins = function (cb) {
-        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-        var list = getCanonicalChannelList();
-        store.rpc.reset(list, function (e, hash) {
-            if (e) { return void cb(e); }
-            cb(null, hash);
         });
     };
 
@@ -579,6 +607,8 @@ define([
                 contains = true;
                 pad.atime = +new Date();
                 pad.title = title;
+                pad.owners = owners;
+                pad.expire = expire;
 
                 // If the href is different, it means we have a stronger one
                 if (href !== pad.href) { isStronger = true; }

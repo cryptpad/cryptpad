@@ -57,27 +57,11 @@ define([], function () {
         // shim between chainpad and netflux
         var msgIn = function (peerId, msg) {
             return msg.replace(/^cp\|/, '');
-
-            /*try {
-                var decryptedMsg = Crypto.decrypt(msg, validateKey);
-                return decryptedMsg;
-            } catch (err) {
-                console.error(err);
-                return msg;
-            }*/
         };
 
         var msgOut = function (msg) {
             if (readOnly) { return; }
             return msg;
-            /*try {
-                var cmsg = Crypto.encrypt(msg);
-                if (msg.indexOf('[4') === 0) { cmsg = 'cp|' + cmsg; }
-                return cmsg;
-            } catch (err) {
-                console.log(msg);
-                throw err;
-            }*/
         };
 
         var onMsg = function(peer, msg, wc, network, direct) {
@@ -93,7 +77,9 @@ define([], function () {
                     if (parsed.channel === wc.id && !validateKey) {
                         validateKey = parsed.validateKey;
                     }
-                    padData = parsed;
+                    if (parsed.channel === wc.id) {
+                        padData = parsed;
+                    }
                     // We have to return even if it is not the current channel:
                     // we don't want to continue with other channels messages here
                     return;

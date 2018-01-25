@@ -49,6 +49,9 @@ define([
             case 'UNPIN_PADS': {
                 Store.unpinPads(data, cb); break;
             }
+            case 'GET_DELETED_PADS': {
+                Store.getDeletedPads(data, cb); break;
+            }
             case 'GET_PINNED_USAGE': {
                 Store.getPinnedUsage(data, cb); break;
             }

@@ -56,6 +56,12 @@ define([
                     cb(obj);
                 });
             });
+            sframeChan.on('Q_DRIVE_GETDELETED', function (data, cb) {
+                Cryptpad.getDeletedPads(function (err, obj) {
+                    if (err) { return void console.error(err); }
+                    cb(obj);
+                });
+            });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
             });

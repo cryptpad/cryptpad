@@ -2975,6 +2975,14 @@ define([
 
         refresh();
         UI.removeLoadingScreen();
+
+        sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
+            var ids = filesOp.findChannels(data);
+            ids.forEach(function (id) {
+                var paths = filesOp.findFile(id);
+                filesOp.delete(paths, refresh);
+            });
+        });
     };
 
     var setHistory = function (bool, update) {
@@ -3091,7 +3099,6 @@ define([
                 throw new Error("Corrupted drive");
             }
             andThen(common, proxy);
-            UI.removeLoadingScreen();
 
             var onDisconnect = APP.onDisconnect = function (noAlert) {
                 setEditable(false);

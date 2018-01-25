@@ -6,7 +6,7 @@ define([
 ], function (Util, Messages, Crypto) {
     var Nacl = window.nacl;
 
-    var Hash = {};
+    var Hash = window.CryptPad_Hash = {};
 
     var uint8ArrayToHex = Util.uint8ArrayToHex;
     var hexToBase64 = Util.hexToBase64;
