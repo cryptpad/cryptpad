@@ -10,6 +10,7 @@ define([
     '/customize/messages.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
+    '/api/config',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -26,7 +27,8 @@ define([
     Hash,
     Messages,
     h,
-    AppConfig
+    AppConfig,
+    ApiConfig
     )
 {
     var saveAs = window.saveAs;
@@ -83,6 +85,9 @@ define([
     if (AppConfig.disableProfile) {
         var displaynameIdx = categories.account.indexOf('cp-settings-displayname');
         categories.account.splice(displaynameIdx, 1);
+    }
+    if (!ApiConfig.allowSubscriptions) {
+        delete categories.subscription;
     }
 
     var create = {};
@@ -801,6 +806,7 @@ define([
             $category.click(function () {
                 if (!Array.isArray(categories[key]) && categories[key].onClick) {
                     categories[key].onClick();
+                    return;
                 }
                 active = key;
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
