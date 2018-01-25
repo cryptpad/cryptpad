@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>PROB Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>PROB Function</h1>
+			<p>The <b>PROB</b> function is one of the statistical functions. It is used to return the probability that values in a range are between lower and upper limits.</p>
+			<p>The <b>PROB</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>PROB(x-range, probability-range, lower-limit[, upper-limit])</em></b></p> 
+			<p><em>where</em></p>
+				<p style="text-indent: 50px;"><b><em>x-range</em></b> is the selected range of cells containing numeric values you want to associate the probabilities with.</p>
+				<p style="text-indent: 50px;"><b><em>probability-range</em></b> is a set of probabilities associated with values in <b><em>x-range</em></b>, the selected range of cells containing numeric values greater than 0 but less than 1. The sum of the values in <b><em>probability-range</em></b> should be equal to 1, otherwise the function will return the <b>#NUM!</b> error.</p>
+				<p class="note"><b>Note</b>: <b><em>x-range</em></b> should contain the same number of elements as <b><em>probability-range</em></b>.</p>
+				<p style="text-indent: 50px;"><b><em>lower-limit</em></b> is the lower bound of the value, a numeric value entered manually or included into the cell you make reference to.</p>
+				<p style="text-indent: 50px;"><b><em>upper-limit</em></b> is the upper bound of the value, a numeric value entered manually or included into the cell you make reference to. It is an optional argument. If it is omitted, the function will return the probability equal to <b><em>lower-limit</em></b>.</p>
+			<p>To apply the <b>PROB</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Statistical</b> function group from the list,</li>
+			<li>click the <b>PROB</b> function,</li>
+			<li>enter the required arguments separating them by commas,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="PROB Function" src="../images/prob.png" /></p>
+		</div>
+	</body>
+</html>

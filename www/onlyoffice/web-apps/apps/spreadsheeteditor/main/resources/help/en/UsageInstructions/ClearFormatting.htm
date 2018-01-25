@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Clear text, format in a cell, copy cell format</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Clear the text or the format within your worksheet, copy cell format" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Clear text, format in a cell, copy cell format</h1>
+            <h3>Clear format</h3>
+			<p>You can quickly remove the text or the format within the selected cell. To do that,</p>
+			<ol>
+				<li>select a cell, a range of cells with the mouse or the whole worksheet by pressing the <b>Ctrl+A</b> key combination,
+                <p class="note"><b>Note</b>: you can also select multiple non-adjacent cells or cell ranges holding down the <b>Ctrl</b> key while selecting cells/ranges with the mouse.</p>
+                </li>
+				<li>click the <b>Clear</b> <img alt="Clear" src="../images/clear.png" /> icon at the top toolbar and select one of the available options:
+				<ul>
+				<li>use the <b>All</b> option if you wish to remove all including text, format, function etc;</li>
+				<li>use the <b>Text</b> option if you wish to remove the text from the selected range of cells;</li>
+				<li>use the <b>Format</b> option if you wish to clear the format of the selected range of cells. The text and functions, if present, will remain;</li>
+                <li>use the <b>Comments</b> option if you wish to remove comments from the selected range of cells;</li>
+                <li>use the <b>Hyperlinks</b> option if you wish to clear hyperlinks within the selected range of cells.</li>
+				</ul>
+                <p class="note"><b>Note</b>: all these options are also available from the right-click menu.</p>
+				</li>
+			</ol>
+            <h3>Copy cell format</h3>
+            <p>You can quickly copy a certain cell format and apply it to other cells.</p>
+            <p>To apply the copied format to a single cell or several adjacent cells,</p>
+            <ol>
+                <li>select the cell/range of cells which format you need to copy with the mouse or <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">using the keyboard</a>,</li>
+                <li>click the <b>Copy Style</b> <img alt="Copy Style" src="../images/copystyle.png" /> icon at the top toolbar, (the mouse pointer will look like this <img alt="Mouse pointer while pasting style" src="../images/paste_style.png" />),</li>
+                <li>select the cell/range of cells you want to apply the same format to.</li>
+            </ol>
+            <p>To apply the copied format to multiple non-adjacent cells or cell ranges,</p>
+            <ol>
+                <li>select the cell/range of cells which format you need to copy with the mouse or <a href="../HelpfulHints/KeyboardShortcuts.htm#textselection" onclick="onhyperlinkclick(this)">using the keyboard</a>,</li>
+                <li>double-click the <b>Copy Style</b> <img alt="Copy Style" src="../images/copystyle.png" /> icon at the top toolbar, (the mouse pointer will look like this <img alt="Mouse pointer while pasting style" src="../images/paste_style.png" /> and the <b>Copy Style</b> icon will remain selected: <img alt="Multiple copying style" src="../images/copystyle_selected.png" />),</li>
+                <li>click single cells or select cell ranges one by one to apply the same format to all of them,</li>
+                <li>to exit this mode, click the <b>Copy Style</b> <img alt="Multiple copying style" src="../images/copystyle_selected.png" /> icon once again or press the <b>Esc</b> key on the keyboard.</li>
+            </ol>
+		</div>
+	</body>
+</html>

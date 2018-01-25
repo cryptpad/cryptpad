@@ -1,0 +1,49 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Функция WEEKNUM (НОМНЕДЕЛИ)</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Функция WEEKNUM (НОМНЕДЕЛИ)</h1>
+			<p>Функция <b>WEEKNUM</b> - это одна из функций даты и времени. Возвращает порядковый номер той недели в течение года, на которую приходится заданная дата.</p>
+			<p>Синтаксис функции <b>WEEKNUM</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>WEEKNUM(serial-value [,weekday-start-flag])</em></b></p> 
+			<p><em>где</em></p> 
+			<p style="text-indent: 50px;"><b><em>serial-value</em></b> (порядковый номер) - число, представляющее дату, по которой определяется неделя, введенное с помощью функции <a href="Date.htm" onclick="onhyperlinkclick(this)">Date</a> или другой функции даты и времени.</p>
+			<p style="text-indent: 50px;"><b><em>weekday-start-flag</em></b> (начало недели) - числовое значение, определяющее, какой тип значения должен быть возвращен. Может иметь одно из следующих значений:</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>Числовое значение</b></td>
+					<td><b>Последовательность дней</b></td>
+				</tr>
+				<tr>
+					<td>1 или опущено</td>
+					<td>с воскресенья по субботу</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>с понедельника по воскресенье</td>
+				</tr>
+			</table>
+			<p>Чтобы применить функцию <b>WEEKNUM</b>,</p>
+			<ol>
+			<li>выделите ячейку, в которой требуется отобразить результат,</li>
+			<li>щелкните по значку <b>Вставить функцию</b> <img alt="Значок Вставить функцию" src="../images/insertfunction.png" />, расположенному на верхней панели инструментов,
+				<br />или щелкните правой кнопкой мыши по выделенной ячейке и выберите в меню команду <b>Вставить функцию</b>,
+				<br />или щелкните по значку <img alt="Значок Функция" src="../images/function.png" /> перед строкой формул,
+			</li>
+			<li>выберите из списка группу функций <b>Дата и время</b>,</li>
+			<li>щелкните по функции <b>WEEKNUM</b>,</li>
+			<li>введите требуемые аргументы, разделяя их запятыми,</li>
+			<li>нажмите клавишу <b>Enter</b>.</li>
+			</ol>
+			<p>Результат будет отображен в выбранной ячейке.</p>
+			<p style="text-indent: 150px;"><img alt="Функция WEEKNUM" src="../images/weeknum.png" /></p>
+		</div>
+	</body>
+</html>

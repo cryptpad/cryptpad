@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>INDEX Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>INDEX Function</h1>
+			<p>The <b>INDEX</b> function is one of the lookup and reference functions. It is used to return a value within a range of cells on the base of a specified row and column number. The <b>INDEX</b> function has two forms. <!--The array form is used to return a value within a single range of cells. The reference form is used to return a value within an array that contains several ranges of cells.--></p>
+			<p>The <b>INDEX</b> function syntax in the array form is:</p> 
+			<p style="text-indent: 150px;"><b><em>INDEX(array, [row-number][, [column-number]])</em></b></p> 
+            <p>The <b>INDEX</b> function syntax in the reference form is:</p>
+            <p style="text-indent: 150px;"><b><em>INDEX(reference, [row-number][, [column-number][, [area-number]]])</em></b></p>
+            <p><em>where</em></p> 
+            <p style="text-indent: 50px;"><em><b>array</b></em> is a range of cells.</p>
+            <p style="text-indent: 50px;"><em><b>reference</b></em> is a reference to a range of cells<!--or several ranges enclosed in parentheses and separated by commas-->.</p>
+            <p style="text-indent: 50px;"><em><b>row-number</b></em> is a row number you wish to return a value from. If it is omitted, <em><b>column-number</b></em> is required.</p>
+			<p style="text-indent: 50px;"><em><b>column-number</b></em> is a column number you wish to return a value from. If it is omitted, <em><b>row-number</b></em> is required.</p>
+            <p style="text-indent: 50px;"><em><b>area-number</b></em> is an area to use in case the array contains several ranges. It is an optional argument. If it is omitted, the function will assume <b><em>area-number</em></b> to be 1.</p>
+			<p>These arguments can be entered manually or included into the cells you make reference to.</p>
+			<p>To apply the <b>INDEX</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Lookup and Reference</b> function group from the list,</li>
+			<li>click the <b>INDEX</b> function,</li>
+			<li>enter the required arguments separating them by commas,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="INDEX Function" src="../images/index_1.png" /></p>
+		</div>
+	</body>
+</html>

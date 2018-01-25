@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Use Mail Merge</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use Mail Merge to create a lot of personalized letters and send them to recipients" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Use Mail Merge</h1>
+            <p class="note"><b>Note</b>: this option is available for paid versions only.</p>
+			<p>The <b>Mail Merge</b> feature is used to create a set of documents combining a common content which is taken from a text document and some individual components (variables, such as names, greetings etc.) taken from a spreadsheet (for example, a customer list). It can be useful if you need to create a lot of personalized letters and send them to recipients.</p>
+			<p>To start working with the <b>Mail Merge</b> feature,</p>
+            <ol>
+                <li><b>Prepare a data source and load it to the main document</b>
+                <ol>
+                    <li>A data source used for the mail merge must be an <b>.xlsx</b> spreadsheet stored on your portal. Open an existing spreadsheet or create a new one and make sure that it meets the following requirements.
+                    <p>The spreadsheet should have a header row with the column titles, as values in the first cell of each column will designate merge fields (i.e. variables that you can insert into the text). Each column should contain a set of actual values for a variable. Each row in the spreadsheet should correspond to a separate record (i.e. a set of values that belongs to a certain recipient). During the merge process, a copy of the main document will be created for each record and each merge field inserted into the main text will be replaced with an actual value from the corresponding column. If you are goung to send results by email, the spreadsheet must also include a column with the recipients' email addresses.</p>
+                    </li>
+                    <li>Open an existing text document or create a new one. It must contain the main text which will be the same for each version of the merged document. Click the <b>Mail Merge</b> <img alt="Mail Merge icon" src="../images/mailmergeicon.png" /> icon on the top toolbar.</li>
+                    <li>The <b>Select Data Source</b> window will open. It displays the list of all your <b>.xlsx</b> spreadsheets stored in the <b>My Documents</b> section. To navigate between other <b>Documents</b> module sections use the menu in the left part of the window. Select the file you need and click <b>OK</b>.</li>
+                </ol>
+                <p>Once the data source is loaded, the <b>Mail Merge Setting</b> tab will be available on the right sidebar.</p>
+                <p><img alt="Mail Merge Setting tab" src="../images/right_mailmerge.png" /></p>
+                </li>
+                <li><b>Verify or change the recipients list</b>
+                <ol>
+                    <li>Click the <b>Edit recipients list</b> button on the top of the right sidebar to open the <b>Mail Merge Recipients</b> window, where the content of the selected data source is displayed.
+                    <p><img alt="Mail Merge Recipients window" src="../images/mailmergerecipients.png" /></p>
+                    </li>
+                    <li>Here you can add new information, edit or delete the existing data, if necessary. To simplify working with data, you can use the icons on the top of the window:
+                    <ul>
+                        <li><img alt="Copy" src="../images/copy.png" /> and <img alt="Paste" src="../images/paste.png" /> - to copy and paste the copied data</li>
+                        <li><img alt="Undo" src="../images/undo.png" /> and <img alt="Redo" src="../images/redo.png" /> - to undo and redo undone actions</li>
+                        <li><img alt="Sort Lowest to Highest icon" src="../images/sortatoz.png" /> and <img alt="Sort Highest to Lowest icon" src="../images/sortztoa.png" /> - to sort your data within a selected range of cells in ascending or descending order</li>
+                        <li><img alt="Filter icon" src="../images/sortandfilter.png" /> - to enable the filter for the previously selected range of cells or to remove the applied filter</li>
+                        <li><img alt="Clear Filter icon" src="../images/clearfilter.png" /> - to clear all the applied filter parameters
+                        <p class="note"><b>Note</b>: to learn more on how to use the filter you can refer to the <b>Sort and filter data</b> section of the <b>Spreadsheet Editor</b> help.</p>
+                        </li>
+                        <li><img alt="Search icon" src="../images/searchicon.png" /> - to search for a certain value and replace it with another one, if necessary
+                        <p class="note"><b>Note</b>: to learn more on how to use the <b>Find and Replace</b> tool you can refer to the <b>Search and Replace Functions</b> section of the <b>Spreadsheet Editor</b> help.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>After all the necessary changes are made, click the <b>Save & Exit</b> button. To discard the changes, click the <b>Close</b> button.</li>
+                </ol>
+                </li>
+                <li><b>Insert merge fields and check the results</b>
+                <ol>
+                    <li>Place the mouse cursor in the text of the main document where you want a merge field to be inserted, click the <b>Insert Merge Field</b> button at the right sidebar and select the necessary field from the list. The available fields correspond to the data in the first cell of each column of the selected data source. Add all the fields you need anywhere in the document.
+                    <p><img alt="Merge Fields section" src="../images/mergefields.png" /></p>
+                    </li>
+                    <li>Turn on the <b>Highlight merge fields</b> switcher at the right sidebar to make the inserted fields more noticeable in the document text.
+                    <p><img alt="Main document with inserted fields" src="../images/insertedfields.png" /></p>
+                    </li>
+                    <li>Turn on the <b>Preview results</b> switcher at the right sidebar to view the document text with the merge fields replaced with actual values from the data source. Use the arrow buttons to preview versions of the merged document for each record.
+                    <p><img alt="Preview results" src="../images/previewinsertedfields.png" /></p>
+                    </li>
+                </ol>
+                <ul>
+                    <li>To delete an inserted field, disable the <b>Preview results</b> mode, select the field with the mouse and press the <b>Delete</b> key on the keyboard. </li>
+                    <li>To replace an inserted field, disable the <b>Preview results</b> mode, select the field with the mouse, click the <b>Insert Merge Field</b> button at the right sidebar and choose a new field from the list.</li>
+                </ul>
+                </li>
+                <li><b>Specify the merge parameters</b>
+                <ol>
+                    <li>Select the merge type. You can start mass mailing or save the result as a file in the PDF or Docx format to be able to print or edit it later. Select the necessary option from the <b>Merge to</b> list:
+                    <p><img alt="Merge type selection" src="../images/mergeto.png" /></p>
+                    <ul>
+                        <li><b>PDF</b> - to create a single document in the PDF format that includes all the merged copies so that you can print them later</li>
+                        <li><b>Docx</b> - to create a single document in the Docx format that includes all the merged copies so that you can edit individual copies later</li>
+                        <li><b>Email</b> - to send the results to recipients by email
+                        <p class="note"><b>Note</b>: the recipients' email addresses must be specified in the loaded data source and you need to have at least one email account connected in the <b>Mail</b> module on your portal.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Choose the records you want to apply the merge to:
+                    <ul>
+                        <li><b>All records</b> (this option is selected by default) - to create merged documents for all records from the loaded data source</li>
+                        <li><b>Current record</b> - to create a merged document for the record that is currently displayed</li>
+                        <li><b>From</b> ... <b>To</b> - to create merged documents for a range of records (in this case you need to specify two values: the number of the first record and the last record in the desired range)
+                        <p class="note"><b>Note</b>: the maximum allowed quantity of recipients is 100. If you have more than 100 recipients in your data source, please, perform the mail merge by stages: specify the values from 1 to 100, wait until the mail merge process is over, then repeat the operation specifying the values from 101 to N etc.</p>
+                        </li>
+                    </ul>
+                    </li>
+                    <li>Complete the merge
+                        <ul>
+                            <li>If you've decided to save the merge results as a file,
+                            <ul>
+                                <li>click the <b>Download</b> button to store the file anywhere on your PC. You'll find the downloaded file in your default <em>Downloads</em> folder.</li>
+                                <li>click the <b>Save</b> button to save the file on your portal. In the <b>Folder for save</b> window that opens, you can change the file name and specify the folder where you want to save the file. You can also check the <b>Open merged document in new tab</b> box to check the result once the merge process is finished. Finally, click <b>Save</b> in the <b>Folder for save</b> window.</li>
+                            </ul>
+                            </li>
+                            <li>If you've selected the <b>Email</b> option, the <b>Merge</b> button will be available on the right sidebar. After you click it, the <b>Send to Email</b> window will open:
+                                <p><img alt="Send to Email window" src="../images/sendtoemail.png" /></p>
+                            <ul>
+                                <li>In the <b>From</b> list, select the mail account you want to use for sending mail, if you have several accounts connected in the <b>Mail</b> module.</li>
+                                <li>In the <b>To</b> list, select the merge field corresponding to email addresses of the recipients, if it was not selected automatically.</li>
+                                <li>Enter your message subject in the <b>Subject Line</b> field.</li>
+                                <li>Select the mail format from the list: <b>HTML</b>, <b>Attach as DOCX</b> or <b>Attach as PDF</b>. When one of the two latter options is selected, you also need to specify the <b>File name</b> for attachments and enter the <b>Message</b> (the text of your letter that will be sent to recipients).</li>
+                                <li>Click the <b>Send</b> button.</li>
+                            </ul>
+                            <p>Once the mailing is over you'll receive a notification to your email specified in the <b>From</b> field.</p>
+                            </li>
+                        </ul>
+                    </li>
+                </ol>
+                </li>
+            </ol>
+		</div>
+	</body>
+</html>

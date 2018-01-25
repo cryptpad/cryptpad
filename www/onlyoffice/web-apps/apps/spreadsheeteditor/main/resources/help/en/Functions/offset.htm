@@ -1,0 +1,37 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>OFFSET Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>OFFSET Function</h1>
+			<p>The <b>OFFSET</b> function is one of the lookup and reference functions. It is used to return a reference to a cell displaced from the specified cell (or the upper-left cell in the range of cells) to a certain number of rows and columns.</p>
+			<p>The <b>OFFSET</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>OFFSET(reference, rows, cols[, [height] [, [width]]])</em></b></p> 
+			<p><em>where</em></p> 
+			<p style="text-indent: 50px;"><em><b>reference</b></em> is a reference to an initial cell or range of cells.</p>
+			<p style="text-indent: 50px;"><em><b>rows</b></em> is a number of rows, up or down, that you want the upper-left cell in the returned reference to refer to. Positive numbers mean the result will shift below the initial cell. Negative values mean it will shift above the initial cell.</p>
+			<p style="text-indent: 50px;"><em><b>cols</b></em> is a number of columns, to the left or right, that you want the upper-left cell in the returned reference to refer to. Positive numbers mean the result will shift to the right of the initial cell. Negative values mean it will shift to the left of the initial cell.</p>
+            <p style="text-indent: 50px;"><em><b>height</b></em> is a number of rows in the returned reference. The value must be a positive number. It's an optional argument. If it is omitted, the function will assume it to be equal to the initial range height.</p>
+            <p style="text-indent: 50px;"><em><b>width</b></em> is a number of columns in the returned reference. The value must be a positive number. It's an optional argument. If it is omitted, the function will assume it to be equal to the initial range width.</p>
+			<p>To apply the <b>OFFSET</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Lookup and Reference</b> function group from the list,</li>
+			<li>click the <b>OFFSET</b> function,</li>
+			<li>enter the required arguments separating them by comma,</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="OFFSET Function" src="../images/offset.png" /></p>
+		</div>
+	</body>
+</html>

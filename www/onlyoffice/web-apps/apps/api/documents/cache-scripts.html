@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ONLYOFFICE Documents</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+    <meta name="description" content="" />
+    <meta name="keywords" content="" />
+    <style type="text/css"></style>
+</head>
+<body>
+    <script type="text/javascript" src="../../../vendor/jquery/jquery.min.js"></script>
+    <script type="text/javascript" src="../../../vendor/sockjs/sockjs.min.js"></script>
+    <script type="text/javascript" src="../../../vendor/xregexp/xregexp-all-min.js"></script>
+	<script type="text/javascript" src="../../../../sdkjs/common/AllFonts.js"></script>
+    <script type="text/javascript" src="../../../../sdkjs/word/sdk-all-min.js"></script>
+    <script type="text/javascript" src="../../../../sdkjs/word/sdk-all.js"></script>
+    <div id="editor_sdk">
+    <script type="text/javascript">
+        window['AscNotLoadAllScript'] = true;
+        var editor = new Asc.asc_docs_api({
+            'id-view'  : 'editor_sdk'
+        });
+        editor.LoadFontsFromServer();
+    </script>
+</body>
+</html>

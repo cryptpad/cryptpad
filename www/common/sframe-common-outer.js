@@ -167,7 +167,7 @@ define([
                 }).nThen(function (/*waitFor*/) {
                     metaObj.doc = {
                         defaultTitle: defaultTitle,
-                        type: parsed.type
+                        type: cfg.type || parsed.type
                     };
                     var additionalPriv = {
                         accountName: Utils.LocalStore.getAccountName(),
@@ -588,10 +588,10 @@ define([
                     crypto: Crypto.createEncryptor(secret.keys),
                     onConnect: function (wc) {
                         if (window.location.hash && window.location.hash !== '#') {
-                            window.location = parsed.getUrl({
+                            /*window.location = parsed.getUrl({
                                 present: parsed.hashData.present,
                                 embed: parsed.hashData.embed
-                            });
+                            });*/
                             return;
                         }
                         if (readOnly || cfg.noHash) { return; }

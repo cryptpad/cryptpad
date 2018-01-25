@@ -9,6 +9,7 @@ var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
+var OOServer = require('./ooserver.js');
 
 var config;
 try {
@@ -176,6 +177,53 @@ var send404 = function (res, path) {
     });
 };
 
+/* SPECIAL CODE FOR ONLYOFFICE 
+/* Font support as onlyoffice requires fonts transformed to js */  
+var FONT_OBFUSCATION_MAGIC = new Buffer([
+    0xA0, 0x66, 0xD6, 0x20, 0x14, 0x96, 0x47, 0xfa, 0x95, 0x69, 0xB8, 0x50, 0xB0, 0x41, 0x49, 0x48
+]);
+
+
+var FONT_NAME_MAP = {};
+[ './www/onlyoffice/fonts/' ].forEach(function (path) {
+    Fs.readdir(path, function (err, list) {
+        if (err) { throw err; }
+        list.forEach(function (fontName) {
+            FONT_NAME_MAP[fontName.toLowerCase()] = path + fontName;
+        });
+    });
+});
+
+/* Code to automatically transform font to js */ 
+/* Currently not active, but might be necessary */
+app.use("/onlyoffice/fonts/odttf/:name", function (req, res) {
+    var name = req.params.name.replace(/\.js$/, '').toLowerCase();
+    console.log(name);
+    if (!FONT_NAME_MAP[name]) {
+        console.log(name);
+        console.log(FONT_NAME_MAP[name]);
+        res.status(400).send('No such font');
+        return;
+    }
+    Fs.readFile(FONT_NAME_MAP[name], function (err, ret) {
+        if (err) { throw err; }
+        var maxLen = Math.min(32, ret.length);
+        for (var i = 0; i < maxLen; i++) {
+            ret[i] ^= FONT_OBFUSCATION_MAGIC[i % 16];
+        }
+        res.end(ret);
+    });
+});
+
+/* All fonts file replaced by the list of fonts in ttf */
+app.use("/onlyoffice/sdkjs/common/AllFonts.js",
+    Express.static("./www/onlyoffice/allfonts-noobf.js"));
+
+/* Replace fonts thumbnail call */
+app.use("/onlyoffice/sdkjs/common/Images/fonts_thumbnail@2x.png",
+    Express.static("./www/onlyoffice/fonts_thumbnail.png"));
+
+
 app.use(function (req, res, next) {
     res.status(404);
     send404(res, custom_four04_path);
@@ -183,17 +231,22 @@ app.use(function (req, res, next) {
 
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
-httpServer.listen(config.httpPort,config.httpAddress,function(){
-    var host = config.httpAddress;
-    var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
+/* Install sockjs websocket server */
+OOServer.install(httpServer, () => {
+    httpServer.listen(config.httpPort,config.httpAddress,function(){
+        var host = config.httpAddress;
+        var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
 
-    var port = config.httpPort;
-    var ps = port === 80? '': ':' + port;
+        var port = config.httpPort;
+        var ps = port === 80? '': ':' + port;
 
-    console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+        console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+    });
 });
 if (config.httpSafePort) {
-    Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
+    var safeHttpServer = Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
+    OOServer.install(safeHttpServer, () => {
+    });
 }
 
 var wsConfig = { server: httpServer };

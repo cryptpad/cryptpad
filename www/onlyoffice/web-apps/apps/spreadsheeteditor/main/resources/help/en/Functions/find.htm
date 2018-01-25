@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>FIND/FINDB Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>FIND/FINDB Function</h1>
+			<p>The <b>FIND</b>/<b>FINDB</b> function is one of the text and data functions. Is used to find the specified substring (string-1) within a string (string-2). The <b>FIND</b> function is intended for languages that use the single-byte character set (SBCS), while <b>FINDB</b> - for languages that use the double-byte character set (DBCS) like Japanese, Chinese, Korean etc.</p>
+			<p>The <b>FIND/FINDB</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>FIND(string-1, string-2 [,start-pos])</em></b></p> 
+			<p style="text-indent: 150px;"><b><em>FINDB(string-1, string-2 [,start-pos])</em></b></p> 
+			<p><em>where</em></p>
+			<p style="text-indent: 50px;"><b><em>string-1</em></b> is a string you are looking for,</p>
+			<p style="text-indent: 50px;"><b><em>string-2</em></b> is a string you are searching within,</p>
+			<p style="text-indent: 50px;"><b><em>start-pos</em></b> is a position in a string where the search will start. It is an optional argument. If it is omitted, the funcion will start search from the beginning of the string.</p>
+			<p>The values can be entered manually or included into the cell you make reference to.</p>
+			<p class="note"><b>Note</b>: if there are no matches, the function will return the <b>#VALUE!</b> error.</p>
+			<p>To apply the <b>FIND/FINDB</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Text and data</b> function group from the list,</li>
+			<li>click the <b>FIND/FINDB</b> function,</li>
+			<li>enter the required arguments separating them by comma,
+			<p class="note"><b>Note</b>: the FIND/FINDB function is <b>case-sensitive</b>.</p>
+			</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell.</p>
+			<p style="text-indent: 150px;"><img alt="FIND/FINDB Function" src="../images/find.png" /></p>
+		</div>
+	</body>
+</html>

@@ -1,0 +1,132 @@
+﻿body
+{
+font-family: Tahoma, Arial, Verdana;
+font-size: 12px;
+color: #666;
+background: #fff;
+}
+
+img
+{
+border: none;
+vertical-align: middle;
+}
+
+img.floatleft 
+{ 
+float: left;
+margin-right: 30px;
+margin-bottom: 10px;
+}
+
+img.floatright 
+{ 
+float: right;
+margin-left: 30px;
+margin-bottom: 10px;
+}
+
+li
+{
+line-height: 2em;
+}
+
+.mainpart
+{
+margin: 0;
+padding: 10px 20px;
+}
+
+.mainpart h1
+{
+font-size: 16px;
+font-weight: bold;
+}
+
+table,
+tr,
+td,
+th
+{
+border-left: 0;
+border-right: 0;
+border-bottom: solid 1px #E4E4E4;
+border-collapse: collapse;
+padding: 8px;
+text-align: left;
+}
+
+table
+{
+margin: 20px 0;
+width: 100%;
+}
+
+th
+{
+font-size: 14px;
+font-weight: bold;
+padding-top: 20px;
+}
+
+td.function
+{
+width: 35%;
+}
+
+td.shortfunction
+{
+width: 20%;
+}
+
+td.combination
+{
+width: 15%;
+}
+
+td.description
+{
+width: 50%;
+}
+
+td.longdescription
+{
+width: 80%;
+}
+
+.note
+{
+background: #F4F4F4 url(images/help.png) no-repeat 7px 5px;
+font-size: 11px;
+padding: 10px 20px 10px 37px;
+width: 90%;
+margin: 10px 0;
+line-height: 1em;
+min-height: 14px;
+}
+
+hr
+{
+height: 1px;
+width: 90%;
+text-align: left;
+margin: 10px 0 15px;
+color: #E4E4E4;
+background-color: #E4E4E4;
+border: 0;
+clear: both;
+}
+
+a
+{
+color: #7496DD;
+text-decoration: underline;
+}
+
+a:hover
+{
+text-decoration: none;
+}
+a.sup_link {
+text-decoration: none;	
+}

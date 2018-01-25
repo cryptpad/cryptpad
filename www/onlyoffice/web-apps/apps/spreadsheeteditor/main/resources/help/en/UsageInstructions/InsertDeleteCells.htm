@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Manage cells, rows, and columns</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Insert or delete cells, rows, and columns, hide or show rows or columns, change row height and column width" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Manage cells, rows, and columns</h1>
+			<p>You can insert blank cells above or to the left of the selected cell on a worksheet. You can also insert an entire row above the selected one or a column to the left of the selected column. To make it easy to view a large amount of information, you can hide some rows or columns and display them again. It's also possible to specify a certain row height and column width.</p>
+			<h3>Insert cells, rows, columns</h3>
+            <p><b>To insert a blank cell to the left of the selected cell:</b></p>
+			<ol>
+				<li>right-click the cell to the left of which you wish to insert a new one,</li>
+				<li>click the <b>Insert Cells</b> <img alt="Insert Cells icon" src="../images/insertcells.png" /> icon situated at the top toolbar or select the <b>Insert</b> item from the right-click menu and use the <b>Shift cells right</b> option.</li>
+			</ol>
+			<p>The program will shift the selected cell to the right to insert a blank one.</p>
+			<p><b>To insert a blank cell above the selected cell:</b></p>
+			<ol>
+				<li>right-click the cell above which you wish to insert a new one,</li>
+				<li>click the <b>Insert Cells</b> <img alt="Insert Cells icon" src="../images/insertcells.png" /> icon situated at the top toolbar or select the <b>Insert</b> item from the right-click menu and use the <b>Shift cells down</b> option.</li>
+			</ol>
+			<p>The program will shift the selected cell down to insert a blank one.</p>
+			<p><b>To insert an entire row:</b></p>
+			<ol>
+				<li>select either the whole row by clicking its heading or a cell in the row above which you wish to insert a new one,
+				<p class="note"><b>Note</b>: to insert multiple rows, select the same number of rows as you wish to insert.</p>
+				</li>
+				<li>click the <b>Insert Cells</b> <img alt="Insert Cells icon" src="../images/insertcells.png" /> icon situated at the top toolbar and use the <b>Entire row</b> option,
+                    <br />or right-click the selected cell, select the <b>Insert</b> item from the right-click menu, then choose the <b>Entire row</b> option,
+                    <br />or right-click the selected row(s) and use the <b>Insert Top</b> option from the right-click menu.
+                </li>
+			</ol>
+			<p>The program will shift the selected row down to insert a blank one.</p>
+			<p><b>To insert an entire column:</b></p>
+			<ol>
+				<li>select either the whole column by clicking its heading or a cell in the column to the left of which you wish to insert a new one,
+				<p class="note"><b>Note</b>: to insert multiple columns, select the same number of columns as you wish to insert.</p>
+				</li>
+				<li>click the <b>Insert Cells</b> <img alt="Insert Cells icon" src="../images/insertcells.png" /> icon situated at the top toolbar and use the <b>Entire column</b> option,
+                    <br />or right-click the selected cell, select the <b>Insert</b> item from the right-click menu, then choose the <b>Entire column</b> option,
+                    <br />or right-click the selected column(s) and use the <b>Insert Left</b> option from the right-click menu.
+                </li>
+			</ol>
+			<p>The program will shift the selected column to the right to insert a blank one.</p>
+            <h3>Hide and show rows and columns</h3>
+            <p><b>To hide a row or column:</b></p>
+            <ol>
+                <li>select rows or columns you wish to hide,</li>
+                <li>right-click the selected rows or columns and use the <b>Hide</b> option from the right-click menu.</li>
+            </ol>
+            <p><b>To display hidden rows or columns</b>, select visible rows above and below the hidden rows or visible columns to the left and to the right of the hidden columns, right-click them and use the <b>Show</b> option from the right-click menu.</p>
+            <h3>Change column width and row height</h3>
+            <p>The <b>column width</b> determines how many characters with default formatting can be displayed in the column cell. The default value is set to 8.43 symbols. To change it:</p>
+            <ol>
+                <li>select columns you wish to change,</li>
+                <li>right-click the selected columns and use the <b>Set Column Width</b> option from the right-click menu,</li>
+                <li>choose one of the available options:
+                    <ul>
+                        <li>select the <b>Auto Fit Column Width</b> option to automatically adjust the width of each column according to its content, or</li>
+                        <li>
+                            select the <b>Custom Column Width</b> option and specify a new value from 0 to 255 in the <b>Custom Column Width</b> window, then click <b>OK</b>.
+                            <p><img alt="Custom Column Width window" src="../images/columnwidth.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>To change the width of a single column manually, move the mouse cursor over the right border of the column heading so that the cursor turns into the bidirectional arrow <img alt="Mouse Cursor when changing column width" src="../images/changecolumnwidthcursor.png" />. Drag the border to the left or right to set a custom width or double-click the mouse to automatically change the column width according to its content.</p>
+            <p><img alt="Changing column width" src="../images/changecolumnwidth.png" /></p>
+            <p>The default <b>row height</b> value is 14.25 points. To change it:</p>
+            <ol>
+                <li>select rows you wish to change,</li>
+                <li>right-click the selected rows and use the <b>Set Row Height</b> option from the right-click menu,</li>
+                <li>choose one of the available options:
+                    <ul>
+                        <li>select the <b>Auto Fit Row Height</b> option to automatically adjust the height of each row according to its content, or</li>
+                        <li>
+                            select the <b>Custom Row Height</b> option and specify a new value from 0 to 408.75 in the <b>Custom Row Height</b> window, then click <b>OK</b>.
+                            <p><img alt="Custom Row Height window" src="../images/rowheight.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p>To change the height of a single row manually, drag the bottom border of the row heading.</p>
+            <h3>Delete cells, rows, columns</h3>
+            <p><b>To delete an unnecessary cell, row, or column:</b></p>
+			<ol>
+			<li>select cells, rows, or columns you wish to delete,</li>
+			<li>click the <b>Delete Cells</b> <img alt="Delete Cells icon" src="../images/deletecells.png" /> icon situated at the top toolbar or select the <b>Delete</b> item from the right-click menu and select the appropriate option:
+			<br />if you use the <b>Shift cells left</b> option a cell to the right of the deleted one will be moved to the left;
+			<br />if you use the <b>Shift cells up</b> option a cell below the deleted one will be moved up;
+			<br />if you use the <b>Entire row</b> option a row below the selected one will be moved up;
+			<br />if you use the <b>Entire column</b> option a column to the right of the deleted one will be moved to the left;
+			</li>
+			</ol>
+			<p>You can always restore the deleted data using the <b>Undo</b> <img alt="Undo icon" src="../images/undo.png" /> icon at the top toolbar.</p>
+		</div>
+	</body>
+</html>

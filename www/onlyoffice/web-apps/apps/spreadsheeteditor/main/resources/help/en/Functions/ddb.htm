@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>DDB Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+        <div class="mainpart">
+            <h1>DDB Function</h1>
+            <p>The <b>DDB</b> function is one of the financial functions. It is used to calculate the depreciation of an asset for a specified accounting period using the double-declining balance method.</p>
+            <p>The <b>DDB</b> function syntax is:</p>
+            <p style="text-indent: 150px;"><b><em>DDB(cost, salvage, life, period[, [factor]])</em></b></p>
+            <p><em>where</em></p>
+            <p style="text-indent: 50px;"><b><em>cost</em></b> is the cost of the asset.</p>
+            <p style="text-indent: 50px;"><b><em>salvage</em></b> is the salvage value of the asset at the end of its lifetime.</p>
+            <p style="text-indent: 50px;"><b><em>life</em></b> is the total number of the periods within the asset lifetime.</p>
+            <p style="text-indent: 50px;"><b><em>period</em></b> is the period you wish to calculate depreciation for. The value must be expressed in the same units as <em>life</em>.</p>
+            <p style="text-indent: 50px;"><b><em>factor</em></b> is the rate at which the balance declines. It is an optional argument. If it is omitted, the function will assume <b><em>factor</em></b> to be 2.</p>
+            <p class="note"><b>Note:</b> all the values must be positive numbers.</p>
+            <p>The values can be entered manually or included into the cell you make reference to.</p>
+            <p>To apply the <b>DDB</b> function,</p>
+            <ol>
+                <li>select the cell where you wish to display the result,</li>
+                <li>
+                    click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+                    <br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+                    <br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+                </li>
+                <li>select the <b>Financial</b> function group from the list,</li>
+                <li>click the <b>DDB</b> function,</li>
+                <li>enter the required arguments separating them by commas,</li>
+                <li>press the <b>Enter</b> button.</li>
+            </ol>
+            <p>The result will be displayed in the selected cell.</p>
+            <p style="text-indent: 150px;"><img alt="DDB Function" src="../images/ddb.png" /></p>
+        </div>
+	</body>
+</html>

@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Use named ranges</title>
+		<meta charset="utf-8" />
+        <meta name="description" content="Use named ranges to simplify working with formulas" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Use named ranges</h1>
+            <p>Names are meaningful notations that can be assigned for a cell or cell range and used to simplify working with formulas. Creating a formula, you can insert a name as its argument instead of using a reference to a cell range. For example, if you assign the <em>Annual_Income</em> name for a cell range, it will be possible to enter <em>=SUM(Annual_Income)</em> instead of <em>=SUM(B1:B12)</em>. In such a form, formulas become clearer. This feature can also be useful in case a lot of formulas are referred to one and the same cell range. If the range address is changed, you can make the correction once using the Name Manager instead of editing all the formulas one by one.</p>
+			<p>There are two types of names that can be used:</p>
+            <ul>
+                <li><b>Defined name</b> – an arbitrary name that you can specify for a certain cell range.</li>
+                <li><b>Table name</b> – a default name that is automatically assigned to a <a href="SortData.htm#tabletemplate" onclick="onhyperlinkclick(this)">new formatted table</a> (<em>Table1</em>, <em>Table2</em> etc.). You can edit such a name later.</li>
+            </ul>
+            <p>Names are also classified by <b>Scope</b>, i.e. the location where a name is recognized. A name can be scoped to the whole workbook (it will be recognized for any worksheet within this workbook) or to a separate worksheet (it will be recognized for the specified worksheet only). Each name must be unique within a single scope, the same names can be used within different scopes.</p>
+            <h3>Create new names</h3>
+			<p>To create a new defined name for a selection:</p>
+			<ol>
+			<li>Select a cell or cell range you want to assign a name to.</li>
+			<li>Open a new name window in a suitable way:
+                <ul>
+                    <li>Right-click the selection and choose the <b>Define Name</b> option from the contextual menu,</li>
+                    <li>or click the <b>Named Ranges</b> <img alt="Named Ranges icon" src="../images/namedranges.png" /> icon at the top toolbar and select the <b>New name</b> option from the menu.</li>
+                </ul>
+                <p>The <b>New Name</b> window will open:</p>
+                <p><img alt="New Name window" src="../images/newnamewindow.png" /></p>
+            </li>
+            <li>Enter the necessary <b>Name</b> in the text entry field.
+            <p class="note"><b>Note</b>: a name cannot start from a number, contain spaces or punctuation marks. Underscores (_) are allowed. Case does not matter.</p>   
+            </li>
+            <li>Specify the name <b>Scope</b>. The <em>Workbook</em> scope is selected by default, but you can specify an individual worksheet selecting it from the list.</li>
+            <li>Check the selected <b>Data Range</b> address. If necessary, you can change it. Click the <b>Select Data</b> button - the <b>Select Data Range</b> window will open. 
+            <p><img alt="Select Data Range window" src="../images/selectdatarange.png" /></p>   
+            <p>Change the link to the cell range in the entry field or select a new range on the worksheet with the mouse and click <b>OK</b>.</p> 
+            </li>
+            <li>Click <b>OK</b> to save the new name.</li>
+			</ol>
+            <p>To quickly create a new name for the selected range of cells, you can also enter the desired name into the name box located to the left of the the formula bar and press <b>Enter</b>. A name created in such a way is scoped to the <em>Workbook</em>.</p>
+            <p><img alt="Name Box" src="../images/namefield.png" /></p>
+			<h3>Manage names</h3>
+            <p>All the existing names can be accessed via the <b>Name Manager</b>. To open it:</p>
+            <ul>
+                <li>click the <b>Named Ranges</b> <img alt="Named Ranges icon" src="../images/namedranges.png" /> icon at the top toolbar and select the <b>Name manager</b> option from the menu,</li>
+                <li>or click the arrow in the name field and select the <b>Manager</b> option.</li>
+            </ul>
+            <p>The <b>Name Manager</b> window will open:</p>
+            <p><img alt="Name Manager window" src="../images/namemanagerwindow.png" /></p>
+            <p>For your convenience, you can filter the names selecting the name category you want to be displayed: <b>All</b>, <b>Defined names</b>, <b>Table names</b>, <b>Names Scoped to Sheet</b> or <b>Names Scoped to Workbook</b>. The names that belong to the selected category will be displayed in the list, the other names will be hidden.</p>
+            <p>To change the sort order for the displayed list you can click on the <b>Named Ranges</b> or <b>Scope</b> titles in this window.</p>
+            <p><b>To edit a name</b>, select it in the list and click the <b>Edit</b> button. The <b>Edit Name</b> window will open:</p>
+            <p><img alt="Edit Name window" src="../images/editnamewindow.png" /></p>
+            <p>For a defined name, you can change the name and the data range it refers to. For a table name, you can change the name only. When all the necessary changes are made, click <b>OK</b> to apply them. To discard the changes, click <b>Cancel</b>. If the edited name is used in a formula, the formula will be automatically changed accordingly.</p>
+            <p><b>To delete a name</b>, select it in the list and click the <b>Delete</b> button.</p>
+            <p class="note"><b>Note</b>: if you delete the name that is used in a formula, the formula will no longer work (it will return the <em>#NAME?</em> error).</p>  
+            <p>You can also create a new name in the <b>Name Manager</b> window by clicking the <b>New</b> button.</p>
+			<h3 id="usingnames">Use names when working with the spreadsheet</h3>
+            <p><b>To quickly navigate between cell ranges</b> you can click the arrow in the name box and select the necessary name from the name list – the data range that corresponds to this name will be selected on the worksheet.</p>
+            <p><img alt="Name list" src="../images/namelist.png" /></p>
+            <p class="note"><b>Note</b>: the name list displays the defined names and table names scoped to the current worksheet and to the whole workbook.</p>
+            <p><b>To add a name as an argument of a formula</b>:</p>
+            <ol>
+                <li>Place the insertion point where you need to add a name.</li>
+                <li>Do one of the following:
+                    <ul>
+                        <li>enter the name of the necessary named range manually using the keyboard. Once you type the initial letters, the <b>Formula Autocomplete</b> list will be displayed. As you type, the items (formulas and names) that match the entered characters are displayed in it. You can select the necessary name from the list and insert it into the formula by double-clicking it or pressing the <b>Tab</b> key.</li>
+                        <li>
+                            or click the <b>Named Ranges</b> <img alt="Named Ranges icon" src="../images/namedranges.png" /> icon at the top toolbar, select the <b>Paste name</b> option from the menu, choose the necessary name from the <b>Paste Name</b> window and click <b>OK</b>:
+                            <p><img alt="Paste Name window" src="../images/pastenamewindow.png" /></p>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+            <p class="note"><b>Note</b>: the <b>Paste Name</b> window displays the defined names and table names scoped to the current worksheet and to the whole workbook.</p>  
+		</div>
+	</body>
+</html>
