@@ -13,8 +13,8 @@ config = {
                     }
     },
     "events": {
-     "onDocumentStateChange": function(evt) { console.log("in change"); window.top.APP.onLocal(); },
-     "onReady": function(evt) { console.log("in onReady"); window.top.onOOReady(); } 
+     "onDocumentStateChange": function(evt) { console.log("in change"); window.parent.APP.onLocal(); },
+     "onReady": function(evt) { console.log("in onReady"); window.parent.onOOReady(); } 
     }
 };
 

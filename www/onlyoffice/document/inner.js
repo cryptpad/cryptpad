@@ -76,7 +76,6 @@ define([
 
         var loadDocument = APP.loadDocument = function (content, file) {
              console.log("Read " + content); 
-             return;
              window.frames[0].frames[0].editor.asc_CloseFile();
              var openResult = {bSerFormat: true, data: content, url: "http://localhost:3000/onlyoffice/", changes: null};
              window.frames[0].frames[0].editor.openDocument(openResult);
