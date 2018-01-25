@@ -495,6 +495,7 @@ define(function () {
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Rich text";
     out.settings_cat_creation = "New pad";
+    out.settings_cat_subscription = "Subscription";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 

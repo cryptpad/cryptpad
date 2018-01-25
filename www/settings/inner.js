@@ -64,7 +64,13 @@ define([
         'code': [
             'cp-settings-code-indent-unit',
             'cp-settings-code-indent-type'
-        ]
+        ],
+        'subscription': {
+            onClick: function () {
+                var urls = common.getMetadataMgr().getPrivateData().accounts;
+                window.open(urls.upgradeURL);
+            }
+        }
     };
 
     if (!AppConfig.dislayCreationScreen) {
@@ -786,12 +792,16 @@ define([
             if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
             if (key === 'pad') { $category.append($('<span>', {'class': 'fa fa-file-word-o' })); }
             if (key === 'creation') { $category.append($('<span>', {'class': 'fa fa-plus-circle' })); }
+            if (key === 'subscription') { $category.append($('<span>', {'class': 'fa fa-star-o' })); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
             }
 
             $category.click(function () {
+                if (!Array.isArray(categories[key]) && categories[key].onClick) {
+                    categories[key].onClick();
+                }
                 active = key;
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
                 $category.addClass('cp-leftside-active');

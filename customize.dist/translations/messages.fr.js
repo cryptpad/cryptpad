@@ -490,6 +490,7 @@ define(function () {
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Documents texte";
     out.settings_cat_creation = "Nouveau pad";
+    out.settings_cat_subscription = "Abonnement";
     out.settings_title = "Préférences";
     out.settings_save = "Sauver";
 
