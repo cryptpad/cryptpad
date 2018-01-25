@@ -9,7 +9,7 @@ const Pull = require('pull-stream');
 
 const isValidChannelId = function (id) {
     return typeof(id) === 'string' &&
-        [32, 48].indexOf(id.length) > -1 &&
+        id.length >= 32 && id.length < 50 &&
         /^[a-zA-Z0-9=+-]*$/.test(id);
 };
 
