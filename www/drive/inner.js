@@ -802,6 +802,7 @@ define([
                     hide.push('properties');
                     hide.push('rename');
                     hide.push('openparent');
+                    hide.push('hashtag');
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -911,6 +912,7 @@ define([
             //var actions = [];
             var toShow = filterContextMenu(menuType, paths);
             var $actions = $contextMenu.find('a');
+            $contextMenu.data('paths', paths);
             $actions = $actions.filter(function (i, el) {
                 return toShow.some(function (className) { return $(el).is(className); });
             });
@@ -922,9 +924,6 @@ define([
                 } else {
                     $a.text($(el).text());
                 }
-                $(el).data('paths', paths);
-                //$(el).data('path', path);
-                //:$(el).data('element', $element);
                 $container.append($a);
                 $a.click(function() { $(el).click(); });
             });
@@ -2733,6 +2732,7 @@ define([
                         var parsed = Hash.parsePadUrl(data.href);
                         var channel = Util.base64ToHex(parsed.hashData.channel);
                         n = n.nThen(function (waitFor) {
+                            // XXX use the delete channel rpc
                             sframeChan.query('Q_CONTACTS_CLEAR_OWNED_CHANNEL', channel,
                                              waitFor(function (e) {
                                 if (e) { return void console.error(e); }
