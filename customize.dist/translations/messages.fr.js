@@ -415,6 +415,7 @@ define(function () {
                            "Cette action supprimera votre CryptDrive et son historique de votre navigateur, mais les pads existeront toujours (de manière chiffrée) sur notre serveur.";
     out.fm_padIsOwned = "Vous êtes le propriétaire de ce pad";
     out.fm_padIsOwnedOther = "Ce pad est la propriété d'un autre utilisateur";
+    out.fm_deletedPads = "Ces pads n'existent plus sur le serveur, ils ont été supprimés de votre CryptDrive: {0}";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -474,6 +475,7 @@ define(function () {
     out.register_warning = "Zero Knowledge signifie que nous ne pouvons pas récupérer vos données si vous perdez vos identifiants.";
     out.register_alreadyRegistered = "Cet utilisateur existe déjà, souhaitez-vous vous connecter ?";
 
+    out.register_whyRegister = "Pourquoi s'inscrire ?";
     out.register_header = "Bienvenue dans CryptPad";
     out.register_explanation = [
         "<p>Faisons d'abord le point sur certaines choses</p>",
@@ -707,6 +709,7 @@ define(function () {
 
     // features.html
 
+    out.features = "Fonctionnalités";
     out.features_title = "Tableau des fonctionnalités";
     out.features_feature = "Fonctionnalité";
     out.features_anon = "Utilisateur anonyme";

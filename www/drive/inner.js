@@ -1435,6 +1435,7 @@ define([
                 case FILES_DATA: pName = FILES_DATA_NAME; break;
                 case SEARCH: pName = SEARCH_NAME; break;
                 case RECENT: pName = RECENT_NAME; break;
+                case OWNED: pName = OWNED_NAME; break;
                 default: pName = name;
             }
             return pName;
@@ -2978,10 +2979,15 @@ define([
 
         sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
             var ids = filesOp.findChannels(data);
+            var titles = [];
             ids.forEach(function (id) {
+                var title = filesOp.getTitle(id);
+                titles.push(title);
                 var paths = filesOp.findFile(id);
                 filesOp.delete(paths, refresh);
             });
+            if (!titles.length) { return; }
+            UI.log(Messages._getKey('fm_deletedPads', [titles.join(', ')]));
         });
     };
 

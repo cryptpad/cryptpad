@@ -417,6 +417,7 @@ define(function () {
                            "This will remove your CryptDrive and its history from your browser, but your pads will still exist (encrypted) on our server.";
     out.fm_padIsOwned = "You are the owner of this pad";
     out.fm_padIsOwnedOther = "This pad is owned by another user";
+    out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -472,6 +473,7 @@ define(function () {
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 
+    out.register_whyRegister = "Why signing up?";
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
         "<h3>Lets go over a couple things first:</h3>",
@@ -717,6 +719,7 @@ define(function () {
 
     // features.html
 
+    out.features = "Features";
     out.features_title = "Features table";
     out.features_feature = "Feature";
     out.features_anon = "Anonymous user";
