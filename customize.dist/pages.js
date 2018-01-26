@@ -100,6 +100,7 @@ define([
                 h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [  
                     h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
                     h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
+                    h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
                     h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
                     h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
                 ].concat(rightLinks))
@@ -332,6 +333,11 @@ define([
                             h('td')
                         ]),
                     ])
+                ]),
+                h('div#cp-features-register', [
+                    h('a', {
+                        href: '/register/'
+                    }, h('button.cp-features-register-button', 'Register for free'))
                 ])
             ]),
             infopageFooter()
@@ -601,6 +607,9 @@ define([
                     setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
                 h('div#userForm.form-group.hidden.col-md-6', [
+                    h('a', {
+                        href: '/features.html'
+                    }, Msg.register_whyRegister),
                     h('input.form-control#username', {
                         type: 'text',
                         autocomplete: 'off',

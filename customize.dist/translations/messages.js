@@ -473,6 +473,7 @@ define(function () {
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 
+    out.register_whyRegister = "Why signing up?";
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
         "<h3>Lets go over a couple things first:</h3>",
@@ -718,6 +719,7 @@ define(function () {
 
     // features.html
 
+    out.features = "Features";
     out.features_title = "Features table";
     out.features_feature = "Feature";
     out.features_anon = "Anonymous user";

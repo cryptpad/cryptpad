@@ -475,6 +475,7 @@ define(function () {
     out.register_warning = "Zero Knowledge signifie que nous ne pouvons pas récupérer vos données si vous perdez vos identifiants.";
     out.register_alreadyRegistered = "Cet utilisateur existe déjà, souhaitez-vous vous connecter ?";
 
+    out.register_whyRegister = "Pourquoi s'inscrire ?";
     out.register_header = "Bienvenue dans CryptPad";
     out.register_explanation = [
         "<p>Faisons d'abord le point sur certaines choses</p>",
@@ -708,6 +709,7 @@ define(function () {
 
     // features.html
 
+    out.features = "Fonctionnalités";
     out.features_title = "Tableau des fonctionnalités";
     out.features_feature = "Fonctionnalité";
     out.features_anon = "Utilisateur anonyme";
