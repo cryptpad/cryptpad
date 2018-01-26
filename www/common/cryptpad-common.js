@@ -557,6 +557,11 @@ define([
             return void cb(null, hashes);
         }
 
+        if (hashes.editHash) {
+            // no need to find stronger if we already have edit hash
+            return void cb(null, hashes);
+        }
+
         postMessage("GET_STRONGER_HASH", {
             href: window.location.href
         }, function (hash) {

@@ -300,6 +300,8 @@ Version 1
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
+        // We can't have a stronger hash if we're already in edit mode
+        if (parsed.hashData && parsed.hashData.mode === 'edit') { return; }
         var stronger;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];
