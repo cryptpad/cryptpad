@@ -102,8 +102,8 @@ define([
 
             // Push channels owned by someone else or channel that should have expired
             // because of the expiration time
-            if ((data.owners && data.owners.indexOf(edPublic) === -1) ||
-                    data.expire < (+new Date())) {
+            if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
+                    (data.expire && data.expire < (+new Date()))) {
                 list.push(Hash.hrefToHexChannelId(data.href));
             }
         });

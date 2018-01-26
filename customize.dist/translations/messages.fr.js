@@ -415,6 +415,7 @@ define(function () {
                            "Cette action supprimera votre CryptDrive et son historique de votre navigateur, mais les pads existeront toujours (de manière chiffrée) sur notre serveur.";
     out.fm_padIsOwned = "Vous êtes le propriétaire de ce pad";
     out.fm_padIsOwnedOther = "Ce pad est la propriété d'un autre utilisateur";
+    out.fm_deletedPads = "Ces pads n'existent plus sur le serveur, ils ont été supprimés de votre CryptDrive: {0}";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
