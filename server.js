@@ -9,6 +9,7 @@ var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
+var nThen = require("nthen");
 
 var config;
 try {
@@ -198,32 +199,37 @@ if (config.httpSafePort) {
 
 var wsConfig = { server: httpServer };
 
-var createSocketServer = function (err, rpc) {
-    if(!config.useExternalWebsocket) {
-        if (websocketPort !== config.httpPort) {
-            console.log("setting up a new websocket server");
-            wsConfig = { port: websocketPort};
-        }
-        var wsSrv = new WebSocketServer(wsConfig);
-        Storage.create(config, function (store) {
-            NetfluxSrv.run(store, wsSrv, config, rpc);
-        });
-    }
-};
+var rpc;
 
-var loadRPC = function (cb) {
+var nt = nThen(function (w) {
+    if (!config.enableTaskScheduling) { return; }
+    var Tasks = require("./storage/tasks");
+
+    console.log("loading task scheduler");
+    Tasks.create(config, w(function (e, tasks) {
+        config.tasks = tasks;
+    }));
+}).nThen(function (w) {
     config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
-
-    if (typeof(config.rpc) === 'string') {
-        // load pin store...
-        var Rpc = require(config.rpc);
-        Rpc.create(config, function (e, rpc) {
-            if (e) { throw e; }
-            cb(void 0, rpc);
-        });
-    } else {
-        cb();
+    if (typeof(config.rpc) !== 'string') { return; }
+    // load pin store...
+    var Rpc = require(config.rpc);
+    Rpc.create(config, w(function (e, _rpc) {
+        if (e) {
+            w.abort();
+            throw e;
+        }
+        rpc = _rpc;
+    }));
+}).nThen(function () {
+    if(config.useExternalWebsocket) { return; }
+    if (websocketPort !== config.httpPort) {
+        console.log("setting up a new websocket server");
+        wsConfig = { port: websocketPort};
     }
-};
+    var wsSrv = new WebSocketServer(wsConfig);
+    Storage.create(config, function (store) {
+        NetfluxSrv.run(store, wsSrv, config, rpc);
+    });
+});
 
-loadRPC(createSocketServer);
