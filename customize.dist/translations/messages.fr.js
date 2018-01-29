@@ -393,7 +393,8 @@ define(function () {
     out.updated_0_fm_info_trash = "Vider la corbeille permet de libérer de l'espace dans votre CryptDrive";
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
-    out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
+    out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads seront donc supprimés après 3 mois d\'inactivité (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
+                            'Ils sont stockés dans votre navigateur donc nettoyer votre historique peut les faire disparaître.<br>' +
                             '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
     out.fm_info_owned = "Vous êtes propriétaire des pads affichés dans cette catégorie. Cela signifie que vous pouvez choisir de les supprimer définitivement du serveur à n'importe quel moment. Ils seront alors inaccessibles pour tous les autres utilisateurs.";
     out.fm_alert_backupUrl = "Lien de secours pour ce CryptDrive.<br>" +

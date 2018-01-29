@@ -396,7 +396,8 @@ define(function () {
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
-                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
+                            'They are stored in your browser so clearing history may make them disappear.<br>' +
+                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.<br>';
     out.fm_info_owned = "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.";
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep it secret.<br>" +

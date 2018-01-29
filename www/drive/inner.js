@@ -1509,6 +1509,11 @@ define([
             if (!APP.loggedIn) {
                 msg = Messages.fm_info_anonymous;
                 $box.html(msg);
+                $box.find('a[target!="_blank"]').click(function (e) {
+                    e.preventDefault();
+                    var href = $(this).attr('href');
+                    common.gotoURL(href);
+                });
                 return $box;
             }
             if (!msg || APP.store['hide-info-' + path[0]] === '1') {
