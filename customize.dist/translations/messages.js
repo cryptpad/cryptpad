@@ -381,7 +381,8 @@ define(function () {
     out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
-    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently this pad from the server?";
+    out.fm_deleteOwnedPad = "Are you sure you want to remove permanently this pad from the server?";
+    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently these pads from the server?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";

@@ -906,6 +906,8 @@ define([
         var userObject = store.userObject = UserObject.init(proxy.drive, {
             pinPads: Store.pinPads,
             unpinPads: Store.unpinPads,
+            removeOwnedChannel: function () {}, // XXX
+            edPublic: store.proxy.edPublic,
             loggedIn: store.loggedIn,
             log: function (msg) {
                 postMessage("DRIVE_LOG", msg);
