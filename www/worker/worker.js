@@ -29,16 +29,17 @@ require.config({
 });
 
 var i = 0;
+var id = Math.floor(Math.random()*100000);
 
 onconnect = function(e) {
     console.log(e);
     console.log(i);
     var port = e.ports[0];
     console.log('here');
-    require([
-        '/common/outer/async-store.js'
-    ], function (Store) {
-            console.log(Store);
+    //require([
+    //    '/common/outer/async-store.js'
+    //], function (Store) {
+            //console.log(Store);
             console.log(self.Proxy);
             var n = i;
             port.postMessage({state: 'READY'});
@@ -46,8 +47,9 @@ onconnect = function(e) {
                 console.log('worker received');
                 console.log(e.data);
                 port.postMessage('hello CryptPad'+n);
+                port.postMessage('This is '+id);
             };
-            var data = {
+            /*var data = {
                 query: function (cmd, data, cb) {
                     console.log(cmd, data);
                 },
@@ -64,7 +66,7 @@ onconnect = function(e) {
                 });
                 port.postMessage('Store is connected!');
                 port.postMessage('Your username is ' + ret.store.proxy['cryptpad.username']);
-            });
+            });*/
             i++;
-    });
+    //});
 };
