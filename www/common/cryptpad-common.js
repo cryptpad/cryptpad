@@ -195,6 +195,9 @@ define([
     common.clearOwnedChannel = function (channel, cb) {
         postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
     };
+    common.removeOwnedChannel = function (channel, cb) {
+        postMessage("REMOVE_OWNED_CHANNEL", channel, cb);
+    };
 
     common.getDeletedPads = function (cb) {
         postMessage("GET_DELETED_PADS", null, function (obj) {

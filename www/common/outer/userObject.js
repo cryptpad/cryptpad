@@ -97,7 +97,9 @@ define([
                     var channelId = fd && fd.href && Hash.hrefToHexChannelId(fd.href);
                     // If trying to remove an owned pad, remove it from server also
                     if (fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
-                        removeOwnedChannel(channelId);
+                        removeOwnedChannel(channelId, function (obj) {
+                            if (obj && obj.error) { console.error(obj.error); }
+                        });
                     }
                     if (channelId) { toClean.push(channelId); }
                     spliceFileData(id);

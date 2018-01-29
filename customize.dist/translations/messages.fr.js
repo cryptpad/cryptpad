@@ -377,7 +377,8 @@ define(function () {
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?";
     out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?";
-    out.fm_deleteOwnedPads = "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?";
+    out.fm_deleteOwnedPad = "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?";
+    out.fm_deleteOwnedPads = "Êtes-vous sûr de vouloir supprimer définitivement ces pads du serveur ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";

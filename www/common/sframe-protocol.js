@@ -209,6 +209,9 @@ define({
     'EV_DRIVE_CHANGE': true,
     'EV_DRIVE_REMOVE': true,
 
+    // Remove an owned pad from the server
+    'Q_REMOVE_OWNED_CHANNEL': true,
+
     // Notifications about connection and disconnection from the network
     'EV_NETWORK_DISCONNECT': true,
     'EV_NETWORK_RECONNECT': true,

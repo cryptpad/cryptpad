@@ -2687,8 +2687,8 @@ define([
             if (paths) {
                 paths.forEach(function (p) { pathsList.push(p.path); });
             }
-            var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
-            if (paths.length === 1) {
+            var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
+            if (pathsList.length === 1) {
                 msg = Messages.fm_removePermanentlyDialog;
             }
             UI.confirm(msg, function(res) {
@@ -2702,7 +2702,8 @@ define([
             if (paths) {
                 paths.forEach(function (p) { pathsList.push(p.path); });
             }
-            var msgD = paths ? Messages.fm_deleteOwnedPads : Messages.fm_deleteContainsOwned;
+            var msgD = pathsList.length === 1 ? Messages.fm_deleteOwnedPad :
+                                                Messages.fm_deleteOwnedPads;
             UI.confirm(msgD, function(res) {
                 $(window).focus();
                 if (!res) { return; }
@@ -2714,11 +2715,10 @@ define([
                     var parsed = Hash.parsePadUrl(data.href);
                     var channel = Util.base64ToHex(parsed.hashData.channel);
                     n = n.nThen(function (waitFor) {
-                        // XXX use the delete channel rpc
-                        sframeChan.query('Q_CONTACTS_CLEAR_OWNED_CHANNEL', channel,
+                        sframeChan.query('Q_REMOVE_OWNED_CHANNEL', channel,
                                          waitFor(function (e) {
                             if (e) { return void console.error(e); }
-                            filesOp.delete([p.path], refresh);
+                            filesOp.delete([p], refresh);
                         }));
                     });
                 });

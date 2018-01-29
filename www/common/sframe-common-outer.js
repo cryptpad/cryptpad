@@ -501,6 +501,9 @@ define([
             sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
                 Cryptpad.clearOwnedChannel(channel, cb);
             });
+            sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
+                Cryptpad.removeOwnedChannel(channel, cb);
+            });
 
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);

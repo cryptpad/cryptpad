@@ -190,6 +190,13 @@ define([
         });
     };
 
+    Store.removeOwnedChannel = function (data, cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+        store.rpc.removeOwnedChannel(data, function (err) {
+            cb({error:err});
+        });
+    };
+
     var arePinsSynced = function (cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
@@ -335,7 +342,6 @@ define([
         }
 
         store.anon_rpc.send('GET_DELETED_PADS', list, function (e, res) {
-            console.log(e, res);
             if (e) { return void cb({error: e}); }
             if (res && res.length && Array.isArray(res[0])) {
                 cb(res[0]);
@@ -907,7 +913,7 @@ define([
         var userObject = store.userObject = UserObject.init(proxy.drive, {
             pinPads: Store.pinPads,
             unpinPads: Store.unpinPads,
-            removeOwnedChannel: function () {}, // XXX
+            removeOwnedChannel: Store.removeOwnedChannel,
             edPublic: store.proxy.edPublic,
             loggedIn: store.loggedIn,
             log: function (msg) {
