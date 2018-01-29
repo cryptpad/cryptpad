@@ -63,7 +63,7 @@ var write = function (env, task, cb) {
                 return void cb(err);
             }
         }));
-    }).nThen(function (w) {
+    }).nThen(function () {
         // write the file to the path
         Fs.writeFile(mkPath(env, id), str, function (e) {
             if (e) { return void cb(e); }

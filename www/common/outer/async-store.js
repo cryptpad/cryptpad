@@ -335,7 +335,6 @@ define([
         }
 
         store.anon_rpc.send('GET_DELETED_PADS', list, function (e, res) {
-            console.log(e, res);
             if (e) { return void cb({error: e}); }
             if (res && res.length && Array.isArray(res[0])) {
                 cb(res[0]);
