@@ -369,15 +369,19 @@ var getDeletedPads = function (Env, channels, cb) {
 
     var sem = Saferphore.create(10);
     var absentees = [];
+
+    var job = function (channel, wait) {
+        return function (give) {
+            getFileSize(Env, channel, wait(give(function (e, size) {
+                if (e) { return; }
+                if (size === 0) { absentees.push(channel); }
+            })));
+        };
+    };
+
     nThen(function (w) {
         for (var i = 0; i < L; i++) {
-            let channel = channels[i];
-            sem.take(function (give) {
-                getFileSize(Env, channel, w(give(function (e, size) {
-                    if (e) { return; }
-                    if (size === 0) { absentees.push(channel); }
-                })));
-            });
+            sem.take(job(channels[i], w));
         }
     }).nThen(function () {
         cb(void 0, absentees);
