@@ -847,7 +847,7 @@ define(function () {
 
     // Creation page
     out.creation_404 = "Le pad auquel vous souhaitez accéder n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.";
-    out.creation_ownedTitle = "Type ode pad";
+    out.creation_ownedTitle = "Type de pad";
     out.creation_ownedTrue = "Pad possédé";
     out.creation_ownedFalse = "Pad ouvert";
     out.creation_owned1 = "Un pad <b>possédé</b> est un pad que vous pouvez supprimer du serveur à n'importe quel moment depuis votre CryptDrive. Une fois supprimé, personne d'autre ne peut y accéder, même si le pad est stocké dans un autre CryptDrive.";
