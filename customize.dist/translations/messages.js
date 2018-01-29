@@ -742,6 +742,7 @@ define(function () {
     out.features_f_multiple = "Use on multiple devices";
     out.features_f_multiple_notes = "Easy way to access your pads from any device";
     out.features_f_logoutEverywhere = "Log out from other devices";
+    out.features_f_logoutEverywhere_notes = ""; // Used in the French translation to explain
     out.features_f_templates = "Use templates";
     out.features_f_templates_notes = "Create templates and create new pads from your templates";
     out.features_f_profile = "Create a profile";

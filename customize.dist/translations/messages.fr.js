@@ -570,7 +570,9 @@ define(function () {
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
     out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";
     out.upload_notEnoughSpace = "Il n'y a pas assez d'espace libre dans votre CryptDrive pour ce fichier.";
+    out.upload_notEnoughSpaceBrief = "Pas assez d'espace";
     out.upload_tooLarge = "Ce fichier dépasse la taille maximale autorisée.";
+    out.upload_tooLargeBrief = 'Fichier trop volumineux';
     out.upload_choose = "Choisir un fichier";
     out.upload_pending = "En attente";
     out.upload_cancelled = "Annulé";
@@ -580,6 +582,7 @@ define(function () {
     out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
     out.download_button = "Déchiffrer et télécharger";
     out.download_mt_button = "Télécharger";
+    out.download_resourceNotAvailable = "Le fichier demandé n'est pas disponible...";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";
