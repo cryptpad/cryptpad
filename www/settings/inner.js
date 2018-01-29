@@ -75,7 +75,7 @@ define([
         }
     };
 
-    if (!AppConfig.dislayCreationScreen) {
+    if (!AppConfig.displayCreationScreen) {
         delete categories.creation;
     }
     if (AppConfig.disableFeedback) {
@@ -789,7 +789,7 @@ define([
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
         APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
-        var active = 'account';
+        var active = privateData.category || 'account';
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }

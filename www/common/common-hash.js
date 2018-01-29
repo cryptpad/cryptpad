@@ -176,7 +176,7 @@ Version 1
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         };
-        if (!secretHash && !/#/.test(window.location.href)) {
+        if (!secretHash && !window.location.hash) { //!/#/.test(window.location.href)) {
             generate();
             return secret;
         } else {

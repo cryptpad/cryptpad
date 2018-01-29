@@ -66,9 +66,18 @@ define([
                 Cryptpad.mergeAnonDrive(cb);
             });
         };
+        var category;
+        if (window.location.hash) {
+            category = window.location.hash.slice(1);
+            window.location.hash = '';
+        }
+        var addData = function (obj) {
+            if (category) { obj.category = category; }
+        };
         SFCommonO.start({
             noRealtime: true,
-            addRpc: addRpc
+            addRpc: addRpc,
+            addData: addData
         });
     });
 });
