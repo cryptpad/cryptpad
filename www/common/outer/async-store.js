@@ -211,16 +211,6 @@ define([
         });
     };
 
-    Store.getDeletedPads = function (data, cb) {
-        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-        //var list = getCanonicalChannelList(true);
-
-        // TODO: rpc to get the deleted pads here and send this list in the callback
-
-        cb([]);
-    };
-
     Store.uploadComplete = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.uploadComplete(function (err, res) {
@@ -337,6 +327,24 @@ define([
         });
     };
 
+    Store.getDeletedPads = function (data, cb) {
+        if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
+        var list = getCanonicalChannelList(true);
+        if (!Array.isArray(list)) {
+            return void cb({error: 'INVALID_FILE_LIST'});
+        }
+
+        store.anon_rpc.send('GET_DELETED_PADS', list, function (e, res) {
+            console.log(e, res);
+            if (e) { return void cb({error: e}); }
+            if (res && res.length && Array.isArray(res[0])) {
+                cb(res[0]);
+            } else {
+                cb({error: 'UNEXPECTED_RESPONSE'});
+            }
+        });
+    };
+
     Store.initAnonRpc = function (data, cb) {
         require([
             '/common/rpc.js',
@@ -348,8 +356,6 @@ define([
             });
         });
     };
-
-
 
     //////////////////////////////////////////////////////////////////
     /////////////////////// Store ////////////////////////////////////
