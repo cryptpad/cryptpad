@@ -352,7 +352,6 @@ define([
                 if (!$(el).is(':visible')) { return; }
                 $(el).click();
             }, frame);
-            $(el).removeAttr('data-keys');
         });
         document.body.appendChild(frame);
         $(frame).focus();
