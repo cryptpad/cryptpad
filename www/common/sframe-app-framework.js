@@ -7,6 +7,7 @@ define([
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-thumbnail.js',
     '/common/common-feedback.js',
@@ -27,6 +28,7 @@ define([
     SFCommon,
     Messages,
     Util,
+    Hash,
     UI,
     Thumb,
     Feedback,
@@ -286,7 +288,12 @@ define([
             evOnReady.fire(newPad);
 
             if (AppConfig.textAnalyzer && textContentGetter) {
-                AppConfig.textAnalyzer(textContentGetter);
+                var privateData = common.getMetadataMgr().getPrivateData();
+                var channelHashes = privateData.availableHashes;
+                var hash = channelHashes.editHash || channelHashes.viewHash;
+                var href = privateData.pathname + '#' + hash;
+                var channelId = Hash.hrefToHexChannelId(href);
+                AppConfig.textAnalyzer(textContentGetter, channelId);
             }
 
             UI.removeLoadingScreen(emitResize);
