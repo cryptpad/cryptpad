@@ -24,23 +24,23 @@ define([
         return offset;
     };
 
-    var opsToWords = function (last, current) {
+    var opsToWords = function (previous, current) {
         var output = [];
-        Diff.diff(A, B).forEach(function (op) {
+        Diff.diff(previous, current).forEach(function (op) {
             // ignore deleted sections...
             var offset = op.offset;
             var toInsert = op.toInsert;
 
             // given an operation,  check whether it is a word fragment,
             // if it is, expand it to its word boundaries
-            var first = B.slice(leadingBoundary(B, offset), offset);
-            var last = B.slice(offset + toInsert.length, trailingBoundary(B, offset + toInsert.length));
+            var first = current.slice(leadingBoundary(current, offset), offset);
+            var last = current.slice(offset + toInsert.length, trailingBoundary(current, offset + toInsert.length));
 
             var result = first + toInsert + last;
             // concat-in-place
             Array.prototype.push.apply(output, result.split(/\s+/));
         });
-        return output;
+        return output.filter(Boolean);
     };
 
     var runningDiff = function (getter, f, time) {
