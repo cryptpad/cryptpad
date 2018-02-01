@@ -287,23 +287,20 @@ define([
             if (!readOnly) { onLocal(); }
             evOnReady.fire(newPad);
 
+            UI.removeLoadingScreen(emitResize);
+
+            var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            var hash = privateDat.availableHashes.editHash ||
+                       privateDat.availableHashes.viewHash;
+            var href = privateDat.pathname + '#' + hash;
             if (AppConfig.textAnalyzer && textContentGetter) {
-                var privateData = common.getMetadataMgr().getPrivateData();
-                var channelHashes = privateData.availableHashes;
-                var hash = channelHashes.editHash || channelHashes.viewHash;
-                var href = privateData.pathname + '#' + hash;
                 var channelId = Hash.hrefToHexChannelId(href);
                 AppConfig.textAnalyzer(textContentGetter, channelId);
             }
 
-            UI.removeLoadingScreen(emitResize);
-
-            var privateDat = cpNfInner.metadataMgr.getPrivateData();
             if (options.thumbnail && privateDat.thumbnails) {
-                var hash = privateDat.availableHashes.editHash ||
-                           privateDat.availableHashes.viewHash;
                 if (hash) {
-                    options.thumbnail.href = privateDat.pathname + '#' + hash;
+                    options.thumbnail.href = href;
                     options.thumbnail.getContent = function () {
                         if (!cpNfInner.chainpad) { return; }
                         return cpNfInner.chainpad.getUserDoc();
