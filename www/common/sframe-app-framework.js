@@ -84,6 +84,7 @@ define([
             });
         });
 
+        var textContentGetter;
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
         var normalize0 = function (x) { return x; };
@@ -283,6 +284,10 @@ define([
             firstConnection = false;
             if (!readOnly) { onLocal(); }
             evOnReady.fire(newPad);
+
+            if (AppConfig.textAnalyzer && textContentGetter) {
+                AppConfig.textAnalyzer(textContentGetter);
+            }
 
             UI.removeLoadingScreen(emitResize);
 
@@ -566,6 +571,10 @@ define([
                 // Set the content supplier, this is the function which will supply the content
                 // in the pad when requested by the framework.
                 setContentGetter: function (cg) { contentGetter = cg; },
+
+                // Set a text content supplier, this is a function which will give a text
+                // representation of the pad content if a text analyzer is configured
+                setTextContentGetter: function (tcg) { textContentGetter = tcg; },
 
                 // Inform the framework that the content of the pad has been changed locally.
                 localChange: onLocal,
