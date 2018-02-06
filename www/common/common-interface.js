@@ -553,6 +553,7 @@ define([
         var $loading, $container;
         if ($('#' + LOADING).length) {
             $loading = $('#' + LOADING); //.show();
+            $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);

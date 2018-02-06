@@ -6,10 +6,17 @@ define([
     '/common/outer/network-config.js',
     '/customize/credential.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/common/common-realtime.js',
+    '/common/common-constants.js',
+    '/common/common-interface.js',
+    '/common/common-feedback.js',
+    '/common/outer/local-store.js',
+    '/customize/messages.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
-], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad) {
+], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
+            Feedback, LocalStore, Messages) {
     var Exports = {
         Cred: Cred,
     };
@@ -140,6 +147,128 @@ define([
                 setTimeout(function () { cb(void 0, res); });
             });
         });
+    };
+
+    Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, testing, test) {
+        var hashing = true;
+
+        var proceed = function (result) {
+            var proxy = result.proxy;
+            proxy.edPublic = result.edPublic;
+            proxy.edPrivate = result.edPrivate;
+            proxy.curvePublic = result.curvePublic;
+            proxy.curvePrivate = result.curvePrivate;
+
+            if (isRegister) {
+                Feedback.send('REGISTRATION', true);
+            } else {
+                Feedback.send('LOGIN', true);
+            }
+
+            Realtime.whenRealtimeSyncs(result.realtime, function () {
+                try {
+                LocalStore.login(result.userHash, result.userName, function () {
+                    hashing = false;
+                    if (test && typeof test === "function" && test()) { console.log('testing');
+                    return; }
+                    if (shouldImport) {
+                        sessionStorage.migrateAnonDrive = 1;
+                    }
+                    if (sessionStorage.redirectTo) {
+                        var h = sessionStorage.redirectTo;
+                        var parser = document.createElement('a');
+                        parser.href = h;
+                        if (parser.origin === window.location.origin) {
+                            delete sessionStorage.redirectTo;
+                            window.location.href = h;
+                            return;
+                        }
+                    }
+                    window.location.href = '/drive/';
+                });
+                } catch (e) { console.error(e); }
+            });
+        };
+
+        // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen
+        // pops up
+        window.setTimeout(function () {
+            UI.addLoadingScreen({
+                loadingText: Messages.login_hashing,
+                hideTips: true,
+            });
+            // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
+            // after hashing the password
+            window.setTimeout(function () {
+                Exports.loginOrRegister(uname, passwd, isRegister, function (err, result) {
+                    var proxy;
+                    if (result) { proxy = result.proxy; }
+
+                    if (err) {
+                        switch (err) {
+                            case 'NO_SUCH_USER':
+                                UI.removeLoadingScreen(function () {
+                                    UI.alert(Messages.login_noSuchUser, function () {
+                                        hashing = false;
+                                    });
+                                });
+                                break;
+                            case 'INVAL_USER':
+                                UI.removeLoadingScreen(function () {
+                                    UI.alert(Messages.login_invalUser, function () {
+                                        hashing = false;
+                                    });
+                                });
+                                break;
+                            case 'INVAL_PASS':
+                                UI.removeLoadingScreen(function () {
+                                    UI.alert(Messages.login_invalPass, function () {
+                                        hashing = false;
+                                    });
+                                });
+                                break;
+                            case 'PASS_TOO_SHORT':
+                                UI.removeLoadingScreen(function () {
+                                    var warning = Messages._getKey('register_passwordTooShort', [
+                                        Cred.MINIMUM_PASSWORD_LENGTH
+                                    ]);
+                                    UI.alert(warning, function () {
+                                        hashing = false;
+                                    });
+                                });
+                                break;
+                            case 'ALREADY_REGISTERED':
+                                // logMeIn should reset registering = false
+                                UI.removeLoadingScreen(function () {
+                                    UI.confirm(Messages.register_alreadyRegistered, function (yes) {
+                                        if (!yes) { return; }
+                                        proxy.login_name = uname;
+
+                                        if (!proxy[Constants.displayNameKey]) {
+                                            proxy[Constants.displayNameKey] = uname;
+                                        }
+                                        LocalStore.eraseTempSessionValues();
+                                        proceed(result);
+                                    });
+                                });
+                                break;
+                            default: // UNHANDLED ERROR
+                                hashing = false;
+                                UI.errorLoadingScreen(Messages.login_unhandledError);
+                        }
+                        return;
+                    }
+
+                    if (testing) { return void proceed(result); }
+
+                    proxy.login_name = uname;
+                    proxy[Constants.displayNameKey] = uname;
+                    sessionStorage.createReadme = 1;
+
+                    proceed(result);
+                });
+            }, 0);
+        }, 200);
     };
 
     return Exports;
