@@ -42,6 +42,11 @@ define(function() {
         '#800080', // purple
     ];
 
+    // Background color in the apps with centered content:
+    // - file app in view mode
+    // - rich text app when editor's width reduced in settings
+    config.appBackgroundColor = '#666';
+
     // Set enableTemplates to false to remove the button allowing users to save a pad as a template
     // and remove the template category in CryptDrive
     config.enableTemplates = true;

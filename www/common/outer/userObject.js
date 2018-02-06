@@ -17,8 +17,12 @@ define([
             console.error("unpinPads was not provided");
         };
         var pinPads = config.pinPads;
+        var removeOwnedChannel = config.removeOwnedChannel || function () {
+            console.error("removeOwnedChannel was not provided");
+        };
         var loggedIn = config.loggedIn;
         var workgroup = config.workgroup;
+        var edPublic = config.edPublic;
 
         var ROOT = exp.ROOT;
         var FILES_DATA = exp.FILES_DATA;
@@ -90,9 +94,14 @@ define([
             exp.getFiles([FILES_DATA]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.getFileData(id);
-                    if (fd && fd.href) {
-                        toClean.push(Hash.hrefToHexChannelId(fd.href));
+                    var channelId = fd && fd.href && Hash.hrefToHexChannelId(fd.href);
+                    // If trying to remove an owned pad, remove it from server also
+                    if (fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
+                        removeOwnedChannel(channelId, function (obj) {
+                            if (obj && obj.error) { console.error(obj.error); }
+                        });
                     }
+                    if (channelId) { toClean.push(channelId); }
                     spliceFileData(id);
                 }
             });

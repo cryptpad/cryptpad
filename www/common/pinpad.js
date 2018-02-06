@@ -145,7 +145,22 @@ define([
                     if (response && response.length) {
                         cb(void 0, response[0]);
                     } else {
-                        cb();
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+
+            exp.removeOwnedChannel = function (channel, cb) {
+                if (typeof(channel) !== 'string' || channel.length !== 32) {
+                    // can't use this on files because files can't be owned...
+                    return void cb('INVALID_ARGUMENTS');
+                }
+                rpc.send('REMOVE_OWNED_CHANNEL', channel, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length) {
+                        cb(void 0, response[0]); // I haven't tested this...
+                    } else {
+                        cb('INVALID_RESPONSE');
                     }
                 });
             };

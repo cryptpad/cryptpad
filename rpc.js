@@ -11,6 +11,8 @@ var Path = require("path");
 var Https = require("https");
 const Package = require('./package.json');
 const Pinned = require('./pinned');
+const Saferphore = require("saferphore");
+const nThen = require("nthen");
 
 var RPC = module.exports;
 
@@ -352,6 +354,37 @@ var getMultipleFileSize = function (Env, channels, cb) {
             counts[channel] = size;
             done();
         });
+    });
+};
+
+/*  accepts a list, and returns a sublist of channel or file ids which seem
+    to have been deleted from the server (file size 0)
+
+    we might consider that we should only say a file is gone if fs.stat returns
+    ENOENT, but for now it's simplest to just rely on getFileSize...
+*/
+var getDeletedPads = function (Env, channels, cb) {
+    if (!Array.isArray(channels)) { return cb('INVALID_LIST'); }
+    var L = channels.length;
+
+    var sem = Saferphore.create(10);
+    var absentees = [];
+
+    var job = function (channel, wait) {
+        return function (give) {
+            getFileSize(Env, channel, wait(give(function (e, size) {
+                if (e) { return; }
+                if (size === 0) { absentees.push(channel); }
+            })));
+        };
+    };
+
+    nThen(function (w) {
+        for (var i = 0; i < L; i++) {
+            sem.take(job(channels[i], w));
+        }
+    }).nThen(function () {
+        cb(void 0, absentees);
     });
 };
 
@@ -1004,7 +1037,8 @@ var isUnauthenticatedCall = function (call) {
         'GET_MULTIPLE_FILE_SIZE',
         'IS_CHANNEL_PINNED',
         'IS_NEW_CHANNEL',
-        'GET_HISTORY_OFFSET'
+        'GET_HISTORY_OFFSET',
+        'GET_DELETED_PADS',
     ].indexOf(call) !== -1;
 };
 
@@ -1132,6 +1166,14 @@ RPC.create = function (
                         return respond(e);
                     }
                     respond(e, [null, dict, null]);
+                });
+            case 'GET_DELETED_PADS':
+                return void getDeletedPads(Env, msg[1], function (e, list) {
+                    if (e) {
+                        WARN(e, msg[1]);
+                        return respond(e);
+                    }
+                    respond(e, [null, list, null]);
                 });
             case 'IS_CHANNEL_PINNED':
                 return void isChannelPinned(Env, msg[1], function (isPinned) {

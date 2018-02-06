@@ -377,7 +377,8 @@ define(function () {
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?";
     out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?";
-    out.fm_deleteOwnedPads = "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?";
+    out.fm_deleteOwnedPad = "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?";
+    out.fm_deleteOwnedPads = "Êtes-vous sûr de vouloir supprimer définitivement ces pads du serveur ?";
     out.fm_restoreDialog = "Êtes-vous sûr de vouloir restaurer {0} à son emplacement précédent ?";
     out.fm_removeSeveralDialog = "Êtes-vous sûr de vouloir déplacer ces {0} éléments vers la corbeille ?";
     out.fm_removeDialog = "Êtes-vous sûr de vouloir déplacer {0} vers la corbeille ?";
@@ -392,7 +393,8 @@ define(function () {
     out.updated_0_fm_info_trash = "Vider la corbeille permet de libérer de l'espace dans votre CryptDrive";
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contient tous les fichiers de "Documents", "Fichiers non triés" et "Corbeille". Vous ne pouvez pas supprimer ou déplacer des fichiers depuis cet endroit.'; // Same here
-    out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads risquent donc d\'être supprimés (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
+    out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads seront donc supprimés après 3 mois d\'inactivité (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
+                            'Ils sont stockés dans votre navigateur donc nettoyer votre historique peut les faire disparaître.<br>' +
                             '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
     out.fm_info_owned = "Vous êtes propriétaire des pads affichés dans cette catégorie. Cela signifie que vous pouvez choisir de les supprimer définitivement du serveur à n'importe quel moment. Ils seront alors inaccessibles pour tous les autres utilisateurs.";
     out.fm_alert_backupUrl = "Lien de secours pour ce CryptDrive.<br>" +
@@ -415,6 +417,7 @@ define(function () {
                            "Cette action supprimera votre CryptDrive et son historique de votre navigateur, mais les pads existeront toujours (de manière chiffrée) sur notre serveur.";
     out.fm_padIsOwned = "Vous êtes le propriétaire de ce pad";
     out.fm_padIsOwnedOther = "Ce pad est la propriété d'un autre utilisateur";
+    out.fm_deletedPads = "Ces pads n'existent plus sur le serveur, ils ont été supprimés de votre CryptDrive: {0}";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -474,6 +477,7 @@ define(function () {
     out.register_warning = "Zero Knowledge signifie que nous ne pouvons pas récupérer vos données si vous perdez vos identifiants.";
     out.register_alreadyRegistered = "Cet utilisateur existe déjà, souhaitez-vous vous connecter ?";
 
+    out.register_whyRegister = "Pourquoi s'inscrire ?";
     out.register_header = "Bienvenue dans CryptPad";
     out.register_explanation = [
         "<p>Faisons d'abord le point sur certaines choses</p>",
@@ -567,7 +571,9 @@ define(function () {
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
     out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";
     out.upload_notEnoughSpace = "Il n'y a pas assez d'espace libre dans votre CryptDrive pour ce fichier.";
+    out.upload_notEnoughSpaceBrief = "Pas assez d'espace";
     out.upload_tooLarge = "Ce fichier dépasse la taille maximale autorisée.";
+    out.upload_tooLargeBrief = 'Fichier trop volumineux';
     out.upload_choose = "Choisir un fichier";
     out.upload_pending = "En attente";
     out.upload_cancelled = "Annulé";
@@ -577,6 +583,7 @@ define(function () {
     out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
     out.download_button = "Déchiffrer et télécharger";
     out.download_mt_button = "Télécharger";
+    out.download_resourceNotAvailable = "Le fichier demandé n'est pas disponible...";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";
@@ -707,6 +714,7 @@ define(function () {
 
     // features.html
 
+    out.features = "Fonctionnalités";
     out.features_title = "Tableau des fonctionnalités";
     out.features_feature = "Fonctionnalité";
     out.features_anon = "Utilisateur anonyme";
@@ -839,6 +847,24 @@ define(function () {
     out.feedback_optout = "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience.";
 
     // Creation page
+    out.creation_404 = "Le pad auquel vous souhaitez accéder n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.";
+    out.creation_ownedTitle = "Type de pad";
+    out.creation_ownedTrue = "Pad possédé";
+    out.creation_ownedFalse = "Pad ouvert";
+    out.creation_owned1 = "Un pad <b>possédé</b> est un pad que vous pouvez supprimer du serveur à n'importe quel moment depuis votre CryptDrive. Une fois supprimé, personne d'autre ne peut y accéder, même si le pad est stocké dans un autre CryptDrive.";
+    out.creation_owned2 = "Un pad <b>ouvert</b> n'a pas de propriétaire et ne peut donc pas être supprimé du serveur par un utilisateur. Il pourra tout de même être supprimé automatiquement si sa date d'expiration est dépassée.";
+    out.creation_expireTitle = "Durée de vie";
+    out.creation_expireTrue = "Ajouter durée de vie";
+    out.creation_expireFalse = "Illimitée";
+    out.creation_expireHours = "Heures";
+    out.creation_expireDays = "Jours";
+    out.creation_expireMonths = "Mois";
+    out.creation_expire1 = "Par défault, un pad stocké dans le CryptDrive d'un utilisateur enregistré ne sera jamais supprimé du serveur, même s'il est inactif (à moins qu'il possède un propriétaire souhaitement le supprimer).";
+    out.creation_expire2 = "Si vous le souhaitez, vous pouvez ajouter une durée de vie au pad afin d'être sûr qu'il soit supprimé du serveur, de manière permanente, à la date voulue.";
+    out.creation_createTitle = "Créer un pad";
+    out.creation_createFromTemplate = "Depuis un modèle";
+    out.creation_createFromScratch = "Nouveau pad vide";
+    out.creation_settings = "Préférences des nouveaux pads";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Possédé par un autre utilisateur";

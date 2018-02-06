@@ -802,6 +802,7 @@ define([
                     hide.push('properties');
                     hide.push('rename');
                     hide.push('openparent');
+                    hide.push('hashtag');
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -911,6 +912,7 @@ define([
             //var actions = [];
             var toShow = filterContextMenu(menuType, paths);
             var $actions = $contextMenu.find('a');
+            $contextMenu.data('paths', paths);
             $actions = $actions.filter(function (i, el) {
                 return toShow.some(function (className) { return $(el).is(className); });
             });
@@ -922,9 +924,6 @@ define([
                 } else {
                     $a.text($(el).text());
                 }
-                $(el).data('paths', paths);
-                //$(el).data('path', path);
-                //:$(el).data('element', $element);
                 $container.append($a);
                 $a.click(function() { $(el).click(); });
             });
@@ -1435,6 +1434,7 @@ define([
                 case FILES_DATA: pName = FILES_DATA_NAME; break;
                 case SEARCH: pName = SEARCH_NAME; break;
                 case RECENT: pName = RECENT_NAME; break;
+                case OWNED: pName = OWNED_NAME; break;
                 default: pName = name;
             }
             return pName;
@@ -1509,6 +1509,11 @@ define([
             if (!APP.loggedIn) {
                 msg = Messages.fm_info_anonymous;
                 $box.html(msg);
+                $box.find('a[target!="_blank"]').click(function (e) {
+                    e.preventDefault();
+                    var href = $(this).attr('href');
+                    common.gotoURL(href);
+                });
                 return $box;
             }
             if (!msg || APP.store['hide-info-' + path[0]] === '1') {
@@ -2682,17 +2687,46 @@ define([
             $contextMenu.find('.cp-app-drive-context-delete').text(Messages.fc_remove)
                 .attr('data-icon', 'fa-eraser');
         }
-        var deletePaths = function (paths) {
-            var pathsList = [];
-            paths.forEach(function (p) { pathsList.push(p.path); });
-            var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
-            if (paths.length === 1) {
+        var deletePaths = function (paths, pathsList) {
+            pathsList = pathsList || [];
+            if (paths) {
+                paths.forEach(function (p) { pathsList.push(p.path); });
+            }
+            var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
+            if (pathsList.length === 1) {
                 msg = Messages.fm_removePermanentlyDialog;
             }
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
                 filesOp.delete(pathsList, refresh);
+            });
+        };
+        var deleteOwnedPaths = function (paths, pathsList) {
+            pathsList = pathsList || [];
+            if (paths) {
+                paths.forEach(function (p) { pathsList.push(p.path); });
+            }
+            var msgD = pathsList.length === 1 ? Messages.fm_deleteOwnedPad :
+                                                Messages.fm_deleteOwnedPads;
+            UI.confirm(msgD, function(res) {
+                $(window).focus();
+                if (!res) { return; }
+                // Try to delete each selected pad from server, and delete from drive if no error
+                var n = nThen(function () {});
+                pathsList.forEach(function (p) {
+                    var el = filesOp.find(p);
+                    var data = filesOp.getFileData(el);
+                    var parsed = Hash.parsePadUrl(data.href);
+                    var channel = Util.base64ToHex(parsed.hashData.channel);
+                    n = n.nThen(function (waitFor) {
+                        sframeChan.query('Q_REMOVE_OWNED_CHANNEL', channel,
+                                         waitFor(function (e) {
+                            if (e) { return void console.error(e); }
+                            filesOp.delete([p], refresh);
+                        }));
+                    });
+                });
             });
         };
         $contextMenu.on("click", "a", function(e) {
@@ -2720,27 +2754,7 @@ define([
                 moveElements(pathsList, [TRASH], false, refresh);
             }
             else if ($(this).hasClass('cp-app-drive-context-deleteowned')) {
-                var msgD = Messages.fm_deleteOwnedPads;
-                UI.confirm(msgD, function(res) {
-                    $(window).focus();
-                    if (!res) { return; }
-                    // Try to delete each selected pad from server, and delete from drive if no error
-                    var n = nThen(function () {});
-                    paths.forEach(function (p) {
-                        var el = filesOp.find(p.path);
-                        var data = filesOp.getFileData(el);
-                        var parsed = Hash.parsePadUrl(data.href);
-                        var channel = Util.base64ToHex(parsed.hashData.channel);
-                        n = n.nThen(function (waitFor) {
-                            sframeChan.query('Q_CONTACTS_CLEAR_OWNED_CHANNEL', channel,
-                                             waitFor(function (e) {
-                                if (e) { return void console.error(e); }
-                                filesOp.delete([p.path], refresh);
-                            }));
-                        });
-                    });
-                });
-                return;
+                deleteOwnedPaths(paths);
             }
             else if ($(this).hasClass('cp-app-drive-context-open')) {
                 paths.forEach(function (p) {
@@ -2878,18 +2892,11 @@ define([
                     if (!$(elmt).data('path')) { return; }
                     paths.push($(elmt).data('path'));
                 });
-                // If we are in the trash or anon pad or if we are holding the "shift" key, delete permanently,
+                if (!paths.length) { return; }
+                // If we are in the trash or anon pad or if we are holding the "shift" key,
+                // delete permanently
                 if (!APP.loggedIn || isTrash || e.shiftKey) {
-                    var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [paths.length]);
-                    if (paths.length === 1) {
-                        msg = Messages.fm_removePermanentlyDialog;
-                    }
-
-                    UI.confirm(msg, function(res) {
-                        $(window).focus();
-                        if (!res) { return; }
-                        filesOp.delete(paths, refresh);
-                    });
+                    deletePaths(null, paths);
                     return;
                 }
                 // else move to trash
@@ -2975,6 +2982,19 @@ define([
 
         refresh();
         UI.removeLoadingScreen();
+
+        sframeChan.query('Q_DRIVE_GETDELETED', null, function (err, data) {
+            var ids = filesOp.findChannels(data);
+            var titles = [];
+            ids.forEach(function (id) {
+                var title = filesOp.getTitle(id);
+                titles.push(title);
+                var paths = filesOp.findFile(id);
+                filesOp.delete(paths, refresh);
+            });
+            if (!titles.length) { return; }
+            UI.log(Messages._getKey('fm_deletedPads', [titles.join(', ')]));
+        });
     };
 
     var setHistory = function (bool, update) {
@@ -3091,7 +3111,6 @@ define([
                 throw new Error("Corrupted drive");
             }
             andThen(common, proxy);
-            UI.removeLoadingScreen();
 
             var onDisconnect = APP.onDisconnect = function (noAlert) {
                 setEditable(false);

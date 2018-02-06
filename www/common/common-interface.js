@@ -317,11 +317,11 @@ define([
             message = dialog.message(msg);
         }
 
-        var close = Util.once(function (el) {
+        var close = function (el) {
             var $el = $(el).fadeOut(150, function () {
-                $el.remove();
+                $el.detach();
             });
-        });
+        };
 
         var navs = [];
         opt.buttons.forEach(function (b) {
@@ -329,7 +329,7 @@ define([
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
             $(button).click(function () {
                 b.onClick();
-                close($(this).parents('.alertify').first());
+                close($(button).parents('.alertify').first());
             });
             if (b.keys && b.keys.length) { $(button).attr('data-keys', JSON.stringify(b.keys)); }
             navs.push(button);

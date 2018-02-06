@@ -31,6 +31,9 @@ define([
             case 'CLEAR_OWNED_CHANNEL': {
                 Store.clearOwnedChannel(data, cb); break;
             }
+            case 'REMOVE_OWNED_CHANNEL': {
+                Store.removeOwnedChannel(data, cb); break;
+            }
             case 'UPLOAD_CHUNK': {
                 Store.uploadChunk(data, cb); break;
             }
@@ -48,6 +51,9 @@ define([
             }
             case 'UNPIN_PADS': {
                 Store.unpinPads(data, cb); break;
+            }
+            case 'GET_DELETED_PADS': {
+                Store.getDeletedPads(data, cb); break;
             }
             case 'GET_PINNED_USAGE': {
                 Store.getPinnedUsage(data, cb); break;

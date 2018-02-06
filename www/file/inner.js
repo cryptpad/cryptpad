@@ -224,6 +224,8 @@ define([
                         if (decrypting) { return; }
                         decrypting = true;
                         displayFile(ev, sizeMb, function (err) {
+                            $appContainer.css('background-color',
+                                              common.getAppConfig().appBackgroundColor);
                             if (err) { UI.alert(err); }
                         });
                     };

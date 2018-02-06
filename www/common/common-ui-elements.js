@@ -1816,6 +1816,13 @@ define([
         $button.click(function () {
             create();
         });
+
+        // Settings button
+        var origin = common.getMetadataMgr().getPrivateData().origin;
+        $(h('div.cp-creation-settings', h('a', {
+            href: origin + '/settings/#creation',
+            target: '_blank'
+        }, Messages.creation_settings))).appendTo($creation);
     };
 
     return UIElements;

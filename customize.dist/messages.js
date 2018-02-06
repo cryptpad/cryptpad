@@ -79,7 +79,7 @@ define(req, function(Util, Default, Language) {
                 });
                 Object.keys(translation).forEach(function (k) {
                     if (/^_/.test(k) || k === 'driveReadme') { return; }
-                    if (!Default[k]) {
+                    if (typeof Default[k] === "undefined") {
                         missing.push([code, k, 0]);
                     }
                 });

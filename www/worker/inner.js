@@ -32,6 +32,7 @@ define([
         sFrameChan.onReady(waitFor());
     }).nThen(function (/*waitFor*/) {
         var $container = $('#cp-app-worker-container');
+        $('<a>', {href:'http://localhost:3000/worker/', target:'_blank'}).text('other').appendTo($container);
         var $bar = $('.cp-toolbar-container');
 
         var displayed = ['useradmin', 'newpad', 'limit', 'pageTitle'];

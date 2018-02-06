@@ -381,7 +381,8 @@ define(function () {
     out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
-    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently this pad from the server?";
+    out.fm_deleteOwnedPad = "Are you sure you want to remove permanently this pad from the server?";
+    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently these pads from the server?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
@@ -395,7 +396,8 @@ define(function () {
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
-                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
+                            'They are stored in your browser so clearing history may make them disappear.<br>' +
+                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.<br>';
     out.fm_info_owned = "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.";
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
@@ -417,6 +419,7 @@ define(function () {
                            "This will remove your CryptDrive and its history from your browser, but your pads will still exist (encrypted) on our server.";
     out.fm_padIsOwned = "You are the owner of this pad";
     out.fm_padIsOwnedOther = "This pad is owned by another user";
+    out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -472,6 +475,7 @@ define(function () {
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 
+    out.register_whyRegister = "Why signing up?";
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
         "<h3>Lets go over a couple things first:</h3>",
@@ -717,6 +721,7 @@ define(function () {
 
     // features.html
 
+    out.features = "Features";
     out.features_title = "Features table";
     out.features_feature = "Feature";
     out.features_anon = "Anonymous user";
@@ -738,6 +743,7 @@ define(function () {
     out.features_f_multiple = "Use on multiple devices";
     out.features_f_multiple_notes = "Easy way to access your pads from any device";
     out.features_f_logoutEverywhere = "Log out from other devices";
+    out.features_f_logoutEverywhere_notes = ""; // Used in the French translation to explain
     out.features_f_templates = "Use templates";
     out.features_f_templates_notes = "Create templates and create new pads from your templates";
     out.features_f_profile = "Create a profile";
@@ -873,6 +879,7 @@ define(function () {
     out.creation_createTitle = "Create a pad";
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
+    out.creation_settings = "New Pad settings";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";

@@ -31,6 +31,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/bower_components/chainpad/chainpad.dist.js',
+    '/customize/application_config.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -50,7 +51,8 @@ define([
     ApiConfig,
     Hash,
     Util,
-    ChainPad)
+    ChainPad,
+    AppConfig)
 {
     var DiffDom = window.diffDOM;
 
@@ -592,7 +594,8 @@ define([
                 }
                 // Used in ckeditor-config.js
                 Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
-                var newCss = '.cke_body_width { background: #666; height: 100%; }' +
+                var backColor = AppConfig.appBackgroundColor;
+                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; }' +
                     '.cke_body_width body {' +
                         'max-width: 50em; padding: 10px 30px; margin: 0 auto; min-height: 100%;'+
                         'box-sizing: border-box;'+
