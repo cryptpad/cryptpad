@@ -20,10 +20,25 @@ try {
 var websocketPort = config.websocketPort || config.httpPort;
 var useSecureWebsockets = config.useSecureWebsockets || false;
 
+// This is stuff which will become available to replify
+const debuggableStore = new WeakMap();
+const debuggable = function (name, x) {
+    if (name in debuggableStore) {
+        try { throw new Error(); } catch (e) {
+            console.error('cannot add ' + name + ' more than once [' + e.stack + ']');
+        }
+    } else {
+        debuggableStore[name] = x;
+    }
+    return x;
+};
+debuggable('global', global);
+debuggable('config', config);
+
 // support multiple storage back ends
 var Storage = require(config.storage||'./storage/file');
 
-var app = Express();
+var app = debuggable('app', Express());
 
 var httpsOpts;
 
@@ -217,7 +232,7 @@ var loadRPC = function (cb) {
     if (typeof(config.rpc) === 'string') {
         // load pin store...
         var Rpc = require(config.rpc);
-        Rpc.create(config, function (e, rpc) {
+        Rpc.create(config, debuggable, function (e, rpc) {
             if (e) { throw e; }
             cb(void 0, rpc);
         });
@@ -227,3 +242,7 @@ var loadRPC = function (cb) {
 };
 
 loadRPC(createSocketServer);
+
+if (config.debugReplName) {
+    require('replify')({ name: config.debugReplName, app: debuggableStore });
+}
