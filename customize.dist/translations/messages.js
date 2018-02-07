@@ -22,8 +22,7 @@ define(function () {
     out.button_newslide = 'New Presentation';
     out.button_newwhiteboard = 'New Whiteboard';
 
-    // NOTE: We want to update the 'common_connectionLost' key.
-    // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
+    // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
 
