@@ -70,6 +70,10 @@ define([
 
             var makeCheckbox = function (id, cb) {
                 var entry = APP.lm.proxy.data[id];
+                if (!entry || typeof(entry) !== 'object') {
+                    return void console.log('entry undefined');
+                }
+
                 var checked = entry.state === 1 ?
                     'cp-app-todo-task-checkbox-checked fa-check-square-o':
                     'cp-app-todo-task-checkbox-unchecked fa-square-o';
@@ -92,6 +96,7 @@ define([
             };
 
             var addTaskUI = function (el, animate) {
+                if (!el) { return; }
                 var $taskDiv = $('<div>', {
                     'class': 'cp-app-todo-task'
                 });
@@ -108,6 +113,9 @@ define([
                 .appendTo($taskDiv);
 
                 var entry = APP.lm.proxy.data[el];
+                if (!entry || typeof(entry) !== 'object') {
+                    return void console.log('entry undefined');
+                }
 
                 if (entry.state) {
                     $taskDiv.addClass('cp-app-todo-task-complete');

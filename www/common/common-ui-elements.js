@@ -1687,7 +1687,10 @@ define([
                 Messages.creation_ownedTitle,
                 createHelper(Messages.creation_owned1 + '\n' + Messages.creation_owned2)
             ]),
-            setHTML(h('p'), Messages.creation_owned1 + '<br>' + Messages.creation_owned2),
+            h('div.cp-creation-help-container', [
+                setHTML(h('p'), Messages.creation_owned1),
+                setHTML(h('p'), Messages.creation_owned2)
+            ]),
             h('input#cp-creation-owned-true.cp-creation-owned-value', {
                 type: 'radio',
                 name: 'cp-creation-owned',
@@ -1715,7 +1718,10 @@ define([
                 Messages.creation_expireTitle,
                 createHelper(Messages.creation_expire1, Messages.creation_expire2)
             ]),
-            setHTML(h('p'), Messages.creation_expire1 + '<br>' + Messages.creation_expire2),
+            h('div.cp-creation-help-container', [
+                setHTML(h('p'), Messages.creation_expire1),
+                setHTML(h('p'), Messages.creation_expire2)
+            ]),
             h('input#cp-creation-expire-false.cp-creation-expire-value', {
                 type: 'radio',
                 name: 'cp-creation-expire',

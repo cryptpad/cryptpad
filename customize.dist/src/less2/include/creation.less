@@ -33,14 +33,24 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            h2, p {
-                width: 100%;
-            }
             h2 {
+                width: 100%;
                 display: flex;
+                margin-bottom: 20px;
                 justify-content: space-between;
                 .cp-creation-help {
                     display: none;
+                }
+            }
+            .cp-creation-help-container {
+                display: flex;
+                justify-content: space-between;
+                p {
+                    padding: 0 20px;
+                    flex-grow: 0;
+                    flex-shrink: 0;
+                    flex-basis: 50%;
+                    text-align: justify;
                 }
             }
             @media screen and (max-width: 500px) {
@@ -50,7 +60,7 @@
                 h2 .cp-creation-help {
                     display: inline;
                 }
-                p {
+                .cp-creation-help-container {
                     display: none;
                 }
             }

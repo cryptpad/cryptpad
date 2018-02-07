@@ -39,6 +39,24 @@ define([
         if (typeof(proxy.data) !== 'object') { proxy.data = {}; }
         if (!Array.isArray(proxy.order)) { proxy.order = []; }
         if (typeof(proxy.type) !== 'string') { proxy.type = 'todo'; }
+
+        // if a key exists in order, but there is no data for it...
+        // remove that key
+        var i = proxy.order.length - 1;
+        for (;i >= 0; i--) {
+            if (typeof(proxy.data[proxy.order[i]]) === 'undefined') {
+                console.log('removing todo entry with no data at [%s]', i);
+                proxy.order.splice(i, 1);
+            }
+        }
+
+        // if you have data, but it's not in the order array...
+        // add it to the order array...
+        Object.keys(proxy.data).forEach(function (key) {
+            if (proxy.order.indexOf(key) > -1) { return; }
+            console.log("restoring entry with missing key");
+            proxy.order.unshift(key);
+        });
     };
 
     /*  add (id, obj) push id to order, add object to data */

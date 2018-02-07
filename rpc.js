@@ -428,8 +428,7 @@ var getHash = function (Env, publicKey, cb) {
 
 // The limits object contains storage limits for all the publicKey that have paid
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
-var limits = {};
-var updateLimits = function (config, publicKey, cb /*:(?string, ?any[])=>void*/) {
+var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>void*/) {
     if (config.adminEmail === false) {
         if (config.allowSubscriptions === false) { return; }
         throw new Error("allowSubscriptions must be false if adminEmail is false");
@@ -494,15 +493,15 @@ var updateLimits = function (config, publicKey, cb /*:(?string, ?any[])=>void*/)
         response.on('end', function () {
             try {
                 var json = JSON.parse(str);
-                limits = json;
+                Env.limits = json;
                 Object.keys(customLimits).forEach(function (k) {
                     if (!isLimit(customLimits[k])) { return; }
-                    limits[k] = customLimits[k];
+                    Env.limits[k] = customLimits[k];
                 });
 
                 var l;
                 if (userId) {
-                    var limit = limits[userId];
+                    var limit = Env.limits[userId];
                     l = limit && typeof limit.limit === "number" ?
                             [limit.limit, limit.plan, limit.note] : [defaultLimit, '', ''];
                 }
@@ -523,7 +522,7 @@ var updateLimits = function (config, publicKey, cb /*:(?string, ?any[])=>void*/)
 
 var getLimit = function (Env, publicKey, cb) {
     var unescapedKey = unescapeKeyCharacters(publicKey);
-    var limit = limits[unescapedKey];
+    var limit = Env.limits[unescapedKey];
     var defaultLimit = typeof(Env.defaultStorageLimit) === 'number'?
         Env.defaultStorageLimit: DEFAULT_LIMIT;
 
@@ -1097,7 +1096,11 @@ type NetfluxWebsocketSrvContext_t = {
     )=>void
 };
 */
-RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) {
+RPC.create = function (
+    config /*:Config_t*/,
+    debuggable /*:<T>(string, T)=>T*/,
+    cb /*:(?Error, ?Function)=>void*/
+) {
     // load pin-store...
     console.log('loading rpc module...');
 
@@ -1115,8 +1118,10 @@ RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) 
         msgStore: (undefined /*:any*/),
         pinStore: (undefined /*:any*/),
         pinnedPads: {},
-        evPinnedPadsReady: mkEvent(true)
+        evPinnedPadsReady: mkEvent(true),
+        limits: {}
     };
+    debuggable('rpc_env', Env);
 
     var Sessions = Env.Sessions;
     var paths = Env.paths;
@@ -1306,7 +1311,7 @@ RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) 
                     Respond(e, size);
                 });
             case 'UPDATE_LIMITS':
-                return void updateLimits(config, safeKey, function (e, limit) {
+                return void updateLimits(Env, config, safeKey, function (e, limit) {
                     if (e) {
                         WARN(e, limit);
                         return void Respond(e);
@@ -1418,7 +1423,7 @@ RPC.create = function (config /*:Config_t*/, cb /*:(?Error, ?Function)=>void*/) 
     };
 
     var updateLimitDaily = function () {
-        updateLimits(config, undefined, function (e) {
+        updateLimits(Env, config, undefined, function (e) {
             if (e) {
                 WARN('limitUpdate', e);
             }
