@@ -7,6 +7,7 @@ define([
     '/common/sframe-common.js',
     '/customize/messages.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-thumbnail.js',
     '/common/common-feedback.js',
@@ -27,6 +28,7 @@ define([
     SFCommon,
     Messages,
     Util,
+    Hash,
     UI,
     Thumb,
     Feedback,
@@ -84,6 +86,7 @@ define([
             });
         });
 
+        var textContentGetter;
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
         var normalize0 = function (x) { return x; };
@@ -287,11 +290,17 @@ define([
             UI.removeLoadingScreen(emitResize);
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
+            var hash = privateDat.availableHashes.editHash ||
+                       privateDat.availableHashes.viewHash;
+            var href = privateDat.pathname + '#' + hash;
+            if (AppConfig.textAnalyzer && textContentGetter) {
+                var channelId = Hash.hrefToHexChannelId(href);
+                AppConfig.textAnalyzer(textContentGetter, channelId);
+            }
+
             if (options.thumbnail && privateDat.thumbnails) {
-                var hash = privateDat.availableHashes.editHash ||
-                           privateDat.availableHashes.viewHash;
                 if (hash) {
-                    options.thumbnail.href = privateDat.pathname + '#' + hash;
+                    options.thumbnail.href = href;
                     options.thumbnail.getContent = function () {
                         if (!cpNfInner.chainpad) { return; }
                         return cpNfInner.chainpad.getUserDoc();
@@ -566,6 +575,10 @@ define([
                 // Set the content supplier, this is the function which will supply the content
                 // in the pad when requested by the framework.
                 setContentGetter: function (cg) { contentGetter = cg; },
+
+                // Set a text content supplier, this is a function which will give a text
+                // representation of the pad content if a text analyzer is configured
+                setTextContentGetter: function (tcg) { textContentGetter = tcg; },
 
                 // Inform the framework that the content of the pad has been changed locally.
                 localChange: onLocal,

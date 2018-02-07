@@ -96,6 +96,7 @@ define([
             };
 
             var addTaskUI = function (el, animate) {
+                if (!el) { return; }
                 var $taskDiv = $('<div>', {
                     'class': 'cp-app-todo-task'
                 });
