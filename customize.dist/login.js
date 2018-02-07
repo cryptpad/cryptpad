@@ -91,7 +91,7 @@ define([
         return Object.keys(proxy).length === 0;
     };
 
-    Exports.loginOrRegister = function (uname, passwd, isRegister, cb) {
+    Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
         if (typeof(cb) !== 'function') { return; }
 
         // Usernames are all lowercase. No going back on this one
@@ -144,49 +144,54 @@ define([
                     return void cb('ALREADY_REGISTERED', res);
                 }
 
-                setTimeout(function () { cb(void 0, res); });
+                if (isRegister) {
+                    var proxy = rt.proxy;
+                    proxy.edPublic = res.edPublic;
+                    proxy.edPrivate = res.edPrivate;
+                    proxy.curvePublic = res.curvePublic;
+                    proxy.curvePrivate = res.curvePrivate;
+                    proxy.login_name = uname;
+                    proxy[Constants.displayNameKey] = uname;
+                    sessionStorage.createReadme = 1;
+                    Feedback.send('REGISTRATION', true);
+                } else {
+                    Feedback.send('LOGIN', true);
+                }
+
+                if (shouldImport) {
+                    sessionStorage.migrateAnonDrive = 1;
+                }
+
+                Realtime.whenRealtimeSyncs(rt.realtime, function () {
+                    LocalStore.login(res.userHash, res.userName, function () {
+                        cb(void 0, res);
+                    });
+                });
             });
         });
+    };
+    Exports.redirect = function () {
+        if (sessionStorage.redirectTo) {
+            var h = sessionStorage.redirectTo;
+            var parser = document.createElement('a');
+            parser.href = h;
+            if (parser.origin === window.location.origin) {
+                delete sessionStorage.redirectTo;
+                window.location.href = h;
+                return;
+            }
+        }
+        window.location.href = '/drive/';
     };
 
     Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, testing, test) {
         var hashing = true;
 
         var proceed = function (result) {
-            var proxy = result.proxy;
-            proxy.edPublic = result.edPublic;
-            proxy.edPrivate = result.edPrivate;
-            proxy.curvePublic = result.curvePublic;
-            proxy.curvePrivate = result.curvePrivate;
-
-            if (isRegister) {
-                Feedback.send('REGISTRATION', true);
-            } else {
-                Feedback.send('LOGIN', true);
-            }
-
+            hashing = false;
+            if (test && typeof test === "function" && test()) { return; }
             Realtime.whenRealtimeSyncs(result.realtime, function () {
-                try {
-                LocalStore.login(result.userHash, result.userName, function () {
-                    hashing = false;
-                    if (test && typeof test === "function" && test()) { console.log('testing');
-                    return; }
-                    if (shouldImport) {
-                        sessionStorage.migrateAnonDrive = 1;
-                    }
-                    if (sessionStorage.redirectTo) {
-                        var h = sessionStorage.redirectTo;
-                        var parser = document.createElement('a');
-                        parser.href = h;
-                        if (parser.origin === window.location.origin) {
-                            delete sessionStorage.redirectTo;
-                            window.location.href = h;
-                            return;
-                        }
-                    }
-                    window.location.href = '/drive/';
-                });
-                } catch (e) { console.error(e); }
+                Exports.redirect();
             });
         };
 
@@ -200,7 +205,7 @@ define([
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
-                Exports.loginOrRegister(uname, passwd, isRegister, function (err, result) {
+                Exports.loginOrRegister(uname, passwd, isRegister, shouldImport, function (err, result) {
                     var proxy;
                     if (result) { proxy = result.proxy; }
 
@@ -260,10 +265,6 @@ define([
                     }
 
                     if (testing) { return void proceed(result); }
-
-                    proxy.login_name = uname;
-                    proxy[Constants.displayNameKey] = uname;
-                    sessionStorage.createReadme = 1;
 
                     proceed(result);
                 });
