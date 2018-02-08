@@ -80,7 +80,7 @@ define([
         var rt = opt.rt = Listmap.create(config);
         rt.proxy
         .on('ready', function () {
-            cb(void 0, rt);
+            setTimeout(function () { cb(void 0, rt); });
         })
         .on('disconnect', function (info) {
             cb('E_DISCONNECT', info);
@@ -162,9 +162,16 @@ define([
                     sessionStorage.migrateAnonDrive = 1;
                 }
 
-                Realtime.whenRealtimeSyncs(rt.realtime, function () {
-                    LocalStore.login(res.userHash, res.userName, function () {
-                        cb(void 0, res);
+                // We have to call whenRealtimeSyncs asynchronously here because in the current
+                // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
+                // asynchronously.
+                // The following setTimeout is here to make sure whenRealtimeSyncs is called after
+                // `contentUpdate` so that we have an update userDoc in chainpad.
+                setTimeout(function () {
+                    Realtime.whenRealtimeSyncs(rt.realtime, function () {
+                        LocalStore.login(res.userHash, res.userName, function () {
+                            setTimeout(function () { cb(void 0, res); });
+                        });
                     });
                 });
             });
