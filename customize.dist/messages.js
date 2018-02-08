@@ -101,8 +101,8 @@ define(req, function(Util, Default, Language) {
                 checkInObject(Default, translation, []);
                 // Push the removals at the end
                 missing.sort(function (a, b) {
-                    if (a[2] === 0 && b[2] !== 0) return 1;
-                    if (a[2] !== 0 && b[2] === 0) return -1;
+                    if (a[2] === 0 && b[2] !== 0) { return 1; }
+                    if (a[2] !== 0 && b[2] === 0) { return -1; }
                     return 0;
                 });
                 Array.prototype.push.apply(allMissing, missing); // Destructive concat
