@@ -12,15 +12,16 @@
         background: @colortheme_loading-bg;
         color: @colortheme_loading-color;
         display: flex;
-        align-items: center;
+        flex-flow: column; /* we need column so that the child can shrink vertically */
+        justify-content: center;
         width: 100%;
         height: 100%;
         overflow: auto;
-        @media screen and (max-height: 600px), screen and (max-width: 500px) {
-            align-items: baseline;
-        }
     }
     #cp-creation {
+        flex: 0 1 auto; /* allows shrink */
+        min-height: 0;
+        overflow: auto;
         text-align: center;
         font: @colortheme_app-font;
         width: 100%;
@@ -43,6 +44,7 @@
                 }
             }
             .cp-creation-help-container {
+                width: 100%;
                 display: flex;
                 justify-content: space-between;
                 p {
@@ -56,7 +58,7 @@
             @media screen and (max-width: 500px) {
                 width: ~"calc(100% - 30px)";
             }
-            @media screen and (max-height: 600px), screen and (max-width: 500px) {
+            @media screen and (max-height: 800px), screen and (max-width: 500px) {
                 h2 .cp-creation-help {
                     display: inline;
                 }
