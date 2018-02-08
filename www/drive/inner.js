@@ -2673,11 +2673,14 @@ define([
             var data = JSON.parse(JSON.stringify(filesOp.getFileData(el)));
             if (!data || !data.href) { return void cb('INVALID_FILE'); }
             data.href = base + data.href;
+
+            var roUrl;
             if (ro) {
                 data.roHref = data.href;
                 delete data.href;
             } else {
-                data.roHref = base + getReadOnlyUrl(el);
+                roUrl = getReadOnlyUrl(el);
+                if (roUrl) { data.roHref = base + roUrl; }
             }
 
             UIElements.getProperties(common, data, cb);
