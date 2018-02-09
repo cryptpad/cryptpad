@@ -847,20 +847,20 @@ define(function () {
     out.feedback_optout = "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience.";
 
     // Creation page
-    out.creation_404 = "Le pad auquel vous souhaitez accéder n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.";
+    out.creation_404 = "Ce pad n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.";
     out.creation_ownedTitle = "Type de pad";
     out.creation_ownedTrue = "Pad possédé";
     out.creation_ownedFalse = "Pad ouvert";
-    out.creation_owned1 = "Un pad <b>possédé</b> est un pad que vous pouvez supprimer du serveur à n'importe quel moment depuis votre CryptDrive. Une fois supprimé, personne d'autre ne peut y accéder, même si le pad est stocké dans un autre CryptDrive.";
-    out.creation_owned2 = "Un pad <b>ouvert</b> n'a pas de propriétaire et ne peut donc pas être supprimé du serveur par un utilisateur. Il pourra tout de même être supprimé automatiquement si sa date d'expiration est dépassée.";
+    out.creation_owned1 = "Un pad <b>possédé</b> peut être supprimé du serveur à tout moment quand son propriétaire le souhaite. Une fois supprimé, il disparaît du CryptDrive des autres utilisateurs.";
+    out.creation_owned2 = "Un pad <b>ouvert</b> n'a pas de propriétaire et ne peut donc pas être supprimé du serveur à moins d'avoir dépassé sa date d'expiration.";
     out.creation_expireTitle = "Durée de vie";
     out.creation_expireTrue = "Ajouter durée de vie";
-    out.creation_expireFalse = "Illimitée";
-    out.creation_expireHours = "Heures";
-    out.creation_expireDays = "Jours";
+    out.creation_expireFalse = "Illimité";
+    out.creation_expireHours = "Heure(s)";
+    out.creation_expireDays = "Jour(s)";
     out.creation_expireMonths = "Mois";
-    out.creation_expire1 = "Par défault, un pad stocké dans le CryptDrive d'un utilisateur enregistré ne sera jamais supprimé du serveur, même s'il est inactif (à moins qu'il possède un propriétaire souhaitement le supprimer).";
-    out.creation_expire2 = "Si vous le souhaitez, vous pouvez ajouter une durée de vie au pad afin d'être sûr qu'il soit supprimé du serveur, de manière permanente, à la date voulue.";
+    out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
+    out.creation_expire2 = "Un pad <b>expirant</b> a une durée de vie définie, après laquelle il sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs.";
     out.creation_createTitle = "Créer un pad";
     out.creation_createFromTemplate = "Depuis un modèle";
     out.creation_createFromScratch = "Nouveau pad vide";

@@ -861,7 +861,7 @@ define(function () {
     out.feedback_optout = "If you would like to opt out, visit <a href='/settings/'>your user settings page</a>, where you'll find a checkbox to enable or disable user feedback";
 
     // Creation page
-    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad";
+    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad.";
     out.creation_ownedTitle = "Type of pad";
     out.creation_ownedTrue = "Owned pad";
     out.creation_ownedFalse = "Open pad";
@@ -886,7 +886,7 @@ define(function () {
     out.creation_expiration = "Expiration time";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
-    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiration pad, etc.).";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiring pad, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     // New share modal
