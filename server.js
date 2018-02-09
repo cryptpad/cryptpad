@@ -117,6 +117,7 @@ Fs.exists(__dirname + "/customize", function (e) {
 
 var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'contact'];
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
+app.get(mainPagePattern, Express.static(__dirname + '/customize'));
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
 app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
