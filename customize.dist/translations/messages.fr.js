@@ -31,12 +31,15 @@ define(function () {
     out.wrongApp = "Impossible d'afficher le contenu de ce document temps-réel dans votre navigateur. Vous pouvez essayer de recharger la page.";
     out.padNotPinned = 'Ce pad va expirer dans 3 mois, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
     out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
+    out.expiredError = "Ce pad a atteint sa date d'expiration est n'est donc plus disponible.";
+    out.expiredErrorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";
     out.saved = "Enregistré";
     out.synced = "Tout est enregistré";
     out.deleted = "Pad supprimé de votre CryptDrive";
+    out.deletedFromServer = "Pad supprimé du serveur";
 
     out.realtime_unrecoverableError = "Le moteur temps-réel a rencontré une erreur critique. Cliquez sur OK pour recharger la page.";
 

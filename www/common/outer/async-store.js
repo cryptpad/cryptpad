@@ -815,6 +815,9 @@ define([
             onDisconnect: function () {
                 postMessage("PAD_DISCONNECT");
             }, // post EV_PAD_DISCONNECT
+            onError: function (err) {
+                postMessage("PAD_ERROR", err);
+            }, // post EV_PAD_ERROR
             channel: data.channel,
             validateKey: data.validateKey,
             owners: data.owners,

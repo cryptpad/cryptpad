@@ -709,6 +709,7 @@ define([
             typing = 1;
             $spin.text(Messages.typing);
             $spin.interval = window.setInterval(function () {
+                if (toolbar.isErrorState) { return; }
                 var dots = Array(typing+1).join('.');
                 $spin.text(Messages.typing + dots);
                 typing++;
@@ -718,6 +719,7 @@ define([
         var onSynced = function () {
             if ($spin.timeout) { clearTimeout($spin.timeout); }
             $spin.timeout = setTimeout(function () {
+                if (toolbar.isErrorState) { return; }
                 window.clearInterval($spin.interval);
                 typing = -1;
                 $spin.text(Messages.saved);
@@ -1091,6 +1093,15 @@ define([
             toolbar.connected = false;
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.forgotten);
+            }
+        };
+
+        // When the pad is deleted from the server
+        toolbar.deleted = function (/*userId*/) {
+            toolbar.isErrorState = true;
+            toolbar.connected = false;
+            if (toolbar.spinner) {
+                toolbar.spinner.text(Messages.deletedFromServer);
             }
         };
 

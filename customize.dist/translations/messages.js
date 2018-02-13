@@ -32,12 +32,15 @@ define(function () {
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
+    out.expiredError = 'This pad has reached its expiration time and is no longer available.';
+    out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
 
     out.loading = "Loading...";
     out.error = "Error";
     out.saved = "Saved";
     out.synced = "Everything is saved";
     out.deleted = "Pad deleted from your CryptDrive";
+    out.deletedFromServer = "Pad deleted from the server";
 
     out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
 

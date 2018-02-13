@@ -102,6 +102,10 @@ define([], function () {
             sframeChan.event('EV_RT_DISCONNECT');
         });
 
+        padRpc.onErrorEvent.reg(function (err) {
+            sframeChan.event('EV_RT_ERROR', err);
+        });
+
         // join the netflux network, promise to handle opening of the channel
         padRpc.joinPad({
             channel: channel || null,

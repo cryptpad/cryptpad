@@ -43,6 +43,7 @@ define([
     var STATE = Object.freeze({
         DISCONNECTED: 'DISCONNECTED',
         FORGOTTEN: 'FORGOTTEN',
+        DELETED: 'DELETED',
         INFINITE_SPINNER: 'INFINITE_SPINNER',
         INITIALIZING: 'INITIALIZING',
         HISTORY_MODE: 'HISTORY_MODE',
@@ -119,8 +120,9 @@ define([
 
         var stateChange = function (newState) {
             var wasEditable = (state === STATE.READY);
+            if (state === STATE.DELETED) { return; }
             if (state === STATE.INFINITE_SPINNER && newState !== STATE.READY) { return; }
-            if (newState === STATE.INFINITE_SPINNER) {
+            if (newState === STATE.INFINITE_SPINNER || newState === STATE.DELETED) {
                 state = newState;
             } else if (state === STATE.DISCONNECTED && newState !== STATE.INITIALIZING) {
                 throw new Error("Cannot transition from DISCONNECTED to " + newState);
@@ -147,6 +149,10 @@ define([
                 }
                 case STATE.FORGOTTEN: {
                     evStart.reg(function () { toolbar.forgotten(); });
+                    break;
+                }
+                case STATE.DELETED: {
+                    evStart.reg(function () { toolbar.deleted(); });
                     break;
                 }
                 default:
@@ -257,6 +263,7 @@ define([
 
         var onReady = function () {
             var newContentStr = cpNfInner.chainpad.getUserDoc();
+            if (state === STATE.DELETED) { return; }
 
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
@@ -316,12 +323,25 @@ define([
             }
         };
         var onConnectionChange = function (info) {
+            if (state === STATE.DELETED) { return; }
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);
             if (info.state) {
                 UI.findOKButton().click();
             } else {
                 UI.alert(Messages.common_connectionLost, undefined, true);
             }
+        };
+
+        var onError = function (err) {
+            stateChange(STATE.DELETED);
+            var msg = err.type;
+            if (err.type === 'EEXPIRED') {
+                msg = Messages.expiredError;
+                if (err.loaded) {
+                    msg += Messages.expiredErrorCopy;
+                }
+            }
+            UI.errorLoadingScreen(msg, true, true);
         };
 
         var setFileExporter = function (extension, fe, async) {
@@ -441,7 +461,8 @@ define([
                 onLocal: onLocal,
                 onInit: function () { stateChange(STATE.INITIALIZING); },
                 onReady: function () { evStart.reg(onReady); },
-                onConnectionChange: onConnectionChange
+                onConnectionChange: onConnectionChange,
+                onError: onError
             });
 
             var privReady = Util.once(waitFor());
@@ -457,6 +478,7 @@ define([
             var infiniteSpinnerModal = false;
             window.setInterval(function () {
                 if (state === STATE.DISCONNECTED) { return; }
+                if (state === STATE.DELETED) { return; }
                 var l;
                 try {
                     l = cpNfInner.chainpad.getLag();

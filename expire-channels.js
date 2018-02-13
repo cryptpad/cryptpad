@@ -2,12 +2,21 @@ var Fs = require("fs");
 var Path = require("path");
 
 var nThen = require("nthen");
-var config = require("./config");
 
+var config;
+try {
+    config = require('./config');
+} catch (e) {
+    console.log("You can customize the configuration by copying config.example.js to config.js");
+    config = require('./config.example');
+}
+
+var FileStorage = require(config.storage || './storage/file');
 var root = Path.resolve(config.taskPath || './tasks');
 
 var dirs;
 var nt;
+var store;
 
 var queue = function (f) {
     nt = nt.nThen(f);
@@ -41,17 +50,17 @@ var handleTask = function (str, path, cb) {
         return cb();
     }
 
-    nThen(function () {
+    nThen(function (waitFor) {
         switch (command) {
             case 'EXPIRE':
                 console.log("expiring: %s", args[0]);
-                // TODO actually remove the file...
+                store.removeChannel(args[0], waitFor());
                 break;
             default:
                 console.log("unknown command", command);
         }
     }).nThen(function () {
-        // remove the file...
+        // remove the task file...
         Fs.unlink(path, function (err) {
             if (err) { console.error(err); }
             cb();
@@ -63,6 +72,10 @@ nt = nThen(function (w) {
     Fs.readdir(root, w(function (e, list) {
         if (e) { throw e; }
         dirs = list;
+    }));
+}).nThen(function (waitFor) {
+    FileStorage.create(config, waitFor(function (_store) {
+        store = _store;
     }));
 }).nThen(function () {
     dirs.forEach(function (dir) {
