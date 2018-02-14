@@ -1346,7 +1346,7 @@ RPC.create = function (
                 });
 
             case 'REMOVE_OWNED_CHANNEL':
-                return void removeOwnedChannel(Env, msg[1], publicKey, function (e, response) {
+                return void removeOwnedChannel(Env, msg[1], publicKey, function (e) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, "OK");
                 });
