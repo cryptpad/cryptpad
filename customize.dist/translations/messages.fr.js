@@ -33,6 +33,7 @@ define(function () {
     out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
     out.expiredError = "Ce pad a atteint sa date d'expiration est n'est donc plus disponible.";
     out.expiredErrorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
+    out.deletedError = 'Ce pad a été supprimé par son propriétaire et n\'est donc plus disponible.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";

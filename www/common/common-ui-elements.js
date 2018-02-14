@@ -1655,8 +1655,6 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
 
-        // XXX check text for pad creation screen + translate it in French
-
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var $creation = $('<div>', { id: 'cp-creation' }).appendTo($creationContainer);

@@ -415,6 +415,7 @@ define([
             Title.setToolbar(toolbar);
 
             var $rightside = toolbar.$rightside;
+            var $drawer = toolbar.$drawer;
 
             /* save as template */
             if (!metadataMgr.getPrivateData().isTemplate) {
@@ -428,7 +429,7 @@ define([
 
             /* add an export button */
             var $export = common.createButton('export', true, {}, saveImage);
-            $rightside.append($export);
+            $drawer.append($export);
 
             if (common.isLoggedIn()) {
                 common.createButton('savetodrive', true, {}, function () {})
@@ -448,6 +449,9 @@ define([
                 setEditable(false);
             });
             $rightside.append($forget);
+
+            var $properties = common.createButton('properties', true);
+            toolbar.$drawer.append($properties);
 
             if (!readOnly) {
                 makeColorButton($rightside);
@@ -562,7 +566,12 @@ define([
 
 
                 if (readOnly) { return; }
-                if (isNew) {
+
+                var privateDat = metadataMgr.getPrivateData();
+                var skipTemp = Util.find(privateDat,
+                    ['settings', 'general', 'creation', 'noTemplate']);
+                var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
+                if (isNew && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
                     common.openTemplatePicker();
                 }
             });
@@ -605,6 +614,24 @@ define([
             }
         };
 
+        config.onError = function (err) {
+            setEditable(false);
+            toolbar.deleted();
+            var msg = err.type;
+            if (err.type === 'EEXPIRED') {
+                msg = Messages.expiredError;
+                if (err.loaded) {
+                    msg += Messages.expiredErrorCopy;
+                }
+            } else if (err.type === 'EDELETED') {
+                msg = Messages.deletedError;
+                if (err.loaded) {
+                    msg += Messages.expiredErrorCopy;
+                }
+            }
+            UI.errorLoadingScreen(msg, true, true);
+        };
+
         cpNfInner = common.startRealtime(config);
         metadataMgr = cpNfInner.metadataMgr;
 
@@ -640,6 +667,18 @@ define([
                 $('body').append($div.html());
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
+        }).nThen(function (waitFor) {
+            common.getSframeChannel().onReady(waitFor());
+        }).nThen(function (waitFor) {
+            if (!AppConfig.displayCreationScreen) { return; }
+            var priv = common.getMetadataMgr().getPrivateData();
+            if (priv.isNewFile) {
+                var c = (priv.settings.general && priv.settings.general.creation) || {};
+                if (c.skip && !priv.forceCreationScreen) {
+                    return void common.createPad(c, waitFor());
+                }
+                common.getPadCreationScreen(c, waitFor());
+            }
         }).nThen(function (/*waitFor*/) {
             andThen(common);
         });

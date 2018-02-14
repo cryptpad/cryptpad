@@ -1348,7 +1348,7 @@ RPC.create = function (
             case 'REMOVE_OWNED_CHANNEL':
                 return void removeOwnedChannel(Env, msg[1], publicKey, function (e, response) {
                     if (e) { return void Respond(e); }
-                    Respond(void 0, response);
+                    Respond(void 0, "OK");
                 });
             // restricted to privileged users...
             case 'UPLOAD':

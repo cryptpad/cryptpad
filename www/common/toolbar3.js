@@ -1100,6 +1100,7 @@ define([
         toolbar.deleted = function (/*userId*/) {
             toolbar.isErrorState = true;
             toolbar.connected = false;
+            updateUserList(toolbar, config);
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }

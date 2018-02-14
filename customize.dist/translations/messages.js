@@ -34,6 +34,7 @@ define(function () {
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
     out.expiredError = 'This pad has reached its expiration time and is no longer available.';
     out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
+    out.deletedError = 'This pad has been deleted by its owner and is no longer available.';
 
     out.loading = "Loading...";
     out.error = "Error";

@@ -1119,13 +1119,34 @@ define([
         }
 
         UI.removeLoadingScreen();
-        if (isNew) {
+        var privateDat = metadataMgr.getPrivateData();
+        var skipTemp = Util.find(privateDat,
+            ['settings', 'general', 'creation', 'noTemplate']);
+        var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
+        if (isNew && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
             common.openTemplatePicker();
         }
     };
 
-    var onDisconnect = function () {
+    // Manage disconnections because of network or error
+    var onDisconnect = function (info) {
         setEditable(false);
+        if (info && ['EEXPIRED', 'EDELETED'].indexOf(info.type) !== -1) {
+            APP.toolbar.deleted();
+            var msg = info.type;
+            if (info.type === 'EEXPIRED') {
+                msg = Messages.expiredError;
+                if (info.loaded) {
+                    msg += Messages.expiredErrorCopy;
+                }
+            } else if (info.type === 'EDELETED') {
+                msg = Messages.deletedError;
+                if (info.loaded) {
+                    msg += Messages.expiredErrorCopy;
+                }
+            }
+            return void UI.errorLoadingScreen(msg, true, true);
+        }
         UI.alert(Messages.common_connectionLost, undefined, true);
     };
 
@@ -1175,6 +1196,7 @@ define([
         Title.setToolbar(APP.toolbar);
 
         var $rightside = APP.toolbar.$rightside;
+        var $drawer = APP.toolbar.$drawer;
 
         metadataMgr.onChange(function () {
             var md = copyObject(metadataMgr.getMetadata());
@@ -1189,6 +1211,9 @@ define([
         var $forgetPad = common.createButton('forget', true, {}, forgetCb);
         $rightside.append($forgetPad);
 
+        var $properties = common.createButton('properties', true);
+        $drawer.append($properties);
+
         /* save as template */
         if (!metadataMgr.getPrivateData().isTemplate) {
             var templateObj = {
@@ -1201,7 +1226,7 @@ define([
 
         /* add an export button */
         var $export = common.createButton('export', true, {}, exportFile);
-        $rightside.append($export);
+        $drawer.append($export);
 
         var $help = common.createButton('', true).click(function () { showHelp(); })
             .appendTo($rightside);
@@ -1255,6 +1280,16 @@ define([
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
+        }).nThen(function (waitFor) {
+            if (!AppConfig.displayCreationScreen) { return; }
+            var priv = common.getMetadataMgr().getPrivateData();
+            if (priv.isNewFile) {
+                var c = (priv.settings.general && priv.settings.general.creation) || {};
+                if (c.skip && !priv.forceCreationScreen) {
+                    return void common.createPad(c, waitFor());
+                }
+                common.getPadCreationScreen(c, waitFor());
+            }
         }).nThen(function (/* waitFor */) {
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();

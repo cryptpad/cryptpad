@@ -340,6 +340,11 @@ define([
                 if (err.loaded) {
                     msg += Messages.expiredErrorCopy;
                 }
+            } else if (err.type === 'EDELETED') {
+                msg = Messages.deletedError;
+                if (err.loaded) {
+                    msg += Messages.expiredErrorCopy;
+                }
             }
             UI.errorLoadingScreen(msg, true, true);
         };
@@ -436,7 +441,9 @@ define([
             var priv = common.getMetadataMgr().getPrivateData();
             if (priv.isNewFile) {
                 var c = (priv.settings.general && priv.settings.general.creation) || {};
-                if (c.skip && !priv.forceCreationScreen) { return void common.createPad(c, waitFor()); }
+                if (c.skip && !priv.forceCreationScreen) {
+                    return void common.createPad(c, waitFor());
+                }
                 common.getPadCreationScreen(c, waitFor());
             }
         }).nThen(function (waitFor) {

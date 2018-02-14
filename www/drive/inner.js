@@ -2715,6 +2715,8 @@ define([
             UI.confirm(msgD, function(res) {
                 $(window).focus();
                 if (!res) { return; }
+                filesOp.delete(pathsList, refresh);
+                /*
                 // Try to delete each selected pad from server, and delete from drive if no error
                 var n = nThen(function () {});
                 pathsList.forEach(function (p) {
@@ -2726,10 +2728,12 @@ define([
                         sframeChan.query('Q_REMOVE_OWNED_CHANNEL', channel,
                                          waitFor(function (e) {
                             if (e) { return void console.error(e); }
-                            filesOp.delete([p], refresh);
+                            filesOp.delete([p], function () {}, false, true);
                         }));
                     });
                 });
+                n.nThen(function () { refresh(); });
+                */
             });
         };
         $contextMenu.on("click", "a", function(e) {

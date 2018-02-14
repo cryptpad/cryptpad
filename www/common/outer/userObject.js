@@ -85,8 +85,11 @@ define([
             delete files[FILES_DATA][id];
         };
 
-        exp.checkDeletedFiles = function () {
-            // Nothing in OLD_FILES_DATA for workgroups
+        // Find files in FILES_DATA that are not anymore in the drive, and remove them from
+        // FILES_DATA. If there are owned pads, remove them from server too, unless the flag tells
+        // us they're already removed
+        exp.checkDeletedFiles = function (isOwnPadRemoved) {
+            // Nothing in FILES_DATA for workgroups
             if (workgroup || (!loggedIn && !config.testMode)) { return; }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
@@ -96,7 +99,8 @@ define([
                     var fd = exp.getFileData(id);
                     var channelId = fd && fd.href && Hash.hrefToHexChannelId(fd.href);
                     // If trying to remove an owned pad, remove it from server also
-                    if (fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
+                    if (!isOwnPadRemoved &&
+                            fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
                         removeOwnedChannel(channelId, function (obj) {
                             if (obj && obj.error) { console.error(obj.error); }
                         });
@@ -123,7 +127,7 @@ define([
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
-        exp.deleteMultiplePermanently = function (paths, nocheck) {
+        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved) {
             var hrefPaths = paths.filter(function(x) { return exp.isPathIn(x, ['hrefArray']); });
             var rootPaths = paths.filter(function(x) { return exp.isPathIn(x, [ROOT]); });
             var trashPaths = paths.filter(function(x) { return exp.isPathIn(x, [TRASH]); });
@@ -179,7 +183,7 @@ define([
 
             // In some cases, we want to remove pads from a location without removing them from
             // OLD_FILES_DATA (replaceHref)
-            if (!nocheck) { exp.checkDeletedFiles(); }
+            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved); }
         };
 
         // Move

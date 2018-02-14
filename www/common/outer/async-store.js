@@ -897,7 +897,7 @@ define([
             case 'addFolder':
                 store.userObject.addFolder(data.path, data.name, cb); break;
             case 'delete':
-                store.userObject.delete(data.paths, cb, data.nocheck); break;
+                store.userObject.delete(data.paths, cb, data.nocheck, data.isOwnPadRemoved); break;
             case 'emptyTrash':
                 store.userObject.emptyTrash(cb); break;
             case 'rename':

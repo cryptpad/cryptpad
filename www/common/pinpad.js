@@ -157,8 +157,8 @@ define([
                 }
                 rpc.send('REMOVE_OWNED_CHANNEL', channel, function (e, response) {
                     if (e) { return void cb(e); }
-                    if (response && response.length) {
-                        cb(void 0, response[0]); // I haven't tested this...
+                    if (response && response.length && response[0] === "OK") {
+                        cb();
                     } else {
                         cb('INVALID_RESPONSE');
                     }
