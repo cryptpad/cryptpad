@@ -9,6 +9,7 @@ define([
     '/common/common-hash.js',
     '/todo/todo.js',
     '/customize/messages.js',
+    '/bower_components/sortablejs/Sortable.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
@@ -23,7 +24,8 @@ define([
     UI,
     Hash,
     Todo,
-    Messages
+    Messages,
+    Sortable
     )
 {
     var APP = window.APP = {};
@@ -46,6 +48,17 @@ define([
 
         var onReady = function () {
             var todo = Todo.init(APP.lm.proxy);
+
+            Sortable.create($list[0], {
+                store: {
+                    get: function (sortable) {
+                        return todo.getOrder();
+                    },
+                    set: function (sortable) {
+                        todo.reorder(sortable.toArray());
+                    }
+                }
+            });
 
             var deleteTask = function(id) {
                 todo.remove(id);
@@ -106,6 +119,7 @@ define([
                     $taskDiv.appendTo($list);
                 }
                 $taskDiv.data('id', el);
+                $taskDiv.attr('data-id', el);
 
                 makeCheckbox(el, function (/*state*/) {
                     APP.display();
@@ -121,9 +135,25 @@ define([
                     $taskDiv.addClass('cp-app-todo-task-complete');
                 }
 
-                $('<span>', { 'class': 'cp-app-todo-task-text' })
+                var $input = $('<input>', {
+                    type: 'text',
+                    'class': 'cp-app-todo-task-input'
+                }).val(entry.task).keydown(function (e) {
+                    if (e.which === 13) {
+                        todo.val(el, 'task', $input.val().trim());
+                        $input.hide();
+                        $span.text($input.val().trim());
+                        $span.show();
+                    }
+                }).appendTo($taskDiv);
+
+                var $span = $('<span>', { 'class': 'cp-app-todo-task-text' })
                     .text(entry.task)
-                    .appendTo($taskDiv);
+                    .appendTo($taskDiv)
+                    .click(function () {
+                        $input.show();
+                        $span.hide();
+                    });
               /*$('<span>', { 'class': 'cp-app-todo-task-date' })
                     .text(new Date(entry.ctime).toLocaleString())
                     .appendTo($taskDiv);*/

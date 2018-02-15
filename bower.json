@@ -45,7 +45,8 @@
     "bootstrap-tokenfield": "^0.12.1",
     "localforage": "^1.5.2",
     "html2canvas": "^0.4.1",
-    "croppie": "^2.5.0"
+    "croppie": "^2.5.0",
+    "sortablejs": "#^1.6.0"
   },
   "resolutions": {
     "bootstrap": "v4.0.0-alpha.6"

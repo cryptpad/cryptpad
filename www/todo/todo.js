@@ -77,6 +77,17 @@ define([
         if (proxy.data[id]) { delete proxy.data[id]; }
     };
 
+    /* change the order in the proxy (with a check to make sure that nothing is missing */
+    var reorder = function (proxy, order) {
+        var existingOrder = proxy.order.slice().sort();
+        var newOrder = order.slice().sort();
+        if (JSON.stringify(existingOrder) === JSON.stringify(newOrder)) {
+            proxy.order = order.slice();
+        } else {
+            console.error("Can't reorder the tasks. Some tasks are missing or added");
+        }
+    };
+
     Todo.init = function (proxy) {
         var api = {};
         initialize(proxy);
@@ -89,6 +100,12 @@ define([
         };
         api.remove = function (id) {
             return remove(proxy, id);
+        };
+        api.getOrder = function () {
+            return proxy.order.slice();
+        };
+        api.reorder = function (order) {
+            return reorder(proxy, order);
         };
 
         return api;
