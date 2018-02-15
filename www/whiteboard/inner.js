@@ -598,6 +598,7 @@ define([
         };
 
         config.onAbort = function () {
+            if (APP.unrecoverable) { return; }
             // inform of network disconnect
             setEditable(false);
             toolbar.failed();
@@ -605,6 +606,7 @@ define([
         };
 
         config.onConnectionChange = function (info) {
+            if (APP.unrecoverable) { return; }
             setEditable(info.state);
             if (info.state) {
                 initializing = true;
@@ -615,27 +617,17 @@ define([
         };
 
         config.onError = function (err) {
-            setEditable(false);
-            toolbar.deleted();
-            var msg = err.type;
-            if (err.type === 'EEXPIRED') {
-                msg = Messages.expiredError;
-                if (err.loaded) {
-                    msg += Messages.expiredErrorCopy;
-                }
-            } else if (err.type === 'EDELETED') {
-                msg = Messages.deletedError;
-                if (err.loaded) {
-                    msg += Messages.expiredErrorCopy;
-                }
-            }
-            UI.errorLoadingScreen(msg, true, true);
+            common.onServerError(err, toolbar, function () {
+                APP.unrecoverable = true;
+                setEditable(false);
+            });
         };
 
         cpNfInner = common.startRealtime(config);
         metadataMgr = cpNfInner.metadataMgr;
 
         cpNfInner.onInfiniteSpinner(function () {
+            if (APP.unrecoverable) { return; }
             setEditable(false);
             UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                 if (!yes) { return; }

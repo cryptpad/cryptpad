@@ -333,20 +333,9 @@ define([
         };
 
         var onError = function (err) {
-            stateChange(STATE.DELETED);
-            var msg = err.type;
-            if (err.type === 'EEXPIRED') {
-                msg = Messages.expiredError;
-                if (err.loaded) {
-                    msg += Messages.expiredErrorCopy;
-                }
-            } else if (err.type === 'EDELETED') {
-                msg = Messages.deletedError;
-                if (err.loaded) {
-                    msg += Messages.expiredErrorCopy;
-                }
-            }
-            UI.errorLoadingScreen(msg, true, true);
+            common.onServerError(err, toolbar, function () {
+                stateChange(STATE.DELETED);
+            });
         };
 
         var setFileExporter = function (extension, fe, async) {

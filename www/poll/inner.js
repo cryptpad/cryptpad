@@ -1130,27 +1130,20 @@ define([
 
     // Manage disconnections because of network or error
     var onDisconnect = function (info) {
-        setEditable(false);
-        if (info && ['EEXPIRED', 'EDELETED'].indexOf(info.type) !== -1) {
-            APP.toolbar.deleted();
-            var msg = info.type;
-            if (info.type === 'EEXPIRED') {
-                msg = Messages.expiredError;
-                if (info.loaded) {
-                    msg += Messages.expiredErrorCopy;
-                }
-            } else if (info.type === 'EDELETED') {
-                msg = Messages.deletedError;
-                if (info.loaded) {
-                    msg += Messages.expiredErrorCopy;
-                }
-            }
-            return void UI.errorLoadingScreen(msg, true, true);
+        if (APP.unrecoverable) { return; }
+        if (info && info.type) {
+            // Server error
+            return void common.onServerError(info, APP.toolbar, function () {
+                APP.unrecoverable = true;
+                setEditable(false);
+            });
         }
+        setEditable(false);
         UI.alert(Messages.common_connectionLost, undefined, true);
     };
 
     var onReconnect = function () {
+        if (APP.unrecoverable) { return; }
         setEditable(true);
         UI.findOKButton().click();
     };

@@ -1829,5 +1829,24 @@ define([
         }, Messages.creation_settings))).appendTo($creation);
     };
 
+    UIElements.onServerError = function (common, err, toolbar, cb) {
+        if (["EDELETED", "EEXPIRED"].indexOf(err.type) === -1) { return; }
+        var msg = err.type;
+        if (err.type === 'EEXPIRED') {
+            msg = Messages.expiredError;
+            if (err.loaded) {
+                msg += Messages.expiredErrorCopy;
+            }
+        } else if (err.type === 'EDELETED') {
+            msg = Messages.deletedError;
+            if (err.loaded) {
+                msg += Messages.expiredErrorCopy;
+            }
+        }
+        if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
+        UI.errorLoadingScreen(msg, true, true);
+        (cb || function () {})();
+    };
+
     return UIElements;
 });
