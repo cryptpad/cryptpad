@@ -78,7 +78,7 @@ nt = nThen(function (w) {
         store = _store;
     }));
 }).nThen(function () {
-    dirs.forEach(function (dir) {
+    dirs.forEach(function (dir, dIdx) {
         queue(function (w) {
             console.log('recursing into %s', dir);
             Fs.readdir(Path.join(root, dir), w(function (e, list) {
@@ -98,6 +98,11 @@ nt = nThen(function (w) {
                         });
                     });
                 });
+                if (dIdx === (dirs.length - 1)) {
+                    queue(function () {
+                        store.shutdown();
+                    });
+                }
             }));
         });
     });
