@@ -478,7 +478,7 @@ define(function () {
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 
-    out.register_whyRegister = "Why signing up?";
+    out.register_whyRegister = "Why sign up?";
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
         "<h3>Lets go over a couple things first:</h3>",
@@ -890,7 +890,7 @@ define(function () {
     out.creation_expiration = "Expiration time";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
-    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiring pad, etc.).";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     // New share modal
