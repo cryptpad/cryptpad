@@ -3,8 +3,9 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-realtime.js',
+    '/common/common-feedback.js',
     '/customize/messages.js'
-], function (AppConfig, Util, Hash, Realtime, Messages) {
+], function (AppConfig, Util, Hash, Realtime, Feedback, Messages) {
     var module = {};
 
     var clone = function (o) {
@@ -102,7 +103,12 @@ define([
                     if (!isOwnPadRemoved &&
                             fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
                         removeOwnedChannel(channelId, function (obj) {
-                            if (obj && obj.error) { console.error(obj.error); }
+                            if (obj && obj.error) {
+                                console.error(obj.error);
+                                // RPC may not be responding
+                                // Send a report that can be handled manually
+                                Feedback.send('ERROR_DELETING_OWNED_PAD=' + channelId, true);
+                            }
                         });
                     }
                     if (channelId) { toClean.push(channelId); }
