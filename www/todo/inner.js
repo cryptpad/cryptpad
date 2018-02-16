@@ -51,7 +51,7 @@ define([
 
             Sortable.create($list[0], {
                 store: {
-                    get: function (sortable) {
+                    get: function () {
                         return todo.getOrder();
                     },
                     set: function (sortable) {
@@ -135,6 +135,8 @@ define([
                     $taskDiv.addClass('cp-app-todo-task-complete');
                 }
 
+                var $span = $('<span>', { 'class': 'cp-app-todo-task-text' });
+
                 var $input = $('<input>', {
                     type: 'text',
                     'class': 'cp-app-todo-task-input'
@@ -147,8 +149,7 @@ define([
                     }
                 }).appendTo($taskDiv);
 
-                var $span = $('<span>', { 'class': 'cp-app-todo-task-text' })
-                    .text(entry.task)
+                $span.text(entry.task)
                     .appendTo($taskDiv)
                     .click(function () {
                         $input.show();

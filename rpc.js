@@ -1181,7 +1181,7 @@ RPC.create = function (
                 });
             case 'IS_NEW_CHANNEL':
                 return void isNewChannel(Env, msg[1], function (e, isNew) {
-                    respond(null, [null, isNew, null]);
+                    respond(e, [null, isNew, null]);
                 });
             default:
                 console.error("unsupported!");
