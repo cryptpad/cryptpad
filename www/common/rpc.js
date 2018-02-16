@@ -217,6 +217,15 @@ types of messages:
             });
         });
 
+        if (network.onHistoryKeeperChange) {
+            network.onHistoryKeeperChange(function () {
+                send('COOKIE', "", function (e) {
+                    if (e) { return void cb(e); }
+                    ctx.connected = true;
+                });
+            });
+        }
+
         send('COOKIE', "", function (e) {
             if (e) { return void cb(e); }
             // callback to provide 'send' method to whatever needs it
