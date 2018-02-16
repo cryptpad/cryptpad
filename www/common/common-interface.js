@@ -553,6 +553,7 @@ define([
         var $loading, $container;
         if ($('#' + LOADING).length) {
             $loading = $('#' + LOADING); //.show();
+            $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);
@@ -600,11 +601,20 @@ define([
         }, 3750);
         // jquery.fadeout can get stuck
     };
-    UI.errorLoadingScreen = function (error, transparent) {
-        if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen({hideTips: true}); }
+    UI.errorLoadingScreen = function (error, transparent, exitable) {
+        if (!$('#' + LOADING).is(':visible') || $('#' + LOADING).hasClass('cp-loading-hidden')) {
+            UI.addLoadingScreen({hideTips: true});
+        }
         $('.cp-loading-spinner-container').hide();
+        $('#cp-loading-tip').remove();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);
+        if (exitable) {
+            $(window).focus();
+            $(window).keydown(function (e) {
+                if (e.which === 27) { $('#' + LOADING).hide(); }
+            });
+        }
     };
 
     var $defaultIcon = $('<span>', {"class": "fa fa-file-text-o"});

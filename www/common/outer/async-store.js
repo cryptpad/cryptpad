@@ -815,6 +815,9 @@ define([
             onDisconnect: function () {
                 postMessage("PAD_DISCONNECT");
             }, // post EV_PAD_DISCONNECT
+            onError: function (err) {
+                postMessage("PAD_ERROR", err);
+            }, // post EV_PAD_ERROR
             channel: data.channel,
             validateKey: data.validateKey,
             owners: data.owners,
@@ -894,7 +897,7 @@ define([
             case 'addFolder':
                 store.userObject.addFolder(data.path, data.name, cb); break;
             case 'delete':
-                store.userObject.delete(data.paths, cb, data.nocheck); break;
+                store.userObject.delete(data.paths, cb, data.nocheck, data.isOwnPadRemoved); break;
             case 'emptyTrash':
                 store.userObject.emptyTrash(cb); break;
             case 'rename':

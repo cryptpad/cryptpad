@@ -43,7 +43,7 @@ define(req, function(Util, Default, Language) {
 
     messages._checkTranslationState = function (cb) {
         if (typeof(cb) !== "function") { return; }
-        var missing = [];
+        var allMissing = [];
         var reqs = [];
         Object.keys(map).forEach(function (code) {
             if (code === defaultLanguage) { return; }
@@ -54,37 +54,60 @@ define(req, function(Util, Default, Language) {
             Object.keys(map).forEach(function (code, i) {
                 if (code === defaultLanguage) { return; }
                 var translation = langs[i];
-                var updated = {};
-                Object.keys(Default).forEach(function (k) {
-                    if (/^updated_[0-9]+_/.test(k) && !translation[k]) {
-                        var key = k.split('_').slice(2).join('_');
-                        // Make sure we don't already have an update for that key. It should not happen
-                        // but if it does, keep the latest version
-                        if (updated[key]) {
-                            var ek = updated[key];
-                            if (parseInt(ek.split('_')[1]) > parseInt(k.split('_')[1])) { return; }
+                var missing = [];
+                var checkInObject = function (ref, translated, path) {
+                    var updated = {};
+                    Object.keys(ref).forEach(function (k) {
+                        if (/^updated_[0-9]+_/.test(k) && !translated[k]) {
+                            var key = k.split('_').slice(2).join('_');
+                            // Make sure we don't already have an update for that key. It should not happen
+                            // but if it does, keep the latest version
+                            if (updated[key]) {
+                                var ek = updated[key];
+                                if (parseInt(ek.split('_')[1]) > parseInt(k.split('_')[1])) { return; }
+                            }
+                            updated[key] = k;
                         }
-                        updated[key] = k;
-                    }
-                });
-                Object.keys(Default).forEach(function (k) {
-                    if (/^_/.test(k) || k === 'driveReadme') { return; }
-                    if (!translation[k] || updated[k]) {
-                        if (updated[k]) {
-                            missing.push([code, k, 2, 'out.' + updated[k]]);
-                            return;
+                    });
+                    Object.keys(ref).forEach(function (k) {
+                        if (/^_/.test(k) || k === 'driveReadme') { return; }
+                        var nPath = path.slice();
+                        nPath.push(k);
+                        if (!translated[k] || updated[k]) {
+                            if (updated[k]) {
+                                var uPath = path.slice();
+                                uPath.unshift('out');
+                                missing.push([code, nPath, 2, uPath.join('.') + '.' + updated[k]]);
+                                return;
+                            }
+                            return void missing.push([code, nPath, 1]);
                         }
-                        missing.push([code, k, 1]);
-                    }
+                        if (typeof ref[k] !== typeof translated[k]) {
+                            return void missing.push([code, nPath, 3]);
+                        }
+                        if (typeof ref[k] === "object" && !Array.isArray(ref[k])) {
+                            checkInObject(ref[k], translated[k], nPath);
+                        }
+                    });
+                    Object.keys(translated).forEach(function (k) {
+                        if (/^_/.test(k) || k === 'driveReadme') { return; }
+                        var nPath = path.slice();
+                        nPath.push(k);
+                        if (typeof ref[k] === "undefined") {
+                            missing.push([code, nPath, 0]);
+                        }
+                    });
+                };
+                checkInObject(Default, translation, []);
+                // Push the removals at the end
+                missing.sort(function (a, b) {
+                    if (a[2] === 0 && b[2] !== 0) { return 1; }
+                    if (a[2] !== 0 && b[2] === 0) { return -1; }
+                    return 0;
                 });
-                Object.keys(translation).forEach(function (k) {
-                    if (/^_/.test(k) || k === 'driveReadme') { return; }
-                    if (typeof Default[k] === "undefined") {
-                        missing.push([code, k, 0]);
-                    }
-                });
+                Array.prototype.push.apply(allMissing, missing); // Destructive concat
             });
-            cb(missing);
+            cb(allMissing);
         });
     };
 

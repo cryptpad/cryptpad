@@ -22,8 +22,7 @@ define(function () {
     out.button_newslide = 'New Presentation';
     out.button_newwhiteboard = 'New Whiteboard';
 
-    // NOTE: We want to update the 'common_connectionLost' key.
-    // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
+    // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
 
@@ -33,12 +32,16 @@ define(function () {
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
+    out.expiredError = 'This pad has reached its expiration time and is no longer available.';
+    out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
+    out.deletedError = 'This pad has been deleted by its owner and is no longer available.';
 
     out.loading = "Loading...";
     out.error = "Error";
     out.saved = "Saved";
     out.synced = "Everything is saved";
     out.deleted = "Pad deleted from your CryptDrive";
+    out.deletedFromServer = "Pad deleted from the server";
 
     out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
 
@@ -862,20 +865,20 @@ define(function () {
     out.feedback_optout = "If you would like to opt out, visit <a href='/settings/'>your user settings page</a>, where you'll find a checkbox to enable or disable user feedback";
 
     // Creation page
-    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad";
+    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad.";
     out.creation_ownedTitle = "Type of pad";
     out.creation_ownedTrue = "Owned pad";
     out.creation_ownedFalse = "Open pad";
-    out.creation_owned1 = "An <b>owned</b> pad is a pad that you can delete from the server whenever you want. Once it is deleted, no one else can access it, even if it is stored in their CryptDrive.";
+    out.creation_owned1 = "An <b>owned</b> pad can be deleted from the server whenever the owner wants. Deleting an owned pad removes it from other users' CryptDrives.";
     out.creation_owned2 = "An <b>open</b> pad doesn't have any owner and thus, it can't be deleted from the server unless it has reached its expiration time.";
     out.creation_expireTitle = "Life time";
     out.creation_expireTrue = "Add a life time";
     out.creation_expireFalse = "Unlimited";
-    out.creation_expireHours = "Hours";
-    out.creation_expireDays = "Days";
-    out.creation_expireMonths = "Months";
-    out.creation_expire1 = "By default, a pad stored by a registered user will never be removed from the server, unless it is requested by its owner.";
-    out.creation_expire2 = "If you prefer, you can set a life time to make sure the pad will be permanently deleted from the server and unavailable after the specified date.";
+    out.creation_expireHours = "Hour(s)";
+    out.creation_expireDays = "Day(s)";
+    out.creation_expireMonths = "Month(s)";
+    out.creation_expire1 = "An <b>unlimited</b> pad will not be removed from the server until its owner deletes it.";
+    out.creation_expire2 = "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives.";
     out.creation_createTitle = "Create a pad";
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
@@ -887,7 +890,7 @@ define(function () {
     out.creation_expiration = "Expiration time";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
-    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiration pad, etc.).";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     // New share modal

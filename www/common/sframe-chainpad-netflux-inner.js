@@ -34,6 +34,7 @@ define([
         var onLocal = config.onLocal || function () { };
         var setMyID = config.setMyID || function () { };
         var onReady = config.onReady || function () { };
+        var onError = config.onError || function () { };
         var userName = config.userName;
         var initialState = config.initialState;
         if (config.transformFunction) { throw new Error("transformFunction is nolonger allowed"); }
@@ -82,6 +83,11 @@ define([
             isReady = false;
             chainpad.abort();
             onConnectionChange({ state: false });
+        });
+        sframeChan.on('EV_RT_ERROR', function (err) {
+            isReady = false;
+            chainpad.abort();
+            onError(err);
         });
         sframeChan.on('EV_RT_CONNECT', function (content) {
             //content.members.forEach(userList.onJoin);

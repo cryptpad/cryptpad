@@ -115,6 +115,12 @@ define(['json.sortify'], function (Sortify) {
             if (!meta.user) { return; }
             change(true);
         });
+        sframeChan.on('EV_RT_ERROR', function (err) {
+            if (err.type !== 'EEXPIRED' && err.type !== 'EDELETED') { return; }
+            members = [];
+            if (!meta.user) { return; }
+            change(true);
+        });
 
         return Object.freeze({
             updateMetadata: function (m) {
