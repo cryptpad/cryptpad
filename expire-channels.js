@@ -72,6 +72,10 @@ nt = nThen(function (w) {
     Fs.readdir(root, w(function (e, list) {
         if (e) { throw e; }
         dirs = list;
+        if (dirs.length === 0) {
+            w.abort();
+            return;
+        }
     }));
 }).nThen(function (waitFor) {
     FileStorage.create(config, waitFor(function (_store) {
