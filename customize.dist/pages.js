@@ -373,6 +373,42 @@ define([
         ]);
     };
 
+    Pages['/faq.html'] = function () {
+        var categories = [];
+        var faq = Msg.faq;
+        Object.keys(faq).forEach(function (c) {
+            var questions = [];
+            Object.keys(faq[c]).forEach(function (q) {
+                var item = faq[c][q];
+                if (typeof item !== "object") { return; }
+                var answer = h('p.cp-faq-questions-a');
+                var question = h('p.cp-faq-questions-q');
+                $(question).click(function () {
+                    if ($(answer).is(':visible')) {
+                        return void $(answer).slideUp();
+                    }
+                    $(answer).slideDown();
+                });
+                questions.push(h('div.cp-faq-questions-items', [
+                    setHTML(question, item.q),
+                    setHTML(answer, item.a)
+                ]));
+            });
+            categories.push(h('div.cp-faq-category', [
+                h('h3', faq[c].title),
+                h('div.cp-faq-category-questions', questions)
+            ]));
+        });
+        return h('div#cp-main', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.faq_title)),
+                h('div.cp-faq-container', categories)
+            ]),
+            infopageFooter()
+        ]);
+    };
+
     Pages['/terms.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),

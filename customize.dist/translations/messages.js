@@ -759,6 +759,30 @@ define(function () {
     out.features_f_storage_anon = "Pads deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
 
+    // faq.html
+
+    out.faq_link = "FAQ";
+    out.faq_title = "Frequently Asked Questions";
+    out.faq = {};
+    out.faq.cat1 = {
+        title: 'Category 1',
+        q1: {
+            q: 'What is a pad?',
+            a: 'A realtime collaborative document...'
+        },
+        q2: {
+            q: 'Question 2?',
+            a: '42'
+        }
+    };
+    out.faq.cat2 = {
+        title: 'Category 2',
+        q1: {
+            q: 'A new question?',
+            a: 'The answer'
+        }
+    };
+
     // terms.html
 
     out.tos_title = "CryptPad Terms of Service";

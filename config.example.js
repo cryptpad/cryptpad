@@ -126,7 +126,8 @@ module.exports = {
         'about',
         'contact',
         'what-is-cryptpad',
-        'features'
+        'features',
+        'faq'
     ],
 
     /*  Limits, Donations, Subscriptions and Contact
