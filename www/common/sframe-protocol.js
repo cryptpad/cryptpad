@@ -31,6 +31,8 @@ define({
     'EV_RT_CONNECT': true,
     // Called after the history is finished synchronizing, no arguments.
     'EV_RT_READY': true,
+    // Called when the server returns an error in a pad (EEXPIRED, EDELETED).
+    'EV_RT_ERROR': true,
     // Called from both outside and inside, argument is a (string) chainpad message.
     'Q_RT_MESSAGE': true,
 
@@ -201,11 +203,16 @@ define({
     // Inner drive needs to send command and receive updates from the async store
     'Q_DRIVE_USEROBJECT': true,
     'Q_DRIVE_GETOBJECT': true,
+    // Get the pads deleted from the server by other users to remove them from the drive
+    'Q_DRIVE_GETDELETED': true,
     // Store's userObject need to send log messages to inner to display them in the UI
     'EV_DRIVE_LOG': true,
     // Refresh the drive when the drive has changed ('change' or 'remove' events)
     'EV_DRIVE_CHANGE': true,
     'EV_DRIVE_REMOVE': true,
+
+    // Remove an owned pad from the server
+    'Q_REMOVE_OWNED_CHANNEL': true,
 
     // Notifications about connection and disconnection from the network
     'EV_NETWORK_DISCONNECT': true,

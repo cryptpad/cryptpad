@@ -195,6 +195,16 @@ define([
     common.clearOwnedChannel = function (channel, cb) {
         postMessage("CLEAR_OWNED_CHANNEL", channel, cb);
     };
+    common.removeOwnedChannel = function (channel, cb) {
+        postMessage("REMOVE_OWNED_CHANNEL", channel, cb);
+    };
+
+    common.getDeletedPads = function (cb) {
+        postMessage("GET_DELETED_PADS", null, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
 
     common.uploadComplete = function (cb) {
         postMessage("UPLOAD_COMPLETE", null, function (obj) {
@@ -528,6 +538,7 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+    pad.onErrorEvent = Util.mkEvent();
 
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
@@ -547,6 +558,11 @@ define([
         if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
             // It means we're using an old hash
             hashes.editHash = window.location.hash.slice(1);
+            return void cb(null, hashes);
+        }
+
+        if (hashes.editHash) {
+            // no need to find stronger if we already have edit hash
             return void cb(null, hashes);
         }
 
@@ -663,6 +679,9 @@ define([
             }
             case 'PAD_DISCONNECT': {
                 common.padRpc.onDisconnectEvent.fire(data); break;
+            }
+            case 'PAD_ERROR': {
+                common.padRpc.onErrorEvent.fire(data); break;
             }
             // Drive
             case 'DRIVE_LOG': {

@@ -102,7 +102,7 @@ types of messages:
         }
 
         // HACK to hide messages from the anon rpc
-        if (parsed.length !== 4) {
+        if (parsed.length !== 4 && parsed[1] !== 'ERROR') {
             console.log(parsed);
             console.error("received message [%s] for txid[%s] with no callback", msg, txid);
         }
@@ -216,6 +216,15 @@ types of messages:
                 ctx.connected = true;
             });
         });
+
+        if (network.onHistoryKeeperChange) {
+            network.onHistoryKeeperChange(function () {
+                send('COOKIE', "", function (e) {
+                    if (e) { return void cb(e); }
+                    ctx.connected = true;
+                });
+            });
+        }
 
         send('COOKIE', "", function (e) {
             if (e) { return void cb(e); }

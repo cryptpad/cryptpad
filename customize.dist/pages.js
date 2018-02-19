@@ -72,7 +72,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.25.0 (Zombie)")
+            h('div.cp-version-footer', "CryptPad v1.26.0 (undefined)")
         ]);
     };
 
@@ -100,6 +100,7 @@ define([
                 h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [  
                     h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
                     h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
+                    h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
                     h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
                     h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
                 ].concat(rightLinks))
@@ -332,6 +333,11 @@ define([
                             h('td')
                         ]),
                     ])
+                ]),
+                h('div#cp-features-register', [
+                    h('a', {
+                        href: '/register/'
+                    }, h('button.cp-features-register-button', 'Register for free'))
                 ])
             ]),
             infopageFooter()
@@ -362,6 +368,42 @@ define([
                 h('h2', Msg.policy_choices),
                 h('p', Msg.policy_choices_open),
                 setHTML(h('p'), Msg.policy_choices_vpn),
+            ]),
+            infopageFooter()
+        ]);
+    };
+
+    Pages['/faq.html'] = function () {
+        var categories = [];
+        var faq = Msg.faq;
+        Object.keys(faq).forEach(function (c) {
+            var questions = [];
+            Object.keys(faq[c]).forEach(function (q) {
+                var item = faq[c][q];
+                if (typeof item !== "object") { return; }
+                var answer = h('p.cp-faq-questions-a');
+                var question = h('p.cp-faq-questions-q');
+                $(question).click(function () {
+                    if ($(answer).is(':visible')) {
+                        return void $(answer).slideUp();
+                    }
+                    $(answer).slideDown();
+                });
+                questions.push(h('div.cp-faq-questions-items', [
+                    setHTML(question, item.q),
+                    setHTML(answer, item.a)
+                ]));
+            });
+            categories.push(h('div.cp-faq-category', [
+                h('h3', faq[c].title),
+                h('div.cp-faq-category-questions', questions)
+            ]));
+        });
+        return h('div#cp-main', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.faq_title)),
+                h('div.cp-faq-container', categories)
             ]),
             infopageFooter()
         ]);
@@ -601,6 +643,9 @@ define([
                     setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
                 h('div#userForm.form-group.hidden.col-md-6', [
+                    h('a', {
+                        href: '/features.html'
+                    }, Msg.register_whyRegister),
                     h('input.form-control#username', {
                         type: 'text',
                         autocomplete: 'off',

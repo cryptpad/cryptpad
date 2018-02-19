@@ -6,7 +6,7 @@ define([
 ], function (Util, Messages, Crypto) {
     var Nacl = window.nacl;
 
-    var Hash = {};
+    var Hash = window.CryptPad_Hash = {};
 
     var uint8ArrayToHex = Util.uint8ArrayToHex;
     var hexToBase64 = Util.hexToBase64;
@@ -176,7 +176,7 @@ Version 1
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         };
-        if (!secretHash && !/#/.test(window.location.href)) {
+        if (!secretHash && !window.location.hash) { //!/#/.test(window.location.href)) {
             generate();
             return secret;
         } else {
@@ -300,6 +300,8 @@ Version 1
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
+        // We can't have a stronger hash if we're already in edit mode
+        if (parsed.hashData && parsed.hashData.mode === 'edit') { return; }
         var stronger;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];

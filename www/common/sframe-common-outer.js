@@ -132,10 +132,12 @@ define([
             // Check if the pad exists on server
             if (!window.location.hash) { isNewFile = true; return; }
 
-            Cryptpad.isNewChannel(window.location.href, waitFor(function (e, isNew) {
-                if (e) { return console.error(e); }
-                isNewFile = Boolean(isNew);
-            }));
+            if (realtime) {
+                Cryptpad.isNewChannel(window.location.href, waitFor(function (e, isNew) {
+                    if (e) { return console.error(e); }
+                    isNewFile = Boolean(isNew);
+                }));
+            }
         }).nThen(function () {
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             var isNewHash = true;
@@ -500,6 +502,9 @@ define([
 
             sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
                 Cryptpad.clearOwnedChannel(channel, cb);
+            });
+            sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
+                Cryptpad.removeOwnedChannel(channel, cb);
             });
 
             if (cfg.addRpc) {

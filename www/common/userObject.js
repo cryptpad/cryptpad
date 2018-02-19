@@ -380,6 +380,18 @@ define([
             var trashpaths = _findFileInTrash([TRASH], file);
             return rootpaths.concat(templatepaths, trashpaths);
         };
+
+        // Get drive ids of files from their channel ids
+        exp.findChannels = function (channels) {
+            var allFilesList = files[FILES_DATA];
+            var channels64 = channels.slice().map(Util.hexToBase64);
+            return getFiles([FILES_DATA]).filter(function (k) {
+                var data = allFilesList[k];
+                var parsed = Hash.parsePadUrl(data.href);
+                return parsed.hashData && channels64.indexOf(parsed.hashData.channel) !== -1;
+            });
+        };
+
         exp.search = function (value) {
             if (typeof(value) !== "string") { return []; }
             value = value.trim();
@@ -544,17 +556,18 @@ define([
         // DELETE
         // Permanently delete multiple files at once using a list of paths
         // NOTE: We have to be careful when removing elements from arrays (trash root, unsorted or template)
-        exp.delete = function (paths, cb, nocheck) {
+        exp.delete = function (paths, cb, nocheck, isOwnPadRemoved) {
             if (sframeChan) {
                 return void sframeChan.query("Q_DRIVE_USEROBJECT", {
                     cmd: "delete",
                     data: {
                         paths: paths,
-                        nocheck: nocheck
+                        nocheck: nocheck,
+                        isOwnPadRemoved: isOwnPadRemoved
                     }
                 }, cb);
             }
-            exp.deleteMultiplePermanently(paths, nocheck);
+            exp.deleteMultiplePermanently(paths, nocheck, isOwnPadRemoved);
             if (typeof cb === "function") { cb(); }
         };
         exp.emptyTrash = function (cb) {

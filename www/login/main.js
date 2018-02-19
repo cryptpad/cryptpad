@@ -13,7 +13,6 @@ define([
     $(function () {
         var $main = $('#mainBlock');
         var $checkImport = $('#import-recent');
-        var Messages = Cryptpad.Messages;
 
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');
@@ -61,90 +60,15 @@ define([
 
             hashing = true;
             var shouldImport = $checkImport[0].checked;
-
-            // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
-            window.setTimeout(function () {
-                UI.addLoadingScreen({
-                    loadingText: Messages.login_hashing,
-                    hideTips: true,
-                });
-                // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
-                window.setTimeout(function () {
-                    loginReady(function () {
-                        var uname = $uname.val();
-                        var passwd = $passwd.val();
-                        Login.loginOrRegister(uname, passwd, false, function (err, result) {
-                            if (!err) {
-                                var proxy = result.proxy;
-
-                                // successful validation and user already exists
-                                // set user hash in localStorage and redirect to drive
-                                if (!proxy.login_name) {
-                                    result.proxy.login_name = result.userName;
-                                }
-
-                                proxy.edPrivate = result.edPrivate;
-                                proxy.edPublic = result.edPublic;
-
-                                proxy.curvePrivate = result.curvePrivate;
-                                proxy.curvePublic = result.curvePublic;
-
-                                Feedback.send('LOGIN', true);
-                                Realtime.whenRealtimeSyncs(result.realtime, function() {
-                                    LocalStore.login(result.userHash, result.userName, function () {
-                                        hashing = false;
-                                        if (test) {
-                                            localStorage.clear();
-                                            test.pass();
-                                            return;
-                                        }
-                                        if (shouldImport) {
-                                            sessionStorage.migrateAnonDrive = 1;
-                                        }
-                                        if (sessionStorage.redirectTo) {
-                                            var h = sessionStorage.redirectTo;
-                                            var parser = document.createElement('a');
-                                            parser.href = h;
-                                            if (parser.origin === window.location.origin) {
-                                                delete sessionStorage.redirectTo;
-                                                window.location.href = h;
-                                                return;
-                                            }
-                                        }
-                                        window.location.href = '/drive/';
-                                    });
-                                });
-                                return;
-                            }
-                            switch (err) {
-                                case 'NO_SUCH_USER':
-                                    UI.removeLoadingScreen(function () {
-                                        UI.alert(Messages.login_noSuchUser, function () {
-                                            hashing = false;
-                                        });
-                                    });
-                                    break;
-                                case 'INVAL_USER':
-                                    UI.removeLoadingScreen(function () {
-                                        UI.alert(Messages.login_invalUser, function () {
-                                            hashing = false;
-                                        });
-                                    });
-                                    break;
-                                case 'INVAL_PASS':
-                                    UI.removeLoadingScreen(function () {
-                                        UI.alert(Messages.login_invalPass, function () {
-                                            hashing = false;
-                                        });
-                                    });
-                                    break;
-                                default: // UNHANDLED ERROR
-                                    UI.errorLoadingScreen(Messages.login_unhandledError);
-                            }
-                        });
-                    });
-                }, 0);
-            }, 100);
+            var uname = $uname.val();
+            var passwd = $passwd.val();
+            Login.loginOrRegisterUI(uname, passwd, false, shouldImport, Test.testing, function () {
+                if (test) {
+                    localStorage.clear();
+                    test.pass();
+                    return true;
+                }
+            });
         });
         $('#register').on('click', function () {
             if (sessionStorage) {

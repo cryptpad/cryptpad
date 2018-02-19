@@ -8,7 +8,9 @@ var domain = ' http://localhost:3000/';
 // If your system doesn't support dumping, comment this out and install with
 // `npm install --production`
 // See: https://strongloop.github.io/strongloop.com/strongblog/how-to-heap-snapshots/
-require('heapdump');
+
+// to enable this feature, uncomment the line below:
+// require('heapdump');
 
 module.exports = {
 
@@ -124,7 +126,8 @@ module.exports = {
         'about',
         'contact',
         'what-is-cryptpad',
-        'features'
+        'features',
+        'faq'
     ],
 
     /*  Limits, Donations, Subscriptions and Contact
@@ -191,6 +194,18 @@ module.exports = {
         }
         */
     },
+
+    /*  some features may require that the server be able to schedule tasks
+        far into the future, such as:
+            > "three months from now, this channel should expire"
+        To disable these features, set 'enableTaskScheduling' to false
+    */
+    enableTaskScheduling: true,
+
+    /*  if you would like the list of scheduled tasks to be stored in
+        a custom location, change the path below:
+    */
+    taskPath: './tasks',
 
     /*
      *  By default, CryptPad also contacts our accounts server once a day to check for changes in
@@ -311,4 +326,12 @@ module.exports = {
     //  '/etc/apache2/ssl/my_public_cert.crt',
     //  '/etc/apache2/ssl/my_certificate_authorities_cert_chain.ca'
     //],
+
+    /* You can get a repl for debugging the server if you want it.
+     * to enable this, specify the debugReplName and then you can
+     * connect to it with `nc -U /tmp/repl/<your name>.sock`
+     * If you run multiple cryptpad servers, you need to use different
+     * repl names.
+     */
+    //debugReplName: "cryptpad"
 };

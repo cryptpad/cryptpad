@@ -12,15 +12,16 @@
         background: @colortheme_loading-bg;
         color: @colortheme_loading-color;
         display: flex;
-        align-items: center;
+        flex-flow: column; /* we need column so that the child can shrink vertically */
+        justify-content: center;
         width: 100%;
         height: 100%;
         overflow: auto;
-        @media screen and (max-height: 600px), screen and (max-width: 500px) {
-            align-items: baseline;
-        }
     }
     #cp-creation {
+        flex: 0 1 auto; /* allows shrink */
+        min-height: 0;
+        overflow: auto;
         text-align: center;
         font: @colortheme_app-font;
         width: 100%;
@@ -33,24 +34,35 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            h2, p {
-                width: 100%;
-            }
             h2 {
+                width: 100%;
                 display: flex;
+                margin-bottom: 20px;
                 justify-content: space-between;
                 .cp-creation-help {
                     display: none;
                 }
             }
+            .cp-creation-help-container {
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                p {
+                    padding: 0 20px;
+                    flex-grow: 0;
+                    flex-shrink: 0;
+                    flex-basis: 50%;
+                    text-align: justify;
+                }
+            }
             @media screen and (max-width: 500px) {
                 width: ~"calc(100% - 30px)";
             }
-            @media screen and (max-height: 600px), screen and (max-width: 500px) {
+            @media screen and (max-height: 800px), screen and (max-width: 500px) {
                 h2 .cp-creation-help {
                     display: inline;
                 }
-                p {
+                .cp-creation-help-container {
                     display: none;
                 }
             }
@@ -138,6 +150,21 @@
                     border-radius: 3px;
                 }
             }
+        }
+        .cp-creation-settings {
+            justify-content: left;
+            a {
+                color: #0275d8;
+                &:hover {
+                    color: lighten(#0275d8, 10%);
+                }
+            }
+        }
+        .cp-creation-deleted {
+            background: #111;
+            padding: 10px;
+            text-align: justify;
+            font-weight: bold;
         }
     }
 }

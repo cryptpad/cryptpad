@@ -10,6 +10,7 @@ define([
     '/customize/messages.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
+    '/api/config',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -26,7 +27,8 @@ define([
     Hash,
     Messages,
     h,
-    AppConfig
+    AppConfig,
+    ApiConfig
     )
 {
     var saveAs = window.saveAs;
@@ -64,10 +66,16 @@ define([
         'code': [
             'cp-settings-code-indent-unit',
             'cp-settings-code-indent-type'
-        ]
+        ],
+        'subscription': {
+            onClick: function () {
+                var urls = common.getMetadataMgr().getPrivateData().accounts;
+                window.open(urls.upgradeURL);
+            }
+        }
     };
 
-    if (!AppConfig.dislayCreationScreen) {
+    if (!AppConfig.displayCreationScreen) {
         delete categories.creation;
     }
     if (AppConfig.disableFeedback) {
@@ -77,6 +85,9 @@ define([
     if (AppConfig.disableProfile) {
         var displaynameIdx = categories.account.indexOf('cp-settings-displayname');
         categories.account.splice(displaynameIdx, 1);
+    }
+    if (!ApiConfig.allowSubscriptions) {
+        delete categories.subscription;
     }
 
     var create = {};
@@ -778,7 +789,7 @@ define([
         var $categories = $('<div>', {'class': 'cp-sidebarlayout-categories'})
                             .appendTo(APP.$leftside);
         APP.$usage = $('<div>', {'class': 'usage'}).appendTo(APP.$leftside);
-        var active = 'account';
+        var active = privateData.category || 'account';
         Object.keys(categories).forEach(function (key) {
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
@@ -786,12 +797,17 @@ define([
             if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
             if (key === 'pad') { $category.append($('<span>', {'class': 'fa fa-file-word-o' })); }
             if (key === 'creation') { $category.append($('<span>', {'class': 'fa fa-plus-circle' })); }
+            if (key === 'subscription') { $category.append($('<span>', {'class': 'fa fa-star-o' })); }
 
             if (key === active) {
                 $category.addClass('cp-leftside-active');
             }
 
             $category.click(function () {
+                if (!Array.isArray(categories[key]) && categories[key].onClick) {
+                    categories[key].onClick();
+                    return;
+                }
                 active = key;
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
                 $category.addClass('cp-leftside-active');

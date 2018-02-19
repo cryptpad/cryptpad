@@ -33,6 +33,7 @@ define([], function () {
         var onLeave = conf.onLeave;
         var onReady = conf.onReady;
         var onDisconnect = conf.onDisconnect;
+        var onError = conf.onError;
         var owners = conf.owners;
         var password = conf.password;
         var expire = conf.expire;
@@ -43,6 +44,17 @@ define([], function () {
         var lastKnownHash;
 
         var messageFromOuter = function () {};
+
+        var error = function (err, wc) {
+            if (onError) {
+                onError({
+                    type: err,
+                    loaded: !initializing
+                });
+                if (wc && (err === "EEXPIRED" || err === "EDELETED")) { wc.leave(); }
+            }
+            else { console.error(err); }
+        };
 
         var onRdy = function (padData) {
             // Trigger onReady only if not ready yet. This is important because the history keeper sends a direct
@@ -57,27 +69,11 @@ define([], function () {
         // shim between chainpad and netflux
         var msgIn = function (peerId, msg) {
             return msg.replace(/^cp\|/, '');
-
-            /*try {
-                var decryptedMsg = Crypto.decrypt(msg, validateKey);
-                return decryptedMsg;
-            } catch (err) {
-                console.error(err);
-                return msg;
-            }*/
         };
 
         var msgOut = function (msg) {
             if (readOnly) { return; }
             return msg;
-            /*try {
-                var cmsg = Crypto.encrypt(msg);
-                if (msg.indexOf('[4') === 0) { cmsg = 'cp|' + cmsg; }
-                return cmsg;
-            } catch (err) {
-                console.log(msg);
-                throw err;
-            }*/
         };
 
         var onMsg = function(peer, msg, wc, network, direct) {
@@ -93,7 +89,9 @@ define([], function () {
                     if (parsed.channel === wc.id && !validateKey) {
                         validateKey = parsed.validateKey;
                     }
-                    padData = parsed;
+                    if (parsed.channel === wc.id) {
+                        padData = parsed;
+                    }
                     // We have to return even if it is not the current channel:
                     // we don't want to continue with other channels messages here
                     return;
@@ -110,10 +108,16 @@ define([], function () {
             if (peer === hk) {
                 // if the peer is the 'history keeper', extract their message
                 var parsed1 = JSON.parse(msg);
+                // First check if it is an error message (EXPIRED/DELETED)
+                if (parsed1.channel === wc.id && parsed1.error) {
+                    return void error(parsed1.error, wc);
+                }
+
                 msg = parsed1[4];
                 // Check that this is a message for our channel
                 if (parsed1[3] !== wc.id) { return; }
             }
+
 
             lastKnownHash = msg.slice(0,64);
             var message = msgIn(peer, msg);
@@ -191,7 +195,12 @@ define([], function () {
                 };
                 var msg = ['GET_HISTORY', wc.id, cfg];
                 // Add the validateKey if we are the channel creator and we have a validateKey
-                if (hk) { network.sendto(hk, JSON.stringify(msg)); }
+                if (hk) {
+                    network.sendto(hk, JSON.stringify(msg)).then(function () {
+                    }, function (err) {
+                        console.error(err);
+                    });
+                }
             } else {
                 onRdy();
             }
@@ -218,8 +227,8 @@ define([], function () {
             // join the netflux network, promise to handle opening of the channel
             network.join(channel || null).then(function(wc) {
                 onOpen(wc, network, firstConnection);
-            }, function(error) {
-                console.error(error);
+            }, function(err) {
+                console.error(err);
             });
         };
 

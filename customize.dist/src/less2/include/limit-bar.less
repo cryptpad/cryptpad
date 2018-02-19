@@ -8,9 +8,10 @@
         width: 100%;
         margin-top: 20px;
         .cp-limit-bar {
-            padding: 5px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
 
-            display: inline-block;
             max-width: 100%;
             margin: 3px;
             box-sizing: border-box;
@@ -18,7 +19,6 @@
             background: white;
             position: relative;
             text-align: center;
-            vertical-align: middle;
             width: ~"calc(100% - 6px)";
             height: 35px;
             line-height: 25px;
@@ -29,6 +29,7 @@
                 background: blue;
                 position: absolute;
                 left: 0;
+                top: 0;
                 z-index: 1; // .usage
                 &.cp-limit-usage-normal {
                     background: @colortheme_green;

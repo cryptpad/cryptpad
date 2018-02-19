@@ -37,6 +37,15 @@ define([
         window.alert("CryptPad needs localStorage to work, try a different browser");
     };
 
+    window.onerror = function (e) {
+        if (/requirejs\.org/.test(e)) {
+            console.log();
+            console.error("Require.js threw a Script Error. This probably means you're missing a dependency for CryptPad.\nIt is recommended that the admin of this server runs `bower install && bower update` to get the latest code, then modify their cache version.\nBest of luck,\nThe CryptPad Developers");
+            return void console.log();
+        }
+        throw e;
+    };
+
     try {
         var test_key = 'localStorage_test';
         var testval = Math.random().toString();

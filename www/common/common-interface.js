@@ -111,12 +111,14 @@ define([
         return input;
     };
 
-    dialog.okButton = function (content) {
-        return h('button.ok.primary', { tabindex: '2', }, content || Messages.okButton);
+    dialog.okButton = function (content, classString) {
+        var sel = typeof(classString) === 'string'? 'button.ok.' + classString:'button.ok.primary';
+        return h(sel, { tabindex: '2', }, content || Messages.okButton);
     };
 
-    dialog.cancelButton = function (content) {
-        return h('button.cancel', { tabindex: '1'}, content || Messages.cancelButton);
+    dialog.cancelButton = function (content, classString) {
+        var sel = typeof(classString) === 'string'? 'button.' + classString:'button.cancel';
+        return h(sel, { tabindex: '1'}, content || Messages.cancelButton);
     };
 
     dialog.message = function (text) {
@@ -315,11 +317,11 @@ define([
             message = dialog.message(msg);
         }
 
-        var close = Util.once(function (el) {
+        var close = function (el) {
             var $el = $(el).fadeOut(150, function () {
-                $el.remove();
+                $el.detach();
             });
-        });
+        };
 
         var navs = [];
         opt.buttons.forEach(function (b) {
@@ -327,7 +329,7 @@ define([
             var button = h('button', { tabindex: '1', 'class': b.className || '' }, b.name);
             $(button).click(function () {
                 b.onClick();
-                close($(this).parents('.alertify').first());
+                close($(button).parents('.alertify').first());
             });
             if (b.keys && b.keys.length) { $(button).attr('data-keys', JSON.stringify(b.keys)); }
             navs.push(button);
@@ -464,8 +466,8 @@ define([
             message = dialog.message(msg);
         }
 
-        var ok = dialog.okButton(opt.ok);
-        var cancel = dialog.cancelButton(opt.cancel);
+        var ok = dialog.okButton(opt.ok, opt.okClass);
+        var cancel = dialog.cancelButton(opt.cancel, opt.cancelClass);
 
         var frame = dialog.frame([
             message,
@@ -551,6 +553,7 @@ define([
         var $loading, $container;
         if ($('#' + LOADING).length) {
             $loading = $('#' + LOADING); //.show();
+            $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);
@@ -598,11 +601,20 @@ define([
         }, 3750);
         // jquery.fadeout can get stuck
     };
-    UI.errorLoadingScreen = function (error, transparent) {
-        if (!$('#' + LOADING).is(':visible')) { UI.addLoadingScreen({hideTips: true}); }
+    UI.errorLoadingScreen = function (error, transparent, exitable) {
+        if (!$('#' + LOADING).is(':visible') || $('#' + LOADING).hasClass('cp-loading-hidden')) {
+            UI.addLoadingScreen({hideTips: true});
+        }
         $('.cp-loading-spinner-container').hide();
+        $('#cp-loading-tip').remove();
         if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
         $('#' + LOADING).find('p').html(error || Messages.error);
+        if (exitable) {
+            $(window).focus();
+            $(window).keydown(function (e) {
+                if (e.which === 27) { $('#' + LOADING).hide(); }
+            });
+        }
     };
 
     var $defaultIcon = $('<span>', {"class": "fa fa-file-text-o"});

@@ -9,7 +9,7 @@ const Pull = require('pull-stream');
 
 const isValidChannelId = function (id) {
     return typeof(id) === 'string' &&
-        [32, 48].indexOf(id.length) > -1 &&
+        id.length >= 32 && id.length < 50 &&
         /^[a-zA-Z0-9=+-]*$/.test(id);
 };
 
@@ -418,6 +418,7 @@ module.exports.create = function (
         openFileLimit: conf.openFileLimit || 2048,
     };
     // 0x1ff -> 777
+    var it;
     Fs.mkdir(env.root, 0x1ff, function (err) {
         if (err && err.code !== 'EEXIST') {
             // TODO: somehow return a nice error
@@ -465,9 +466,12 @@ module.exports.create = function (
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 clearChannel(env, channelName, cb);
             },
+            shutdown: function () {
+                clearInterval(it);
+            }
         });
     });
-    setInterval(function () {
+    it = setInterval(function () {
         flushUnusedChannels(env, function () { });
     }, 5000);
 };

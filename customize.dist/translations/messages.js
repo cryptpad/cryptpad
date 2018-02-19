@@ -22,8 +22,7 @@ define(function () {
     out.button_newslide = 'New Presentation';
     out.button_newwhiteboard = 'New Whiteboard';
 
-    // NOTE: We want to update the 'common_connectionLost' key.
-    // Please do not add a new 'updated_common_connectionLostAndInfo' but change directly the value of 'common_connectionLost'
+    // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
 
@@ -33,12 +32,16 @@ define(function () {
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
+    out.expiredError = 'This pad has reached its expiration time and is no longer available.';
+    out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
+    out.deletedError = 'This pad has been deleted by its owner and is no longer available.';
 
     out.loading = "Loading...";
     out.error = "Error";
     out.saved = "Saved";
     out.synced = "Everything is saved";
     out.deleted = "Pad deleted from your CryptDrive";
+    out.deletedFromServer = "Pad deleted from the server";
 
     out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
 
@@ -381,7 +384,8 @@ define(function () {
     out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
-    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently this pad from the server?";
+    out.fm_deleteOwnedPad = "Are you sure you want to remove permanently this pad from the server?";
+    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently these pads from the server?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
@@ -395,7 +399,8 @@ define(function () {
     out.fm_info_trash = out.updated_0_fm_info_trash;
     out.fm_info_allFiles = 'Contains all the files from "Documents", "Unsorted" and "Trash". You can\'t move or remove files from here.'; // Same here
     out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
-                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.';
+                            'They are stored in your browser so clearing history may make them disappear.<br>' +
+                            '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.<br>';
     out.fm_info_owned = "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.";
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
@@ -417,6 +422,7 @@ define(function () {
                            "This will remove your CryptDrive and its history from your browser, but your pads will still exist (encrypted) on our server.";
     out.fm_padIsOwned = "You are the owner of this pad";
     out.fm_padIsOwnedOther = "This pad is owned by another user";
+    out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -472,6 +478,7 @@ define(function () {
     out.register_mustAcceptTerms = "You must accept the terms of service.";
     out.register_mustRememberPass = "We cannot reset your password if you forget it. It's very important that you remember it! Please check the checkbox to confirm.";
 
+    out.register_whyRegister = "Why sign up?";
     out.register_header = "Welcome to CryptPad";
     out.register_explanation = [
         "<h3>Lets go over a couple things first:</h3>",
@@ -495,6 +502,7 @@ define(function () {
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Rich text";
     out.settings_cat_creation = "New pad";
+    out.settings_cat_subscription = "Subscription";
     out.settings_title = "Settings";
     out.settings_save = "Save";
 
@@ -716,6 +724,7 @@ define(function () {
 
     // features.html
 
+    out.features = "Features";
     out.features_title = "Features table";
     out.features_feature = "Feature";
     out.features_anon = "Anonymous user";
@@ -737,6 +746,7 @@ define(function () {
     out.features_f_multiple = "Use on multiple devices";
     out.features_f_multiple_notes = "Easy way to access your pads from any device";
     out.features_f_logoutEverywhere = "Log out from other devices";
+    out.features_f_logoutEverywhere_notes = ""; // Used in the French translation to explain
     out.features_f_templates = "Use templates";
     out.features_f_templates_notes = "Create templates and create new pads from your templates";
     out.features_f_profile = "Create a profile";
@@ -748,6 +758,30 @@ define(function () {
     out.features_f_storage = "Storage";
     out.features_f_storage_anon = "Pads deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
+
+    // faq.html
+
+    out.faq_link = "FAQ";
+    out.faq_title = "Frequently Asked Questions";
+    out.faq = {};
+    out.faq.cat1 = {
+        title: 'Category 1',
+        q1: {
+            q: 'What is a pad?',
+            a: 'A realtime collaborative document...'
+        },
+        q2: {
+            q: 'Question 2?',
+            a: '42'
+        }
+    };
+    out.faq.cat2 = {
+        title: 'Category 2',
+        q1: {
+            q: 'A new question?',
+            a: 'The answer'
+        }
+    };
 
     // terms.html
 
@@ -855,23 +889,24 @@ define(function () {
     out.feedback_optout = "If you would like to opt out, visit <a href='/settings/'>your user settings page</a>, where you'll find a checkbox to enable or disable user feedback";
 
     // Creation page
-    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad";
+    out.creation_404 = "This pad not longer exists. Use the following form to create a new pad.";
     out.creation_ownedTitle = "Type of pad";
     out.creation_ownedTrue = "Owned pad";
     out.creation_ownedFalse = "Open pad";
-    out.creation_owned1 = "An <b>owned</b> pad is a pad that you can delete from the server whenever you want. Once it is deleted, no one else can access it, even if it is stored in their CryptDrive.";
+    out.creation_owned1 = "An <b>owned</b> pad can be deleted from the server whenever the owner wants. Deleting an owned pad removes it from other users' CryptDrives.";
     out.creation_owned2 = "An <b>open</b> pad doesn't have any owner and thus, it can't be deleted from the server unless it has reached its expiration time.";
     out.creation_expireTitle = "Life time";
     out.creation_expireTrue = "Add a life time";
     out.creation_expireFalse = "Unlimited";
-    out.creation_expireHours = "Hours";
-    out.creation_expireDays = "Days";
-    out.creation_expireMonths = "Months";
-    out.creation_expire1 = "By default, a pad stored by a registered user will never be removed from the server, unless it is requested by its owner.";
-    out.creation_expire2 = "If you prefer, you can set a life time to make sure the pad will be permanently deleted from the server and unavailable after the specified date.";
+    out.creation_expireHours = "Hour(s)";
+    out.creation_expireDays = "Day(s)";
+    out.creation_expireMonths = "Month(s)";
+    out.creation_expire1 = "An <b>unlimited</b> pad will not be removed from the server until its owner deletes it.";
+    out.creation_expire2 = "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives.";
     out.creation_createTitle = "Create a pad";
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
+    out.creation_settings = "New Pad settings";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";
@@ -879,7 +914,7 @@ define(function () {
     out.creation_expiration = "Expiration time";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
-    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pad, expiration pad, etc.).";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     // New share modal

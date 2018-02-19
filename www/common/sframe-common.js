@@ -92,6 +92,7 @@ define([
     funcs.createMarkdownToolbar = callWithCommon(UIElements.createMarkdownToolbar);
     funcs.getPadCreationScreen = callWithCommon(UIElements.getPadCreationScreen);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
+    funcs.onServerError = callWithCommon(UIElements.onServerError);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -392,15 +393,12 @@ define([
                 UI.log(data.logText);
             });
 
-            ctx.metadataMgr.onChange(function () {
-                try {
-                    var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
-                    Feedback.init(feedback);
-                } catch (e) { Feedback.init(false); }
-            });
-
             ctx.metadataMgr.onReady(waitFor());
         }).nThen(function () {
+            try {
+                var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
+                Feedback.init(feedback);
+            } catch (e) { Feedback.init(false); }
             ctx.sframeChan.ready();
             cb(funcs);
         });

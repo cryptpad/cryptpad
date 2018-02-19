@@ -94,9 +94,27 @@ define([
         return list;
     };
 
-    var getCanonicalChannelList = function () {
-        return Util.deduplicateString(getUserChannelList()).sort();
+    var getExpirableChannelList = function () {
+        var list = [];
+        store.userObject.getFiles([store.userObject.FILES_DATA]).forEach(function (id) {
+            var data = store.userObject.getFileData(id);
+            var edPublic = store.proxy.edPublic;
+
+            // Push channels owned by someone else or channel that should have expired
+            // because of the expiration time
+            if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
+                    (data.expire && data.expire < (+new Date()))) {
+                list.push(Hash.hrefToHexChannelId(data.href));
+            }
+        });
+        return list;
     };
+
+    var getCanonicalChannelList = function (expirable) {
+        var list = expirable ? getExpirableChannelList() : getUserChannelList();
+        return Util.deduplicateString(list).sort();
+    };
+
     //////////////////////////////////////////////////////////////////
     /////////////////////// RPC //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
@@ -172,6 +190,34 @@ define([
         });
     };
 
+    Store.removeOwnedChannel = function (data, cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+        store.rpc.removeOwnedChannel(data, function (err) {
+            cb({error:err});
+        });
+    };
+
+    var arePinsSynced = function (cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+        var list = getCanonicalChannelList(false);
+        var local = Hash.hashChannelList(list);
+        store.rpc.getServerHash(function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(null, hash === local);
+        });
+    };
+
+    var resetPins = function (cb) {
+        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
+
+        var list = getCanonicalChannelList(false);
+        store.rpc.reset(list, function (e, hash) {
+            if (e) { return void cb(e); }
+            cb(null, hash);
+        });
+    };
+
     Store.uploadComplete = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.uploadComplete(function (err, res) {
@@ -193,27 +239,6 @@ define([
         store.rpc.uploadCancel(function (err, res) {
             if (err) { return void cb({error:err}); }
             cb(res);
-        });
-    };
-
-    var arePinsSynced = function (cb) {
-        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-        var list = getCanonicalChannelList();
-        var local = Hash.hashChannelList(list);
-        store.rpc.getServerHash(function (e, hash) {
-            if (e) { return void cb(e); }
-            cb(null, hash === local);
-        });
-    };
-
-    var resetPins = function (cb) {
-        if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-
-        var list = getCanonicalChannelList();
-        store.rpc.reset(list, function (e, hash) {
-            if (e) { return void cb(e); }
-            cb(null, hash);
         });
     };
 
@@ -309,6 +334,23 @@ define([
         });
     };
 
+    Store.getDeletedPads = function (data, cb) {
+        if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
+        var list = getCanonicalChannelList(true);
+        if (!Array.isArray(list)) {
+            return void cb({error: 'INVALID_FILE_LIST'});
+        }
+
+        store.anon_rpc.send('GET_DELETED_PADS', list, function (e, res) {
+            if (e) { return void cb({error: e}); }
+            if (res && res.length && Array.isArray(res[0])) {
+                cb(res[0]);
+            } else {
+                cb({error: 'UNEXPECTED_RESPONSE'});
+            }
+        });
+    };
+
     Store.initAnonRpc = function (data, cb) {
         require([
             '/common/rpc.js',
@@ -320,8 +362,6 @@ define([
             });
         });
     };
-
-
 
     //////////////////////////////////////////////////////////////////
     /////////////////////// Store ////////////////////////////////////
@@ -579,6 +619,8 @@ define([
                 contains = true;
                 pad.atime = +new Date();
                 pad.title = title;
+                pad.owners = owners;
+                pad.expire = expire;
 
                 // If the href is different, it means we have a stronger one
                 if (href !== pad.href) { isStronger = true; }
@@ -773,6 +815,9 @@ define([
             onDisconnect: function () {
                 postMessage("PAD_DISCONNECT");
             }, // post EV_PAD_DISCONNECT
+            onError: function (err) {
+                postMessage("PAD_ERROR", err);
+            }, // post EV_PAD_ERROR
             channel: data.channel,
             validateKey: data.validateKey,
             owners: data.owners,
@@ -852,7 +897,7 @@ define([
             case 'addFolder':
                 store.userObject.addFolder(data.path, data.name, cb); break;
             case 'delete':
-                store.userObject.delete(data.paths, cb, data.nocheck); break;
+                store.userObject.delete(data.paths, cb, data.nocheck, data.isOwnPadRemoved); break;
             case 'emptyTrash':
                 store.userObject.emptyTrash(cb); break;
             case 'rename':
@@ -871,6 +916,8 @@ define([
         var userObject = store.userObject = UserObject.init(proxy.drive, {
             pinPads: Store.pinPads,
             unpinPads: Store.unpinPads,
+            removeOwnedChannel: Store.removeOwnedChannel,
+            edPublic: store.proxy.edPublic,
             loggedIn: store.loggedIn,
             log: function (msg) {
                 postMessage("DRIVE_LOG", msg);
