@@ -2232,7 +2232,7 @@ define([
 
             // Only Trash and Root are available in not-owned files manager
             if (!path || displayedCategories.indexOf(path[0]) === -1) {
-                log(Messages.categoryError);
+                log(Messages.fm_categoryError);
                 currentPath = [ROOT];
                 _displayDirectory(currentPath);
                 return;
