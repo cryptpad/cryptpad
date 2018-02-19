@@ -15,12 +15,18 @@ define(function () {
     out.type.media = "Média";
     out.type.todo = "Todo";
     out.type.contacts = "Contacts";
+    out.type.oodoc = 'OnlyOffice Texte';
+    out.type.ooslide = 'OnlyOffice Présentation';
+    out.type.oocell = 'OnlyOffice Tableur';
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
     out.button_newpoll = 'Nouveau sondage';
     out.button_newslide = 'Nouvelle présentation';
     out.button_newwhiteboard = 'Nouveau tableau blanc';
+    out.button_newoodoc = 'Nouveau texte OnlyOffice';
+    out.button_newooslide = 'Nouvelle présentation OnlyOffice';
+    out.button_newoocell = 'Nouveau tableur OnlyOffice';
 
     out.updated_0_common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
     out.common_connectionLost = out.updated_0_common_connectionLost;

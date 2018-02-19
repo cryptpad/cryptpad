@@ -9,7 +9,8 @@ define(function() {
     /* Select the buttons displayed on the main page to create new collaborative sessions
      * Existing types : pad, code, poll, slide
      */
-    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'whiteboard', 'file', 'todo', 'contacts'];
+    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'whiteboard',
+                                'oodoc', 'ooslide', 'oocell', 'file', 'todo', 'contacts'];
     config.registeredOnlyTypes = ['file', 'contacts'];
 
     /*  Cryptpad apps use a common API to display notifications to users
@@ -81,6 +82,9 @@ define(function() {
         whiteboard: 'fa-paint-brush',
         todo: 'fa-tasks',
         contacts: 'fa-users',
+        oodoc: 'fa-file-word-o',
+        ooslide: 'fa-file-powerpoint-o',
+        oocell: 'fa-file-excel-o',
     };
 
     // EXPERIMENTAL: Enabling "displayCreationScreen" may cause UI issues and possible loss of data

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) Ascensio System SIA 2017. All rights reserved
+ * Copyright (c) Ascensio System SIA 2018. All rights reserved
  *
  * http://www.onlyoffice.com 
  *

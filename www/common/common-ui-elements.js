@@ -672,12 +672,24 @@ define([
                     });
                 });
                 break;
+            case 'save': // OnlyOffice save
+                button = $('<button>', {
+                    'class': 'fa fa-save',
+                    title: 'TODO OnlyOffice save',
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
+                .text('TODO: OnlyOffice save'))
+                .click(common.prepareFeedback(type));
+                if (callback) { button.click(callback); }
+                break;
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
                     style: 'font:'+size+' FontAwesome'
                 })
                 .click(common.prepareFeedback(type));
+                if (callback) {
+                    button.click(callback);
+                }
         }
         if (rightside) {
             button.addClass('cp-toolbar-rightside-button');

@@ -1,11 +1,11 @@
 config = {
     "document": {
-        "fileType": "docx",
+        "fileType": "pptx",
         "key": "Khirz6zTPdfd7",
-        "title": "test.docx",
-        "url": "/onlyoffice/test.docx"
+        "title": "test.pptx",
+        "url": "/onlyoffice/test.pptx"
     },
-    "documentType": "text",
+    "documentType": "presentation",
     "editorConfig": {
                         "user": {
                         "id": "c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
@@ -13,10 +13,11 @@ config = {
                     }
     },
     "events": {
-     "onDocumentStateChange": function(evt) { console.log("in change"); window.top.APP.onLocal(); },
-     "onReady": function(evt) { console.log("in onReady"); window.top.onOOReady(); } 
+     "onDocumentStateChange": function(evt) { console.log("in change"); },
+     "onReady": function(evt) { console.log("in onReady"); }
     }
 };
+window.onbeforeunload = null;
 
 
 var docEditor = new DocsAPI.DocEditor("placeholder", config);

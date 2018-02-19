@@ -1,0 +1,42 @@
+@import (once) "../customize/src/less2/include/browser.less";
+@import (once) "../customize/src/less2/include/toolbar.less";
+@import (once) "../customize/src/less2/include/markdown.less";
+@import (once) '../customize/src/less2/include/fileupload.less';
+@import (once) '../customize/src/less2/include/alertify.less';
+@import (once) '../customize/src/less2/include/avatar.less';
+
+.toolbar_main(
+    @bg-color: @colortheme_ooslide-bg,
+    @warn-color: @colortheme_ooslide-warn,
+    @color: @colortheme_ooslide-color
+);
+.fileupload_main();
+.alertify_main();
+
+// body
+&.cp-app-ooslide {
+    display: flex;
+    flex-flow: column;
+
+    #cp-toolbar {
+        display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+    }
+
+    .cp-cryptpad-toolbar {
+        padding: 0px;
+        display: inline-block;
+    }
+    #cp-app-oo-container {
+        flex: 1;
+        height: 100%;
+        background-color: lightgrey;
+        display: flex;
+    }
+    #ooframe {
+        flex: 1;
+        border:none;
+        margin:0;
+        padding:0;
+    }
+}
+

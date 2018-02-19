@@ -29,10 +29,13 @@ define([
 {
     var saveAs = window.saveAs;
 
+    /*
     var ooReady = window.frames[0] && window.frames[0].frames[0] && window.frames[0].frames[0].editor;
     window.onOOReady = function () {
+        console.log('ready!');
         ooReady = true;
     };
+    */
 
     var APP = window.APP = {
         $: $
@@ -77,9 +80,12 @@ define([
         var loadDocument = APP.loadDocument = function (content, file) {
              console.log("Read " + content); 
              return;
+             /*
+             // TODO: load a document from server here
              window.frames[0].frames[0].editor.asc_CloseFile();
              var openResult = {bSerFormat: true, data: content, url: "http://localhost:3000/onlyoffice/", changes: null};
              window.frames[0].frames[0].editor.openDocument(openResult);
+             */
         };
 
         var readOnly = false;
@@ -119,7 +125,6 @@ define([
         };
 
         APP.onLocal = config.onLocal = function () {
-            console.log(initializing, readOnly);
             if (initializing) { return; }
             if (readOnly) { return; }
 
@@ -127,8 +132,9 @@ define([
                 console.log("Cannot access editor");
                 return;
             }
-            console.log('ok');
             var data = window.frames[0].frames[0].editor.asc_nativeGetFile();
+            console.log('onLocal, data avalable');
+            data = '';
             var content = stringifyInner(data);
             APP.realtime.contentUpdate(content);
         };
@@ -169,14 +175,9 @@ define([
             var $import = common.createButton('import', true, {}, loadDocument);
             $rightside.append($import);
             var $save = common.createButton('save', true, {}, saveToServer);
-            $save.click(function () {
-                       saveToServer();
-            });
             $rightside.append($save);
             var $remote = common.createButton('remote', true, {}, callRemote);
-            $remote.click(function () {
-                      callRemote(); 
-            });
+            $remote.attr('title', 'call onRemote');
             $rightside.append($remote);
 
             if (common.isLoggedIn()) {
@@ -293,9 +294,11 @@ define([
         var common;
 
         nThen(function (waitFor) {
+            /*
             if (!ooReady) {
                 window.onOOReady = waitFor();
             }
+            */
             $(waitFor(function () {
                 UI.addLoadingScreen();
             }));

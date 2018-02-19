@@ -15,12 +15,18 @@ define(function () {
     out.type.media = 'Media';
     out.type.todo = "Todo";
     out.type.contacts = 'Contacts';
+    out.type.oodoc = 'OnlyOffice Text';
+    out.type.ooslide = 'OnlyOffice Slide';
+    out.type.oocell = 'OnlyOffice Spreadsheet';
 
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
     out.button_newpoll = 'New Poll';
     out.button_newslide = 'New Presentation';
     out.button_newwhiteboard = 'New Whiteboard';
+    out.button_newoodoc = 'New OnlyOffice document';
+    out.button_newooslide = 'New OnlyOffice presentation';
+    out.button_newoocell = 'New OnlyOffice spreadsheet';
 
     // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";

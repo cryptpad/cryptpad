@@ -20,8 +20,8 @@ define([
         window.rc = requireConfig;
         window.apiconf = ApiConfig;
         document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + '/onlyoffice/document/inner.html?' + requireConfig.urlArgs +
-                '#' + encodeURIComponent(JSON.stringify(req)));
+            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
+                requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
         // loading screen setup.

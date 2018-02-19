@@ -202,7 +202,7 @@ var FONT_OBFUSCATION_MAGIC = new Buffer([
 
 
 var FONT_NAME_MAP = {};
-[ './www/onlyoffice/fonts/' ].forEach(function (path) {
+[ './www/common/onlyoffice/fonts/' ].forEach(function (path) {
     Fs.readdir(path, function (err, list) {
         if (err) { throw err; }
         list.forEach(function (fontName) {
@@ -213,7 +213,7 @@ var FONT_NAME_MAP = {};
 
 /* Code to automatically transform font to js */ 
 /* Currently not active, but might be necessary */
-app.use("/onlyoffice/fonts/odttf/:name", function (req, res) {
+app.use("/common/onlyoffice/fonts/odttf/:name", function (req, res) {
     var name = req.params.name.replace(/\.js$/, '').toLowerCase();
     console.log(name);
     if (!FONT_NAME_MAP[name]) {
@@ -233,12 +233,14 @@ app.use("/onlyoffice/fonts/odttf/:name", function (req, res) {
 });
 
 /* All fonts file replaced by the list of fonts in ttf */
-app.use("/onlyoffice/sdkjs/common/AllFonts.js",
-    Express.static("./www/onlyoffice/allfonts-noobf.js"));
+app.use("/common/onlyoffice/sdkjs/common/AllFonts.js",
+    Express.static("./www/common/onlyoffice/allfonts-noobf.js"));
 
 /* Replace fonts thumbnail call */
-app.use("/onlyoffice/sdkjs/common/Images/fonts_thumbnail@2x.png",
-    Express.static("./www/onlyoffice/fonts_thumbnail.png"));
+app.use("/common/onlyoffice/sdkjs/common/Images/fonts_thumbnail@2x.png",
+    Express.static("./www/common/onlyoffice/fonts_thumbnail@2x.png"));
+app.use("/common/onlyoffice/sdkjs/common/Images/fonts_thumbnail.png",
+    Express.static("./www/common/onlyoffice/fonts_thumbnail.png"));
 
 
 app.use(function (req, res, next) {
