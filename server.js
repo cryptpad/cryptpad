@@ -234,7 +234,7 @@ app.use("/common/onlyoffice/fonts/odttf/:name", function (req, res) {
 
 /* All fonts file replaced by the list of fonts in ttf */
 app.use("/common/onlyoffice/sdkjs/common/AllFonts.js",
-    Express.static("./www/common/onlyoffice/allfonts-noobf.js"));
+    Express.static("./www/common/onlyoffice/AllFonts.js"));
 
 /* Replace fonts thumbnail call */
 app.use("/common/onlyoffice/sdkjs/common/Images/fonts_thumbnail@2x.png",
