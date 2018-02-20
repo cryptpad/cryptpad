@@ -147,6 +147,8 @@ define([
                         $span.text($input.val().trim());
                         $span.show();
                     }
+                }).on('click mousedown', function (e) {
+                    e.stopPropagation();
                 }).appendTo($taskDiv);
 
                 $span.text(entry.task)
