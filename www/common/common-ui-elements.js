@@ -283,10 +283,11 @@ define([
                 present: present
             });
         };
-        var getLinkValue = function () {
-            var edit = $(link).find('#cp-share-editable-true').is(':checked');
-            var embed = $(link).find('#cp-share-embed').is(':checked');
-            var present = $(link).find('#cp-share-present').is(':checked');
+        var getLinkValue = function (initValue) {
+            var val = initValue || {};
+            var edit = initValue ? val.edit : $(link).find('#cp-share-editable-true').is(':checked');
+            var embed = initValue ? val.embed : $(link).find('#cp-share-embed').is(':checked');
+            var present = initValue ? val.present : $(link).find('#cp-share-present').is(':checked');
 
             var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
@@ -375,6 +376,7 @@ define([
             }
             if (val.embed) { $(link).find('#cp-share-embed').attr('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
+            $(link).find('#cp-share-link-preview').val(getLinkValue(val));
         });
         return tabs;
     };

@@ -104,9 +104,13 @@ define([
                             fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
                         removeOwnedChannel(channelId, function (obj) {
                             if (obj && obj.error) {
-                                console.error(obj.error);
+                                // If the error is that the file is already removed, nothing to
+                                // report, it's a normal behavior (pad expired probably)
+                                if (obj.error.code === 'ENOENT') { return; }
+
                                 // RPC may not be responding
                                 // Send a report that can be handled manually
+                                console.error(obj.error);
                                 Feedback.send('ERROR_DELETING_OWNED_PAD=' + channelId, true);
                             }
                         });
