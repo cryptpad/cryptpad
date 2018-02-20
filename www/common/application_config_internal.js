@@ -83,8 +83,9 @@ define(function() {
         contacts: 'fa-users',
     };
 
-    // EXPERIMENTAL: Enabling "displayCreationScreen" may cause UI issues and possible loss of data
-    config.displayCreationScreen = false;
+    // Ability to create owned pads and expiring pads through a new pad creation screen.
+    // The new screen can be disabled by the users in their settings page
+    config.displayCreationScreen = true;
 
     // Prevent anonymous users from storing pads in their drive
     config.disableAnonymousStore = false;
