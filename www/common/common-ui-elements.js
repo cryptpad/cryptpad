@@ -378,6 +378,10 @@ define([
             if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));
         });
+        common.getMetadataMgr().onChange(function () {
+            hashes = common.getMetadataMgr().getPrivateData().availableHashes;
+            $(link).find('#cp-share-link-preview').val(getLinkValue());
+        });
         return tabs;
     };
     UIElements.createFileShareModal = function (config) {
