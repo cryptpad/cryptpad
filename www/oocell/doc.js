@@ -30,7 +30,10 @@ config = {
         "onAppReady": function(evt) { console.log("in onAppReady"); },
     }
 };
-window.onbeforeunload = null;
+window.onbeforeunload = function () {
+    var ifr = document.getElementsByTagName('iframe')[0];
+    if (ifr) { ifr.remove(); }
+};
 
 
 var docEditor = new DocsAPI.DocEditor("placeholder", config);
