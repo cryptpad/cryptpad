@@ -625,6 +625,7 @@ define([
                 // Update metadata values and send new metadata inside
                 parsed = Utils.Hash.parsePadUrl(window.location.href);
                 defaultTitle = Utils.Hash.getDefaultName(parsed);
+                hashes = Utils.Hash.getHashes(secret.channel, secret);
                 readOnly = false;
                 updateMeta();
 
