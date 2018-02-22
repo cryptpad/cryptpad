@@ -331,17 +331,27 @@ define([
             });
 
             sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
+                var href;
+                if (readOnly && hashes.editHash) {
+                    // If we have a stronger hash, use it for pad attributes
+                    href = window.location.pathname + '#' + hashes.editHash;
+                }
                 Cryptpad.getPadAttribute(data.key, function (e, data) {
                     cb({
                         error: e,
                         data: data
                     });
-                });
+                }, href);
             });
             sframeChan.on('Q_SET_PAD_ATTRIBUTE', function (data, cb) {
+                var href;
+                if (readOnly && hashes.editHash) {
+                    // If we have a stronger hash, use it for pad attributes
+                    href = window.location.pathname + '#' + hashes.editHash;
+                }
                 Cryptpad.setPadAttribute(data.key, data.value, function (e) {
                     cb({error:e});
-                });
+                }, href);
             });
 
             sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
