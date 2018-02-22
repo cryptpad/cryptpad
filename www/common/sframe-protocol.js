@@ -31,6 +31,8 @@ define({
     'EV_RT_CONNECT': true,
     // Called after the history is finished synchronizing, no arguments.
     'EV_RT_READY': true,
+    // Called when the server returns an error in a pad (EEXPIRED, EDELETED).
+    'EV_RT_ERROR': true,
     // Called from both outside and inside, argument is a (string) chainpad message.
     'Q_RT_MESSAGE': true,
 

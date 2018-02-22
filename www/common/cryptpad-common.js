@@ -538,6 +538,7 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+    pad.onErrorEvent = Util.mkEvent();
 
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
@@ -678,6 +679,9 @@ define([
             }
             case 'PAD_DISCONNECT': {
                 common.padRpc.onDisconnectEvent.fire(data); break;
+            }
+            case 'PAD_ERROR': {
+                common.padRpc.onErrorEvent.fire(data); break;
             }
             // Drive
             case 'DRIVE_LOG': {

@@ -2232,7 +2232,7 @@ define([
 
             // Only Trash and Root are available in not-owned files manager
             if (!path || displayedCategories.indexOf(path[0]) === -1) {
-                log(Messages.categoryError);
+                log(Messages.fm_categoryError);
                 currentPath = [ROOT];
                 _displayDirectory(currentPath);
                 return;
@@ -2673,11 +2673,14 @@ define([
             var data = JSON.parse(JSON.stringify(filesOp.getFileData(el)));
             if (!data || !data.href) { return void cb('INVALID_FILE'); }
             data.href = base + data.href;
+
+            var roUrl;
             if (ro) {
                 data.roHref = data.href;
                 delete data.href;
             } else {
-                data.roHref = base + getReadOnlyUrl(el);
+                roUrl = getReadOnlyUrl(el);
+                if (roUrl) { data.roHref = base + roUrl; }
             }
 
             UIElements.getProperties(common, data, cb);
@@ -2712,6 +2715,8 @@ define([
             UI.confirm(msgD, function(res) {
                 $(window).focus();
                 if (!res) { return; }
+                filesOp.delete(pathsList, refresh);
+                /*
                 // Try to delete each selected pad from server, and delete from drive if no error
                 var n = nThen(function () {});
                 pathsList.forEach(function (p) {
@@ -2723,10 +2728,12 @@ define([
                         sframeChan.query('Q_REMOVE_OWNED_CHANNEL', channel,
                                          waitFor(function (e) {
                             if (e) { return void console.error(e); }
-                            filesOp.delete([p], refresh);
+                            filesOp.delete([p], function () {}, false, true);
                         }));
                     });
                 });
+                n.nThen(function () { refresh(); });
+                */
             });
         };
         $contextMenu.on("click", "a", function(e) {

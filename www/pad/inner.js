@@ -402,6 +402,17 @@ define([
             }
         });
 
+        framework.setTextContentGetter(function () {
+            var innerCopy = inner.cloneNode(true);
+            displayMediaTags(framework, innerCopy, mediaTagMap);
+            innerCopy.normalize();
+            $(innerCopy).find('*').each(function (i, el) {
+                $(el).append(' ');
+            });
+            var str = $(innerCopy).text();
+            str = str.replace(/\s\s+/g, ' ');
+            return str;
+        });
         framework.setContentGetter(function () {
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();

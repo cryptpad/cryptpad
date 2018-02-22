@@ -141,7 +141,7 @@ define([
     };
     var getPadProperties = function (common, data, cb) {
         var $d = $('<div>');
-        if (!data || !data.href) { return void cb(void 0, $d); }
+        if (!data || (!data.href && !data.roHref)) { return void cb(void 0, $d); }
 
         if (data.href) {
             $('<label>', {'for': 'cp-app-prop-link'}).text(Messages.editShare).appendTo($d);
@@ -283,10 +283,11 @@ define([
                 present: present
             });
         };
-        var getLinkValue = function () {
-            var edit = $(link).find('#cp-share-editable-true').is(':checked');
-            var embed = $(link).find('#cp-share-embed').is(':checked');
-            var present = $(link).find('#cp-share-present').is(':checked');
+        var getLinkValue = function (initValue) {
+            var val = initValue || {};
+            var edit = initValue ? val.edit : $(link).find('#cp-share-editable-true').is(':checked');
+            var embed = initValue ? val.embed : $(link).find('#cp-share-embed').is(':checked');
+            var present = initValue ? val.present : $(link).find('#cp-share-present').is(':checked');
 
             var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
@@ -375,6 +376,11 @@ define([
             }
             if (val.embed) { $(link).find('#cp-share-embed').attr('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
+            $(link).find('#cp-share-link-preview').val(getLinkValue(val));
+        });
+        common.getMetadataMgr().onChange(function () {
+            hashes = common.getMetadataMgr().getPrivateData().availableHashes;
+            $(link).find('#cp-share-link-preview').val(getLinkValue());
         });
         return tabs;
     };
@@ -1655,8 +1661,6 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
 
-        // XXX check text for pad creation screen + translate it in French
-
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var $creation = $('<div>', { id: 'cp-creation' }).appendTo($creationContainer);
@@ -1687,7 +1691,10 @@ define([
                 Messages.creation_ownedTitle,
                 createHelper(Messages.creation_owned1 + '\n' + Messages.creation_owned2)
             ]),
-            setHTML(h('p'), Messages.creation_owned1 + '<br>' + Messages.creation_owned2),
+            h('div.cp-creation-help-container', [
+                setHTML(h('p'), Messages.creation_owned1),
+                setHTML(h('p'), Messages.creation_owned2)
+            ]),
             h('input#cp-creation-owned-true.cp-creation-owned-value', {
                 type: 'radio',
                 name: 'cp-creation-owned',
@@ -1715,7 +1722,10 @@ define([
                 Messages.creation_expireTitle,
                 createHelper(Messages.creation_expire1, Messages.creation_expire2)
             ]),
-            setHTML(h('p'), Messages.creation_expire1 + '<br>' + Messages.creation_expire2),
+            h('div.cp-creation-help-container', [
+                setHTML(h('p'), Messages.creation_expire1),
+                setHTML(h('p'), Messages.creation_expire2)
+            ]),
             h('input#cp-creation-expire-false.cp-creation-expire-value', {
                 type: 'radio',
                 name: 'cp-creation-expire',
@@ -1823,6 +1833,25 @@ define([
             href: origin + '/settings/#creation',
             target: '_blank'
         }, Messages.creation_settings))).appendTo($creation);
+    };
+
+    UIElements.onServerError = function (common, err, toolbar, cb) {
+        if (["EDELETED", "EEXPIRED"].indexOf(err.type) === -1) { return; }
+        var msg = err.type;
+        if (err.type === 'EEXPIRED') {
+            msg = Messages.expiredError;
+            if (err.loaded) {
+                msg += Messages.expiredErrorCopy;
+            }
+        } else if (err.type === 'EDELETED') {
+            msg = Messages.deletedError;
+            if (err.loaded) {
+                msg += Messages.expiredErrorCopy;
+            }
+        }
+        if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
+        UI.errorLoadingScreen(msg, true, true);
+        (cb || function () {})();
     };
 
     return UIElements;

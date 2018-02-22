@@ -92,6 +92,7 @@ define([
     funcs.createMarkdownToolbar = callWithCommon(UIElements.createMarkdownToolbar);
     funcs.getPadCreationScreen = callWithCommon(UIElements.getPadCreationScreen);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
+    funcs.onServerError = callWithCommon(UIElements.onServerError);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);

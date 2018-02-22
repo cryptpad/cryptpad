@@ -21,10 +21,25 @@ try {
 var websocketPort = config.websocketPort || config.httpPort;
 var useSecureWebsockets = config.useSecureWebsockets || false;
 
+// This is stuff which will become available to replify
+const debuggableStore = new WeakMap();
+const debuggable = function (name, x) {
+    if (name in debuggableStore) {
+        try { throw new Error(); } catch (e) {
+            console.error('cannot add ' + name + ' more than once [' + e.stack + ']');
+        }
+    } else {
+        debuggableStore[name] = x;
+    }
+    return x;
+};
+debuggable('global', global);
+debuggable('config', config);
+
 // support multiple storage back ends
 var Storage = require(config.storage||'./storage/file');
 
-var app = Express();
+var app = debuggable('app', Express());
 
 var httpsOpts;
 
@@ -102,6 +117,7 @@ Fs.exists(__dirname + "/customize", function (e) {
 
 var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'contact'];
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
+app.get(mainPagePattern, Express.static(__dirname + '/customize'));
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
 app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
@@ -204,7 +220,6 @@ var rpc;
 var nt = nThen(function (w) {
     if (!config.enableTaskScheduling) { return; }
     var Tasks = require("./storage/tasks");
-
     console.log("loading task scheduler");
     Tasks.create(config, w(function (e, tasks) {
         config.tasks = tasks;
@@ -214,7 +229,7 @@ var nt = nThen(function (w) {
     if (typeof(config.rpc) !== 'string') { return; }
     // load pin store...
     var Rpc = require(config.rpc);
-    Rpc.create(config, w(function (e, _rpc) {
+    Rpc.create(config, debuggable, w(function (e, _rpc) {
         if (e) {
             w.abort();
             throw e;
@@ -233,3 +248,6 @@ var nt = nThen(function (w) {
     });
 });
 
+if (config.debugReplName) {
+    require('replify')({ name: config.debugReplName, app: debuggableStore });
+}

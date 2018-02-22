@@ -8,6 +8,7 @@
     "express": "~4.10.1",
     "nthen": "~0.1.0",
     "pull-stream": "^3.6.1",
+    "replify": "^1.2.0",
     "saferphore": "0.0.1",
     "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",

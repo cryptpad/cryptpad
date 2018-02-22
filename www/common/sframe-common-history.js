@@ -44,12 +44,12 @@ define([
 
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
 
-        var to = window.setTimeout(function () {
+        /*var to = window.setTimeout(function () {
             cb('[GET_FULL_HISTORY_TIMEOUT]');
-        }, 30000);
+        }, 30000);*/
 
         common.getFullHistory(realtime, function () {
-            window.clearTimeout(to);
+            //window.clearTimeout(to);
             cb(null, realtime);
         });
     };
