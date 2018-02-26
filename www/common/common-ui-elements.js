@@ -1764,6 +1764,7 @@ define([
 
         // Create the pad
         var create = function (template) {
+            $creationContainer.remove();
             // Type of pad
             var ownedVal = parseInt($('input[name="cp-creation-owned"]:checked').val());
             // Life time
@@ -1784,7 +1785,6 @@ define([
                 expire: expireVal,
                 template: template
             }, function () {
-                $creationContainer.remove();
                 cb();
             });
         };
