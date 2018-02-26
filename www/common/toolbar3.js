@@ -593,7 +593,7 @@ define([
     };
 
     var createUnpinnedWarning0 = function (toolbar, config) {
-        if (true) { return; } // stub this call since it won't make it into the next release
+        //if (true) { return; } // stub this call since it won't make it into the next release
         if (Common.isLoggedIn()) { return; }
         var pd = config.metadataMgr.getPrivateData();
         var o = pd.origin;

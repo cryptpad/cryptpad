@@ -187,7 +187,7 @@ define([
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: window.location.hash.length > 0,
+                        isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
@@ -666,8 +666,9 @@ define([
             Utils.Feedback.reportAppUsage();
 
             if (!realtime) { return; }
-            if (isNewFile && Utils.LocalStore.isLoggedIn()
-                && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
+            if (isNewFile && cfg.useCreationScreen) { return; }
+            //if (isNewFile && Utils.LocalStore.isLoggedIn()
+            //    && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
 
             startRealtime();
         });

@@ -1274,16 +1274,9 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
-            if (!AppConfig.displayCreationScreen) { return; }
-            var priv = common.getMetadataMgr().getPrivateData();
-            if (priv.isNewFile) {
-                var c = (priv.settings.general && priv.settings.general.creation) || {};
-                if (c.skip && !priv.forceCreationScreen) {
-                    return void common.createPad(c, waitFor());
-                }
-                common.getPadCreationScreen(c, waitFor());
-            }
+            common.handleNewFile(waitFor);
         }).nThen(function (/* waitFor */) {
+            console.log('here');
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;

@@ -30,11 +30,12 @@ define(function () {
     out.typeError = "This pad is not compatible with the selected application";
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
-    out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
+    out.padNotPinned = 'This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
     out.expiredError = 'This pad has reached its expiration time and is no longer available.';
     out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
     out.deletedError = 'This pad has been deleted by its owner and is no longer available.';
+    out.inactiveError = 'This pad has been deleted due to inactivity. Press Esc to create a new pad.';
 
     out.loading = "Loading...";
     out.error = "Error";

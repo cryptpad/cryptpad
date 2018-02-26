@@ -7,7 +7,6 @@ var config;
 try {
     config = require('./config');
 } catch (e) {
-    console.log("You can customize the configuration by copying config.example.js to config.js");
     config = require('./config.example');
 }
 

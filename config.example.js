@@ -249,6 +249,14 @@ module.exports = {
      */
     pinPath: './pins',
 
+    /*  Pads that are not 'pinned' by any registered user can be set to expire
+     *  after a configurable number of days of inactivity (default 90 days).
+     *  The value can be changed or set to false to remove expiration.
+     *  Expired pads can then be removed using a cron job calling the
+     *  `delete-inactive.js` script with node
+     */
+    inactiveTime: 90, // days
+
     /*  CryptPad allows logged in users to upload encrypted files. Files/blobs
      *  are stored in a 'blob-store'. Set its location here.
      */

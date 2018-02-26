@@ -555,8 +555,11 @@ define([
             $loading = $('#' + LOADING); //.show();
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
+            $('.cp-loading-spinner-container').show();
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);
+            } else {
+                $('#' + LOADING).find('p').text('');
             }
             $container = $loading.find('.cp-loading-container');
         } else {
@@ -612,7 +615,10 @@ define([
         if (exitable) {
             $(window).focus();
             $(window).keydown(function (e) {
-                if (e.which === 27) { $('#' + LOADING).hide(); }
+                if (e.which === 27) {
+                    $('#' + LOADING).hide();
+                    if (typeof(exitable) === "function") { exitable(); }
+                }
             });
         }
     };
