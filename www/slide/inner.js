@@ -9,6 +9,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/diffMarked.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
 
@@ -53,6 +54,7 @@ define([
     Util,
     Hash,
     UI,
+    DiffMd,
     Messages,
     CMeditor)
 {
@@ -426,6 +428,16 @@ define([
         framework._.toolbar.$rightside.append(markdownTb.button);
     };
 
+    var mkHelpMenu = function (framework) {
+        var $codeMirrorContainer = $('#cp-app-slide-editor-container');
+        var helpMenu = framework._.sfCommon.createHelpMenu();
+        $codeMirrorContainer.prepend(helpMenu.menu);
+
+        $(helpMenu.text).html(DiffMd.render(Messages.slideInitialState));
+
+        framework._.toolbar.$rightside.append(helpMenu.button);
+    };
+
     var activateLinks = function ($content, framework) {
         $content.click(function (e) {
             if (!e.target) { return; }
@@ -465,6 +477,7 @@ define([
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
         mkMarkdownToolbar(framework, editor);
+        mkHelpMenu(framework);
 
         CodeMirror.configureTheme(common);
 
@@ -519,7 +532,7 @@ define([
         });
 
         framework.onDefaultContentNeeded(function () {
-            CodeMirror.contentUpdate({ content: Messages.slideInitialState });
+            CodeMirror.contentUpdate({ content: '' });
         });
 
         Slide.setTitle(framework._.title);

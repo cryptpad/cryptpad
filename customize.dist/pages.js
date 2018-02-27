@@ -819,12 +819,6 @@ define([
             appToolbar(),
             h('div#cp-app-poll-content', [
                 h('div#cp-app-poll-form', [
-                    h('div#cp-app-poll-help', [
-                        h('h1', 'CryptPoll'),
-                        setHTML(h('h2'), Msg.poll_subtitle),
-                        h('p', Msg.poll_p_save),
-                        h('p', Msg.poll_p_encryption)
-                    ]),
                     h('div.cp-app-poll-realtime', [
                         h('br'),
                         h('div', [

@@ -75,6 +75,20 @@ define([
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
+
+        if (c === '') {
+            var $empty = $('<img>', {
+                src: '/customize/main-favicon.png',
+                alt: '',
+                class: 'cp-app-code-preview-empty'
+            });
+            $content.html('').append($empty);
+            $content.addClass('cp-app-slide-isempty');
+            return;
+            //c = $('<div>').append($empty).html();
+        }
+        $content.removeClass('cp-app-slide-isempty');
+
         var mediatagBg = '';
         if (options.background && options.background.mt) {
             mediatagBg = options.background.mt;

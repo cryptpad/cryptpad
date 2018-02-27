@@ -14,6 +14,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
     '/common/test.js',
@@ -43,6 +44,7 @@ define([
     SframeCM,
     Thumb,
     UI,
+    h,
     Messages,
     CMeditor,
     Test)
@@ -60,8 +62,6 @@ define([
     var Render = Renderer(APP);
 
     var debug = $.noop; //console.log;
-
-    var HIDE_INTRODUCTION_TEXT = "hide-text";
 
     var metadataMgr;
     var Title;
@@ -626,29 +626,6 @@ define([
         });*/
         updatePublishButton();
         APP.editor.refresh();
-    };
-
-    var updateHelpButton = function () {
-        if (!APP.$helpButton) { return; }
-        var help = $('#cp-app-poll-help').is(':visible');
-        var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
-        APP.$helpButton.attr('title', msg);
-        if (help) {
-            APP.$helpButton.addClass('cp-toolbar-button-active');
-            return;
-        }
-        APP.$helpButton.removeClass('cp-toolbar-button-active');
-    };
-    var showHelp = function(help) {
-        if (typeof help === 'undefined') {
-            help = !$('#cp-app-poll-help').is(':visible');
-        }
-
-        var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
-
-        $('#cp-app-poll-help').toggle(help);
-        $('#cp-app-poll-action-help').text(msg);
-        updateHelpButton();
     };
 
     var setEditable = function (editable) {
@@ -1221,10 +1198,19 @@ define([
         var $export = common.createButton('export', true, {}, exportFile);
         $drawer.append($export);
 
-        var $help = common.createButton('', true).click(function () { showHelp(); })
-            .appendTo($rightside);
-        APP.$helpButton = $help;
-        updateHelpButton();
+        var helpMenu = common.createHelpMenu();
+        $('#cp-app-poll-form').prepend(helpMenu.menu);
+        $rightside.append(helpMenu.button);
+        var setHTML = function (e, html) {
+            e.innerHTML = html;
+            return e;
+        };
+        var help = h('div', [
+            setHTML(h('h1'), Messages.poll_subtitle),
+            h('p', Messages.poll_p_save),
+            h('p', Messages.poll_p_encryption)
+        ]);
+        $(helpMenu.text).html($(help).html());
 
         if (APP.readOnly) { publish(true); return; }
         var $publish = common.createButton('', true)
@@ -1344,18 +1330,6 @@ define([
                  })
                  .on('disconnect', onDisconnect)
                  .on('reconnect', onReconnect);
-
-            common.getAttribute(['poll', HIDE_INTRODUCTION_TEXT], function (e, value) {
-                if (e) { console.error(e); }
-                if (!value) {
-                    common.setAttribute(['poll', HIDE_INTRODUCTION_TEXT], "1", function (e) {
-                        if (e) { console.error(e); }
-                    });
-                    showHelp(true);
-                } else {
-                    showHelp(false);
-                }
-            });
         });
     };
     main();

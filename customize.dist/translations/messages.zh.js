@@ -469,13 +469,8 @@ define(function () {
         '<p>',
         '這是&nbsp;<strong>CryptPad</strong>, 零知識即時協作編輯平台，當你輸入時一切已即存好。',
         '<br>',
-        '分享這個工作檔案的網址連結給友人或是使用、 <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;分享&nbsp;</span> 按鈕分享<em>唯讀的連結</em>&nbsp;其只能看不能編寫。',
-        '</p>',
-
-        '<p><em>',
-        '來吧, 開始打字輸入吧...',
-        '</em></p>',
-        '<p>&nbsp;<br></p>'
+        '分享這個工作檔案的網址連結給友人或是使用、 <span class="fa fa-share-alt"></span> 按鈕分享<em>唯讀的連結</em>&nbsp;其只能看不能編寫。',
+        '</p>'
     ].join('');
 
     out.codeInitialState = [
@@ -487,14 +482,6 @@ define(function () {
 
     out.slideInitialState = [
         '# CryptSlide\n',
-        '* 它是零知識即時協作編輯平台。\n',
-        '* 你所輸入的東西會予以加密，僅有知道此網頁連結者可以接取這份文件。\n',
-        '* 即便是本站伺服器也不知道你輸入了什麼內容。\n',
-        '* 你在這裏看到的、你在這裏聽到的、當你離開本站時，讓它就留在這裏吧。\n',
-        '\n',
-        '---',
-        '\n',
-        '# 如何使用\n',
         '1. 使用 markdown 語法來寫下你的投影片內容\n',
         '  - 進一步學習 markdown 語法 [here](http://www.markdowntutorial.com/)\n',
         '2. 利用 --- 來區隔不同的投影片\n',

@@ -780,13 +780,8 @@ define(function () {
         '<p>',
         'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',
         '<br>',
-        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
+        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span class="fa fa-share-alt"></span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
         '</p>',
-        '<p>',
-        '<em>',
-        'Lancez-vous, commencez à taper...',
-        '</em></p>',
-        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = [
@@ -798,14 +793,6 @@ define(function () {
 
     out.slideInitialState = [
         '# CryptSlide\n',
-        '* Voici CryptPad, l\'éditeur collaboratif en temps-réel Zero Knowledge.\n',
-        '* Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
-        '* Même le serveur est incapable de voir ce que vous tapez.\n',
-        '* Ce que vous voyez ici, ce que vous entendez, quand vous partez, ça reste ici.\n',
-        '\n',
-        '---',
-        '\n',
-        '# Comment l\'utiliser\n',
         '1. Écrivez le contenu de votre présentation avec la syntaxe Markdown\n',
         '  - Apprenez à utiliser markdown en cliquant [ici](http://www.markdowntutorial.com/)\n',
         '2. Séparez vos slides avec ---\n',

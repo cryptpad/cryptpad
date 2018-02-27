@@ -816,13 +816,8 @@ define(function () {
         '<p>',
         'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
-        'Share the link to this pad to edit with friends or use the <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
+        'Share the link to this pad to edit with friends or use the <span class="fa fa-share-alt"></span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
         '</p>',
-
-        '<p><em>',
-        'Go ahead, just start typing...',
-        '</em></p>',
-        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = [
@@ -834,14 +829,6 @@ define(function () {
 
     out.slideInitialState = [
         '# CryptSlide\n',
-        '* This is a zero knowledge realtime collaborative editor.\n',
-        '* What you type here is encrypted so only people who have the link can access it.\n',
-        '* Even the server cannot see what you type.\n',
-        '* What you see here, what you hear here, when you leave here, let it stay here.\n',
-        '\n',
-        '---',
-        '\n',
-        '# How to use\n',
         '1. Write your slides content using markdown syntax\n',
         '  - Learn more about markdown syntax [here](http://www.markdowntutorial.com/)\n',
         '2. Separate your slides with ---\n',

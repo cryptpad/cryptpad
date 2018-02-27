@@ -377,38 +377,15 @@ define([
             config.$contentContainer.prepend($content);
         }
 
-        var $ck = config.$container.find('.cke_toolbox_main');
-        var mobile = $('body').width() <= 600;
         var hide = function () {
             $content.hide();
             $button.removeClass('cp-toolbar-button-active');
-            $ck.css({
-                'padding-left': '',
-            });
         };
         var show = function () {
             if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
-            if (mobile) {
-                $ck.hide();
-            }
             $button.addClass('cp-toolbar-button-active');
-            $ck.css({
-                'padding-left': '175px',
-            });
-            var h = $ck.is(':visible') ? -$ck.height() : 0;
-            $content.css('margin-top', h+'px');
         };
-        $(window).on('cryptpad-ck-toolbar', function () {
-            if (mobile && $ck.is(':visible')) { return void hide(); }
-            if ($content.is(':visible')) { return void show(); }
-            hide();
-        });
-        $(window).on('resize', function () {
-            mobile = $('body').width() <= 600;
-            var h = $ck.is(':visible') ? -$ck.height() : 0;
-            $content.css('margin-top', h+'px');
-        });
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'userlist-drawer'], false);
             hide();
@@ -423,7 +400,7 @@ define([
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || mobile) { return void hide(); }
+            if (val === false) { return void hide(); }
             show();
         });
 

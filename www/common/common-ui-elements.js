@@ -855,6 +855,45 @@ define([
         };
     };
 
+    UIElements.createHelpMenu = function (common) {
+        var type = common.getMetadataMgr().getMetadata().type || 'pad';
+
+        var text = h('p.cp-help-text');
+        var closeButton = h('span.cp-help-close.fa.fa-window-close');
+        var $toolbarButton = common.createButton('', true).addClass('cp-toolbar-button-active');
+        var help = h('div.cp-help-container', [
+            closeButton,
+            text
+        ]);
+
+        var toggleHelp = function (forceClose) {
+            if ($(help).hasClass('cp-help-hidden')) {
+                if (forceClose) { return; }
+                common.setAttribute(['hideHelp', type], false);
+                $toolbarButton.addClass('cp-toolbar-button-active');
+                return void $(help).removeClass('cp-help-hidden');
+            }
+            $toolbarButton.removeClass('cp-toolbar-button-active');
+            $(help).addClass('cp-help-hidden');
+            common.setAttribute(['hideHelp', type], true);
+        };
+
+        $(closeButton).click(function () { toggleHelp(true); });
+        $toolbarButton.click(function () {
+            toggleHelp();
+        });
+
+        common.getAttribute(['hideHelp', type], function (err, val) {
+            if (val === true) { toggleHelp(true); }
+        });
+
+        return {
+            menu: help,
+            button: $toolbarButton,
+            text: text
+        };
+    };
+
     // Avatars
 
     // Enable mediatags

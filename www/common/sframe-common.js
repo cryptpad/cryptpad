@@ -90,6 +90,7 @@ define([
     funcs.updateTags = callWithCommon(UIElements.updateTags);
     funcs.createLanguageSelector = callWithCommon(UIElements.createLanguageSelector);
     funcs.createMarkdownToolbar = callWithCommon(UIElements.createMarkdownToolbar);
+    funcs.createHelpMenu = callWithCommon(UIElements.createHelpMenu);
     funcs.getPadCreationScreen = callWithCommon(UIElements.getPadCreationScreen);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
     funcs.onServerError = callWithCommon(UIElements.onServerError);
