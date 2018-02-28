@@ -143,7 +143,7 @@ define([
 
         $(helpMenu.text).html(Messages.initialState);
 
-        framework._.toolbar.$rightside.append(helpMenu.button);
+        framework._.toolbar.$drawer.append(helpMenu.button);
     };
 
     var mkDiffOptions = function (cursor, readOnly) {

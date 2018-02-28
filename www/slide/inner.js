@@ -435,7 +435,7 @@ define([
 
         $(helpMenu.text).html(DiffMd.render(Messages.slideInitialState));
 
-        framework._.toolbar.$rightside.append(helpMenu.button);
+        framework._.toolbar.$drawer.append(helpMenu.button);
     };
 
     var activateLinks = function ($content, framework) {

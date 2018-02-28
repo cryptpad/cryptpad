@@ -218,6 +218,10 @@ define(function () {
     out.cancelButton = 'Annuler (Échap)';
     out.doNotAskAgain = "Ne plus demander (Échap)";
 
+    out.show_help_button = "Afficher l'aide";
+    out.hide_help_button = "Cacher l'aide";
+    out.help_button = "Aide";
+
     out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";
     out.history_next = "Voir la version suivante";
@@ -277,9 +281,6 @@ define(function () {
     out.poll_edit = "Modifier";
     out.poll_locked = "Verrouillé";
     out.poll_unlocked = "Déverrouillé";
-
-    out.poll_show_help_button = "Afficher l'aide";
-    out.poll_hide_help_button = "Cacher l'aide";
 
     out.poll_bookmark_col = "Marquer cette colonne comme favorite pour qu'elle soit toujours déverouillée et affichée en première position.";
     out.poll_bookmarked_col = "Voici votre colonne favorite; elle sera toujours dévérouillée et affichée en première position.";

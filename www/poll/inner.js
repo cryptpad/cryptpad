@@ -1200,7 +1200,7 @@ define([
 
         var helpMenu = common.createHelpMenu();
         $('#cp-app-poll-form').prepend(helpMenu.menu);
-        $rightside.append(helpMenu.button);
+        $drawer.append(helpMenu.button);
         var setHTML = function (e, html) {
             e.innerHTML = html;
             return e;

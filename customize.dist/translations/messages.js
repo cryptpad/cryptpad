@@ -220,6 +220,10 @@ define(function () {
     out.cancelButton = 'Cancel (esc)';
     out.doNotAskAgain = "Don't ask me again (Esc)";
 
+    out.show_help_button = "Show help";
+    out.hide_help_button = "Hide help";
+    out.help_button = "Help";
+
     out.historyText = "History";
     out.historyButton = "Display the document history";
     out.history_next = "Go to the next version";
@@ -279,9 +283,6 @@ define(function () {
     out.poll_edit = "Edit";
     out.poll_locked = "Locked";
     out.poll_unlocked = "Unlocked";
-
-    out.poll_show_help_button = "Show help";
-    out.poll_hide_help_button = "Hide help";
 
     out.poll_bookmark_col = 'Bookmark this column so that it is always unlocked and displayed at the beginning for you';
     out.poll_bookmarked_col = 'This is your bookmarked column. It will always be unlocked and displayed at the beginning for you.';

@@ -657,6 +657,11 @@ define([
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
                     if (callback) { callback(isVisible); }
+                    if (isVisible) {
+                        button.addClass('cp-toolbar-button-active');
+                    } else {
+                        button.removeClass('cp-toolbar-button-active');
+                    }
                     updateIcon(isVisible);
                 });
                 updateIcon(data.element.is(':visible'));
@@ -681,7 +686,6 @@ define([
             default:
                 button = $('<button>', {
                     'class': "fa fa-question",
-                    style: 'font:'+size+' FontAwesome'
                 })
                 .click(common.prepareFeedback(type));
         }
@@ -861,6 +865,9 @@ define([
         var text = h('p.cp-help-text');
         var closeButton = h('span.cp-help-close.fa.fa-window-close');
         var $toolbarButton = common.createButton('', true).addClass('cp-toolbar-button-active');
+        $toolbarButton.attr('title', Messages.hide_help_button);
+        $toolbarButton
+            .append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.help_button));
         var help = h('div.cp-help-container', [
             closeButton,
             text
@@ -871,9 +878,11 @@ define([
                 if (forceClose) { return; }
                 common.setAttribute(['hideHelp', type], false);
                 $toolbarButton.addClass('cp-toolbar-button-active');
+                $toolbarButton.attr('title', Messages.hide_help_button);
                 return void $(help).removeClass('cp-help-hidden');
             }
             $toolbarButton.removeClass('cp-toolbar-button-active');
+            $toolbarButton.attr('title', Messages.show_help_button);
             $(help).addClass('cp-help-hidden');
             common.setAttribute(['hideHelp', type], true);
         };

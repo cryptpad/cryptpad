@@ -86,7 +86,7 @@ define([
 
         $(helpMenu.text).html(DiffMd.render(Messages.codeInitialState));
 
-        framework._.toolbar.$rightside.append(helpMenu.button);
+        framework._.toolbar.$drawer.append(helpMenu.button);
     };
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
