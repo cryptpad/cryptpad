@@ -66,12 +66,18 @@ define([
             config.onRemote();
         }
 
+        var getContent = function () {
+            try {
+                return window.frames[0].frames[0].editor.asc_nativeGetFile();
+            } catch (e) { return null; }
+        };
+
         var saveDocument = APP.saveDocument = function () {
             var defaultName = "text.oot";
             UI.prompt(Messages.exportPrompt, defaultName, function (filename) {
                 if (!(typeof(filename) === 'string' && filename)) { return; }
                     console.log("In saveDocument");
-                    var content = window.frames[0].frames[0].editor.asc_nativeGetFile();
+                    var content = getContent();
                     var blob = new Blob([content], {type: "text/plain;charset=utf-8"});
                     saveAs(blob, filename);
             });
@@ -132,7 +138,7 @@ define([
                 console.log("Cannot access editor");
                 return;
             }
-            var data = window.frames[0].frames[0].editor.asc_nativeGetFile();
+            var data = getContent();
             console.log('onLocal, data avalable');
             data = '';
             var content = stringifyInner(data);
@@ -240,7 +246,7 @@ define([
             // force readonly to prevent interlacing
             readOnly = true;
 
-            var previousData = window.frames[0].frames[0].editor.asc_nativeGetFile();
+            var previousData = getContent();
             var userDoc = APP.realtime.getUserDoc();
 
             var json = JSON.parse(userDoc);
