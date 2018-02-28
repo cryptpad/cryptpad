@@ -548,6 +548,13 @@ define([
                 return;
             }
 
+            // Ctrl+A select all
+            if (e.which === 65 && e.ctrlKey) {
+                $content.find('.cp-app-drive-element:not(.cp-app-drive-element-selected)')
+                    .addClass('cp-app-drive-element-selected');
+                return;
+            }
+
             // [Left, Up, Right, Down]
             if ([37, 38, 39, 40].indexOf(e.which) === -1) { return; }
             e.preventDefault();
@@ -2908,6 +2915,7 @@ define([
                 }
                 // else move to trash
                 moveElements(paths, [TRASH], false, refresh);
+                return;
             }
         });
         var isCharacterKey = function (e) {
