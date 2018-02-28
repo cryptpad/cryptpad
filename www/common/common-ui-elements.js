@@ -1528,6 +1528,7 @@ define([
         if (!$blockContainer.length) {
             $blockContainer = $('<div>', {
                 'class': 'cp-modal-container',
+                tabindex: 1,
                 'id': cfg.id
             });
         }
@@ -1559,14 +1560,16 @@ define([
             $body: $('body')
         });
         var $title = $('<h3>').text(Messages.fm_newFile);
-        var $description = $('<p>').text(Messages.creation_newPadModalDescription);
+        var $description = $('<p>').html(Messages.creation_newPadModalDescription);
         $modal.find('.cp-modal').append($title);
         $modal.find('.cp-modal').append($description);
 
         var $advanced;
 
         var $advancedContainer = $('<div>');
-        if (common.isLoggedIn()) {
+        var priv = common.getMetadataMgr().getPrivateData();
+        var c = (priv.settings.general && priv.settings.general.creation) || {};
+        if (AppConfig.displayCreationScreen && common.isLoggedIn() && c.skip) {
             $advanced = $('<input>', {
                 type: 'checkbox',
                 checked: 'checked',
@@ -1575,9 +1578,12 @@ define([
             $('<label>', {
                 for: 'cp-app-toolbar-creation-advanced'
             }).text(Messages.creation_newPadModalAdvanced).appendTo($advancedContainer);
+            $description.append('<br>');
+            $description.append(Messages.creation_newPadModalDescriptionAdvanced);
         }
 
         var $container = $('<div>');
+        var i = 0;
         AppConfig.availablePadTypes.forEach(function (p) {
             if (p === 'drive') { return; }
             if (p === 'contacts') { return; }
@@ -1586,7 +1592,8 @@ define([
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
             var $element = $('<li>', {
-                'class': 'cp-icons-element'
+                'class': 'cp-icons-element',
+                'id': 'cp-newpad-icons-'+ (i++)
             }).prepend(UI.getIcon(p)).appendTo($container);
             $element.append($('<span>', {'class': 'cp-icons-name'})
                 .text(Messages.type[p]));
@@ -1594,7 +1601,7 @@ define([
             $element.click(function () {
                 $modal.hide();
                 if ($advanced && $advanced.is(':checked')) {
-                    common.sessionStorage.put(Constants.displayPadCreationScreen, true, function () {
+                    common.sessionStorage.put(Constants.displayPadCreationScreen, true, function (){
                         common.openURL('/' + p + '/');
                     });
                     return;
@@ -1605,11 +1612,41 @@ define([
             });
         });
 
+        var selected = -1;
+        var next = function () {
+            selected = ++selected % 5;
+            $container.find('.cp-icons-element-selected').removeClass('cp-icons-element-selected');
+            $container.find('#cp-newpad-icons-'+selected).addClass('cp-icons-element-selected');
+        };
 
-        /*var $content = createNewPadIcons($modal, isInRoot);*/
+        $modal.off('keydown');
+        $modal.keydown(function (e) {
+            if (e.which === 9) {
+                e.preventDefault();
+                e.stopPropagation();
+                next();
+                return;
+            }
+            if (e.which === 13) {
+                if ($container.find('.cp-icons-element-selected').length === 1) {
+                    $container.find('.cp-icons-element-selected').click();
+                }
+                return;
+            }
+            if (e.which === 32 && $advanced) {
+                $advanced.prop('checked', !$advanced.prop('checked'));
+                $modal.focus();
+                e.stopPropagation();
+                e.preventDefault();
+            }
+        });
+
+
         $modal.find('.cp-modal').append($container).append($advancedContainer);
-        window.setTimeout(function () { $modal.show(); });
-        //addNewPadHandlers($modal, isInRoot);
+        window.setTimeout(function () {
+            $modal.show();
+            $modal.focus();
+        });
     };
 
     UIElements.initFilePicker = function (common, cfg) {

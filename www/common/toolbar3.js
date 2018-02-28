@@ -768,21 +768,19 @@ define([
                 content: $('<div>').append(UI.getIcon(p)).html() + Messages.type[p]
             });
         });
-        if (Config.displayCreationScreen) {
-            pads_options.push({
-                tag: 'a',
-                attributes: {
-                    id: 'cp-app-toolbar-creation-advanced',
-                    href: origin
-                },
-                content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
-            });
-            $(window).keydown(function (e) {
-                if (e.which === 69 && e.ctrlKey) {
-                    Common.createNewPadModal();
-                }
-            });
-        }
+        pads_options.push({
+            tag: 'a',
+            attributes: {
+                id: 'cp-app-toolbar-creation-advanced',
+                href: origin
+            },
+            content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
+        });
+        $(window).keydown(function (e) {
+            if (e.which === 69 && (e.ctrlKey || e.metaKey)) {
+                Common.createNewPadModal();
+            }
+        });
         var dropdownConfig = {
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
