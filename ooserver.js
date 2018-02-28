@@ -10,13 +10,14 @@ try {
 }
 var origin = config.httpUnsafeOrigin || 'http://localhost:3000/';
 
-module.exports.install = function(server, callbackFunction) {
+module.exports.install = function(server, port, callbackFunction) {
+    console.log();
     var sockjs_opts = {sockjs_url: ""},
     sockjs_echo = sockjs.createServer(sockjs_opts);
     //urlParse = new RegExp("^/common/onlyoffice/doc/([0-9-.a-zA-Z_=]*)/c.+", 'i');
 
     console.log("Start ooserver");
-    console.log("Port " + sockjs_echo.port);
+    console.log("Port " + port);
 
     function getBaseUrl(protocol, hostHeader, forwardedProtoHeader, forwardedHostHeader) {
         var url = '';
@@ -64,24 +65,21 @@ module.exports.install = function(server, callbackFunction) {
             try {
                 console.log("Received: " + message);
                 data = JSON.parse(message);
-                switch (data.type) {
-                    case 'auth':
-                        console.log("Response auth");
-                        var fileUrl = origin + "oodoc/test.bin";
 
-                        if (data.openCmd) {
-                            if (data.openCmd.format === "xlsx") {
-                                fileUrl = origin + "oocell/test.bin";
-                            } else if (data.openCmd.format === "pptx") {
-                                fileUrl = origin + "ooslide/test.bin";
-                            }
-                        }
-                        sendData(conn, {"type":"auth","result":1,"sessionId":"08e77705-dc5c-477d-b73a-b1a7cbca1e9b","sessionTimeConnect":1494226099270,"participants":[]});
-                        sendData(conn, {"type":"documentOpen","data":{"type":"open","status":"ok","data":{"Editor.bin":fileUrl}}});
-                        break;
-                    default:
-                        break;
+                if (data.type !== 'auth') { return; }
+                console.log("Response auth");
+
+                var fileUrl = origin + "oodoc/test.bin";
+
+                if (data.openCmd) {
+                    if (data.openCmd.format === "xlsx") {
+                        fileUrl = origin + "oocell/test.bin";
+                    } else if (data.openCmd.format === "pptx") {
+                        fileUrl = origin + "ooslide/test.bin";
+                    }
                 }
+                sendData(conn, {"type":"auth","result":1,"sessionId":"08e77705-dc5c-477d-b73a-b1a7cbca1e9b","sessionTimeConnect":1494226099270,"participants":[]});
+                sendData(conn, {"type":"documentOpen","data":{"type":"open","status":"ok","data":{"Editor.bin":fileUrl}}});
             } catch (e) {
                 console.error(e);
                 //console.log("error receiving response: docId = %s type = %s\r\n%s", docId, (data && data.type) ? data.type : 'null', e.stack);
