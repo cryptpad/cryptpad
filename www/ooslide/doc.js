@@ -1,4 +1,5 @@
-config = {
+/* globals DocsAPI */
+window.config = {
     "document": {
         "fileType": "pptx",
         "key": "Khirz6zTPdfd7",
@@ -13,12 +14,12 @@ config = {
                     }
     },
     "events": {
-     "onDocumentStateChange": function(evt) { console.log("in change"); },
-     "onReady": function(evt) { console.log("in onReady"); }
+     "onDocumentStateChange": function (/* evt */) { console.log("in change"); },
+     "onReady": function (/* evt */) { console.log("in onReady"); }
     }
 };
 window.onbeforeunload = null;
 
 
-var docEditor = new DocsAPI.DocEditor("placeholder", config);
+window.docEditor = new DocsAPI.DocEditor("placeholder", window.config);
 

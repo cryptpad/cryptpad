@@ -1,4 +1,5 @@
-config = {
+/* globals DocsAPI */
+window.config = {
     "document": {
         "fileType": "xlsx",
         "key": "Khirz6zTPdfd7",
@@ -26,8 +27,8 @@ config = {
             }
             console.log("in change (remote)");
         },
-        "onReady": function(evt) { console.log("in onReady"); },
-        "onAppReady": function(evt) { console.log("in onAppReady"); },
+        "onReady": function(/*evt*/) { console.log("in onReady"); },
+        "onAppReady": function(/*evt*/) { console.log("in onAppReady"); },
     }
 };
 window.onbeforeunload = function () {
@@ -35,6 +36,5 @@ window.onbeforeunload = function () {
     if (ifr) { ifr.remove(); }
 };
 
-
-var docEditor = new DocsAPI.DocEditor("placeholder", config);
+window.docEditor = new DocsAPI.DocEditor("placeholder", window.config);
 

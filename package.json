@@ -12,7 +12,6 @@
     "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",
     "ws": "^1.0.1",
-    "co": "^4.6.0",
     "sockjs": "^0.3.18"
   },
   "devDependencies": {

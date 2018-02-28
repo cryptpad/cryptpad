@@ -9,6 +9,7 @@ www/scratch
 www/common/toolbar.js
 www/common/hyperscript.js
 www/common/tippy.min.js
+www/common/onlyoffice/*
 
 www/pad/wysiwygarea-plugin.js
 www/pad/mediatag-plugin.js
@@ -17,3 +18,4 @@ www/pad/mediatag-plugin-dialog.js
 www/common/media-tag-nacl.min.js
 
 customize/
+
