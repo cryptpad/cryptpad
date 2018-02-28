@@ -437,6 +437,8 @@ define([
         }
 
         framework.onReady(function (newPad) {
+            editor.focus();
+
             if (!module.isMaximized) {
                 module.isMaximized = true;
                 $('iframe.cke_wysiwyg_frame').css('width', '');
@@ -444,7 +446,6 @@ define([
             }
             $('body').addClass('app-pad');
 
-            editor.focus();
             if (newPad) {
                 cursor.setToEnd();
             } else if (framework.isReadOnly()) {
@@ -474,9 +475,18 @@ define([
                     $iframe.find('html').addClass('cke_body_width');
                 }
             });
+            /*setTimeout(function () {
+                $('iframe.cke_wysiwyg_frame').focus();
+                editor.focus();
+                console.log(editor);
+                console.log(editor.focusManager);
+                $(window).trigger('resize');
+            });*/
         });
 
-        framework.onDefaultContentNeeded(function () { });
+        framework.onDefaultContentNeeded(function () {
+            inner.innerHTML = '<p></p>';
+        });
 
         var importMediaTags = function (dom, cb) {
             var $dom = $(dom);
@@ -616,9 +626,11 @@ define([
                 var backColor = AppConfig.appBackgroundColor;
                 var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; }' +
                     '.cke_body_width body {' +
-                        'max-width: 50em; padding: 10px 30px; margin: 0 auto; min-height: 100%;'+
-                        'box-sizing: border-box;'+
-                    '}';
+                        'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
+                        'box-sizing: border-box; overflow: auto;'+
+                    '}' +
+                    'html.cke_body_width { overflow: hidden; }' +
+                    '.cke_body_width body > *:first-child { margin-top: 0; }';
                 Ckeditor.addCss(newCss);
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {

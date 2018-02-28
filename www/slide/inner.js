@@ -502,6 +502,8 @@ define([
         });
 
         framework.onReady(function (/*newPad*/) {
+            editor.focus();
+
             CodeMirror.setMode('markdown', function () { });
             Slide.onChange(function (o, n, l) {
                 var slideNumber = '';

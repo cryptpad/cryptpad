@@ -327,6 +327,8 @@ define([
         framework.setTitleRecommender(CodeMirror.getHeadingText);
 
         framework.onReady(function (newPad) {
+            editor.focus();
+
             if (newPad && !CodeMirror.highlightMode) {
                 CodeMirror.setMode('gfm', evModeChange.fire);
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
