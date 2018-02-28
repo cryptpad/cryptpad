@@ -75,7 +75,7 @@
             }
         }
 
-        .cp-creation-create {
+        .cp-creation-create, .cp-creation-settings {
             button {
                 .tools_unselectable();
                 padding: 15px;
@@ -84,6 +84,7 @@
                 margin: 3px 10px;
                 border: none;
                 cursor: pointer;
+                outline: none;
                 &:hover {
                     background: darken(@colortheme_loading-bg, 5%);
                 }
@@ -158,6 +159,9 @@
                 &:hover {
                     color: lighten(#0275d8, 10%);
                 }
+            }
+            &> span.fa {
+                margin-left: 15px;
             }
         }
         .cp-creation-deleted {

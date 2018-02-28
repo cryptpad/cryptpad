@@ -1839,8 +1839,7 @@ define([
         UIElements.setExpirationValue(cfg.expire, $creation);
 
         // Create the pad
-        var create = function (template) {
-            $creationContainer.remove();
+        var getFormValues = function (template) {
             // Type of pad
             var ownedVal = parseInt($('input[name="cp-creation-owned"]:checked').val());
             // Life time
@@ -1856,11 +1855,16 @@ define([
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
 
-            common.createPad({
+            return {
                 owned: ownedVal,
                 expire: expireVal,
                 template: template
-            }, function () {
+            };
+        };
+        var create = function (template) {
+            $creationContainer.remove();
+
+            common.createPad(getFormValues(template), function () {
                 cb();
             });
         };
@@ -1905,10 +1909,39 @@ define([
 
         // Settings button
         var origin = common.getMetadataMgr().getPrivateData().origin;
-        $(h('div.cp-creation-settings', h('a', {
-            href: origin + '/settings/#creation',
-            target: '_blank'
-        }, Messages.creation_settings))).appendTo($creation);
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
+        var okTo;
+        var $saveButton = $('<button>').text(Messages.creation_saveSettings).click(function () {
+            if (okTo) { clearTimeout(okTo); }
+            $ok.hide();
+            $spinner.show();
+            var val = getFormValues();
+            NThen(function (waitFor) {
+                common.setAttribute(['general', 'creation', 'owned'], val.owned, waitFor(function (e) {
+                    if (e) { return void console.error(e); }
+                }));
+                common.setAttribute(['general', 'creation', 'expire'], val.expire, waitFor(function (e) {
+                    if (e) { return void console.error(e); }
+                }));
+            }).nThen(function () {
+                $spinner.hide();
+                $ok.show();
+                okTo = setTimeout(function () {
+                    $ok.hide();
+                }, 5000);
+            });
+        });
+        $(h('div.cp-creation-settings', [
+            $saveButton[0],
+            h('br'),
+            h('a', {
+                href: origin + '/settings/#creation',
+                target: '_blank'
+            }, Messages.creation_settings),
+            $ok[0],
+            $spinner[0]
+        ])).appendTo($creation);
     };
 
     UIElements.onServerError = function (common, err, toolbar, cb) {

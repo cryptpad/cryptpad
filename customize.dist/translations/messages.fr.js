@@ -857,6 +857,7 @@ define(function () {
     out.creation_createFromTemplate = "Depuis un modèle";
     out.creation_createFromScratch = "Nouveau pad vide";
     out.creation_settings = "Préférences des nouveaux pads";
+    out.creation_saveSettings = "Sauver les préférences";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Possédé par un autre utilisateur";

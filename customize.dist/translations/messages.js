@@ -895,6 +895,7 @@ define(function () {
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
     out.creation_settings = "New Pad settings";
+    out.creation_saveSettings = "Save settings";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";
