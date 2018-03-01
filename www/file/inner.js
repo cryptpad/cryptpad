@@ -100,6 +100,11 @@ define([
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
+                toolbar.$rightside.append(common.createButton('forget', true));
+                if (common.isLoggedIn()) {
+                    toolbar.$rightside.append(common.createButton('hashtag', true));
+                }
+
 
                 common.setPadAttribute('fileType', metadata.type);
 
@@ -118,7 +123,6 @@ define([
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
                     var rightsideDisplayed = false;
-
                     $(window.document).on('decryption', function (e) {
                         var decrypted = e.originalEvent;
                         if (decrypted.callback) {
@@ -142,13 +146,7 @@ define([
                             toolbar.$rightside
                             .append(common.createButton('export', true, {}, function () {
                                 saveAs(decrypted.blob, decrypted.metadata.name);
-                            }))
-                            .append(common.createButton('forget', true, {}, function () {
-                                // not sure what to do here
                             }));
-                            if (common.isLoggedIn()) {
-                                toolbar.$rightside.append(common.createButton('hashtag', true));
-                            }
                             rightsideDisplayed = true;
                         }
 

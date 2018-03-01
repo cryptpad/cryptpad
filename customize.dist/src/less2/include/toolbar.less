@@ -389,11 +389,6 @@
             margin: 0;
         }*/
 
-        .cp-toolbar-rightside-button {
-            float: right;
-            cursor: pointer;
-        }
-
         select {
             margin-left: 5px;
             margin-right: 5px;
@@ -473,13 +468,6 @@
             background-color: lighten(@bg-color, 8%);
             button:hover, button.cp-toolbar-button-active {
                 background-color: @bg-color;
-            }
-        }
-        .cp-toolbar-rightside {
-            @media screen and (max-width: @barWidth) { // 450px
-                flex-wrap: wrap;
-                height: auto;
-                width: 100%;
             }
         }
         .cp-toolbar-title-hoverable:hover {
@@ -830,13 +818,37 @@
         }
     }
     .cp-toolbar-rightside {
+        display: flex;
         min-height: @toolbar_line-height;
         overflow: hidden;
+        @media screen and (max-width: @barWidth) { // 450px
+            flex-wrap: wrap;
+            height: auto;
+            width: 100%;
+        }
         &:empty {
             min-height: 0;
             height: 0;
         }
-        text-align: right;
+
+        .cp-toolbar-rightside-button {
+            cursor: pointer;
+            // UI actions
+            &.cp-toolbar-icon-toggle { order: 1; }
+            &.cp-toolbar-icon-preview { order: 2; }
+            &.cp-toolbar-icon-present { order: 3; }
+            // Content actions
+            &.cp-toolbar-icon-mediatag { order: 10; }
+            order: 11;
+            // Storage actions
+            &.cp-toolbar-icon-hashtag { order: 20; }
+            &.cp-toolbar-icon-template { order: 21; }
+            &.cp-toolbar-icon-forget { order: 22; }
+            // Drawer
+            &.cp-toolbar-drawer-button { order: 30; }
+
+        }
+
         .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
             display: none;
         }

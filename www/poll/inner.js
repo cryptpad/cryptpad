@@ -1064,7 +1064,7 @@ define([
                     setTimeout(waitFor());
                 }).nThen(function (waitFor) {
                     // Switch to non-admin mode
-                    $('.cp-toolbar-rightside-button.fa-check').click();
+                    $('.cp-toolbar-icon-publish').click();
                     setTimeout(waitFor());
                 }).nThen(function (waitFor) {
                     $('.cp-app-poll-comments-add-name').val("Mr.Me").keyup();
@@ -1213,9 +1213,11 @@ define([
         $(helpMenu.text).html($(help).html());
 
         if (APP.readOnly) { publish(true); return; }
-        var $publish = common.createButton('', true)
-            .removeClass('fa-question').addClass('fa-check')
-            .click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
+        var $publish = common.createButton('', true, {
+            name: 'publish',
+            icon: 'fa-check',
+            hiddenReadOnly: true
+        }).click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
         APP.$publishButton = $publish;
         updatePublishButton();
 
@@ -1230,11 +1232,7 @@ define([
                 }
             };
             common.initFilePicker(fileDialogCfg);
-            APP.$mediaTagButton = $('<button>', {
-                title: Messages.filePickerButton,
-                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                style: 'font-size: 17px'
-            }).click(function () {
+            APP.$mediaTagButton = common.createButton('mediatag', true).click(function () {
                 var pickerCfg = {
                     types: ['file'],
                     where: ['root']

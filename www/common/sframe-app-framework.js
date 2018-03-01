@@ -398,11 +398,7 @@ define([
                         '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
                 }
             });
-            $embedButton = $('<button>', {
-                title: Messages.filePickerButton,
-                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                style: 'font-size: 17px'
-            }).click(function () {
+            $embedButton = common.createButton('mediatag', true).click(function () {
                 common.openFilePicker({
                     types: ['file'],
                     where: ['root']

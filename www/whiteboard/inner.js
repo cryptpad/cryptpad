@@ -312,12 +312,13 @@ define([
                 return;
             }
 
-            var $color = APP.$color = $('<button>', {
-                id: "cp-app-whiteboard-color-picker",
+            var $color = APP.$color = common.createButton(null, true, {
+                icon: 'fa-square',
                 title: Messages.canvas_chooseColor,
-                'class': "fa fa-square cp-toolbar-rightside-button",
-            })
-            .on('click', function () {
+                name: 'color',
+                id: 'cp-app-whiteboard-color-picker'
+            });
+            $color.on('click', function () {
                 pickColor($color.css('background-color'), function (color) {
                     setColor(color);
                 });
@@ -469,12 +470,13 @@ define([
                     };
                     reader.readAsDataURL(file);
                 };
-                common.createButton('', true)
-                    .attr('title', Messages.canvas_imageEmbed)
-                    .removeClass('fa-question').addClass('fa-file-image-o')
-                    .click(function () {
-                        $('<input>', {type:'file'}).on('change', onUpload).click();
-                    }).appendTo($rightside);
+                common.createButton('', true, {
+                    title: Messages.canvas_imageEmbed,
+                    icon: 'fa-file-image-o',
+                    name: 'embedImage'
+                }).click(function () {
+                    $('<input>', {type:'file'}).on('change', onUpload).click();
+                }).appendTo($rightside);
 
                 if (common.isLoggedIn()) {
                     var fileDialogCfg = {
@@ -493,11 +495,7 @@ define([
                         }
                     };
                     common.initFilePicker(fileDialogCfg);
-                    APP.$mediaTagButton = $('<button>', {
-                        title: Messages.filePickerButton,
-                        'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                        style: 'font-size: 17px'
-                    }).click(function () {
+                    APP.$mediaTagButton = common.createButton('mediatag', true).click(function () {
                         var pickerCfg = {
                             types: ['file'],
                             where: ['root'],

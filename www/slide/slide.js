@@ -139,7 +139,6 @@ define([
 
             change(null, Slide.index);
             Common.setPresentUrl(true);
-            $('.cp-app-slide-present-button').hide();
             updateFontSize();
             return;
         }
@@ -147,8 +146,6 @@ define([
         Common.setTabTitle(); // Remove the slide number from the title
         Common.setPresentUrl(false);
         change(Slide.index, null);
-        $('.cp-app-slide-present-button').show();
-        $('.cp-app-slide-source-button').hide();
         $modal.removeClass('cp-app-slide-shown');
         updateFontSize();
     };
