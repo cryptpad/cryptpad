@@ -652,6 +652,7 @@ define([
                 $contentContainer.prepend($toolbarContainer.find('.cke_toolbox_main'));
                 $mainContainer.prepend($toolbarContainer);
                 $contentContainer.find('.cke_toolbox_main').addClass('cke_reset_all');
+                $toolbarContainer.removeClass('cke_reset_all');
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
