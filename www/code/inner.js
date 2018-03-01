@@ -54,6 +54,7 @@ define([
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
+        'gfm',
         'html',
         'htmlembedded',
         'htmlmixed',
