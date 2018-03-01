@@ -41,7 +41,8 @@ define([
 {
     var APP = window.APP = {
         editable: false,
-        mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
+        mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
+        isMac: navigator.platform === "MacIntel"
     };
 
     var stringify = function (obj) {
@@ -549,7 +550,7 @@ define([
             }
 
             // Ctrl+A select all
-            if (e.which === 65 && e.ctrlKey) {
+            if (e.which === 65 && (e.ctrlKey || (e.metaKey && APP.isMac))) {
                 $content.find('.cp-app-drive-element:not(.cp-app-drive-element-selected)')
                     .addClass('cp-app-drive-element-selected');
                 return;

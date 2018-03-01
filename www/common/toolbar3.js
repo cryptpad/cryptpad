@@ -777,7 +777,7 @@ define([
             content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
         });
         $(window).keydown(function (e) {
-            if (e.which === 69 && (e.ctrlKey || e.metaKey)) {
+            if (e.which === 69 && (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey))) {
                 Common.createNewPadModal();
             }
         });

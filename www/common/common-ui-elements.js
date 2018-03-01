@@ -463,7 +463,6 @@ define([
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
         var button;
-        var size = "17px";
         var sframeChan = common.getSframeChannel();
         switch (type) {
             case 'export':

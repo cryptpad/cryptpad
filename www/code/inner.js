@@ -367,7 +367,6 @@ define([
 
     var getThumbnailContainer = function () {
         var $preview = $('#cp-app-code-preview-content');
-        var $codeMirror = $('.CodeMirror');
         if ($preview.length && $preview.is(':visible')) {
             return $preview[0];
         }
