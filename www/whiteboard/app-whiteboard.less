@@ -42,6 +42,13 @@
         display: none;
     }
 
+    #cp-app-whiteboard-container {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+        overflow: auto;
+    }
+
     // created in the html
     #cp-app-whiteboard-canvas-area {
         flex: 1;
@@ -51,6 +58,8 @@
     .cp-app-whiteboard-canvas-container {
         margin: auto;
         background: white;
+        flex: 1;
+        min-height: 0;
         & > canvas {
             border: 1px solid black;
         }
@@ -71,7 +80,7 @@
         border-top: 1px solid black;
         background: white;
 
-        padding: 1em;
+        padding: 10px;
 
         & > * + * {
             margin: 0;
@@ -127,7 +136,7 @@
         display: flex;
         justify-content: space-between;
 
-        padding: 1em;
+        padding: 10px;
 
         span.cp-app-whiteboard-palette-color {
             height: 4vw;

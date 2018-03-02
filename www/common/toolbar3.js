@@ -318,7 +318,7 @@ define([
                 $span.append($rightCol);
             } else {
                 Common.displayAvatar($span, data.avatar, name, function ($img) {
-                    if (data.avatar && $img.length) {
+                    if (data.avatar && $img && $img.length) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
                     $span.append($rightCol);
@@ -610,7 +610,7 @@ define([
                 });
             });
             $('.cp-toolbar-top').append($msg);
-            UI.addTooltips();
+            //UI.addTooltips();
         });
     };
 

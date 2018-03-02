@@ -588,7 +588,6 @@ define([
                             return;
                         });
                     });
-
                 });
                 break;
             case 'present':
@@ -1777,7 +1776,7 @@ define([
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
-        var $creation = $('<div>', { id: 'cp-creation' }).appendTo($creationContainer);
+        var $creation = $('<div>', { id: 'cp-creation', tabindex: 1 }).appendTo($creationContainer);
 
         var setHTML = function (e, html) {
             e.innerHTML = html;
@@ -1980,6 +1979,29 @@ define([
             $ok[0],
             $spinner[0]
         ])).appendTo($creation);
+
+        var selected = -1;
+        var next = function () {
+            selected = ++selected % $creation.find('button').length;
+            $creation.find('button').removeClass('cp-creation-button-selected');
+            $($creation.find('button').get(selected)).addClass('cp-creation-button-selected');
+        };
+
+        $creation.keydown(function (e) {
+            if (e.which === 9) {
+                e.preventDefault();
+                e.stopPropagation();
+                next();
+                return;
+            }
+            if (e.which === 13) {
+                if ($creation.find('.cp-creation-button-selected').length === 1) {
+                    $creation.find('.cp-creation-button-selected').click();
+                }
+                return;
+            }
+        });
+        $creation.focus();
     };
 
     UIElements.onServerError = function (common, err, toolbar, cb) {

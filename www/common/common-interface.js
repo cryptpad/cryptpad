@@ -668,7 +668,6 @@ define([
                 position: 'bottom',
                 distance: 0,
                 performance: true,
-                dynamicTitle: true,
                 delay: [delay, 0],
                 sticky: true
             });
@@ -691,6 +690,9 @@ define([
             mutations.forEach(function(mutation) {
                 if (mutation.type === "childList") {
                     for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        if ($(mutation.addedNodes[i]).attr('title')) {
+                            addTippy(0, mutation.addedNodes[i]);
+                        }
                         $(mutation.addedNodes[i]).find('[title]').each(addTippy);
                     }
                     for (var j = 0; j < mutation.removedNodes.length; j++) {

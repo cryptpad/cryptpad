@@ -8,6 +8,8 @@
 @import (once) "./tools.less";
 @import (once) "./icons.less";
 @import (once) "./modal.less";
+@import (once) "./markdown-toolbar.less";
+@import (once) "./help.less";
 
 .toolbar_main (
     @color: @colortheme_default-color, // Color of the text for the toolbar
@@ -24,6 +26,8 @@
     .ckeditor_fix();
     .history_main();
     .iconColors_main();
+    .markdownToolbar_main(@color, @bg-color);
+    .help_main(@color, @bg-color);
 
     .cp-toolbar-container {
         display: flex;
@@ -239,55 +243,6 @@
         }
     }
 
-    // TODO(cjd) This ought to be in a less file for markdown-based editors
-    .cp-markdown-toolbar {
-        height: @toolbar_line-height;
-        background-color: lighten(@bg-color, 20%);
-        display: none;
-        button {
-            height: @toolbar_line-height !important;
-            outline: 0;
-            color: @color;
-            .toolbar_button;
-            font: normal normal normal 14px/1 FontAwesome;
-            &:hover {
-                background-color: lighten(@bg-color, 8%);
-            }
-            &.cp-markdown-help { float: right; }
-        }
-    }
-
-    // TODO put in a different less file
-    .cp-help-container {
-        position: relative;
-        background-color: lighten(@bg-color, 15%);
-        &.cp-help-hidden {
-            display: none;
-        }
-
-        .cp-help-close {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-        }
-        .cp-help-text {
-            color: @color;
-            margin: 0;
-            padding: 15px;
-            h1 {
-                font-size: 20px;
-            }
-            h2 {
-                font-size: 18px;
-            }
-            h3 {
-                font-size: 16px;
-            }
-            ul, ol, p { margin: 0; }
-        }
-    }
-
-
     .cp-toolbar-userlist-drawer {
         background-color: @bg-color;
         color: @color;
@@ -450,6 +405,7 @@
                             font-size: @colortheme_app-font-size;
                             flex: 1;
                             max-width: none;
+                            line-height: calc(@toolbar_line-height - 12px); // padding + border
                         }
                     }
                 }
@@ -615,7 +571,7 @@
             }
             input {
                 max-width: ~"calc(100% - 40px)";
-                flex: 1;
+                //flex: 1;
                 vertical-align: middle;
                 box-sizing: border-box;
                 cursor: auto;
@@ -623,6 +579,7 @@
                 font-size: 20px;
                 padding: 5px 5px;
                 height: 40px;
+                line-height: 28px; // padding + border
             }
         }
         .cp-toolbar-link, .cp-toolbar-new {

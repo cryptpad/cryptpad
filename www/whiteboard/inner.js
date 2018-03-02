@@ -454,6 +454,14 @@ define([
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
 
+            if (Messages.whiteboardHelp) {
+                var $appContainer = $('#cp-app-whiteboard-container');
+                var helpMenu = common.createHelpMenu();
+                $appContainer.prepend(helpMenu.menu);
+                $(helpMenu.text).html(Messages.whiteboardHelp);
+                toolbar.$drawer.append(helpMenu.button);
+            }
+
             if (!readOnly) {
                 makeColorButton($rightside);
 

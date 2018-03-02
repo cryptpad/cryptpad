@@ -25,6 +25,7 @@
         text-align: center;
         font: @colortheme_app-font;
         width: 100%;
+        outline: none;
         & > div {
             width: 60vw;
             max-width: 100%;
@@ -87,6 +88,10 @@
                 outline: none;
                 &:hover {
                     background: darken(@colortheme_loading-bg, 5%);
+                }
+                &.cp-creation-button-selected {
+                    color: darken(@colortheme_loading-bg, 10%);
+                    background: @colortheme_loading-color;
                 }
             }
         }

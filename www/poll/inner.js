@@ -820,6 +820,7 @@ define([
     var checkDeletedCells = function () {
         // faster than forEach?
         var c;
+        if (!APP.proxy || !APP.proxy.content) { return; }
         for (var k in APP.proxy.content.cells) {
             c = Render.getCoordinates(k);
             if (APP.proxy.content.colsOrder.indexOf(c[0]) === -1 ||

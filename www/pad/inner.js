@@ -629,7 +629,6 @@ define([
                         'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
                         'box-sizing: border-box; overflow: auto;'+
                     '}' +
-                    'html.cke_body_width { overflow: hidden; }' +
                     '.cke_body_width body > *:first-child { margin-top: 0; }';
                 Ckeditor.addCss(newCss);
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
