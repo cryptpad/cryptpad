@@ -294,17 +294,12 @@ define(function () {
         '<p>',
         'Esto es&nbsp;<strong>CryptPad</strong>, el editor colaborativo en tiempo real Zero Knowledge. Todo está guardado cuando escribes.',
         '<br>',
-        'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Compartir&nbsp;</span> para obtener un <em>enlace sólo lectura</em>&nbsp;que permite leer pero no escribir.',
+        'Comparte el enlace a este pad para editar con amigos o utiliza el botón <span class="fa fa-share-alt"></span> para obtener un <em>enlace sólo lectura</em>&nbsp;que permite leer pero no escribir.',
         '</p>',
-
-        '<p><em>',
-        'Vamos, empieza a escribir...',
-        '</em></p>',
-        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = "/*\n   Esto es CryptPad, el editor colaborativo en tiempo real zero knowledge.\n   Lo que escribes aquí está cifrado de manera que sólo las personas con el enlace pueden acceder a ello.\n   Incluso el servidor no puede ver lo que escribes.\n   Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n*/";
-    out.slideInitialState = "# CryptSlide\n* Esto es CryptPad, el editor colaborativo en tiempo real zero knowledge.\n* Lo que escribes aquí está cifrado de manera que sólo las personas con el enlace pueden acceder a ello.\n* Incluso el servidor no puede ver lo que escribes.\n* Lo que ves aquí, lo que escuchas aquí, cuando sales, se queda aquí\n\n---\n# Cómo utilizarlo\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus diapositivas con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus diapositivas se actualizan en tiempo real";
+    out.slideInitialState = "# CryptSlide\n1. Escribe tu contenido en Markdown\n  - Puedes aprender más sobre Markdown [aquí](http://www.markdowntutorial.com/)\n2. Separa tus diapositivas con ---\n3. Haz clic en \"Presentar\" para ver el resultado  - Tus diapositivas se actualizan en tiempo real";
     out.driveReadmeTitle = "¿Qué es CryptPad?";
     out.readme_welcome = "¡Bienvenido a CryptPad!";
     out.readme_p1 = "Bienvenido a CryptPad, aquí podrás anotar cosas solo o con otra gente.";

@@ -29,11 +29,12 @@ define(function () {
     out.typeError = "Ce pad n'est pas compatible avec l'application sélectionnée";
     out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
     out.wrongApp = "Impossible d'afficher le contenu de ce document temps-réel dans votre navigateur. Vous pouvez essayer de recharger la page.";
-    out.padNotPinned = 'Ce pad va expirer dans 3 mois, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
+    out.padNotPinned = 'Ce pad va expirer après 3 mois d\'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
     out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
     out.expiredError = "Ce pad a atteint sa date d'expiration est n'est donc plus disponible.";
     out.expiredErrorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
     out.deletedError = 'Ce pad a été supprimé par son propriétaire et n\'est donc plus disponible.';
+    out.inactiveError = 'Ce pad a été supprimé en raison de son inactivité. Appuyez sur Échap pour créer un nouveau pad.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";
@@ -217,6 +218,10 @@ define(function () {
     out.cancelButton = 'Annuler (Échap)';
     out.doNotAskAgain = "Ne plus demander (Échap)";
 
+    out.show_help_button = "Afficher l'aide";
+    out.hide_help_button = "Cacher l'aide";
+    out.help_button = "Aide";
+
     out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";
     out.history_next = "Voir la version suivante";
@@ -276,9 +281,6 @@ define(function () {
     out.poll_edit = "Modifier";
     out.poll_locked = "Verrouillé";
     out.poll_unlocked = "Déverrouillé";
-
-    out.poll_show_help_button = "Afficher l'aide";
-    out.poll_hide_help_button = "Cacher l'aide";
 
     out.poll_bookmark_col = "Marquer cette colonne comme favorite pour qu'elle soit toujours déverouillée et affichée en première position.";
     out.poll_bookmarked_col = "Voici votre colonne favorite; elle sera toujours dévérouillée et affichée en première position.";
@@ -779,13 +781,8 @@ define(function () {
         '<p>',
         'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',
         '<br>',
-        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Partager&nbsp;</span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
+        'Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span class="fa fa-share-alt"></span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.',
         '</p>',
-        '<p>',
-        '<em>',
-        'Lancez-vous, commencez à taper...',
-        '</em></p>',
-        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = [
@@ -797,14 +794,6 @@ define(function () {
 
     out.slideInitialState = [
         '# CryptSlide\n',
-        '* Voici CryptPad, l\'éditeur collaboratif en temps-réel Zero Knowledge.\n',
-        '* Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n',
-        '* Même le serveur est incapable de voir ce que vous tapez.\n',
-        '* Ce que vous voyez ici, ce que vous entendez, quand vous partez, ça reste ici.\n',
-        '\n',
-        '---',
-        '\n',
-        '# Comment l\'utiliser\n',
         '1. Écrivez le contenu de votre présentation avec la syntaxe Markdown\n',
         '  - Apprenez à utiliser markdown en cliquant [ici](http://www.markdowntutorial.com/)\n',
         '2. Séparez vos slides avec ---\n',
@@ -869,6 +858,7 @@ define(function () {
     out.creation_createFromTemplate = "Depuis un modèle";
     out.creation_createFromScratch = "Nouveau pad vide";
     out.creation_settings = "Préférences des nouveaux pads";
+    out.creation_saveSettings = "Sauver les préférences";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Possédé par un autre utilisateur";
@@ -876,7 +866,8 @@ define(function () {
     out.creation_expiration = "Date d'expiration";
     out.creation_propertiesTitle = "Disponibilité";
     out.creation_appMenuName = "Mode avancé (Ctrl + E)";
-    out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez cocher la case pour afficher l'écran de création de pads";
+    out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.";
+    out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads possédés ou à date d'expiration). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
 
     // New share modal

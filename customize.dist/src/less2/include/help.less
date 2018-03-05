@@ -1,0 +1,32 @@
+@import (once) "./colortheme-all.less";
+
+.help_main (@color, @bg-color) {
+    .cp-help-container {
+        position: relative;
+        background-color: lighten(@bg-color, 15%);
+        &.cp-help-hidden {
+            display: none;
+        }
+
+        .cp-help-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        .cp-help-text {
+            color: @color;
+            margin: 0;
+            padding: 15px;
+            h1 {
+                font-size: 20px;
+            }
+            h2 {
+                font-size: 18px;
+            }
+            h3 {
+                font-size: 16px;
+            }
+            ul, ol, p { margin: 0; }
+        }
+    }
+}

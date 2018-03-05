@@ -72,7 +72,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.26.0 (undefined)")
+            h('div.cp-version-footer', "CryptPad v1.27.0 (null)")
         ]);
     };
 
@@ -368,6 +368,42 @@ define([
                 h('h2', Msg.policy_choices),
                 h('p', Msg.policy_choices_open),
                 setHTML(h('p'), Msg.policy_choices_vpn),
+            ]),
+            infopageFooter()
+        ]);
+    };
+
+    Pages['/faq.html'] = function () {
+        var categories = [];
+        var faq = Msg.faq;
+        Object.keys(faq).forEach(function (c) {
+            var questions = [];
+            Object.keys(faq[c]).forEach(function (q) {
+                var item = faq[c][q];
+                if (typeof item !== "object") { return; }
+                var answer = h('p.cp-faq-questions-a');
+                var question = h('p.cp-faq-questions-q');
+                $(question).click(function () {
+                    if ($(answer).is(':visible')) {
+                        return void $(answer).slideUp();
+                    }
+                    $(answer).slideDown();
+                });
+                questions.push(h('div.cp-faq-questions-items', [
+                    setHTML(question, item.q),
+                    setHTML(answer, item.a)
+                ]));
+            });
+            categories.push(h('div.cp-faq-category', [
+                h('h3', faq[c].title),
+                h('div.cp-faq-category-questions', questions)
+            ]));
+        });
+        return h('div#cp-main', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.faq_title)),
+                h('div.cp-faq-container', categories)
             ]),
             infopageFooter()
         ]);
@@ -720,10 +756,14 @@ define([
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
             appToolbar(),
-            h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
-                width: 600,
-                height: 600
-            })),
+            h('div#cp-app-whiteboard-canvas-area',
+                h('div#cp-app-whiteboard-container',
+                    h('canvas#cp-app-whiteboard-canvas', {
+                        width: 600,
+                        height: 600
+                    })
+                )
+            ),
             h('div#cp-app-whiteboard-controls', {
                 style: {
                     display: 'block',
@@ -783,12 +823,6 @@ define([
             appToolbar(),
             h('div#cp-app-poll-content', [
                 h('div#cp-app-poll-form', [
-                    h('div#cp-app-poll-help', [
-                        h('h1', 'CryptPoll'),
-                        setHTML(h('h2'), Msg.poll_subtitle),
-                        h('p', Msg.poll_p_save),
-                        h('p', Msg.poll_p_encryption)
-                    ]),
                     h('div.cp-app-poll-realtime', [
                         h('br'),
                         h('div', [

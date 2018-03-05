@@ -74,6 +74,24 @@
             }
         }
         .markdown_main();
+        .cp-app-code-preview-empty {
+            display: none;
+        }
+        &.cp-app-code-preview-isempty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            #cp-app-code-preview-content {
+                display: none;
+            }
+            .cp-app-code-preview-empty {
+                //flex: 1 1 auto;
+                max-height: 100%;
+                max-width: 100%;
+                display: block;
+                opacity: 0.2;
+            }
+        }
     }
 
     #cp-app-code-preview-content {

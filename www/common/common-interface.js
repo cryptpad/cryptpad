@@ -555,8 +555,11 @@ define([
             $loading = $('#' + LOADING); //.show();
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
+            $('.cp-loading-spinner-container').show();
             if (loadingText) {
                 $('#' + LOADING).find('p').text(loadingText);
+            } else {
+                $('#' + LOADING).find('p').text('');
             }
             $container = $loading.find('.cp-loading-container');
         } else {
@@ -612,7 +615,10 @@ define([
         if (exitable) {
             $(window).focus();
             $(window).keydown(function (e) {
-                if (e.which === 27) { $('#' + LOADING).hide(); }
+                if (e.which === 27) {
+                    $('#' + LOADING).hide();
+                    if (typeof(exitable) === "function") { exitable(); }
+                }
             });
         }
     };
@@ -662,7 +668,6 @@ define([
                 position: 'bottom',
                 distance: 0,
                 performance: true,
-                dynamicTitle: true,
                 delay: [delay, 0],
                 sticky: true
             });
@@ -672,6 +677,12 @@ define([
         setInterval(UI.clearTooltips, delay);
         var checkRemoved = function (x) {
             var out = false;
+            var xId = $(x).attr('aria-describedby');
+            if (xId) {
+                if (xId.indexOf('tippy-tooltip-') === 0) {
+                    return true;
+                }
+            }
             $(x).find('[aria-describedby]').each(function (i, el) {
                 var id = el.getAttribute('aria-describedby');
                 if (id.indexOf('tippy-tooltip-') !== 0) { return; }
@@ -685,6 +696,9 @@ define([
             mutations.forEach(function(mutation) {
                 if (mutation.type === "childList") {
                     for (var i = 0; i < mutation.addedNodes.length; i++) {
+                        if ($(mutation.addedNodes[i]).attr('title')) {
+                            addTippy(0, mutation.addedNodes[i]);
+                        }
                         $(mutation.addedNodes[i]).find('[title]').each(addTippy);
                     }
                     for (var j = 0; j < mutation.removedNodes.length; j++) {

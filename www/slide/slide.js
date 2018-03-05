@@ -75,6 +75,20 @@ define([
         if (typeof(Slide.content) !== 'string') { return; }
 
         var c = Slide.content;
+
+        if (c === '') {
+            var $empty = $('<img>', {
+                src: '/customize/main-favicon.png',
+                alt: '',
+                class: 'cp-app-code-preview-empty'
+            });
+            $content.html('').append($empty);
+            $content.addClass('cp-app-slide-isempty');
+            return;
+            //c = $('<div>').append($empty).html();
+        }
+        $content.removeClass('cp-app-slide-isempty');
+
         var mediatagBg = '';
         if (options.background && options.background.mt) {
             mediatagBg = options.background.mt;
@@ -125,7 +139,6 @@ define([
 
             change(null, Slide.index);
             Common.setPresentUrl(true);
-            $('.cp-app-slide-present-button').hide();
             updateFontSize();
             return;
         }
@@ -133,8 +146,6 @@ define([
         Common.setTabTitle(); // Remove the slide number from the title
         Common.setPresentUrl(false);
         change(Slide.index, null);
-        $('.cp-app-slide-present-button').show();
-        $('.cp-app-slide-source-button').hide();
         $modal.removeClass('cp-app-slide-shown');
         updateFontSize();
     };

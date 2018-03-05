@@ -191,8 +191,10 @@ define([
         window.location.href = '/drive/';
     };
 
+    var hashing;
     Exports.loginOrRegisterUI = function (uname, passwd, isRegister, shouldImport, testing, test) {
-        var hashing = true;
+        if (hashing) { return void console.log("hashing is already in progress"); }
+        hashing = true;
 
         var proceed = function (result) {
             hashing = false;
@@ -275,7 +277,7 @@ define([
 
                     proceed(result);
                 });
-            }, 0);
+            }, 500);
         }, 200);
     };
 

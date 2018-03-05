@@ -1,0 +1,20 @@
+@import (once) "./colortheme-all.less";
+
+.markdownToolbar_main (@color, @bg-color) {
+    .cp-markdown-toolbar {
+        height: @toolbar_line-height;
+        background-color: lighten(@bg-color, 20%);
+        display: none;
+        button {
+            height: @toolbar_line-height !important;
+            outline: 0;
+            color: @color;
+            .toolbar_button;
+            font: normal normal normal 14px/1 FontAwesome;
+            &:hover {
+                background-color: lighten(@bg-color, 8%);
+            }
+            &.cp-markdown-help { float: right; }
+        }
+    }
+}

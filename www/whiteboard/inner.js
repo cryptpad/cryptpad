@@ -312,12 +312,13 @@ define([
                 return;
             }
 
-            var $color = APP.$color = $('<button>', {
-                id: "cp-app-whiteboard-color-picker",
+            var $color = APP.$color = common.createButton(null, true, {
+                icon: 'fa-square',
                 title: Messages.canvas_chooseColor,
-                'class': "fa fa-square cp-toolbar-rightside-button",
-            })
-            .on('click', function () {
+                name: 'color',
+                id: 'cp-app-whiteboard-color-picker'
+            });
+            $color.on('click', function () {
                 pickColor($color.css('background-color'), function (color) {
                     setColor(color);
                 });
@@ -453,6 +454,14 @@ define([
             var $properties = common.createButton('properties', true);
             toolbar.$drawer.append($properties);
 
+            if (Messages.whiteboardHelp) {
+                var $appContainer = $('#cp-app-whiteboard-container');
+                var helpMenu = common.createHelpMenu();
+                $appContainer.prepend(helpMenu.menu);
+                $(helpMenu.text).html(Messages.whiteboardHelp);
+                toolbar.$drawer.append(helpMenu.button);
+            }
+
             if (!readOnly) {
                 makeColorButton($rightside);
 
@@ -469,12 +478,13 @@ define([
                     };
                     reader.readAsDataURL(file);
                 };
-                common.createButton('', true)
-                    .attr('title', Messages.canvas_imageEmbed)
-                    .removeClass('fa-question').addClass('fa-file-image-o')
-                    .click(function () {
-                        $('<input>', {type:'file'}).on('change', onUpload).click();
-                    }).appendTo($rightside);
+                common.createButton('', true, {
+                    title: Messages.canvas_imageEmbed,
+                    icon: 'fa-file-image-o',
+                    name: 'embedImage'
+                }).click(function () {
+                    $('<input>', {type:'file'}).on('change', onUpload).click();
+                }).appendTo($rightside);
 
                 if (common.isLoggedIn()) {
                     var fileDialogCfg = {
@@ -493,11 +503,7 @@ define([
                         }
                     };
                     common.initFilePicker(fileDialogCfg);
-                    APP.$mediaTagButton = $('<button>', {
-                        title: Messages.filePickerButton,
-                        'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                        style: 'font-size: 17px'
-                    }).click(function () {
+                    APP.$mediaTagButton = common.createButton('mediatag', true).click(function () {
                         var pickerCfg = {
                             types: ['file'],
                             where: ['root'],
@@ -662,15 +668,7 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
-            if (!AppConfig.displayCreationScreen) { return; }
-            var priv = common.getMetadataMgr().getPrivateData();
-            if (priv.isNewFile) {
-                var c = (priv.settings.general && priv.settings.general.creation) || {};
-                if (c.skip && !priv.forceCreationScreen) {
-                    return void common.createPad(c, waitFor());
-                }
-                common.getPadCreationScreen(c, waitFor());
-            }
+            common.handleNewFile(waitFor);
         }).nThen(function (/*waitFor*/) {
             andThen(common);
         });

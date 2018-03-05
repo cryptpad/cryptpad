@@ -9,6 +9,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
+    '/common/diffMarked.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
 
@@ -53,6 +54,7 @@ define([
     Util,
     Hash,
     UI,
+    DiffMd,
     Messages,
     CMeditor)
 {
@@ -71,9 +73,7 @@ define([
     };
 
     var mkSlidePreviewPane = function (framework, $contentContainer) {
-        var $previewButton = framework._.sfCommon.createButton(null, true);
-        $previewButton.removeClass('fa-question').addClass('fa-eye');
-        $previewButton.attr('title', Messages.previewButtonTitle);
+        var $previewButton = framework._.sfCommon.createButton('preview', true);
         $previewButton.click(function () {
             var $c = $contentContainer;
             if ($c.hasClass('cp-app-slide-preview')) {
@@ -100,19 +100,16 @@ define([
         });
     };
 
-    var mkPrintButton = function (framework, editor, $content, $print, $toolbarDrawer) {
-        var $printButton = $('<button>', {
-            title: Messages.printButtonTitle,
-            'class': 'cp-toolbar-rightside-button fa fa-print',
-            style: 'font-size: 17px'
-        }).click(function () {
+    var mkPrintButton = function (framework, editor, $content, $print) {
+        var $printButton = framework._.sfCommon.createButton('print', true);
+        $printButton.click(function () {
             Slide.update(editor.getValue(), true);
             $print.html($content.html());
             window.focus();
             window.print();
             framework.feedback('PRINT_SLIDES');
-        }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
-        $toolbarDrawer.append($printButton);
+        });
+        framework._.toolbar.$drawer.append($printButton);
     };
 
     // Flag to check if a file from the filepicker is a mediatag for the slides or a background image
@@ -120,7 +117,7 @@ define([
         isBackground: false
     };
 
-    var mkSlideOptionsButton = function (framework, slideOptions, $toolbarDrawer) {
+    var mkSlideOptionsButton = function (framework, slideOptions) {
         var metadataMgr = framework._.cpNfInner.metadataMgr;
         var updateSlideOptions = function (newOpt) {
             if (JSONSortify(newOpt) !== JSONSortify(slideOptions)) {
@@ -317,14 +314,17 @@ define([
             return $container;
         };
 
-        var $slideOptions = $('<button>', {
+        var $optionsButton = framework._.sfCommon.createButton(null, true, {
+            icon: 'fa-cog',
             title: Messages.slideOptionsTitle,
-            'class': 'cp-toolbar-rightside-button fa fa-cog cp-hidden-if-readonly',
-            style: 'font-size: 17px'
-        }).click(function () {
+            hiddenReadOnly: true,
+            text: Messages.slideOptionsText,
+            name: 'options'
+        });
+        $optionsButton.click(function () {
             $('body').append(createPrintDialog());
-        }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.slideOptionsText));
-        $toolbarDrawer.append($slideOptions);
+        });
+        framework._.toolbar.$drawer.append($optionsButton);
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
@@ -361,17 +361,21 @@ define([
             framework.localChange();
         };
 
-        var $back = $('<button>', {
-            id: SLIDE_BACKCOLOR_ID,
-            'class': 'fa fa-square cp-toolbar-rightside-button cp-hidden-if-readonly',
-            'style': 'font-family: FontAwesome; color: #000;',
-            title: Messages.backgroundButtonTitle
+        var $back = framework._.sfCommon.createButton(null, true, {
+            icon: 'fa-square',
+            title: Messages.backgroundButtonTitle,
+            hiddenReadOnly: true,
+            name: 'background',
+            style: 'color: #000;',
+            id: SLIDE_BACKCOLOR_ID
         });
-        var $text = $('<button>', {
-            id: SLIDE_COLOR_ID,
-            'class': 'fa fa-i-cursor cp-toolbar-rightside-button cp-hidden-if-readonly',
-            'style': 'font-family: FontAwesome; font-weight: bold; color: #fff;',
-            title: Messages.colorButtonTitle
+        var $text = framework._.sfCommon.createButton(null, true, {
+            icon: 'fa-i-cursor',
+            title: Messages.colorButtonTitle,
+            hiddenReadOnly: true,
+            name: 'color',
+            style: 'font-weight: bold; color: #FFF;',
+            id: SLIDE_COLOR_ID
         });
         var $testColor = $('<input>', { type: 'color', value: '!' });
         var $check = $("#cp-app-slide-colorpicker");
@@ -426,6 +430,16 @@ define([
         framework._.toolbar.$rightside.append(markdownTb.button);
     };
 
+    var mkHelpMenu = function (framework) {
+        var $codeMirrorContainer = $('#cp-app-slide-editor-container');
+        var helpMenu = framework._.sfCommon.createHelpMenu();
+        $codeMirrorContainer.prepend(helpMenu.menu);
+
+        $(helpMenu.text).html(DiffMd.render(Messages.slideInitialState));
+
+        framework._.toolbar.$drawer.append(helpMenu.button);
+    };
+
     var activateLinks = function ($content, framework) {
         $content.click(function (e) {
             if (!e.target) { return; }
@@ -459,12 +473,13 @@ define([
 
         activateLinks($content, framework);
         Slide.setModal(framework._.sfCommon, $modal, $content, slideOptions, Messages.slideInitialState);
-        mkPrintButton(framework, editor, $content, $print, $toolbarDrawer);
+        mkPrintButton(framework, editor, $content, $print);
         mkSlideOptionsButton(framework, slideOptions, $toolbarDrawer);
         mkColorConfiguration(framework, $modal);
         mkFilePicker(framework, editor);
         mkSlidePreviewPane(framework, $contentContainer);
         mkMarkdownToolbar(framework, editor);
+        mkHelpMenu(framework);
 
         CodeMirror.configureTheme(common);
 
@@ -489,6 +504,8 @@ define([
         });
 
         framework.onReady(function (/*newPad*/) {
+            editor.focus();
+
             CodeMirror.setMode('markdown', function () { });
             Slide.onChange(function (o, n, l) {
                 var slideNumber = '';
@@ -519,7 +536,7 @@ define([
         });
 
         framework.onDefaultContentNeeded(function () {
-            CodeMirror.contentUpdate({ content: Messages.slideInitialState });
+            CodeMirror.contentUpdate({ content: '' });
         });
 
         Slide.setTitle(framework._.title);
@@ -539,13 +556,9 @@ define([
     };
 
     var getThumbnailContainer = function () {
-        var $codeMirror = $('.CodeMirror');
         var $c = $('#cp-app-slide-editor');
         if ($c.hasClass('cp-app-slide-preview')) {
             return $('.cp-app-slide-frame').first()[0];
-        }
-        if ($codeMirror.length) {
-            return $codeMirror[0];
         }
     };
 

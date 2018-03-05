@@ -30,11 +30,12 @@ define(function () {
     out.typeError = "This pad is not compatible with the selected application";
     out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
-    out.padNotPinned = 'This pad will expire in 3 months, {0}login{1} or {2}register{3} to preserve it.';
+    out.padNotPinned = 'This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
     out.expiredError = 'This pad has reached its expiration time and is no longer available.';
     out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
     out.deletedError = 'This pad has been deleted by its owner and is no longer available.';
+    out.inactiveError = 'This pad has been deleted due to inactivity. Press Esc to create a new pad.';
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -219,6 +220,10 @@ define(function () {
     out.cancelButton = 'Cancel (esc)';
     out.doNotAskAgain = "Don't ask me again (Esc)";
 
+    out.show_help_button = "Show help";
+    out.hide_help_button = "Hide help";
+    out.help_button = "Help";
+
     out.historyText = "History";
     out.historyButton = "Display the document history";
     out.history_next = "Go to the next version";
@@ -278,9 +283,6 @@ define(function () {
     out.poll_edit = "Edit";
     out.poll_locked = "Locked";
     out.poll_unlocked = "Unlocked";
-
-    out.poll_show_help_button = "Show help";
-    out.poll_hide_help_button = "Hide help";
 
     out.poll_bookmark_col = 'Bookmark this column so that it is always unlocked and displayed at the beginning for you';
     out.poll_bookmarked_col = 'This is your bookmarked column. It will always be unlocked and displayed at the beginning for you.';
@@ -759,6 +761,30 @@ define(function () {
     out.features_f_storage_anon = "Pads deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
 
+    // faq.html
+
+    out.faq_link = "FAQ";
+    out.faq_title = "Frequently Asked Questions";
+    out.faq = {};
+    out.faq.cat1 = {
+        title: 'Category 1',
+        q1: {
+            q: 'What is a pad?',
+            a: 'A realtime collaborative document...'
+        },
+        q2: {
+            q: 'Question 2?',
+            a: '42'
+        }
+    };
+    out.faq.cat2 = {
+        title: 'Category 2',
+        q1: {
+            q: 'A new question?',
+            a: 'The answer'
+        }
+    };
+
     // terms.html
 
     out.tos_title = "CryptPad Terms of Service";
@@ -791,13 +817,8 @@ define(function () {
         '<p>',
         'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
-        'Share the link to this pad to edit with friends or use the <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
+        'Share the link to this pad to edit with friends or use the <span class="fa fa-share-alt"></span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
         '</p>',
-
-        '<p><em>',
-        'Go ahead, just start typing...',
-        '</em></p>',
-        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = [
@@ -809,14 +830,6 @@ define(function () {
 
     out.slideInitialState = [
         '# CryptSlide\n',
-        '* This is a zero knowledge realtime collaborative editor.\n',
-        '* What you type here is encrypted so only people who have the link can access it.\n',
-        '* Even the server cannot see what you type.\n',
-        '* What you see here, what you hear here, when you leave here, let it stay here.\n',
-        '\n',
-        '---',
-        '\n',
-        '# How to use\n',
         '1. Write your slides content using markdown syntax\n',
         '  - Learn more about markdown syntax [here](http://www.markdowntutorial.com/)\n',
         '2. Separate your slides with ---\n',
@@ -883,6 +896,7 @@ define(function () {
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
     out.creation_settings = "New Pad settings";
+    out.creation_saveSettings = "Save settings";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";
@@ -890,7 +904,8 @@ define(function () {
     out.creation_expiration = "Expiration time";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
-    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.";
+    out.creation_newPadModalDescriptionAdvanced = "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     // New share modal
