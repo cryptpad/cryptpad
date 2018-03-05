@@ -30,6 +30,8 @@ flex-flow: column;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-flow: column;
+    min-height: 0;
 }
 
 #cp-app-file-content.ready {
@@ -133,4 +135,26 @@ media-tag {
     background-color: rgba(255, 0, 115, 0.75);
     z-index: 10000;
     display: block;
+}
+
+#cp-app-file-download-view {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+    media-tag {
+        flex: 1;
+        min-height: 0;
+        max-width: 100vw;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        &> * {
+            max-height: 100%;
+            max-width: 100%;
+        }
+    }
+
 }

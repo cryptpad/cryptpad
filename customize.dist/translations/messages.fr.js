@@ -218,6 +218,10 @@ define(function () {
     out.cancelButton = 'Annuler (Échap)';
     out.doNotAskAgain = "Ne plus demander (Échap)";
 
+    out.show_help_button = "Afficher l'aide";
+    out.hide_help_button = "Cacher l'aide";
+    out.help_button = "Aide";
+
     out.historyText = "Historique";
     out.historyButton = "Afficher l'historique du document";
     out.history_next = "Voir la version suivante";
@@ -277,9 +281,6 @@ define(function () {
     out.poll_edit = "Modifier";
     out.poll_locked = "Verrouillé";
     out.poll_unlocked = "Déverrouillé";
-
-    out.poll_show_help_button = "Afficher l'aide";
-    out.poll_hide_help_button = "Cacher l'aide";
 
     out.poll_bookmark_col = "Marquer cette colonne comme favorite pour qu'elle soit toujours déverouillée et affichée en première position.";
     out.poll_bookmarked_col = "Voici votre colonne favorite; elle sera toujours dévérouillée et affichée en première position.";
@@ -857,6 +858,7 @@ define(function () {
     out.creation_createFromTemplate = "Depuis un modèle";
     out.creation_createFromScratch = "Nouveau pad vide";
     out.creation_settings = "Préférences des nouveaux pads";
+    out.creation_saveSettings = "Sauver les préférences";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Possédé par un autre utilisateur";
@@ -864,7 +866,8 @@ define(function () {
     out.creation_expiration = "Date d'expiration";
     out.creation_propertiesTitle = "Disponibilité";
     out.creation_appMenuName = "Mode avancé (Ctrl + E)";
-    out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez cocher la case pour afficher l'écran de création de pads";
+    out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.";
+    out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads possédés ou à date d'expiration). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
 
     // New share modal

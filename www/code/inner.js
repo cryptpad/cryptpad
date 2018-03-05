@@ -54,6 +54,7 @@ define([
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
+        'gfm',
         'html',
         'htmlembedded',
         'htmlmixed',
@@ -86,7 +87,7 @@ define([
 
         $(helpMenu.text).html(DiffMd.render(Messages.codeInitialState));
 
-        framework._.toolbar.$rightside.append(helpMenu.button);
+        framework._.toolbar.$drawer.append(helpMenu.button);
     };
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
@@ -101,7 +102,7 @@ define([
             class: 'cp-app-code-preview-empty'
         }).appendTo($previewContainer);
 
-        var $previewButton = framework._.sfCommon.createButton(null, true);
+        var $previewButton = framework._.sfCommon.createButton('preview', true);
         var forceDrawPreview = function () {
             try {
                 if (editor.getValue() === '') {
@@ -118,12 +119,6 @@ define([
             forceDrawPreview();
         }, 150);
 
-        $previewButton.removeClass('fa-question').addClass('fa-eye');
-        window.setTimeout(function () {
-            // setTimeout needed for tippy (tooltip), otherwise we have the browser's default
-            // tooltips
-            $previewButton.attr('title', Messages.previewButtonTitle);
-        });
         var previewTo;
         $previewButton.click(function () {
             clearTimeout(previewTo);
@@ -327,6 +322,8 @@ define([
         framework.setTitleRecommender(CodeMirror.getHeadingText);
 
         framework.onReady(function (newPad) {
+            editor.focus();
+
             if (newPad && !CodeMirror.highlightMode) {
                 CodeMirror.setMode('gfm', evModeChange.fire);
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
@@ -370,12 +367,8 @@ define([
 
     var getThumbnailContainer = function () {
         var $preview = $('#cp-app-code-preview-content');
-        var $codeMirror = $('.CodeMirror');
         if ($preview.length && $preview.is(':visible')) {
             return $preview[0];
-        }
-        if ($codeMirror.length) {
-            return $codeMirror[0];
         }
     };
 

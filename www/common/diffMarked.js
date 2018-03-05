@@ -116,6 +116,7 @@ define([
 
     /*  remove listeners from the DOM */
     var removeListeners = function (root) {
+        if (!root) { return; }
         slice(root.attributes).map(function (attr) {
             if (/^on/i.test(attr.name)) {
                 console.log('removing attribute', attr.name, root.attributes[attr.name]);
@@ -171,7 +172,9 @@ define([
             return mt + '</media-tag>';
         });
 
-        var safe_newHtmlFixed = domFromHTML(unsafe_newHtmlFixed).body.outerHTML;
+        var newDomFixed = domFromHTML(unsafe_newHtmlFixed);
+        if (!newDomFixed || !newDomFixed.body) { return; }
+        var safe_newHtmlFixed = newDomFixed.body.outerHTML;
         var $div = $('<div>', {id: id}).append(safe_newHtmlFixed);
 
         var Dom = domFromHTML($('<div>').append($div).html());

@@ -220,6 +220,10 @@ define(function () {
     out.cancelButton = 'Cancel (esc)';
     out.doNotAskAgain = "Don't ask me again (Esc)";
 
+    out.show_help_button = "Show help";
+    out.hide_help_button = "Hide help";
+    out.help_button = "Help";
+
     out.historyText = "History";
     out.historyButton = "Display the document history";
     out.history_next = "Go to the next version";
@@ -279,9 +283,6 @@ define(function () {
     out.poll_edit = "Edit";
     out.poll_locked = "Locked";
     out.poll_unlocked = "Unlocked";
-
-    out.poll_show_help_button = "Show help";
-    out.poll_hide_help_button = "Hide help";
 
     out.poll_bookmark_col = 'Bookmark this column so that it is always unlocked and displayed at the beginning for you';
     out.poll_bookmarked_col = 'This is your bookmarked column. It will always be unlocked and displayed at the beginning for you.';
@@ -895,6 +896,7 @@ define(function () {
     out.creation_createFromTemplate = "From template";
     out.creation_createFromScratch = "From scratch";
     out.creation_settings = "New Pad settings";
+    out.creation_saveSettings = "Save settings";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";
@@ -902,7 +904,8 @@ define(function () {
     out.creation_expiration = "Expiration time";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
-    out.creation_newPadModalDescription = "Click on a pad type to create it. You can check the box if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
+    out.creation_newPadModalDescription = "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.";
+    out.creation_newPadModalDescriptionAdvanced = "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
     // New share modal
