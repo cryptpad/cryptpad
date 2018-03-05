@@ -677,6 +677,12 @@ define([
         setInterval(UI.clearTooltips, delay);
         var checkRemoved = function (x) {
             var out = false;
+            var xId = $(x).attr('aria-describedby');
+            if (xId) {
+                if (xId.indexOf('tippy-tooltip-') === 0) {
+                    return true;
+                }
+            }
             $(x).find('[aria-describedby]').each(function (i, el) {
                 var id = el.getAttribute('aria-describedby');
                 if (id.indexOf('tippy-tooltip-') !== 0) { return; }
