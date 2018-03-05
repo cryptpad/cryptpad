@@ -66,10 +66,15 @@ define([
             config.onRemote();
         }
 
-        var getContent = function () {
+        var getContent = APP.getContent = function () {
+            APP.ed = window.frames[0].frames[0].editor;
             try {
                 return window.frames[0].frames[0].editor.asc_nativeGetFile();
             } catch (e) { return null; }
+        };
+
+        var setContent = APP.setContent = function (content) {
+
         };
 
         var saveDocument = APP.saveDocument = function () {

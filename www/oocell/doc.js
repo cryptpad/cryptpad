@@ -2,7 +2,7 @@
 window.config = {
     "document": {
         "fileType": "xlsx",
-        "key": "Khirz6zTPdfd7",
+        "key": "fresh", // "Khirz6zTPdfd7",
         "title": "test.xlsx",
         "url": "/onlyoffice/test.xlsx"
     },
@@ -15,8 +15,8 @@ window.config = {
             }
         },
         "user": {
-            "id": "c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
-            "name": "John Smith"
+            "id": "", //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
+            "name": "", //"John Smith"
         }
     },
     "events": {
