@@ -766,23 +766,140 @@ define(function () {
     out.faq_link = "FAQ";
     out.faq_title = "Frequently Asked Questions";
     out.faq = {};
-    out.faq.cat1 = {
-        title: 'Category 1',
-        q1: {
-            q: 'What is a pad?',
-            a: 'A realtime collaborative document...'
+    out.faq.keywords = {
+        title: 'Keywords',
+        pad: {
+            q: "What is a Pad?",
+            a: ""
         },
-        q2: {
-            q: 'Question 2?',
-            a: '42'
+        owned: {
+            q: "What is an owned Pad?",
+            a: ""
+        },
+        expiring: {
+            q: "What is an expiring Pad?",
+            a: ""
+        },
+        tag: {
+            q: "How can I use tags?",
+            a: ""
+        },
+        template: {
+            q: "What is a template?",
+            a: ""
+        },
+    };
+    out.faq.privacy = {
+        title: 'Privacy',
+        different: {
+            q: "How is CryptPad different from other Pad services?",
+            a: ""
+        },
+        me: {
+            q: "What information does the server know about me?",
+            a: ""
+        },
+        other: {
+            q: "What can other collaborators learn about me?",
+            a: ""
+        },
+        register: {
+            q: "Does the server know more about me if I register?",
+            a: ""
+        },
+        anonymous: {
+            q: "Does CryptPad make me anonymous?",
+            a: ""
+        },
+        access: {
+            q: "What non-public information does the server have access to?",
+            a: ""
+        },
+        metadata: {
+            q: "What metadata can you gather?",
+            a: ""
         }
     };
-    out.faq.cat2 = {
-        title: 'Category 2',
-        q1: {
-            q: 'A new question?',
-            a: 'The answer'
+    out.faq.security = {
+        title: 'Security',
+        proof: {
+            q: "How do you use Zero Knowledge Proofs?",
+            a: ""
+        },
+        why: {
+            q: "Why should I use CryptPad?",
+            a: ""
+        },
+        compromised: {
+            q: "Does CryptPad protect me if my device is compromised?",
+            a: ""
+        },
+        policy: {
+            q: "What is your application security policy?",
+            a: ""
+        },
+        crypto: {
+            q: "What cryptography do you use?",
+            a: ""
         }
+    };
+    out.faq.usability = {
+        title: 'Usability',
+        register: {
+            q: "What do I get by registering?",
+            a: ""
+        },
+        share: {
+            q: "How can I share encrypted pads with my friends?",
+            a: ""
+        },
+        remove: {
+            q: "I removed a pad or file from my CryptDrive, but the content is still available. How can I remove it?",
+            a: ""
+        },
+        forget: {
+            q: "What if I forget my password?",
+            a: ""
+        },
+        change: {
+            q: "What if I want to change my password?",
+            a: ""
+        },
+        devices: {
+            q: "I am logged in on two devices, and see two different CryptDrives, how is this possible?",
+            a: ""
+        },
+        folder: {
+            q: "Can I share entire folders from my CryptDrive?",
+            a: ""
+        },
+        feature: {
+            q: "Can you add a very special feature which I need?",
+            a: ""
+        },
+    };
+    out.faq.other = {
+        title: "Other questions",
+        pay: {
+            q: "Why should I pay when so many features are free?",
+            a: ""
+        },
+        goal: {
+            q: "What is your goal?",
+            a: ""
+        },
+        jobs: {
+            q: "Are you hiring?",
+            a: ""
+        },
+        host: {
+            q: "Can you help me set up my own instance of CryptPad?",
+            a: ""
+        },
+        revenue: {
+            q: "How can I participate in the revenue sharing?",
+            a: ""
+        },
     };
 
     // terms.html
