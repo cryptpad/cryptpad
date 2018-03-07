@@ -464,6 +464,7 @@ define([
         var AppConfig = common.getAppConfig();
         var button;
         var sframeChan = common.getSframeChannel();
+        var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -656,8 +657,7 @@ define([
             case 'toggle':
                 button = $('<button>', {
                     'class': 'fa fa-caret-down cp-toolbar-icon-toggle',
-                })
-                .click(common.prepareFeedback(type));
+                });
                 window.setTimeout(function () {
                     button.attr('title', data.title);
                 });
@@ -666,14 +666,16 @@ define([
                     if (!isVisible) { button.addClass('fa-caret-down'); }
                     else { button.addClass('fa-caret-up'); }
                 };
-                button.click(function () {
+                button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
                     if (callback) { callback(isVisible); }
                     if (isVisible) {
                         button.addClass('cp-toolbar-button-active');
+                        if (e.originalEvent) { Feedback.send('TOGGLE_SHOW_' + appType); }
                     } else {
                         button.removeClass('cp-toolbar-button-active');
+                        if (e.originalEvent) { Feedback.send('TOGGLE_HIDE_' + appType); }
                     }
                     updateIcon(isVisible);
                 });
@@ -702,7 +704,7 @@ define([
                 button = $('<button>', {
                     'class': "fa " + icon,
                 })
-                .click(common.prepareFeedback(type));
+                .click(common.prepareFeedback(data.name || 'DEFAULT'));
                 if (data.title) { button.attr('title', data.title); }
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
