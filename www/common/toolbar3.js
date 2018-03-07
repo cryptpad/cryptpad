@@ -1048,6 +1048,13 @@ define([
         toolbar.reconnecting = function (/*userId*/) {
             toolbar.connected = false;
             if (toolbar.spinner) {
+                var state = -1;
+                var interval = window.setInterval(function () {
+                    if (toolbar.connected) { clearInterval(interval); }
+                    var dots = Array(state+1).join('.');
+                    toolbar.spinner.text(Messages.reconnecting + dots);
+                    if (++state > 3) { state = 0; }
+                }, 500);
                 toolbar.spinner.text(Messages.reconnecting);
             }
         };

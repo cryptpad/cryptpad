@@ -1117,13 +1117,13 @@ define([
             });
         }
         setEditable(false);
-        UI.alert(Messages.common_connectionLost, undefined, true);
+        //UI.alert(Messages.common_connectionLost, undefined, true);
     };
 
     var onReconnect = function () {
         if (APP.unrecoverable) { return; }
         setEditable(true);
-        UI.findOKButton().click();
+        //UI.findOKButton().click();
     };
 
     var getHeadingText = function () {

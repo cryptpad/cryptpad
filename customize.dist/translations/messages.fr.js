@@ -47,7 +47,7 @@ define(function () {
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
-    out.reconnecting = 'Reconnexion...';
+    out.reconnecting = 'Reconnexion';
     out.typing = "Édition";
     out.initializing = "Initialisation...";
     out.forgotten = 'Déplacé vers la corbeille';
@@ -361,7 +361,7 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_searchName = "Recherche";
     out.fm_recentPadsName = "Pads récents";
-    out.fm_ownedPadsName = "Possédés";
+    out.fm_ownedPadsName = "Pads possédés";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";

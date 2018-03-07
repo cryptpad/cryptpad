@@ -616,9 +616,9 @@ define([
             setEditable(info.state);
             if (info.state) {
                 initializing = true;
-                UI.findOKButton().click();
+                //UI.findOKButton().click();
             } else {
-                UI.alert(Messages.common_connectionLost, undefined, true);
+                //UI.alert(Messages.common_connectionLost, undefined, true);
             }
         };
 

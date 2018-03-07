@@ -48,7 +48,7 @@ define(function () {
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
-    out.reconnecting = 'Reconnecting...';
+    out.reconnecting = 'Reconnecting';
     out.typing = "Editing";
     out.initializing = "Initializing...";
     out.forgotten = 'Moved to the trash';
