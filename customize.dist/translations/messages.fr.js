@@ -283,7 +283,7 @@ define(function () {
     out.poll_unlocked = "Déverrouillé";
 
     out.poll_bookmark_col = "Marquer cette colonne comme favorite pour qu'elle soit toujours déverouillée et affichée en première position.";
-    out.poll_bookmarked_col = "Voici votre colonne favorite; elle sera toujours dévérouillée et affichée en première position.";
+    out.poll_bookmarked_col = "Voici votre colonne favorite ; elle sera toujours dévérouillée et affichée en première position.";
     out.poll_total = 'TOTAL';
 
     out.poll_comment_list = "Commentaires";
