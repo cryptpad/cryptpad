@@ -350,7 +350,7 @@ define([
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.policy_title)),
                 h('h2', Msg.policy_whatweknow),
-                h('p', Msg.policywhatweknow_p1),
+                setHTML(h('p'), Msg.policy_whatweknow_p1),
 
                 h('h2', Msg.policy_howweuse),
                 h('p', Msg.policy_howweuse_p1),
