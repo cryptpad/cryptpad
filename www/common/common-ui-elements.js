@@ -852,6 +852,7 @@ define([
         var tbState = true;
         common.getAttribute(['general', 'markdown-help'], function (e, data) {
             if (e) { return void console.error(e); }
+            if ($(window).height() < 800) { return; }
             if (data === true && $toolbarButton.length && tbState) {
                 $toolbarButton.click();
             }
@@ -868,6 +869,7 @@ define([
             }
             common.getAttribute(['general', 'markdown-help'], function (e, data) {
                 if (e) { return void console.error(e); }
+                if ($(window).height() < 800) { return; }
                 if (data === true && $toolbarButton) {
                     // Show the toolbar using the button to make sure the icon in the button is
                     // correct (caret-down / caret-up)
@@ -923,6 +925,7 @@ define([
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
+            if ($(window).height() < 800) { return void toggleHelp(true); }
             if (val === true) { toggleHelp(true); }
         });
 
