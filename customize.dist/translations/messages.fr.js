@@ -956,13 +956,13 @@ define(function () {
     out.help.title = "Pour bien démarrer";
     out.help.generic = {
         more: 'Apprenez-en davantage sur le fonctionnement de CryptPad en lisant notre <a href="/faq.html" target="_blank">FAQ</a>',
-        share: 'Utilisez le menu partage (<span class="fa fa-share-alt"></span>) pour générer un lien afin que les collaborateurs puissant voir ou modifier ce pad',
+        share: 'Utilisez le menu partage (<span class="fa fa-share-alt"></span>) pour générer un lien d\'accès ou d\'édition  pad',
         stored: 'Chaque pad que vous visitez est stocké automatiquement dans votre <a href="/drive/" target="_blank">CryptDrive</a>'
     };
 
     out.help.text = {
-        formatting: 'Vous pouvez afficher ou cacher la barre d\'outils de mise en forme du texte en cliquant sur les boutons <span class="fa fa-caret-down"></span> ou <span class="fa fa-caret-up"></span>',
-        embed: 'Les utilisateurs enregistrés peuvent intégrer une image ou un fichier provenant de leur CryptDrive en utilisant le bouton <span class="fa fa-image"></span>',
+        formatting: 'Vous pouvez afficher ou cacher la barre d\'outils de texte en cliquant sur les boutons <span class="fa fa-caret-down"></span> ou <span class="fa fa-caret-up"></span>',
+        embed: 'Les utilisateurs enregistrés peuvent intégrer un fichier de leur CryptDrive en utilisant le bouton <span class="fa fa-image"></span>',
         history: 'Vous pouvez utiliser l\'historique (<span class="fa fa-history"></span>) pour voir ou restaurer les versions précédentes du pad'
     };
 
@@ -984,7 +984,7 @@ define(function () {
     out.help.poll = {
         decisions: 'Prenez des décisions en privé avec des personnes de confiance',
         options: 'Proposez des options et exprimez vos préférences',
-        choices: 'Cliquez sur les cellules de votre colonne pour modifier leur valeur entre oui (<strong>✔</strong>), non (<strong>✖</strong>) ou peut-être (<strong>~</strong>)',
+        choices: 'Cliquez sur les cellules de votre colonne pour modifier leur valeur entre oui (<strong>✔</strong>), peut-être (<strong>~</strong>) ou non (<strong>✖</strong>)',
         submit: 'Cliquez sur <b>Ajouter</b> pour rendre vos choix visibles aux autres'
     };
 

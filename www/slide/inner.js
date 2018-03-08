@@ -399,7 +399,7 @@ define([
             $foregroundPicker.click();
         });
 
-        framework._.toolbar.$rightside.append($back).append($text);
+        framework._.toolbar.$rightside.append($text).append($back);
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
