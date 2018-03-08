@@ -138,10 +138,8 @@ define([
 
     var mkHelpMenu = function (framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
-        var helpMenu = framework._.sfCommon.createHelpMenu();
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
         $toolbarContainer.before(helpMenu.menu);
-
-        $(helpMenu.text).html(Messages.initialState);
 
         framework._.toolbar.$drawer.append(helpMenu.button);
     };

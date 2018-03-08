@@ -993,9 +993,11 @@ define(function () {
     out.header_logoTitle = out.updated_0_header_logoTitle;
     out.header_homeTitle = 'Go to CryptPad homepage';
 
+    // Initial states
 
     out.help = {};
 
+    out.help.title = "Getting started";
     out.help.generic = {
         more: 'Learn more about how CryptPad can work for you by reading our <a href="/faq.html" target="_blank">FAQ</a>',
         share: 'Use the share menu (<span class="fa fa-share-alt"></span>) to generate a link so collaborators can view or edit this pad',
@@ -1036,7 +1038,6 @@ define(function () {
         embed: 'Embed images from your disk <span class="fa fa-file-image-o"></span> or your CryptDrive <span class="fa fa-image"></span> and export them as PNG to your disk <span class="fa fa-download"></span> or your CryptDrive <span class="fa fa-cloud-upload"></span>'
     };
 
-    // Initial states
 
     out.initialState = [
         '<p>',

@@ -951,6 +951,50 @@ define(function () {
 
     // Initial states
 
+    out.help = {};
+
+    out.help.title = "Pour bien démarrer";
+    out.help.generic = {
+        more: 'Apprenez-en davantage sur le fonctionnement de CryptPad en lisant notre <a href="/faq.html" target="_blank">FAQ</a>',
+        share: 'Utilisez le menu partage (<span class="fa fa-share-alt"></span>) pour générer un lien afin que les collaborateurs puissant voir ou modifier ce pad',
+        stored: 'Chaque pad que vous visitez est stocké automatiquement dans votre <a href="/drive/" target="_blank">CryptDrive</a>'
+    };
+
+    out.help.text = {
+        formatting: 'Vous pouvez afficher ou cacher la barre d\'outils de mise en forme du texte en cliquant sur les boutons <span class="fa fa-caret-down"></span> ou <span class="fa fa-caret-up"></span>',
+        embed: 'Les utilisateurs enregistrés peuvent intégrer une image ou un fichier provenant de leur CryptDrive en utilisant le bouton <span class="fa fa-image"></span>',
+        history: 'Vous pouvez utiliser l\'historique (<span class="fa fa-history"></span>) pour voir ou restaurer les versions précédentes du pad'
+    };
+
+    out.help.pad = {
+        export: 'Vous pouvez exporter le contenu en tant que PDF avec le bouton <span class="fa fa-print"></span> de la barre d\'outils de mise en forme du texte'
+    };
+
+    out.help.code = {
+        modes: 'Utilisez le sous-menu <span class="fa fa-ellipsis-h"></span> pour changer le mode de coloration syntaxique ou le thème de couleur'
+    };
+
+    out.help.slide = {
+        markdown: 'Rédigez vos slides en <a href="http://www.markdowntutorial.com/">Markdown</a> et séparez les avec une ligne contenant <code>---</code>',
+        present: 'Démarrez la présentation en utilisant le bouton <span class="fa fa-play-circle"></span>',
+        settings: 'Modifiez les préférences de la présentation (image de fond, transitions, numéro de pages, ...) avec le bouton <span class="fa fa-cog"></span> dans le sous-menu <span class="fa fa-ellipsis-h"></span>',
+        colors: 'Modifiez la couleur du texte ou du fond en utilisant les boutons <span class="fa fa-i-cursor"></span> et <span class="fa fa-square"></span>'
+    };
+
+    out.help.poll = {
+        decisions: 'Prenez des décisions en privé avec des personnes de confiance',
+        options: 'Proposez des options et exprimez vos préférences',
+        choices: 'Cliquez sur les cellules de votre colonne pour modifier leur valeur entre oui (<strong>✔</strong>), non (<strong>✖</strong>) ou peut-être (<strong>~</strong>)',
+        submit: 'Cliquez sur <b>Ajouter</b> pour rendre vos choix visibles aux autres'
+    };
+
+    out.help.whiteboard = {
+        colors: 'Double-cliquez sur les couleurs pour changer la palette',
+        mode: 'Vous pouvez désactiver le mode dessin pour déplacer, redimensionner, ou supprimer des éléments du dessin',
+        embed: 'Intégrez des images de votre disque <span class="fa fa-file-image-o"></span> ou de votre CryptDrive <span class="fa fa-image"></span> et exporter le contenu en tant que PNG sur votre disque <span class="fa fa-download"></span> ou votre CryptDrive <span class="fa fa-cloud-upload"></span>'
+    };
+
+
     out.initialState = [
         '<p>',
         'Voici <strong>CryptPad</strong>, l\'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.',

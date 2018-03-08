@@ -82,10 +82,8 @@ define([
     };
     var mkHelpMenu = function (framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
-        var helpMenu = framework._.sfCommon.createHelpMenu();
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'code']);
         $codeMirrorContainer.prepend(helpMenu.menu);
-
-        $(helpMenu.text).html(DiffMd.render(Messages.codeInitialState));
 
         framework._.toolbar.$drawer.append(helpMenu.button);
     };
