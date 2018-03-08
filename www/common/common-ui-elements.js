@@ -890,10 +890,49 @@ define([
         };
     };
 
-    UIElements.createHelpMenu = function (common) {
+    UIElements.createHelpMenu = function (common, categories) {
         var type = common.getMetadataMgr().getMetadata().type || 'pad';
 
-        var text = h('p.cp-help-text');
+        var setHTML = function (e, html) {
+            e.innerHTML = html;
+            return e;
+        };
+
+        var elements = [];
+        if (Messages.help && Messages.help.generic) {
+            Object.keys(Messages.help.generic).forEach(function (el) {
+                elements.push(setHTML(h('li'), Messages.help.generic[el]));
+            });
+        }
+        if (categories) {
+            categories.forEach(function (cat) {
+                var msgs = Messages.help[cat];
+                if (msgs) {
+                    Object.keys(msgs).forEach(function (el) {
+                        elements.push(setHTML(h('li'), msgs[el]));
+                    });
+                }
+            });
+        }
+
+        var text = h('p.cp-help-text', [
+            h('h1', Messages.help.title),
+            h('ul', elements)
+        ]);
+
+        var origin = common.getMetadataMgr().getPrivateData().origin || '';
+        $(text).find('a').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var href = $(this).attr('href');
+            var absolute = /^https?:\/\//i;
+            if (!absolute.test(href)) {
+                if (href.slice(0,1) !== '/') { href = '/' + href; }
+                href = origin + href;
+            }
+            common.openUnsafeURL(href);
+        });
+
         var closeButton = h('span.cp-help-close.fa.fa-window-close');
         var $toolbarButton = common.createButton('', true, {
             title: Messages.hide_help_button,
