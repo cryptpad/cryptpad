@@ -237,7 +237,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faFolder,
                 }, Messages.fc_newfolder)),
-                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item', {
+                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),

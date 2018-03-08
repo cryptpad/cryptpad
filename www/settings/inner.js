@@ -335,13 +335,13 @@ define([
                 type: 'radio',
                 name: 'cp-creation-owned',
                 value: 1,
+                checked: 'checked'
             }),
             h('label', { 'for': 'cp-creation-owned-true' }, Messages.creation_ownedTrue),
             h('input#cp-creation-owned-false.cp-creation-owned-value', {
                 type: 'radio',
                 name: 'cp-creation-owned',
                 value: 0,
-                checked: 'checked'
             }),
             h('label', { 'for': 'cp-creation-owned-false' }, Messages.creation_ownedFalse),
             h('span.fa.fa-check', {title: Messages.saved}),
@@ -364,8 +364,8 @@ define([
             });
         });
         common.getAttribute(['general', 'creation', 'owned'], function (e, val) {
-            if (val) {
-                $owned.find('#cp-creation-owned-true').attr('checked', true);
+            if (!val && typeof val !== "undefined") {
+                $owned.find('#cp-creation-owned-false').attr('checked', true);
             }
         });
 

@@ -116,7 +116,7 @@ define([
             } else {
                 var errText = "[cursor.fixSelection] At least one of the " +
                     "cursor nodes did not exist, could not fix selection";
-                console.error(errText);
+                //console.error(errText);
                 return errText;
             }
             } catch (e) { console.error(e); }

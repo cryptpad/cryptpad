@@ -362,53 +362,146 @@
                 flex: 1;
             }
         }
-        &:not(.cp-toolbar-notitle) {
-            .cp-toolbar-top {
-                @media screen and (max-width: @browser_media-medium-screen) {
-                    flex-wrap: wrap;
-                    height: auto;
-                    .cp-toolbar-top-filler {
-                        flex: 1;
-                    }
-                    .cp-toolbar-title {
-                        flex: auto;
+        .cp-toolbar-top {
+            @media screen and (max-width: @browser_media-medium-screen) {
+                flex-wrap: wrap;
+                height: @toolbar_line-height;
+                .cp-pad-not-pinned {
+                    line-height: 32px;
+                    flex: unset;
+                    padding: 0;
+                    align-self: auto;
+                    margin: 0 5px;
+                }
+                .cp-toolbar-top-filler {
+                    height: 32px;
+                }
+                .cp-toolbar-title {
+                    height: @toolbar_line-height;
+                    line-height: initial;
+                    margin: 0;
+                    .cp-toolbar-title-hoverable {
                         width: 100%;
-                        order: 10;
+                    }
+                    .cp-toolbar-title-value-page {
+                        padding: 5px;
+                        line-height: unset;
+                        border: 0;
+                    }
+                    .cp-toolbar-title-editable, .cp-toolbar-title-value-page {
+                        max-width: ~"calc(100vw - 26px)";
+                        display: inline-block;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-size: @colortheme_app-font-size;
                         height: @toolbar_line-height;
-                        line-height: initial;
-                        margin: 0;
-                        .cp-toolbar-title-hoverable {
-                            width: 100%;
-                        }
-                        .cp-toolbar-title-editable {
-                            max-width: ~"calc(100vw - 26px)";
-                            display: inline-block;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            font-size: @colortheme_app-font-size;
-                            height: @toolbar_line-height;
-                            box-sizing: border-box;
-                            line-height: 20px;
-                        }
-                        .cp-toolbar-title-edit, .cp-toolbar-title-save {
-                            box-sizing: border-box;
-                            height: @toolbar_line-height;
-                            line-height: @colortheme_app-font-size;
-                            display: inline-block;
+                        box-sizing: border-box;
+                        line-height: 20px;
+                    }
+                    .cp-toolbar-title-edit, .cp-toolbar-title-save {
+                        box-sizing: border-box;
+                        height: @toolbar_line-height;
+                        line-height: @colortheme_app-font-size;
+                        display: inline-block;
 
-                            .fa {
-                                font-size: @colortheme_app-font-size;
-                            }
-                        }
-                        input {
-                            height: @toolbar_line-height;
+                        .fa {
                             font-size: @colortheme_app-font-size;
-                            flex: 1;
-                            max-width: none;
-                            line-height: calc(@toolbar_line-height - 12px); // padding + border
                         }
+                    }
+                    input {
+                        height: @toolbar_line-height;
+                        font-size: @colortheme_app-font-size;
+                        flex: 1;
+                        max-width: none;
+                        line-height: calc(@toolbar_line-height - 12px); // padding + border
                     }
                 }
+                .cp-toolbar-link {
+                    height: @toolbar_line-height;
+                    width: @toolbar_line-height;
+                    .cp-toolbar-link-logo {
+                        padding: 5px;
+                    }
+                }
+                .cp-toolbar-user {
+                    height: @toolbar_line-height;
+                    .cp-toolbar-new {
+                        height: @toolbar_line-height;
+                        width: @toolbar_line-height;
+                        margin-left: 0;
+                        button {
+                            height: @toolbar_line-height;
+                            width: @toolbar_line-height;
+                            font-size: 20px;
+                            margin-top: -1px;
+                        }
+                    }
+                    .cp-toolbar-user-dropdown {
+                        height: @toolbar_line-height;
+                        width: @toolbar_line-height;
+                        &> button {
+                            height: @toolbar_line-height;
+                            width: @toolbar_line-height;
+                            span { font-size: unset; }
+                        }
+                        &> button.cp-avatar.cp-avatar {
+                            media-tag {
+                                margin: 4px;
+                                max-width: 24px;
+                                min-width: 24px;
+                                max-height: 24px;
+                                min-height: 24px;
+                            }
+                        }
+                    }
+                    .cp-toolbar-limit {
+                        line-height: 32px;
+                        margin: 0;
+                    }
+                }
+                /*
+                .cp-toolbar-top-filler {
+                    flex: 1;
+                }
+                .cp-toolbar-title {
+                    flex: auto;
+                    width: 100%;
+                    order: 10;
+                    height: @toolbar_line-height;
+                    line-height: initial;
+                    margin: 0;
+                    .cp-toolbar-title-hoverable {
+                        width: 100%;
+                    }
+                    .cp-toolbar-title-editable {
+                        max-width: ~"calc(100vw - 26px)";
+                        display: inline-block;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-size: @colortheme_app-font-size;
+                        height: @toolbar_line-height;
+                        box-sizing: border-box;
+                        line-height: 20px;
+                    }
+                    .cp-toolbar-title-edit, .cp-toolbar-title-save {
+                        box-sizing: border-box;
+                        height: @toolbar_line-height;
+                        line-height: @colortheme_app-font-size;
+                        display: inline-block;
+
+                        .fa {
+                            font-size: @colortheme_app-font-size;
+                        }
+                    }
+                    input {
+                        height: @toolbar_line-height;
+                        font-size: @colortheme_app-font-size;
+                        flex: 1;
+                        max-width: none;
+                        line-height: calc(@toolbar_line-height - 12px); // padding + border
+                    }
+                }
+                */
             }
         }
 
@@ -471,9 +564,9 @@
             overflow: hidden;
             white-space: nowrap;
 
-            align-self: center;
-            padding-left: 20px;
-            padding-right: 5px;
+            line-height: @toolbar_top-height;
+            padding: 0;
+            margin: 0 5px;
             font-size: @colortheme_app-font-size;
             color: @warn-color;
             .cp-pnp-msg {

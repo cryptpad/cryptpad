@@ -432,10 +432,8 @@ define([
 
     var mkHelpMenu = function (framework) {
         var $codeMirrorContainer = $('#cp-app-slide-editor-container');
-        var helpMenu = framework._.sfCommon.createHelpMenu();
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'slide']);
         $codeMirrorContainer.prepend(helpMenu.menu);
-
-        $(helpMenu.text).html(DiffMd.render(Messages.slideInitialState));
 
         framework._.toolbar.$drawer.append(helpMenu.button);
     };

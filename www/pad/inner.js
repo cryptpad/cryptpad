@@ -138,10 +138,8 @@ define([
 
     var mkHelpMenu = function (framework) {
         var $toolbarContainer = $('.cke_toolbox_main');
-        var helpMenu = framework._.sfCommon.createHelpMenu();
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
         $toolbarContainer.before(helpMenu.menu);
-
-        $(helpMenu.text).html(Messages.initialState);
 
         framework._.toolbar.$drawer.append(helpMenu.button);
     };
@@ -282,7 +280,7 @@ define([
             framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
         };
         framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function (err, data) {
-            if (typeof(data) === "undefined" || data) { $('.cke_toolbox_main').show(); }
+            if ($(window).height() >= 800 && (typeof(data) === "undefined" || data)) { $('.cke_toolbox_main').show(); }
             else { $('.cke_toolbox_main').hide(); }
             var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
             framework._.toolbar.$rightside.append($collapse);

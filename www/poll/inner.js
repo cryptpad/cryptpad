@@ -1117,13 +1117,13 @@ define([
             });
         }
         setEditable(false);
-        UI.alert(Messages.common_connectionLost, undefined, true);
+        //UI.alert(Messages.common_connectionLost, undefined, true);
     };
 
     var onReconnect = function () {
         if (APP.unrecoverable) { return; }
         setEditable(true);
-        UI.findOKButton().click();
+        //UI.findOKButton().click();
     };
 
     var getHeadingText = function () {
@@ -1199,19 +1199,9 @@ define([
         var $export = common.createButton('export', true, {}, exportFile);
         $drawer.append($export);
 
-        var helpMenu = common.createHelpMenu();
+        var helpMenu = common.createHelpMenu(['poll']);
         $('#cp-app-poll-form').prepend(helpMenu.menu);
         $drawer.append(helpMenu.button);
-        var setHTML = function (e, html) {
-            e.innerHTML = html;
-            return e;
-        };
-        var help = h('div', [
-            setHTML(h('h1'), Messages.poll_subtitle),
-            h('p', Messages.poll_p_save),
-            h('p', Messages.poll_p_encryption)
-        ]);
-        $(helpMenu.text).html($(help).html());
 
         if (APP.readOnly) { publish(true); return; }
         var $publish = common.createButton('', true, {

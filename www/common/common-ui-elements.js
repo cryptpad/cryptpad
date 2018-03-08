@@ -464,6 +464,7 @@ define([
         var AppConfig = common.getAppConfig();
         var button;
         var sframeChan = common.getSframeChannel();
+        var appType = (common.getMetadataMgr().getMetadata().type || 'pad').toUpperCase();
         switch (type) {
             case 'export':
                 button = $('<button>', {
@@ -656,8 +657,7 @@ define([
             case 'toggle':
                 button = $('<button>', {
                     'class': 'fa fa-caret-down cp-toolbar-icon-toggle',
-                })
-                .click(common.prepareFeedback(type));
+                });
                 window.setTimeout(function () {
                     button.attr('title', data.title);
                 });
@@ -666,14 +666,16 @@ define([
                     if (!isVisible) { button.addClass('fa-caret-down'); }
                     else { button.addClass('fa-caret-up'); }
                 };
-                button.click(function () {
+                button.click(function (e) {
                     data.element.toggle();
                     var isVisible = data.element.is(':visible');
                     if (callback) { callback(isVisible); }
                     if (isVisible) {
                         button.addClass('cp-toolbar-button-active');
+                        if (e.originalEvent) { Feedback.send('TOGGLE_SHOW_' + appType); }
                     } else {
                         button.removeClass('cp-toolbar-button-active');
+                        if (e.originalEvent) { Feedback.send('TOGGLE_HIDE_' + appType); }
                     }
                     updateIcon(isVisible);
                 });
@@ -702,7 +704,7 @@ define([
                 button = $('<button>', {
                     'class': "fa " + icon,
                 })
-                .click(common.prepareFeedback(type));
+                .click(common.prepareFeedback(data.name || 'DEFAULT'));
                 if (data.title) { button.attr('title', data.title); }
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
@@ -850,6 +852,7 @@ define([
         var tbState = true;
         common.getAttribute(['general', 'markdown-help'], function (e, data) {
             if (e) { return void console.error(e); }
+            if ($(window).height() < 800) { return; }
             if (data === true && $toolbarButton.length && tbState) {
                 $toolbarButton.click();
             }
@@ -866,6 +869,7 @@ define([
             }
             common.getAttribute(['general', 'markdown-help'], function (e, data) {
                 if (e) { return void console.error(e); }
+                if ($(window).height() < 800) { return; }
                 if (data === true && $toolbarButton) {
                     // Show the toolbar using the button to make sure the icon in the button is
                     // correct (caret-down / caret-up)
@@ -886,10 +890,49 @@ define([
         };
     };
 
-    UIElements.createHelpMenu = function (common) {
+    UIElements.createHelpMenu = function (common, categories) {
         var type = common.getMetadataMgr().getMetadata().type || 'pad';
 
-        var text = h('p.cp-help-text');
+        var setHTML = function (e, html) {
+            e.innerHTML = html;
+            return e;
+        };
+
+        var elements = [];
+        if (Messages.help && Messages.help.generic) {
+            Object.keys(Messages.help.generic).forEach(function (el) {
+                elements.push(setHTML(h('li'), Messages.help.generic[el]));
+            });
+        }
+        if (categories) {
+            categories.forEach(function (cat) {
+                var msgs = Messages.help[cat];
+                if (msgs) {
+                    Object.keys(msgs).forEach(function (el) {
+                        elements.push(setHTML(h('li'), msgs[el]));
+                    });
+                }
+            });
+        }
+
+        var text = h('p.cp-help-text', [
+            h('h1', Messages.help.title),
+            h('ul', elements)
+        ]);
+
+        var origin = common.getMetadataMgr().getPrivateData().origin || '';
+        $(text).find('a').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var href = $(this).attr('href');
+            var absolute = /^https?:\/\//i;
+            if (!absolute.test(href)) {
+                if (href.slice(0,1) !== '/') { href = '/' + href; }
+                href = origin + href;
+            }
+            common.openUnsafeURL(href);
+        });
+
         var closeButton = h('span.cp-help-close.fa.fa-window-close');
         var $toolbarButton = common.createButton('', true, {
             title: Messages.hide_help_button,
@@ -921,6 +964,7 @@ define([
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
+            if ($(window).height() < 800) { return void toggleHelp(true); }
             if (val === true) { toggleHelp(true); }
         });
 
@@ -1799,6 +1843,7 @@ define([
         };
 
         // Owned pads
+        // Default is Owned pad
         var owned = h('div.cp-creation-owned', [
             h('h2', [
                 Messages.creation_ownedTitle,
@@ -1824,7 +1869,7 @@ define([
         ]);
         $creation.append(owned);
 
-        // If set to "open pad" or not set, check "open pad"
+        // If set to "open pad", check "open pad"
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned-false').attr('checked', true);
         }
@@ -1872,6 +1917,16 @@ define([
             ])
         ]);
         $creation.append(expire);
+        $creation.find('#cp-creation-expire-val').keydown(function (e) {
+            if (e.which === 9) {
+                e.stopPropagation();
+            }
+        });
+        $creation.find('#cp-creation-expire-unit').keydown(function (e) {
+            if (e.which === 9 && e.shiftKey) {
+                e.stopPropagation();
+            }
+        });
 
         UIElements.setExpirationValue(cfg.expire, $creation);
 
@@ -1940,6 +1995,7 @@ define([
         });
 
         var $button = $('<button>').text(Messages.creation_createFromScratch).appendTo($create);
+        $button.addClass('cp-creation-button-selected');
         $button.click(function () {
             create();
         });
@@ -1980,7 +2036,7 @@ define([
             $spinner[0]
         ])).appendTo($creation);
 
-        var selected = -1;
+        var selected = 0;
         var next = function () {
             selected = ++selected % $creation.find('button').length;
             $creation.find('button').removeClass('cp-creation-button-selected');
