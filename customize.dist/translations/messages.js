@@ -1013,7 +1013,7 @@ define(function () {
     };
 
     out.help.code = {
-        modes: 'Use the dropdown menus in the drawer (<span class="fa fa-ellipsis-h"></span>) to change syntax highlighting modes or color themes.',
+        modes: 'Use the dropdown menus in the <span class="fa fa-ellipsis-h"></span> submenu to change syntax highlighting modes or color themes',
     };
 
     out.help.slide = {
@@ -1026,7 +1026,7 @@ define(function () {
     out.help.poll = {
         decisions: 'Make decisions in private among trusted friends',
         options: 'Propose options, and express your preferences',
-        choices: 'Click cells in your column to cycle through yes (<strong>✔</strong>), no (<strong>✖</strong>), or maybe (<strong>~</strong>)',
+        choices: 'Click cells in your column to cycle through yes (<strong>✔</strong>), maybe (<strong>~</strong>), or no (<strong>✖</strong>)',
         submit: 'Click <strong>submit</strong> to make your choices visible to others',
     };
 
