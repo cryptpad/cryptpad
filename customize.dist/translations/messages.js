@@ -977,7 +977,8 @@ define(function () {
     out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
     out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
 
-    // 404 page out.four04_pageNotFound = "We couldn't find the page you were looking for.";
+    // 404 page
+    out.four04_pageNotFound = "We couldn't find the page you were looking for.";
 
     // BottomBar.html
 
