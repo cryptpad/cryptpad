@@ -976,8 +976,7 @@ define(function () {
     out.tos_logs = "Metadata provided by your browser to the server may be logged for the purpose of maintaining the service.";
     out.tos_3rdparties = "We do not provide individualized data to third parties unless required to by law.";
 
-    // 404 page
-    out.four04_pageNotFound = "We couldn't find the page you were looking for.";
+    // 404 page out.four04_pageNotFound = "We couldn't find the page you were looking for.";
 
     // BottomBar.html
 
@@ -992,6 +991,49 @@ define(function () {
     out.updated_0_header_logoTitle = 'Go to your CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
     out.header_homeTitle = 'Go to CryptPad homepage';
+
+
+    out.help = {};
+
+    out.help.generic = {
+        more: 'Learn more about how CryptPad can work for you by reading our <a href="/faq.html" target="_blank">FAQ</a>',
+        share: 'Use the share menu (<span class="fa fa-share-alt"></span>) to generate a link so collaborators can view or edit this pad',
+        stored: 'Every pad you visit is automatically stored in your <a href="/drive/" target="_blank">CryptDrive</a>',
+    };
+
+    out.help.text = {
+        formatting: 'You can display or hide the text formatting toolbar by clicking the <span class="fa fa-caret-down"></span> or <span class="fa fa-caret-up"></span> buttons',
+        embed: 'Registered users can embed an image or a file stored in their CryptDrive using <span class="fa fa-image"></span>',
+        history: 'You can use <em>history</em> <span class="fa fa-history"></span> to view or restore previous versions',
+    };
+
+    out.help.pad = {
+        export: 'You can export the content as PDF using the <span class="fa fa-print"></span> button in the text formatting toolbar',
+    };
+
+    out.help.code = {
+        modes: 'Use the dropdown menus in the drawer (<span class="fa fa-ellipsis-h"></span>) to change syntax highlighting modes or color themes.',
+    };
+
+    out.help.slide = {
+        markdown: 'Write slides in <a href="http://www.markdowntutorial.com/">Markdown</a> and separate them with a line containing <code>---</code>',
+        present: 'Start the presentation using the <span class="fa fa-play-circle"></span> button',
+        settings: 'Change the slide settings (background, transitions, page numbers, etc.) with the <span class="fa fa-cog"></span> button in the <span class="fa fa-ellipsis-h"></span> submenu',
+        colors: 'Change the text and background colors using the <span class="fa fa-i-cursor"></span> and <span class="fa fa-square"></span> buttons',
+    };
+
+    out.help.poll = {
+        decisions: 'Make decisions in private among trusted friends',
+        options: 'Propose options, and express your preferences',
+        choices: 'Click cells in your column to cycle through yes (<strong>✔</strong>), no (<strong>✖</strong>), or maybe (<strong>~</strong>)',
+        submit: 'Click <strong>submit</strong> to make your choices visible to others',
+    };
+
+    out.help.whiteboard = {
+        colors: 'Double-click colors to modify your palette',
+        mode: 'Disable draw mode to drag and stretch strokes',
+        embed: 'Embed images from your disk <span class="fa fa-file-image-o"></span> or your CryptDrive <span class="fa fa-image"></span> and export them as PNG to your disk <span class="fa fa-download"></span> or your CryptDrive <span class="fa fa-cloud-upload"></span>'
+    };
 
     // Initial states
 
