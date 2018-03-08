@@ -672,7 +672,7 @@ define(function () {
     out.footer_aboutUs = "À propos";
 
     out.about = "À propos";
-    out.privacy = "Vie privée";
+    out.privacy = "Confidentialité";
     out.contact = "Contact";
     out.terms = "Conditions";
     out.blog = "Blog";
@@ -759,6 +759,7 @@ define(function () {
 
     out.faq_link = "FAQ";
     out.faq_title = "Foire Aux Questions";
+    out.faq_whatis = "Qu'est-ce que CryptPad ?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Termes spéciaux',
