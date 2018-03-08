@@ -1804,6 +1804,7 @@ define([
         };
 
         // Owned pads
+        // Default is Owned pad
         var owned = h('div.cp-creation-owned', [
             h('h2', [
                 Messages.creation_ownedTitle,
@@ -1829,7 +1830,7 @@ define([
         ]);
         $creation.append(owned);
 
-        // If set to "open pad" or not set, check "open pad"
+        // If set to "open pad", check "open pad"
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned-false').attr('checked', true);
         }
@@ -1877,6 +1878,16 @@ define([
             ])
         ]);
         $creation.append(expire);
+        $creation.find('#cp-creation-expire-val').keydown(function (e) {
+            if (e.which === 9) {
+                e.stopPropagation();
+            }
+        });
+        $creation.find('#cp-creation-expire-unit').keydown(function (e) {
+            if (e.which === 9 && e.shiftKey) {
+                e.stopPropagation();
+            }
+        });
 
         UIElements.setExpirationValue(cfg.expire, $creation);
 
@@ -1945,6 +1956,7 @@ define([
         });
 
         var $button = $('<button>').text(Messages.creation_createFromScratch).appendTo($create);
+        $button.addClass('cp-creation-button-selected');
         $button.click(function () {
             create();
         });
@@ -1985,7 +1997,7 @@ define([
             $spinner[0]
         ])).appendTo($creation);
 
-        var selected = -1;
+        var selected = 0;
         var next = function () {
             selected = ++selected % $creation.find('button').length;
             $creation.find('button').removeClass('cp-creation-button-selected');
