@@ -765,6 +765,7 @@ define(function () {
 
     out.faq_link = "FAQ";
     out.faq_title = "Frequently Asked Questions";
+    out.faq_whatis = "What is CryptPad?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Keywords',
