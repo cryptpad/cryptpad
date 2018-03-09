@@ -4,16 +4,6 @@ define(function () {
     out.main_title = "CryptPad: Zero Knowledge, Colaborare în timp real";
     out.main_slogan = "Puterea stă în cooperare - Colaborarea este cheia";
 
-    out.type = {};
-    out.pad = "Rich text";
-    out.code = "Code";
-    out.poll = "Poll";
-    out.slide = "Presentation";
-    out.drive = "Drive";
-    out.whiteboard = "Whiteboard";
-    out.file = "File";
-    out.media = "Media";
-
     out.button_newpad = "Filă Text Nouă";
     out.button_newcode = "Filă Cod Nouă";
     out.button_newpoll = "Sondaj Nou";
@@ -330,9 +320,9 @@ define(function () {
     out.header_france = "<a href=\"http://www.xwiki.com/\" target=\"_blank\" rel=\"noopener noreferrer\">With <img class=\"bottom-bar-heart\" src=\"/customize/heart.png\" alt=\"love\" /> from <img class=\"bottom-bar-fr\" src=\"/customize/fr.png\" title=\"Franța\" alt=\"Franța\"/> by <img src=\"/customize/logo-xwiki.png\" alt=\"XWiki SAS\" class=\"bottom-bar-xwiki\"/></a>";
     out.header_support = "<a href=\"http://ng.open-paas.org/\" title=\"OpenPaaS::ng\" target=\"_blank\" rel=\"noopener noreferrer\"> <img src=\"/customize/openpaasng.png\" alt=\"OpenPaaS-ng\" class=\"bottom-bar-openpaas\" /></a>";
     out.header_logoTitle = "Mergi la pagina principală";
-    out.initialState = "<p>Acesta este&nbsp;<strong>CryptPad</strong>, editorul colaborativ bazat pe tehnologia Zero Knowledge în timp real. Totul este salvat pe măsură ce scrii.<br>Partajează link-ul către acest pad pentru a edita cu prieteni sau folosește <span class=\"fa fa-share-alt\" style=\"border:1px solid black;color:#000;\">&nbsp;Share&nbsp;</span> butonul pentru a partaja <em>read-only link</em>&nbsp;permițând vizualizarea dar nu și editarea.</p><p><em>Îndrăznește, începe să scrii...</em></p><p>&nbsp;<br></p>";
+    out.initialState = "<p>Acesta este&nbsp;<strong>CryptPad</strong>, editorul colaborativ bazat pe tehnologia Zero Knowledge în timp real. Totul este salvat pe măsură ce scrii.<br>Partajează link-ul către acest pad pentru a edita cu prieteni sau folosește <span class=\"fa fa-share-alt\"></span> butonul pentru a partaja <em>read-only link</em>&nbsp;permițând vizualizarea dar nu și editarea.</p>";
     out.codeInitialState = "/*\n   Acesta este editorul colaborativ de cod bazat pe tehnologia Zero Knowledge CryptPad.\n   Ce scrii aici este criptat, așa că doar oamenii care au link-ul pot să-l acceseze.\n   Poți să alegi ce limbaj de programare pus n evidență și schema de culori UI n dreapta sus.\n*/";
-    out.slideInitialState = "# CryptSlide\n* Acesta este un editor colaborativ bazat pe tehnologia Zero Knowledge.\n* Ce scrii aici este criptat, așa că doar oamenii care au link-ul pot să-l acceseze.\n* Nici măcar serverele nu au acces la ce scrii tu.\n* Ce vezi aici, ce auzi aici, atunci când pleci, lași aici.\n\n-\n# Cum se folosește\n1. Scrie-ți conținutul slide-urilor folosind sintaxa markdown\n  - Află mai multe despre sintaxa markdown [aici](http://www.markdowntutorial.com/)\n2. Separă-ți slide-urile cu -\n3. Click pe butonul \"Play\" pentru a vedea rezultatele  - Slide-urile tale sunt actualizate în timp real.";
+    out.slideInitialState = "# CryptSlide\n1. Scrie-ți conținutul slide-urilor folosind sintaxa markdown\n  - Află mai multe despre sintaxa markdown [aici](http://www.markdowntutorial.com/)\n2. Separă-ți slide-urile cu ---\n3. Click pe butonul \"Play\" pentru a vedea rezultatele  - Slide-urile tale sunt actualizate în timp real.";
     out.driveReadmeTitle = "Ce este CryptPad?";
     out.readme_welcome = "Bine ai venit n CryptPad !";
     out.readme_p1 = "Bine ai venit în CryptPad, acesta este locul unde îți poți lua notițe, singur sau cu prietenii.";

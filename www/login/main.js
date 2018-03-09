@@ -53,12 +53,8 @@ define([
             $('button.login').click();
         });
 
-        var hashing = false;
         var test;
         $('button.login').click(function () {
-            if (hashing) { return void console.log("hashing is already in progress"); }
-
-            hashing = true;
             var shouldImport = $checkImport[0].checked;
             var uname = $uname.val();
             var passwd = $passwd.val();

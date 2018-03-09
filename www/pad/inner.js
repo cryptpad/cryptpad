@@ -136,6 +136,14 @@ define([
         check();
     };
 
+    var mkHelpMenu = function (framework) {
+        var $toolbarContainer = $('.cke_toolbox_main');
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+        $toolbarContainer.before(helpMenu.menu);
+
+        framework._.toolbar.$drawer.append(helpMenu.button);
+    };
+
     var mkDiffOptions = function (cursor, readOnly) {
         return {
             preDiffApply: function (info) {
@@ -269,12 +277,10 @@ define([
             element: $bar.find('.cke_toolbox_main')
         };
         var onClick = function (visible) {
-            $(window).trigger('resize');
-            $(window).trigger('cryptpad-ck-toolbar');
             framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
         };
         framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function (err, data) {
-            if (typeof(data) === "undefined" || data) { $('.cke_toolbox_main').show(); }
+            if ($(window).height() >= 800 && (typeof(data) === "undefined" || data)) { $('.cke_toolbox_main').show(); }
             else { $('.cke_toolbox_main').hide(); }
             var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
             framework._.toolbar.$rightside.append($collapse);
@@ -324,12 +330,12 @@ define([
     var andThen2 = function (editor, Ckeditor, framework) {
         var mediaTagMap = {};
         var $bar = $('#cke_1_toolbox');
+        var $contentContainer = $('#cke_1_contents');
         var $html = $bar.closest('html');
         var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
         }
-
         var ml = Ckeditor.instances.editor1.plugins.magicline.backdoor.that.line.$;
         [ml, ml.parentElement].forEach(function (el) {
             el.setAttribute('class', 'non-realtime');
@@ -351,6 +357,8 @@ define([
                 framework._.sfCommon.openUnsafeURL(href);
             }
         };
+
+        mkHelpMenu(framework);
 
         framework.onEditableChange(function (unlocked) {
             if (!framework.isReadOnly()) {
@@ -421,12 +429,14 @@ define([
 
         $bar.find('#cke_1_toolbar_collapser').hide();
         if (!framework.isReadOnly()) {
-            addToolbarHideBtn(framework, $bar);
+            addToolbarHideBtn(framework, $contentContainer);
         } else {
             $('.cke_toolbox_main').hide();
         }
 
         framework.onReady(function (newPad) {
+            editor.focus();
+
             if (!module.isMaximized) {
                 module.isMaximized = true;
                 $('iframe.cke_wysiwyg_frame').css('width', '');
@@ -434,7 +444,6 @@ define([
             }
             $('body').addClass('app-pad');
 
-            editor.focus();
             if (newPad) {
                 cursor.setToEnd();
             } else if (framework.isReadOnly()) {
@@ -464,10 +473,17 @@ define([
                     $iframe.find('html').addClass('cke_body_width');
                 }
             });
+            /*setTimeout(function () {
+                $('iframe.cke_wysiwyg_frame').focus();
+                editor.focus();
+                console.log(editor);
+                console.log(editor.focusManager);
+                $(window).trigger('resize');
+            });*/
         });
 
         framework.onDefaultContentNeeded(function () {
-            documentBody.innerHTML = Messages.initialState;
+            inner.innerHTML = '<p></p>';
         });
 
         var importMediaTags = function (dom, cb) {
@@ -561,9 +577,9 @@ define([
         nThen(function (waitFor) {
             Framework.create({
                 toolbarContainer: '#cke_1_toolbox',
-                contentContainer: '#cke_1_contents',
+                contentContainer: '#cke_editor1 > .cke_inner',
                 patchTransformer: ChainPad.NaiveJSONTransformer,
-                thumbnail: {
+                /*thumbnail: {
                     getContainer: function () { return $('iframe').contents().find('html')[0]; },
                     filter: function (el, before) {
                         if (before) {
@@ -584,7 +600,7 @@ define([
                         var range = module.cursor.makeRange();
                         module.cursor.fixSelection(sel, range);
                     }
-                }
+                }*/
             }, waitFor(function (fw) { window.APP.framework = framework = fw; }));
 
             nThen(function (waitFor) {
@@ -608,9 +624,10 @@ define([
                 var backColor = AppConfig.appBackgroundColor;
                 var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; }' +
                     '.cke_body_width body {' +
-                        'max-width: 50em; padding: 10px 30px; margin: 0 auto; min-height: 100%;'+
-                        'box-sizing: border-box;'+
-                    '}';
+                        'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
+                        'box-sizing: border-box; overflow: auto;'+
+                    '}' +
+                    '.cke_body_width body > *:first-child { margin-top: 0; }';
                 Ckeditor.addCss(newCss);
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
@@ -624,6 +641,15 @@ define([
                     height: Messages.pad_mediatagHeight
                 };
                 Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
+            }).nThen(function () {
+                // Move ckeditor parts to have a structure like the other apps
+                var $toolbarContainer = $('#cke_1_top');
+                var $contentContainer = $('#cke_1_contents');
+                var $mainContainer = $('#cke_editor1');
+                $contentContainer.prepend($toolbarContainer.find('.cke_toolbox_main'));
+                $mainContainer.prepend($toolbarContainer);
+                $contentContainer.find('.cke_toolbox_main').addClass('cke_reset_all');
+                $toolbarContainer.removeClass('cke_reset_all');
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {

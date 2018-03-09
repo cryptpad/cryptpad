@@ -187,7 +187,7 @@ define([
                             upgradeURL: Cryptpad.upgradeURL
                         },
                         isNewFile: isNewFile,
-                        isDeleted: window.location.hash.length > 0,
+                        isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
@@ -331,17 +331,27 @@ define([
             });
 
             sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
+                var href;
+                if (readOnly && hashes.editHash) {
+                    // If we have a stronger hash, use it for pad attributes
+                    href = window.location.pathname + '#' + hashes.editHash;
+                }
                 Cryptpad.getPadAttribute(data.key, function (e, data) {
                     cb({
                         error: e,
                         data: data
                     });
-                });
+                }, href);
             });
             sframeChan.on('Q_SET_PAD_ATTRIBUTE', function (data, cb) {
+                var href;
+                if (readOnly && hashes.editHash) {
+                    // If we have a stronger hash, use it for pad attributes
+                    href = window.location.pathname + '#' + hashes.editHash;
+                }
                 Cryptpad.setPadAttribute(data.key, data.value, function (e) {
                     cb({error:e});
-                });
+                }, href);
             });
 
             sframeChan.on('Q_GET_ATTRIBUTE', function (data, cb) {
@@ -625,6 +635,7 @@ define([
                 // Update metadata values and send new metadata inside
                 parsed = Utils.Hash.parsePadUrl(window.location.href);
                 defaultTitle = Utils.Hash.getDefaultName(parsed);
+                hashes = Utils.Hash.getHashes(secret.channel, secret);
                 readOnly = false;
                 updateMeta();
 
@@ -655,8 +666,9 @@ define([
             Utils.Feedback.reportAppUsage();
 
             if (!realtime) { return; }
-            if (isNewFile && Utils.LocalStore.isLoggedIn()
-                && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
+            if (isNewFile && cfg.useCreationScreen) { return; }
+            //if (isNewFile && Utils.LocalStore.isLoggedIn()
+            //    && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
 
             startRealtime();
         });

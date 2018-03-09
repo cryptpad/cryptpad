@@ -14,6 +14,7 @@ define([
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
     '/common/test.js',
@@ -43,6 +44,7 @@ define([
     SframeCM,
     Thumb,
     UI,
+    h,
     Messages,
     CMeditor,
     Test)
@@ -60,8 +62,6 @@ define([
     var Render = Renderer(APP);
 
     var debug = $.noop; //console.log;
-
-    var HIDE_INTRODUCTION_TEXT = "hide-text";
 
     var metadataMgr;
     var Title;
@@ -628,29 +628,6 @@ define([
         APP.editor.refresh();
     };
 
-    var updateHelpButton = function () {
-        if (!APP.$helpButton) { return; }
-        var help = $('#cp-app-poll-help').is(':visible');
-        var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
-        APP.$helpButton.attr('title', msg);
-        if (help) {
-            APP.$helpButton.addClass('cp-toolbar-button-active');
-            return;
-        }
-        APP.$helpButton.removeClass('cp-toolbar-button-active');
-    };
-    var showHelp = function(help) {
-        if (typeof help === 'undefined') {
-            help = !$('#cp-app-poll-help').is(':visible');
-        }
-
-        var msg = (help ? Messages.poll_hide_help_button : Messages.poll_show_help_button);
-
-        $('#cp-app-poll-help').toggle(help);
-        $('#cp-app-poll-action-help').text(msg);
-        updateHelpButton();
-    };
-
     var setEditable = function (editable) {
         APP.locked = APP.readOnly || !editable;
 
@@ -843,6 +820,7 @@ define([
     var checkDeletedCells = function () {
         // faster than forEach?
         var c;
+        if (!APP.proxy || !APP.proxy.content) { return; }
         for (var k in APP.proxy.content.cells) {
             c = Render.getCoordinates(k);
             if (APP.proxy.content.colsOrder.indexOf(c[0]) === -1 ||
@@ -1087,7 +1065,7 @@ define([
                     setTimeout(waitFor());
                 }).nThen(function (waitFor) {
                     // Switch to non-admin mode
-                    $('.cp-toolbar-rightside-button.fa-check').click();
+                    $('.cp-toolbar-icon-publish').click();
                     setTimeout(waitFor());
                 }).nThen(function (waitFor) {
                     $('.cp-app-poll-comments-add-name').val("Mr.Me").keyup();
@@ -1139,13 +1117,13 @@ define([
             });
         }
         setEditable(false);
-        UI.alert(Messages.common_connectionLost, undefined, true);
+        //UI.alert(Messages.common_connectionLost, undefined, true);
     };
 
     var onReconnect = function () {
         if (APP.unrecoverable) { return; }
         setEditable(true);
-        UI.findOKButton().click();
+        //UI.findOKButton().click();
     };
 
     var getHeadingText = function () {
@@ -1221,15 +1199,16 @@ define([
         var $export = common.createButton('export', true, {}, exportFile);
         $drawer.append($export);
 
-        var $help = common.createButton('', true).click(function () { showHelp(); })
-            .appendTo($rightside);
-        APP.$helpButton = $help;
-        updateHelpButton();
+        var helpMenu = common.createHelpMenu(['poll']);
+        $('#cp-app-poll-form').prepend(helpMenu.menu);
+        $drawer.append(helpMenu.button);
 
         if (APP.readOnly) { publish(true); return; }
-        var $publish = common.createButton('', true)
-            .removeClass('fa-question').addClass('fa-check')
-            .click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
+        var $publish = common.createButton('', true, {
+            name: 'publish',
+            icon: 'fa-check',
+            hiddenReadOnly: true
+        }).click(function () { publish(!APP.proxy.published); }).appendTo($rightside);
         APP.$publishButton = $publish;
         updatePublishButton();
 
@@ -1244,11 +1223,7 @@ define([
                 }
             };
             common.initFilePicker(fileDialogCfg);
-            APP.$mediaTagButton = $('<button>', {
-                title: Messages.filePickerButton,
-                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                style: 'font-size: 17px'
-            }).click(function () {
+            APP.$mediaTagButton = common.createButton('mediatag', true).click(function () {
                 var pickerCfg = {
                     types: ['file'],
                     where: ['root']
@@ -1274,16 +1249,9 @@ define([
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
-            if (!AppConfig.displayCreationScreen) { return; }
-            var priv = common.getMetadataMgr().getPrivateData();
-            if (priv.isNewFile) {
-                var c = (priv.settings.general && priv.settings.general.creation) || {};
-                if (c.skip && !priv.forceCreationScreen) {
-                    return void common.createPad(c, waitFor());
-                }
-                common.getPadCreationScreen(c, waitFor());
-            }
+            common.handleNewFile(waitFor);
         }).nThen(function (/* waitFor */) {
+            console.log('here');
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
@@ -1351,18 +1319,6 @@ define([
                  })
                  .on('disconnect', onDisconnect)
                  .on('reconnect', onReconnect);
-
-            common.getAttribute(['poll', HIDE_INTRODUCTION_TEXT], function (e, value) {
-                if (e) { console.error(e); }
-                if (!value) {
-                    common.setAttribute(['poll', HIDE_INTRODUCTION_TEXT], "1", function (e) {
-                        if (e) { console.error(e); }
-                    });
-                    showHelp(true);
-                } else {
-                    showHelp(false);
-                }
-            });
         });
     };
     main();

@@ -41,7 +41,8 @@ define([
 {
     var APP = window.APP = {
         editable: false,
-        mobile: function () { return $('body').width() <= 600; } // Menu and content area are not inline-block anymore for mobiles
+        mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
+        isMac: navigator.platform === "MacIntel"
     };
 
     var stringify = function (obj) {
@@ -236,7 +237,7 @@ define([
                     'tabindex': '-1',
                     'data-icon': faFolder,
                 }, Messages.fc_newfolder)),
-                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item', {
+                h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
@@ -545,6 +546,13 @@ define([
                 $select.each(function (idx, el) {
                     $(el).dblclick();
                 });
+                return;
+            }
+
+            // Ctrl+A select all
+            if (e.which === 65 && (e.ctrlKey || (e.metaKey && APP.isMac))) {
+                $content.find('.cp-app-drive-element:not(.cp-app-drive-element-selected)')
+                    .addClass('cp-app-drive-element-selected');
                 return;
             }
 
@@ -2908,6 +2916,7 @@ define([
                 }
                 // else move to trash
                 moveElements(paths, [TRASH], false, refresh);
+                return;
             }
         });
         var isCharacterKey = function (e) {

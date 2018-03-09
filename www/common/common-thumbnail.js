@@ -177,6 +177,7 @@ define([
     window.html2canvas = undefined;
     Thumb.fromDOM = function (opts, cb) {
         var element = opts.getContainer();
+        if (!element) { return; }
         var todo = function () {
             if (opts.filter) { opts.filter(element, true); }
             window.html2canvas(element, {
@@ -202,8 +203,8 @@ define([
         var mkThumbnail = function () {
             var content = opts.getContent();
             if (content === oldThumbnailState) { return; }
+            oldThumbnailState = content;
             Thumb.fromDOM(opts, function (err, b64) {
-                oldThumbnailState = content;
                 Thumb.setPadThumbnail(common, opts.href, b64);
             });
         };

@@ -8,6 +8,8 @@
 @import (once) "./tools.less";
 @import (once) "./icons.less";
 @import (once) "./modal.less";
+@import (once) "./markdown-toolbar.less";
+@import (once) "./help.less";
 
 .toolbar_main (
     @color: @colortheme_default-color, // Color of the text for the toolbar
@@ -24,6 +26,8 @@
     .ckeditor_fix();
     .history_main();
     .iconColors_main();
+    .markdownToolbar_main(@color, @bg-color);
+    .help_main(@color, @bg-color);
 
     .cp-toolbar-container {
         display: flex;
@@ -208,6 +212,7 @@
             width: auto;
             margin: 0;
             padding: 0;
+            outline: none;
         }
         label[for="cp-app-toolbar-creation-advanced"] {
             margin: 0;
@@ -238,23 +243,6 @@
         }
     }
 
-    // TODO(cjd) This ought to be in a less file for markdown-based editors
-    .cp-markdown-toolbar {
-        height: @toolbar_line-height;
-        background-color: lighten(@bg-color, 20%);
-        display: none;
-        button {
-            height: @toolbar_line-height !important;
-            outline: 0;
-            color: @color;
-            .toolbar_button;
-            font: normal normal normal 14px/1 FontAwesome;
-            &:hover {
-                background-color: lighten(@bg-color, 8%);
-            }
-            &.cp-markdown-help { float: right; }
-        }
-    }
     .cp-toolbar-userlist-drawer {
         background-color: @bg-color;
         color: @color;
@@ -356,11 +344,6 @@
             margin: 0;
         }*/
 
-        .cp-toolbar-rightside-button {
-            float: right;
-            cursor: pointer;
-        }
-
         select {
             margin-left: 5px;
             margin-right: 5px;
@@ -379,52 +362,146 @@
                 flex: 1;
             }
         }
-        &:not(.cp-toolbar-notitle) {
-            .cp-toolbar-top {
-                @media screen and (max-width: @browser_media-medium-screen) {
-                    flex-wrap: wrap;
-                    height: auto;
-                    .cp-toolbar-top-filler {
-                        flex: 1;
-                    }
-                    .cp-toolbar-title {
-                        flex: auto;
+        .cp-toolbar-top {
+            @media screen and (max-width: @browser_media-medium-screen) {
+                flex-wrap: wrap;
+                height: @toolbar_line-height;
+                .cp-pad-not-pinned {
+                    line-height: 32px;
+                    flex: unset;
+                    padding: 0;
+                    align-self: auto;
+                    margin: 0 5px;
+                }
+                .cp-toolbar-top-filler {
+                    height: 32px;
+                }
+                .cp-toolbar-title {
+                    height: @toolbar_line-height;
+                    line-height: initial;
+                    margin: 0;
+                    .cp-toolbar-title-hoverable {
                         width: 100%;
-                        order: 10;
+                    }
+                    .cp-toolbar-title-value-page {
+                        padding: 5px;
+                        line-height: unset;
+                        border: 0;
+                    }
+                    .cp-toolbar-title-editable, .cp-toolbar-title-value-page {
+                        max-width: ~"calc(100vw - 26px)";
+                        display: inline-block;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-size: @colortheme_app-font-size;
                         height: @toolbar_line-height;
-                        line-height: initial;
-                        margin: 0;
-                        .cp-toolbar-title-hoverable {
-                            width: 100%;
-                        }
-                        .cp-toolbar-title-editable {
-                            max-width: ~"calc(100vw - 26px)";
-                            display: inline-block;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            font-size: @colortheme_app-font-size;
-                            height: @toolbar_line-height;
-                            box-sizing: border-box;
-                            line-height: 20px;
-                        }
-                        .cp-toolbar-title-edit, .cp-toolbar-title-save {
-                            box-sizing: border-box;
-                            height: @toolbar_line-height;
-                            line-height: @colortheme_app-font-size;
-                            display: inline-block;
+                        box-sizing: border-box;
+                        line-height: 20px;
+                    }
+                    .cp-toolbar-title-edit, .cp-toolbar-title-save {
+                        box-sizing: border-box;
+                        height: @toolbar_line-height;
+                        line-height: @colortheme_app-font-size;
+                        display: inline-block;
 
-                            .fa {
-                                font-size: @colortheme_app-font-size;
-                            }
-                        }
-                        input {
-                            height: @toolbar_line-height;
+                        .fa {
                             font-size: @colortheme_app-font-size;
-                            flex: 1;
-                            max-width: none;
                         }
+                    }
+                    input {
+                        height: @toolbar_line-height;
+                        font-size: @colortheme_app-font-size;
+                        flex: 1;
+                        max-width: none;
+                        line-height: calc(@toolbar_line-height - 12px); // padding + border
                     }
                 }
+                .cp-toolbar-link {
+                    height: @toolbar_line-height;
+                    width: @toolbar_line-height;
+                    .cp-toolbar-link-logo {
+                        padding: 5px;
+                    }
+                }
+                .cp-toolbar-user {
+                    height: @toolbar_line-height;
+                    .cp-toolbar-new {
+                        height: @toolbar_line-height;
+                        width: @toolbar_line-height;
+                        margin-left: 0;
+                        button {
+                            height: @toolbar_line-height;
+                            width: @toolbar_line-height;
+                            font-size: 20px;
+                            margin-top: -1px;
+                        }
+                    }
+                    .cp-toolbar-user-dropdown {
+                        height: @toolbar_line-height;
+                        width: @toolbar_line-height;
+                        &> button {
+                            height: @toolbar_line-height;
+                            width: @toolbar_line-height;
+                            span { font-size: unset; }
+                        }
+                        &> button.cp-avatar.cp-avatar {
+                            media-tag {
+                                margin: 4px;
+                                max-width: 24px;
+                                min-width: 24px;
+                                max-height: 24px;
+                                min-height: 24px;
+                            }
+                        }
+                    }
+                    .cp-toolbar-limit {
+                        line-height: 32px;
+                        margin: 0;
+                    }
+                }
+                /*
+                .cp-toolbar-top-filler {
+                    flex: 1;
+                }
+                .cp-toolbar-title {
+                    flex: auto;
+                    width: 100%;
+                    order: 10;
+                    height: @toolbar_line-height;
+                    line-height: initial;
+                    margin: 0;
+                    .cp-toolbar-title-hoverable {
+                        width: 100%;
+                    }
+                    .cp-toolbar-title-editable {
+                        max-width: ~"calc(100vw - 26px)";
+                        display: inline-block;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        font-size: @colortheme_app-font-size;
+                        height: @toolbar_line-height;
+                        box-sizing: border-box;
+                        line-height: 20px;
+                    }
+                    .cp-toolbar-title-edit, .cp-toolbar-title-save {
+                        box-sizing: border-box;
+                        height: @toolbar_line-height;
+                        line-height: @colortheme_app-font-size;
+                        display: inline-block;
+
+                        .fa {
+                            font-size: @colortheme_app-font-size;
+                        }
+                    }
+                    input {
+                        height: @toolbar_line-height;
+                        font-size: @colortheme_app-font-size;
+                        flex: 1;
+                        max-width: none;
+                        line-height: calc(@toolbar_line-height - 12px); // padding + border
+                    }
+                }
+                */
             }
         }
 
@@ -440,13 +517,6 @@
             background-color: lighten(@bg-color, 8%);
             button:hover, button.cp-toolbar-button-active {
                 background-color: @bg-color;
-            }
-        }
-        .cp-toolbar-rightside {
-            @media screen and (max-width: @barWidth) { // 450px
-                flex-wrap: wrap;
-                height: auto;
-                width: 100%;
             }
         }
         .cp-toolbar-title-hoverable:hover {
@@ -494,9 +564,9 @@
             overflow: hidden;
             white-space: nowrap;
 
-            align-self: center;
-            padding-left: 20px;
-            padding-right: 5px;
+            line-height: @toolbar_top-height;
+            padding: 0;
+            margin: 0 5px;
             font-size: @colortheme_app-font-size;
             color: @warn-color;
             .cp-pnp-msg {
@@ -505,6 +575,7 @@
                 font-size: @colortheme_app-font-size;
                 a {
                     font-size: @colortheme_app-font-size;
+                    font-family: @colortheme_font;
                     font-weight: bold;
                     color: @warn-color;
                     &:hover {
@@ -593,7 +664,7 @@
             }
             input {
                 max-width: ~"calc(100% - 40px)";
-                flex: 1;
+                //flex: 1;
                 vertical-align: middle;
                 box-sizing: border-box;
                 cursor: auto;
@@ -601,6 +672,7 @@
                 font-size: 20px;
                 padding: 5px 5px;
                 height: 40px;
+                line-height: 28px; // padding + border
             }
         }
         .cp-toolbar-link, .cp-toolbar-new {
@@ -792,16 +864,41 @@
         }
         .cp-toolbar-share-button {
             width: 50px;
+            text-align: center;
         }
     }
     .cp-toolbar-rightside {
+        display: flex;
         min-height: @toolbar_line-height;
         overflow: hidden;
+        @media screen and (max-width: @barWidth) { // 450px
+            flex-wrap: wrap;
+            height: auto;
+            width: 100%;
+        }
         &:empty {
             min-height: 0;
             height: 0;
         }
-        text-align: right;
+
+        .cp-toolbar-rightside-button {
+            cursor: pointer;
+            // UI actions
+            &.cp-toolbar-icon-toggle { order: 1; }
+            &.cp-toolbar-icon-preview { order: 2; }
+            &.cp-toolbar-icon-present { order: 3; }
+            // Content actions
+            &.cp-toolbar-icon-mediatag { order: 10; }
+            order: 11;
+            // Storage actions
+            &.cp-toolbar-icon-hashtag { order: 20; }
+            &.cp-toolbar-icon-template { order: 21; }
+            &.cp-toolbar-icon-forget { order: 22; }
+            // Drawer
+            &.cp-toolbar-drawer-button { order: 30; }
+
+        }
+
         .cp-toolbar-drawer-content:empty ~ .cp-toolbar-drawer-button {
             display: none;
         }
@@ -820,6 +917,7 @@
                 font-size: 17px;
             }
             &> span {
+                order: 8;
                 box-sizing: border-box;
                 min-width: 150px;
                 height: @toolbar_line-height;
@@ -834,15 +932,36 @@
                 border: 0;
                 width: 100%;
                 line-height: 1em;
+                &.cp-toolbar-button-active {
+                    background-color: inherit;
+                }
                 .cp-toolbar-drawer-element {
                     margin-left: 10px;
                     display: inline;
-                    vertical-align: top;
+                    vertical-align: baseline;
+                }
+                &.fa-info-circle, &.fa-history, &.fa-cog {
+                    .cp-toolbar-drawer-element {
+                        margin-left: 11px;
+                    }
+                }
+                &.fa-question {
+                    .cp-toolbar-drawer-element {
+                        margin-left: 16px;
+                    }
                 }
                 &:hover {
                     background-color: @colortheme_dropdown-bg-hover !important;
                     color: @colortheme_dropdown-color;
                 }
+                order: 8;
+                &.fa-history { order: 1; }
+                &.fa-download { order: 2; }
+                &.fa-upload { order: 3; }
+                &.fa-print { order: 4; }
+                &.fa-cog { order: 5; }
+                &.fa-info-circle { order: 6; }
+                &.fa-help { order: 7; }
             }
         }
     }

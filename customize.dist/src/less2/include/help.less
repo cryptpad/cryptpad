@@ -1,0 +1,38 @@
+@import (once) "./colortheme-all.less";
+
+.help_main (@color, @bg-color) {
+    .cp-help-container {
+        position: relative;
+        background-color: lighten(@bg-color, 15%);
+        &.cp-help-hidden {
+            display: none;
+        }
+
+        .cp-help-close {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+        }
+        .cp-help-text {
+            color: @color;
+            margin: 0;
+            padding: 15px;
+            a {
+                color: darken(@colortheme_link-color, 30%);
+                @spin: spin(lighten(@bg-color, 15%), 180);
+                color: contrast(lighten(@bg-color, 15%), lighten(@spin, 10%), darken(@spin, 10%));
+                //color: darken(spin(lighten(@bg-color, 15%), 180), 10%);
+            }
+            h1 {
+                font-size: 20px;
+            }
+            h2 {
+                font-size: 18px;
+            }
+            h3 {
+                font-size: 16px;
+            }
+            ul, ol, p { margin: 0; }
+        }
+    }
+}

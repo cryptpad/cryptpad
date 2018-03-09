@@ -325,11 +325,11 @@ define([
         var onConnectionChange = function (info) {
             if (state === STATE.DELETED) { return; }
             stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);
-            if (info.state) {
+            /*if (info.state) {
                 UI.findOKButton().click();
             } else {
                 UI.alert(Messages.common_connectionLost, undefined, true);
-            }
+            }*/
         };
 
         var onError = function (err) {
@@ -398,11 +398,7 @@ define([
                         '" data-crypto-key="cryptpad:' + data.key + '"></media-tag>'), data);
                 }
             });
-            $embedButton = $('<button>', {
-                title: Messages.filePickerButton,
-                'class': 'cp-toolbar-rightside-button fa fa-picture-o',
-                style: 'font-size: 17px'
-            }).click(function () {
+            $embedButton = common.createButton('mediatag', true).click(function () {
                 common.openFilePicker({
                     types: ['file'],
                     where: ['root']
@@ -426,15 +422,7 @@ define([
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
             Test.registerInner(common.getSframeChannel());
-            if (!AppConfig.displayCreationScreen) { return; }
-            var priv = common.getMetadataMgr().getPrivateData();
-            if (priv.isNewFile) {
-                var c = (priv.settings.general && priv.settings.general.creation) || {};
-                if (c.skip && !priv.forceCreationScreen) {
-                    return void common.createPad(c, waitFor());
-                }
-                common.getPadCreationScreen(c, waitFor());
-            }
+            common.handleNewFile(waitFor);
         }).nThen(function (waitFor) {
             cpNfInner = common.startRealtime({
                 // really basic operational transform

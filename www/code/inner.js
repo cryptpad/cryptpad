@@ -54,6 +54,7 @@ define([
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
+        'gfm',
         'html',
         'htmlembedded',
         'htmlmixed',
@@ -63,6 +64,29 @@ define([
         'xml',
     ]);
 
+    var mkMarkdownTb = function (editor, framework) {
+        var $codeMirrorContainer = $('#cp-app-code-container');
+        var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
+        $codeMirrorContainer.prepend(markdownTb.toolbar);
+
+        framework._.toolbar.$rightside.append(markdownTb.button);
+
+        var modeChange = function (mode) {
+            if (['markdown', 'gfm'].indexOf(mode) !== -1) { return void markdownTb.setState(true); }
+            markdownTb.setState(false);
+        };
+
+        return {
+            modeChange: modeChange
+        };
+    };
+    var mkHelpMenu = function (framework) {
+        var $codeMirrorContainer = $('#cp-app-code-container');
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'code']);
+        $codeMirrorContainer.prepend(helpMenu.menu);
+
+        framework._.toolbar.$drawer.append(helpMenu.button);
+    };
     var mkPreviewPane = function (editor, CodeMirror, framework, isPresentMode) {
         var $previewContainer = $('#cp-app-code-preview');
         var $preview = $('#cp-app-code-preview-content');
@@ -70,12 +94,20 @@ define([
         var $codeMirrorContainer = $('#cp-app-code-container');
         var $codeMirror = $('.CodeMirror');
 
-        var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
-        $codeMirrorContainer.prepend(markdownTb.toolbar);
+        $('<img>', {
+            src: '/customize/main-favicon.png',
+            alt: '',
+            class: 'cp-app-code-preview-empty'
+        }).appendTo($previewContainer);
 
-        var $previewButton = framework._.sfCommon.createButton(null, true);
+        var $previewButton = framework._.sfCommon.createButton('preview', true);
         var forceDrawPreview = function () {
             try {
+                if (editor.getValue() === '') {
+                    $previewContainer.addClass('cp-app-code-preview-isempty');
+                    return;
+                }
+                $previewContainer.removeClass('cp-app-code-preview-isempty');
                 DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
             } catch (e) { console.error(e); }
         };
@@ -85,12 +117,6 @@ define([
             forceDrawPreview();
         }, 150);
 
-        $previewButton.removeClass('fa-question').addClass('fa-eye');
-        window.setTimeout(function () {
-            // setTimeout needed for tippy (tooltip), otherwise we have the browser's default
-            // tooltips
-            $previewButton.attr('title', Messages.previewButtonTitle);
-        });
         var previewTo;
         $previewButton.click(function () {
             clearTimeout(previewTo);
@@ -118,7 +144,7 @@ define([
             }
         });
 
-        framework._.toolbar.$rightside.append($previewButton).append(markdownTb.button);
+        framework._.toolbar.$rightside.append($previewButton);
 
         $preview.click(function (e) {
             if (!e.target) { return; }
@@ -145,7 +171,6 @@ define([
                         }
                     }
                 });
-                markdownTb.setState(true);
                 return;
             }
             $editorContainer.removeClass('cp-app-code-present');
@@ -153,7 +178,6 @@ define([
             $previewContainer.hide();
             $previewButton.removeClass('active');
             $codeMirrorContainer.addClass('cp-app-code-fullpage');
-            markdownTb.setState(false);
         };
 
         var isVisible = function () {
@@ -252,8 +276,12 @@ define([
         var common = framework._.sfCommon;
 
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
+        var markdownTb = mkMarkdownTb(editor, framework);
+        mkHelpMenu(framework);
+
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);
+        evModeChange.reg(markdownTb.modeChange);
 
         mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
@@ -292,6 +320,8 @@ define([
         framework.setTitleRecommender(CodeMirror.getHeadingText);
 
         framework.onReady(function (newPad) {
+            editor.focus();
+
             if (newPad && !CodeMirror.highlightMode) {
                 CodeMirror.setMode('gfm', evModeChange.fire);
                 //console.log("%s => %s", CodeMirror.highlightMode, CodeMirror.$language.val());
@@ -315,7 +345,7 @@ define([
         });
 
         framework.onDefaultContentNeeded(function () {
-             editor.setValue(Messages.codeInitialState);
+             editor.setValue(''); //Messages.codeInitialState);
         });
 
         framework.setFileExporter(CodeMirror.getContentExtension, CodeMirror.fileExporter);
@@ -335,12 +365,8 @@ define([
 
     var getThumbnailContainer = function () {
         var $preview = $('#cp-app-code-preview-content');
-        var $codeMirror = $('.CodeMirror');
         if ($preview.length && $preview.is(':visible')) {
             return $preview[0];
-        }
-        if ($codeMirror.length) {
-            return $codeMirror[0];
         }
     };
 

@@ -72,7 +72,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.26.0 (undefined)")
+            h('div.cp-version-footer', "CryptPad v1.27.0 (null)")
         ]);
     };
 
@@ -98,9 +98,11 @@ define([
                     ]),
                     h('a.navbar-brand', { href: '/index.html'}),
                 h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [  
-                    h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
+                    //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
+                    h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
                     h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                     h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
+                    h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
                     h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
                     h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
                 ].concat(rightLinks))
@@ -350,7 +352,7 @@ define([
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.policy_title)),
                 h('h2', Msg.policy_whatweknow),
-                h('p', Msg.policywhatweknow_p1),
+                setHTML(h('p'), Msg.policy_whatweknow_p1),
 
                 h('h2', Msg.policy_howweuse),
                 h('p', Msg.policy_howweuse_p1),
@@ -403,6 +405,9 @@ define([
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.faq_title)),
+                h('p.cp-faq-header', h('a.nav-item.nav-link', {
+                    href: '/what-is-cryptpad.html'
+                }, Msg.faq_whatis)),
                 h('div.cp-faq-container', categories)
             ]),
             infopageFooter()
@@ -756,10 +761,14 @@ define([
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
             appToolbar(),
-            h('div#cp-app-whiteboard-canvas-area', h('canvas#cp-app-whiteboard-canvas', {
-                width: 600,
-                height: 600
-            })),
+            h('div#cp-app-whiteboard-canvas-area',
+                h('div#cp-app-whiteboard-container',
+                    h('canvas#cp-app-whiteboard-canvas', {
+                        width: 600,
+                        height: 600
+                    })
+                )
+            ),
             h('div#cp-app-whiteboard-controls', {
                 style: {
                     display: 'block',
@@ -819,12 +828,6 @@ define([
             appToolbar(),
             h('div#cp-app-poll-content', [
                 h('div#cp-app-poll-form', [
-                    h('div#cp-app-poll-help', [
-                        h('h1', 'CryptPoll'),
-                        setHTML(h('h2'), Msg.poll_subtitle),
-                        h('p', Msg.poll_p_save),
-                        h('p', Msg.poll_p_encryption)
-                    ]),
                     h('div.cp-app-poll-realtime', [
                         h('br'),
                         h('div', [

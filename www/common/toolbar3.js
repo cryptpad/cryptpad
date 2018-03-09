@@ -318,7 +318,7 @@ define([
                 $span.append($rightCol);
             } else {
                 Common.displayAvatar($span, data.avatar, name, function ($img) {
-                    if (data.avatar && $img.length) {
+                    if (data.avatar && $img && $img.length) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
                     $span.append($rightCol);
@@ -377,38 +377,15 @@ define([
             config.$contentContainer.prepend($content);
         }
 
-        var $ck = config.$container.find('.cke_toolbox_main');
-        var mobile = $('body').width() <= 600;
         var hide = function () {
             $content.hide();
             $button.removeClass('cp-toolbar-button-active');
-            $ck.css({
-                'padding-left': '',
-            });
         };
         var show = function () {
             if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
-            if (mobile) {
-                $ck.hide();
-            }
             $button.addClass('cp-toolbar-button-active');
-            $ck.css({
-                'padding-left': '175px',
-            });
-            var h = $ck.is(':visible') ? -$ck.height() : 0;
-            $content.css('margin-top', h+'px');
         };
-        $(window).on('cryptpad-ck-toolbar', function () {
-            if (mobile && $ck.is(':visible')) { return void hide(); }
-            if ($content.is(':visible')) { return void show(); }
-            hide();
-        });
-        $(window).on('resize', function () {
-            mobile = $('body').width() <= 600;
-            var h = $ck.is(':visible') ? -$ck.height() : 0;
-            $content.css('margin-top', h+'px');
-        });
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'userlist-drawer'], false);
             hide();
@@ -423,7 +400,7 @@ define([
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || mobile) { return void hide(); }
+            if (val === false || $(window).height() < 800) { return void hide(); }
             show();
         });
 
@@ -593,7 +570,7 @@ define([
     };
 
     var createUnpinnedWarning0 = function (toolbar, config) {
-        if (true) { return; } // stub this call since it won't make it into the next release
+        //if (true) { return; } // stub this call since it won't make it into the next release
         if (Common.isLoggedIn()) { return; }
         var pd = config.metadataMgr.getPrivateData();
         var o = pd.origin;
@@ -633,7 +610,7 @@ define([
                 });
             });
             $('.cp-toolbar-top').append($msg);
-            UI.addTooltips();
+            //UI.addTooltips();
         });
     };
 
@@ -791,21 +768,19 @@ define([
                 content: $('<div>').append(UI.getIcon(p)).html() + Messages.type[p]
             });
         });
-        if (Config.displayCreationScreen) {
-            pads_options.push({
-                tag: 'a',
-                attributes: {
-                    id: 'cp-app-toolbar-creation-advanced',
-                    href: origin
-                },
-                content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
-            });
-            $(window).keydown(function (e) {
-                if (e.which === 69 && e.ctrlKey) {
-                    Common.createNewPadModal();
-                }
-            });
-        }
+        pads_options.push({
+            tag: 'a',
+            attributes: {
+                id: 'cp-app-toolbar-creation-advanced',
+                href: origin
+            },
+            content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
+        });
+        $(window).keydown(function (e) {
+            if (e.which === 69 && (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey))) {
+                Common.createNewPadModal();
+            }
+        });
         var dropdownConfig = {
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
@@ -1073,6 +1048,13 @@ define([
         toolbar.reconnecting = function (/*userId*/) {
             toolbar.connected = false;
             if (toolbar.spinner) {
+                var state = -1;
+                var interval = window.setInterval(function () {
+                    if (toolbar.connected) { clearInterval(interval); }
+                    var dots = Array(state+1).join('.');
+                    toolbar.spinner.text(Messages.reconnecting + dots);
+                    if (++state > 3) { state = 0; }
+                }, 500);
                 toolbar.spinner.text(Messages.reconnecting);
             }
         };
