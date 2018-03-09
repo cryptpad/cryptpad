@@ -17,6 +17,12 @@
             color: @color;
             margin: 0;
             padding: 15px;
+            a {
+                color: darken(@colortheme_link-color, 30%);
+                @spin: spin(lighten(@bg-color, 15%), 180);
+                color: contrast(lighten(@bg-color, 15%), lighten(@spin, 10%), darken(@spin, 10%));
+                //color: darken(spin(lighten(@bg-color, 15%), 180), 10%);
+            }
             h1 {
                 font-size: 20px;
             }
