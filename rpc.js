@@ -13,6 +13,7 @@ const Package = require('./package.json');
 const Pinned = require('./pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
+const Mkdirp = require("mkdirp");
 
 var RPC = module.exports;
 
@@ -980,6 +981,93 @@ var upload_complete = function (Env, publicKey, cb) {
     tryRandomLocation(handleMove);
 };
 
+var owned_upload_complete = function (Env, safeKey, cb) {
+    var session = getSession(Env.Sessions, safeKey);
+
+    // the file has already been uploaded to the staging area
+    // close the pending writestream
+    if (session.blobstage && session.blobstage.close) {
+        session.blobstage.close();
+        delete session.blobstage;
+    }
+
+    var oldPath = makeFilePath(Env.paths.staging, safeKey);
+
+    // construct relevant paths
+    var root = Env.paths.staging;
+
+    //var safeKey = escapeKeyCharacters(safeKey);
+    var safeKeyPrefix = safeKey.slice(0, 2);
+
+    var blobId = createFileId();
+    var blobIdPrefix = blobId.slice(0, 2);
+
+    var plannedPath = Path.join(root, safeKeyPrefix, safeKey, blobIdPrefix);
+
+    var tries = 0;
+
+    var chooseSafeId = function (cb) {
+        if (tries >= 3) {
+            // you've already failed three times in a row
+            // give up and return an error
+            cb('E_REPEATED_FAILURE');
+        }
+
+        var path = Path.join(plannedPath, blobId);
+        Fs.access(path, Fs.constants.R_OK | Fs.constants.W_OK, function (e) {
+            if (!e) {
+                // generate a new id (with the same prefix) and recurse
+                blobId = blobIdPrefix + createFileId().slice(2);
+                return void chooseSafeId(cb);
+            } else if (e.code === 'ENOENT') {
+                // no entry, so it's safe for us to proceed
+                return void cb(void 0, path);
+            } else {
+                // it failed in an unexpected way. log it
+                // try again, but no more than a fixed number of times...
+                tries++;
+                chooseSafeId(cb);
+            }
+        });
+    };
+
+    // the user wants to move it into their own space
+    // /blob/safeKeyPrefix/safeKey/blobPrefix/blobID
+
+    var finalPath;
+    nThen(function (w) {
+        // make the requisite directory structure using Mkdirp
+        Mkdirp(plannedPath, w(function (e /*, path */) {
+            if (e) { // does not throw error if the directory already existed
+                w.abort();
+                return void cb(e); // XXX do we export Errors or strings?
+            }
+        }));
+    }).nThen(function (w) {
+        // produce an id which confirmably does not collide with another
+        chooseSafeId(w(function (e, path) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+            finalPath = path; // this is where you'll put the new file
+        }));
+    }).nThen(function (w) {
+        // move the existing file to its new path
+        Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e.code);
+            }
+            // otherwise it worked...
+        }));
+    }).nThen(function () {
+        // clean up their session when you're done
+        // call back with the blob id...
+        cb(void 0, blobId);
+    });
+};
+
 var upload_status = function (Env, publicKey, filesize, cb) {
     var paths = Env.paths;
 
@@ -1054,6 +1142,7 @@ var isAuthenticatedCall = function (call) {
         'GET_LIMIT',
         'UPLOAD_STATUS',
         'UPLOAD_COMPLETE',
+        'OWNED_UPLOAD_COMPLETE',
         'UPLOAD_CANCEL',
         'EXPIRE_SESSION',
         'CLEAR_OWNED_CHANNEL',
@@ -1128,6 +1217,7 @@ RPC.create = function (
     var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
+    console.log(blobStagingPath);
 
     var isUnauthenticateMessage = function (msg) {
         return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
@@ -1374,6 +1464,12 @@ RPC.create = function (
                 return void upload_complete(Env, safeKey, function (e, hash) {
                     WARN(e, hash);
                     Respond(e, hash);
+                });
+            case 'OWNED_UPLOAD_COMPLETE':
+                if (!privileged) { return deny(); }
+                return void owned_upload_complete(Env, safeKey, function (e, blobId) {
+                    WARN(e, blobId);
+                    Respond(e, blobId);
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
