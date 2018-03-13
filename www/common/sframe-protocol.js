@@ -220,6 +220,8 @@ define({
 
     // Pad creation screen: create a pad with the selected attributes (owned, expire)
     'Q_CREATE_PAD': true,
+    // Get the available templates
+    'Q_CREATE_TEMPLATES': true,
 
     // This is for sending data out of the iframe when we are in testing mode
     // The exact protocol is defined in common/test.js

@@ -678,6 +678,13 @@ define([
         });
         cb(list);
     };
+    Store.getPadData = function (id, cb) {
+        cb(store.userObject.getFileData(id));
+    };
+    Store.setInitialPath = function (path) {
+        if (!store.data) { return; }
+        store.data.initialPath = path;
+    };
 
     // Messaging (manage friends from the userlist)
     var getMessagingCfg = function () {
