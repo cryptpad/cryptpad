@@ -32,9 +32,11 @@ define(function () {
     out.padNotPinned = 'Ce pad va expirer après 3 mois d\'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
     out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
     out.expiredError = "Ce pad a atteint sa date d'expiration est n'est donc plus disponible.";
-    out.expiredErrorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
     out.deletedError = 'Ce pad a été supprimé par son propriétaire et n\'est donc plus disponible.';
     out.inactiveError = 'Ce pad a été supprimé en raison de son inactivité. Appuyez sur Échap pour créer un nouveau pad.';
+    out.chainpadError = 'Une erreur critique est survenue lors de la mise à jour du contenu. Le pad est désormais en mode lecture seule afin de s\'assurer que vous ne perdiez pas davantage de données.<br>' +
+                        'Appuyez sur <em>Échap</em> pour voir le pad ou rechargez la page pour pouvoir le modifier à nouveau.';
+    out.errorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";
