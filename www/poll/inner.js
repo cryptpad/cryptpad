@@ -1106,6 +1106,25 @@ define([
         }
     };
 
+    var onError = function (info) {
+        if (info && info.type) {
+            if (info.type === 'CHAINPAD') {
+                APP.unrecoverable = true;
+                setEditable(false);
+                APP.toolbar.errorState(true, info.error);
+                var msg = Messages.chainpadError;
+                UI.errorLoadingScreen(msg, true, true);
+                console.error(info.error);
+                return;
+            }
+            // Server error
+            return void common.onServerError(info, APP.toolbar, function () {
+                APP.unrecoverable = true;
+                setEditable(false);
+            });
+        }
+    };
+
     // Manage disconnections because of network or error
     var onDisconnect = function (info) {
         if (APP.unrecoverable) { return; }
@@ -1318,7 +1337,8 @@ define([
                     });
                  })
                  .on('disconnect', onDisconnect)
-                 .on('reconnect', onReconnect);
+                 .on('reconnect', onReconnect)
+                 .on('error', onError);
         });
     };
     main();
