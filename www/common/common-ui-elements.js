@@ -1829,10 +1829,11 @@ define([
         };
 
         // Title
-        $creation.append(h('h1.cp-creation-title', 'Create a new pad')); // XXX
+        var colorClass = 'cp-icon-color-'+type;
+        $creation.append(h('h1.cp-creation-title.'+colorClass, Messages['button_new'+type]));
 
         // Deleted pad warning
-        if (metadataMgr.getPrivateData().isDeleted || true) { // XXX
+        if (metadataMgr.getPrivateData().isDeleted) {
             $creation.append(h('div.cp-creation-deleted-container',
                 h('div.cp-creation-deleted', Messages.creation_404)
             ));
@@ -1858,23 +1859,22 @@ define([
                     checked: 'checked'
                 }),
                 h('span.cp-checkmark-mark'),
-                'Owned pad'
-            ]), // XXX
+                Messages.creation_owned
+            ]),
             createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
         ]);
 
         // Life time
         var expire = h('div.cp-creation-expire', [
-            //Messages.creation_ownedTitle,
             h('label.cp-checkmark', [
                 h('input', {
                     type: 'checkbox',
                     id: 'cp-creation-expire'
                 }),
                 h('span.cp-checkmark-mark'),
-                'Expiring pad'
-            ]), // XXX
-            createHelper('faq.html#keywords-expiring', Messages.creation_expire1),
+                Messages.creation_expire
+            ]),
+            createHelper('faq.html#keywords-expiring', Messages.creation_expire2),
             h('div.cp-creation-expire-picker', [
                 h('input#cp-creation-expire-val', {
                     type: "number",
@@ -1907,9 +1907,9 @@ define([
                     checked: 'checked'
                 }),
                 h('span.cp-checkmark-mark'),
-                'Save settings'
-            ]), // XXX
-            createHelper('/settings/#creation', "View more settings")
+                Messages.creation_saveSettings
+            ]),
+            createHelper('/settings/#creation', Messages.creation_settings)
         ]);
 
         $(h('div#cp-creation-form', [
@@ -1930,12 +1930,12 @@ define([
                 return a.name < b.name ? -1 : 1;
             });
             data.unshift({
-                name: "No template",
+                name: Messages.creation_noTemplate,
                 id: 0,
                 icon: h('span.fa.fa-times')
             });
             data.push({
-                name: "New template",
+                name: Messages.creation_newTemplate,
                 id: -1,
                 icon: h('span.fa.fa-plus')
             });
@@ -2056,7 +2056,7 @@ define([
 
         var $create = $(h('div.cp-creation-create')).appendTo($creation);
 
-        var $button = $('<button>').text('Create').appendTo($create);
+        var $button = $('<button>').text(Messages.creation_create).appendTo($create);
         $button.addClass('cp-creation-button-selected');
         $button.click(function () {
             create();

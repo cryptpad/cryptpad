@@ -1107,11 +1107,13 @@ define(function () {
     // Creation page
     out.creation_404 = "This pad not longer exists. Use the following form to create a new pad.";
     out.creation_ownedTitle = "Type of pad";
-    out.creation_ownedTrue = "Owned pad";
+    out.creation_owned = "Owned pad"; // Creation page
+    out.creation_ownedTrue = "Owned pad"; // Settings
     out.creation_ownedFalse = "Open pad";
     out.creation_owned1 = "An <b>owned</b> pad can be deleted from the server whenever the owner wants. Deleting an owned pad removes it from other users' CryptDrives.";
     out.creation_owned2 = "An <b>open</b> pad doesn't have any owner and thus, it can't be deleted from the server unless it has reached its expiration time.";
     out.creation_expireTitle = "Life time";
+    out.creation_expire = "Expiring pad";
     out.creation_expireTrue = "Add a life time";
     out.creation_expireFalse = "Unlimited";
     out.creation_expireHours = "Hour(s)";
@@ -1119,11 +1121,11 @@ define(function () {
     out.creation_expireMonths = "Month(s)";
     out.creation_expire1 = "An <b>unlimited</b> pad will not be removed from the server until its owner deletes it.";
     out.creation_expire2 = "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives.";
-    out.creation_createTitle = "Create a pad";
-    out.creation_createFromTemplate = "From template";
-    out.creation_createFromScratch = "From scratch";
-    out.creation_settings = "New Pad settings";
-    out.creation_saveSettings = "Save settings";
+    out.creation_noTemplate = "No template";
+    out.creation_newTemplate = "New template";
+    out.creation_create = "Create";
+    out.creation_saveSettings = "Remember these settings";
+    out.creation_settings = "View more settings";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";

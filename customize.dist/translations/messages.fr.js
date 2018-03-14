@@ -1060,11 +1060,13 @@ define(function () {
     // Creation page
     out.creation_404 = "Ce pad n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.";
     out.creation_ownedTitle = "Type de pad";
+    out.creation_owned = "Être propriétaire de ce pad";
     out.creation_ownedTrue = "Pad possédé";
     out.creation_ownedFalse = "Pad ouvert";
     out.creation_owned1 = "Un pad <b>possédé</b> peut être supprimé du serveur à tout moment quand son propriétaire le souhaite. Une fois supprimé, il disparaît du CryptDrive des autres utilisateurs.";
     out.creation_owned2 = "Un pad <b>ouvert</b> n'a pas de propriétaire et ne peut donc pas être supprimé du serveur à moins d'avoir dépassé sa date d'expiration.";
     out.creation_expireTitle = "Durée de vie";
+    out.creation_expire = "Ajouter une durée de vie";
     out.creation_expireTrue = "Ajouter durée de vie";
     out.creation_expireFalse = "Illimité";
     out.creation_expireHours = "Heure(s)";
@@ -1072,11 +1074,11 @@ define(function () {
     out.creation_expireMonths = "Mois";
     out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
     out.creation_expire2 = "Un pad <b>expirant</b> a une durée de vie définie, après laquelle il sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs.";
-    out.creation_createTitle = "Créer un pad";
-    out.creation_createFromTemplate = "Depuis un modèle";
-    out.creation_createFromScratch = "Nouveau pad vide";
-    out.creation_settings = "Préférences des nouveaux pads";
-    out.creation_saveSettings = "Sauver les préférences";
+    out.creation_noTemplate = "Pas de modèle";
+    out.creation_newTemplate = "Nouveau modèle";
+    out.creation_create = "Créer";
+    out.creation_saveSettings = "Se souvenir de ces paramètres";
+    out.creation_settings = "Voir davantage de préférences";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Possédé par un autre utilisateur";
