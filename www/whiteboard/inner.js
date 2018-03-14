@@ -346,7 +346,16 @@ define([
 
             var content = stringifyInner(canvas.toDatalessJSON());
 
-            APP.realtime.contentUpdate(content);
+            try {
+                APP.realtime.contentUpdate(content);
+            } catch (e) {
+                APP.unrecoverable = true;
+                setEditable(false);
+                APP.toolbar.errorState(true, e.message);
+                var msg = Messages.chainpadError;
+                UI.errorLoadingScreen(msg, true, true);
+                console.error(e);
+            }
         };
 
         var addImageToCanvas = function (img) {

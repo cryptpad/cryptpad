@@ -1061,6 +1061,7 @@ define([
 
         toolbar.errorState = function (state, error) {
             toolbar.isErrorState = state;
+            if (state) { toolbar.connected = false; }
             if (toolbar.spinner) {
                 if (!state) {
                     return void kickSpinner(toolbar, config);

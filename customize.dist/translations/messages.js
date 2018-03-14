@@ -33,9 +33,11 @@ define(function () {
     out.padNotPinned = 'This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
     out.expiredError = 'This pad has reached its expiration time and is no longer available.';
-    out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
     out.deletedError = 'This pad has been deleted by its owner and is no longer available.';
     out.inactiveError = 'This pad has been deleted due to inactivity. Press Esc to create a new pad.';
+    out.chainpadError = 'A critical error occurred when updating your content. This page is in read-only mode to make sure you won\'t lose your work.<br>' +
+                        'Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.';
+    out.errorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
 
     out.loading = "Loading...";
     out.error = "Error";

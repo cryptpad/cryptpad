@@ -2121,12 +2121,12 @@ define([
         if (err.type === 'EEXPIRED') {
             msg = Messages.expiredError;
             if (err.loaded) {
-                msg += Messages.expiredErrorCopy;
+                msg += Messages.errorCopy;
             }
         } else if (err.type === 'EDELETED') {
             msg = Messages.deletedError;
             if (err.loaded) {
-                msg += Messages.expiredErrorCopy;
+                msg += Messages.errorCopy;
             }
         }
         if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
