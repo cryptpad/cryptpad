@@ -400,7 +400,7 @@ define([
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || $(window).height() < 800) { return void hide(); }
+            if (val === false || $(window).width() < 800) { return void hide(); }
             show();
         });
 
