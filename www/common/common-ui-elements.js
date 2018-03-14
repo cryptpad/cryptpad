@@ -1823,11 +1823,6 @@ define([
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var $creation = $('<div>', { id: 'cp-creation', tabindex: 1 }).appendTo($creationContainer);
 
-        var setHTML = function (e, html) {
-            e.innerHTML = html;
-            return e;
-        };
-
         // Title
         var colorClass = 'cp-icon-color-'+type;
         $creation.append(h('h1.cp-creation-title.'+colorClass, Messages['button_new'+type]));
@@ -1948,7 +1943,7 @@ define([
                 }).appendTo($container);
                 console.log(obj.id);
                 $span.data('id', obj.id);
-                if (idx === 0) { $span.addClass('cp-creation-template-selected') }
+                if (idx === 0) { $span.addClass('cp-creation-template-selected'); }
                 $span.append(obj.icon || UI.getFileIcon({type: type}));
                 $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
                     .appendTo($span);
@@ -2009,7 +2004,7 @@ define([
         UIElements.setExpirationValue(cfg.expire, $creation);
 
         // Create the pad
-        var getFormValues = function (template) {
+        var getFormValues = function () {
             // Type of pad
             var ownedVal = $('#cp-creation-owned').is(':checked') ? 1 : 0;
             // Life time
@@ -2026,12 +2021,12 @@ define([
             }
 
             var $template = $creation.find('.cp-creation-template-selected');
-            var template = $template.data('id') || undefined;
+            var templateId = $template.data('id') || undefined;
 
             return {
                 owned: ownedVal,
                 expire: expireVal,
-                templateId: template
+                templateId: templateId
             };
         };
         var create = function () {
