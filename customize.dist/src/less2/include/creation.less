@@ -1,5 +1,7 @@
 @import (once) "./colortheme-all.less";
 @import (once) "./tools.less";
+@import (once) "./checkmark.less";
+@import (once) './icon-colors.less';
 
 .creation_main() {
     .tippy-popper {
@@ -31,149 +33,205 @@
             max-width: 100%;
             margin: 40px auto;
             text-align: left;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            h2 {
-                width: 100%;
-                display: flex;
-                margin-bottom: 20px;
-                justify-content: space-between;
-                .cp-creation-help {
-                    display: none;
-                }
-            }
-            .cp-creation-help-container {
-                width: 100%;
-                display: flex;
-                justify-content: space-between;
-                p {
-                    padding: 0 20px;
-                    flex-grow: 0;
-                    flex-shrink: 0;
-                    flex-basis: 50%;
-                    text-align: justify;
-                }
-            }
-            @media screen and (max-width: 500px) {
-                width: ~"calc(100% - 30px)";
-            }
-            @media screen and (max-height: 800px), screen and (max-width: 500px) {
-                h2 .cp-creation-help {
-                    display: inline;
-                }
-                .cp-creation-help-container {
-                    display: none;
-                }
-            }
-            @media screen and (min-height: 601px) {
-                @media screen and (min-width: 501px) {
-                    p {
-                        display: block !important;
-                    }
-                }
-            }
         }
 
         .cp-creation-create, .cp-creation-settings {
+            @creation-button: #FF0073;
             button {
                 .tools_unselectable();
                 padding: 15px;
-                background: darken(@colortheme_loading-bg, 10%);
-                color: @colortheme_loading-color;
+                background: #30b239;
+                color: #FFF;
+                font-weight: bold;
                 margin: 3px 10px;
                 border: none;
                 cursor: pointer;
                 outline: none;
                 &:hover {
-                    background: darken(@colortheme_loading-bg, 5%);
+                    background: darken(@creation-button, 5%);
                 }
-                &.cp-creation-button-selected {
-                    color: darken(@colortheme_loading-bg, 10%);
-                    background: @colortheme_loading-color;
+            }
+        }
+        .cp-creation-create {
+            text-align: center;
+        }
+
+        #cp-creation-form {
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            & > div {
+                width: 400px;
+                max-width: 100%;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                font-size: 16px;
+                margin: 10px 0;
+                label {
+                    flex: 1;
+                }
+                input[type="checkbox"] {
+                    &+ label {
+                        margin-bottom: 0;
+                        flex: 1;
+                        padding: 0 10px;
+                    }
+                }
+                .cp-creation-help {
+                    font-size: 18px;
+                    color: white;
+                    &:hover {
+                        color: #AAA;
+                        text-decoration: none;
+                    }
+                }
+            }
+            .cp-creation-expire {
+                .cp-creation-expire-picker {
+                    display: block;
+                    overflow: hidden;
+                    max-height: 0px;
+                    transition: max-height 0.5s ease-in-out;
+                    width: 100%;
+                    text-align: center;
+                    margin-top: 10px;
+                    input {
+                        width: 100px;
+                    }
+                }
+                .cp-creation-expire-picker.active {
+                    max-height: 40px;
+                }
+            }
+            .cp-creation-settings {
+                button {
+                    margin: 0;
+                    padding: 0;
+                }
+                .cp-filler { flex: 1; }
+            }
+
+            div.cp-creation-template {
+                width: 100%;
+                background-color: darken(@colortheme_modal-bg, 3%);
+                padding: 20px;
+                margin: 30px 0;
+            }
+            .cp-creation-template-container {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-y: auto;
+                align-items: center;
+                .cp-creation-template-element {
+                    @darker: darken(@colortheme_modal-fg, 30%);
+
+                    width: 125px;
+                    padding: 10px;
+                    margin: 5px;
+                    display: inline-flex;
+                    flex-flow: column;
+
+                    box-sizing: content-box;
+
+                    text-align: left;
+                    line-height: 1em;
+                    cursor: pointer;
+
+                    background-color: #111;
+                    color: @darker;
+                    border: 1px solid transparent;
+
+                    &.cp-creation-template-selected {
+                        border: 1px solid white;
+                        background-color: #222;
+                    }
+
+                    transition: all 0.1s;
+
+                    &:hover {
+                        color: @colortheme_modal-fg;
+                    }
+
+                    align-items: center;
+
+                    img {
+                        max-width: 100px;
+                        max-height: 100px;
+                        background: #fff;
+                    }
+
+                    .cp-creation-template-element-name {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        height: 20px;
+                        line-height: 20px;
+                        margin-top: 5px;
+                        max-width: 100%;
+                    }
+                    .fa {
+                        cursor: pointer;
+                        width: 100px;
+                        height: 100px;
+                        font-size: 70px;
+                        text-align: center;
+                        line-height: 100px;
+                    }
                 }
             }
         }
 
-        input[type="radio"] {
-            display: none;
-            &:checked {
-                & + label {
-                    font-weight: bold;
-                    background-color: lighten(@colortheme_loading-bg, 20%);
-                    cursor: default;
-                    border: 1px solid #c1158e;
-                    &:hover {
-                        background-color: lighten(@colortheme_loading-bg, 20%);
-                    }
-                }
+        .cp-creation-deleted-container {
+            text-align: center;
+            .cp-creation-deleted {
+                background: #111;
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                display: inline-block;
             }
         }
-        input[type="radio"] + label {
-            .tools_unselectable();
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 200px;
-            height: 50px;
-            padding: 5px;
-            margin: 0 20px;
-            border: 1px solid @colortheme_loading-color;
-            cursor: pointer;
-            &:hover {
-                background-color: lighten(@colortheme_loading-bg, 10%);
+
+        .checkmark_main(30px);
+
+        @media screen and (max-width: @browser_media-narrow-screen) {
+            & > div {
+                width: 95%;
+                margin: 10px auto;
             }
         }
-        .cp-creation-expire {
-            #cp-creation-expire-true {
-                display: none;
-                &:checked {
-                    & + label {
-                        height: 100px;
-                        .cp-creation-expire-picker {
-                            display: inline;
+        @media screen and (max-width: @browser_media-medium-screen) {
+            #cp-creation-form {
+                div.cp-creation-template {
+                    margin: 0;
+                    padding: 5px;
+                    .cp-creation-template-container {
+                        .cp-creation-template-element {
+                            flex-flow: row;
+                            margin: 1px;
+                            padding: 5px;
+                            img {
+                                display: none;
+                            }
+                            .fa {
+                                font-size: 18px;
+                                width: 20px;
+                                height: 20px;
+                                line-height: 20px;
+                                display: inline !important;
+                            }
+                            .cp-creation-template-element-name {
+                                margin: 0;
+                                margin-left: 5px;
+                            }
                         }
                     }
                 }
             }
-            label[for="cp-creation-expire-true"] {
-                flex-wrap: wrap;
-                .cp-creation-expire-picker {
-                    display: none;
-                }
-                input {
-                    width: 70px;
-                }
-                select {
-                    width: 100px;
-                }
-                input, select {
-                    border: none;
-                    height: 30px;
-                    background: @colortheme_loading-bg;
-                    color: @colortheme_loading-color;
-                    border-radius: 3px;
-                }
-            }
         }
-        .cp-creation-settings {
-            justify-content: left;
-            a {
-                color: #0275d8;
-                &:hover {
-                    color: lighten(#0275d8, 10%);
-                }
-            }
-            &> span.fa {
-                margin-left: 15px;
-            }
-        }
-        .cp-creation-deleted {
-            background: #111;
-            padding: 10px;
-            text-align: justify;
-            font-weight: bold;
-        }
+
     }
 }

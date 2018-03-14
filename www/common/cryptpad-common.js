@@ -75,13 +75,7 @@ define([
             cb();
         });
     };
-    // Settings and drive
-    common.getUserObject = function (cb) {
-        postMessage("GET", [], function (obj) {
-            cb(obj);
-        });
-    };
-    // Settings and auth
+    // Settings and drive and auth
     common.getUserObject = function (cb) {
         postMessage("GET", [], function (obj) {
             cb(obj);
@@ -467,6 +461,16 @@ define([
         postMessage("GET_SECURE_FILES_LIST", query, function (list) {
             cb(void 0, list);
         });
+    };
+    // Get a template href from its id
+    common.getPadData = function (id, cb) {
+        postMessage("GET_PAD_DATA", id, function (data) {
+            cb(void 0, data);
+        });
+    };
+    // Set initial path when creating a pad from pad creation screen
+    common.setInitialPath = function (path) {
+        postMessage("SET_INITIAL_PATH", path);
     };
 
     // Messaging (manage friends from the userlist)

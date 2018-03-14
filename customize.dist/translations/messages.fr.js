@@ -1062,11 +1062,13 @@ define(function () {
     // Creation page
     out.creation_404 = "Ce pad n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.";
     out.creation_ownedTitle = "Type de pad";
+    out.creation_owned = "Être propriétaire de ce pad";
     out.creation_ownedTrue = "Être propriétaire";
     out.creation_ownedFalse = "Pas de propriétaire";
     out.creation_owned1 = "Être <b>propriétaire</b> d'un pad signifie que vous pouvez le supprimer du serveur à tout moment. Une fois supprimé, il disparaît du CryptDrive des autres utilisateurs.";
     out.creation_owned2 = "Un pad <b>sans propriétaire</b> ne peut pas être supprimé du serveur à moins d'avoir dépassé son éventuelle date d'expiration.";
     out.creation_expireTitle = "Durée de vie";
+    out.creation_expire = "Ajouter une durée de vie";
     out.creation_expireTrue = "Ajouter durée de vie";
     out.creation_expireFalse = "Illimité";
     out.creation_expireHours = "Heure(s)";
@@ -1074,11 +1076,11 @@ define(function () {
     out.creation_expireMonths = "Mois";
     out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
     out.creation_expire2 = "Un pad <b>à durée de vie</b> sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs lorsque cette durée sera dépassée.";
-    out.creation_createTitle = "Créer un pad";
-    out.creation_createFromTemplate = "Utiliser un modèle";
-    out.creation_createFromScratch = "Créer un pad vide";
-    out.creation_settings = "Préférences des nouveaux pads";
-    out.creation_saveSettings = "Sauver les préférences";
+    out.creation_noTemplate = "Pas de modèle";
+    out.creation_newTemplate = "Nouveau modèle";
+    out.creation_create = "Créer";
+    out.creation_saveSettings = "Se souvenir de ces paramètres";
+    out.creation_settings = "Voir davantage de préférences";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Appartient à un autre utilisateur";
