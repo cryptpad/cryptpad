@@ -372,7 +372,7 @@ define([
         var metadata = {
             // "user" is shared with everybody via the userlist
             user: {
-                name: store.proxy[Constants.displayNameKey],
+                name: store.proxy[Constants.displayNameKey] || "",
                 uid: store.proxy.uid,
                 avatar: Util.find(store.proxy, ['profile', 'avatar']),
                 profile: Util.find(store.proxy, ['profile', 'view']),

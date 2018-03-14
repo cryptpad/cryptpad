@@ -885,7 +885,6 @@ define([
         var oldUserData;
         if (!config.metadataMgr) { return; }
         var metadataMgr = config.metadataMgr;
-        var userNetfluxId = metadataMgr.getNetfluxId();
         var notify = function(type, name, oldname) {
             // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
             if (typeof name === "undefined") { return; }
@@ -929,6 +928,7 @@ define([
         metadataMgr.onChange(function () {
             var newdata = metadataMgr.getMetadata().users;
             var netfluxIds = Object.keys(newdata);
+            var userNetfluxId = metadataMgr.getNetfluxId();
             // Notify for disconnected users
             if (typeof oldUserData !== "undefined") {
                 for (var u in oldUserData) {
