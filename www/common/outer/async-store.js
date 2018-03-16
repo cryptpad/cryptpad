@@ -69,8 +69,16 @@ define([
         var userChannel = userParsedHash && userParsedHash.channel;
         if (!userChannel) { return null; }
 
-        var list = store.userObject.getFiles([store.userObject.FILES_DATA]).map(function (id) {
-                return Hash.hrefToHexChannelId(store.userObject.getFileData(id).href);
+        // Get the list of pads' channel ID in your drive
+        // This list is filtered so that it doesn't include pad owned by other users (you should
+        // not pin these pads)
+        var files = store.userObject.getFiles([store.userObject.FILES_DATA]);
+        var edPublic = store.proxy.edPublic;
+        var list = files.map(function (id) {
+                var d = store.userObject.getFileData(id);
+                if (d.owners && d.owners.length && edPublic &&
+                    d.owners.indexOf(edPublic) === -1) { return; }
+                return Hash.hrefToHexChannelId(d.href);
             })
             .filter(function (x) { return x; });
 
