@@ -163,11 +163,10 @@ define([
     var sortColumns = function (order, firstcol) {
         var colsOrder = order.slice();
         // Never put at the first position an uncommitted column
-        if (APP.proxy.content.colsOrder.indexOf(firstcol) === -1) { return colsOrder; }
-        colsOrder.sort(function (a, b) {
-            return (a === firstcol) ? -1 :
-                        ((b === firstcol) ? 1 : 0);
-        });
+        var idx = APP.proxy.content.colsOrder.indexOf(firstcol);
+        if (!firstcol || idx === -1) { return colsOrder; }
+        colsOrder.splice(idx, 1);
+        colsOrder.unshift(firstcol);
         return colsOrder;
     };
 
@@ -618,7 +617,6 @@ define([
             // If readOnly, always put the app in published mode
             bool = true;
         }
-        console.log(bool);
         $(APP.$mediaTagButton).toggle(!bool);
         setTablePublished(bool);
         /*['textarea'].forEach(function (sel) {
@@ -1270,7 +1268,6 @@ define([
         }).nThen(function (waitFor) {
             common.handleNewFile(waitFor);
         }).nThen(function (/* waitFor */) {
-            console.log('here');
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;

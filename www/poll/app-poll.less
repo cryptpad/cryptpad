@@ -111,11 +111,9 @@ table#cp-app-poll-table {
 }
 #cp-app-poll-table-container {
     position: relative;
-    padding: 30px 0;
-    width: ~"calc(100% - 30px)";
+    margin: 20px;
 }
 #cp-app-poll-table-container button {
-    //display: none;
     border-radius: 0;
     border: 0;
 }
@@ -148,8 +146,8 @@ table#cp-app-poll-table {
 #cp-app-poll-table-scroll {
     overflow-y: hidden;
     overflow-x: auto;
-    margin-left: ~"calc(25% + 30px)";
-    max-width: ~"calc(75% - 30px - 100px - 100px)";
+    margin-left: 25%;
+    max-width: ~"calc(75% - 100px - 100px)";
     width: auto;
     display: inline-block;
 }
@@ -227,7 +225,6 @@ table {
     margin: 20px;
 }
 tbody {
-    //border: 1px solid @poll-border-color;
     * {
         box-sizing: border-box;
     }
@@ -298,7 +295,7 @@ div.cp-app-poll-realtime {
             /* Options */
             td:first-child {
                 position:absolute;
-                left: 30px;
+                left: 0;
                 top: auto;
                 width: 25%;
             }
@@ -454,7 +451,6 @@ div.cp-app-poll-realtime {
                 &:nth-last-child(2) {
                     border-right: 1px solid @poll-border-color;
                 }
-                //text-align: center;
                 &.cp-app-poll-table-own {
                     background: @poll-th-user-bg;
                     .cp-app-poll-table-lock {
@@ -631,7 +627,41 @@ div.cp-app-poll-realtime {
             }
         }
     }
+
+    @media screen and (max-width: 500px) {
+        #cp-app-poll-table-scroll {
+            max-width: 100%;
+            padding: 0;
+            margin: 0;
+            table {
+                tr {
+                    td {
+                        &:first-child {
+                            position: unset;
+                            min-width: 100px;
+                            &:hover:not(:empty) {
+                                position: absolute;
+                                min-width: 100px;
+                                width: auto;
+                                z-index: 100;
+                            }
+                        }
+                        &:nth-last-child(2) {
+                            position: unset;
+                        }
+                        &:last-child {
+                            position: unset;
+                        }
+                    }
+                }
+            }
+        }
+        #cp-app-poll-comments {
+            min-width: 90%;
+        }
+    }
 }
+
 
 .btn {
     display: inline-flex;
