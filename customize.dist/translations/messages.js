@@ -546,6 +546,11 @@ define(function () {
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
     out.settings_userFeedback = "Enable user feedback";
 
+    out.settings_deleteTitle = "Account deletion";
+    out.settings_deleteHint = "Account deletion is permanent. Your CryptDrive and your list of pads will be deleted from the server. The rest of your pads will be deleted in 90 days if nobody else has stored them in their CryptDrive.";
+    out.settings_deleteButton = "Delete your account";
+    out.settings_deleteModal = "Share the following information with your CryptPad administrator in order to have your data removed from their server.";
+
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
     out.settings_publicSigningKey = "Public Signing Key";
 

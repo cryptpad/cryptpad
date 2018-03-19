@@ -542,6 +542,11 @@ define(function () {
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
     out.settings_userFeedback = "Activer l'envoi de retours d'expérience";
 
+    out.settings_deleteTitle = "Suppression du compte";
+    out.settings_deleteHint = "La suppression de votre compte utilisateur est permanente. Votre CryptDrive et votre liste de pads seront supprimés du serveur. Le reste de vos pads sera supprimé après 90 jours d'inactivité si personne ne les a stockés dans leur CryptDrive.";
+    out.settings_deleteButton = "Supprimer votre compte";
+    out.settings_deleteModal = "Veuillez envoyer les informations suivantes à votre administrateur CryptPad afin que vos données soient supprimées du serveur.";
+
     out.settings_anonymous = "Vous n'êtes pas connectés. Ces préférences seront utilisées pour ce navigateur.";
     out.settings_publicSigningKey = "Clé publique de signature";
 
@@ -1081,7 +1086,7 @@ define(function () {
     out.creation_create = "Créer";
     out.creation_saveSettings = "Ne plus me demander";
     out.creation_settings = "Voir davantage de préférences";
-    out.creation_rememberHelp = "Ouvrez votre page de Préférences pour annuler cette fonctionnalité";
+    out.creation_rememberHelp = "Ouvrez votre page de Préférences pour voir ce formulaire à nouveau.";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Appartient à un autre utilisateur";
