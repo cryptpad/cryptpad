@@ -246,6 +246,13 @@ define([], function () {
         }
     };
 
+    Util.isChecked = function (el) {
+        // could be nothing...
+        if (!el) { return false; }
+        // jquery or dom elements should both be fine with this
+        return Boolean($(el).prop('checked'));
+    };
+
     return Util;
 });
 }(self));
