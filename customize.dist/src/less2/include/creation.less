@@ -36,6 +36,7 @@
         }
 
         .cp-creation-create, .cp-creation-settings {
+            margin-top: 0px;
             @creation-button: #FF0073;
             button {
                 .tools_unselectable();
@@ -47,6 +48,7 @@
                 border: none;
                 cursor: pointer;
                 outline: none;
+                width: 100%;
                 &:hover {
                     background: darken(@creation-button, 5%);
                 }
@@ -87,21 +89,23 @@
                     }
                 }
             }
+            .cp-creation-slider {
+                display: block;
+                overflow: hidden;
+                max-height: 0px;
+                transition: max-height 0.5s ease-in-out;
+                width: 100%;
+                margin-top: 10px;
+                &.active {
+                    max-height: 40px;
+                }
+            }
             .cp-creation-expire {
                 .cp-creation-expire-picker {
-                    display: block;
-                    overflow: hidden;
-                    max-height: 0px;
-                    transition: max-height 0.5s ease-in-out;
-                    width: 100%;
                     text-align: center;
-                    margin-top: 10px;
                     input {
                         width: 100px;
                     }
-                }
-                .cp-creation-expire-picker.active {
-                    max-height: 40px;
                 }
             }
             .cp-creation-settings {
@@ -112,11 +116,20 @@
                 .cp-filler { flex: 1; }
             }
 
+            div.cp-creation-remember {
+                margin-top: 30px;
+                .cp-creation-remember-help {
+                    font-style: italic;
+                }
+            }
             div.cp-creation-template {
                 width: 100%;
                 background-color: darken(@colortheme_modal-bg, 3%);
                 padding: 20px;
                 margin: 30px 0;
+                .cp-creation-title {
+                    padding: 0 0 10px 10px;
+                }
             }
             .cp-creation-template-container {
                 width: 100%;
@@ -128,8 +141,8 @@
                 .cp-creation-template-element {
                     @darker: darken(@colortheme_modal-fg, 30%);
 
-                    width: 125px;
-                    padding: 10px;
+                    width: 135px;
+                    padding: 5px;
                     margin: 5px;
                     display: inline-flex;
                     flex-flow: column;
@@ -164,6 +177,7 @@
                     }
 
                     .cp-creation-template-element-name {
+                        flex: 1;
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
@@ -213,6 +227,7 @@
                             flex-flow: row;
                             margin: 1px;
                             padding: 5px;
+                            width: 155px;
                             img {
                                 display: none;
                             }

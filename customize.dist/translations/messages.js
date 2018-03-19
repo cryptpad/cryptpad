@@ -1126,8 +1126,9 @@ define(function () {
     out.creation_noTemplate = "No template";
     out.creation_newTemplate = "New template";
     out.creation_create = "Create";
-    out.creation_saveSettings = "Remember these settings";
+    out.creation_saveSettings = "Don't show this again";
     out.creation_settings = "View more settings";
+    out.creation_rememberHelp = "Visit your Settings page to reset this preference";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";

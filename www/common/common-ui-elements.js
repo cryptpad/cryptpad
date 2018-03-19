@@ -1825,7 +1825,8 @@ define([
 
         // Title
         var colorClass = 'cp-icon-color-'+type;
-        $creation.append(h('h1.cp-creation-title.'+colorClass, Messages['button_new'+type]));
+        $creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
+        //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));
 
         // Deleted pad warning
         if (metadataMgr.getPrivateData().isDeleted) {
@@ -1870,7 +1871,7 @@ define([
                 Messages.creation_expire
             ]),
             createHelper('faq.html#keywords-expiring', Messages.creation_expire2),
-            h('div.cp-creation-expire-picker', [
+            h('div.cp-creation-expire-picker.cp-creation-slider', [
                 h('input#cp-creation-expire-val', {
                     type: "number",
                     min: 1,
@@ -1889,29 +1890,34 @@ define([
         ]);
 
         var templates = h('div.cp-creation-template', [
+            h('h3.cp-creation-title.'+colorClass, Messages['button_new'+type]),
             h('div.cp-creation-template-container', [
                 h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')
             ])
         ]);
 
         var settings = h('div.cp-creation-remember', [
-            h('label.cp-checkmark.cp-checkmark-secondary', [
+            h('label.cp-checkmark', [
                 h('input', {
                     type: 'checkbox',
-                    id: 'cp-creation-remember',
-                    checked: 'checked'
+                    id: 'cp-creation-remember'
                 }),
                 h('span.cp-checkmark-mark'),
                 Messages.creation_saveSettings
             ]),
-            createHelper('/settings/#creation', Messages.creation_settings)
+            createHelper('/settings/#creation', Messages.creation_settings),
+            h('div.cp-creation-remember-help.cp-creation-slider', Messages.creation_rememberHelp)
         ]);
+
+        var createDiv = h('div.cp-creation-create');
+        var $create = $(createDiv);
 
         $(h('div#cp-creation-form', [
             owned,
             expire,
+            settings,
             templates,
-            settings
+            createDiv
         ])).appendTo($creation);
 
         // Display templates
@@ -1927,12 +1933,12 @@ define([
             data.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
-                icon: h('span.fa.fa-times')
+                icon: h('span.fa.fa-file')
             });
             data.push({
                 name: Messages.creation_newTemplate,
                 id: -1,
-                icon: h('span.fa.fa-plus')
+                icon: h('span.fa.fa-bookmark')
             });
             var $container = $(templates).find('.cp-creation-template-container').html('');
             data.forEach(function (obj, idx) {
@@ -1984,6 +1990,16 @@ define([
             $creation.focus();
         });
 
+        // Display settings help when checkbox checked
+        $creation.find('#cp-creation-remember').on('change', function () {
+            if ($(this).is(':checked')) {
+                $creation.find('.cp-creation-remember-help:not(.active)').addClass('active');
+                return;
+            }
+            $creation.find('.cp-creation-remember-help').removeClass('active');
+            $creation.focus();
+        });
+
         // Keyboard shortcuts
         $creation.find('#cp-creation-expire-val').keydown(function (e) {
             if (e.which === 9) {
@@ -2000,6 +2016,9 @@ define([
         // Initial values
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
             $creation.find('#cp-creation-owned').attr('checked', false);
+        }
+        if (cfg.skip) {
+            $creation.find('#cp-creation-remember').attr('checked', 'checked');
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
 
@@ -2032,16 +2051,20 @@ define([
         var create = function () {
             var val = getFormValues();
 
-            if ($('#cp-creation-remember').is(':checked')) {
-                common.setAttribute(['general', 'creation', 'owned'],
-                                    val.owned, function (e) {
-                    if (e) { return void console.error(e); }
-                });
-                common.setAttribute(['general', 'creation', 'expire'],
-                                    val.expire, function (e) {
-                    if (e) { return void console.error(e); }
-                });
-            }
+            var skip = $('#cp-creation-remember').is(':checked');
+            common.setAttribute(['general', 'creation', 'skip'], skip, function (e) {
+                if (e) { return void console.error(e); }
+            });
+            common.setAttribute(['general', 'creation', 'noTemplate'], skip, function (e) {
+                if (e) { return void console.error(e); }
+            });
+
+            common.setAttribute(['general', 'creation', 'owned'], val.owned, function (e) {
+                if (e) { return void console.error(e); }
+            });
+            common.setAttribute(['general', 'creation', 'expire'], val.expire, function (e) {
+                if (e) { return void console.error(e); }
+            });
 
             $creationContainer.remove();
             common.createPad(val, function () {
@@ -2049,7 +2072,6 @@ define([
             });
         };
 
-        var $create = $(h('div.cp-creation-create')).appendTo($creation);
 
         var $button = $('<button>').text(Messages.creation_create).appendTo($create);
         $button.addClass('cp-creation-button-selected');

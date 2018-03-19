@@ -1079,8 +1079,9 @@ define(function () {
     out.creation_noTemplate = "Pas de modèle";
     out.creation_newTemplate = "Nouveau modèle";
     out.creation_create = "Créer";
-    out.creation_saveSettings = "Se souvenir de ces paramètres";
+    out.creation_saveSettings = "Ne plus me demander";
     out.creation_settings = "Voir davantage de préférences";
+    out.creation_rememberHelp = "Ouvrez votre page de Préférences pour annuler cette fonctionnalité";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
     out.creation_ownedByOther = "Appartient à un autre utilisateur";
