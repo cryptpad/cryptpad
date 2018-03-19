@@ -88,6 +88,10 @@ define([
         };
         postMessage("MIGRATE_ANON_DRIVE", data, cb);
     };
+    // Settings
+    common.deleteAccount = function (cb) {
+        postMessage("DELETE_ACCOUNT", null, cb);
+    };
     // Drive
     common.userObjectCommand = function (data, cb) {
         postMessage("DRIVE_USEROBJECT", data, cb);

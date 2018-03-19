@@ -1,4 +1,5 @@
 define([
+    'json.sortify',
     '/common/userObject.js',
     '/common/migrate-user-object.js',
     '/common/common-hash.js',
@@ -15,7 +16,7 @@ define([
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
-], function (UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
+], function (Sortify, UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
              CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap) {
     var Store = {};
@@ -417,6 +418,23 @@ define([
             var path = data.path || ['root'];
             store.userObject.add(id, path);
             onSync(cb);
+        });
+    };
+
+    Store.deleteAccount = function (data, cb) {
+        var toSign = {
+            intent: 'Please delete my account.'
+        };
+        var secret = Hash.getSecrets('drive', storeHash);
+        toSign.drive = secret.channel;
+        toSign.edPublic = store.proxy.edPublic;
+        var signKey = Crypto.Nacl.util.decodeBase64(secret.keys.signKey);
+        console.log(Sortify(toSign));
+        var proof = Crypto.Nacl.sign.detached(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)), signKey);
+        var proofTxt = Crypto.Nacl.util.encodeBase64(proof);
+        cb({
+            proof: proofTxt,
+            toSign: JSON.parse(Sortify(toSign))
         });
     };
 

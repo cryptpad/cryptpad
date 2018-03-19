@@ -193,6 +193,7 @@ define({
     'Q_SETTINGS_LOGOUT': true,
     // Import pads from this computer's anon session into the current user account
     'Q_SETTINGS_IMPORT_LOCAL': true,
+    'Q_SETTINGS_DELETE_ACCOUNT': true,
 
     // Store the language selected in the iframe into localStorage outside
     'Q_LANGUAGE_SET': true,

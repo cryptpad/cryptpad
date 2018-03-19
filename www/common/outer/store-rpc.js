@@ -172,7 +172,10 @@ define([
             case 'DRIVE_USEROBJECT': {
                 Store.userObjectCommand(data, cb); break;
             }
-
+            // Settings
+            case 'DELETE_ACCOUNT': {
+                Store.deleteAccount(data, cb); break;
+            }
             case 'IS_NEW_CHANNEL': {
                 Store.isNewChannel(data, cb); break;
             }
