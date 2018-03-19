@@ -371,11 +371,11 @@ define([
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
             if (val.edit === false) {
-                $(link).find('#cp-share-editable-false').attr('checked', true);
+                $(link).find('#cp-share-editable-false').prop('checked', true);
             }
-            else { $(link).find('#cp-share-editable-true').attr('checked', true); }
-            if (val.embed) { $(link).find('#cp-share-embed').attr('checked', true); }
-            if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
+            else { $(link).find('#cp-share-editable-true').prop('checked', true); }
+            if (val.embed) { $(link).find('#cp-share-embed').prop('checked', true); }
+            if (val.present) { $(link).find('#cp-share-present').prop('checked', true); }
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));
         });
         common.getMetadataMgr().onChange(function () {

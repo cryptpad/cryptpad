@@ -249,8 +249,16 @@ define([], function () {
     Util.isChecked = function (el) {
         // could be nothing...
         if (!el) { return false; }
-        // jquery or dom elements should both be fine with this
-        return Boolean($(el).prop('checked'));
+        // check if it's a dom element
+        if (typeof(el.tagName) !== 'undefined') {
+            return Boolean(el.checked);
+        }
+        // sketchy test to see if it's jquery
+        if (typeof(el.prop) === 'function') {
+            return Boolean(el.prop('checked'));
+        }
+        // else just say it's not checked
+        return false;
     };
 
     return Util;
