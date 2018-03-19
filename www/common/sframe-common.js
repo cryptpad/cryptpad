@@ -189,7 +189,6 @@ define([
                 return void funcs.createPad(c, waitFor());
             }
             // If we display the pad creation screen, it will handle deleted pads directly
-            console.log('here');
             funcs.getPadCreationScreen(c, waitFor());
         }
     };

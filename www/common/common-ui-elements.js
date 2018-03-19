@@ -1947,7 +1947,6 @@ define([
                     'class': 'cp-creation-template-element',
                     'title': name,
                 }).appendTo($container);
-                console.log(obj.id);
                 $span.data('id', obj.id);
                 if (idx === 0) { $span.addClass('cp-creation-template-selected'); }
                 $span.append(obj.icon || UI.getFileIcon({type: type}));
@@ -2015,10 +2014,10 @@ define([
 
         // Initial values
         if (!cfg.owned && typeof cfg.owned !== "undefined") {
-            $creation.find('#cp-creation-owned').attr('checked', false);
+            $creation.find('#cp-creation-owned').prop('checked', false);
         }
         if (cfg.skip) {
-            $creation.find('#cp-creation-remember').attr('checked', 'checked');
+            $creation.find('#cp-creation-remember').prop('checked', true).trigger('change');
         }
         UIElements.setExpirationValue(cfg.expire, $creation);
 
@@ -2078,44 +2077,6 @@ define([
         $button.click(function () {
             create();
         });
-
-        // Save settings button
-        /*var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved}).hide();
-        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'}).hide();
-        var okTo;
-        var $saveButton = $('<button>').text(Messages.creation_saveSettings).click(function () {
-            if (okTo) { clearTimeout(okTo); }
-            $ok.hide();
-            $spinner.show();
-            var val = getFormValues();
-            NThen(function (waitFor) {
-                common.setAttribute(['general', 'creation', 'owned'], val.owned, waitFor(function (e) {
-                    if (e) { return void console.error(e); }
-                }));
-                common.setAttribute(['general', 'creation', 'expire'], val.expire, waitFor(function (e) {
-                    if (e) { return void console.error(e); }
-                }));
-            }).nThen(function () {
-                $spinner.hide();
-                $ok.show();
-                okTo = setTimeout(function () {
-                    $ok.hide();
-                }, 5000);
-            });
-        });
-
-        var settings = h('div.cp-creation-settings', [
-            h('button.cp-creation-settings-save', Messages.creation_saveSettings),
-            $ok[0],
-            $spinner[0],
-            h('span.cp-filler'),
-            createHelper('/settings/#creation')
-            //h('a', {
-            //    href: origin + '/settings/#creation',
-            //    target: '_blank'
-            //}, Messages.creation_settings),
-        ]);*/
-
 
         $creation.keydown(function (e) {
             if (e.which === 9) {
