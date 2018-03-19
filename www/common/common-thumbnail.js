@@ -237,6 +237,9 @@ define([
         $span.prepend(img);
         cb($(img));
     };
+    Thumb.addThumbnail = function(thumb, $span, cb) {
+        return addThumbnail(null, thumb, $span, cb);
+    };
     var getKey = function (href) {
         var parsed = Hash.parsePadUrl(href);
         return 'thumbnail-' + parsed.type + '-' + parsed.hashData.channel;

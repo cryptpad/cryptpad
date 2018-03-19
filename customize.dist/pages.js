@@ -384,7 +384,8 @@ define([
                 var item = faq[c][q];
                 if (typeof item !== "object") { return; }
                 var answer = h('p.cp-faq-questions-a');
-                var question = h('p.cp-faq-questions-q');
+                var hash = c + '-' + q;
+                var question = h('p.cp-faq-questions-q#' + hash);
                 $(question).click(function () {
                     if ($(answer).is(':visible')) {
                         return void $(answer).slideUp();
@@ -401,6 +402,10 @@ define([
                 h('div.cp-faq-category-questions', questions)
             ]));
         });
+        var hash = window.location.hash;
+        if (hash) {
+            $(categories).find(hash).click();
+        }
         return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [

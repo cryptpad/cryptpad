@@ -117,6 +117,12 @@ define([
             case 'GET_SECURE_FILES_LIST': {
                 Store.getSecureFilesList(data, cb); break;
             }
+            case 'GET_PAD_DATA': {
+                Store.getPadData(data, cb); break;
+            }
+            case 'SET_INITIAL_PATH': {
+                Store.setInitialPath(data); break;
+            }
             case 'GET_STRONGER_HASH': {
                 Store.getStrongerHash(data, cb); break;
             }
@@ -166,7 +172,10 @@ define([
             case 'DRIVE_USEROBJECT': {
                 Store.userObjectCommand(data, cb); break;
             }
-
+            // Settings
+            case 'DELETE_ACCOUNT': {
+                Store.deleteAccount(data, cb); break;
+            }
             case 'IS_NEW_CHANNEL': {
                 Store.isNewChannel(data, cb); break;
             }

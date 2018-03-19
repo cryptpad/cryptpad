@@ -193,6 +193,7 @@ define({
     'Q_SETTINGS_LOGOUT': true,
     // Import pads from this computer's anon session into the current user account
     'Q_SETTINGS_IMPORT_LOCAL': true,
+    'Q_SETTINGS_DELETE_ACCOUNT': true,
 
     // Store the language selected in the iframe into localStorage outside
     'Q_LANGUAGE_SET': true,
@@ -220,6 +221,8 @@ define({
 
     // Pad creation screen: create a pad with the selected attributes (owned, expire)
     'Q_CREATE_PAD': true,
+    // Get the available templates
+    'Q_CREATE_TEMPLATES': true,
 
     // This is for sending data out of the iframe when we are in testing mode
     // The exact protocol is defined in common/test.js

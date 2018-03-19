@@ -163,11 +163,10 @@ define([
     var sortColumns = function (order, firstcol) {
         var colsOrder = order.slice();
         // Never put at the first position an uncommitted column
-        if (APP.proxy.content.colsOrder.indexOf(firstcol) === -1) { return colsOrder; }
-        colsOrder.sort(function (a, b) {
-            return (a === firstcol) ? -1 :
-                        ((b === firstcol) ? 1 : 0);
-        });
+        var idx = APP.proxy.content.colsOrder.indexOf(firstcol);
+        if (!firstcol || idx === -1) { return colsOrder; }
+        colsOrder.splice(idx, 1);
+        colsOrder.unshift(firstcol);
         return colsOrder;
     };
 
@@ -618,7 +617,6 @@ define([
             // If readOnly, always put the app in published mode
             bool = true;
         }
-        console.log(bool);
         $(APP.$mediaTagButton).toggle(!bool);
         setTablePublished(bool);
         /*['textarea'].forEach(function (sel) {
@@ -1106,6 +1104,25 @@ define([
         }
     };
 
+    var onError = function (info) {
+        if (info && info.type) {
+            if (info.type === 'CHAINPAD') {
+                APP.unrecoverable = true;
+                setEditable(false);
+                APP.toolbar.errorState(true, info.error);
+                var msg = Messages.chainpadError;
+                UI.errorLoadingScreen(msg, true, true);
+                console.error(info.error);
+                return;
+            }
+            // Server error
+            return void common.onServerError(info, APP.toolbar, function () {
+                APP.unrecoverable = true;
+                setEditable(false);
+            });
+        }
+    };
+
     // Manage disconnections because of network or error
     var onDisconnect = function (info) {
         if (APP.unrecoverable) { return; }
@@ -1251,7 +1268,6 @@ define([
         }).nThen(function (waitFor) {
             common.handleNewFile(waitFor);
         }).nThen(function (/* waitFor */) {
-            console.log('here');
             Test.registerInner(common.getSframeChannel());
             var metadataMgr = common.getMetadataMgr();
             APP.locked = APP.readOnly = metadataMgr.getPrivateData().readOnly;
@@ -1318,7 +1334,8 @@ define([
                     });
                  })
                  .on('disconnect', onDisconnect)
-                 .on('reconnect', onReconnect);
+                 .on('reconnect', onReconnect)
+                 .on('error', onError);
         });
     };
     main();

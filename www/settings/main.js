@@ -65,6 +65,9 @@ define([
             sframeChan.on('Q_SETTINGS_IMPORT_LOCAL', function (data, cb) {
                 Cryptpad.mergeAnonDrive(cb);
             });
+            sframeChan.on('Q_SETTINGS_DELETE_ACCOUNT', function (data, cb) {
+                Cryptpad.deleteAccount(cb);
+            });
         };
         var category;
         if (window.location.hash) {

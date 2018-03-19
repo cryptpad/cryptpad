@@ -638,9 +638,10 @@ define([
         var $icon = UI.getIcon();
         if (!data) { return $icon; }
         var href = data.href;
-        if (!href) { return $icon; }
+        var type = data.type;
+        if (!href && !type) { return $icon; }
 
-        var type = Hash.parsePadUrl(href).type;
+        if (!type) { type = Hash.parsePadUrl(href).type; }
         $icon = UI.getIcon(type);
 
         return $icon;
