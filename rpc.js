@@ -992,6 +992,9 @@ var owned_upload_complete = function (Env, safeKey, cb) {
     }
 
     var oldPath = makeFilePath(Env.paths.staging, safeKey);
+    if (typeof(oldPath) !== 'string') {
+        return void cb('EINVAL_CONFIG');
+    }
 
     // construct relevant paths
     var root = Env.paths.staging;
@@ -1054,6 +1057,9 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         }));
     }).nThen(function (w) {
         // move the existing file to its new path
+
+        // flow is dumb and I need to guard against this which will never happen
+        /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
         Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
             if (e) {
                 w.abort();
@@ -1217,7 +1223,6 @@ RPC.create = function (
     var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
-    console.log(blobStagingPath);
 
     var isUnauthenticateMessage = function (msg) {
         return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);

@@ -241,7 +241,6 @@ define([
                 type: 'radio',
                 name: 'cp-share-editable',
                 value: 1,
-                checked: 'checked'
             }),
             h('label', { 'for': 'cp-share-editable-true' }, Messages.share_linkEdit),
             h('input#cp-share-editable-false.cp-share-editable-value', {
@@ -271,12 +270,12 @@ define([
         ]);
         if (!hashes.editHash) {
             $(link).find('#cp-share-editable-false').attr('checked', true);
-            $(link).find('#cp-share-editable-true').attr('disabled', true);
+            $(link).find('#cp-share-editable-true').removeAttr('checked').attr('disabled', true);
         }
         var saveValue = function () {
-            var edit = $(link).find('#cp-share-editable-true').is(':checked');
-            var embed = $(link).find('#cp-share-embed').is(':checked');
-            var present = $(link).find('#cp-share-present').is(':checked');
+            var edit = Util.isChecked($(link).find('#cp-share-editable-true'));
+            var embed = Util.isChecked($(link).find('#cp-share-embed'));
+            var present = Util.isChecked($(link).find('#cp-share-present'));
             common.setAttribute(['general', 'share'], {
                 edit: edit,
                 embed: embed,
@@ -285,9 +284,9 @@ define([
         };
         var getLinkValue = function (initValue) {
             var val = initValue || {};
-            var edit = initValue ? val.edit : $(link).find('#cp-share-editable-true').is(':checked');
-            var embed = initValue ? val.embed : $(link).find('#cp-share-embed').is(':checked');
-            var present = initValue ? val.present : $(link).find('#cp-share-present').is(':checked');
+            var edit = initValue ? val.edit : Util.isChecked($(link).find('#cp-share-editable-true'));
+            var embed = initValue ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
+            var present = initValue ? val.present : Util.isChecked($(link).find('#cp-share-present'));
 
             var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
@@ -372,10 +371,11 @@ define([
         common.getAttribute(['general', 'share'], function (err, val) {
             val = val || {};
             if (val.edit === false) {
-                $(link).find('#cp-share-editable-false').attr('checked', true);
+                $(link).find('#cp-share-editable-false').prop('checked', true);
             }
-            if (val.embed) { $(link).find('#cp-share-embed').attr('checked', true); }
-            if (val.present) { $(link).find('#cp-share-present').attr('checked', true); }
+            else { $(link).find('#cp-share-editable-true').prop('checked', true); }
+            if (val.embed) { $(link).find('#cp-share-embed').prop('checked', true); }
+            if (val.present) { $(link).find('#cp-share-present').prop('checked', true); }
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));
         });
         common.getMetadataMgr().onChange(function () {
@@ -1681,7 +1681,7 @@ define([
             $element.attr('data-type', p);
             $element.click(function () {
                 $modal.hide();
-                if ($advanced && $advanced.is(':checked')) {
+                if ($advanced && Util.isChecked($advanced)) {
                     common.sessionStorage.put(Constants.displayPadCreationScreen, true, function (){
                         common.openURL('/' + p + '/');
                     });
