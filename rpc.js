@@ -1043,7 +1043,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         Mkdirp(plannedPath, w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
-                return void cb(e); // XXX do we export Errors or strings?
+                return void cb(e);
             }
         }));
     }).nThen(function (w) {
