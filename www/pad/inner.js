@@ -280,7 +280,7 @@ define([
             framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
         };
         framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function (err, data) {
-            if (($(window).height() >= 800  || $(window).width >= 800) &&
+            if (($(window).height() >= 800  || $(window).width() >= 800) &&
                 (typeof(data) === "undefined" || data)) { $('.cke_toolbox_main').show(); }
             else { $('.cke_toolbox_main').hide(); }
             var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
