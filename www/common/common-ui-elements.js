@@ -1889,11 +1889,15 @@ define([
             ])
         ]);
 
+        var createDiv = h('div.cp-creation-create');
+        var $create = $(createDiv);
+
         var templates = h('div.cp-creation-template', [
             h('h3.cp-creation-title.'+colorClass, Messages['button_new'+type]),
             h('div.cp-creation-template-container', [
                 h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')
-            ])
+            ]),
+            createDiv
         ]);
 
         var settings = h('div.cp-creation-remember', [
@@ -1909,15 +1913,11 @@ define([
             h('div.cp-creation-remember-help.cp-creation-slider', Messages.creation_rememberHelp)
         ]);
 
-        var createDiv = h('div.cp-creation-create');
-        var $create = $(createDiv);
-
         $(h('div#cp-creation-form', [
             owned,
             expire,
             settings,
-            templates,
-            createDiv
+            templates
         ])).appendTo($creation);
 
         // Display templates

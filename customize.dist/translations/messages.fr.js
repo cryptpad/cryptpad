@@ -547,7 +547,7 @@ define(function () {
     out.settings_deleteButton = "Supprimer votre compte";
     out.settings_deleteModal = "Veuillez envoyer les informations suivantes à votre administrateur CryptPad afin que vos données soient supprimées du serveur.";
 
-    out.settings_anonymous = "Vous n'êtes pas connectés. Ces préférences seront utilisées pour ce navigateur.";
+    out.settings_anonymous = "Vous n'êtes pas connecté. Ces préférences seront utilisées pour ce navigateur.";
     out.settings_publicSigningKey = "Clé publique de signature";
 
     out.settings_usage = "Utilisation";
@@ -1033,7 +1033,7 @@ define(function () {
     out.readme_cat1 = "Découvrez votre CryptDrive";
     out.readme_cat1_l1 = "Créer un pad : Dans votre CryptDrive, cliquez sur {0} puis {1} et vous obtenez un nouveau pad."; // 0: New, 1: Rich Text
     out.readme_cat1_l2 = "Ouvrir des pads depuis votre CryptDrive : Double-cliquez sur l'icone d'un pad pour l'ouvrir.";
-    out.readme_cat1_l3 = "Organiser vos pads : Quand vous êtes connectés, tous les pads auquel vous accédez sont ajoutés dans la section {0} de votre CryptDrive."; // 0: Unsorted files
+    out.readme_cat1_l3 = "Organiser vos pads : Quand vous êtes connecté, tous les pads auquel vous accédez sont ajoutés dans la section {0} de votre CryptDrive."; // 0: Unsorted files
     out.readme_cat1_l3_l1 = "Vous pouvez cliquer et faire glisser des fichiers dans des dossiers dans la section {0} de votre CryptDrive, et créer de nouveaux dossiers."; // 0: Documents
     out.readme_cat1_l3_l2 = "N'hésitez pas à utiliser le clic droit sur les icones puisque des menus sont souvent disponibles.";
     out.readme_cat1_l4 = "Déplacer des pads vers la corbeille : Vous pouvez cliquer et faire glisser vos pads dans la {0} de la même manière que vous pouvez les déposer dans des dossiers."; // 0: Trash

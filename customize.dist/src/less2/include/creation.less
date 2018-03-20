@@ -37,11 +37,11 @@
 
         .cp-creation-create, .cp-creation-settings {
             margin-top: 0px;
-            @creation-button: #FF0073;
+            @creation-button: #30B239;
             button {
                 .tools_unselectable();
                 padding: 15px;
-                background: #30b239;
+                background: @creation-button;
                 color: #FFF;
                 font-weight: bold;
                 margin: 3px 10px;
@@ -50,12 +50,20 @@
                 outline: none;
                 width: 100%;
                 &:hover {
-                    background: darken(@creation-button, 5%);
+                    //background: darken(@creation-button, 5%);
+                    background: lighten(@creation-button, 5%);
                 }
             }
         }
         .cp-creation-create {
             text-align: center;
+            margin: auto;
+            margin-top: 20px;
+            width: 400px;
+            max-width: 100%;
+            button {
+                margin: 0;
+            }
         }
 
         #cp-creation-form {

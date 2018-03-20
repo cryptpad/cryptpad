@@ -92,20 +92,25 @@ define([
             ]);
         }
 
-        return h('nav.navbar.navbar-toggleable-md',
-                     h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
-                    [h('i.fa.fa-bars ')
-                    ]),
-                    h('a.navbar-brand', { href: '/index.html'}),
-                h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [  
-                    //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
-                    h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
-                    h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
-                    h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
-                    h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
-                    h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
-                    h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
-                ].concat(rightLinks))
+        return h('nav.navbar.navbar-expand-lg',
+            h('a.navbar-brand', { href: '/index.html'}),
+            h('button.navbar-toggler', {
+                'type':'button',
+                'data-toggle':'collapse',
+                'data-target':'#menuCollapse',
+                'aria-controls': 'menuCollapse',
+                'aria-expanded':'false',
+                'aria-label':'Toggle navigation'
+            }, h('i.fa.fa-bars ')),
+            h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
+                //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
+                h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
+                h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
+                h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
+                h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
+                h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
+            ].concat(rightLinks))
         );
     };
 
@@ -144,10 +149,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/AaronMacSween.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
                         h('h3', "Aaron MacSween"),
                         h('hr'),
                         setHTML(h('div#bioAaron'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance. <br/> He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.<br/>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.<br/>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>'),
@@ -195,10 +200,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/Catalin.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
                         h('h3', "Catalin Scripcariu"),
                         h('hr'),
                         setHTML(h('div#bioCatalin'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.<br/>At the beginning of 2017 he joined the XWiki, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>'),
@@ -504,13 +509,13 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center', [
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2', [
                         setHTML(h('h2'), Msg.whatis_zeroknowledge),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p1),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p2),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p3),
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1', [
                         h('img#zeroknowledge', { src: '/customize/images/zeroknowledge_small.png?' + urlArgs }),
                     ]),
                 ]),
