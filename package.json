@@ -11,6 +11,7 @@
     "pull-stream": "^3.6.1",
     "replify": "^1.2.0",
     "saferphore": "0.0.1",
+    "sortify": "^1.0.4",
     "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",
     "ws": "^1.0.1"
