@@ -326,6 +326,24 @@ var getFileSize = function (Env, channel, cb) {
     });
 };
 
+var getMetadata = function (Env, channel, cb) {
+    if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
+
+    if (channel.length === 32) {
+        if (typeof(Env.msgStore.getChannelMetadata) !== 'function') {
+            return cb('GET_CHANNEL_METADATA_UNSUPPORTED');
+        }
+
+        return void Env.msgStore.getChannelMetadata(channel, function (e, data /*:object*/) {
+            if (e) {
+                if (e.code === 'INVALID_METADATA') { return void cb(void 0, {}); }
+                return void cb(e.code);
+            }
+            cb(void 0, data);
+        });
+    }
+};
+
 var getMultipleFileSize = function (Env, channels, cb) {
     if (!Array.isArray(channels)) { return cb('INVALID_PIN_LIST'); }
     if (typeof(Env.msgStore.getChannelSize) !== 'function') {
@@ -1128,6 +1146,7 @@ var isNewChannel = function (Env, channel, cb) {
 var isUnauthenticatedCall = function (call) {
     return [
         'GET_FILE_SIZE',
+        'GET_METADATA',
         'GET_MULTIPLE_FILE_SIZE',
         'IS_CHANNEL_PINNED',
         'IS_NEW_CHANNEL',
@@ -1248,11 +1267,13 @@ RPC.create = function (
             }
             case 'GET_FILE_SIZE':
                 return void getFileSize(Env, msg[1], function (e, size) {
-                    if (e) {
-                        console.error(e);
-                    }
                     WARN(e, msg[1]);
                     respond(e, [null, size, null]);
+                });
+            case 'GET_METADATA':
+                return void getMetadata(Env, msg[1], function (e, data) {
+                    WARN(e, msg[1]);
+                    respond(e, [null, data, null]);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
                 return void getMultipleFileSize(Env, msg[1], function (e, dict) {
