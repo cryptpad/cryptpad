@@ -429,12 +429,26 @@ define([
         toSign.drive = secret.channel;
         toSign.edPublic = store.proxy.edPublic;
         var signKey = Crypto.Nacl.util.decodeBase64(secret.keys.signKey);
-        console.log(Sortify(toSign));
-        var proof = Crypto.Nacl.sign.detached(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)), signKey);
-        var proofTxt = Crypto.Nacl.util.encodeBase64(proof);
-        cb({
-            proof: proofTxt,
-            toSign: JSON.parse(Sortify(toSign))
+        Store.anonRpcMsg({
+            msg: 'GET_METADATA',
+            data: secret.channel
+        }, function (data) {
+            console.log(data[0]);
+            var metadata = data[0];
+            // Owned drive
+            if (metadata && metadata.owners && metadata.owners.length === 1 &&
+                metadata.owners.indexOf(edPublic) !== -1) {
+                
+                return;
+            }
+
+            // Not owned drive
+            var proof = Crypto.Nacl.sign.detached(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)), signKey);
+            var proofTxt = Crypto.Nacl.util.encodeBase64(proof);
+            cb({
+                proof: proofTxt,
+                toSign: JSON.parse(Sortify(toSign))
+            });
         });
     };
 
