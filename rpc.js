@@ -837,6 +837,17 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
+/*  Users should be able to clear their own pin log with an authenticated RPC
+*/
+var removePins = function (Env, safeKey, cb) {
+    if (typeof(Env.pinStore.removeChannel) !== 'function') {
+        return void cb("E_NOT_IMPLEMENTED");
+    }
+    Env.pinStore.removeChannel(safeKey, function (err) {
+        cb(err);
+    });
+};
+
 var upload = function (Env, publicKey, content, cb) {
     var paths = Env.paths;
     var dec;
@@ -1043,7 +1054,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         Mkdirp(plannedPath, w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
-                return void cb(e); // XXX do we export Errors or strings?
+                return void cb(e);
             }
         }));
     }).nThen(function (w) {
@@ -1153,6 +1164,7 @@ var isAuthenticatedCall = function (call) {
         'EXPIRE_SESSION',
         'CLEAR_OWNED_CHANNEL',
         'REMOVE_OWNED_CHANNEL',
+        'REMOVE_PINS',
     ].indexOf(call) !== -1;
 };
 
@@ -1444,6 +1456,11 @@ RPC.create = function (
                 return void removeOwnedChannel(Env, msg[1], publicKey, function (e) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, "OK");
+                });
+            case 'REMOVE_PINS':
+                return void removePins(Env, safeKey, function (e, response) {
+                    if (e) { return void Respond(e); }
+                    Respond(void 0, response);
                 });
             // restricted to privileged users...
             case 'UPLOAD':
