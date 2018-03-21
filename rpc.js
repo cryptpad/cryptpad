@@ -1479,7 +1479,7 @@ RPC.create = function (
                     Respond(void 0, "OK");
                 });
             case 'REMOVE_PINS':
-                return void removePins(Env, safeKey, function (e, response) {
+                return void removePins(Env, safeKey, function (e) {
                     if (e) { return void Respond(e); }
                     Respond(void 0, "OK");
                 });

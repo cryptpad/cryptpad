@@ -583,7 +583,7 @@ define([
     Store.resetDrive = function (data, cb) {
         nThen(function (waitFor) {
             removeOwnedPads(waitFor);
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             store.proxy.drive = store.fo.getStructure();
             onSync(cb);
         });
