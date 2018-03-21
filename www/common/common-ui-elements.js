@@ -1870,7 +1870,7 @@ define([
                 h('span.cp-checkmark-mark'),
                 Messages.creation_expire
             ]),
-            createHelper('faq.html#keywords-expiring', Messages.creation_expire2),
+            createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
             h('div.cp-creation-expire-picker.cp-creation-slider', [
                 h('input#cp-creation-expire-val', {
                     type: "number",
