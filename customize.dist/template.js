@@ -3,7 +3,7 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
 
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Pages) {
 $(function () {
     var $body = $('body');

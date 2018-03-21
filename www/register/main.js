@@ -11,7 +11,7 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
 
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore) {
     var Messages = Cryptpad.Messages;
 
