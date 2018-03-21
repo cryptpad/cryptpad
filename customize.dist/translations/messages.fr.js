@@ -38,9 +38,11 @@ define(function () {
     out.padNotPinned = 'Ce pad va expirer après 3 mois d\'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
     out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
     out.expiredError = "Ce pad a atteint sa date d'expiration est n'est donc plus disponible.";
-    out.expiredErrorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
     out.deletedError = 'Ce pad a été supprimé par son propriétaire et n\'est donc plus disponible.';
     out.inactiveError = 'Ce pad a été supprimé en raison de son inactivité. Appuyez sur Échap pour créer un nouveau pad.';
+    out.chainpadError = 'Une erreur critique est survenue lors de la mise à jour du contenu. Le pad est désormais en mode lecture seule afin de s\'assurer que vous ne perdiez pas davantage de données.<br>' +
+                        'Appuyez sur <em>Échap</em> pour voir le pad ou rechargez la page pour pouvoir le modifier à nouveau.';
+    out.errorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";
@@ -367,7 +369,7 @@ define(function () {
     out.fm_templateName = "Modèles";
     out.fm_searchName = "Recherche";
     out.fm_recentPadsName = "Pads récents";
-    out.fm_ownedPadsName = "Pads possédés";
+    out.fm_ownedPadsName = "Pads en votre possession";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
@@ -546,7 +548,12 @@ define(function () {
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
     out.settings_userFeedback = "Activer l'envoi de retours d'expérience";
 
-    out.settings_anonymous = "Vous n'êtes pas connectés. Ces préférences seront utilisées pour ce navigateur.";
+    out.settings_deleteTitle = "Suppression du compte";
+    out.settings_deleteHint = "La suppression de votre compte utilisateur est permanente. Votre CryptDrive et votre liste de pads seront supprimés du serveur. Le reste de vos pads sera supprimé après 90 jours d'inactivité si personne ne les a stockés dans leur CryptDrive.";
+    out.settings_deleteButton = "Supprimer votre compte";
+    out.settings_deleteModal = "Veuillez envoyer les informations suivantes à votre administrateur CryptPad afin que vos données soient supprimées du serveur.";
+
+    out.settings_anonymous = "Vous n'êtes pas connecté. Ces préférences seront utilisées pour ce navigateur.";
     out.settings_publicSigningKey = "Clé publique de signature";
 
     out.settings_usage = "Utilisation";
@@ -775,13 +782,13 @@ define(function () {
                'Il désigne un document que vous pouvez modifier dans votre navigateur et, en général, vous pouvez voir les modifications effectuées par les autres utilisateurs de manière quasiment instantanée.'
         },
         owned: {
-            q: "Qu'est-ce qu'un pad possédé ?",
-            a: "Un <em>pad possédé</em> est un pad créé avec un <em>propriétaire</em> explicite, identifié sur le serveur par sa <em>clé de signature publique</em>.<br>" +
+            q: "Qu'est-ce qu'un pad avec propriétaire ?",
+            a: "Être <em>propriétaire</em> d'un pad signifie que vous êtes identifié comme tel par le serveur avec à votre <em>clé de signature publique</em>.<br>" +
                "Le propriétaire d'un pad peut décider de supprimer ce pad du serveur de manière permanente, afin de le rendre inaccessible aux autres collaborateurs même s'ils possédent le lien dans leur CryptDrive."
         },
         expiring: {
-            q: "Qu'est-ce qu'un pad expirant ?",
-            a: "Un <em>pad expirant</em> est un pad créé avec une date définie à partir de laquelle il sera supprimé automatiquement du serveur. Les pads expirants peuvent être configurés pour avoir une durée de vie comprise entre une heure et cent mois. Le pad et tout son historique sera alors inaccessible, de manière permanente, même s'il est en cours d'édition à sa date d'expiration.<br>" +
+            q: "Qu'est-ce qu'un pad à durée de vie ?",
+            a: "Un <em>pad à durée de vie</em> est un pad créé avec une date définie à partir de laquelle il sera supprimé automatiquement du serveur. Ils peuvent être configurés pour avoir une durée de vie comprise entre une heure et cent mois. Le pad et tout son historique sera alors inaccessible, de manière permanente, même s'il est en cours d'édition à sa date d'expiration.<br>" +
                "Si un pad possède une date d'expiration, vous pouvez la vérifier en regardant les <em>propriétés</em> du pad, soit avec un clic-droit sur le pad dans votre CryptDrive, ou soit en cliquant sur Propriétés dans le sous-menu de la barre d'outils de l'application."
         },
         tag: {
@@ -875,9 +882,9 @@ define(function () {
         },
         remove: {
             q: "J'ai supprimé un pad ou un fichier de mon CryptDrive, mais le contenu est encore disponible. Comment le supprimer ?",
-            a: "Seuls les <em>pads possédés</em> (introduits en février 2018) peuvent être supprimés du serveur. Ils ne peuvent d'ailleurs être supprimés du serveur que par leur <em>propriétaire</em> (l'utilisateur ayant créé le pad).<br>" +
+            a: "Seuls les <em>pads avec propriétaire</em> (introduits en février 2018) peuvent être supprimés du serveur. Ils ne peuvent d'ailleurs être supprimés du serveur que par leur <em>propriétaire</em> (l'utilisateur ayant créé le pad).<br>" +
                "Si vous n'êtes pas le créateur du pad, vous devrez demander au propriétaire de le supprimer pour vous.<br>" +
-               "Pour les pads que vous possédez, vous pouvez effectuer un <b>clic-droit sur le pad dans votre CryptDrive</b>, et sélectionner <b>Supprimer du serveur</b>."
+               "Pour les pads dont vous êtes le propriétaire, vous pouvez effectuer un <b>clic-droit sur le pad dans votre CryptDrive</b>, et sélectionner <b>Supprimer du serveur</b>."
         },
         forget: {
             q: "Que faire si j'oublie mon mot de passe ?",
@@ -1032,7 +1039,7 @@ define(function () {
     out.readme_cat1 = "Découvrez votre CryptDrive";
     out.readme_cat1_l1 = "Créer un pad : Dans votre CryptDrive, cliquez sur {0} puis {1} et vous obtenez un nouveau pad."; // 0: New, 1: Rich Text
     out.readme_cat1_l2 = "Ouvrir des pads depuis votre CryptDrive : Double-cliquez sur l'icone d'un pad pour l'ouvrir.";
-    out.readme_cat1_l3 = "Organiser vos pads : Quand vous êtes connectés, tous les pads auquel vous accédez sont ajoutés dans la section {0} de votre CryptDrive."; // 0: Unsorted files
+    out.readme_cat1_l3 = "Organiser vos pads : Quand vous êtes connecté, tous les pads auquel vous accédez sont ajoutés dans la section {0} de votre CryptDrive."; // 0: Unsorted files
     out.readme_cat1_l3_l1 = "Vous pouvez cliquer et faire glisser des fichiers dans des dossiers dans la section {0} de votre CryptDrive, et créer de nouveaux dossiers."; // 0: Documents
     out.readme_cat1_l3_l2 = "N'hésitez pas à utiliser le clic droit sur les icones puisque des menus sont souvent disponibles.";
     out.readme_cat1_l4 = "Déplacer des pads vers la corbeille : Vous pouvez cliquer et faire glisser vos pads dans la {0} de la même manière que vous pouvez les déposer dans des dossiers."; // 0: Trash
@@ -1066,32 +1073,35 @@ define(function () {
     // Creation page
     out.creation_404 = "Ce pad n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.";
     out.creation_ownedTitle = "Type de pad";
-    out.creation_ownedTrue = "Pad possédé";
-    out.creation_ownedFalse = "Pad ouvert";
-    out.creation_owned1 = "Un pad <b>possédé</b> peut être supprimé du serveur à tout moment quand son propriétaire le souhaite. Une fois supprimé, il disparaît du CryptDrive des autres utilisateurs.";
-    out.creation_owned2 = "Un pad <b>ouvert</b> n'a pas de propriétaire et ne peut donc pas être supprimé du serveur à moins d'avoir dépassé sa date d'expiration.";
+    out.creation_owned = "Être propriétaire de ce pad";
+    out.creation_ownedTrue = "Être propriétaire";
+    out.creation_ownedFalse = "Pas de propriétaire";
+    out.creation_owned1 = "Être <b>propriétaire</b> d'un pad signifie que vous pouvez le supprimer du serveur à tout moment. Une fois supprimé, il disparaît du CryptDrive des autres utilisateurs.";
+    out.creation_owned2 = "Un pad <b>sans propriétaire</b> ne peut pas être supprimé du serveur à moins d'avoir dépassé son éventuelle date d'expiration.";
     out.creation_expireTitle = "Durée de vie";
+    out.creation_expire = "Ajouter une durée de vie";
     out.creation_expireTrue = "Ajouter durée de vie";
     out.creation_expireFalse = "Illimité";
     out.creation_expireHours = "Heure(s)";
     out.creation_expireDays = "Jour(s)";
     out.creation_expireMonths = "Mois";
     out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
-    out.creation_expire2 = "Un pad <b>expirant</b> a une durée de vie définie, après laquelle il sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs.";
-    out.creation_createTitle = "Créer un pad";
-    out.creation_createFromTemplate = "Depuis un modèle";
-    out.creation_createFromScratch = "Nouveau pad vide";
-    out.creation_settings = "Préférences des nouveaux pads";
-    out.creation_saveSettings = "Sauver les préférences";
+    out.creation_expire2 = "Un pad <b>à durée de vie</b> sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs lorsque cette durée sera dépassée.";
+    out.creation_noTemplate = "Pas de modèle";
+    out.creation_newTemplate = "Nouveau modèle";
+    out.creation_create = "Créer";
+    out.creation_saveSettings = "Ne plus me demander";
+    out.creation_settings = "Voir davantage de préférences";
+    out.creation_rememberHelp = "Ouvrez votre page de Préférences pour voir ce formulaire à nouveau.";
     // Properties about creation data
     out.creation_owners = "Propriétaires";
-    out.creation_ownedByOther = "Possédé par un autre utilisateur";
+    out.creation_ownedByOther = "Appartient à un autre utilisateur";
     out.creation_noOwner = "Pas de propriétaire";
     out.creation_expiration = "Date d'expiration";
     out.creation_propertiesTitle = "Disponibilité";
     out.creation_appMenuName = "Mode avancé (Ctrl + E)";
     out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.";
-    out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads possédés ou à date d'expiration). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
+    out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads avec propriétaire ou à durée de vie). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
 
     // New share modal

@@ -39,9 +39,11 @@ define(function () {
     out.padNotPinned = 'This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
     out.expiredError = 'This pad has reached its expiration time and is no longer available.';
-    out.expiredErrorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
     out.deletedError = 'This pad has been deleted by its owner and is no longer available.';
     out.inactiveError = 'This pad has been deleted due to inactivity. Press Esc to create a new pad.';
+    out.chainpadError = 'A critical error occurred when updating your content. This page is in read-only mode to make sure you won\'t lose your work.<br>' +
+                        'Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.';
+    out.errorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -549,6 +551,11 @@ define(function () {
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
     out.settings_userFeedback = "Enable user feedback";
+
+    out.settings_deleteTitle = "Account deletion";
+    out.settings_deleteHint = "Account deletion is permanent. Your CryptDrive and your list of pads will be deleted from the server. The rest of your pads will be deleted in 90 days if nobody else has stored them in their CryptDrive.";
+    out.settings_deleteButton = "Delete your account";
+    out.settings_deleteModal = "Share the following information with your CryptPad administrator in order to have your data removed from their server.";
 
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
     out.settings_publicSigningKey = "Public Signing Key";
@@ -1113,11 +1120,13 @@ define(function () {
     // Creation page
     out.creation_404 = "This pad not longer exists. Use the following form to create a new pad.";
     out.creation_ownedTitle = "Type of pad";
-    out.creation_ownedTrue = "Owned pad";
+    out.creation_owned = "Owned pad"; // Creation page
+    out.creation_ownedTrue = "Owned pad"; // Settings
     out.creation_ownedFalse = "Open pad";
     out.creation_owned1 = "An <b>owned</b> pad can be deleted from the server whenever the owner wants. Deleting an owned pad removes it from other users' CryptDrives.";
     out.creation_owned2 = "An <b>open</b> pad doesn't have any owner and thus, it can't be deleted from the server unless it has reached its expiration time.";
     out.creation_expireTitle = "Life time";
+    out.creation_expire = "Expiring pad";
     out.creation_expireTrue = "Add a life time";
     out.creation_expireFalse = "Unlimited";
     out.creation_expireHours = "Hour(s)";
@@ -1125,11 +1134,12 @@ define(function () {
     out.creation_expireMonths = "Month(s)";
     out.creation_expire1 = "An <b>unlimited</b> pad will not be removed from the server until its owner deletes it.";
     out.creation_expire2 = "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives.";
-    out.creation_createTitle = "Create a pad";
-    out.creation_createFromTemplate = "From template";
-    out.creation_createFromScratch = "From scratch";
-    out.creation_settings = "New Pad settings";
-    out.creation_saveSettings = "Save settings";
+    out.creation_noTemplate = "No template";
+    out.creation_newTemplate = "New template";
+    out.creation_create = "Create";
+    out.creation_saveSettings = "Don't show this again";
+    out.creation_settings = "View more settings";
+    out.creation_rememberHelp = "Visit your Settings page to reset this preference";
     // Properties about creation data
     out.creation_owners = "Owners";
     out.creation_ownedByOther = "Owned by another user";

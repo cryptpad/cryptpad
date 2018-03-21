@@ -400,7 +400,9 @@ define([
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || $(window).height() < 800) { return void hide(); }
+            if (val === false || ($(window).height() < 800 && $(window).width() < 800)) {
+                return void hide();
+            }
             show();
         });
 
@@ -885,7 +887,6 @@ define([
         var oldUserData;
         if (!config.metadataMgr) { return; }
         var metadataMgr = config.metadataMgr;
-        var userNetfluxId = metadataMgr.getNetfluxId();
         var notify = function(type, name, oldname) {
             // type : 1 (+1 user), 0 (rename existing user), -1 (-1 user)
             if (typeof name === "undefined") { return; }
@@ -929,6 +930,7 @@ define([
         metadataMgr.onChange(function () {
             var newdata = metadataMgr.getMetadata().users;
             var netfluxIds = Object.keys(newdata);
+            var userNetfluxId = metadataMgr.getNetfluxId();
             // Notify for disconnected users
             if (typeof oldUserData !== "undefined") {
                 for (var u in oldUserData) {
@@ -1061,6 +1063,7 @@ define([
 
         toolbar.errorState = function (state, error) {
             toolbar.isErrorState = state;
+            if (state) { toolbar.connected = false; }
             if (toolbar.spinner) {
                 if (!state) {
                     return void kickSpinner(toolbar, config);

@@ -1,15 +1,17 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "1.27.0",
+  "version": "1.28.0",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
     "chainpad-server": "^2.0.0",
     "express": "~4.16.0",
+    "mkdirp": "^0.5.1",
     "nthen": "~0.1.0",
     "pull-stream": "^3.6.1",
     "replify": "^1.2.0",
     "saferphore": "0.0.1",
+    "sortify": "^1.0.4",
     "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",
     "ws": "^1.0.1",

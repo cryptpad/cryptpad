@@ -1,0 +1,67 @@
+@import (once) "./colortheme-all.less";
+
+.checkmark_main(@size) {
+
+    @width: round(@size / 8);
+    @dim1: round(@size / 3);
+    @dim2: round(2 * @size / 3);
+    @top: round(@size / 12);
+    // <label.cp-checkmark><input><span.cp-checkmark-mark></span>Text</label>
+    .cp-checkmark {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        &.cp-checkmark-secondary {
+            .cp-checkmark-mark {
+                &:after {
+                    border-color: @colortheme_checkmark-col2;
+                }
+            }
+            input {
+                &:checked ~ .cp-checkmark-mark {
+                    background-color: @colortheme_checkmark-back2;
+                }
+            }
+        }
+        &:hover .cp-checkmark-mark {
+            background-color: @colortheme_checkmark-back0-active;
+        }
+
+        input {
+            display: none;
+            &:checked ~ .cp-checkmark-mark {
+                background-color: @colortheme_checkmark-back1;
+                &:after {
+                    display: block;
+                }
+            }
+        }
+
+        .cp-checkmark-mark {
+            margin-right: 10px;
+            position: relative;
+            height: @size;
+            width: @size;
+            background-color: @colortheme_checkmark-back0;
+            display: flex;
+            justify-content: center;
+            &:after {
+                content: "";
+                display: none;
+                margin-top: @top;
+                width: @dim1;
+                height: @dim2;
+                transform: rotate(45deg);
+                border: solid @colortheme_checkmark-col1;
+                border-width: 0 @width @width 0;
+            }
+        }
+
+    }
+}

@@ -246,6 +246,21 @@ define([], function () {
         }
     };
 
+    Util.isChecked = function (el) {
+        // could be nothing...
+        if (!el) { return false; }
+        // check if it's a dom element
+        if (typeof(el.tagName) !== 'undefined') {
+            return Boolean(el.checked);
+        }
+        // sketchy test to see if it's jquery
+        if (typeof(el.prop) === 'function') {
+            return Boolean(el.prop('checked'));
+        }
+        // else just say it's not checked
+        return false;
+    };
+
     return Util;
 });
 }(self));

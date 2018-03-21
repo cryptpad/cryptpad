@@ -45,6 +45,7 @@ define([
         FORGOTTEN: 'FORGOTTEN',
         DELETED: 'DELETED',
         INFINITE_SPINNER: 'INFINITE_SPINNER',
+        ERROR: 'ERROR',
         INITIALIZING: 'INITIALIZING',
         HISTORY_MODE: 'HISTORY_MODE',
         READY: 'READY'
@@ -118,9 +119,9 @@ define([
             return;
         };
 
-        var stateChange = function (newState) {
+        var stateChange = function (newState, text) {
             var wasEditable = (state === STATE.READY);
-            if (state === STATE.DELETED) { return; }
+            if (state === STATE.DELETED || state === STATE.ERROR) { return; }
             if (state === STATE.INFINITE_SPINNER && newState !== STATE.READY) { return; }
             if (newState === STATE.INFINITE_SPINNER || newState === STATE.DELETED) {
                 state = newState;
@@ -145,6 +146,14 @@ define([
                 }
                 case STATE.INFINITE_SPINNER: {
                     evStart.reg(function () { toolbar.failed(); });
+                    break;
+                }
+                case STATE.ERROR: {
+                    evStart.reg(function () {
+                        toolbar.errorState(true, text);
+                        var msg = Messages.chainpadError;
+                        UI.errorLoadingScreen(msg, true, true);
+                    });
                     break;
                 }
                 case STATE.FORGOTTEN: {
@@ -249,7 +258,12 @@ define([
             }
 
             var contentStr = JSONSortify(content);
-            cpNfInner.chainpad.contentUpdate(contentStr);
+            try {
+                cpNfInner.chainpad.contentUpdate(contentStr);
+            } catch (e) {
+                stateChange(STATE.ERROR, e.message);
+                console.error(e);
+            }
             if (cpNfInner.chainpad.getUserDoc() !== contentStr) {
                 console.error("realtime.getUserDoc() !== shjson");
             }
@@ -463,6 +477,7 @@ define([
             window.setInterval(function () {
                 if (state === STATE.DISCONNECTED) { return; }
                 if (state === STATE.DELETED) { return; }
+                if (state === STATE.ERROR) { return; }
                 var l;
                 try {
                     l = cpNfInner.chainpad.getLag();

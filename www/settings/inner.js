@@ -47,7 +47,8 @@ define([
             'cp-settings-logout-everywhere',
             'cp-settings-resettips',
             'cp-settings-thumbnails',
-            'cp-settings-userfeedback'
+            'cp-settings-userfeedback',
+            'cp-settings-delete'
         ],
         'creation': [
             'cp-settings-creation-owned',
@@ -314,6 +315,48 @@ define([
         if (privateData.feedbackAllowed) {
             $checkbox[0].checked = true;
         }
+        return $div;
+    };
+
+    create['delete'] = function () {
+        var $div = $('<div>', { 'class': 'cp-settings-delete cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_deleteTitle).appendTo($div);
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .append(Messages.settings_deleteHint).appendTo($div);
+
+        //var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $button = $('<button>', {'id': 'cp-settings-delete', 'class': 'btn btn-danger'})
+            .text(Messages.settings_deleteButton).appendTo($div);
+
+        $button.click(function () {
+            $spinner.show();
+            sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function (err, data) {
+                var msg = h('div.cp-app-settings-delete-alert', [
+                    h('p', Messages.settings_deleteModal),
+                    h('pre', JSON.stringify(data, 0, 2))
+                ]);
+                UI.alert(msg);
+                $spinner.hide();
+            });
+            // TODO
+            /*
+            UI.confirm("Are you sure?", function (yes) {
+                // Logout everywhere
+                // Disconnect other tabs
+                // Remove owned pads
+                // Remove owned drive
+                // Remove pinstore
+                // Alert: "Account deleted", press OK to be redirected to the home page
+                $spinner.hide();
+            });*/
+        });
+
+        $spinner.hide().appendTo($div);
+
         return $div;
     };
 

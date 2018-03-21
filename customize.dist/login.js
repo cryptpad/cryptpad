@@ -75,6 +75,7 @@ define([
             logLevel: 1,
             classic: true,
             ChainPad: ChainPad,
+            owners: [opt.edPublic]
         };
 
         var rt = opt.rt = Listmap.create(config);

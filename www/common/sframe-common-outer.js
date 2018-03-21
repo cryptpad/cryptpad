@@ -469,6 +469,35 @@ define([
                     cb(templates.length > 0);
                 });
             });
+            var getKey = function (href) {
+                var parsed = Utils.Hash.parsePadUrl(href);
+                return 'thumbnail-' + parsed.type + '-' + parsed.hashData.channel;
+            };
+            sframeChan.on('Q_CREATE_TEMPLATES', function (type, cb) {
+                Cryptpad.getSecureFilesList({
+                    types: [type],
+                    where: ['template']
+                }, function (err, data) {
+                    // NOTE: Never return data directly!
+                    if (err) { return void cb({error: err}); }
+
+                    var res = [];
+                    nThen(function (waitFor) {
+                        Object.keys(data).map(function (el) {
+                            var k = getKey(data[el].href);
+                            Utils.LocalStore.getThumbnail(k, waitFor(function (e, thumb) {
+                                res.push({
+                                    id: el,
+                                    name: data[el].filename || data[el].title || '?',
+                                    thumbnail: thumb
+                                });
+                            }));
+                        });
+                    }).nThen(function () {
+                        cb({data: res});
+                    });
+                });
+            });
 
             sframeChan.on('EV_GOTO_URL', function (url) {
                 if (url) {
@@ -584,7 +613,7 @@ define([
                 var replaceHash = function (hash) {
                     if (window.history && window.history.replaceState) {
                         if (!/^#/.test(hash)) { hash = '#' + hash; }
-                        void window.history.replaceState({}, window.document.title, hash);
+                        window.history.replaceState({}, window.document.title, hash);
                         if (typeof(window.onhashchange) === 'function') {
                             window.onhashchange();
                         }
@@ -646,19 +675,31 @@ define([
                 if (data.expire) {
                     rtConfig.expire = data.expire;
                 }
-                if (data.template) {
-                    // Pass rtConfig to useTemplate because Cryptput will create the file and
-                    // we need to have the owners and expiration time in the first line on the
-                    // server
-                    Cryptpad.useTemplate(data.template, Cryptget, function () {
-                        startRealtime();
-                        cb();
-                    }, rtConfig);
-                    return;
-                }
-                // Start realtime outside the iframe and callback
-                startRealtime(rtConfig);
-                cb();
+                nThen(function(waitFor) {
+                    if (data.templateId) {
+                        if (data.templateId === -1) {
+                            Cryptpad.setInitialPath(['template']);
+                            return;
+                        }
+                        Cryptpad.getPadData(data.templateId, waitFor(function (err, d) {
+                            data.template = d.href;
+                        }));
+                    }
+                }).nThen(function () {
+                    if (data.template) {
+                        // Pass rtConfig to useTemplate because Cryptput will create the file and
+                        // we need to have the owners and expiration time in the first line on the
+                        // server
+                        Cryptpad.useTemplate(data.template, Cryptget, function () {
+                            startRealtime();
+                            cb();
+                        }, rtConfig);
+                        return;
+                    }
+                    // Start realtime outside the iframe and callback
+                    startRealtime(rtConfig);
+                    cb();
+                });
             });
 
             sframeChan.ready();

@@ -97,6 +97,7 @@ define([
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
+    funcs.addThumbnail = Thumb.addThumbnail;
 
     // History
     funcs.getHistory = callWithCommon(History.create);
@@ -188,7 +189,6 @@ define([
                 return void funcs.createPad(c, waitFor());
             }
             // If we display the pad creation screen, it will handle deleted pads directly
-            console.log('here');
             funcs.getPadCreationScreen(c, waitFor());
         }
     };
@@ -196,7 +196,8 @@ define([
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
             expire: cfg.expire,
-            template: cfg.template
+            template: cfg.template,
+            templateId: cfg.templateId
         }, cb);
     };
 
