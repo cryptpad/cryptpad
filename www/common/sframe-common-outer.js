@@ -622,6 +622,7 @@ define([
                     window.location.hash = hash;
                 };
 
+                console.log(secret.channel);
                 var cpNfCfg = {
                     sframeChan: sframeChan,
                     channel: secret.channel,

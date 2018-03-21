@@ -28,7 +28,7 @@ define(function () {
 
     out.websocketError = 'Unable to connect to the websocket server...';
     out.typeError = "This pad is not compatible with the selected application";
-    out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
+    out.onLogout = 'You are logged out, {0}click here{1} to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
@@ -550,6 +550,8 @@ define(function () {
     out.settings_deleteHint = "Account deletion is permanent. Your CryptDrive and your list of pads will be deleted from the server. The rest of your pads will be deleted in 90 days if nobody else has stored them in their CryptDrive.";
     out.settings_deleteButton = "Delete your account";
     out.settings_deleteModal = "Share the following information with your CryptPad administrator in order to have your data removed from their server.";
+    out.settings_deleteConfirm = "Clicking OK will delete your account permanently. Are you sure?";
+    out.settings_deleted = "Your user account is now deleted. Press OK to go to the home page.";
 
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
     out.settings_publicSigningKey = "Public Signing Key";

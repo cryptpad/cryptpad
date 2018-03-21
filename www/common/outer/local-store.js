@@ -92,7 +92,7 @@ define([
         });
     };
     var logoutHandlers = [];
-    LocalStore.logout = function (cb) {
+    LocalStore.logout = function (cb, isDeletion) {
         [
             Constants.userNameKey,
             Constants.userHashKey,
@@ -112,9 +112,11 @@ define([
         }
         eraseTempSessionValues();
 
-        logoutHandlers.forEach(function (h) {
-            if (typeof (h) === "function") { h(); }
-        });
+        if (!isDeletion) {
+            logoutHandlers.forEach(function (h) {
+                if (typeof (h) === "function") { h(); }
+            });
+        }
 
         if (typeof(AppConfig.customizeLogout) === 'function') {
             return void AppConfig.customizeLogout(cb);

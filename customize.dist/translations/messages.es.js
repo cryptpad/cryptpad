@@ -152,7 +152,7 @@ define(function () {
 
     out.websocketError = "Error al conectarse al servidor WebSocket";
     out.typeError = "Este documento no es compatible con la aplicación seleccionada";
-    out.onLogout = "Tu sesión está cerrada, <a href=\"/\" target=\"_blank\">haz clic aquí</a> para iniciar sesión<br>o pulsa <em>Escape</em> para acceder al documento en modo sólo lectura.";
+    out.onLogout = "Tu sesión está cerrada, {0}haz clic aquí{1} para iniciar sesión<br>o pulsa <em>Escape</em> para acceder al documento en modo sólo lectura.";
     out.loading = "Cargando...";
     out.error = "Error";
     out.language = "Idioma";

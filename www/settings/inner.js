@@ -326,7 +326,7 @@ define([
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .append(Messages.settings_deleteHint).appendTo($div);
 
-        //var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
         var $button = $('<button>', {'id': 'cp-settings-delete', 'class': 'btn btn-danger'})
@@ -334,13 +334,26 @@ define([
 
         $button.click(function () {
             $spinner.show();
-            sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function (err, data) {
-                var msg = h('div.cp-app-settings-delete-alert', [
-                    h('p', Messages.settings_deleteModal),
-                    h('pre', JSON.stringify(data, 0, 2))
-                ]);
-                UI.alert(msg);
-                $spinner.hide();
+            UI.confirm(Messages.settings_deleteConfirm, function (yes) {
+                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function (err, data) {
+                    // Owned drive
+                    if (data.state === true) {
+                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function () {});
+                        UI.alert(Messages.settings_deleted, function () {
+                            common.gotoURL('/');
+                        });
+                        $ok.show();
+                        $spinner.hide();
+                        return;
+                    }
+                    // Not owned drive
+                    var msg = h('div.cp-app-settings-delete-alert', [
+                        h('p', Messages.settings_deleteModal),
+                        h('pre', JSON.stringify(data, 0, 2))
+                    ]);
+                    UI.alert(msg);
+                    $spinner.hide();
+                });
             });
             // TODO
             /*
@@ -356,6 +369,7 @@ define([
         });
 
         $spinner.hide().appendTo($div);
+        $ok.hide().appendTo($div);
 
         return $div;
     };

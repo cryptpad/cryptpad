@@ -31,7 +31,7 @@ define(function () {
 
     out.websocketError = '無法連結上 websocket 伺服器...';
     out.typeError = "這個編輯檔與所選的應用程式並不相容";
-    out.onLogout = '你已登出, <a href="/" target="_blank">點擊這裏</a> 來登入<br>或按<em>Escape</em> 來以唯讀模型使用你的編輯檔案';
+    out.onLogout = '你已登出, {0}點擊這裏{1} 來登入<br>或按<em>Escape</em> 來以唯讀模型使用你的編輯檔案';
     out.wrongApp = "無法在瀏覽器顯示即時期間的內容，請試著再重新載入本頁。";
 
     out.loading = "載入中...";

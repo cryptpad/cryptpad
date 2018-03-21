@@ -1481,7 +1481,7 @@ RPC.create = function (
             case 'REMOVE_PINS':
                 return void removePins(Env, safeKey, function (e, response) {
                     if (e) { return void Respond(e); }
-                    Respond(void 0, response);
+                    Respond(void 0, "OK");
                 });
             // restricted to privileged users...
             case 'UPLOAD':

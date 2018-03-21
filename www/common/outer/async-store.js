@@ -16,9 +16,11 @@ define([
     '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
+    '/bower_components/nthen/index.js',
+    '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
              CpNfWorker, NetConfig, AppConfig,
-             Crypto, ChainPad, Listmap) {
+             Crypto, ChainPad, Listmap, nThen, Saferphore) {
     var Store = {};
 
     var postMessage = function () {};
@@ -421,28 +423,78 @@ define([
         });
     };
 
+    var getOwnedPads = function () {
+        var list = [];
+        store.userObject.getFiles([store.userObject.FILES_DATA]).forEach(function (id) {
+            var data = store.userObject.getFileData(id);
+            var edPublic = store.proxy.edPublic;
+
+            // Push channels owned by someone else or channel that should have expired
+            // because of the expiration time
+            if (data.owners && data.owners.length === 1 && data.owners.indexOf(edPublic) !== -1) {
+                list.push(Hash.hrefToHexChannelId(data.href));
+            }
+        });
+        return list;
+    };
+    var removeOwnedPads = function (waitFor) {
+        // Delete owned pads
+        var ownedPads = getOwnedPads();
+        var sem = Saferphore.create(10);
+        ownedPads.forEach(function (c) {
+            var w = waitFor();
+            sem.take(function (give) {
+                Store.removeOwnedChannel(c, give(function (obj) {
+                    if (obj && obj.error) { console.error(obj.error); }
+                    w();
+                }));
+            });
+        });
+    };
+
     Store.deleteAccount = function (data, cb) {
-        var toSign = {
-            intent: 'Please delete my account.'
-        };
+        var edPublic = store.proxy.edPublic;
         var secret = Hash.getSecrets('drive', storeHash);
-        toSign.drive = secret.channel;
-        toSign.edPublic = store.proxy.edPublic;
-        var signKey = Crypto.Nacl.util.decodeBase64(secret.keys.signKey);
+        console.log(edPublic);
+        console.log(secret.channel);
         Store.anonRpcMsg({
             msg: 'GET_METADATA',
             data: secret.channel
         }, function (data) {
-            console.log(data[0]);
             var metadata = data[0];
             // Owned drive
             if (metadata && metadata.owners && metadata.owners.length === 1 &&
                 metadata.owners.indexOf(edPublic) !== -1) {
-                
+                nThen(function (waitFor) {
+                    var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
+                    store.proxy[Constants.tokenKey] = token;
+                    postMessage("DELETE_ACCOUNT", token, waitFor());
+                }).nThen(function (waitFor) {
+                    removeOwnedPads(waitFor);
+                }).nThen(function (waitFor) {
+                    // Delete Pin Store
+                    store.rpc.removePins(waitFor(function (err) {
+                        if (err) { console.error(err); }
+                    }));
+                }).nThen(function (waitFor) {
+                    // Delete Drive
+                    Store.removeOwnedChannel(secret.channel, waitFor());
+                }).nThen(function () {
+                    store.network.disconnect();
+                    cb({
+                        state: true
+                    });
+                });
                 return;
             }
 
             // Not owned drive
+            var toSign = {
+                intent: 'Please delete my account.'
+            };
+            toSign.drive = secret.channel;
+            toSign.edPublic = edPublic;
+            var signKey = Crypto.Nacl.util.decodeBase64(secret.keys.signKey);
             var proof = Crypto.Nacl.sign.detached(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)), signKey);
             var proofTxt = Crypto.Nacl.util.encodeBase64(proof);
             cb({
@@ -529,8 +581,12 @@ define([
 
     // Reset the drive part of the userObject (from settings)
     Store.resetDrive = function (data, cb) {
-        store.proxy.drive = store.fo.getStructure();
-        onSync(cb);
+        nThen(function (waitFor) {
+            removeOwnedPads(waitFor);
+        }).nThen(function (waitFor) {
+            store.proxy.drive = store.fo.getStructure();
+            onSync(cb);
+        });
     };
 
     /**

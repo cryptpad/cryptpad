@@ -397,19 +397,6 @@ define([
 
             UI.addTooltips();
 
-            ctx.sframeChan.on('EV_LOGOUT', function () {
-                $(window).on('keyup', function (e) {
-                    if (e.keyCode === 27) {
-                        UI.removeLoadingScreen();
-                    }
-                });
-                UI.addLoadingScreen({hideTips: true});
-                UI.errorLoadingScreen(Messages.onLogout, true);
-                logoutHandlers.forEach(function (h) {
-                    if (typeof (h) === "function") { h(); }
-                });
-            });
-
             ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
                 UI.confirm(confirmMsg, cb, null, true);
             });
@@ -425,6 +412,23 @@ define([
                 var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
+
+            ctx.sframeChan.on('EV_LOGOUT', function () {
+                $(window).on('keyup', function (e) {
+                    if (e.keyCode === 27) {
+                        UI.removeLoadingScreen();
+                    }
+                });
+                UI.addLoadingScreen({hideTips: true});
+                var origin = ctx.metadataMgr.getPrivateData().origin;
+                var href = origin + "/login/";
+                var onLogoutMsg = Messages._getKey('onLogout', ['<a href="' + href + '" target="_blank">', '</a>']);
+                UI.errorLoadingScreen(onLogoutMsg, true);
+                logoutHandlers.forEach(function (h) {
+                    if (typeof (h) === "function") { h(); }
+                });
+            });
+
             ctx.sframeChan.ready();
             cb(funcs);
         });

@@ -27,7 +27,7 @@ define(function () {
 
     out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
     out.typeError = "Ce pad n'est pas compatible avec l'application sélectionnée";
-    out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
+    out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, {0}cliquez ici{1} pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
     out.wrongApp = "Impossible d'afficher le contenu de ce document temps-réel dans votre navigateur. Vous pouvez essayer de recharger la page.";
     out.padNotPinned = 'Ce pad va expirer après 3 mois d\'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
     out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
@@ -546,6 +546,8 @@ define(function () {
     out.settings_deleteHint = "La suppression de votre compte utilisateur est permanente. Votre CryptDrive et votre liste de pads seront supprimés du serveur. Le reste de vos pads sera supprimé après 90 jours d'inactivité si personne ne les a stockés dans leur CryptDrive.";
     out.settings_deleteButton = "Supprimer votre compte";
     out.settings_deleteModal = "Veuillez envoyer les informations suivantes à votre administrateur CryptPad afin que vos données soient supprimées du serveur.";
+    out.settings_deleteConfirm = "Êtes-vous sûr de vouloir supprimer votre compte utilisateur ? Cette action est irréversible.";
+    out.settings_deleted = "Votre compte utilisateur a été supprimé. Appuyez sur OK pour être rédirigé(e) vers la page d'accueil.";
 
     out.settings_anonymous = "Vous n'êtes pas connecté. Ces préférences seront utilisées pour ce navigateur.";
     out.settings_publicSigningKey = "Clé publique de signature";

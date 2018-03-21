@@ -1148,7 +1148,7 @@ define([
         // so we can just use those and only check for errors
         var $container = $('<span>', {'class':'cp-limit-container'});
         var todo = function (err, data) {
-            if (err) { return void console.error(err); }
+            if (err || !data) { return void console.error(err || 'No data'); }
 
             var usage = data.usage;
             var limit = data.limit;

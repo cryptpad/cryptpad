@@ -622,6 +622,12 @@ define([
         window.location.href = '/login/';
     };
 
+    common.startAccountDeletion = function (cb) {
+        // Logout other tabs
+        LocalStore.logout(null, true);
+        cb();
+    };
+
     var onMessage = function (cmd, data, cb) {
         cb = cb || function () {};
         switch (cmd) {
@@ -701,6 +707,10 @@ define([
             case 'DRIVE_REMOVE': {
                 common.drive.onRemove.fire(data); break;
             }
+            // Account deletion
+            case 'DELETE_ACCOUNT': {
+                common.startAccountDeletion(cb); break;
+            }
         }
     };
 
@@ -779,11 +789,11 @@ define([
 
                 if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
-                if (cfg.userHash && sessionStorage) {
+                /*if (cfg.userHash && sessionStorage) {
                     // copy User_hash into sessionStorage because cross-domain iframes
                     // on safari replaces localStorage with sessionStorage or something
                     sessionStorage.setItem(Constants.userHashKey, cfg.userHash);
-                }
+                }*/
 
                 if (cfg.userHash) {
                     var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
