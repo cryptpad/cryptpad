@@ -93,6 +93,7 @@ define([
             getSecrets: getSecrets,
             noHash: true, // Don't add the hash in the URL if it doesn't already exist
             addRpc: addRpc,
+            owned: true
         });
     });
 });
