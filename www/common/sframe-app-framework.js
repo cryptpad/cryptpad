@@ -572,6 +572,9 @@ define([
                 toolbar.$rightside.append($templateButton);
             }
 
+            var $importTemplateButton = common.createButton('importtemplate', true, templateObj);
+            toolbar.$drawer.append($importTemplateButton);
+
             /* add a forget button */
             toolbar.$rightside.append(common.createButton('forget', true, {}, function (err) {
                 if (err) { return; }

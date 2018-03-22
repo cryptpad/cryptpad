@@ -482,13 +482,44 @@ define([
                     'class': 'fa fa-upload cp-toolbar-icon-import',
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
-                if (callback) {
+                /*if (data.types) {
+                    // New import button in the toolbar
+                    var importFunction = {
+                        template: function () {
+                            UIElements.openTemplatePicker(common, true);
+                        },
+                        file: function (cb) {
+                            importContent('text/plain', function (content, file) {
+                                cb(content, file);
+                            }, {accept: data ? data.accept : undefined})
+                        }
+                    };
+                    var toImport = [];
+                    Object.keys(data.types).forEach(function (importType) {
+                        if (!importFunction[importType] || !data.types[importType]) { return; }
+                        var option = h('button', importType);
+                        $(option).click(function () {
+                            importFunction[importType](data.types[importType]);
+                        });
+                        toImport.push(options);
+                    });
+
+                    button.click(common.prepareFeedback(type));
+
+                    if (toImport.length === 1) {
+                        button.click(function () { $(toImport[0]).click(); });
+                    } else {
+                        Cryptpad.alert(h('p.cp-import-container', toImport));
+                    }
+                }
+                else if (callback) {*/
+                    // Old import button, used in settings
                     button
                     .click(common.prepareFeedback(type))
                     .click(importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }, {accept: data ? data.accept : undefined}));
-                }
+                //}
                 break;
             case 'upload':
                 button = $('<button>', {
@@ -519,6 +550,16 @@ define([
                 });
                 if (data.accept) { $input.attr('accept', data.accept); }
                 button.click(function () { $input.click(); });
+                break;
+            case 'importtemplate':
+                button = $('<button>', {
+                    'class': 'fa fa-upload cp-toolbar-icon-import',
+                    title: Messages.template_import,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.template_import));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                });
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
@@ -1742,7 +1783,7 @@ define([
         sframeChan.event("EV_FILE_PICKER_OPEN", types);
     };
 
-    UIElements.openTemplatePicker = function (common) {
+    UIElements.openTemplatePicker = function (common, force) {
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
         var sframeChan = common.getSframeChannel();
@@ -1782,10 +1823,13 @@ define([
             if (data) {
                 common.openFilePicker(pickerCfg);
                 focus = document.activeElement;
+                if (force) { return void onConfirm(true); }
                 UI.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,
                     cancel: Messages.useTemplateCancel,
                 });
+            } else if (force) {
+                UI.alert(Messages.template_empty);
             }
         });
     };

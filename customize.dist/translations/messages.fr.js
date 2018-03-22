@@ -145,6 +145,8 @@ define(function () {
     out.useTemplate = "Commencer avec un modèle?";
     out.useTemplateOK = 'Choisir un modèle (Entrée)';
     out.useTemplateCancel = 'Document vierge (Échap)';
+    out.template_import = "Importer un modèle";
+    out.template_empty = "Aucun modèle disponible";
 
     out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
 

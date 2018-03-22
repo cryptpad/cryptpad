@@ -146,6 +146,8 @@ define(function () {
     out.useTemplate = "Start with a template?"; //Would you like to "You have available templates for this type of pad. Do you want to use one?";
     out.useTemplateOK = 'Pick a template (Enter)';
     out.useTemplateCancel = 'Start fresh (Esc)';
+    out.template_import = "Import a template";
+    out.template_empty = "No template available";
 
     out.previewButtonTitle = "Display or hide the Markdown preview mode";
 
