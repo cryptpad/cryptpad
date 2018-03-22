@@ -1422,50 +1422,51 @@ define([
                 tag: 'a',
                 attributes: {
                     'target': '_blank',
-                    'href': origin+'/drive/'
+                    'href': origin+'/drive/',
+                    'class': 'fa fa-hdd-o'
                 },
-                content: Messages.login_accessDrive
+                content: h('span', Messages.login_accessDrive)
             });
         }
         // Add the change display name button if not in read only mode
         if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': config.changeNameButtonCls},
-                content: Messages.user_rename
+                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
+                content: h('span', Messages.user_rename)
             });
         }
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile'},
-                content: Messages.profileButton
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
+                content: h('span', Messages.profileButton)
             });
         }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-settings'},
-                content: Messages.settingsButton
+                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog'},
+                content: h('span', Messages.settingsButton)
             });
         }
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-logout'},
-                content: Messages.logoutButton
+                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
+                content: h('span', Messages.logoutButton)
             });
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login'},
-                content: Messages.login_login
+                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
+                content: h('span', Messages.login_login)
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-register'},
-                content: Messages.login_register
+                attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
+                content: h('span', Messages.login_register)
             });
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
@@ -1521,9 +1522,8 @@ define([
                 UIElements.displayAvatar(Common, $avatar, url,
                         newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
-                    if ($img) {
-                        $userAdmin.find('> button').addClass('cp-avatar');
-                    }
+                    $userAdmin.find('> button').removeClass('cp-avatar');
+                    if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;
                 });
                 return;

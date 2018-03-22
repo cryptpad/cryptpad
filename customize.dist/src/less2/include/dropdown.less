@@ -55,9 +55,23 @@
                 user-select: none;
                 float: none;
                 text-align: left;
-                font: @dropdown_font;
                 line-height: 1em;
+                align-items: center;
 
+                &:not(.fa) {
+                    font: @dropdown_font;
+                }
+                &.fa {
+                    font-size: 18px;
+                    &::before {
+                        width: 40px;
+                        margin-left: -10px;
+                        text-align: center;
+                    }
+                    * {
+                        font: @dropdown_font;
+                    }
+                }
 
                 .fa {
                     width: 20px;
