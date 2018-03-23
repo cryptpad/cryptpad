@@ -643,10 +643,19 @@ define([
                         replaceHash(Utils.Hash.getEditHashFromKeys(wc, secret.keys));
                     }
                 };
-                Object.keys(rtConfig).forEach(function (k) {
-                    cpNfCfg[k] = rtConfig[k];
+
+                nThen(function (waitFor) {
+                    if (isNewFile && cfg.owned && !window.location.hash) {
+                        Cryptpad.getMetadata(waitFor(function (err, m) {
+                            cpNfCfg.owners = [m.priv.edPublic];
+                        }));
+                    }
+                }).nThen(function () {
+                    Object.keys(rtConfig).forEach(function (k) {
+                        cpNfCfg[k] = rtConfig[k];
+                    });
+                    CpNfOuter.start(cpNfCfg);
                 });
-                CpNfOuter.start(cpNfCfg);
             };
 
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {

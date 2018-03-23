@@ -92,16 +92,25 @@ define([
             ]);
         }
 
+        var button = h('button.navbar-toggler', {
+            'type':'button',
+            /*'data-toggle':'collapse',
+            'data-target':'#menuCollapse',
+            'aria-controls': 'menuCollapse',
+            'aria-expanded':'false',
+            'aria-label':'Toggle navigation'*/
+        }, h('i.fa.fa-bars '));
+
+        $(button).click(function () {
+            if ($('#menuCollapse').is(':visible')) {
+                return void $('#menuCollapse').slideUp();
+            }
+            $('#menuCollapse').slideDown();
+        });
+
         return h('nav.navbar.navbar-expand-lg',
             h('a.navbar-brand', { href: '/index.html'}),
-            h('button.navbar-toggler', {
-                'type':'button',
-                'data-toggle':'collapse',
-                'data-target':'#menuCollapse',
-                'aria-controls': 'menuCollapse',
-                'aria-expanded':'false',
-                'aria-label':'Toggle navigation'
-            }, h('i.fa.fa-bars ')),
+            button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
                 h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),

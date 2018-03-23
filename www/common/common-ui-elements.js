@@ -482,13 +482,44 @@ define([
                     'class': 'fa fa-upload cp-toolbar-icon-import',
                     title: Messages.importButtonTitle,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.importButton));
-                if (callback) {
+                /*if (data.types) {
+                    // New import button in the toolbar
+                    var importFunction = {
+                        template: function () {
+                            UIElements.openTemplatePicker(common, true);
+                        },
+                        file: function (cb) {
+                            importContent('text/plain', function (content, file) {
+                                cb(content, file);
+                            }, {accept: data ? data.accept : undefined})
+                        }
+                    };
+                    var toImport = [];
+                    Object.keys(data.types).forEach(function (importType) {
+                        if (!importFunction[importType] || !data.types[importType]) { return; }
+                        var option = h('button', importType);
+                        $(option).click(function () {
+                            importFunction[importType](data.types[importType]);
+                        });
+                        toImport.push(options);
+                    });
+
+                    button.click(common.prepareFeedback(type));
+
+                    if (toImport.length === 1) {
+                        button.click(function () { $(toImport[0]).click(); });
+                    } else {
+                        Cryptpad.alert(h('p.cp-import-container', toImport));
+                    }
+                }
+                else if (callback) {*/
+                    // Old import button, used in settings
                     button
                     .click(common.prepareFeedback(type))
                     .click(importContent('text/plain', function (content, file) {
                         callback(content, file);
                     }, {accept: data ? data.accept : undefined}));
-                }
+                //}
                 break;
             case 'upload':
                 button = $('<button>', {
@@ -519,6 +550,17 @@ define([
                 });
                 if (data.accept) { $input.attr('accept', data.accept); }
                 button.click(function () { $input.click(); });
+                break;
+            case 'importtemplate':
+                button = $('<button>', {
+                    'class': 'fa fa-upload cp-toolbar-icon-import',
+                    title: Messages.template_import,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.template_import));
+                button
+                .click(common.prepareFeedback(type))
+                .click(function () {
+                    UIElements.openTemplatePicker(common, true);
+                });
                 break;
             case 'template':
                 if (!AppConfig.enableTemplates) { return; }
@@ -584,7 +626,8 @@ define([
                         sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
                             if (err) { return void callback(err); }
                             var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                            UI.alert(cMsg, undefined, true);
+                            var msg = common.fixLinks($('<div>').html(cMsg));
+                            UI.alert(msg);
                             callback();
                             return;
                         });
@@ -920,18 +963,7 @@ define([
             h('ul', elements)
         ]);
 
-        var origin = common.getMetadataMgr().getPrivateData().origin || '';
-        $(text).find('a').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var href = $(this).attr('href');
-            var absolute = /^https?:\/\//i;
-            if (!absolute.test(href)) {
-                if (href.slice(0,1) !== '/') { href = '/' + href; }
-                href = origin + href;
-            }
-            common.openUnsafeURL(href);
-        });
+        common.fixLinks(text);
 
         var closeButton = h('span.cp-help-close.fa.fa-window-close');
         var $toolbarButton = common.createButton('', true, {
@@ -1422,50 +1454,51 @@ define([
                 tag: 'a',
                 attributes: {
                     'target': '_blank',
-                    'href': origin+'/drive/'
+                    'href': origin+'/drive/',
+                    'class': 'fa fa-hdd-o'
                 },
-                content: Messages.login_accessDrive
+                content: h('span', Messages.login_accessDrive)
             });
         }
         // Add the change display name button if not in read only mode
         if (config.changeNameButtonCls && config.displayChangeName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': config.changeNameButtonCls},
-                content: Messages.user_rename
+                attributes: {'class': config.changeNameButtonCls + ' fa fa-user'},
+                content: h('span', Messages.user_rename)
             });
         }
         if (accountName && !AppConfig.disableProfile) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-profile'},
-                content: Messages.profileButton
+                attributes: {'class': 'cp-toolbar-menu-profile fa fa-user-circle'},
+                content: h('span', Messages.profileButton)
             });
         }
         if (padType !== 'settings') {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-settings'},
-                content: Messages.settingsButton
+                attributes: {'class': 'cp-toolbar-menu-settings fa fa-cog'},
+                content: h('span', Messages.settingsButton)
             });
         }
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-logout'},
-                content: Messages.logoutButton
+                attributes: {'class': 'cp-toolbar-menu-logout fa fa-sign-out'},
+                content: h('span', Messages.logoutButton)
             });
         } else {
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-login'},
-                content: Messages.login_login
+                attributes: {'class': 'cp-toolbar-menu-login fa fa-sign-in'},
+                content: h('span', Messages.login_login)
             });
             options.push({
                 tag: 'a',
-                attributes: {'class': 'cp-toolbar-menu-register'},
-                content: Messages.login_register
+                attributes: {'class': 'cp-toolbar-menu-register fa fa-user-plus'},
+                content: h('span', Messages.login_register)
             });
         }
         var $icon = $('<span>', {'class': 'fa fa-user-secret'});
@@ -1521,9 +1554,8 @@ define([
                 UIElements.displayAvatar(Common, $avatar, url,
                         newName || Messages.anonymous, function ($img) {
                     oldUrl = url;
-                    if ($img) {
-                        $userAdmin.find('> button').addClass('cp-avatar');
-                    }
+                    $userAdmin.find('> button').removeClass('cp-avatar');
+                    if ($img) { $userAdmin.find('> button').addClass('cp-avatar'); }
                     loadingAvatar = false;
                 });
                 return;
@@ -1742,7 +1774,7 @@ define([
         sframeChan.event("EV_FILE_PICKER_OPEN", types);
     };
 
-    UIElements.openTemplatePicker = function (common) {
+    UIElements.openTemplatePicker = function (common, force) {
         var metadataMgr = common.getMetadataMgr();
         var type = metadataMgr.getMetadataLazy().type;
         var sframeChan = common.getSframeChannel();
@@ -1782,10 +1814,13 @@ define([
             if (data) {
                 common.openFilePicker(pickerCfg);
                 focus = document.activeElement;
+                if (force) { return void onConfirm(true); }
                 UI.confirm(Messages.useTemplate, onConfirm, {
                     ok: Messages.useTemplateOK,
                     cancel: Messages.useTemplateCancel,
                 });
+            } else if (force) {
+                UI.alert(Messages.template_empty);
             }
         });
     };

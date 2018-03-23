@@ -145,6 +145,8 @@ define(function () {
     out.useTemplate = "Commencer avec un modèle?";
     out.useTemplateOK = 'Choisir un modèle (Entrée)';
     out.useTemplateCancel = 'Document vierge (Échap)';
+    out.template_import = "Importer un modèle";
+    out.template_empty = "Aucun modèle disponible";
 
     out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
 
@@ -611,9 +613,6 @@ define(function () {
     out.pad_showToolbar = "Afficher la barre d'outils";
     out.pad_hideToolbar = "Cacher la barre d'outils";
 
-    // general warnings
-    out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
-
     // markdown toolbar
     out.mdToolbar_button = "Afficher ou cacher la barre d'outils Markdown";
     out.mdToolbar_defaultText = "Votre texte ici";
@@ -952,8 +951,6 @@ define(function () {
 
     // Header.html
 
-    out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" alt="amour" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
-    out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Retourner vers votre CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
     out.header_homeTitle = "Aller sur la page d'accueil";

@@ -46,6 +46,7 @@ define([
         SFCommonO.start({
             getSecrets: getSecrets,
             noHash: true,
+            owned: true
         });
     });
 });
