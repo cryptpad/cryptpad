@@ -343,6 +343,27 @@ define([
         window.open(bounceHref);
     };
 
+    funcs.fixLinks = function (domElement) {
+        var origin = ctx.metadataMgr.getPrivateData().origin;
+        $(domElement).find('a[target="_blank"]').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var href = $(this).attr('href');
+            var absolute = /^https?:\/\//i;
+            if (!absolute.test(href)) {
+                if (href.slice(0,1) !== '/') { href = '/' + href; }
+                href = origin + href;
+            }
+            funcs.openUnsafeURL(href);
+        });
+        $(domElement).find('a[target!="_blank"]').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            funcs.gotoURL($(this).attr('href'));
+        });
+        return $(domElement)[0];
+    };
+
     funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
     var logoutHandlers = [];

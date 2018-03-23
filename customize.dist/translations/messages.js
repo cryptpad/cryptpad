@@ -617,9 +617,6 @@ define(function () {
     out.pad_showToolbar = "Show toolbar";
     out.pad_hideToolbar = "Hide toolbar";
 
-    // general warnings
-    out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
-
     // markdown toolbar
     out.mdToolbar_button = "Show or hide the Markdown toolbar";
     out.mdToolbar_defaultText = "Your text here";
@@ -998,9 +995,6 @@ define(function () {
 
     // Header.html
 
-    out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">With <img class="bottom-bar-heart" src="/customize/heart.png" alt="love" /> from <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="France"/> by <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
-
-    out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Go to your CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
     out.header_homeTitle = 'Go to CryptPad homepage';

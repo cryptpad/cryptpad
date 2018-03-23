@@ -370,7 +370,8 @@ define([
             currentPath = [FILES_DATA];
             $tree.hide();
             if (Object.keys(files.root).length && !proxy.anonymousAlert) {
-                UI.alert(Messages.fm_alert_anonymous, null, true);
+                var msg = common.fixLinks($('<div>').html(Messages.fm_alert_anonymous));
+                UI.alert(msg);
                 proxy.anonymousAlert = true;
             }
         }
@@ -1516,13 +1517,7 @@ define([
             }
             if (!APP.loggedIn) {
                 msg = Messages.fm_info_anonymous;
-                $box.html(msg);
-                $box.find('a[target!="_blank"]').click(function (e) {
-                    e.preventDefault();
-                    var href = $(this).attr('href');
-                    common.gotoURL(href);
-                });
-                return $box;
+                return $(common.fixLinks($box.html(msg)));
             }
             if (!msg || APP.store['hide-info-' + path[0]] === '1') {
                 $box.hide();

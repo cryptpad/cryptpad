@@ -626,7 +626,8 @@ define([
                         sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
                             if (err) { return void callback(err); }
                             var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                            UI.alert(cMsg, undefined, true);
+                            var msg = common.fixLinks($('<div>').html(cMsg));
+                            UI.alert(msg);
                             callback();
                             return;
                         });
@@ -962,18 +963,7 @@ define([
             h('ul', elements)
         ]);
 
-        var origin = common.getMetadataMgr().getPrivateData().origin || '';
-        $(text).find('a').click(function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var href = $(this).attr('href');
-            var absolute = /^https?:\/\//i;
-            if (!absolute.test(href)) {
-                if (href.slice(0,1) !== '/') { href = '/' + href; }
-                href = origin + href;
-            }
-            common.openUnsafeURL(href);
-        });
+        common.fixLinks(text);
 
         var closeButton = h('span.cp-help-close.fa.fa-window-close');
         var $toolbarButton = common.createButton('', true, {
