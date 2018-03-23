@@ -559,6 +559,7 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function () {
+                    UIElements.openTemplatePicker(common, true);
                 });
                 break;
             case 'template':
