@@ -2,7 +2,7 @@ define([
     '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function () {
     var Nacl = window.nacl;
-    var PARANOIA = true;
+    //var PARANOIA = true;
 
     var plainChunkLength = 128 * 1024;
     var cypherChunkLength = 131088;
@@ -36,24 +36,11 @@ define([
     var increment = function (N) {
         var l = N.length;
         while (l-- > 1) {
-            if (PARANOIA) {
-                if (typeof(N[l]) !== 'number') {
-                    throw new Error('E_UNSAFE_TYPE');
-                }
-                if (N[l] > 255) {
-                    throw new Error('E_OUT_OF_BOUNDS');
-                }
-            }
         /*  jshint probably suspects this is unsafe because we lack types
             but as long as this is only used on nonces, it should be safe  */
             if (N[l] !== 255) { return void N[l]++; } // jshint ignore:line
+            if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
             N[l] = 0;
-
-            // you don't need to worry about this running out.
-            // you'd need a REAAAALLY big file
-            if (l === 0) {
-                throw new Error('E_NONCE_TOO_LARGE');
-            }
         }
     };
 
@@ -160,19 +147,21 @@ define([
         }
 
         var takeChunk = function (cb) {
-            var start = i * cypherChunkLength + 2 + metadataLength;
-            var end = start + cypherChunkLength;
-            i++;
-            var box = new Uint8Array(u8.subarray(start, end));
+            setTimeout(function () {
+                var start = i * cypherChunkLength + 2 + metadataLength;
+                var end = start + cypherChunkLength;
+                i++;
+                var box = new Uint8Array(u8.subarray(start, end));
 
-            // decrypt the chunk
-            var plaintext = Nacl.secretbox.open(box, nonce, key);
-            increment(nonce);
+                // decrypt the chunk
+                var plaintext = Nacl.secretbox.open(box, nonce, key);
+                increment(nonce);
 
-            if (!plaintext) { return cb('DECRYPTION_ERROR'); }
+                if (!plaintext) { return cb('DECRYPTION_ERROR'); }
 
-            _progress(end);
-            cb(void 0, plaintext);
+                _progress(end);
+                cb(void 0, plaintext);
+            });
         };
 
         var chunks = [];
@@ -219,7 +208,7 @@ define([
 
         var state = 0;
         var next = function (cb) {
-            if (state === 2) { return void cb(); }
+            if (state === 2) { return void setTimeout(cb); }
 
             var start;
             var end;
@@ -238,7 +227,9 @@ define([
                     .concat(slice(box)));
                 state++;
 
-                return void cb(void 0, prefixed);
+                return void setTimeout(function () {
+                    cb(void 0, prefixed);
+                });
             }
 
             // encrypt the rest of the file...
@@ -253,7 +244,9 @@ define([
             // regular data is done
             if (i * plainChunkLength >= u8.length) { state = 2; }
 
-            return void cb(void 0, box);
+            setTimeout(function () {
+                cb(void 0, box);
+            });
         };
 
         return next;
