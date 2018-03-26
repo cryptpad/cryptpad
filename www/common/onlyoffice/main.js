@@ -36,8 +36,12 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
+        var addData = function (obj) {
+            obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
+        };
         SFCommonO.start({
-            type: 'oo'
+            type: 'oo',
+            addData: addData
         });
     });
 });
