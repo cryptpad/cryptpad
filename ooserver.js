@@ -69,15 +69,15 @@ module.exports.install = function(server, port, callbackFunction) {
                 if (data.type !== 'auth') { return; }
                 console.log("Response auth");
 
-                var fileUrl = origin + "oodoc/test.bin";
+                var fileUrl = data.openCmd.url;//origin + "oodoc/test.bin";
 
-                if (data.openCmd) {
+                /*if (data.openCmd) {
                     if (data.openCmd.format === "xlsx") {
                         fileUrl = origin + "oocell/test.bin";
                     } else if (data.openCmd.format === "pptx") {
                         fileUrl = origin + "ooslide/test.bin";
                     }
-                }
+                }*/
                 sendData(conn, {"type":"auth","result":1,"sessionId":"08e77705-dc5c-477d-b73a-b1a7cbca1e9b","sessionTimeConnect":1494226099270,"participants":[]});
                 sendData(conn, {"type":"documentOpen","data":{"type":"open","status":"ok","data":{"Editor.bin":fileUrl}}});
             } catch (e) {
