@@ -118,13 +118,14 @@ define([
                     },
                     "onReady": function(/*evt*/) { console.log("in onReady"); },
                     "onAppReady": function(/*evt*/) { console.log("in onAppReady"); },
+                    "onDownloadAs": function (evt) { console.log("in onDownloadAs", evt); }
                 }
             };
             window.onbeforeunload = function () {
                 var ifr = document.getElementsByTagName('iframe')[0];
                 if (ifr) { ifr.remove(); }
             };
-            APP.docEditor = new DocsAPI.DocEditor("cp-app-oo-placeholder", window.config);
+            APP.docEditor = new DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
         };
 
         var readOnly = false;
