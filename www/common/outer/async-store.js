@@ -75,13 +75,19 @@ define([
         // not pin these pads)
         var files = store.userObject.getFiles([store.userObject.FILES_DATA]);
         var edPublic = store.proxy.edPublic;
+        var toConcat = [];
         var list = files.map(function (id) {
                 var d = store.userObject.getFileData(id);
                 if (d.owners && d.owners.length && edPublic &&
                     d.owners.indexOf(edPublic) === -1) { return; }
+                if (d.lastVersion) { toConcat.push(Hash.hrefToHexChannelId(d.lastVersion)); }
                 return Hash.hrefToHexChannelId(d.href);
             })
             .filter(function (x) { return x; });
+
+        // Non-destructive concat
+        console.log(toConcat);
+        Array.prototype.push.apply(list, toConcat);
 
         // Get the avatar
         var profile = store.proxy.profile;

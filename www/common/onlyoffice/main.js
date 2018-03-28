@@ -39,9 +39,19 @@ define([
         var addData = function (obj) {
             obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
         };
+        var addRpc = function (sframeChan, Cryptpad, Utils) {
+            sframeChan.on('Q_OO_SAVE', function (data, cb) {
+                var chanId = Utils.Hash.hrefToHexChannelId(data.url);
+                Cryptpad.pinPads([chanId], function (e) {
+                    if (e) { return void cb(e); }
+                    Cryptpad.setPadAttribute('lastVersion', data.url, cb);
+                });
+            });
+        };
         SFCommonO.start({
             type: 'oo',
-            addData: addData
+            addData: addData,
+            addRpc: addRpc
         });
     });
 });

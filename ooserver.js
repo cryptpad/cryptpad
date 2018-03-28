@@ -66,6 +66,12 @@ module.exports.install = function(server, port, callbackFunction) {
                 console.log("Received: " + message);
                 data = JSON.parse(message);
 
+                if (data.type === "isSaveLock") {
+                    //return void sendData(conn, {type: "saveLock", saveLock: false});
+                }
+                if (data.type === "saveChanges") {
+                    //return void sendData(conn, {type: 'savePartChanges', changesIndex: 0});
+                }
                 if (data.type !== 'auth') { return; }
                 console.log("Response auth");
 

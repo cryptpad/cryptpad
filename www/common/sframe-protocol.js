@@ -227,4 +227,7 @@ define({
     // This is for sending data out of the iframe when we are in testing mode
     // The exact protocol is defined in common/test.js
     'EV_TESTDATA': true,
+
+    // OnlyOffice: save a new version
+    'Q_OO_SAVE': true,
 });
