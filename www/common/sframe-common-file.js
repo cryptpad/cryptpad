@@ -115,7 +115,9 @@ define([
                         window.open(origin + $link.attr('href'), '_blank');
                     });
                 var title = metadata.name;
-                UI.log(Messages._getKey('upload_success', [title]));
+                if (!config.noStore) {
+                    UI.log(Messages._getKey('upload_success', [title]));
+                }
                 common.prepareFeedback('upload')();
 
                 if (config.onUploaded) {

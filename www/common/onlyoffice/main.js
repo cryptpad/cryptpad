@@ -42,6 +42,12 @@ define([
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('Q_OO_SAVE', function (data, cb) {
                 var chanId = Utils.Hash.hrefToHexChannelId(data.url);
+                Cryptpad.getPadAttribute('lastVersion', function (err, data) {
+                    if (data) {
+                        var oldChanId = Utils.Hash.hrefToHexChannelId(data);
+                        if (oldChanId !== chanId) { Cryptpad.unpinPads([oldChanId], function () {}); }
+                    }
+                });
                 Cryptpad.pinPads([chanId], function (e) {
                     if (e) { return void cb(e); }
                     Cryptpad.setPadAttribute('lastVersion', data.url, cb);

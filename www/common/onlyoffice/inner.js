@@ -131,8 +131,6 @@ define([
             noStore: true,
             body: $('body'),
             onUploaded: function (ev, data) {
-                console.log('uploaded');
-                console.log(data);
                 if (!data || !data.url) { return; }
                 common.getSframeChannel().query('Q_OO_SAVE', data, function (err) {
                     if (err) {
