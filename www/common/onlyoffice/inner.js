@@ -310,7 +310,7 @@ define([
             var userDoc = APP.realtime.getUserDoc();
             console.log(userDoc);
             var isNew = false;
-            var newDoc = '';
+            var newDoc = true;
             if (userDoc === "" || userDoc === "{}") { isNew = true; }
 
             if (userDoc !== "") {
