@@ -8,6 +8,7 @@ define(function () {
     out.type.pad = 'Rich text';
     out.type.code = 'Code';
     out.type.poll = 'Poll';
+    out.type.kanban = 'Kanban';
     out.type.slide = 'Presentation';
     out.type.drive = 'CryptDrive';
     out.type.whiteboard = 'Whiteboard';
@@ -21,6 +22,7 @@ define(function () {
     out.button_newpoll = 'New Poll';
     out.button_newslide = 'New Presentation';
     out.button_newwhiteboard = 'New Whiteboard';
+    out.button_newkanban = 'New Kanban';
 
     // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
@@ -244,6 +246,9 @@ define(function () {
     out.pad_mediatagTitle = "Media-Tag settings";
     out.pad_mediatagWidth = "Width (px)";
     out.pad_mediatagHeight = "Height (px)";
+
+    // Kanban
+    out.kanban_title = "Kanban";
 
     // Polls
 

@@ -56,6 +56,7 @@ define([
                         footLink('/code/', 'main_code'),
                         footLink('/slide/', 'main_slide'),
                         footLink('/poll/', 'main_poll'),
+                        footLink('/kanban/', 'main_kanban'),
                         footLink('/whiteboard/', null, Msg.type.whiteboard)
                     ]),
                     footerCol('footer_aboutUs', [
@@ -557,6 +558,7 @@ define([
                 [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
                 [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
                 [ 'poll', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
+                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'fa-calendar' ],
                 [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
                 [ 'recent', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
             ].filter(function (x) {
@@ -881,6 +883,13 @@ define([
                     ])
                 ])
             ])
+        ];
+    };
+
+    Pages['/kanban/'] = Pages['/kanban/index.html'] = function () {
+        return [
+            appToolbar(),
+            h('div#cp-app-kanban-content', [])
         ];
     };
 
