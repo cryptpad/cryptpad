@@ -886,12 +886,5 @@ define([
         ];
     };
 
-    Pages['/kanban/'] = Pages['/kanban/index.html'] = function () {
-        return [
-            appToolbar(),
-            h('div#cp-app-kanban-content', [])
-        ];
-    };
-
     return Pages;
 });

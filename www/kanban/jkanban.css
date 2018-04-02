@@ -1,4 +1,3 @@
-
 .kanban-container-outer {
     position: relative;
     box-sizing: border-box;
@@ -30,7 +29,7 @@
     vertical-align: top;
 }
 
-.kanban-board.disabled-board{
+.kanban-board.disabled-board {
     opacity: .3;
 }
 
@@ -92,37 +91,52 @@
     height: auto !important;
 }
 
-.kanban-header-yellow { background: #FC3; }
-.kanban-header-orange { background: #F91; }
-.kanban-header-blue   { background: #0AC; }
-.kanban-header-red    { background: #E43; }
-.kanban-header-green  { background: #8C4; }
+.kanban-header-yellow {
+    background: #FC3;
+}
+
+.kanban-header-orange {
+    background: #F91;
+}
+
+.kanban-header-blue {
+    background: #0AC;
+}
+
+.kanban-header-red {
+    background: #E43;
+}
+
+.kanban-header-green {
+    background: #8C4;
+}
 
 #kanban-addboard {
-  float: left;
-  margin: 30px;
-  margin-right: 10px;
-  padding: 5px;
-  padding-top: 3;
-  padding-bottom: 3px;
-  border: 1px solid;
-  width: 30px;
-  text-align: center;
-  background: #d4d4e8;
-  font-weight: bold;
+    float: left;
+    margin: 30px;
+    margin-right: 10px;
+    padding: 5px;
+    padding-top: 3;
+    padding-bottom: 3px;
+    border: 1px solid;
+    width: 30px;
+    text-align: center;
+    background: #d4d4e8;
+    font-weight: bold;
 }
 
 .kanban-removeboard {
-  float: right;
-  margin: 10px;
-  padding: 3px;
-  width: 30px;
-  text-align: center;
-  background: #eee;
-  font-weight: bold;
+    float: right;
+    margin: 10px;
+    padding: 3px;
+    width: 30px;
+    text-align: center;
+    background: #eee;
+    font-weight: bold;
 }
 
 /* Dragula CSS  */
+
 .gu-mirror {
     position: fixed !important;
     margin: 0 !important;
