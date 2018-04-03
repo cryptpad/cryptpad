@@ -48,26 +48,29 @@ define([
     var toolbar;
 
     var andThen = function (common) {
+        var readOnly = false;
+        var locked = false;
         var config = {};
         var hashes = [];
 
         var getFileType = function () {
             var type = common.getMetadataMgr().getPrivateData().ooType;
+            var title = common.getMetadataMgr().getMetadataLazy().title;
             var file = {};
             switch(type) {
                 case 'oodoc':
                     file.type = 'docx';
-                    file.title = 'test.docx';
+                    file.title = title + '.docx' || 'document.docx';
                     file.doc = 'text';
                     break;
                 case 'oocell':
                     file.type = 'xlsx';
-                    file.title = 'test.xlsx';
+                    file.title = title + '.xlsx' || 'spreadsheet.xlsx';
                     file.doc = 'spreadsheet';
                     break;
                 case 'ooslide':
                     file.type = 'pptx';
-                    file.title = 'test.pptx';
+                    file.title = titl + '.pptx' || 'presentation.pptx';
                     file.doc = 'presentation';
                     break;
             }
@@ -77,12 +80,19 @@ define([
         var startOO = function (blob, file) {
             if (APP.ooconfig) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
+            var lock = locked !== common.getMetadataMgr().getNetfluxId();
+
+            // Config
             APP.ooconfig = {
                 "document": {
                     "fileType": file.type,
                     "key": "fresh",
                     "title": file.title,
-                    "url": url
+                    "url": url,
+                    "permissions": {
+                        "download": false, // FIXME: download/export is not working, so we use false
+                                           // to remove the button
+                    }
                 },
                 "documentType": file.doc,
                 "editorConfig": {
@@ -95,7 +105,8 @@ define([
                     "user": {
                         "id": "", //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
                         "name": "", //"John Smith"
-                    }
+                    },
+                    "mode": readOnly || lock ? "view" : "edit"
                 },
                 "events": {
                     "onDocumentStateChange": function (evt) {
@@ -105,7 +116,19 @@ define([
                         }
                         console.log("in change (remote)");
                     },
-                    "onReady": function(/*evt*/) { console.log("in onReady"); },
+                    "onReady": function(/*evt*/) {
+                        var $tb = $('iframe[name="frameEditor"]').contents().find('head');
+                        var css = '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
+                                  '#fm-btn-save { display: none !important; }' +
+                                  '#header { display: none !important; }';
+                        $('<style>').text(css).appendTo($tb);
+                        console.log($('iframe[name="frameEditor"]'));
+                        console.log($tb);
+                        return;
+                        $tb.find('> .toolbar-group:visible').first().hide();
+                        $tb.find('> .separator').first().hide();
+                        console.log($tb.find('> .toolbar-group:visible'));
+                    },
                     "onAppReady": function(/*evt*/) { console.log("in onAppReady"); },
                     "onDownloadAs": function (evt) { console.log("in onDownloadAs", evt); }
                 }
@@ -179,12 +202,6 @@ define([
                 }
             };
             xhr.send(null);
-            /** TODO
-             * get hashes
-             * setPadAttribute the latest version + unpin/pin if necessary
-             * download & decrypt
-             * load OO
-             */
         };
         var loadDocument = function (newPad) {
             var type = common.getMetadataMgr().getPrivateData().ooType;
@@ -211,7 +228,6 @@ define([
             startOO(blob, file);
         };
 
-        var readOnly = false;
         var initializing = true;
         var $bar = $('#cp-toolbar');
         var Title;
@@ -219,7 +235,6 @@ define([
         var metadataMgr = common.getMetadataMgr();
 
         config = {
-            readOnly: readOnly,
             patchTransformer: ChainPad.NaiveJSONTransformer,
             // cryptpad debug logging (default is 1)
             // logLevel: 0,
@@ -240,7 +255,10 @@ define([
 
         var stringifyInner = function () {
             var obj = {
-                content: hashes || [],
+                content: {
+                    hashes: hashes || [],
+                    locked: locked
+                },
                 metadata: metadataMgr.getMetadataLazy()
             };
             // stringify the json and send it into chainpad
@@ -324,10 +342,26 @@ define([
                     UI.errorLoadingScreen(errorText);
                     throw new Error(errorText);
                 }
-                hashes = hjson.content;
+                hashes = hjson.content && hjson.content.hashes;
+                locked = hjson.content && hjson.content.locked;
                 newDoc = !hashes || hashes.length === 0;
             } else {
                 Title.updateTitle(Title.defaultTitle);
+            }
+
+            if (!readOnly) {
+                // Check if the editor has left
+                var me = common.getMetadataMgr().getNetfluxId();
+                var members = common.getMetadataMgr().getChannelMembers();
+                if (locked) {
+                    if (members.indexOf(locked) === -1) {
+                        locked = me;
+                        APP.onLocal();
+                    }
+                } else {
+                    locked = me;
+                    APP.onLocal();
+                }
             }
 
             loadDocument(newDoc);
@@ -337,12 +371,25 @@ define([
             UI.removeLoadingScreen();
         };
 
+        var reloadDisplayed = false;
         config.onRemote = function () {
             if (initializing) { return; }
             var userDoc = APP.realtime.getUserDoc();
             var json = JSON.parse(userDoc);
             if (json.metadata) {
                 metadataMgr.updateMetadata(json.metadata);
+            }
+            var newHashes = (json.content && json.content.hashes) || [];
+            if (newHashes.length !== hashes.length ||
+                stringify(newHashes) !== stringify(hashes)) {
+                hashes = newHashes;
+                if (reloadDisplayed) { return; }
+                reloadDisplayed = true;
+                UI.confirm('TODO new version available. Press OK to reload.', function (yes) {
+                    reloadDisplayed = false;
+                    if (!yes) { return; }
+                    common.gotoURL();
+                }); // XXX
             }
         };
 

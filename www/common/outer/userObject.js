@@ -115,6 +115,7 @@ define([
                             }
                         });
                     }
+                    if (fd.lastVersion) { toClean.push(Hash.hrefToHexChannelId(fd.lastVersion)); }
                     if (channelId) { toClean.push(channelId); }
                     spliceFileData(id);
                 }

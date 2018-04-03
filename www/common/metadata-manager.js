@@ -154,6 +154,7 @@ define(['json.sortify'], function (Sortify) {
                 var list = members.slice().filter(function (m) { return m.length === 32; });
                 return list.length - Object.keys(metadataObj.users).length;
             },
+            getChannelMembers: function () { return members.slice(); },
             getPrivateData : function () {
                 return priv;
             },
