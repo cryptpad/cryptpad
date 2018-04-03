@@ -319,6 +319,9 @@ define(function () {
     // OnlyOffice
     out.oo_saveError = "Une erreur s'est produite lors de la sauvegarde de vos modifications. Merci de réessayer dans quelques instants.";
     out.oo_newVersion = "Une nouvelle version du document est disponible. Cliquez sur OK pour l'ouvrir.";
+    out.oo_locked = "Ce document est actuellement verrouillé. ";
+    out.oo_locked_unregistered = "Seuls les utilisateurs enregistrés peuvent le modifier.";
+    out.oo_locked_edited = "Un seul utilisateur à la fois peut modifier le document.";
 
     // Profile
     out.profileButton = "Profil"; // dropdown menu

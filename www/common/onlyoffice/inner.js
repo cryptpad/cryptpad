@@ -80,7 +80,8 @@ define([
         var startOO = function (blob, file) {
             if (APP.ooconfig) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = locked !== common.getMetadataMgr().getNetfluxId();
+            var lock = locked !== common.getMetadataMgr().getNetfluxId() ||
+                       !common.isLoggedIn();
 
             // Config
             APP.ooconfig = {
@@ -122,12 +123,11 @@ define([
                                   '#fm-btn-save { display: none !important; }' +
                                   '#header { display: none !important; }';
                         $('<style>').text(css).appendTo($tb);
-                        console.log($('iframe[name="frameEditor"]'));
-                        console.log($tb);
-                        return;
-                        $tb.find('> .toolbar-group:visible').first().hide();
-                        $tb.find('> .separator').first().hide();
-                        console.log($tb.find('> .toolbar-group:visible'));
+                        if (UI.findOKButton().length) {
+                            UI.findOKButton().on('focusout', function () {
+                                window.setTimeout(function () { UI.findOKButton().focus(); });
+                            });
+                        }
                     },
                     "onAppReady": function(/*evt*/) { console.log("in onAppReady"); },
                     "onDownloadAs": function (evt) { console.log("in onDownloadAs", evt); }
@@ -362,7 +362,14 @@ define([
                     locked = me;
                     APP.onLocal();
                 }
+
+                if (!common.isLoggedIn()) {
+                    UI.alert(Messages.oo_locked + Messages.oo_locked_unregistered);
+                } else if (locked !== me) {
+                    UI.alert(Messages.oo_locked + Messages.oo_locked_edited);
+                }
             }
+
 
             loadDocument(newDoc);
 

@@ -307,6 +307,9 @@ define(function () {
     // OnlyOffice
     out.oo_saveError = "We were unable to save your modifications, please try again in a few moments.";
     out.oo_newVersion = "A new version of this document is available, click OK to load it.";
+    out.oo_locked = "This document is currently locked. ";
+    out.oo_locked_unregistered = "Only registered users can edit.";
+    out.oo_locked_edited = "Only one person can edit at a time.";
 
     // Canvas
     out.canvas_clear = "Clear";
