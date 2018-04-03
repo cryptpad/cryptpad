@@ -2052,6 +2052,7 @@ define([
                 $element.data('context', 'default');
                 $container.append($element);
             });
+            createGhostIcon($container);
         };
 
         var displayTrashRoot = function ($list, $folderHeader, $fileHeader) {
