@@ -316,6 +316,10 @@ define(function () {
     out.canvas_chooseColor = "Choisir une couleur";
     out.canvas_imageEmbed = "Intégrer une image de votre ordinateur";
 
+    // OnlyOffice
+    out.oo_saveError = "Une erreur s'est produite lors de la sauvegarde de vos modifications. Merci de réessayer dans quelques instants.";
+    out.oo_newVersion = "Une nouvelle version du document est disponible. Cliquez sur OK pour l'ouvrir.";
+
     // Profile
     out.profileButton = "Profil"; // dropdown menu
     out.profile_urlPlaceholder = 'URL';

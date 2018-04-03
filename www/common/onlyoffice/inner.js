@@ -158,10 +158,10 @@ define([
                 common.getSframeChannel().query('Q_OO_SAVE', data, function (err) {
                     if (err) {
                         console.error(err);
-                        return void UI.log('TODO: Unable to save this version. Please try again :/');
+                        return void UI.alert(Messages.oo_saveError);
                     }
                     hashes.push(data.url);
-                    UI.log('TODO: Saved! :D'); // TODO
+                    UI.log(Messages.saved);
                     APP.onLocal();
                 });
             }
@@ -385,11 +385,11 @@ define([
                 hashes = newHashes;
                 if (reloadDisplayed) { return; }
                 reloadDisplayed = true;
-                UI.confirm('TODO new version available. Press OK to reload.', function (yes) {
+                UI.confirm(Messages.oo_newVersion, function (yes) {
                     reloadDisplayed = false;
                     if (!yes) { return; }
                     common.gotoURL();
-                }); // XXX
+                });
             }
         };
 

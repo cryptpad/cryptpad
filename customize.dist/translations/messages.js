@@ -304,6 +304,10 @@ define(function () {
 
     out.poll_comment_disabled = "Publish this poll using the ✓ button to enable the comments.";
 
+    // OnlyOffice
+    out.oo_saveError = "We were unable to save your modifications, please try again in a few moments.";
+    out.oo_newVersion = "A new version of this document is available, click OK to load it.";
+
     // Canvas
     out.canvas_clear = "Clear";
     out.canvas_delete = "Delete selection";
