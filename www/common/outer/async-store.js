@@ -380,6 +380,7 @@ define([
 
     // Get the metadata for sframe-common-outer
     Store.getMetadata = function (data, cb) {
+        var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
         var metadata = {
             // "user" is shared with everybody via the userlist
             user: {
@@ -394,7 +395,7 @@ define([
                 edPublic: store.proxy.edPublic,
                 friends: store.proxy.friends || {},
                 settings: store.proxy.settings,
-                thumbnails: !Util.find(store.proxy, ['settings', 'general', 'disableThumbnails'])
+                thumbnails: disableThumbnails === false
             }
         };
         cb(JSON.parse(JSON.stringify(metadata)));

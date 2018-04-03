@@ -259,7 +259,7 @@ define([
         $spinner.hide().appendTo($div);
 
         common.getAttribute(['general', 'disableThumbnails'], function (e, val) {
-            $checkbox[0].checked = val;
+            $checkbox[0].checked = typeof(val) === "undefined" || val;
         });
 
         // Reset
