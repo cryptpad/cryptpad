@@ -168,6 +168,7 @@ define([
 
         queue.next = function () {
             if (queue.queue.length === 0) {
+                clearTimeout(queue.to);
                 queue.to = window.setTimeout(function () {
                     if (config.keepTable) { return; }
                     File.$container.fadeOut();
@@ -193,6 +194,10 @@ define([
             var $progressValue = $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending);
 
             var $tr = $('<tr>', {id: id}).appendTo($table);
+            var $lines = $table.find('tr[id]');
+            if ($lines.length > 5) {
+                $lines.slice(0, $lines.length - 5).remove();
+            }
 
             var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
                 queue.queue = queue.queue.filter(function (el) { return el.id !== id; });
