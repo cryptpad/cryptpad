@@ -9,6 +9,7 @@ const hashesFromPinFile = (pinFile, fileName) => {
         switch (l[0]) {
             case 'RESET': {
                 pins = {};
+                if (l[1] && l[1].length) { l[1].forEach((x) => { pins[x] = 1; }); }
                 //jshint -W086
                 // fallthrough
             }
