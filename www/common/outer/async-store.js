@@ -495,8 +495,15 @@ define([
             };
             toSign.drive = secret.channel;
             toSign.edPublic = edPublic;
-            var signKey = Crypto.Nacl.util.decodeBase64(secret.keys.signKey);
+            var signKey = Crypto.Nacl.util.decodeBase64(store.proxy.edPrivate);
             var proof = Crypto.Nacl.sign.detached(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)), signKey);
+
+            var check = Crypto.Nacl.sign.detached.verify(Crypto.Nacl.util.decodeUTF8(Sortify(toSign)),
+                proof,
+                Crypto.Nacl.util.decodeBase64(edPublic));
+
+            if (!check) { console.error('signed message failed verification'); }
+
             var proofTxt = Crypto.Nacl.util.encodeBase64(proof);
             cb({
                 proof: proofTxt,
