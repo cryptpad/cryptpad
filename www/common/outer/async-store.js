@@ -436,6 +436,12 @@ define([
                 list.push(Hash.hrefToHexChannelId(data.href));
             }
         });
+        if (store.proxy.todo) {
+            list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo));
+        }
+        if (store.proxy.profile && store.proxy.profile.edit) {
+            list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit));
+        }
         return list;
     };
     var removeOwnedPads = function (waitFor) {
