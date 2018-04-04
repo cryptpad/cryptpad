@@ -552,6 +552,8 @@ define([
                 button.click(function () { $input.click(); });
                 break;
             case 'importtemplate':
+                if (!AppConfig.enableTemplates) { return; }
+                if (!common.isLoggedIn()) { return; }
                 button = $('<button>', {
                     'class': 'fa fa-upload cp-toolbar-icon-import',
                     title: Messages.template_import,
