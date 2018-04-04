@@ -456,8 +456,6 @@ define([
     Store.deleteAccount = function (data, cb) {
         var edPublic = store.proxy.edPublic;
         var secret = Hash.getSecrets('drive', storeHash);
-        console.log(edPublic);
-        console.log(secret.channel);
         Store.anonRpcMsg({
             msg: 'GET_METADATA',
             data: secret.channel
