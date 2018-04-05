@@ -70,7 +70,7 @@ define([
                     break;
                 case 'ooslide':
                     file.type = 'pptx';
-                    file.title = titl + '.pptx' || 'presentation.pptx';
+                    file.title = title + '.pptx' || 'presentation.pptx';
                     file.doc = 'presentation';
                     break;
             }
