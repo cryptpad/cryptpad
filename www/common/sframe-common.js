@@ -170,6 +170,7 @@ define([
 
     // Store
     funcs.handleNewFile = function (waitFor) {
+        if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};

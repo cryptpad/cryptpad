@@ -717,8 +717,8 @@ define([
 
             Utils.Feedback.reportAppUsage();
 
-            if (!realtime) { return; }
-            if (isNewFile && cfg.useCreationScreen) { return; }
+            if (!realtime && !Test.testing) { return; }
+            if (isNewFile && cfg.useCreationScreen && !Test.testing) { return; }
             //if (isNewFile && Utils.LocalStore.isLoggedIn()
             //    && AppConfig.displayCreationScreen && cfg.useCreationScreen) { return; }
 
