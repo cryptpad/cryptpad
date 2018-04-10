@@ -334,7 +334,7 @@ var getMetadata = function (Env, channel, cb) {
             return cb('GET_CHANNEL_METADATA_UNSUPPORTED');
         }
 
-        return void Env.msgStore.getChannelMetadata(channel, function (e, data /*:object*/) {
+        return void Env.msgStore.getChannelMetadata(channel, function (e, data) {
             if (e) {
                 if (e.code === 'INVALID_METADATA') { return void cb(void 0, {}); }
                 return void cb(e.code);
