@@ -1,0 +1,76 @@
+@import (once) '../../customize/src/less2/include/colortheme-all.less';
+@import (once) '../../customize/src/less2/include/modal.less';
+@import (once) '../../customize/src/less2/include/icon-colors.less';
+@import (once) '../../customize/src/less2/include/fileupload.less';
+@import (once) '../../customize/src/less2/include/alertify.less';
+
+.iconColors_main();
+.fileupload_main();
+.alertify_main();
+
+#cp-filepicker-dialog {
+    display: none;
+    .cp-modal {
+        .cp-filepicker-content {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .cp-filepicker-content-element {
+            @darker: darken(@colortheme_modal-fg, 30%);
+
+            width: 125px;
+            //min-width: 200px;
+            //height: 1em;
+            padding: 10px;
+            margin: 5px;
+
+            display: inline-flex;
+            flex-flow: column;
+
+            box-sizing: content-box;
+
+            text-align: left;
+            line-height: 1em;
+            cursor: pointer;
+
+            background-color: #111;
+            color: @darker;
+
+            transition: all 0.1s;
+
+            &:hover {
+                color: @colortheme_modal-fg;
+            }
+
+            align-items: center;
+
+            img {
+                max-width: 100px;
+                max-height: 100px;
+                background: #fff;
+            }
+
+            .cp-filepicker-content-element-name {
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                height: 20px;
+                line-height: 20px;
+                margin-top: 5px;
+                max-width: 100%;
+            }
+            .fa {
+                cursor: pointer;
+                width: 100px;
+                height: 100px;
+                font-size: 70px;
+                text-align: center;
+                line-height: 100px;
+            }
+        }
+    }
+}
+

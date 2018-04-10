@@ -1,29 +1,18 @@
 define([
     'jquery',
     '/common/cryptpad-common.js',
-    '/common/login.js'
-], function ($, Cryptpad, Login) {
+    '/customize/login.js',
+    '/common/common-interface.js',
+    '/common/common-realtime.js',
+    '/common/common-feedback.js',
+    '/common/outer/local-store.js',
+    '/common/test.js',
+
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Test) {
     $(function () {
         var $main = $('#mainBlock');
-        var Messages = Cryptpad.Messages;
-
-        // Language selector
-        var $sel = $('#language-selector');
-        Cryptpad.createLanguageSelector(undefined, $sel);
-        $sel.find('button').addClass('btn').addClass('btn-secondary');
-        $sel.show();
-
-        // User admin menu
-        var $userMenu = $('#user-menu');
-        var userMenuCfg = {
-            $initBlock: $userMenu
-        };
-        var $userAdmin = Cryptpad.createUserAdminMenu(userMenuCfg);
-        $userAdmin.find('button').addClass('btn').addClass('btn-secondary');
-
-        $(window).click(function () {
-            $('.cryptpad-dropdown').hide();
-        });
+        var $checkImport = $('#import-recent');
 
         // main block is hidden in case javascript is disabled
         $main.removeClass('hidden');
@@ -31,7 +20,7 @@ define([
         // Make sure we don't display non-translated content (empty button)
         $main.find('#data').removeClass('hidden');
 
-        if (Cryptpad.isLoggedIn()) {
+        if (LocalStore.isLoggedIn()) {
             // already logged in, redirect to drive
             document.location.href = '/drive/';
             return;
@@ -64,84 +53,18 @@ define([
             $('button.login').click();
         });
 
-        var hashing = false;
+        var test;
         $('button.login').click(function () {
-            if (hashing) { return void console.log("hashing is already in progress"); }
-
-            hashing = true;
-
-            // setTimeout 100ms to remove the keyboard on mobile devices before the loading screen pops up
-            window.setTimeout(function () {
-                Cryptpad.addLoadingScreen(Messages.login_hashing);
-                // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed after hashing the password
-                window.setTimeout(function () {
-                    loginReady(function () {
-                        var uname = $uname.val();
-                        var passwd = $passwd.val();
-                        Login.loginOrRegister(uname, passwd, false, function (err, result) {
-                            if (!err) {
-                                var proxy = result.proxy;
-
-                                // successful validation and user already exists
-                                // set user hash in localStorage and redirect to drive
-                                if (!proxy.login_name) {
-                                    result.proxy.login_name = result.userName;
-                                }
-
-                                proxy.edPrivate = result.edPrivate;
-                                proxy.edPublic = result.edPublic;
-
-                                proxy.curvePrivate = result.curvePrivate;
-                                proxy.curvePublic = result.curvePublic;
-
-                                Cryptpad.feedback('LOGIN', true);
-                                Cryptpad.whenRealtimeSyncs(result.realtime, function() {
-                                    Cryptpad.login(result.userHash, result.userName, function () {
-                                        hashing = false;
-                                        if (sessionStorage.redirectTo) {
-                                            var h = sessionStorage.redirectTo;
-                                            var parser = document.createElement('a');
-                                            parser.href = h;
-                                            if (parser.origin === window.location.origin) {
-                                                delete sessionStorage.redirectTo;
-                                                window.location.href = h;
-                                                return;
-                                            }
-                                        }
-                                        window.location.href = '/drive/';
-                                    });
-                                });
-                                return;
-                            }
-                            switch (err) {
-                                case 'NO_SUCH_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_noSuchUser, function () {
-                                            hashing = false;
-                                        });
-                                    });
-                                    break;
-                                case 'INVAL_USER':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalUser, function () {
-                                            hashing = false;
-                                        });
-                                    });
-                                    break;
-                                case 'INVAL_PASS':
-                                    Cryptpad.removeLoadingScreen(function () {
-                                        Cryptpad.alert(Messages.login_invalPass, function () {
-                                            hashing = false;
-                                        });
-                                    });
-                                    break;
-                                default: // UNHANDLED ERROR
-                                    Cryptpad.errorLoadingScreen(Messages.login_unhandledError);
-                            }
-                        });
-                    });
-                }, 0);
-            }, 100);
+            var shouldImport = $checkImport[0].checked;
+            var uname = $uname.val();
+            var passwd = $passwd.val();
+            Login.loginOrRegisterUI(uname, passwd, false, shouldImport, Test.testing, function () {
+                if (test) {
+                    localStorage.clear();
+                    test.pass();
+                    return true;
+                }
+            });
         });
         $('#register').on('click', function () {
             if (sessionStorage) {
@@ -153,6 +76,13 @@ define([
                 }
             }
             window.location.href = '/register/';
+        });
+
+        Test(function (t) {
+            $uname.val('testuser');
+            $passwd.val('testtest');
+            test = t;
+            $('button.login').click();
         });
     });
 });

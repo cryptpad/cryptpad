@@ -1,11 +1,12 @@
 define([
     'jquery',
     '/bower_components/marked/marked.min.js',
-    '/common/cryptpad-common.js',
+    '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/media-tag.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-],function ($, Marked, Cryptpad, MediaTag) {
+],function ($, Marked, Hash, Util, MediaTag) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -22,8 +23,8 @@ define([
     var mediaMap = {};
 
     // Tasks list
-    var checkedTaskItemPtn = /^\s*\[x\]\s*/;
-    var uncheckedTaskItemPtn = /^\s*\[ \]\s*/;
+    var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
+    var uncheckedTaskItemPtn = /^\s*(<p>)?\[ ?\](<\/p>)?\s*/;
     renderer.listitem = function (text) {
         var isCheckedTaskItem = checkedTaskItemPtn.test(text);
         var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
@@ -40,14 +41,12 @@ define([
     };
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
-            var parsed = Cryptpad.parsePadUrl(href);
-            var hexFileName = Cryptpad.base64ToHex(parsed.hashData.channel);
+            var parsed = Hash.parsePadUrl(href);
+            var hexFileName = Util.base64ToHex(parsed.hashData.channel);
             var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
             var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '">';
             if (mediaMap[src]) {
-                mediaMap[src].forEach(function (n) {
-                    mt += n.outerHTML;
-                });
+                mt += mediaMap[src];
             }
             mt += '</media-tag>';
             return mt;
@@ -117,6 +116,7 @@ define([
 
     /*  remove listeners from the DOM */
     var removeListeners = function (root) {
+        if (!root) { return; }
         slice(root.attributes).map(function (attr) {
             if (/^on/i.test(attr.name)) {
                 console.log('removing attribute', attr.name, root.attributes[attr.name]);
@@ -129,6 +129,7 @@ define([
 
     var domFromHTML = function (html) {
         var Dom = new DOMParser().parseFromString(html, "text/html");
+        Dom.normalize();
         removeForbiddenTags(Dom.body);
         removeListeners(Dom.body);
         return Dom;
@@ -167,18 +168,17 @@ define([
 
         var unsafe_newHtmlFixed = newHtml.replace(pattern, function (all, tag, src) {
             var mt = tag;
-            if (mediaMap[src]) {
-                mediaMap[src].forEach(function (n) {
-                    mt += n.outerHTML;
-                });
-            }
+            if (mediaMap[src]) { mt += mediaMap[src]; }
             return mt + '</media-tag>';
         });
 
-        var safe_newHtmlFixed = domFromHTML(unsafe_newHtmlFixed).body.outerHTML;
+        var newDomFixed = domFromHTML(unsafe_newHtmlFixed);
+        if (!newDomFixed || !newDomFixed.body) { return; }
+        var safe_newHtmlFixed = newDomFixed.body.outerHTML;
         var $div = $('<div>', {id: id}).append(safe_newHtmlFixed);
 
         var Dom = domFromHTML($('<div>').append($div).html());
+        $content[0].normalize();
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {
@@ -191,9 +191,11 @@ define([
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {
                         if (mutation.type === 'childList') {
-                            //console.log(el.outerHTML);
-                            var list_values = [].slice.call(el.children);
-                            mediaMap[el.getAttribute('src')] = list_values;
+                            var list_values = [].slice.call(mutation.target.children)
+                                                .map(function (el) { return el.outerHTML; })
+                                                .join('');
+                            mediaMap[mutation.target.getAttribute('src')] = list_values;
+                            observer.disconnect();
                         }
                     });
                 });

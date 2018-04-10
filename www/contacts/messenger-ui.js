@@ -1,26 +1,16 @@
 define([
     'jquery',
-    '/common/cryptpad-common.js',
+    '/customize/messages.js',
+    '/common/common-util.js',
+    '/common/common-interface.js',
+    '/common/common-notifier.js',
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
-], function ($, Cryptpad, h, Marked) {
+    '/common/media-tag.js',
+], function ($, Messages, Util, UI, Notifier, h, Marked, MediaTag) {
     'use strict';
-    // TODO use our fancy markdown and support media-tags
-    Marked.setOptions({ sanitize: true, });
 
-    var UI = {};
-    var Messages = Cryptpad.Messages;
-
-    var m = function (md) {
-        var d = h('div.content');
-        try {
-            d.innerHTML = Marked(md || '');
-        } catch (e) {
-            console.error(md);
-            console.error(e);
-        }
-        return d;
-    };
+    var MessengerUI = {};
 
     var dataQuery = function (curvePublic) {
         return '[data-key="' + curvePublic + '"]';
@@ -35,7 +25,9 @@ define([
         };
     };
 
-    UI.create = function (messenger, $userlist, $messages) {
+    MessengerUI.create = function (messenger, $userlist, $messages, common) {
+        var origin = common.getMetadataMgr().getPrivateData().origin;
+
         var state = window.state = {
             active: '',
         };
@@ -57,21 +49,46 @@ define([
         };
 
         var notify = function (curvePublic) {
-            find.inList(curvePublic).addClass('notify');
+            find.inList(curvePublic).addClass('cp-app-contacts-notify');
         };
         var unnotify = function (curvePublic) {
-            find.inList(curvePublic).removeClass('notify');
+            find.inList(curvePublic).removeClass('cp-app-contacts-notify');
+        };
+
+        var m = function (md) {
+            var d = h('div.cp-app-contacts-content');
+            try {
+                d.innerHTML = Marked(md || '');
+                var $d = $(d);
+                // remove potentially malicious elements
+                $d.find('script, iframe, object, applet, video, audio').remove();
+
+                // override link clicking, because we're in an iframe
+                $d.find('a').each(function () {
+                    var href = $(this).click(function (e) {
+                        e.preventDefault();
+                        common.openUnsafeURL(href);
+                    }).attr('href');
+                });
+
+                // activate media-tags
+                $d.find('media-tag').each(function (i, e) { MediaTag(e); });
+            } catch (e) {
+                console.error(md);
+                console.error(e);
+            }
+            return d;
         };
 
         var markup = {};
         markup.message = function (msg) {
             var curvePublic = msg.author;
             var name = displayNames[msg.author];
-            return h('div.message', {
+            return h('div.cp-app-contacts-message', {
                 title: msg.time? new Date(msg.time).toLocaleString(): '?',
                 'data-key': curvePublic,
             }, [
-                name? h('div.sender', name): undefined,
+                name? h('div.cp-app-contacts-sender', name): undefined,
                 m(msg.text),
             ]);
         };
@@ -81,10 +98,10 @@ define([
         };
 
         var normalizeLabels = function ($messagebox) {
-            $messagebox.find('div.message').toArray().reduce(function (a, b) {
+            $messagebox.find('div.cp-app-contacts-message').toArray().reduce(function (a, b) {
                 var $b = $(b);
                 if ($(a).data('key') === $b.data('key')) {
-                    $b.find('.sender').hide();
+                    $b.find('.cp-app-contacts-sender').hide();
                     return a;
                 }
                 return b;
@@ -92,7 +109,7 @@ define([
         };
 
         markup.chatbox = function (curvePublic, data) {
-            var moreHistory = h('span.more-history.fa.fa-history', {
+            var moreHistory = h('span.cp-app-contacts-more-history.fa.fa-history', {
                 title: Messages.contacts_fetchHistory,
             });
             var displayName = data.displayName;
@@ -105,14 +122,14 @@ define([
                 var channel = state.channels[curvePublic];
 
                 if (channel.exhausted) {
-                    return void $moreHistory.addClass('faded');
+                    return void $moreHistory.addClass('cp-app-contacts-faded');
                 }
 
                 console.log('getting history');
                 var sig = channel.TAIL || channel.HEAD;
 
                 fetching = true;
-                var $messagebox = $(getChat(curvePublic)).find('.messages');
+                var $messagebox = $(getChat(curvePublic)).find('.cp-app-contacts-messages');
                 messenger.getMoreHistory(curvePublic, sig, 10, function (e, history) {
                     fetching = false;
                     if (e) { return void console.error(e); }
@@ -129,7 +146,7 @@ define([
                                 console.error('No more messages to fetch');
                                 channel.exhausted = true;
                                 console.log(channel);
-                                return;
+                                return void $moreHistory.addClass('cp-app-contacts-faded');
                             } else {
                                 channel.TAIL = msg.sig;
                             }
@@ -151,30 +168,31 @@ define([
                 });
             });
 
-            var removeHistory = h('span.remove-history.fa.fa-eraser', {
+            var removeHistory = h('span.cp-app-contacts-remove-history.fa.fa-eraser', {
                 title: Messages.contacts_removeHistoryTitle
             });
 
             $(removeHistory).click(function () {
-                Cryptpad.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
+                UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
-                    Cryptpad.clearOwnedChannel(data.channel, function (e) {
+
+                    messenger.clearOwnedChannel(data.channel, function (e) {
                         if (e) {
                             console.error(e);
-                            Cryptpad.alert(Messages.contacts_removeHistoryServerError);
+                            UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
                     });
                 });
             });
 
-            var avatar = h('div.avatar');
-            var header = h('div.header', [
+            var avatar = h('div.cp-avatar');
+            var header = h('div.cp-app-contacts-header', [
                 avatar,
                 moreHistory,
                 removeHistory,
             ]);
-            var messages = h('div.messages');
+            var messages = h('div.cp-app-contacts-messages');
             var input = h('textarea', {
                 placeholder: Messages.contacts_typeHere
             });
@@ -182,19 +200,19 @@ define([
                 title: Messages.contacts_send,
             });
 
-            var rightCol = h('span.right-col', [
-                h('span.name', displayName),
+            var rightCol = h('span.cp-app-contacts-right-col', [
+                h('span.cp-app-contacts-name', displayName),
             ]);
 
             var $avatar = $(avatar);
             if (data.avatar && avatars[data.avatar]) {
                 $avatar.append(avatars[data.avatar]).append(rightCol);
             } else {
-                Cryptpad.displayAvatar($avatar, data.avatar, data.displayName, function ($img) {
+                common.displayAvatar($avatar, data.avatar, data.displayName, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
-                    $avatar.append(rightCol);
+                    $(rightCol).insertAfter($avatar);
                 });
             }
 
@@ -249,12 +267,12 @@ define([
             $(input).on('keydown', onKeyDown);
             $(sendButton).click(function () { send(input.value); });
 
-            return h('div.chat', {
+            return h('div.cp-app-contacts-chat', {
                 'data-key': curvePublic,
             }, [
                 header,
                 messages,
-                h('div.input', [
+                h('div.cp-app-contacts-input', [
                     input,
                     sendButton,
                 ]),
@@ -262,11 +280,11 @@ define([
         };
 
         var hideInfo = function () {
-            $messages.find('.info').hide();
+            $messages.find('.cp-app-contacts-info').hide();
         };
 
         var updateStatus = function (curvePublic) {
-            var $status = find.inList(curvePublic).find('.status');
+            var $status = find.inList(curvePublic).find('.cp-app-contacts-status');
             // FIXME this stopped working :(
             messenger.getStatus(curvePublic, function (e, online) {
                 // if error maybe you shouldn't display this friend...
@@ -278,9 +296,9 @@ define([
                 }
                 if (online) {
                     return void $status
-                        .removeClass('offline').addClass('online');
+                        .removeClass('cp-app-contacts-offline').addClass('cp-app-contacts-online');
                 }
-                $status.removeClass('online').addClass('offline');
+                $status.removeClass('cp-app-contacts-online').addClass('cp-app-contacts-offline');
             });
         };
 
@@ -299,11 +317,11 @@ define([
             unnotify(curvePublic);
             var $chat = getChat(curvePublic);
             hideInfo();
-            $messages.find('div.chat[data-key]').hide();
+            $messages.find('div.cp-app-contacts-chat[data-key]').hide();
             if ($chat.length) {
-                var $chat_messages = $chat.find('div.message');
+                var $chat_messages = $chat.find('div.cp-app-contacts-message');
                 if (!$chat_messages.length) {
-                    var $more = $chat.find('.more-history');
+                    var $more = $chat.find('.cp-app-contacts-more-history');
                     $more.click();
                 }
                 return void $chat.show();
@@ -316,25 +334,25 @@ define([
         };
 
         var removeFriend = function (curvePublic) {
-            messenger.removeFriend(curvePublic, function (e, removed) {
+            messenger.removeFriend(curvePublic, function (e /*, removed */) {
                 if (e) { return void console.error(e); }
                 find.inList(curvePublic).remove();
-                console.log(removed);
+                //console.log(removed);
             });
         };
 
         markup.friend = function (data) {
             var curvePublic = data.curvePublic;
-            var friend = h('div.friend.avatar', {
+            var friend = h('div.cp-app-contacts-friend.cp-avatar', {
                 'data-key': curvePublic,
             });
 
-            var remove = h('span.remove.fa.fa-user-times', {
+            var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
                 title: Messages.contacts_remove
             });
-            var status = h('span.status');
-            var rightCol = h('span.right-col', [
-                h('span.name', [data.displayName]),
+            var status = h('span.cp-app-contacts-status');
+            var rightCol = h('span.cp-app-contacts-right-col', [
+                h('span.cp-app-contacts-name', [data.displayName]),
                 remove,
             ]);
 
@@ -343,13 +361,13 @@ define([
                 display(curvePublic);
             })
             .dblclick(function () {
-                if (data.profile) { window.open('/profile/#' + data.profile); }
+                if (data.profile) { window.open(origin + '/profile/#' + data.profile); }
             });
 
             $(remove).click(function (e) {
                 e.stopPropagation();
-                Cryptpad.confirm(Messages._getKey('contacts_confirmRemove', [
-                    Cryptpad.fixHTML(data.displayName)
+                UI.confirm(Messages._getKey('contacts_confirmRemove', [
+                    Util.fixHTML(data.displayName)
                 ]), function (yes) {
                     if (!yes) { return; }
                     removeFriend(curvePublic, function (e) {
@@ -365,7 +383,7 @@ define([
                 $friend.append(avatars[data.avatar]);
                 $friend.append(rightCol);
             } else {
-                Cryptpad.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
+                common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
                     if (data.avatar && $img) {
                         avatars[data.avatar] = $img[0].outerHTML;
                     }
@@ -382,7 +400,7 @@ define([
 
         var initializing = true;
         messenger.on('message', function (message) {
-            if (!initializing) { Cryptpad.notify(); }
+            if (!initializing) { Notifier.notify(); }
             var curvePublic = message.curve;
 
             var name = displayNames[curvePublic];
@@ -400,7 +418,7 @@ define([
                 console.error("Got a message but the chat isn't open");
             }
 
-            var $messagebox = $chat.find('.messages');
+            var $messagebox = $chat.find('.cp-app-contacts-messages');
             var shouldScroll = isBottomedOut($messagebox);
 
             $messagebox.append(el_message);
@@ -444,11 +462,12 @@ define([
             var name = displayNames[curvePublic] = info.displayName;
 
             // update label in friend list
-            find.inList(curvePublic).find('.name').text(name);
+            find.inList(curvePublic).find('.cp-app-contacts-name').text(name);
 
             // update title bar and messages
-            $messages.find(dataQuery(curvePublic) + ' .header .name, div.message'+
-                dataQuery(curvePublic) + ' div.sender').text(name).text(name);
+            $messages.find(dataQuery(curvePublic) + ' .cp-app-contacts-header ' +
+                '.cp-app-contacts-name, div.cp-app-contacts-message'+
+                dataQuery(curvePublic) + ' div.cp-app-contacts-sender').text(name).text(name);
         });
 
         var connectToFriend = function (curvePublic, cb) {
@@ -490,7 +509,7 @@ define([
             console.error('TODO show something if that chatbox was active');
         });
 
-        Cryptpad.onDisplayNameChanged(function () {
+        common.getMetadataMgr().onChange(function () {
             //messenger.checkNewFriends();
             messenger.updateMyData();
         });
@@ -506,16 +525,15 @@ define([
                 count--;
                 if (count === 0) {
                     initializing = false;
-                    Cryptpad.removeLoadingScreen();
+                    UI.removeLoadingScreen();
                 }
             };
             ready();
-
             keys.forEach(function (curvePublic) {
                 connectToFriend(curvePublic, ready);
             });
         });
     };
 
-    return UI;
+    return MessengerUI;
 });

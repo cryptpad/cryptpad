@@ -1,0 +1,40 @@
+@import (once) './include/font.less';
+.font_neuropolitical();
+.font_open-sans();
+
+body.cp-page-index { @import "./pages/page-index.less"; }
+body.cp-page-contact { @import "./pages/page-contact.less"; }
+body.cp-page-login { @import "./pages/page-login.less"; }
+body.cp-page-register { @import "./pages/page-register.less"; }
+body.cp-page-what-is-cryptpad { @import "./pages/page-what-is-cryptpad.less"; }
+body.cp-page-about { @import "./pages/page-about.less"; }
+body.cp-page-privacy { @import "./pages/page-privacy.less"; }
+body.cp-page-terms { @import "./pages/page-terms.less"; }
+
+// Set the HTML style for the apps which shouldn't have a body scrollbar
+html.cp-app-noscroll {
+    @import "./include/app-noscroll.less";
+    .app-noscroll_main();
+}
+// Set the HTML style for printing slides
+html.cp-app-print {
+    @import "./include/app-print.less";
+    .app-print_main();
+}
+
+body.cp-readonly .cp-hidden-if-readonly { display: none !important; }
+
+body.cp-app-drive { @import "../../../drive/app-drive.less"; }
+body.cp-app-pad { @import "../../../pad/app-pad.less"; }
+body.cp-app-code { @import "../../../code/app-code.less"; }
+body.cp-app-slide { @import "../../../slide/app-slide.less"; }
+body.cp-app-file { @import "../../../file/app-file.less"; }
+body.cp-app-filepicker { @import "../../../filepicker/app-filepicker.less"; }
+body.cp-app-contacts {   @import "../../../contacts/app-contacts.less";    }
+body.cp-app-poll { @import "../../../poll/app-poll.less"; }
+body.cp-app-whiteboard { @import "../../../whiteboard/app-whiteboard.less"; }
+body.cp-app-todo { @import "../../../todo/app-todo.less"; }
+body.cp-app-profile { @import "../../../profile/app-profile.less"; }
+body.cp-app-settings { @import "../../../settings/app-settings.less"; }
+body.cp-app-debug { @import "../../../debug/app-debug.less"; }
+

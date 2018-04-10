@@ -1,0 +1,173 @@
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/toolbar.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) '../../customize/src/less2/include/fileupload.less';
+@import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/tools.less';
+@import (once) '../../customize/src/less2/include/tokenfield.less';
+@import (once) '../../customize/src/less2/include/creation.less';
+
+.toolbar_main(
+    @bg-color: @colortheme_whiteboard-bg,
+    @warn-color: @colortheme_whiteboard-warn,
+    @color: @colortheme_whiteboard-color
+);
+.fileupload_main();
+.alertify_main();
+.tokenfield_main();
+.creation_main();
+
+// body
+&.cp-app-whiteboard {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+
+    .middle () {
+        position: relative;
+        vertical-align: middle;
+    }
+    .hidden {
+        display: none;
+    }
+
+    .cp-toolbar-rightside {
+        .cp-toolbar-icon-savetodrive { order: 13; }
+        .cp-toolbar-icon-embedImage { order: 12; }
+        .cp-toolbar-icon-mediatag { order: 11; }
+        .cp-toolbar-icon-color { order: 10; }
+    }
+
+    #cp-app-whiteboard-media-hidden {
+        display: none;
+    }
+
+    #cp-app-whiteboard-container {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+        overflow: auto;
+    }
+
+    // created in the html
+    #cp-app-whiteboard-canvas-area {
+        flex: 1;
+        display: flex;
+    }
+    // created by fabricjs. styled so defaults don't break anything
+    .cp-app-whiteboard-canvas-container {
+        margin: auto;
+        background: white;
+        flex: 1;
+        min-height: 0;
+        & > canvas {
+            border: 1px solid black;
+        }
+    }
+
+    .cp-app-whiteboard-unselectable {
+        .tools_unselectable();
+    }
+
+    // contains user tools
+    #cp-app-whiteboard-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+
+        position: relative;
+        border-top: 1px solid black;
+        background: white;
+
+        padding: 10px;
+
+        & > * + * {
+            margin: 0;
+            margin-left: 1em;
+        }
+
+        #cp-app-whiteboard-width, #cp-app-whiteboard-opacity {
+            .middle;
+        }
+        #cp-app-whiteboard-clear, #cp-app-whiteboard-delete, #cp-app-whiteboard-toggledraw {
+            display: inline;
+            vertical-align: middle;
+        }
+        .cp-app-whiteboard-selected {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9001;
+
+            width: 100px;
+            height: 100px;
+        }
+
+        .cp-app-whiteboard-range-group {
+            display: flex;
+            flex-direction: column;
+            position: relative;
+
+            input[type="range"] {
+                background-color: inherit;
+            }
+
+            & > span {
+                cursor: default;
+                position: absolute;
+                top: 0;
+                right: 0;
+            }
+        }
+        .cp-app-whiteboard-range-group:first-of-type {
+            margin-left: 2em;
+        }
+        .cp-app-whiteboard-range-group:last-of-type {
+            margin-right: 1em;
+        }
+    }
+
+    /* Colors */
+    #cp-app-whiteboard-colors {
+        .middle;
+        z-index: 100;
+        background: white;
+        display: flex;
+        justify-content: space-between;
+
+        padding: 10px;
+
+        span.cp-app-whiteboard-palette-color {
+            height: 4vw;
+            width: 4vw;
+            display: block;
+            margin: 5px;
+            border: 1px solid black;
+            vertical-align: top;
+            border-radius: 50%;
+            transition: transform 0.1s;
+
+            &:hover {
+                transform: scale(1.2);
+            }
+        }
+    }
+
+    // used in the toolbar if supported
+    #cp-app-whiteboard-color-picker {
+        display: block;
+    }
+
+    // input[type=color] must exist in the dom to work correctly
+    // styled so that they don't break layouts
+
+    #cp-app-whiteboard-pickers {
+        visibility: hidden;
+        position: absolute;
+        width: 0;
+        height: 0;
+        z-index: -5;
+    }
+}
+

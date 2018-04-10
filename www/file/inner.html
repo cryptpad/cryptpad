@@ -1,28 +1,30 @@
 <!DOCTYPE html>
-<html>
+<html class="cp-app-noscroll">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script async data-bootload="/file/inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
-    <style>.loading-hidden, .loading-hidden * {display: none !important;}</style>
+    <script async data-bootload="/file/inner.js" data-main="/common/sframe-boot.js?ver=1.6" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <style>
+        .loading-hidden { display: none; }
+        #editor1 { display: none; }
+    </style>
 </head>
-<body class="loading-hidden">
-    <div id="toolbar" class="toolbar-container"></div>
-    <div id="app">
-        <div id="upload-form" style="display: none;">
-            <input type="file" name="file" id="file" class="inputfile" />
-            <label for="file" class="btn btn-primary block unselectable" data-localization-title="upload_choose"
+<body class="cp-app-file">
+    <div id="cp-toolbar" class="cp-toolbar-container"></div>
+    <div id="cp-app-file-content">
+        <div id="cp-app-file-upload-form" style="display: none;">
+            <input type="file" name="file" id="cp-app-file-upfile" class="cp-app-file-input" />
+            <label for="cp-app-file-upfile" class="btn btn-primary cp-app-file-block unselectable" data-localization-title="upload_choose"
                 data-localization="upload_choose"></label>
         </div>
-        <div id="download-form" style="display: none;">
-            <input type="button" name="dl" id="dl" class="inputfile" />
-            <label for="dl" class="btn btn-success block unselectable" data-localization-title="download_button"><span data-localization="download_button"></span></label>
-            <span class="block" id="progress"></span>
+        <div id="cp-app-file-download-form" style="display: none;">
+            <input type="button" name="dl" id="cp-app-file-dlfile" class="cp-app-file-input" />
+            <label for="cp-app-file-dlfile" class="btn btn-success cp-app-file-block unselectable" data-localization-title="download_button"><span data-localization="download_button"></span></label>
+            <span class="cp-app-file-block" id="cp-app-file-dlprogress"></span>
         </div>
-        <div id="download-view" style="display: none;">
-            <media-tag id="encryptedFile"></media-tag>
+        <div id="cp-app-file-download-view" style="display: none;">
+            <media-tag id="cp-app-file-view"></media-tag>
         </div>
-        <div id="feedback" class="block hidden">
+        <div id="cp-app-file-feedback" class="cp-app-file-block cp-app-file-hidden">
         </div>
     </div>
 </body>

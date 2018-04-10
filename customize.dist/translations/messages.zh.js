@@ -31,7 +31,7 @@ define(function () {
 
     out.websocketError = '無法連結上 websocket 伺服器...';
     out.typeError = "這個編輯檔與所選的應用程式並不相容";
-    out.onLogout = '你已登出, <a href="/" target="_blank">點擊這裏</a> 來登入<br>或按<em>Escape</em> 來以唯讀模型使用你的編輯檔案';
+    out.onLogout = '你已登出, {0}點擊這裏{1} 來登入<br>或按<em>Escape</em> 來以唯讀模型使用你的編輯檔案';
     out.wrongApp = "無法在瀏覽器顯示即時期間的內容，請試著再重新載入本頁。";
 
     out.loading = "載入中...";
@@ -116,7 +116,6 @@ define(function () {
     out.previewButtonTitle = "顯示或隱藏 Markdown 預覽模式";
 
     out.presentButtonTitle = "輸入簡報模式";
-    out.presentSuccess = '按 ESC 以退出簡報模式';
 
     out.backgroundButtonTitle = '改變簡報的顏色背景';
     out.colorButtonTitle = '在簡報模式下改變文字顏色';
@@ -470,13 +469,8 @@ define(function () {
         '<p>',
         '這是&nbsp;<strong>CryptPad</strong>, 零知識即時協作編輯平台，當你輸入時一切已即存好。',
         '<br>',
-        '分享這個工作檔案的網址連結給友人或是使用、 <span class="fa fa-share-alt" style="border: 1px solid black;color:#000;">&nbsp;分享&nbsp;</span> 按鈕分享<em>唯讀的連結</em>&nbsp;其只能看不能編寫。',
-        '</p>',
-
-        '<p><em>',
-        '來吧, 開始打字輸入吧...',
-        '</em></p>',
-        '<p>&nbsp;<br></p>'
+        '分享這個工作檔案的網址連結給友人或是使用、 <span class="fa fa-share-alt"></span> 按鈕分享<em>唯讀的連結</em>&nbsp;其只能看不能編寫。',
+        '</p>'
     ].join('');
 
     out.codeInitialState = [
@@ -488,14 +482,6 @@ define(function () {
 
     out.slideInitialState = [
         '# CryptSlide\n',
-        '* 它是零知識即時協作編輯平台。\n',
-        '* 你所輸入的東西會予以加密，僅有知道此網頁連結者可以接取這份文件。\n',
-        '* 即便是本站伺服器也不知道你輸入了什麼內容。\n',
-        '* 你在這裏看到的、你在這裏聽到的、當你離開本站時，讓它就留在這裏吧。\n',
-        '\n',
-        '---',
-        '\n',
-        '# 如何使用\n',
         '1. 使用 markdown 語法來寫下你的投影片內容\n',
         '  - 進一步學習 markdown 語法 [here](http://www.markdowntutorial.com/)\n',
         '2. 利用 --- 來區隔不同的投影片\n',

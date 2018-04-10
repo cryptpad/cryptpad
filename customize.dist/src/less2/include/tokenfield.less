@@ -1,0 +1,83 @@
+@import (once) "./tools.less";
+
+.tokenfield_main () {
+    .tokenfield {
+        .tools_unselectable();
+        height: auto;
+        min-height: 34px;
+        padding-bottom: 0px;
+        background-color: unset;
+        border: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        padding: 0 10px;
+        .token {
+            box-sizing: border-box;
+            border-radius: 3px;
+            display: inline-block;
+            border: 1px solid #d9d9d9;
+            background-color: #ededed;
+            white-space: nowrap;
+            margin: 10px 5px;
+            height: 24px;
+            vertical-align: middle;
+            cursor: default;
+
+            color: #222;
+
+            &:hover {
+                border-color: #b9b9b9;
+            }
+            &.invalid {
+                background: none;
+                border: 1px solid transparent;
+                border-radius: 0;
+                border-bottom: 1px dotted #d9534f;
+            }
+            &.invalid.active {
+                background: #ededed;
+                border: 1px solid #ededed;
+                border-radius: 3px;
+            }
+            .token-label {
+                display: inline-block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding-left: 4px;
+                vertical-align: middle;
+            }
+            .close {
+                font-family: Arial;
+                display: inline-block;
+                line-height: 24px;
+                font-size: 1.1em;
+                margin-left: 5px;
+                float: none;
+                height: 100%;
+                vertical-align: middle;
+                padding-right: 4px;
+            }
+            &.active {
+                border-color: rgba(82, 168, 236, 0.8);
+            }
+            &.duplicate {
+                border-color: #ebccd1;
+            }
+        }
+        .token-input {
+            background: none;
+            flex: 1;
+            border: 0;
+            padding: 0;
+            margin: 0 !important; // Override alertify
+            box-shadow: none;
+            max-width: 100%;
+            &:focus {
+                border-color: transparent;
+                outline: 0;
+                box-shadow: none;
+            }
+        }
+    }
+}

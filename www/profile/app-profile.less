@@ -1,0 +1,164 @@
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/toolbar.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) '../../customize/src/less2/include/fileupload.less';
+@import (once) '../../customize/src/less2/include/alertify.less';
+
+@import (once) '../../customize/src/less2/include/avatar.less';
+@import (once) '../../customize/src/less2/include/sidebar-layout.less';
+
+.toolbar_main(
+    @bg-color: @colortheme_profile-bg,
+    @warn-color: @colortheme_profile-warn,
+    @color: @colortheme_profile-color
+);
+.fileupload_main();
+.alertify_main();
+.sidebar-layout_main();
+
+// body
+&.cp-app-profile {
+    display: flex;
+    flex-flow: column;
+    #cp-app-profile-header {
+        display: flex;
+        #cp-app-profile-rightside {
+            flex: 1;
+            display: flex;
+            flex-flow: column;
+        }
+    }
+    #cp-app-profile-avatar {
+        width: 300px;
+        //height: 350px;
+        margin: 10px;
+        margin-right: 20px;
+        text-align: center;
+        &> span {
+            display: inline-block;
+            text-align: center;
+            height: 300px;
+            width: 300px;
+            border: 1px solid black;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+            .cp-app-profile-avatar-delete {
+                right: 0;
+                position: absolute;
+                opacity: 0.7;
+                &:hover {
+                    opacity: 1;
+                }
+            }
+        }
+        img {
+            max-width: 100%;
+            max-height: 100%;
+            vertical-align: top;
+        }
+        media-tag {
+            height: 100%;
+            width: 100%;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            img {
+                min-width: 100%;
+                min-height: 100%;
+                max-width: none;
+                max-height: none;
+                flex: 1;
+            }
+        }
+        button {
+            height: 40px;
+            margin: 5px;
+        }
+    }
+    .cp-app-profile-resizer {
+        text-align: center;
+    }
+    #cp-app-profile-displayname, #cp-app-profile-link {
+        width: 100%;
+        height: 40px;
+        margin: 10px 0;
+        input {
+            width: 100%;
+            font-size: 20px;
+            box-sizing: border-box;
+            padding-right: 30px;
+        }
+        input:focus ~ .edit {
+            display: none;
+        }
+        .cp-app-profile-input-edit {
+            position: absolute;
+            margin-left: -25px;
+            margin-top: 8px;
+        }
+        .cp-app-profile-input-temp {
+            font-weight: 400;
+            font-family: sans-serif;
+        }
+        .cp-app-profile-displayname {
+            font-weight: bold;
+            font-size: 30px;
+        }
+        .cp-app-profile-link {
+            font-size: 25px;
+        }
+        .cp-app-profile-displayname, .cp-app-profile-link {
+            line-height: 40px;
+        }
+    }
+
+    // I tried using flexbox but messed with how the pencil icon was displayed
+    #cp-app-profile-invite-button {
+        float: right;
+    }
+    #cp-app-profile-viewprofile-button {
+        margin-bottom: 20px;
+        float: right;
+    }
+    #cp-app-profile-description {
+        position: relative;
+        font-size: 16px;
+        border: 1px solid #DDD;
+        margin-bottom: 20px;
+        .cp-app-profile-description-rendered {
+            padding: 0 15px;
+        }
+        .cp-app-profile-description-ok, .cp-app-profile-description-spin {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
+            display: none;
+            z-index: 1000;
+        }
+        textarea {
+            width: 100%;
+            height: 300px;
+        }
+        .CodeMirror {
+            border: 1px solid #DDD;
+            font-family: monospace;
+            font-size: 16px;
+            line-height: initial;
+            pre {
+                margin: 0;
+                font-family: inherit;
+                font-size: inherit;
+                line-height: inherit;
+            }
+        }
+    }
+    #cp-app-profile-create {
+        height: 100%;
+        display: flex;
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+    }
+}
+

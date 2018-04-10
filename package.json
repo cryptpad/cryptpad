@@ -1,25 +1,38 @@
 {
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
-  "version": "1.14.0",
+  "version": "1.29.0",
+  "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "chainpad-server": "^1.0.1",
-    "express": "~4.10.1",
+    "chainpad-server": "^2.0.0",
+    "express": "~4.16.0",
+    "mkdirp": "^0.5.1",
     "nthen": "~0.1.0",
+    "pull-stream": "^3.6.1",
+    "replify": "^1.2.0",
     "saferphore": "0.0.1",
+    "sortify": "^1.0.4",
+    "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",
     "ws": "^1.0.1"
   },
   "devDependencies": {
+    "flow-bin": "^0.59.0",
+    "heapdump": "^0.3.9",
     "jshint": "~2.9.1",
-    "selenium-webdriver": "^2.53.1",
-    "less": "2.7.1"
+    "less": "2.7.1",
+    "lesshint": "^4.5.0",
+    "selenium-webdriver": "^3.6.0"
   },
   "scripts": {
     "start": "node server.js",
     "dev": "DEV=1 node server.js",
-    "lint": "jshint --config .jshintrc --exclude-path .jshintignore .",
+    "fresh": "FRESH=1 node server.js",
+    "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "lint:js": "jshint --config .jshintrc --exclude-path .jshintignore .",
+    "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
+    "flow": "./node_modules/.bin/flow",
     "test": "node TestSelenium.js",
-    "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../what-is-cryptpad.html ../../www/login/index.html ../../www/register/index.html ../../www/settings/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;"
+    "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../what-is-cryptpad.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;"
   }
 }

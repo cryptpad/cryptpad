@@ -1,0 +1,146 @@
+@import (once) "../../customize/src/less2/include/colortheme-all.less";
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/toolbar.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/sidebar-layout.less';
+@import (once) "../../customize/src/less2/include/limit-bar.less";
+@import (once) "../../customize/src/less2/include/creation.less";
+
+.toolbar_main(
+    @bg-color: @colortheme_settings-bg,
+    @warn-color: @colortheme_settings-warn,
+    @color: @colortheme_settings-color
+);
+.alertify_main();
+.sidebar-layout_main();
+.limit-bar_main();
+.creation_main();
+
+// body
+&.cp-app-settings {
+    display: flex;
+    flex-flow: column;
+    #cp-sidebarlayout-container {
+        #cp-sidebarlayout-rightside {
+            input[type="checkbox"] {
+                vertical-align: middle;
+                margin-right: 5px;
+            }
+            .cp-settings-language-selector {
+                button.btn {
+                    width: @sidebar_button-width;
+                    background-color: @colortheme_sidebar-button-alt-bg;
+                    border-color: #adadad;
+                    color: black;
+                    &:hover {
+                        background-color: darken(@colortheme_sidebar-button-alt-bg, 15%);
+                    }
+                }
+            }
+            .cp-sidebarlayout-input-block {
+                input {
+                    border-top-right-radius: 0;
+                    border-bottom-right-radius: 0;
+                    padding: 5px;
+                    padding-left: 15px;
+                    &[type="number"] {
+                        border-right: 1px solid #adadad;
+                    }
+                    &[type="checkbox"] {
+                        margin-right: 100%;
+                    }
+                }
+            }
+            .cp-settings-info-block {
+                [type="text"] {
+                    width: @sidebar_button-width;
+                }
+            }
+            .cp-settings-drive-backup {
+                button {
+                    span.fa {
+                        margin-right: 5px;
+                    }
+                    margin-right: 5px;
+                }
+            }
+            .cp-settings-creation-owned, .cp-settings-creation-expire,
+            .cp-settings-creation-skip, .cp-settings-creation-template {
+                input[type="radio"] {
+                    display: none;
+                    &:checked {
+                        & + label {
+                            font-weight: bold;
+                            background-color: lighten(@colortheme_loading-bg, 20%);
+                            cursor: default;
+                            border: 1px solid #c1158e;
+                            color: @colortheme_loading-color;
+                            &:hover {
+                                background-color: lighten(@colortheme_loading-bg, 20%);
+                            }
+                        }
+                    }
+                }
+                input[type="radio"] + label {
+                    .tools_unselectable();
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    width: 200px;
+                    height: 50px;
+                    padding: 5px;
+                    margin: 0 20px;
+                    border: 1px solid black;
+                    cursor: pointer;
+                    &:hover {
+                        background-color: lighten(@colortheme_loading-bg, 10%);
+                    }
+                }
+                .fa {
+                    margin-left: 50px;
+                }
+            }
+            .cp-settings-creation-skipped {
+                display: none !important; // we have to override an inline style attribute
+            }
+            .cp-settings-creation-expire {
+                #cp-creation-expire-true {
+                    display: none;
+                    &:checked {
+                        & + label {
+                            height: 100px;
+                            .cp-creation-expire-picker {
+                                display: inline;
+                            }
+                        }
+                    }
+                }
+                label[for="cp-creation-expire-true"] {
+                    flex-wrap: wrap;
+                    .cp-creation-expire-picker {
+                        display: none;
+                    }
+                    input {
+                        width: 70px;
+                    }
+                    select {
+                        width: 100px;
+                    }
+                    input, select {
+                        border: none;
+                        height: 30px;
+                        background: @colortheme_loading-bg;
+                        color: @colortheme_loading-color;
+                        border-radius: 3px;
+                    }
+                }
+            }
+        }
+    }
+
+    .cp-app-settings-delete-alert {
+        pre { color: inherit; }
+    }
+}
+

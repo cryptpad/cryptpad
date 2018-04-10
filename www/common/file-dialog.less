@@ -1,47 +1,50 @@
-@import (once) '../customize/src/less2/include/colortheme.less';
+@import (once) '../customize/src/less2/include/colortheme-all.less';
 @import '../customize/src/less2/include/modal.less';
 
-#fileDialog {
-    .cp-modal {
-        .fileContainer {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            overflow-y: auto;
-        }
-
-        .element {
-            @darker: darken(@colortheme_modal-fg, 30%);
-
-            width: 200px;
-            min-width: 200px;
-            height: 1em;
-            padding: 0.5em;
-            margin: 5px;
-            box-sizing: content-box;
-
-            text-align: left;
-            line-height: 1em;
-            cursor: pointer;
-
-            background-color: #111;
-            color: @darker;
-
-            transition: all 0.1s;
-
-            &:hover {
-                color: @colortheme_modal-fg;
+.fileDialog_main () {
+    #fileDialog {
+        display: none;
+        .cp-modal {
+            .fileContainer {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-y: auto;
             }
 
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            .element {
+                @darker: darken(@colortheme_modal-fg, 30%);
 
-            align-items: center;
+                width: 200px;
+                min-width: 200px;
+                height: 1em;
+                padding: 0.5em;
+                margin: 5px;
+                box-sizing: content-box;
 
-            .fa {
+                text-align: left;
+                line-height: 1em;
                 cursor: pointer;
-                margin-right: 0.5em;
+
+                background-color: #111;
+                color: @darker;
+
+                transition: all 0.1s;
+
+                &:hover {
+                    color: @colortheme_modal-fg;
+                }
+
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+
+                align-items: center;
+
+                .fa {
+                    cursor: pointer;
+                    margin-right: 0.5em;
+                }
             }
         }
     }

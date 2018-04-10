@@ -21,6 +21,11 @@ define([
         };
     }
 
+    // RPC breaks if you don't support Number.MAX_SAFE_INTEGER
+    if (Number && !Number.MAX_SAFE_INTEGER) {
+        Number.MAX_SAFE_INTEGER = 9007199254740991;
+    }
+
     var failStore = function () {
         console.error(new Error('wut'));
         require(['jquery'], function ($) {
@@ -29,7 +34,16 @@ define([
                 url: '/common/feedback.html?NO_LOCALSTORAGE=' + (+new Date()),
             });
         });
-        window.alert("CryptPad needs localStorage to work, try a different browser");
+        window.alert("CryptPad needs localStorage to work. Try changing your cookie permissions, or using a different browser");
+    };
+
+    window.onerror = function (e) {
+        if (/requirejs\.org/.test(e)) {
+            console.log();
+            console.error("Require.js threw a Script Error. This probably means you're missing a dependency for CryptPad.\nIt is recommended that the admin of this server runs `bower install && bower update` to get the latest code, then modify their cache version.\nBest of luck,\nThe CryptPad Developers");
+            return void console.log();
+        }
+        throw e;
     };
 
     try {

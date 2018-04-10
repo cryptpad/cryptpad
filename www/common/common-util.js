@@ -1,10 +1,37 @@
+(function (window) {
 define([], function () {
-    var Util = {};
+    var Util = window.CryptPad_Util = {};
+
+    // If once is true, after the event has been fired, any further handlers which are
+    // registered will fire immediately, and this type of event cannot be fired twice.
+    Util.mkEvent = function (once) {
+        var handlers = [];
+        var fired = false;
+        return {
+            reg: function (cb) {
+                if (once && fired) { return void setTimeout(cb); }
+                handlers.push(cb);
+            },
+            unreg: function (cb) {
+                if (handlers.indexOf(cb) === -1) { throw new Error("Not registered"); }
+                handlers.splice(handlers.indexOf(cb), 1);
+            },
+            fire: function () {
+                if (once && fired) { return; }
+                fired = true;
+                var args = Array.prototype.slice.call(arguments);
+                handlers.forEach(function (h) { h.apply(null, args); });
+            }
+        };
+    };
 
     Util.find = function (map, path) {
-        return (map && path.reduce(function (p, n) {
-            return typeof(p[n]) !== 'undefined' && p[n];
-        }, map));
+        var l = path.length;
+        for (var i = 0; i < l; i++) {
+            if (typeof(map[path[i]]) === 'undefined') { return; }
+            map = map[path[i]];
+        }
+        return map;
     };
 
     Util.uid = function () {
@@ -64,22 +91,6 @@ define([], function () {
             }
         }
         return a;
-    };
-
-    Util.getHash = function () {
-        return window.location.hash.slice(1);
-    };
-
-    Util.replaceHash = function (hash) {
-        if (window.history && window.history.replaceState) {
-            if (!/^#/.test(hash)) { hash = '#' + hash; }
-            void window.history.replaceState({}, window.document.title, hash);
-            if (typeof(window.onhashchange) === 'function') {
-                window.onhashchange();
-            }
-            return;
-        }
-        window.location.hash = hash;
     };
 
     /*
@@ -163,12 +174,93 @@ define([], function () {
         return Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
     };
 
-    Util.getAppType = function () {
-        var parts = window.location.pathname.split('/')
-            .filter(function (x) { return x; });
-        if (!parts[0]) { return ''; }
-        return parts[0];
+    /* for wrapping async functions such that they can only be called once */
+    Util.once = function (f) {
+        var called;
+        return function () {
+            if (called) { return; }
+            called = true;
+            f.apply(this, Array.prototype.slice.call(arguments));
+        };
+    };
+
+    Util.slice = function (A) {
+        return Array.prototype.slice.call(A);
+    };
+
+    Util.blobToImage = function (blob, cb) {
+        var reader = new FileReader();
+        reader.onloadend = function() {
+            cb(reader.result);
+        };
+        reader.readAsDataURL(blob);
+    };
+    Util.blobURLToImage = function (url, cb) {
+        var xhr = new XMLHttpRequest();
+        xhr.onload = function() {
+            var reader = new FileReader();
+            reader.onloadend = function() {
+                cb(reader.result);
+            };
+            reader.readAsDataURL(xhr.response);
+        };
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
+        xhr.send();
+    };
+
+    // Check if an element is a plain object
+    Util.isObject = function (o) {
+        return typeof (o) === "object" &&
+               Object.prototype.toString.call(o) === '[object Object]';
+    };
+
+    Util.isCircular = function (o) {
+        try {
+            JSON.stringify(o);
+            return false;
+        } catch (e) { return true; }
+    };
+
+    /*  recursively adds the properties of an object 'b' to 'a'
+        arrays are only shallow copies, so references to the original
+        might still be present. Be mindful if you will modify 'a' in the future */
+    Util.extend = function (a, b) {
+        if (!Util.isObject(a) || !Util.isObject(b)) {
+            return void console.log("Extend only works with 2 objects");
+        }
+        if (Util.isCircular(b)) {
+            return void console.log("Extend doesn't accept circular objects");
+        }
+        for (var k in b) {
+            if (Util.isObject(b[k])) {
+                a[k] = {};
+                Util.extend(a[k], b[k]);
+                continue;
+            }
+            if (Array.isArray(b[k])) {
+                a[k] = b[k].slice();
+                continue;
+            }
+            a[k] = b[k];
+        }
+    };
+
+    Util.isChecked = function (el) {
+        // could be nothing...
+        if (!el) { return false; }
+        // check if it's a dom element
+        if (typeof(el.tagName) !== 'undefined') {
+            return Boolean(el.checked);
+        }
+        // sketchy test to see if it's jquery
+        if (typeof(el.prop) === 'function') {
+            return Boolean(el.prop('checked'));
+        }
+        // else just say it's not checked
+        return false;
     };
 
     return Util;
 });
+}(self));

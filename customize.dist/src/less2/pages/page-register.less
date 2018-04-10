@@ -1,6 +1,7 @@
 @import (once) "../include/infopages.less";
-@import (once) "../include/colortheme.less";
+@import (once) "../include/colortheme-all.less";
 @import (once) "../include/alertify.less";
+@import (once) "../loading.less";
 
 .infopages_main();
 .infopages_topbar();
@@ -17,6 +18,9 @@
             }
         }
         #register {
+            &.btn {
+                padding: .5rem .5rem;
+            }
             margin-top: 16px;
             font-size: 1.25em;
             min-width: 30%; // conflict?
@@ -48,14 +52,22 @@
         text-shadow: 0 1px 5px rgba(0,0,0,.2);
     }
 }
+
 .cp-register-det {
     margin-top: -7em;
     background: #fff;
     box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
+
     #data {
-        background: #4591C4;  /* fallback for old browsers */
-        background: -webkit-linear-gradient(to right, #FF7C4F, #4592C4);  /* Chrome 10-25, Safari 5.1-6 */
-        background: linear-gradient(to right, #FF7C4F, #4592C4); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+        // Old browsers
+        background: #4591C4;
+
+        // Chrome 10-25, Safari 5.1-6
+        background: -webkit-linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
+
+        // W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+
+        background: linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
+
         padding-top: 3em;
         padding-bottom: 7em;
         padding-left: 30px;

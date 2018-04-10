@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html class="cp-app-noscroll">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script async data-bootload="/todo/inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
-    <style>.loading-hidden, .loading-hidden * {display: none !important;}</style>
+    <script async data-bootload="/todo/inner.js" data-main="/common/sframe-boot.js?ver=1.6" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <style>
+        .loading-hidden { display: none; }
+    </style>
 </head>
-<body class="loading-hidden">
-    <div id="toolbar" class="toolbar-container"></div>
-    <div id="container">
-        <div class="cp-create-form">
-            <input type="text" id="newTodoName" data-localization-placeholder="todo_newTodoNamePlaceholder" />
+<body class="cp-app-todo">
+    <div id="cp-toolbar" class="cp-toolbar-container"></div>
+    <div id="cp-app-todo-container">
+        <div class="cp-app-todo-create-form">
+            <input type="text" id="cp-app-todo-newtodo" data-localization-placeholder="todo_newTodoNamePlaceholder" />
             <button class="btn btn-success fa fa-plus" data-localization-title="todo_newTodoNameTitle"></button>
         </div>
-        <div id="tasksList"></div>
+        <div id="cp-app-todo-taskslist"></div>
     </div>
 </body>
-</html>
 

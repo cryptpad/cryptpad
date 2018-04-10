@@ -16,13 +16,17 @@ Installing CryptPad is pretty straightforward. You can read all about it in the
 
 It also contains information on keeping your instance of CryptPad up to date.
 
+## Current version
+
+The most recent version and all past release notes can be found [here](https://github.com/xwiki-labs/cryptpad/releases/).
+
 ## Setup using Docker
 
-See [Cryptpad-Docker](docs/cryptpad-docker.md)
+See [Cryptpad-Docker](docs/cryptpad-docker.md) and the community wiki's [Docker](https://github.com/xwiki-labs/cryptpad/wiki/Docker-(with-Nginx-and-Traefik)) page for details on how to get up-and-running with Cryptpad in Docker.
 
 ## Setup using Ansible
 
-See [Ansible Role for Cryptpad](https://github.com/systemli/ansible-role-cryptpad)
+See [Ansible Role for Cryptpad](https://github.com/systemli/ansible-role-cryptpad).
 
 # Security
 
@@ -75,7 +79,7 @@ If you have any questions or comments, or if you're interested in contributing t
 This software is and will always be available under the GNU Affero General Public License as
 published by the Free Software Foundation, either version 3 of the License, or (at your option)
 any later version. If you wish to use this technology in a proprietary product, please contact
-sales@xwiki.com
+sales@xwiki.com.
 
 [ChainPad]: https://github.com/xwiki-contrib/chainpad
 [active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks

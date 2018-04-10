@@ -69,7 +69,12 @@ define([
     };
 
     module.test = function (assert) {
-        var config = {Cryptpad: Cryptpad, workgroup: false, testMode: true};
+        var config = {
+            pinPads: Cryptpad.pinPads,
+            workgroup: false,
+            testMode: true,
+            loggedIn: false
+        };
 
         // MIGRATION FROM HREF TO ID
         assert(function (cb) {
@@ -243,6 +248,7 @@ define([
         }, "DRIVE4: migration and fixFiles with a pad in trash not root");
 
         // Pad attributes migration
+/*
         assert(function (cb) {
             console.log('START PAD ATTRIBUTES');
             var files = JSON.parse(JSON.stringify(example));
@@ -253,6 +259,7 @@ define([
             return cb(files.filesData[id1].userid === 'value'
                         && files.filesData[id1].previewMode);
         }, "PAD ATTRIBUTES");
+*/
 
         // userObject Tests
 
@@ -318,7 +325,12 @@ define([
             var fo = FO.init(files, config);
             fo.fixFiles();
 
-            var data = Cryptpad.makePad(href5, 'Title5');
+            var data = {
+                href: href5,
+                title: 'Title5',
+                atime: +new Date(),
+                ctime: +new Date()
+            };
             var res;
             var id5;
             // pushData is synchronous in test mode (no pinning)
@@ -350,7 +362,7 @@ define([
                 return cb();
             }
             var path;
-            fo.addFolder(["root", "Folder2"], "subsub", function (e, o) { path = o.newPath; });
+            fo.addFolder(["root", "Folder2"], "subsub", function (o) { path = o.newPath; });
             if (!files.root.Folder2.subsub || path.length !== 3) {
                 console.log("DRIVE operations: add folder");
                 return cb();

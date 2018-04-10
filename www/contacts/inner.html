@@ -1,17 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html class="cp-app-noscroll">
 <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type"/>
-    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
-    <script async data-bootload="/contacts/inner.js" data-main="/common/boot.js?ver=1.0" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
-    <style>.loading-hidden, .loading-hidden * {display: none !important;}</style>
+    <script async data-bootload="/contacts/inner.js" data-main="/common/sframe-boot.js?ver=1.6" src="/bower_components/requirejs/require.js?ver=2.3.5"></script>
+    <style>
+        .loading-hidden { display: none; }
+    </style>
 </head>
-<body class="loading-hidden">
-    <div id="toolbar" class="toolbar-container"></div>
-    <div id="app">
-        <div id="friendList"></div>
-        <div id="messaging"></div>
-    </div>
-</body>
-</html>
+<body class="cp-app-contacts">
 

@@ -1,6 +1,4 @@
 (function () {
-var LS_LANG = "CRYPTPAD_LANG";
-
 // add your module to this map so it gets used
 var map = {
     'fr': 'Français',
@@ -10,39 +8,34 @@ var map = {
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
     'zh': '繁體中文',
+    'el': 'Ελληνικά',
 };
 
-var getStoredLanguage = function () { return localStorage.getItem(LS_LANG); };
-var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage; };
-var getLanguage = function () {
+var messages = {};
+var LS_LANG = "CRYPTPAD_LANG";
+var getStoredLanguage = function () { return localStorage && localStorage.getItem(LS_LANG); };
+var getBrowserLanguage = function () { return navigator.language || navigator.userLanguage || ''; };
+var getLanguage = messages._getLanguage = function () {
+    if (window.cryptpadLanguage) { return window.cryptpadLanguage; }
     if (getStoredLanguage()) { return getStoredLanguage(); }
-    var l = getBrowserLanguage() || '';
-    if (Object.keys(map).indexOf(l) !== -1) {
-        return l;
-    }
+    var l = getBrowserLanguage();
     // Edge returns 'fr-FR' --> transform it to 'fr' and check again
-    return Object.keys(map).indexOf(l.split('-')[0]) !== -1 ? l.split('-')[0] : 'en';
+    return map[l] ? l :
+            (map[l.split('-')[0]] ? l.split('-')[0] : 'en');
 };
 var language = getLanguage();
 
-var req = ['jquery', '/customize/translations/messages.js'];
+var req = ['/common/common-util.js', '/customize/translations/messages.js'];
 if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
 
-define(req, function($, Default, Language) {
-
-    var externalMap = JSON.parse(JSON.stringify(map));
-
+define(req, function(Util, Default, Language) {
     map.en = 'English';
     var defaultLanguage = 'en';
 
-    var messages;
-
-    if (!Language || !language || language === defaultLanguage || language === 'default' || !map[language]) {
-        messages = Default;
-    }
-    else {
+    Util.extend(messages, Default);
+    if (Language && language !== defaultLanguage) {
         // Add the translated keys to the returned object
-        messages = $.extend(true, {}, Default, Language);
+        Util.extend(messages, Language);
     }
 
     messages._languages = map;
@@ -50,46 +43,71 @@ define(req, function($, Default, Language) {
 
     messages._checkTranslationState = function (cb) {
         if (typeof(cb) !== "function") { return; }
-        var missing = [];
+        var allMissing = [];
         var reqs = [];
-        Object.keys(externalMap).forEach(function (code) {
+        Object.keys(map).forEach(function (code) {
+            if (code === defaultLanguage) { return; }
             reqs.push('/customize/translations/messages.' + code + '.js');
         });
         require(reqs, function () {
             var langs = arguments;
-            Object.keys(externalMap).forEach(function (code, i) {
+            Object.keys(map).forEach(function (code, i) {
+                if (code === defaultLanguage) { return; }
                 var translation = langs[i];
-                var updated = {};
-                Object.keys(Default).forEach(function (k) {
-                    if (/^updated_[0-9]+_/.test(k) && !translation[k]) {
-                        var key = k.split('_').slice(2).join('_');
-                        // Make sure we don't already have an update for that key. It should not happen
-                        // but if it does, keep the latest version
-                        if (updated[key]) {
-                            var ek = updated[key];
-                            if (parseInt(ek.split('_')[1]) > parseInt(k.split('_')[1])) { return; }
+                var missing = [];
+                var checkInObject = function (ref, translated, path) {
+                    var updated = {};
+                    Object.keys(ref).forEach(function (k) {
+                        if (/^updated_[0-9]+_/.test(k) && !translated[k]) {
+                            var key = k.split('_').slice(2).join('_');
+                            // Make sure we don't already have an update for that key. It should not happen
+                            // but if it does, keep the latest version
+                            if (updated[key]) {
+                                var ek = updated[key];
+                                if (parseInt(ek.split('_')[1]) > parseInt(k.split('_')[1])) { return; }
+                            }
+                            updated[key] = k;
                         }
-                        updated[key] = k;
-                    }
-                });
-                Object.keys(Default).forEach(function (k) {
-                    if (/^_/.test(k) || k === 'driveReadme') { return; }
-                    if (!translation[k] || updated[k]) {
-                        if (updated[k]) {
-                            missing.push([code, k, 2, 'out.' + updated[k]]);
-                            return;
+                    });
+                    Object.keys(ref).forEach(function (k) {
+                        if (/^_/.test(k) || k === 'driveReadme') { return; }
+                        var nPath = path.slice();
+                        nPath.push(k);
+                        if (!translated[k] || updated[k]) {
+                            if (updated[k]) {
+                                var uPath = path.slice();
+                                uPath.unshift('out');
+                                missing.push([code, nPath, 2, uPath.join('.') + '.' + updated[k]]);
+                                return;
+                            }
+                            return void missing.push([code, nPath, 1]);
                         }
-                        missing.push([code, k, 1]);
-                    }
+                        if (typeof ref[k] !== typeof translated[k]) {
+                            return void missing.push([code, nPath, 3]);
+                        }
+                        if (typeof ref[k] === "object" && !Array.isArray(ref[k])) {
+                            checkInObject(ref[k], translated[k], nPath);
+                        }
+                    });
+                    Object.keys(translated).forEach(function (k) {
+                        if (/^_/.test(k) || k === 'driveReadme') { return; }
+                        var nPath = path.slice();
+                        nPath.push(k);
+                        if (typeof ref[k] === "undefined") {
+                            missing.push([code, nPath, 0]);
+                        }
+                    });
+                };
+                checkInObject(Default, translation, []);
+                // Push the removals at the end
+                missing.sort(function (a, b) {
+                    if (a[2] === 0 && b[2] !== 0) { return 1; }
+                    if (a[2] !== 0 && b[2] === 0) { return -1; }
+                    return 0;
                 });
-                Object.keys(translation).forEach(function (k) {
-                    if (/^_/.test(k) || k === 'driveReadme') { return; }
-                    if (!Default[k]) {
-                        missing.push([code, k, 0]);
-                    }
-                });
+                Array.prototype.push.apply(allMissing, missing); // Destructive concat
             });
-            cb(missing);
+            cb(allMissing);
         });
     };
 
@@ -99,64 +117,15 @@ define(req, function($, Default, Language) {
         var text = messages[key];
         if (typeof(text) === 'string') {
             return text.replace(/\{(\d+)\}/g, function (str, p1) {
-                return argArray[p1] || null;
+                if (typeof(argArray[p1]) === 'string' || typeof(argArray[p1]) === "number") {
+                    return argArray[p1];
+                }
+                console.error("Only strings and numbers can be used in _getKey params!");
+                return '';
             });
         } else {
             return text;
         }
-    };
-
-    // Add handler to the language selector
-    var storeLanguage = function (l) {
-        localStorage.setItem(LS_LANG, l);
-    };
-    messages._initSelector = function ($select) {
-        var selector = $select || $('#language-selector');
-
-        if (!selector.length) { return; }
-
-        // Select the current language in the list
-        selector.setValue(language || 'English');
-
-        // Listen for language change
-        $(selector).find('a.languageValue').on('click', function () {
-            var newLanguage = $(this).attr('data-value');
-            storeLanguage(newLanguage);
-            if (newLanguage !== language) {
-                window.location.reload();
-            }
-        });
-    };
-
-    var translateText = function (i, e) {
-        var $el = $(e);
-        var key = $el.data('localization');
-        $el.html(messages[key]);
-    };
-    var translateAppend = function (i, e) {
-        var $el = $(e);
-        var key = $el.data('localization-append');
-        $el.append(messages[key]);
-    };
-    var translateTitle = function () {
-        var $el = $(this);
-        var key = $el.data('localization-title');
-        $el.attr('title', messages[key]);
-    };
-    var translatePlaceholder = function () {
-        var $el = $(this);
-        var key = $el.data('localization-placeholder');
-        $el.attr('placeholder', messages[key]);
-    };
-    messages._applyTranslation = function () {
-        $('[data-localization]').each(translateText);
-        $('[data-localization-append]').each(translateAppend);
-        $('[data-localization-title]').each(translateTitle);
-        $('[data-localization-placeholder]').each(translatePlaceholder);
-        $('#pad-iframe').contents().find('[data-localization]').each(translateText);
-        $('#pad-iframe').contents().find('[data-localization-append]').each(translateAppend);
-        $('#pad-iframe').contents().find('[data-localization-title]').each(translateTitle);
-        $('#pad-iframe').contents().find('[data-localization-placeholder]').each(translatePlaceholder);
     };
 
     messages.driveReadme = '["BODY",{"class":"cke_editable cke_editable_themed cke_contents_ltr cke_show_borders","contenteditable":"true","spellcheck":"false","style":"color: rgb(51, 51, 51);"},' +

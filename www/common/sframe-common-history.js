@@ -1,9 +1,11 @@
 define([
     'jquery',
-    '/bower_components/chainpad-json-validator/json-ot.js',
+    '/common/common-interface.js',
+    //'/bower_components/chainpad-json-validator/json-ot.js',
+
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, JsonOT) {
-    var ChainPad = window.ChainPad;
+], function ($, UI, ChainPad /* JsonOT */) {
+    //var ChainPad = window.ChainPad;
     var History = {};
 
     var getStates = function (rt) {
@@ -21,9 +23,20 @@ define([
         var createRealtime = function () {
             return ChainPad.create({
                 userName: 'history',
+                validateContent: function (content) {
+                    try {
+                        JSON.parse(content);
+                        return true;
+                    } catch (e) {
+                        console.log('Failed to parse, rejecting patch');
+                        return false;
+                    }
+                },
                 initialState: '',
-                transformFunction: JsonOT.validate,
-                logLevel: 0,
+                //patchTransformer: ChainPad.NaiveJSONTransformer,
+                //logLevel: 0,
+                //transformFunction: JsonOT.validate,
+                logLevel: config.debug ? 2 : 0,
                 noPrune: true
             });
         };
@@ -31,12 +44,12 @@ define([
 
         History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
 
-        var to = window.setTimeout(function () {
+        /*var to = window.setTimeout(function () {
             cb('[GET_FULL_HISTORY_TIMEOUT]');
-        }, 30000);
+        }, 30000);*/
 
         common.getFullHistory(realtime, function () {
-            window.clearTimeout(to);
+            //window.clearTimeout(to);
             cb(null, realtime);
         });
     };
@@ -69,21 +82,20 @@ define([
             config.onLocal();
             config.onRemote();
         };
-        var onReady = function () {
-            config.setHistory(true);
-        };
+
+        config.setHistory(true);
+        var onReady = function () { };
 
         var Messages = common.Messages;
-        var Cryptpad = common.getCryptpadCommon();
 
         var realtime;
 
         var states = [];
         var c = states.length - 1;
 
-        var $hist = $toolbar.find('.cryptpad-toolbar-history');
-        var $left = $toolbar.find('.cryptpad-toolbar-leftside');
-        var $right = $toolbar.find('.cryptpad-toolbar-rightside');
+        var $hist = $toolbar.find('.cp-toolbar-history');
+        var $left = $toolbar.find('.cp-toolbar-leftside');
+        var $right = $toolbar.find('.cp-toolbar-rightside');
         var $cke = $toolbar.find('.cke_toolbox_main');
 
         $hist.html('').show();
@@ -91,7 +103,7 @@ define([
         $right.hide();
         $cke.hide();
 
-        Cryptpad.spinner($hist).get().show();
+        UI.spinner($hist).get().show();
 
         var onUpdate;
 
@@ -111,9 +123,18 @@ define([
             var val = states[i].getContent().doc;
             c = i;
             if (typeof onUpdate === "function") { onUpdate(); }
-            $hist.find('.next, .previous').css('visibility', '');
-            if (c === states.length - 1) { $hist.find('.next').css('visibility', 'hidden'); }
-            if (c === 0) { $hist.find('.previous').css('visibility', 'hidden'); }
+            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous').css('visibility', '');
+            if (c === states.length - 1) { $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden'); }
+            if (c === 0) { $hist.find('.cp-toolbar-history-previous').css('visibility', 'hidden'); }
+
+            if (config.debug) {
+                console.log(states[i]);
+                var ops = states[i] && states[i].getPatch() && states[i].getPatch().operations;
+                if (Array.isArray(ops)) {
+                    ops.forEach(function (op) { console.log(op); });
+                }
+            }
+
             return val || '';
         };
 
@@ -128,18 +149,18 @@ define([
         var display = function () {
             $hist.html('');
             var $prev =$('<button>', {
-                'class': 'previous fa fa-step-backward buttonPrimary',
+                'class': 'cp-toolbar-history-previous fa fa-step-backward buttonPrimary',
                 title: Messages.history_prev
             }).appendTo($hist);
-            var $nav = $('<div>', {'class': 'goto'}).appendTo($hist);
+            var $nav = $('<div>', {'class': 'cp-toolbar-history-goto'}).appendTo($hist);
             var $next = $('<button>', {
-                'class': 'next fa fa-step-forward buttonPrimary',
+                'class': 'cp-toolbar-history-next fa fa-step-forward buttonPrimary',
                 title: Messages.history_next
             }).appendTo($hist);
 
             $('<label>').text(Messages.history_version).appendTo($nav);
             var $cur = $('<input>', {
-                'class' : 'gotoInput',
+                'class' : 'cp-toolbar-history-goto-input',
                 'type' : 'number',
                 'min' : '1',
                 'max' : states.length
@@ -150,11 +171,11 @@ define([
             var $label2 = $('<label>').text(' / '+ states.length).appendTo($nav);
             $('<br>').appendTo($nav);
             var $close = $('<button>', {
-                'class':'closeHistory',
+                'class':'cp-toolbar-history-close',
                 title: Messages.history_closeTitle
             }).text(Messages.history_closeTitle).appendTo($nav);
             var $rev = $('<button>', {
-                'class':'revertHistory buttonSuccess',
+                'class':'cp-toolbar-history-revert buttonSuccess',
                 title: Messages.history_restoreTitle
             }).text(Messages.history_restore).appendTo($nav);
             if (History.readOnly) { $rev.hide(); }
@@ -170,6 +191,7 @@ define([
                 $left.show();
                 $right.show();
                 $cke.show();
+                $(window).trigger('resize');
             };
 
             // Buttons actions
@@ -193,16 +215,17 @@ define([
                 onClose();
             });
             $rev.click(function () {
-                Cryptpad.confirm(Messages.history_restorePrompt, function (yes) {
+                UI.confirm(Messages.history_restorePrompt, function (yes) {
                     if (!yes) { return; }
                     close();
                     onRevert();
-                    Cryptpad.log(Messages.history_restoreDone);
+                    UI.log(Messages.history_restoreDone);
                 });
             });
 
             // Display the latest content
             render(get(c));
+            $(window).trigger('resize');
         };
 
         // Load all the history messages into a new chainpad object

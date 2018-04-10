@@ -1,11 +1,12 @@
-@import (once) "./colortheme.less";
+@import (once) "./colortheme-all.less";
+@import (once) "./variables.less";
 
 .modal_base() {
     font-family: @colortheme_font;
 
     background-color: @colortheme_modal-bg;
     color: @colortheme_modal-fg;
-    box-shadow: @colortheme_modal-shadow;
+    box-shadow: @variables_shadow;
 
     a {
         color: @colortheme_modal-link;
@@ -19,7 +20,7 @@
 .cp-modal-container {
     display: none;
 
-    z-index: 100000;
+    z-index: 100000; //Z modal container
     position: absolute;
     top: 0;
     bottom: 0;
@@ -30,9 +31,9 @@
     .cp-modal {
         background-color: @colortheme_modal-bg;
         color: @colortheme_modal-fg;
-        box-shadow: @colortheme_modal-shadow;
+        box-shadow: @variables_shadow;
 
-        padding: @colortheme_modal-padding;
+        padding: @variables_padding;
 
         position: absolute;
         top: 15vh; bottom: 15vh;
@@ -70,7 +71,7 @@
             position: absolute;
             top: 0;
             right: 0;
-            margin: @colortheme_modal-padding;
+            margin: @variables_padding;
             cursor: pointer;
         }
     }

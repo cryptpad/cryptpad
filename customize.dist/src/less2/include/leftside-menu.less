@@ -1,0 +1,23 @@
+@import (once) "./unselectable.less";
+@import (once) "./variables.less";
+@import (once) "./colortheme-all.less";
+
+.leftside-menu_main() {
+}
+.leftside-menu-category_main() {
+    .unselectable_make();
+    padding: 5px 20px;
+    margin: 15px 0;
+    cursor: pointer;
+    height: @variables_bar-height;
+    line-height: @variables_bar-height - 10px;
+    .fa {
+        width: 25px;
+    }
+    &:hover {
+        background: rgba(0,0,0,0.05);
+    }
+    &.cp-leftside-active {
+        background: @colortheme_sidebar-active;
+    }
+}

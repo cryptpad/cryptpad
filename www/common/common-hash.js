@@ -1,12 +1,12 @@
 define([
     '/common/common-util.js',
-    '/common/common-interface.js',
+    '/customize/messages.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/tweetnacl/nacl-fast.min.js'
-], function (Util, UI, Crypto) {
+], function (Util, Messages, Crypto) {
     var Nacl = window.nacl;
 
-    var Hash = {};
+    var Hash = window.CryptPad_Hash = {};
 
     var uint8ArrayToHex = Util.uint8ArrayToHex;
     var hexToBase64 = Util.hexToBase64;
@@ -35,8 +35,8 @@ define([
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
         return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
     };
-    Hash.getUserHrefFromKeys = function (username, pubkey) {
-        return window.location.origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
+    Hash.getUserHrefFromKeys = function (origin, username, pubkey) {
+        return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
 
     var fixDuplicateSlashes = function (s) {
@@ -68,7 +68,9 @@ Version 1
                 parsed.mode = hashArr[2];
                 parsed.channel = hashArr[3];
                 parsed.key = hashArr[4].replace(/-/g, '/');
-                parsed.present = typeof(hashArr[5]) === "string" && hashArr[5] === 'present';
+                var options = hashArr.slice(5);
+                parsed.present = options.indexOf('present') !== -1;
+                parsed.embed = options.indexOf('embed') !== -1;
                 return parsed;
             }
             return parsed;
@@ -112,8 +114,30 @@ Version 1
 
         if (!href) { return ret; }
         if (href.slice(-1) !== '/') { href += '/'; }
+        href = href.replace(/\/\?[^#]+#/, '/#');
 
         var idx;
+
+        ret.getUrl = function (options) {
+            options = options || {};
+            var url = '/';
+            if (!ret.type) { return url; }
+            url += ret.type + '/';
+            if (!ret.hashData) { return url; }
+            if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
+            if (ret.hashData.version !== 1) { return url + '#' + ret.hash; }
+            url += '#/' + ret.hashData.version +
+                   '/' + ret.hashData.mode +
+                   '/' + ret.hashData.channel.replace(/\//g, '-') +
+                   '/' + ret.hashData.key.replace(/\//g, '-') +'/';
+            if (options.embed) {
+                url += 'embed/';
+            }
+            if (options.present) {
+                url += 'present/';
+            }
+            return url;
+        };
 
         if (!/^https*:\/\//.test(href)) {
             idx = href.indexOf('/#');
@@ -152,7 +176,7 @@ Version 1
             secret.keys = Crypto.createEditCryptor();
             secret.key = Crypto.createEditCryptor().editKeyStr;
         };
-        if (!secretHash && !/#/.test(window.location.href)) {
+        if (!secretHash && !window.location.hash) { //!/#/.test(window.location.href)) {
             generate();
             return secret;
         } else {
@@ -188,14 +212,12 @@ Version 1
                         secret.keys = Crypto.createEditCryptor(parsed.key);
                         secret.key = secret.keys.editKeyStr;
                         if (secret.channel.length !== 32 || secret.key.length !== 24) {
-                            UI.alert("The channel key and/or the encryption key is invalid");
                             throw new Error("The channel key and/or the encryption key is invalid");
                         }
                     }
                     else if (parsed.mode === 'view') {
                         secret.keys = Crypto.createViewCryptor(parsed.key);
                         if (secret.channel.length !== 32) {
-                            UI.alert("The channel key is invalid");
                             throw new Error("The channel key is invalid");
                         }
                     }
@@ -278,6 +300,8 @@ Version 1
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref);
         if (!parsed.hash) { return false; }
+        // We can't have a stronger hash if we're already in edit mode
+        if (parsed.hashData && parsed.hashData.mode === 'edit') { return; }
         var stronger;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];
@@ -338,6 +362,20 @@ Version 1
         channel = channel || Hash.createChannelId();
         return window.location.origin + '/invite/#/1/' + channel +
             '/' + curvePublic.replace(/\//g, '-') + '/';
+    };
+
+    // Create untitled documents when no name is given
+    var getLocaleDate = function () {
+        if (window.Intl && window.Intl.DateTimeFormat) {
+            var options = {weekday: "short", year: "numeric", month: "long", day: "numeric"};
+            return new window.Intl.DateTimeFormat(undefined, options).format(new Date());
+        }
+        return new Date().toString().split(' ').slice(0,4).join(' ');
+    };
+    Hash.getDefaultName = function (parsed) {
+        var type = parsed.type;
+        var name = (Messages.type)[type] + ' - ' + getLocaleDate();
+        return name;
     };
 
     return Hash;

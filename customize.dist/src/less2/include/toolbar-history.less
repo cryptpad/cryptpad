@@ -1,0 +1,52 @@
+@import (once) "./colortheme-all.less";
+
+.history_main () {
+    .cp-toolbar-history {
+        display: none;
+        text-align: center;
+        width: 100%;
+        * {
+            font: @colortheme_app-font;
+        }
+        .cp-toolbar-history-next {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 20px;
+        }
+        .cp-toolbar-history-previous {
+            display: inline-block;
+            vertical-align: middle;
+            margin: 20px;
+        }
+        .cp-toolbar-history-goto {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            input { width: 75px; }
+        }
+        .cp-toolbar-history-goto-input {
+            padding-left: 5px;
+            margin-left: 5px;
+            vertical-align: middle;
+        }
+        button {
+            color: inherit;
+            background-color: rgba(0,0,0,0.2);
+            &:hover {
+                background-color: rgba(0,0,0,0.4);
+            }
+        }
+        .cp-toolbar-history-close {
+            background: white;
+            color: black;
+            margin-top: 5px;
+            &:hover {
+                background-color: #e6e6e6;
+            }
+        }
+        .fa-spinner {
+            font-size: 66px;
+        }
+    }
+}
+

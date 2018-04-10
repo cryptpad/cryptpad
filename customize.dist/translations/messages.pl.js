@@ -52,7 +52,6 @@ define(function () {
     out.shareSuccess = 'Pomyślnie skopiowano URL';
 
     out.presentButtonTitle = "Otwórz tryb prezentacji";
-    out.presentSuccess = 'Naciśnij ESC aby wyjść z trybu prezentacji';
 
     out.backgroundButtonTitle = 'Zmień kolor tła dla tej prezentacji';
     out.colorButtonTitle = 'Zmień kolor tekstu dla tej prezentacji';

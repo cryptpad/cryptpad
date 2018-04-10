@@ -3,13 +3,13 @@ define([
 ], function (Rpc) {
     var create = function (network, proxy, cb) {
         if (!network) {
-            window.setTimeout(function () {
+            setTimeout(function () {
                 cb('INVALID_NETWORK');
             });
             return;
         }
         if (!proxy) {
-            window.setTimeout(function () {
+            setTimeout(function () {
                 cb('INVALID_PROXY');
             });
             return;
@@ -19,7 +19,7 @@ define([
         var edPublic = proxy.edPublic;
 
         if (!(edPrivate && edPublic)) {
-            window.setTimeout(function () {
+            setTimeout(function () {
                 cb('INVALID_KEYS');
             });
             return;
@@ -39,7 +39,7 @@ define([
             // you can ask the server to pin a particular channel for you
             exp.pin = function (channels, cb) {
                 if (!Array.isArray(channels)) {
-                    window.setTimeout(function () {
+                    setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
                     return;
@@ -50,7 +50,7 @@ define([
             // you can also ask to unpin a particular channel
             exp.unpin = function (channels, cb) {
                 if (!Array.isArray(channels)) {
-                    window.setTimeout(function () {
+                    setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
                     return;
@@ -71,7 +71,7 @@ define([
             // if local and remote hashes don't match, send a reset
             exp.reset = function (channels, cb) {
                 if (!Array.isArray(channels)) {
-                    window.setTimeout(function () {
+                    setTimeout(function () {
                         cb('[TypeError] pin expects an array');
                     });
                     return;
@@ -145,7 +145,33 @@ define([
                     if (response && response.length) {
                         cb(void 0, response[0]);
                     } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+
+            exp.removeOwnedChannel = function (channel, cb) {
+                if (typeof(channel) !== 'string' || channel.length !== 32) {
+                    // can't use this on files because files can't be owned...
+                    return void cb('INVALID_ARGUMENTS');
+                }
+                rpc.send('REMOVE_OWNED_CHANNEL', channel, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length && response[0] === "OK") {
                         cb();
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+
+            exp.removePins = function (cb) {
+                rpc.send('REMOVE_PINS', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length && response[0] === "OK") {
+                        cb();
+                    } else {
+                        cb('INVALID_RESPONSE');
                     }
                 });
             };
@@ -163,7 +189,7 @@ define([
 
             exp.uploadStatus = function (size, cb) {
                 if (typeof(size) !== 'number') {
-                    return void window.setTimeout(function () {
+                    return void setTimeout(function () {
                         cb('INVALID_SIZE');
                     });
                 }

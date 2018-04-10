@@ -3,6 +3,15 @@
     globals module
 */
 var domain = ' http://localhost:3000/';
+
+// You can `kill -USR2` the node process and it will write out a heap dump.
+// If your system doesn't support dumping, comment this out and install with
+// `npm install --production`
+// See: https://strongloop.github.io/strongloop.com/strongblog/how-to-heap-snapshots/
+
+// to enable this feature, uncomment the line below:
+// require('heapdump');
+
 module.exports = {
 
     // the address you want to bind to, :: means all ipv4 and ipv6 addresses
@@ -84,6 +93,8 @@ module.exports = {
     // cross-domain iframe. It can simply host the same content as CryptPad.
     // httpSafeOrigin: "https://some-other-domain.xyz",
 
+    httpUnsafeOrigin: domain,
+
     /*  your server's websocket url is configurable
      *  (default: '/cryptpad_websocket')
      *
@@ -114,7 +125,9 @@ module.exports = {
         'terms',
         'about',
         'contact',
-        'what-is-cryptpad'
+        'what-is-cryptpad',
+        'features',
+        'faq'
     ],
 
     /*  Limits, Donations, Subscriptions and Contact
@@ -160,6 +173,41 @@ module.exports = {
     defaultStorageLimit: 50 * 1024 * 1024,
 
     /*
+     *  CryptPad allows administrators to give custom limits to their friends.
+     *  add an entry for each friend, identified by their user id,
+     *  which can be found on the settings page. Include a 'limit' (number of bytes),
+     *  a 'plan' (string), and a 'note' (string).
+     *
+     *  hint: 1GB is 1024 * 1024 * 1024 bytes
+     */
+    customLimits: {
+        /*
+        "https://my.awesome.website/user/#/1/cryptpad-user1/YZgXQxKR0Rcb6r6CmxHPdAGLVludrAF2lEnkbx1vVOo=": {
+            limit: 20 * 1024 * 1024 * 1024,
+            plan: 'insider',
+            note: 'storage space donated by my.awesome.website'
+        },
+        "https://my.awesome.website/user/#/1/cryptpad-user2/GdflkgdlkjeworijfkldfsdflkjeEAsdlEnkbx1vVOo=": {
+            limit: 10 * 1024 * 1024 * 1024,
+            plan: 'insider',
+            note: 'storage space donated by my.awesome.website'
+        }
+        */
+    },
+
+    /*  some features may require that the server be able to schedule tasks
+        far into the future, such as:
+            > "three months from now, this channel should expire"
+        To disable these features, set 'enableTaskScheduling' to false
+    */
+    enableTaskScheduling: true,
+
+    /*  if you would like the list of scheduled tasks to be stored in
+        a custom location, change the path below:
+    */
+    taskPath: './tasks',
+
+    /*
      *  By default, CryptPad also contacts our accounts server once a day to check for changes in
      *  the people who have accounts. This check-in will also send the version of your CryptPad
      *  instance and your email so we can reach you if we are aware of a serious problem. We will
@@ -200,6 +248,14 @@ module.exports = {
      *  defined here.
      */
     pinPath: './pins',
+
+    /*  Pads that are not 'pinned' by any registered user can be set to expire
+     *  after a configurable number of days of inactivity (default 90 days).
+     *  The value can be changed or set to false to remove expiration.
+     *  Expired pads can then be removed using a cron job calling the
+     *  `delete-inactive.js` script with node
+     */
+    inactiveTime: 90, // days
 
     /*  CryptPad allows logged in users to upload encrypted files. Files/blobs
      *  are stored in a 'blob-store'. Set its location here.
@@ -278,4 +334,12 @@ module.exports = {
     //  '/etc/apache2/ssl/my_public_cert.crt',
     //  '/etc/apache2/ssl/my_certificate_authorities_cert_chain.ca'
     //],
+
+    /* You can get a repl for debugging the server if you want it.
+     * to enable this, specify the debugReplName and then you can
+     * connect to it with `nc -U /tmp/repl/<your name>.sock`
+     * If you run multiple cryptpad servers, you need to use different
+     * repl names.
+     */
+    //debugReplName: "cryptpad"
 };

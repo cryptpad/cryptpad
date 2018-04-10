@@ -1,8 +1,9 @@
 define([
-    '/common/cryptpad-common.js',
     '/common/cryptget.js',
     '/common/userObject.js',
-], function (Cryptpad, Crypt, FO) {
+    '/common/common-hash.js',
+    '/common/common-realtime.js',
+], function (Crypt, FO, Hash, Realtime) {
     var exp = {};
 
     var getType = function (el) {
@@ -41,7 +42,7 @@ define([
             if (typeof(p) === "string") {
                 if (getType(root) !== "object") { root = undefined; error(); return; }
                 if (i === path.length - 1) {
-                    root[Cryptpad.createChannelId()] = id;
+                    root[Hash.createChannelId()] = id;
                     return;
                 }
                 next = getType(path[i+1]);
@@ -83,9 +84,9 @@ define([
         });
     };
 
-    exp.anonDriveIntoUser = function (proxy, cb) {
+    exp.anonDriveIntoUser = function (proxyData, fsHash, cb) {
         // Make sure we have an FS_hash and we don't use it, otherwise just stop the migration and cb
-        if (!localStorage.FS_hash || !Cryptpad.isLoggedIn()) {
+        if (!fsHash || !proxyData.loggedIn) {
             if (typeof(cb) === "function") { return void cb(); }
         }
         // Get the content of FS_hash and then merge the objects, remove the migration key and cb
@@ -102,26 +103,29 @@ define([
                 return;
             }
             if (parsed) {
+                var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
-                    Cryptpad: Cryptpad
+                    loggedIn: proxyData.loggedIn,
+                    pinPads: function () {} // without pinPads /outer/userObject.js won't be loaded
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles();
-                    var newData = Cryptpad.getStore().getProxy();
-                    var newFo = newData.fo;
+                    var newFo = proxyData.userObject;
                     var oldRecentPads = parsed.drive[newFo.FILES_DATA];
                     var newRecentPads = proxy.drive[newFo.FILES_DATA];
-                    var newFiles = newFo.getFiles([newFo.FILES_DATA]);
                     var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
+                    var newHrefs = Object.keys(newRecentPads).map(function (id) {
+                        return newRecentPads[id].href;
+                    });
                     oldFiles.forEach(function (id) {
                         var href = oldRecentPads[id].href;
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
-                        if (newFiles.indexOf(id) !== -1) { return; }
+                        if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href
-                        if (Cryptpad.findStronger(href, newRecentPads)) { return; }
+                        if (Hash.findStronger(href, newRecentPads)) { return; }
                         // If we have a weaker version, replace the href by the new one
                         // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
-                        var weaker = Cryptpad.findWeaker(href, newRecentPads);
+                        var weaker = Hash.findWeaker(href, newRecentPads);
                         if (weaker) {
                             // Update RECENTPADS
                             newRecentPads.some(function (pad) {
@@ -150,15 +154,17 @@ define([
                     if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
                         proxy.FS_hashes = [];
                     }
-                    proxy.FS_hashes.push(localStorage.FS_hash);
-                    if (typeof(cb) === "function") { cb(); }
+                    proxy.FS_hashes.push(fsHash);
+                    if (typeof(cb) === "function") {
+                        Realtime.whenRealtimeSyncs(proxyData.realtime, cb);
+                    }
                 };
                 oldFo.migrate(onMigrated);
                 return;
             }
             if (typeof(cb) === "function") { cb(); }
         };
-        Crypt.get(localStorage.FS_hash, todo);
+        Crypt.get(fsHash, todo);
     };
 
     return exp;

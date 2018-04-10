@@ -19,55 +19,42 @@ require(['/api/config'], function (ApiConfig) {
 });
 define([
     'jquery',
-    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/hyperjson/hyperjson.js',
-    '/common/toolbar3.js',
+    '/common/sframe-app-framework.js',
     '/common/cursor.js',
-    '/bower_components/chainpad-json-validator/json-ot.js',
     '/common/TypingTests.js',
-    'json.sortify',
-    '/bower_components/textpatcher/TextPatcher.js',
-    '/common/cryptpad-common.js',
-    '/common/cryptget.js',
+    '/customize/messages.js',
     '/pad/links.js',
     '/bower_components/nthen/index.js',
-    '/common/sframe-common.js',
+    '/common/media-tag.js',
     '/api/config',
-    '/common/common-realtime.js',
+    '/common/common-hash.js',
+    '/common/common-util.js',
+    '/bower_components/chainpad/chainpad.dist.js',
+    '/customize/application_config.js',
 
-    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/diff-dom/diffDOM.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less/cryptpad.less',
-    'less!/customize/src/less/toolbar.less'
+    'less!/customize/src/less2/main.less',
 ], function (
     $,
-    Crypto,
     Hyperjson,
-    Toolbar,
+    Framework,
     Cursor,
-    JsonOT,
     TypingTest,
-    JSONSortify,
-    TextPatcher,
-    Cryptpad,
-    Cryptget,
+    Messages,
     Links,
     nThen,
-    SFCommon,
+    MediaTag,
     ApiConfig,
-    CommonRealtime)
+    Hash,
+    Util,
+    ChainPad,
+    AppConfig)
 {
-    var saveAs = window.saveAs;
-    var Messages = Cryptpad.Messages;
     var DiffDom = window.diffDOM;
-
-    var stringify = function (obj) { return JSONSortify(obj); };
-
-    window.Toolbar = Toolbar;
-    window.Hyperjson = Hyperjson;
 
     var slice = function (coll) {
         return Array.prototype.slice.call(coll);
@@ -90,20 +77,10 @@ define([
 
     var module = window.REALTIME_MODULE = window.APP = {
         Hyperjson: Hyperjson,
-        TextPatcher: TextPatcher,
         logFights: true,
         fights: [],
-        Cryptpad: Cryptpad,
         Cursor: Cursor,
     };
-
-    var emitResize = module.emitResize = function () {
-        var evt = window.document.createEvent('UIEvents');
-        evt.initUIEvent('resize', true, false, window, 0);
-        window.dispatchEvent(evt);
-    };
-
-    var toolbar;
 
     var isNotMagicLine = function (el) {
         return !(el && typeof(el.getAttribute) === 'function' &&
@@ -111,14 +88,19 @@ define([
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
     };
 
-    /* catch `type="_moz"` before it goes over the wire */
-    var brFilter = function (hj) {
-        if (hj[1].type === '_moz') { hj[1].type = undefined; }
+    var hjsonFilters = function (hj) {
+        /* catch `type="_moz"` before it goes over the wire */
+        var brFilter = function (hj) {
+            if (hj[1].type === '_moz') { hj[1].type = undefined; }
+            return hj;
+        };
+        var mediatagContentFilter = function (hj) {
+            if (hj[0] === 'MEDIA-TAG') { hj[2] = []; }
+            return hj;
+        };
+        brFilter(hj);
+        mediatagContentFilter(hj);
         return hj;
-    };
-
-    var onConnectError = function () {
-        Cryptpad.errorLoadingScreen(Messages.websocketError);
     };
 
     var domFromHTML = function (html) {
@@ -127,11 +109,11 @@ define([
 
     var forbiddenTags = [
         'SCRIPT',
-        'IFRAME',
+        //'IFRAME',
         'OBJECT',
         'APPLET',
-        'VIDEO',
-        'AUDIO'
+        //'VIDEO',
+        //'AUDIO'
     ];
 
     var getHTML = function (inner) {
@@ -152,6 +134,14 @@ define([
             check();
         }, CKEDITOR_CHECK_INTERVAL);
         check();
+    };
+
+    var mkHelpMenu = function (framework) {
+        var $toolbarContainer = $('.cke_toolbox_main');
+        var helpMenu = framework._.sfCommon.createHelpMenu(['text', 'pad']);
+        $toolbarContainer.before(helpMenu.menu);
+
+        framework._.toolbar.$drawer.append(helpMenu.button);
     };
 
     var mkDiffOptions = function (cursor, readOnly) {
@@ -232,6 +222,8 @@ define([
                     return true;
                 }
 
+                cursor.update();
+
                 // no use trying to recover the cursor if it doesn't exist
                 if (!cursor.exists()) { return; }
 
@@ -278,36 +270,73 @@ define([
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var andThen = function (editor, Ckeditor, common) {
-        //var $iframe = $('#pad-iframe').contents();
-        //var secret = Cryptpad.getSecrets();
-        //var readOnly = secret.keys && !secret.keys.editKeyStr;
-        //if (!secret.keys) {
-        //    secret.keys = secret.key;
-        //}
-        var readOnly = false; // TODO
-        var cpNfInner;
-        var metadataMgr;
-        var onLocal;
+    var addToolbarHideBtn = function (framework, $bar) {
+        // Expand / collapse the toolbar
+        var cfg = {
+            element: $bar.find('.cke_toolbox_main')
+        };
+        var onClick = function (visible) {
+            framework._.sfCommon.setAttribute(['pad', 'showToolbar'], visible);
+        };
+        framework._.sfCommon.getAttribute(['pad', 'showToolbar'], function (err, data) {
+            if (($(window).height() >= 800  || $(window).width() >= 800) &&
+                (typeof(data) === "undefined" || data)) { $('.cke_toolbox_main').show(); }
+            else { $('.cke_toolbox_main').hide(); }
+            var $collapse = framework._.sfCommon.createButton('toggle', true, cfg, onClick);
+            framework._.toolbar.$rightside.append($collapse);
+        });
+    };
 
+    var displayMediaTags = function (framework, dom, mediaTagMap) {
+        setTimeout(function () { // Just in case
+            var tags = dom.querySelectorAll('media-tag:empty');
+            Array.prototype.slice.call(tags).forEach(function (el) {
+                MediaTag(el);
+                $(el).on('keydown', function (e) {
+                    if ([8,46].indexOf(e.which) !== -1) {
+                        $(el).remove();
+                        framework.localChange();
+                    }
+                });
+                var observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'childList') {
+                            var list_values = [].slice.call(el.children);
+                            mediaTagMap[el.getAttribute('src')] = list_values;
+                        }
+                    });
+                });
+                observer.observe(el, {
+                    attributes: false,
+                    childList: true,
+                    characterData: false
+                });
+            });
+        });
+    };
+
+    var restoreMediaTags = function (tempDom, mediaTagMap) {
+        var tags = tempDom.querySelectorAll('media-tag:empty');
+        Array.prototype.slice.call(tags).forEach(function (tag) {
+            var src = tag.getAttribute('src');
+            if (mediaTagMap[src]) {
+                mediaTagMap[src].forEach(function (n) {
+                    tag.appendChild(n);
+                });
+            }
+        });
+    };
+
+    var andThen2 = function (editor, Ckeditor, framework) {
+        var mediaTagMap = {};
         var $bar = $('#cke_1_toolbox');
-
+        var $contentContainer = $('#cke_1_contents');
         var $html = $bar.closest('html');
         var $faLink = $html.find('head link[href*="/bower_components/components-font-awesome/css/font-awesome.min.css"]');
         if ($faLink.length) {
             $html.find('iframe').contents().find('head').append($faLink.clone());
         }
-        var isHistoryMode = false;
-
-        if (readOnly) {
-            $('#cke_1_toolbox > .cke_toolbox_main').hide();
-        }
-
-        /* add a class to the magicline plugin so we can pick it out more easily */
-
         var ml = Ckeditor.instances.editor1.plugins.magicline.backdoor.that.line.$;
         [ml, ml.parentElement].forEach(function (el) {
             el.setAttribute('class', 'non-realtime');
@@ -325,33 +354,27 @@ define([
             var el = e.currentTarget;
             if (!el || el.nodeName !== 'A') { return; }
             var href = el.getAttribute('href');
-            var bounceHref = window.location.origin + '/bounce/#' + encodeURIComponent(href);
-            if (href) { ifrWindow.open(bounceHref, '_blank'); }
-        };
-
-        var setEditable = module.setEditable = function (bool) {
-            if (bool) {
-                $(inner).css({
-                    color: '#333',
-                });
-            }
-            if (!readOnly || !bool) {
-                inner.setAttribute('contenteditable', bool);
+            if (href) {
+                framework._.sfCommon.openUnsafeURL(href);
             }
         };
 
-        CommonRealtime.onInfiniteSpinner(function () { setEditable(false); });
+        mkHelpMenu(framework);
 
-        // don't let the user edit until the pad is ready
-        setEditable(false);
+        framework.onEditableChange(function (unlocked) {
+            if (!framework.isReadOnly()) {
+                $(inner).attr('contenteditable', '' + Boolean(unlocked));
+            }
+            $(inner).css({ background: unlocked ? '#fff' : '#eee' });
+        });
 
-        var initializing = true;
+        framework.setMediaTagEmbedder(function ($mt) {
+            $mt.attr('contenteditable', 'false');
+            $mt.attr('tabindex', '1');
+            editor.insertElement(new window.CKEDITOR.dom.element($mt[0]));
+        });
 
-        var Title;
-        //var UserList;
-        //var Metadata;
-
-        var getHeadingText = function () {
+        framework.setTitleRecommender(function () {
             var text;
             if (['h1', 'h2', 'h3'].some(function (t) {
                 var $header = $(inner).find(t + ':first-of-type');
@@ -360,261 +383,61 @@ define([
                     return true;
                 }
             })) { return text; }
-        };
+        });
 
-        var DD = new DiffDom(mkDiffOptions(cursor, readOnly));
+        var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
         // apply patches, and try not to lose the cursor in the process!
-        var applyHjson = function (shjson) {
-            var userDocStateDom = hjsonToDom(JSON.parse(shjson));
+        framework.onContentUpdate(function (hjson) {
+            if (!Array.isArray(hjson)) { throw new Error(Messages.typeError); }
+            var userDocStateDom = hjsonToDom(hjson);
 
-            if (!readOnly && !initializing) {
-                userDocStateDom.setAttribute("contenteditable", "true"); // lol wtf
-            }
+            userDocStateDom.setAttribute("contenteditable",
+                inner.getAttribute('contenteditable'));
+
+            restoreMediaTags(userDocStateDom, mediaTagMap);
+
+            // Deal with adjasent text nodes
+            userDocStateDom.normalize();
+            inner.normalize();
+
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
-            if (readOnly) {
+            displayMediaTags(framework, inner, mediaTagMap);
+            if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
                 $links.off('click', openLink).on('click', openLink);
             }
-        };
+        });
 
-        var stringifyDOM = module.stringifyDOM = function (dom) {
-            var hjson = Hyperjson.fromDOM(dom, isNotMagicLine, brFilter);
-            hjson[3] = {
-                metadata: metadataMgr.getMetadataLazy()
-            };
-            /*hjson[3] = { TODO
-                    users: UserList.userData,
-                    defaultTitle: Title.defaultTitle,
-                    type: 'pad'
-                }
-            };
-            if (!initializing) {
-                hjson[3].metadata.title = Title.title;
-            } else if (Cryptpad.initialName && !hjson[3].metadata.title) {
-                hjson[3].metadata.title = Cryptpad.initialName;
-            }*/
-            return stringify(hjson);
-        };
-
-        var realtimeOptions = {
-            readOnly: readOnly,
-            // really basic operational transform
-            transformFunction : JsonOT.validate,
-            // cryptpad debug logging (default is 1)
-            // logLevel: 0,
-            validateContent: function (content) {
-                try {
-                    JSON.parse(content);
-                    return true;
-                } catch (e) {
-                    console.log("Failed to parse, rejecting patch");
-                    return false;
-                }
-            }
-        };
-
-        var setHistory = function (bool, update) {
-            isHistoryMode = bool;
-            setEditable(!bool);
-            if (!bool && update) {
-                realtimeOptions.onRemote();
-            }
-        };
-
-        realtimeOptions.onRemote = function () {
-            if (initializing) { return; }
-            if (isHistoryMode) { return; }
-
-            var oldShjson = stringifyDOM(inner);
-
-            var shjson = module.realtime.getUserDoc();
-
-            // remember where the cursor is
-            cursor.update();
-
-            // Update the user list (metadata) from the hyperjson
-            // TODO Metadata.update(shjson);
-
-            var newInner = JSON.parse(shjson);
-            var newSInner;
-            if (newInner.length > 2) {
-                newSInner = stringify(newInner[2]);
-            }
-
-            if (newInner[3]) {
-                metadataMgr.updateMetadata(newInner[3].metadata);
-            }
-
-            // build a dom from HJSON, diff, and patch the editor
-            applyHjson(shjson);
-
-            if (!readOnly) {
-                var shjson2 = stringifyDOM(inner);
-
-                // TODO
-                //shjson = JSON.stringify(JSON.parse(shjson).slice(0,3));
-
-                if (shjson2 !== shjson) {
-                    console.error("shjson2 !== shjson");
-                    module.patchText(shjson2);
-
-                    /*  pushing back over the wire is necessary, but it can
-                        result in a feedback loop, which we call a browser
-                        fight */
-                    if (module.logFights) {
-                        // what changed?
-                        var op = TextPatcher.diff(shjson, shjson2);
-                        // log the changes
-                        TextPatcher.log(shjson, op);
-                        var sop = JSON.stringify(TextPatcher.format(shjson, op));
-
-                        var index = module.fights.indexOf(sop);
-                        if (index === -1) {
-                            module.fights.push(sop);
-                            console.log("Found a new type of browser disagreement");
-                            console.log("You can inspect the list in your " +
-                                "console at `REALTIME_MODULE.fights`");
-                            console.log(module.fights);
-                        } else {
-                            console.log("Encountered a known browser disagreement: " +
-                                "available at `REALTIME_MODULE.fights[%s]`", index);
-                        }
-                    }
-                }
-            }
-
-            // Notify only when the content has changed, not when someone has joined/left
-            var oldSInner = stringify(JSON.parse(oldShjson)[2]);
-            if (newSInner && newSInner !== oldSInner) {
-                common.notify();
-            }
-        };
-
-        var exportFile = function () {
-            var html = getHTML(inner);
-            var suggestion = Title.suggestTitle('cryptpad-document');
-            Cryptpad.prompt(Messages.exportPrompt,
-                Cryptpad.fixFileName(suggestion) + '.html', function (filename) {
-                if (!(typeof(filename) === 'string' && filename)) { return; }
-                var blob = new Blob([html], {type: "text/html;charset=utf-8"});
-                saveAs(blob, filename);
+        framework.setTextContentGetter(function () {
+            var innerCopy = inner.cloneNode(true);
+            displayMediaTags(framework, innerCopy, mediaTagMap);
+            innerCopy.normalize();
+            $(innerCopy).find('*').each(function (i, el) {
+                $(el).append(' ');
             });
-        };
-        var importFile = function (content) {
-            var shjson = stringify(Hyperjson.fromDOM(domFromHTML(content).body));
-            applyHjson(shjson);
-            realtimeOptions.onLocal();
-        };
+            var str = $(innerCopy).text();
+            str = str.replace(/\s\s+/g, ' ');
+            return str;
+        });
+        framework.setContentGetter(function () {
+            displayMediaTags(framework, inner, mediaTagMap);
+            inner.normalize();
+            return Hyperjson.fromDOM(inner, isNotMagicLine, hjsonFilters);
+        });
 
-        realtimeOptions.onInit = function (info) {
-            readOnly = metadataMgr.getPrivateData().readOnly;
-            console.log('onInit');
-            var titleCfg = { getHeadingText: getHeadingText };
-            Title = common.createTitle(titleCfg, realtimeOptions.onLocal, common, metadataMgr);
-            var configTb = {
-                displayed: ['userlist', 'title', 'useradmin', 'spinner', 'newpad', 'share', 'limit'],
-                title: Title.getTitleConfig(),
-                metadataMgr: metadataMgr,
-                readOnly: readOnly,
-                ifrw: window,
-                realtime: info.realtime,
-                common: Cryptpad,
-                sfCommon: common,
-                $container: $bar,
-                $contentContainer: $('#cke_1_contents'),
-            };
-            toolbar = info.realtime.toolbar = Toolbar.create(configTb);
-            Title.setToolbar(toolbar);
+        $bar.find('#cke_1_toolbar_collapser').hide();
+        if (!framework.isReadOnly()) {
+            addToolbarHideBtn(framework, $contentContainer);
+        } else {
+            $('.cke_toolbox_main').hide();
+        }
 
-            var $rightside = toolbar.$rightside;
-            var $drawer = toolbar.$drawer;
+        framework.onReady(function (newPad) {
+            editor.focus();
 
-            var src = 'less!/customize/src/less/toolbar.less';
-            require([
-                src
-            ], function () {
-                var $html = $bar.closest('html');
-                $html
-                    .find('head style[data-original-src="' + src.replace(/less!/, '') + '"]')
-                    .appendTo($html.find('head'));
-            });
-
-            $bar.find('#cke_1_toolbar_collapser').hide();
-            if (!readOnly) {
-                // Expand / collapse the toolbar
-                var $collapse = Cryptpad.createButton(null, true);
-                $collapse.removeClass('fa-question');
-                var updateIcon = function () {
-                    $collapse.removeClass('fa-caret-down').removeClass('fa-caret-up');
-                    var isCollapsed = !$bar.find('.cke_toolbox_main').is(':visible');
-                    if (isCollapsed) {
-                        if (!initializing) { common.feedback('HIDETOOLBAR_PAD'); }
-                        $collapse.addClass('fa-caret-down');
-                    }
-                    else {
-                        if (!initializing) { common.feedback('SHOWTOOLBAR_PAD'); }
-                        $collapse.addClass('fa-caret-up');
-                    }
-                };
-                updateIcon();
-                $collapse.click(function () {
-                    $(window).trigger('resize');
-                    $('.cke_toolbox_main').toggle();
-                    $(window).trigger('cryptpad-ck-toolbar');
-                    updateIcon();
-                });
-                $rightside.append($collapse);
-            } else {
-                $('.cke_toolbox_main').hide();
-            }
-
-            /* add a history button */
-            var histConfig = {
-                onLocal: realtimeOptions.onLocal,
-                onRemote: realtimeOptions.onRemote,
-                setHistory: setHistory,
-                applyVal: function (val) { applyHjson(val || '["BODY",{},[]]'); },
-                $toolbar: $bar
-            };
-            var $hist = common.createButton('history', true, {histConfig: histConfig});
-            $drawer.append($hist);
-
-            if (!metadataMgr.getPrivateData().isTemplate) {
-                var templateObj = {
-                    rt: info.realtime,
-                    getTitle: function () { return metadataMgr.getMetadata().title; }
-                };
-                var $templateButton = common.createButton('template', true, templateObj);
-                $rightside.append($templateButton);
-            }
-
-            /* add an export button */
-            var $export = Cryptpad.createButton('export', true, {}, exportFile);
-            $drawer.append($export);
-
-            if (!readOnly) {
-                /* add an import button */
-                var $import = Cryptpad.createButton('import', true, {
-                    accept: 'text/html'
-                }, importFile);
-                $drawer.append($import);
-            }
-
-            /* add a forget button */
-            var forgetCb = function (err) {
-                if (err) { return; }
-                setEditable(false);
-            };
-            var $forgetPad = common.createButton('forget', true, {}, forgetCb);
-            $rightside.append($forgetPad);
-        };
-
-        // this should only ever get called once, when the chain syncs
-        realtimeOptions.onReady = function (info) {
-            console.log('onReady');
             if (!module.isMaximized) {
                 module.isMaximized = true;
                 $('iframe.cke_wysiwyg_frame').css('width', '');
@@ -622,96 +445,92 @@ define([
             }
             $('body').addClass('app-pad');
 
-            if (module.realtime !== info.realtime) {
-                module.patchText = TextPatcher.create({
-                    realtime: info.realtime,
-                    //logging: true,
-                });
-            }
-
-            module.realtime = info.realtime;
-
-            var shjson = module.realtime.getUserDoc();
-
-            var newPad = false;
-            if (shjson === '') { newPad = true; }
-
-            if (!newPad) {
-                applyHjson(shjson);
-
-                // Update the user list (metadata) from the hyperjson
-                // XXX Metadata.update(shjson);
-                var parsed = JSON.parse(shjson);
-                if (parsed[3] && parsed[3].metadata) {
-                    metadataMgr.updateMetadata(parsed[3].metadata);
-                }
-
-                if (!readOnly) {
-                    var shjson2 = stringifyDOM(inner);
-                    var hjson2 = JSON.parse(shjson2).slice(0,3);
-                    var hjson = JSON.parse(shjson).slice(0,3);
-                    if (stringify(hjson2) !== stringify(hjson)) {
-                        console.log('err');
-                        console.error("shjson2 !== shjson");
-                        console.log(stringify(hjson2));
-                        console.log(stringify(hjson));
-                        Cryptpad.errorLoadingScreen(Messages.wrongApp);
-                        throw new Error();
-                    }
-                }
-            } else {
-                Title.updateTitle(Cryptpad.initialName || Title.defaultTitle);
-                documentBody.innerHTML = Messages.initialState;
-            }
-
-            Cryptpad.removeLoadingScreen(emitResize);
-            setEditable(!readOnly);
-            initializing = false;
-
-            if (readOnly) { return; }
-            //TODO UserList.getLastName(toolbar.$userNameButton, newPad);
-            onLocal();
-            editor.focus();
             if (newPad) {
                 cursor.setToEnd();
-            } else {
+            } else if (framework.isReadOnly()) {
                 cursor.setToStart();
             }
-        };
 
-        realtimeOptions.onConnectionChange = function (info) {
-            setEditable(info.state);
-            //toolbar.failed(); TODO
-            if (info.state) {
-                initializing = true;
-                //toolbar.reconnecting(info.myId); // TODO
-                Cryptpad.findOKButton().click();
-            } else {
-                Cryptpad.alert(Messages.common_connectionLost, undefined, true);
+            if (framework.isReadOnly()) {
+                $(inner).attr('contenteditable', 'false');
             }
+
+            var fmConfig = {
+                ckeditor: editor,
+                body: $('body'),
+                onUploaded: function (ev, data) {
+                    var parsed = Hash.parsePadUrl(data.url);
+                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
+                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                    var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
+                    editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
+                }
+            };
+            window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
+
+            framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
+                if (data) {
+                    var $iframe = $('html').find('iframe').contents();
+                    $iframe.find('html').addClass('cke_body_width');
+                }
+            });
+            /*setTimeout(function () {
+                $('iframe.cke_wysiwyg_frame').focus();
+                editor.focus();
+                console.log(editor);
+                console.log(editor.focusManager);
+                $(window).trigger('resize');
+            });*/
+        });
+
+        framework.onDefaultContentNeeded(function () {
+            inner.innerHTML = '<p></p>';
+        });
+
+        var importMediaTags = function (dom, cb) {
+            var $dom = $(dom);
+            $dom.find('media-tag').each(function (i, el) {
+                $(el).empty();
+            });
+            cb($dom[0]);
         };
+        framework.setFileImporter({ accept: 'text/html' }, function (content, f, cb) {
+            importMediaTags(domFromHTML(content).body, function (dom) {
+                cb(Hyperjson.fromDOM(dom));
+            });
+        }, true);
 
-        realtimeOptions.onError = onConnectError;
-
-        onLocal = realtimeOptions.onLocal = function () {
-            console.log('onlocal');
-            if (initializing) { return; }
-            if (isHistoryMode) { return; }
-            if (readOnly) { return; }
-
-            // stringify the json and send it into chainpad
-            var shjson = stringifyDOM(inner);
-
-            module.patchText(shjson);
-            if (module.realtime.getUserDoc() !== shjson) {
-                console.error("realtime.getUserDoc() !== shjson");
-            }
+        var exportMediaTags = function (inner, cb) {
+            var $clone = $(inner).clone();
+            nThen(function (waitFor) {
+                $(inner).find('media-tag').each(function (i, el) {
+                    if (!$(el).data('blob')) { return; }
+                    Util.blobToImage($(el).data('blob'), waitFor(function (imgSrc) {
+                        $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
+                            .attr('src', imgSrc);
+                    }));
+                });
+            }).nThen(function () {
+                cb($clone[0]);
+            });
         };
+        framework.setFileExporter('html', function (cb) {
+            exportMediaTags(inner, function (toExport) {
+                cb(new Blob([ getHTML(toExport) ], { type: "text/html;charset=utf-8" }));
+            });
+        }, true);
 
-        cpNfInner = common.startRealtime(realtimeOptions);
-        metadataMgr = cpNfInner.metadataMgr;
-
-        Cryptpad.onLogout(function () { setEditable(false); });
+        framework.setNormalizer(function (hjson) {
+            return [
+                'BODY',
+                {
+                    "class": "cke_editable cke_editable_themed cke_contents_ltr cke_show_borders",
+                    "contenteditable": "true",
+                    "spellcheck":"false"
+                },
+                hjson[2]
+            ];
+        });
 
         /* hitting enter makes a new line, but places the cursor inside
             of the <br> instead of the <p>. This makes it such that you
@@ -722,7 +541,7 @@ define([
             the first such keypress will not be inserted into the P. */
         inner.addEventListener('keydown', cursor.brFix);
 
-        editor.on('change', onLocal);
+        editor.on('change', framework.localChange);
 
         // export the typing tests to the window.
         // call like `test = easyTest()`
@@ -730,8 +549,8 @@ define([
         window.easyTest = function () {
             cursor.update();
             var start = cursor.Range.start;
-            var test = TypingTest.testInput(inner, start.el, start.offset, onLocal);
-            onLocal();
+            var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
+            framework.localChange();
             return test;
         };
 
@@ -744,54 +563,98 @@ define([
 
             var id = classes[0];
             if (typeof(id) === 'string') {
-                common.feedback(id.toUpperCase());
+                framework.feedback(id.toUpperCase());
             }
         });
+
+        framework.start();
     };
 
     var main = function () {
         var Ckeditor;
         var editor;
-        var common;
+        var framework;
 
         nThen(function (waitFor) {
-            ckEditorAvailable(waitFor(function (ck) {
-                Ckeditor = ck;
-                require(['/pad/wysiwygarea-plugin.js'], waitFor());
-            }));
-            $(waitFor(function () {
-                Cryptpad.addLoadingScreen();
-            }));
-            SFCommon.create(waitFor(function (c) { module.common = common = c; }));
-        }).nThen(function (waitFor) {
-            Ckeditor.config.toolbarCanCollapse = true;
-            if (screen.height < 800) {
-                Ckeditor.config.toolbarStartupExpanded = false;
-                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=no');
-            } else {
-                $('meta[name=viewport]').attr('content', 'width=device-width, initial-scale=1.0, user-scalable=yes');
-            }
-            // Used in ckeditor-config.js
-            Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
-            module.ckeditor = editor = Ckeditor.replace('editor1', {
-                customConfig: '/customize/ckeditor-config.js',
-            });
-            editor.on('instanceReady', waitFor());
-        }).nThen(function (/*waitFor*/) {
-            /*if (Ckeditor.env.safari) {
-                var fixIframe = function () {
-                    $('iframe.cke_wysiwyg_frame').height($('#cke_1_contents').height());
-                };
-                $(window).resize(fixIframe);
-                fixIframe();
-            }*/
-            Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
-            Cryptpad.onError(function (info) {
-                if (info && info.type === "store") {
-                    onConnectError();
+            Framework.create({
+                toolbarContainer: '#cke_1_toolbox',
+                contentContainer: '#cke_editor1 > .cke_inner',
+                patchTransformer: ChainPad.NaiveJSONTransformer,
+                /*thumbnail: {
+                    getContainer: function () { return $('iframe').contents().find('html')[0]; },
+                    filter: function (el, before) {
+                        if (before) {
+                            module.cursor.update();
+                            $(el).parents().css('overflow', 'visible');
+                            $(el).css('max-width', '1200px');
+                            $(el).css('max-height', Math.max(600, $(el).width()) + 'px');
+                            $(el).css('overflow', 'hidden');
+                            $(el).find('body').css('background-color', 'transparent');
+                            return;
+                        }
+                        $(el).parents().css('overflow', '');
+                        $(el).css('max-width', '');
+                        $(el).css('max-height', '');
+                        $(el).css('overflow', '');
+                        $(el).find('body').css('background-color', '#fff');
+                        var sel = module.cursor.makeSelection();
+                        var range = module.cursor.makeRange();
+                        module.cursor.fixSelection(sel, range);
+                    }
+                }*/
+            }, waitFor(function (fw) { window.APP.framework = framework = fw; }));
+
+            nThen(function (waitFor) {
+                ckEditorAvailable(waitFor(function (ck) {
+                    Ckeditor = ck;
+                    require(['/pad/wysiwygarea-plugin.js'], waitFor());
+                }));
+                $(waitFor());
+            }).nThen(function (waitFor) {
+                Ckeditor.config.toolbarCanCollapse = true;
+                if (screen.height < 800) {
+                    Ckeditor.config.toolbarStartupExpanded = false;
+                    $('meta[name=viewport]').attr('content',
+                        'width=device-width, initial-scale=1.0, user-scalable=no');
+                } else {
+                    $('meta[name=viewport]').attr('content',
+                        'width=device-width, initial-scale=1.0, user-scalable=yes');
                 }
-            });
-            andThen(editor, Ckeditor, common);
+                // Used in ckeditor-config.js
+                Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
+                var backColor = AppConfig.appBackgroundColor;
+                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; }' +
+                    '.cke_body_width body {' +
+                        'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
+                        'box-sizing: border-box; overflow: auto;'+
+                    '}' +
+                    '.cke_body_width body > *:first-child { margin-top: 0; }';
+                Ckeditor.addCss(newCss);
+                Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
+                module.ckeditor = editor = Ckeditor.replace('editor1', {
+                    customConfig: '/customize/ckeditor-config.js',
+                });
+                editor.on('instanceReady', waitFor());
+            }).nThen(function () {
+                editor.plugins.mediatag.translations = {
+                    title: Messages.pad_mediatagTitle,
+                    width: Messages.pad_mediatagWidth,
+                    height: Messages.pad_mediatagHeight
+                };
+                Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
+            }).nThen(function () {
+                // Move ckeditor parts to have a structure like the other apps
+                var $toolbarContainer = $('#cke_1_top');
+                var $contentContainer = $('#cke_1_contents');
+                var $mainContainer = $('#cke_editor1');
+                $contentContainer.prepend($toolbarContainer.find('.cke_toolbox_main'));
+                $mainContainer.prepend($toolbarContainer);
+                $contentContainer.find('.cke_toolbox_main').addClass('cke_reset_all');
+                $toolbarContainer.removeClass('cke_reset_all');
+            }).nThen(waitFor());
+
+        }).nThen(function (/*waitFor*/) {
+            andThen2(editor, Ckeditor, framework);
         });
     };
     main();

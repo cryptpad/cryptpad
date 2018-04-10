@@ -1,11 +1,11 @@
 define([
     '/api/config',
     '/common/hyperscript.js',
-    '/common/cryptpad-common.js',
-    'jquery'
-], function (Config, h, Cryptpad, $) {
+    '/customize/messages.js',
+    'jquery',
+    '/customize/application_config.js',
+], function (Config, h, Msg, $, AppConfig) {
     var Pages = {};
-    var Msg = Cryptpad.Messages;
     var urlArgs = Config.requireConf.urlArgs;
 
     var setHTML = function (e, html) {
@@ -50,11 +50,6 @@ define([
                             h('p', Msg.main_footerText)
                         ])
                     ], ''),
-                   /* footerCol(null, [
-                        footLink('/about.html', 'about'),
-                        footLink('/terms.html', 'terms'),
-                        footLink('/privacy.html', 'privacy'),
-                    ], 'CryptPad'),*/
                     footerCol('footer_applications', [
                         footLink('/drive/', 'main_drive'),
                         footLink('/pad/', 'main_richText'),
@@ -77,7 +72,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.14.0 (Ouroboros)")
+            h('div.cp-version-footer', "CryptPad v1.29.0 (toSource)")
         ]);
     };
 
@@ -97,17 +92,34 @@ define([
             ]);
         }
 
-        return h('nav.navbar.navbar-toggleable-md',
-                     h('button.navbar-toggler.navbar-toggler-right', {'type':'button'}, {'data-toggle':'collapse'}, {'data-target':'#menuCollapse'}, {'aria-controls': 'menuCollapse'}, {'aria-expanded':'false'}, {'aria-label':'Toggle navigation'},
-                    [h('i.fa.fa-bars ')
-                    ]),
-                    h('a.navbar-brand', { href: '/index.html'}),
-                h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [  
-                    h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad),
-                    h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
-                    h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
-                    h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
-                ].concat(rightLinks))
+        var button = h('button.navbar-toggler', {
+            'type':'button',
+            /*'data-toggle':'collapse',
+            'data-target':'#menuCollapse',
+            'aria-controls': 'menuCollapse',
+            'aria-expanded':'false',
+            'aria-label':'Toggle navigation'*/
+        }, h('i.fa.fa-bars '));
+
+        $(button).click(function () {
+            if ($('#menuCollapse').is(':visible')) {
+                return void $('#menuCollapse').slideUp();
+            }
+            $('#menuCollapse').slideDown();
+        });
+
+        return h('nav.navbar.navbar-expand-lg',
+            h('a.navbar-brand', { href: '/index.html'}),
+            button,
+            h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
+                //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
+                h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
+                h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
+                h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
+                h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
+                h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
+                h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
+            ].concat(rightLinks))
         );
     };
 
@@ -146,10 +158,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/AaronMacSween.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
                         h('h3', "Aaron MacSween"),
                         h('hr'),
                         setHTML(h('div#bioAaron'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance. <br/> He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.<br/>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.<br/>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>'),
@@ -197,10 +209,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/Catalin.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
                         h('h3', "Catalin Scripcariu"),
                         h('hr'),
                         setHTML(h('div#bioCatalin'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.<br/>At the beginning of 2017 he joined the XWiki, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>'),
@@ -233,13 +245,128 @@ define([
         ]);
     };
 
+    Pages['/features.html'] = function () {
+        return h('div#cp-main', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.features_title)),
+                h('table#cp-features-table', [
+                    h('thead', h('tr', [
+                        h('th', Msg.features_feature),
+                        h('th', Msg.features_anon),
+                        h('th', Msg.features_registered),
+                        h('th', Msg.features_notes)
+                    ])),
+                    h('tbody', [
+                        h('tr', [
+                            h('td', Msg.features_f_pad),
+                            h('td.yes', '✔'),// u2714, u2715
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_pad_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_history),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_history_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_export),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_export_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_todo),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_viewFiles),
+                            h('td.yes', '✔'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_drive),
+                            h('td.part', '~'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_drive_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_uploadFiles),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_embedFiles),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_multiple),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_multiple_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_logoutEverywhere),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_logoutEverywhere_notes || '')
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_templates),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_templates_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_profile),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_profile_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_tags),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_tags_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_contacts),
+                            h('td.no', '✕'),
+                            h('td.yes', '✔'),
+                            h('td', Msg.features_f_contacts_notes)
+                        ]),
+                        h('tr', [
+                            h('td', Msg.features_f_storage),
+                            h('td.no', Msg.features_f_storage_anon),
+                            setHTML(h('td.yes.left'), Msg.features_f_storage_registered),
+                            h('td')
+                        ]),
+                    ])
+                ]),
+                h('div#cp-features-register', [
+                    h('a', {
+                        href: '/register/'
+                    }, h('button.cp-features-register-button', 'Register for free'))
+                ])
+            ]),
+            infopageFooter()
+        ]);
+    };
+
     Pages['/privacy.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
             h('div.container.cp-container', [
                 h('center', h('h1', Msg.policy_title)),
                 h('h2', Msg.policy_whatweknow),
-                h('p', Msg.policywhatweknow_p1),
+                setHTML(h('p'), Msg.policy_whatweknow_p1),
 
                 h('h2', Msg.policy_howweuse),
                 h('p', Msg.policy_howweuse_p1),
@@ -257,6 +384,50 @@ define([
                 h('h2', Msg.policy_choices),
                 h('p', Msg.policy_choices_open),
                 setHTML(h('p'), Msg.policy_choices_vpn),
+            ]),
+            infopageFooter()
+        ]);
+    };
+
+    Pages['/faq.html'] = function () {
+        var categories = [];
+        var faq = Msg.faq;
+        Object.keys(faq).forEach(function (c) {
+            var questions = [];
+            Object.keys(faq[c]).forEach(function (q) {
+                var item = faq[c][q];
+                if (typeof item !== "object") { return; }
+                var answer = h('p.cp-faq-questions-a');
+                var hash = c + '-' + q;
+                var question = h('p.cp-faq-questions-q#' + hash);
+                $(question).click(function () {
+                    if ($(answer).is(':visible')) {
+                        return void $(answer).slideUp();
+                    }
+                    $(answer).slideDown();
+                });
+                questions.push(h('div.cp-faq-questions-items', [
+                    setHTML(question, item.q),
+                    setHTML(answer, item.a)
+                ]));
+            });
+            categories.push(h('div.cp-faq-category', [
+                h('h3', faq[c].title),
+                h('div.cp-faq-category-questions', questions)
+            ]));
+        });
+        var hash = window.location.hash;
+        if (hash) {
+            $(categories).find(hash).click();
+        }
+        return h('div#cp-main', [
+            infopageTopbar(),
+            h('div.container.cp-container', [
+                h('center', h('h1', Msg.faq_title)),
+                h('p.cp-faq-header', h('a.nav-item.nav-link', {
+                    href: '/what-is-cryptpad.html'
+                }, Msg.faq_whatis)),
+                h('div.cp-faq-container', categories)
             ]),
             infopageFooter()
         ]);
@@ -280,9 +451,45 @@ define([
     Pages['/contact.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
+            h('div.container-fluid.cp-contdet', [
+                h('row.col-12.col-sm-12',
+                    h('h1.text-center', Msg.contact )
+                )
+            ]),
             h('div.container.cp-container', [
-                h('center', h('h1', Msg.contact)),
-                setHTML(h('p'), Msg.main_about_p2)
+                h('div.row.cp-iconCont.align-items-center', [
+                    h('div.col-12',
+                        setHTML(h('h4.text-center'), Msg.main_about_p26)
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://twitter.com/cryptpad"}, 
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p22)
+                            )
+                        )
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p23)
+                            )
+                        )
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "https://riot.im/app/#/room/#cryptpad:matrix.org"},
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p24)
+                            )
+                        )
+                    ),
+                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                        h('a.card', {href : "mailto:research@xwiki.com"},
+                            h('div.card-body', 
+                                setHTML(h('p'), Msg.main_about_p25)
+                            )
+                        )
+                    ),
+                ]),
             ]),
             infopageFooter(),
         ]);
@@ -311,13 +518,13 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center', [
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.push-lg-6', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2', [
                         setHTML(h('h2'), Msg.whatis_zeroknowledge),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p1),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p2),
                         setHTML(h('p'), Msg.whatis_zeroknowledge_p3),
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.pull-lg-6', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1', [
                         h('img#zeroknowledge', { src: '/customize/images/zeroknowledge_small.png?' + urlArgs }),
                     ]),
                 ]),
@@ -344,8 +551,61 @@ define([
         ]);
     };
 
+    var isAvailableType = function (x) {
+        if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
+        return AppConfig.availablePadTypes.some(function (type) {
+            return x.indexOf(type) > -1;
+        });
+    };
+
     Pages['/'] = Pages['/index.html'] = function () {
         var showingMore = false;
+
+        var icons = [
+                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
+                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
+                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
+                [ 'poll', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
+                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
+                [ 'recent', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
+            ].filter(function (x) {
+                return isAvailableType(x[1]);
+            })
+            .map(function (x, i) {
+                var s = 'div.bs-callout.cp-callout-' + x[0];
+                if (i > 2) { s += '.cp-more.cp-hidden'; }
+                return h('a', [
+                    { href: x[1] },
+                    h(s, [
+                        h('i.fa.' + x[3]),
+                        h('div.pad-button-text', [ h('h4', x[2]) ])
+                    ])
+                ]);
+            });
+
+        var more = icons.length < 4? undefined: h('div.bs-callout.cp-callout-more', [
+                h('div.cp-callout-more-lessmsg.cp-hidden', [
+                    "see less ",
+                    h('i.fa.fa-caret-up')
+                ]),
+                h('div.cp-callout-more-moremsg', [
+                    "see more ",
+                    h('i.fa.fa-caret-down')
+                ]),
+                {
+                    onclick: function () {
+                        if (showingMore) {
+                            $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
+                            $('.cp-callout-more-moremsg').removeClass('cp-hidden');
+                        } else {
+                            $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
+                            $('.cp-callout-more-moremsg').addClass('cp-hidden');
+                        }
+                        showingMore = !showingMore;
+                    }
+                }
+            ]);
+
         return [
             h('div#cp-main', [
                 infopageTopbar(),
@@ -357,44 +617,8 @@ define([
                             h('p', Msg.main_catch_phrase)
                         ]),
                         h('div.col-12.col-sm-6', [
-                            [
-                                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
-                                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
-                                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
-                                [ 'poll.cp-more.cp-hidden', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
-                                [ 'whiteboard.cp-more.cp-hidden', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
-                                [ 'recent.cp-more.cp-hidden', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
-                            ].map(function (x) {
-                                return h('a', [
-                                    { href: x[1] },
-                                    h('div.bs-callout.cp-callout-' + x[0], [
-                                        h('i.fa.' + x[3]),
-                                        h('div.pad-button-text', [ h('h4', x[2]) ])
-                                    ])
-                                ]);
-                            }),
-                            h('div.bs-callout.cp-callout-more', [
-                                h('div.cp-callout-more-lessmsg.cp-hidden', [
-                                    "see less ",
-                                    h('i.fa.fa-caret-up')
-                                ]), 
-                                h('div.cp-callout-more-moremsg', [
-                                    "see more ",
-                                    h('i.fa.fa-caret-down')
-                                ]),
-                                {
-                                    onclick: function () {
-                                        if (showingMore) {
-                                            $('.cp-more, .cp-callout-more-lessmsg').addClass('cp-hidden');
-                                            $('.cp-callout-more-moremsg').removeClass('cp-hidden');
-                                        } else {
-                                            $('.cp-more, .cp-callout-more-lessmsg').removeClass('cp-hidden');
-                                            $('.cp-callout-more-moremsg').addClass('cp-hidden');
-                                        }
-                                        showingMore = !showingMore;
-                                    }
-                                }
-                            ])
+                            icons,
+                            more
                         ])
                     ])
                 ]),
@@ -402,17 +626,23 @@ define([
         ];
     };
 
-    var loadingScreen = function () {
-        return h('div#loading', 
-            h('div.loadingContainer', [
-                h('img.cryptofist', {
+    var loadingScreen = Pages.loadingScreen = function () {
+        return h('div#cp-loading', 
+            h('div.cp-loading-container', [
+                h('img.cp-loading-cryptofist', {
                     src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
                 }),
-                h('div.spinnerContainer',
+                h('div.cp-loading-spinner-container',
                     h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
                 h('p'),
             ])
         );
+    };
+
+    var hiddenLoader = function () {
+        var loader = loadingScreen();
+        loader.style.display = 'none';
+        return loader;
     };
 
     Pages['/user/'] = Pages['/user/index.html'] = function () {
@@ -437,6 +667,9 @@ define([
                     setHTML(h('p.register-explanation'), Msg.register_explanation)
                 ]),
                 h('div#userForm.form-group.hidden.col-md-6', [
+                    h('a', {
+                        href: '/features.html'
+                    }, Msg.register_whyRegister),
                     h('input.form-control#username', {
                         type: 'text',
                         autocomplete: 'off',
@@ -483,13 +716,14 @@ define([
                 h('div.row.cp-register-test',[
                     h('hr'),
                     h('div.col-12', [
-                        setHTML(h('p.test-details'), Msg.register_testimonial),
-                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, Msg.register_testimonial_name)
+                        setHTML(h('p.test-details'), " \"Tools like Etherpad and Google Docs [...] all share a weakness, which is that whomever owns the document server can see everything you're typing. Cryptpad is a free/open project that uses some of the ideas behind blockchain to implement a \"zero-knowledge\" version of a collaborative document editor, ensuring that only the people working on a document can see it.\" "),
+                        h('a.cp-test-source.pull-right', { href : 'http://boingboing.net/2016/09/26/cryptpad-a-freeopen-end-to.html'}, "Cory Doctorow")
                     ])
                 ])
             ]),
 
             infopageFooter(),
+            hiddenLoader(),
         ])];
     };
 
@@ -515,185 +749,147 @@ define([
                             'name': 'password',
                             placeholder: Msg.login_password,
                         }),
+                        h('div.checkbox-container', [
+                            h('input#import-recent', {
+                                name: 'import-recent',
+                                type: 'checkbox',
+                                checked: true
+                            }),
+                            // hscript doesn't generate for on label for some
+                            // reason... use jquery as a temporary fallback
+                            setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
+                            /*h('label', {
+                                'for': 'import-recent',
+                            }, Msg.register_importRecent),*/
+                        ]),
                         h('div.extra', [
-                            h('button.login.first.btn', Msg.login_login),
-                            h('button#register.btn.register.cp-login-register', Msg.login_register)
+                            h('button.login.first.btn', Msg.login_login)
                         ])
                     ])
                 ]),
             ]),
             infopageFooter(),
+            hiddenLoader(),
         ])];
     };
 
     var appToolbar = function () {
-        return h('div#toolbar.toolbar-container');
+        return h('div#cp-toolbar.cp-toolbar-container');
     };
 
     Pages['/whiteboard/'] = Pages['/whiteboard/index.html'] = function () {
         return [
             appToolbar(),
-            h('div#canvas-area', h('canvas#canvas', {
-                width: 600,
-                height: 600
-            })),
-            h('div#controls', {
+            h('div#cp-app-whiteboard-canvas-area',
+                h('div#cp-app-whiteboard-container',
+                    h('canvas#cp-app-whiteboard-canvas', {
+                        width: 600,
+                        height: 600
+                    })
+                )
+            ),
+            h('div#cp-app-whiteboard-controls', {
                 style: {
                     display: 'block',
                 }
             }, [
-                h('button#clear.btn.btn-danger', Msg.canvas_clear), ' ',
-                h('button#toggleDraw.btn.btn-secondary', Msg.canvas_disable),
-                h('button#delete.btn.btn-secondary', {
+                h('button#cp-app-whiteboard-clear.btn.btn-danger', Msg.canvas_clear), ' ',
+                h('button#cp-app-whiteboard-toggledraw.btn.btn-secondary', Msg.canvas_disable),
+                h('button#cp-app-whiteboard-delete.btn.btn-secondary', {
                     style: {
                         display: 'none',
                     }
                 }, Msg.canvas_delete),
-                h('div.range-group', [
+                h('div.cp-app-whiteboard-range-group', [
                     h('label', {
-                        'for': 'width'
+                        'for': 'cp-app-whiteboard-width'
                     }, Msg.canvas_width),
-                    h('input#width', {
+                    h('input#cp-app-whiteboard-width', {
                         type: 'range',
-                        value: "5",
                         min: "1",
                         max: "100"
                     }),
-                    h('span#width-val', '5px')
+                    h('span#cp-app-whiteboard-width-val', '5px')
                 ]),
-                h('div.range-group', [
+                h('div.cp-app-whiteboard-range-group', [
                     h('label', {
-                        'for': 'opacity',
+                        'for': 'cp-app-whiteboard-opacity',
                     }, Msg.canvas_opacity),
-                    h('input#opacity', {
+                    h('input#cp-app-whiteboard-opacity', {
                         type: 'range',
-                        value: "1",
                         min: "0.1",
                         max: "1",
                         step: "0.1"
                     }),
-                    h('span#opacity-val', '100%')
+                    h('span#cp-app-whiteboard-opacity-val', '100%')
                 ]),
-                h('span.selected', [
+                h('span.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
                     h('img', {
                         title: Msg.canvas_currentBrush
                     })
                 ])
             ]),
-            setHTML(h('div#colors'), '&nbsp;'),
-            loadingScreen(),
-            h('div#cursors', {
+            setHTML(h('div#cp-app-whiteboard-colors'), '&nbsp;'),
+            h('div#cp-app-whiteboard-cursors', {
                 style: {
                     display: 'none',
                     background: 'white',
                     'text-align': 'center',
                 }
             }),
-            h('div#pickers'),
+            h('div#cp-app-whiteboard-pickers'),
+            h('div#cp-app-whiteboard-media-hidden')
         ];
     };
 
     Pages['/poll/'] = Pages['/poll/index.html'] = function () {
         return [
             appToolbar(),
-            h('div#content', [
-                h('div#poll', [
-                    h('div#howItWorks', [
-                        h('h1', 'CryptPoll'),
-                        setHTML(h('h2'), Msg.poll_subtitle),
-                        h('p', Msg.poll_p_save),
-                        h('p', Msg.poll_p_encryption)
-                    ]),
-                    h('div.upper', [
-                        h('button#publish.btn.btn-success', {
-                            style: { display: 'none' }
-                        }, Msg.poll_publish_button),
-                        h('button#admin.btn.btn-primary', {
-                            style: { display: 'none' },
-                            title: Msg.poll_admin_button
-                        }, Msg.poll_admin_button),
-                        h('button#help.btn.btn-secondary', {
-                            title: Msg.poll_show_help_button
-                        }, Msg.poll_show_help_button)
-                    ]),
-                    h('div.realtime', [
+            h('div#cp-app-poll-content', [
+                h('div#cp-app-poll-form', [
+                    h('div.cp-app-poll-realtime', [
                         h('br'),
-                        h('center', [
-                            h('textarea#description', {
+                        h('div', [
+                            h('textarea#cp-app-poll-description', {
                                 rows: "5",
                                 cols: "50",
+                                placeholder: Msg.poll_descriptionHint,
                                 disabled: true
                             }),
+                            h('div#cp-app-poll-description-published'),
                             h('br')
                         ]),
-                        h('div#tableContainer', [
-                            h('div#tableScroll'),
-                            h('button#create-user.btn.btn-secondary', {
+                        h('div#cp-app-poll-table-container', [
+                            h('div#cp-app-poll-table-scroll', [h('table')]),
+                            h('button#cp-app-poll-create-user.btn.btn-secondary', {
                                 title: Msg.poll_create_user
-                            }, h('span.fa.fa-plus')),
-                            h('button#create-option.btn.btn-secondary', {
+                            }, Msg.poll_commit),
+                            h('button#cp-app-poll-create-option.btn.btn-secondary', {
                                 title: Msg.poll_create_option
                             }, h('span.fa.fa-plus')),
-                            h('button#commit.btn.btn-secondary', {
-                                title: Msg.poll_commit
-                            }, h('span.fa.fa-check'))
-                        ])
+                        ]),
+                        h('div#cp-app-poll-comments', [
+                            h('h2#cp-app-poll-comments-add-title', Msg.poll_comment_add),
+                            h('div#cp-app-poll-comments-add', [
+                                h('input.cp-app-poll-comments-add-name', {
+                                    type: 'text',
+                                    placeholder: Msg.anonymous
+                                }),
+                                h('textarea.cp-app-poll-comments-add-msg', {
+                                    placeholder: Msg.poll_comment_placeholder
+                                }),
+                                h('button.cp-app-poll-comments-add-submit.btn.btn-secondary',
+                                    Msg.poll_comment_submit),
+                                h('button.cp-app-poll-comments-add-cancel.btn.btn-secondary',
+                                    Msg.cancel)
+                            ]),
+                            h('h2#cp-app-poll-comments-list-title', Msg.poll_comment_list),
+                            h('div#cp-app-poll-comments-list')
+                        ]),
+                        h('div#cp-app-poll-nocomments', Msg.poll_comment_disabled)
                     ])
                 ])
-            ]),
-            loadingScreen()
-        ];
-    };
-
-    Pages['/drive/'] = Pages['/drive/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/file/'] = Pages['/file/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/contacts/'] = Pages['/contacts/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/pad/'] = Pages['/pad/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/code/'] = Pages['/code/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/slide/'] = Pages['/slide/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/invite/'] = Pages['/invite/index.html'] = function () {
-        return loadingScreen();
-    };
-
-    Pages['/settings/'] = Pages['/settings/index.html'] = function () {
-        return [
-            h('div#toolbar'),
-            h('div#container'),
-            loadingScreen()
-        ];
-    };
-
-    Pages['/profile/'] = Pages['/profile/index.html'] = function () {
-        return [
-            h('div#toolbar'),
-            h('div#container'),
-            loadingScreen()
-        ];
-    };
-
-    Pages['/todo/'] = Pages['/todo/index.html'] = function () {
-        return [
-            h('div#toolbar'),
-            h('div#container'),
-            loadingScreen()
+            ])
         ];
     };
 

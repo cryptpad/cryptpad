@@ -15,10 +15,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 define([
+    '/common/common-util.js',
+    '/customize/application_config.js',
     '/bower_components/chainpad/chainpad.dist.js'
-], function () {
-    var ChainPad = window.ChainPad;
+], function (Util, AppConfig, ChainPad) {
     var module = { exports: {} };
+
+    var badStateTimeout = typeof(AppConfig.badStateTimeout) === 'number' ?
+        AppConfig.badStateTimeout : 30000;
 
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
@@ -30,9 +34,11 @@ define([
         var onLocal = config.onLocal || function () { };
         var setMyID = config.setMyID || function () { };
         var onReady = config.onReady || function () { };
+        var onError = config.onError || function () { };
         var userName = config.userName;
         var initialState = config.initialState;
-        var transformFunction = config.transformFunction;
+        if (config.transformFunction) { throw new Error("transformFunction is nolonger allowed"); }
+        var patchTransformer = config.patchTransformer;
         var validateContent = config.validateContent;
         var avgSyncMilliseconds = config.avgSyncMilliseconds;
         var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 1;
@@ -41,46 +47,69 @@ define([
         var metadataMgr = config.metadataMgr;
         config = undefined;
 
-        var chainpad;
+        var chainpad = ChainPad.create({
+            userName: userName,
+            initialState: initialState,
+            patchTransformer: patchTransformer,
+            validateContent: validateContent,
+            avgSyncMilliseconds: avgSyncMilliseconds,
+            logLevel: logLevel
+        });
+        chainpad.onMessage(function(message, cb) {
+            sframeChan.query('Q_RT_MESSAGE', message, cb);
+        });
+        chainpad.onPatch(function () {
+            onRemote({ realtime: chainpad });
+        });
+
         var myID;
         var isReady = false;
+        var evConnected = Util.mkEvent(true);
+        var evInfiniteSpinner = Util.mkEvent(true);
+
+        window.setInterval(function () {
+            if (!chainpad || !myID) { return; }
+            var l;
+            try {
+                l = chainpad.getLag();
+            } catch (e) {
+                throw new Error("ChainPad.getLag() does not exist, please `bower update`");
+            }
+            if (l.lag < badStateTimeout) { return; }
+            evInfiniteSpinner.fire();
+        }, 2000);
 
         sframeChan.on('EV_RT_DISCONNECT', function () {
             isReady = false;
+            chainpad.abort();
             onConnectionChange({ state: false });
+        });
+        sframeChan.on('EV_RT_ERROR', function (err) {
+            isReady = false;
+            chainpad.abort();
+            onError(err);
         });
         sframeChan.on('EV_RT_CONNECT', function (content) {
             //content.members.forEach(userList.onJoin);
-            myID = content.myID;
             isReady = false;
-            if (chainpad) {
+            if (myID) {
                 // it's a reconnect
+                myID = content.myID;
+                chainpad.start();
                 onConnectionChange({ state: true, myId: myID });
                 return;
             }
-            chainpad = ChainPad.create({
-                userName: userName,
-                initialState: initialState,
-                transformFunction: transformFunction,
-                validateContent: validateContent,
-                avgSyncMilliseconds: avgSyncMilliseconds,
-                logLevel: logLevel
-            });
-            chainpad.onMessage(function(message, cb) {
-                sframeChan.query('Q_RT_MESSAGE', message, cb);
-            });
-            chainpad.onPatch(function () {
-                onRemote({ realtime: chainpad });
-            });
+            myID = content.myID;
             onInit({
                 myID: myID,
                 realtime: chainpad,
                 readOnly: readOnly
             });
+            evConnected.fire();
         });
         sframeChan.on('Q_RT_MESSAGE', function (content, cb) {
             if (isReady) {
-                onLocal(); // should be onBeforeMessage
+                onLocal(true); // should be onBeforeMessage
             }
             chainpad.message(content);
             cb('OK');
@@ -92,9 +121,23 @@ define([
             setMyID({ myID: myID });
             onReady({ realtime: chainpad });
         });
+
+        var whenRealtimeSyncs = function (cb) {
+            evConnected.reg(function () {
+                if (chainpad.getAuthDoc() === chainpad.getUserDoc()) {
+                    return void cb();
+                } else {
+                    chainpad.onSettle(cb);
+                }
+            });
+        };
+
         return Object.freeze({
             getMyID: function () { return myID; },
-            metadataMgr: metadataMgr
+            metadataMgr: metadataMgr,
+            whenRealtimeSyncs: whenRealtimeSyncs,
+            onInfiniteSpinner: evInfiniteSpinner.reg,
+            chainpad: chainpad,
         });
     };
     return Object.freeze(module.exports);

@@ -38,7 +38,7 @@ define(function () {
 
     out.websocketError = 'Incapaz de se conectar com o servidor websocket...';
     out.typeError = "Este bloco não é compatível com a aplicação selecionada";
-    out.onLogout = 'você foi desconectado, <a href="/" target="_blank">clique aqui</a> para se conectar, <br>ou pressione <em>ESC</em> para acessar seu bloco em modo somente leitura.';
+    out.onLogout = 'você foi desconectado, {0}clique aqui{1} para se conectar, <br>ou pressione <em>ESC</em> para acessar seu bloco em modo somente leitura.';
     out.wrongApp = "Incapaz de mostrar o conteúdo em tempo real no seu navegador. Por favor tente recarregar a página.";
 
     out.loading = "Carregando...";
@@ -128,7 +128,6 @@ define(function () {
     out.previewButtonTitle = "Mostrar ou esconder o modo de visualização markdown";
 
     out.presentButtonTitle = "Entrar no modo apresentação";
-    out.presentSuccess = 'Pressione ESC para sair do modo de apresentação';
 
     out.backgroundButtonTitle = 'Mudar cor do fundo da apresentação';
     out.colorButtonTitle = 'Mudar a cor do texto no modo apresentação';
@@ -487,13 +486,8 @@ define(function () {
         '<p>',
         'This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.',
         '<br>',
-        'Share the link to this pad to edit with friends or use the <span style="background-color:#5cb85c;color:#ffffff;">&nbsp;Share&nbsp;</span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
+        'Share the link to this pad to edit with friends or use the <span class="fa fa-share-alt"></span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.',
         '</p>',
-
-        '<p><span style="color:#808080;"><em>',
-        'Go ahead, just start typing...',
-        '</em></span></p>',
-        '<p>&nbsp;<br></p>'
     ].join('');
 
     out.codeInitialState = [
@@ -505,14 +499,6 @@ define(function () {
 
     out.slideInitialState = [
         '# CryptSlide\n',
-        '* This is a zero knowledge realtime collaborative editor.\n',
-        '* What you type here is encrypted so only people who have the link can access it.\n',
-        '* Even the server cannot see what you type.\n',
-        '* What you see here, what you hear here, when you leave here, let it stay here.\n',
-        '\n',
-        '---',
-        '\n',
-        '# How to use\n',
         '1. Write your slides content using markdown syntax\n',
         '  - Learn more about markdown syntax [here](http://www.markdowntutorial.com/)\n',
         '2. Separate your slides with ---\n',

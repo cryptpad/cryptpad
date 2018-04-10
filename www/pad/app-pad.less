@@ -1,0 +1,62 @@
+@import (once) "../../customize/src/less2/include/framework.less";
+
+.framework_main(
+    @bg-color: @colortheme_pad-bg,
+    @warn-color: @colortheme_pad-warn,
+    @color: @colortheme_pad-color
+);
+.alertify_main();
+
+// body
+&.cp-app-pad {
+    .tokenfield_main();
+    #cke_1_top {
+        overflow: visible;
+        padding: 0px;
+    }
+    .cke_toolbox_main {
+        background-color: @colortheme_pad-toolbar-bg;
+        .cke_toolbar {
+            height: 28px;
+            padding: 2px 0;
+        }
+    }
+    .cke_wysiwyg_frame {
+        width: 100%;
+    }
+    #cke_editor1 {
+        display: flex;
+        flex-flow: column;
+        height: 100%;
+        border: 0;
+        > .cke_inner {
+            flex: 1;
+            position: unset;
+            display: flex;
+            margin-top: -1px;
+            #cke_1_contents {
+                flex: 1;
+                display: flex;
+                flex-flow: column;
+                height: auto !important;
+                iframe {
+                    flex: 1;
+                }
+            }
+        }
+    }
+
+}
+
+.cke_wysiwyg_frame {
+    min-width: 60%;
+}
+
+@media print {
+    #cke_1_top {
+        display:none !important;
+    }
+    &.cp-app-pad .cp-toolbar-userlist-drawer {
+        display:none;
+    }
+}

@@ -1,4 +1,5 @@
 datastore
+tasks
 www/bower_components/*
 node_modules
 /config.js

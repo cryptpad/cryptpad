@@ -111,3 +111,9 @@ These tests will check to make sure that your translation has an entry for every
 If you have any issues, reach out via any of the methods listed in the readme under **Contacting Us**.
 We're happy to help.
 
+## Deleting a translation
+When a key is nolonger used (such as presentSuccess) you can delete it using this bash one-liner.
+
+```shell
+( export KEY=presentSuccess && grep -nr "$KEY" ./customize.dist/translations/ | sed 's/:.*$//' | while read x; do sed -i -e "/out\.$KEY =/d" $x; done )
+```

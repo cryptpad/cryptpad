@@ -1,8 +1,9 @@
 define([
     'jquery',
-    '/common/cryptpad-common.js',
+    '/common/common-util.js',
+    '/customize/messages.js',
     '/customize/translations/messages.js',
-], function ($, Cryptpad, English) {
+], function ($, Util, Messages, English) {
 
     var $body = $('body');
 
@@ -11,38 +12,40 @@ define([
     };
 
     var todo = function (missing) {
-        var str = "";
-        var need = 1;
+        var currentLang = "";
+        var currentState = 1;
 
         if (missing.length) {
             $body.append(pre(missing.map(function (msg) {
                 var res = "";
-                var code = msg[0];
-                var key = msg[1];
-                var needed = msg[2];
+                var lang = msg[0];
+                var key = msg[1]; // Array
+                var state = msg[2]; // 0 === toDelete, 1 === missing, 2 === updated, 3 === invalid (wrong type)
                 var value = msg[3] || '""';
 
-                if (str !== code) {
-                    if (str !== "")
+                if (currentLang !== lang) {
+                    if (currentLang !== "")
                     {
                         res += '\n';
                     }
-                    str = code;
-                    res += '/*\n *\n * ' + code + '\n *\n */\n\n';
+                    currentLang = lang;
+                    res += '/*\n *\n * ' + lang + '\n *\n */\n\n';
                 }
-                if (need !== needed) {
-                    need = needed;
-                    if (need === 0)
+                if (currentState !== state) {
+                    currentState = state;
+                    if (currentState === 0)
                     {
-                        res += '\n// TODO: These keys are not needed anymore and should be removed ('+ code + ')\n\n';
+                        res += '\n// TODO: These keys are not needed anymore and should be removed ('+ lang + ')\n\n';
                     }
                 }
 
-                res += (need ? '' : '// ') + 'out.' + key + ' = ' + value + ';';
-                if (need === 1) {
-                    res += ' // ' + JSON.stringify(English[key]);
-                } else if (need === 2) {
-                    res += ' // TODO: Key updated --> make sure the updated key "'+ value +'" exists and is translated before that one.';
+                res += (currentState ? '' : '// ') + 'out.' + key.join('.') + ' = ' + value + ';';
+                if (currentState === 1) {
+                    res += ' // ' + JSON.stringify(Util.find(English, key));
+                } else if (currentState === 2) {
+                    res += ' // TODO: Key updated --> make sure the updated key "'+ value +'" exists and is translated before this one.';
+                } else if (currentState === 3) {
+                    res += ' // NOTE: this key has an invalid type! Original value: ' + JSON.stringify(Util.find(English, key));
                 }
                 return res;
             }).join('\n')));
@@ -50,5 +53,5 @@ define([
             $body.text('// All keys are present in all translations');
         }
     };
-    Cryptpad.Messages._checkTranslationState(todo);
+    Messages._checkTranslationState(todo);
 });

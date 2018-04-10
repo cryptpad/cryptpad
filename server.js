@@ -9,6 +9,7 @@ var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
+var nThen = require("nthen");
 
 var config;
 try {
@@ -20,16 +21,38 @@ try {
 var websocketPort = config.websocketPort || config.httpPort;
 var useSecureWebsockets = config.useSecureWebsockets || false;
 
+// This is stuff which will become available to replify
+const debuggableStore = new WeakMap();
+const debuggable = function (name, x) {
+    if (name in debuggableStore) {
+        try { throw new Error(); } catch (e) {
+            console.error('cannot add ' + name + ' more than once [' + e.stack + ']');
+        }
+    } else {
+        debuggableStore[name] = x;
+    }
+    return x;
+};
+debuggable('global', global);
+debuggable('config', config);
+
 // support multiple storage back ends
 var Storage = require(config.storage||'./storage/file');
 
-var app = Express();
+var app = debuggable('app', Express());
 
 var httpsOpts;
 
 var DEV_MODE = !!process.env.DEV
 if (DEV_MODE) {
     console.log("DEV MODE ENABLED");
+}
+
+var FRESH_MODE = !!process.env.FRESH;
+var FRESH_KEY = '';
+if (FRESH_MODE) {
+    console.log("FRESH MODE ENABLED");
+    FRESH_KEY = +new Date();
 }
 
 const clone = (x) => (JSON.parse(JSON.stringify(x)));
@@ -94,6 +117,7 @@ Fs.exists(__dirname + "/customize", function (e) {
 
 var mainPages = config.mainPages || ['index', 'privacy', 'terms', 'about', 'contact'];
 var mainPagePattern = new RegExp('^\/(' + mainPages.join('|') + ').html$');
+app.get(mainPagePattern, Express.static(__dirname + '/customize'));
 app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 
 app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
@@ -102,6 +126,7 @@ app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
+app.use("/customize.dist", Express.static(__dirname + '/customize.dist'));
 app.use(/^\/[^\/]*$/, Express.static('customize'));
 app.use(/^\/[^\/]*$/, Express.static('customize.dist'));
 
@@ -135,13 +160,14 @@ app.get('/api/config', function(req, res){
         'var obj = ' + JSON.stringify({
             requireConf: {
                 waitSeconds: 60,
-                urlArgs: 'ver=' + Package.version + (DEV_MODE? '-' + (+new Date()): ''),
+                urlArgs: 'ver=' + Package.version + (FRESH_KEY? '-' + FRESH_KEY: '') + (DEV_MODE? '-' + (+new Date()): ''),
             },
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
             websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
+            httpUnsafeOrigin: config.httpUnsafeOrigin,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
             if (config.httpSafeOrigin) { return config.httpSafeOrigin; }
@@ -154,6 +180,22 @@ app.get('/api/config', function(req, res){
         'return obj',
         '});'
     ].join(';\n'));
+});
+
+var four04_path = Path.resolve(__dirname + '/customize.dist/404.html');
+var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
+
+var send404 = function (res, path) {
+    if (!path && path !== four04_path) { path = four04_path; }
+    Fs.exists(path, function (exists) {
+        if (exists) { return Fs.createReadStream(path).pipe(res); }
+        send404(res);
+    });
+};
+
+app.use(function (req, res, next) {
+    res.status(404);
+    send404(res, custom_four04_path);
 });
 
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
@@ -173,32 +215,39 @@ if (config.httpSafePort) {
 
 var wsConfig = { server: httpServer };
 
-var createSocketServer = function (err, rpc) {
-    if(!config.useExternalWebsocket) {
-        if (websocketPort !== config.httpPort) {
-            console.log("setting up a new websocket server");
-            wsConfig = { port: websocketPort};
-        }
-        var wsSrv = new WebSocketServer(wsConfig);
-        Storage.create(config, function (store) {
-            NetfluxSrv.run(store, wsSrv, config, rpc);
-        });
-    }
-};
+var rpc;
 
-var loadRPC = function (cb) {
+var nt = nThen(function (w) {
+    if (!config.enableTaskScheduling) { return; }
+    var Tasks = require("./storage/tasks");
+    console.log("loading task scheduler");
+    Tasks.create(config, w(function (e, tasks) {
+        config.tasks = tasks;
+    }));
+}).nThen(function (w) {
     config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
-
-    if (typeof(config.rpc) === 'string') {
-        // load pin store...
-        var Rpc = require(config.rpc);
-        Rpc.create(config, function (e, rpc) {
-            if (e) { throw e; }
-            cb(void 0, rpc);
-        });
-    } else {
-        cb();
+    if (typeof(config.rpc) !== 'string') { return; }
+    // load pin store...
+    var Rpc = require(config.rpc);
+    Rpc.create(config, debuggable, w(function (e, _rpc) {
+        if (e) {
+            w.abort();
+            throw e;
+        }
+        rpc = _rpc;
+    }));
+}).nThen(function () {
+    if(config.useExternalWebsocket) { return; }
+    if (websocketPort !== config.httpPort) {
+        console.log("setting up a new websocket server");
+        wsConfig = { port: websocketPort};
     }
-};
+    var wsSrv = new WebSocketServer(wsConfig);
+    Storage.create(config, function (store) {
+        NetfluxSrv.run(store, wsSrv, config, rpc);
+    });
+});
 
-loadRPC(createSocketServer);
+if (config.debugReplName) {
+    require('replify')({ name: config.debugReplName, app: debuggableStore });
+}

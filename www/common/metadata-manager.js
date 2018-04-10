@@ -34,6 +34,10 @@ define(['json.sortify'], function (Sortify) {
             }
             if (!metadataObj.users) { metadataObj.users = {}; }
             if (!metadataLazyObj.users) { metadataLazyObj.users = {}; }
+
+            if (!metadataObj.type) { metadataObj.type = meta.doc.type; }
+            if (!metadataLazyObj.type) { metadataLazyObj.type = meta.doc.type; }
+
             var mdo = {};
             // We don't want to add our user data to the object multiple times.
             //var containsYou = false;
@@ -51,15 +55,14 @@ define(['json.sortify'], function (Sortify) {
                 mdo[meta.user.netfluxId] = meta.user;
             }
             metadataObj.users = mdo;
-            var lazyUserStr = JSON.stringify(metadataLazyObj.users[meta.user.netfluxId]);
+            var lazyUserStr = Sortify(metadataLazyObj.users[meta.user.netfluxId]);
             dirty = false;
-            if (lazy || lazyUserStr !== JSON.stringify(meta.user)) {
+            if (lazy || lazyUserStr !== Sortify(meta.user)) {
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
                 lazyChangeHandlers.forEach(function (f) { f(); });
             }
 
             if (metadataObj.title !== rememberedTitle) {
-                console.log("Title update\n" + metadataObj.title + '\n');
                 rememberedTitle = metadataObj.title;
                 titleChangeHandlers.forEach(function (f) { f(metadataObj.title); });
             }
@@ -73,30 +76,53 @@ define(['json.sortify'], function (Sortify) {
             });
         };
 
+        var netfluxId;
+        var isReady = false;
+        var readyHandlers = [];
         sframeChan.on('EV_METADATA_UPDATE', function (ev) {
             meta = ev;
             if (ev.priv) {
                 priv = ev.priv;
             }
+            if (netfluxId) {
+                meta.user.netfluxId = netfluxId;
+            }
+            if (!isReady) {
+                isReady = true;
+                readyHandlers.forEach(function (f) { f(); });
+            }
             change(true);
         });
         sframeChan.on('EV_RT_CONNECT', function (ev) {
-            meta.user.netfluxId = ev.myID;
+            netfluxId = ev.myID;
             members = ev.members;
+            if (!meta.user) { return; }
+            meta.user.netfluxId = netfluxId;
             change(true);
         });
         sframeChan.on('EV_RT_JOIN', function (ev) {
+            var idx = members.indexOf(ev);
+            if (idx !== -1) { console.log('Error: ' + ev + ' is already in members'); return; }
             members.push(ev);
+            if (!meta.user) { return; }
             change(false);
         });
         sframeChan.on('EV_RT_LEAVE', function (ev) {
             var idx = members.indexOf(ev);
             if (idx === -1) { console.log('Error: ' + ev + ' not in members'); return; }
             members.splice(idx, 1);
+            if (!meta.user) { return; }
             change(false);
         });
         sframeChan.on('EV_RT_DISCONNECT', function () {
             members = [];
+            if (!meta.user) { return; }
+            change(true);
+        });
+        sframeChan.on('EV_RT_ERROR', function (err) {
+            if (err.type !== 'EEXPIRED' && err.type !== 'EDELETED') { return; }
+            members = [];
+            if (!meta.user) { return; }
             change(true);
         });
 
@@ -104,6 +130,7 @@ define(['json.sortify'], function (Sortify) {
             updateMetadata: function (m) {
                 // JSON.parse(JSON.stringify()) reorders the json, so we have to use sortify even
                 // if it's on our own computer
+                if (!m) { return; }
                 if (Sortify(metadataLazyObj) === Sortify(m)) { return; }
                 metadataObj = JSON.parse(JSON.stringify(m));
                 metadataLazyObj = JSON.parse(JSON.stringify(m));
@@ -139,6 +166,10 @@ define(['json.sortify'], function (Sortify) {
             },
             getNetfluxId : function () {
                 return meta.user.netfluxId;
+            },
+            onReady: function (f) {
+                if (isReady) { return void f(); }
+                readyHandlers.push(f);
             }
         });
     };

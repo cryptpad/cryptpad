@@ -1,8 +1,5 @@
-//@import (once) "./variables.less";
-
 @import (once) "../include/infopages.less";
-@import (once) "../include/colortheme.less";
-
+@import (once) "../include/colortheme-all.less";
 
 .infopages_main();
 .infopages_topbar();
@@ -96,13 +93,13 @@ body {
 }
 @callout-padding: 15px;
 a:hover {
-    text-decoration: none
+    text-decoration: none;
 }
 .bs-callout {
     display: flex;
     align-items: stretch;
     margin: 25px 0;
-    background:rgba(255,255,255,0.6);
+    background: rgba(255,255,255,0.6);
     color: black;
     transition: all .1s ease-in-out;
     box-sizing: border-box;
@@ -139,10 +136,7 @@ h4 {
 .bs-callout:hover {
     //color: white;
     transform: scale(1.05);
-    cursor: pointer; 
-}
-.bs-callout:hover .fa {
-    //width: 100%;
+    cursor: pointer;
 }
 .bs-callout:hover.cp-callout-more {
         transform: none !important;
@@ -164,7 +158,6 @@ h4 {
 .cp-callout-recent .fa { background-color: @colortheme_drive-bg; }
 .cp-hidden { display: none !important; }
 .cp-callout-more {
-    width: auto;
     display: inline-block;
     align-content: center;
     height: 2em;

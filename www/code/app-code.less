@@ -1,0 +1,126 @@
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/markdown.less";
+@import (once) "../../customize/src/less2/include/framework.less";
+
+
+.framework_main(
+    @bg-color: @colortheme_code-bg,
+    @warn-color: @colortheme_code-warn,
+    @color: @colortheme_code-color
+);
+
+// body
+&.cp-app-code {
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+
+    #cp-app-code-container {
+        display: inline-flex;
+        flex-flow: column;
+        height: 100%;
+        min-height: 100%;
+        width: 50%;
+        min-width: 20%;
+        max-width: 80%;
+        resize: horizontal;
+        overflow: hidden;
+        &.cp-app-code-fullpage {
+            max-width: 100%;
+            resize: none;
+            flex: 1;
+        }
+
+    }
+    .CodeMirror {
+        flex: 1;
+        font-size: initial;
+        width: 100%;
+    }
+    .CodeMirror-focused .cm-matchhighlight {
+        background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAFklEQVQI12NgYGBgkKzc8x9CMDAwAAAmhwSbidEoSQAAAABJRU5ErkJggg==);
+        background-position: bottom;
+        background-repeat: repeat-x;
+    }
+    #cp-app-code-editor {
+        flex: 1;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        overflow: hidden;
+        &.cp-app-code-present {
+            #cp-app-code-container { display: none; }
+            #cp-app-code-preview { border: 0; }
+        }
+    }
+    #cp-app-code-preview {
+        flex: 1;
+        padding: 5px 20px;
+        overflow: auto;
+        display: inline-block;
+        height: 100%;
+        border-left: 1px solid black;
+        box-sizing: border-box;
+        font-family: Calibri,Ubuntu,sans-serif;
+        word-wrap: break-word;
+        position: relative;
+        media-tag {
+            * {
+                max-width:100%;
+            }
+            iframe[type="application/pdf"] {
+                max-height:50vh;
+            }
+        }
+        .markdown_main();
+        .cp-app-code-preview-empty {
+            display: none;
+        }
+        &.cp-app-code-preview-isempty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            #cp-app-code-preview-content {
+                display: none;
+            }
+            .cp-app-code-preview-empty {
+                //flex: 1 1 auto;
+                max-height: 100%;
+                max-width: 100%;
+                display: block;
+                opacity: 0.2;
+            }
+        }
+    }
+
+    #cp-app-code-preview-content {
+        max-width: 40vw;
+        margin: 1em auto;
+
+        .markdown_preformatted-code;
+        .markdown_gfm-table(black);
+    }
+
+    .cp-splitter {
+        position: absolute;
+        height: 100%;
+        width: 8px;
+        top: 0;
+        left: 0;
+
+        cursor: col-resize;
+    }
+
+    @media (max-width: @browser_media-medium-screen) {
+        #cp-app-code-container {
+            flex: 1;
+            max-width: 100%;
+            resize: none;
+        }
+        #cp-app-code-preview {
+            display: none !important;
+        }
+    }
+}
+

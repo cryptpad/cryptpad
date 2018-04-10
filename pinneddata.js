@@ -9,6 +9,7 @@ const hashesFromPinFile = (pinFile, fileName) => {
         switch (l[0]) {
             case 'RESET': {
                 pins = {};
+                if (l[1] && l[1].length) { l[1].forEach((x) => { pins[x] = 1; }); }
                 //jshint -W086
                 // fallthrough
             }
@@ -47,84 +48,126 @@ const dsFileStats = {};
 const out = [];
 const pinned = {};
 
-nThen((waitFor) => {
-    Fs.readdir('./datastore', waitFor((err, list) => {
-        if (err) { throw err; }
-        dirList = list;
-    }));
-}).nThen((waitFor) => {
-    dirList.forEach((f) => {
-        sema.take((returnAfter) => {
-            Fs.readdir('./datastore/' + f, waitFor(returnAfter((err, list2) => {
-                if (err) { throw err; }
-                list2.forEach((ff) => { fileList.push('./datastore/' + f + '/' + ff); });
-            })));
+module.exports.load = function (config, cb) {
+    nThen((waitFor) => {
+        Fs.readdir('./datastore', waitFor((err, list) => {
+            if (err) { throw err; }
+            dirList = list;
+        }));
+    }).nThen((waitFor) => {
+        dirList.forEach((f) => {
+            sema.take((returnAfter) => {
+                Fs.readdir('./datastore/' + f, waitFor(returnAfter((err, list2) => {
+                    if (err) { throw err; }
+                    list2.forEach((ff) => { fileList.push('./datastore/' + f + '/' + ff); });
+                })));
+            });
         });
-    });
-}).nThen((waitFor) => {
+    }).nThen((waitFor) => {
 
-    Fs.readdir('./blob', waitFor((err, list) => {
-        if (err) { throw err; }
-        dirList = list;
-    }));
-}).nThen((waitFor) => {
-    dirList.forEach((f) => {
-        sema.take((returnAfter) => {
-            Fs.readdir('./blob/' + f, waitFor(returnAfter((err, list2) => {
-                if (err) { throw err; }
-                list2.forEach((ff) => { fileList.push('./blob/' + f + '/' + ff); });
-            })));
+        Fs.readdir('./blob', waitFor((err, list) => {
+            if (err) { throw err; }
+            dirList = list;
+        }));
+    }).nThen((waitFor) => {
+        dirList.forEach((f) => {
+            sema.take((returnAfter) => {
+                Fs.readdir('./blob/' + f, waitFor(returnAfter((err, list2) => {
+                    if (err) { throw err; }
+                    list2.forEach((ff) => { fileList.push('./blob/' + f + '/' + ff); });
+                })));
+            });
         });
-    });
-}).nThen((waitFor) => {
-    fileList.forEach((f) => {
-        sema.take((returnAfter) => {
-            Fs.stat(f, waitFor(returnAfter((err, st) => {
-                if (err) { throw err; }
-                dsFileStats[f.replace(/^.*\/([^\/\.]*)(\.ndjson)?$/, (all, a) => (a))] = st;
-            })));
+    }).nThen((waitFor) => {
+        fileList.forEach((f) => {
+            sema.take((returnAfter) => {
+                Fs.stat(f, waitFor(returnAfter((err, st) => {
+                    if (err) { throw err; }
+                    st.filename = f;
+                    dsFileStats[f.replace(/^.*\/([^\/\.]*)(\.ndjson)?$/, (all, a) => (a))] = st;
+                })));
+            });
         });
-    });
-}).nThen((waitFor) => {
-    Fs.readdir('./pins', waitFor((err, list) => {
-        if (err) { throw err; }
-        dirList = list;
-    }));
-}).nThen((waitFor) => {
-    fileList.splice(0, fileList.length);
-    dirList.forEach((f) => {
-        sema.take((returnAfter) => {
-            Fs.readdir('./pins/' + f, waitFor(returnAfter((err, list2) => {
-                if (err) { throw err; }
-                list2.forEach((ff) => { fileList.push('./pins/' + f + '/' + ff); });
-            })));
+    }).nThen((waitFor) => {
+        Fs.readdir('./pins', waitFor((err, list) => {
+            if (err) { throw err; }
+            dirList = list;
+        }));
+    }).nThen((waitFor) => {
+        fileList.splice(0, fileList.length);
+        dirList.forEach((f) => {
+            sema.take((returnAfter) => {
+                Fs.readdir('./pins/' + f, waitFor(returnAfter((err, list2) => {
+                    if (err) { throw err; }
+                    list2.forEach((ff) => { fileList.push('./pins/' + f + '/' + ff); });
+                })));
+            });
         });
-    });
-}).nThen((waitFor) => {
-    fileList.forEach((f) => {
-        sema.take((returnAfter) => {
-            Fs.readFile(f, waitFor(returnAfter((err, content) => {
-                if (err) { throw err; }
-                const hashes = hashesFromPinFile(content.toString('utf8'), f);
-                const size = sizeForHashes(hashes, dsFileStats);
-                if (process.argv.indexOf('--unpinned') > -1) {
-                    hashes.forEach((x) => { pinned[x] = 1; });
-                } else {
-                    out.push([f, Math.floor(size / (1024 * 1024))]);
+    }).nThen((waitFor) => {
+        fileList.forEach((f) => {
+            sema.take((returnAfter) => {
+                Fs.readFile(f, waitFor(returnAfter((err, content) => {
+                    if (err) { throw err; }
+                    const hashes = hashesFromPinFile(content.toString('utf8'), f);
+                    const size = sizeForHashes(hashes, dsFileStats);
+                    if (config.unpinned) {
+                        hashes.forEach((x) => { pinned[x] = 1; });
+                    } else {
+                        out.push([f, Math.floor(size / (1024 * 1024))]);
+                    }
+                })));
+            });
+        });
+    }).nThen(() => {
+        if (config.unpinned) {
+            let before = Infinity;
+            if (config.olderthan) {
+                before = config.olderthan;
+                if (isNaN(before)) {
+                    return void cb('--olderthan error [' + config.olderthan + '] not a valid date');
                 }
-            })));
-        });
-    });
-}).nThen(() => {
-    if (process.argv.indexOf('--unpinned') > -1) {
-        Object.keys(dsFileStats).forEach((f) => {
-            if (!(f in pinned)) {
-                console.log("./datastore/" + f.slice(0,2) + "/" + f + ".ndjson " +
-                    dsFileStats[f].size + " " + (+dsFileStats[f].mtime));
             }
-        });
-    } else {
-        out.sort((a,b) => (a[1] - b[1]));
-        out.forEach((x) => { console.log(x[0] + '  ' + x[1] + ' MB'); });
-    }
-});
+            let blobsbefore = before;
+            if (config.blobsolderthan) {
+                blobsbefore = config.blobsolderthan;
+                if (isNaN(blobsbefore)) {
+                    return void cb('--blobsolderthan error [' + config.blobsolderthan + '] not a valid date');
+                }
+            }
+            let files = [];
+            Object.keys(dsFileStats).forEach((f) => {
+                if (!(f in pinned)) {
+                    const isBlob = dsFileStats[f].filename.indexOf('.ndjson') === -1;
+                    if ((+dsFileStats[f].atime) >= ((isBlob) ? blobsbefore : before)) { return; }
+                    files.push({
+                        filename: dsFileStats[f].filename,
+                        size: dsFileStats[f].size,
+                        atime: dsFileStats[f].atime
+                    });
+                }
+            });
+            cb(null, files);
+        } else {
+            out.sort((a,b) => (a[1] - b[1]));
+            cb(null, out.slice());
+        }
+    });
+};
+
+if (!module.parent) {
+    let config = {};
+    if (process.argv.indexOf('--unpinned') > -1) { config.unpinned = true; }
+    const ot = process.argv.indexOf('--olderthan');
+    config.olderthan = ot > -1 && new Date(process.argv[ot+1]);
+    const bot = process.argv.indexOf('--blobsolderthan');
+    config.blobsolderthan = bot > -1 && new Date(process.argv[bot+1]);
+    module.exports.load(config, function (err, data) {
+        if (err) { throw new Error(err); }
+        if (!Array.isArray(data)) { return; }
+        if (config.unpinned) {
+            data.forEach((f) => { console.log(f.filename + " " + f.size + " " + (+f.atime)); });
+        } else {
+            data.forEach((x) => { console.log(x[0] + '  ' + x[1] + ' MB'); });
+        }
+    });
+}

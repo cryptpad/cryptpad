@@ -1,20 +1,19 @@
 define([
-    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
-    '/common/cryptpad-common.js',
-    '/bower_components/textpatcher/TextPatcher.js'
-], function ($, Crypto, Realtime, Cryptpad, TextPatcher) {
-    //var Messages = Cryptpad.Messages;
-    //var noop = function () {};
+    '/common/common-util.js',
+    '/common/common-hash.js',
+    '/common/common-realtime.js',
+    '/common/outer/network-config.js',
+], function (Crypto, CPNetflux, Util, Hash, Realtime, NetConfig) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
         S.cb(err, doc);
         S.done = true;
 
-        var disconnect = Cryptpad.find(S, ['network', 'disconnect']);
+        var disconnect = Util.find(S, ['network', 'disconnect']);
         if (typeof(disconnect) === 'function') { disconnect(); }
-        var abort = Cryptpad.find(S, ['realtime', 'realtime', 'abort']);
+        var abort = Util.find(S, ['realtime', 'realtime', 'abort']);
         if (typeof(abort) === 'function') {
             S.realtime.realtime.sync();
             abort();
@@ -23,10 +22,10 @@ define([
 
     var makeConfig = function (hash) {
         // We can't use cryptget with a file or a user so we can use 'pad' as hash type
-        var secret = Cryptpad.getSecrets('pad', hash);
+        var secret = Hash.getSecrets('pad', hash);
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
-            websocketURL: Cryptpad.getWebsocketURL(),
+            websocketURL: NetConfig.getWebsocketURL(),
             channel: secret.channel,
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
@@ -58,7 +57,7 @@ define([
         };
         overwrite(config, opt);
 
-        Session.realtime = Realtime.start(config);
+        Session.realtime = CPNetflux.start(config);
     };
 
     var put = function (hash, doc, cb, opt) {
@@ -72,23 +71,21 @@ define([
             var realtime = Session.session = info.realtime;
             Session.network = info.network;
 
-            TextPatcher.create({
-                realtime: realtime,
-            })(doc);
+            realtime.contentUpdate(doc);
 
-            var to = window.setTimeout(function () {
+            var to = setTimeout(function () {
                 cb(new Error("Timeout"));
             }, 5000);
 
-            Cryptpad.whenRealtimeSyncs(realtime, function () {
-                window.clearTimeout(to);
+            Realtime.whenRealtimeSyncs(realtime, function () {
+                clearTimeout(to);
                 realtime.abort();
                 finish(Session, void 0);
             });
         };
         overwrite(config, opt);
 
-        Session.session = Realtime.start(config);
+        Session.session = CPNetflux.start(config);
     };
 
     return {

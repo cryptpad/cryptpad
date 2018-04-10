@@ -1,0 +1,261 @@
+@import (once) "./colortheme-all.less";
+@import (once) "./tools.less";
+@import (once) "./checkmark.less";
+@import (once) './icon-colors.less';
+
+.creation_main() {
+    .tippy-popper {
+        z-index: 100000001 !important;
+    }
+    #cp-creation-container {
+        position: absolute;
+        z-index: 100000000; // #loading * 10
+        top: 0px;
+        background: @colortheme_loading-bg;
+        color: @colortheme_loading-color;
+        display: flex;
+        flex-flow: column; /* we need column so that the child can shrink vertically */
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+    }
+    #cp-creation {
+        flex: 0 1 auto; /* allows shrink */
+        min-height: 0;
+        overflow: auto;
+        text-align: center;
+        font: @colortheme_app-font;
+        width: 100%;
+        outline: none;
+        & > div {
+            width: 60vw;
+            max-width: 100%;
+            margin: 40px auto;
+            text-align: left;
+        }
+
+        .cp-creation-create, .cp-creation-settings {
+            margin-top: 0px;
+            @creation-button: #30B239;
+            button {
+                .tools_unselectable();
+                padding: 15px;
+                background: @creation-button;
+                color: #FFF;
+                font-weight: bold;
+                margin: 3px 10px;
+                border: none;
+                cursor: pointer;
+                outline: none;
+                width: 100%;
+                &:hover {
+                    //background: darken(@creation-button, 5%);
+                    background: lighten(@creation-button, 5%);
+                }
+            }
+        }
+        .cp-creation-create {
+            text-align: center;
+            margin: auto;
+            margin-top: 20px;
+            width: 400px;
+            max-width: 100%;
+            button {
+                margin: 0;
+            }
+        }
+
+        #cp-creation-form {
+            display: flex;
+            flex-flow: column;
+            align-items: center;
+            & > div {
+                width: 400px;
+                max-width: 100%;
+                display: flex;
+                align-items: center;
+                flex-wrap: wrap;
+                font-size: 16px;
+                margin: 10px 0;
+                label {
+                    flex: 1;
+                }
+                input[type="checkbox"] {
+                    &+ label {
+                        margin-bottom: 0;
+                        flex: 1;
+                        padding: 0 10px;
+                    }
+                }
+                .cp-creation-help {
+                    font-size: 18px;
+                    color: white;
+                    &:hover {
+                        color: #AAA;
+                        text-decoration: none;
+                    }
+                }
+            }
+            .cp-creation-slider {
+                display: block;
+                overflow: hidden;
+                max-height: 0px;
+                transition: max-height 0.5s ease-in-out;
+                width: 100%;
+                margin-top: 10px;
+                &.active {
+                    max-height: 40px;
+                }
+            }
+            .cp-creation-expire {
+                .cp-creation-expire-picker {
+                    text-align: center;
+                    input {
+                        width: 100px;
+                    }
+                }
+            }
+            .cp-creation-settings {
+                button {
+                    margin: 0;
+                    padding: 0;
+                }
+                .cp-filler { flex: 1; }
+            }
+
+            div.cp-creation-remember {
+                margin-top: 30px;
+                .cp-creation-remember-help {
+                    font-style: italic;
+                }
+            }
+            div.cp-creation-template {
+                width: 100%;
+                background-color: darken(@colortheme_modal-bg, 3%);
+                padding: 20px;
+                margin: 30px 0;
+                .cp-creation-title {
+                    padding: 0 0 10px 10px;
+                    margin: auto;
+                }
+            }
+            .cp-creation-template-container {
+                width: 100%;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                overflow-y: auto;
+                align-items: center;
+                .cp-creation-template-element {
+                    @darker: darken(@colortheme_modal-fg, 30%);
+
+                    width: 135px;
+                    padding: 5px;
+                    margin: 5px;
+                    display: inline-flex;
+                    flex-flow: column;
+
+                    box-sizing: content-box;
+
+                    text-align: left;
+                    line-height: 1em;
+                    cursor: pointer;
+
+                    background-color: #111;
+                    color: @darker;
+                    border: 1px solid transparent;
+
+                    &.cp-creation-template-selected {
+                        border: 1px solid white;
+                        background-color: #222;
+                    }
+
+                    transition: all 0.1s;
+
+                    &:hover {
+                        color: @colortheme_modal-fg;
+                    }
+
+                    align-items: center;
+
+                    img {
+                        max-width: 100px;
+                        max-height: 100px;
+                        background: #fff;
+                    }
+
+                    .cp-creation-template-element-name {
+                        flex: 1;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
+                        height: 20px;
+                        line-height: 20px;
+                        margin-top: 5px;
+                        max-width: 100%;
+                    }
+                    .fa {
+                        cursor: pointer;
+                        width: 100px;
+                        height: 100px;
+                        font-size: 70px;
+                        text-align: center;
+                        line-height: 100px;
+                    }
+                }
+            }
+        }
+
+        .cp-creation-deleted-container {
+            text-align: center;
+            .cp-creation-deleted {
+                background: #111;
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                display: inline-block;
+            }
+        }
+
+        .checkmark_main(30px);
+
+        @media screen and (max-width: @browser_media-narrow-screen) {
+            & > div {
+                width: 95%;
+                margin: 10px auto;
+            }
+        }
+        @media screen and (max-width: @browser_media-medium-screen) {
+            #cp-creation-form {
+                div.cp-creation-template {
+                    margin: 0;
+                    padding: 5px;
+                    .cp-creation-template-container {
+                        .cp-creation-template-element {
+                            flex-flow: row;
+                            margin: 1px;
+                            padding: 5px;
+                            width: 155px;
+                            img {
+                                display: none;
+                            }
+                            .fa {
+                                font-size: 18px;
+                                width: 20px;
+                                height: 20px;
+                                line-height: 20px;
+                                display: inline !important;
+                            }
+                            .cp-creation-template-element-name {
+                                margin: 0;
+                                margin-left: 5px;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+}

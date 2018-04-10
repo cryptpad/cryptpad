@@ -1,0 +1,18 @@
+@import (once) "./toolbar.less";
+@import (once) './fileupload.less';
+@import (once) './alertify.less';
+@import (once) './tokenfield.less';
+@import (once) './creation.less';
+
+.framework_main(@bg-color, @warn-color, @color) {
+    .toolbar_main(
+        @bg-color: @bg-color,
+        @warn-color: @warn-color,
+        @color: @color
+    );
+    .fileupload_main();
+    .alertify_main();
+    .tokenfield_main();
+    .creation_main();
+}
+

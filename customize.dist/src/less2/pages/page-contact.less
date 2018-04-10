@@ -1,9 +1,90 @@
 @import (once) "../include/infopages.less";
-@import (once) "../include/colortheme.less";
+@import (once) "../include/colortheme-all.less";
 
 .infopages_main();
 .infopages_topbar();
 
 .fa {
     padding-right: 0.25em;
+}
+#cp-main {
+	background-color: #fff;
+}
+.cp-container {
+	background: #fff;
+	.cp-iconCont {
+		h4 {
+			margin-top: 1.5em;
+			margin-bottom: 1.5em;
+		}
+		div {
+			.card {
+				padding: 4em 1em 0.5em 1em;
+				box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
+				border-color: #fff;
+				text-align: center;
+				margin-bottom: 1em;
+				&:hover, &:focus {
+					text-decoration: none;
+					transform: scale(1.05);
+				}
+				@media (max-width: 1200px) and (min-width: 769px) {
+					min-height: 139px;
+				}
+				@media (max-width: 768px) and (min-width: 576px) {
+					min-height: 164px;
+				}
+				@media (max-width: 496px) {
+					min-height: 140px;
+				}
+				@media (max-width: 335px) {
+					min-height: 162px;
+				}
+			}
+			&:nth-child(2) {
+				.card {
+					background-image: url(/customize/images/twitter.svg);
+		        	background-repeat: no-repeat;
+		        	background-position: 50% 10%;
+		        	background-size: 3rem;
+				}
+			}
+			&:nth-child(3) {
+				.card {
+					background-image: url(/customize/images/issue.svg);
+		        	background-repeat: no-repeat;
+		        	background-position: 50% 10%;
+		        	background-size: 3rem;
+				}
+			}
+			&:nth-child(4) {
+				.card {
+					background-image: url(/customize/images/sayhi.svg);
+		        	background-repeat: no-repeat;
+		        	background-position: 50% 10%;
+		        	background-size: 3rem;
+				}
+			}
+			&:nth-child(5) {
+				.card {
+					background-image: url(/customize/images/email.svg);
+		        	background-repeat: no-repeat;
+		        	background-position: 50% 10%;
+		        	background-size: 3rem;
+				}
+			}
+		}
+	}
+}
+.cp-contdet {
+	padding-top: 3em;
+    padding-bottom: 3em;
+    background-image: url(/customize/images/bkcontact.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    h1 {
+        font-weight: 700;
+        color: #fff;
+    }
 }

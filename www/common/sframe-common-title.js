@@ -1,34 +1,33 @@
-define(['jquery'], function ($) {
+define([
+    'jquery',
+    '/common/common-util.js',
+    '/common/common-interface.js',
+    '/customize/messages.js'
+], function ($, Util, UI, Messages) {
     var module = {};
 
-    module.create = function (cfg, onLocal, Common, metadataMgr) {
+    module.create = function (Common, cfg) {
         var exp = {};
+        var metadataMgr = Common.getMetadataMgr();
+        var sframeChan = Common.getSframeChannel();
+        var titleUpdated;
+        var evTitleChange = Util.mkEvent();
 
-        exp.defaultTitle = Common.getDefaultTitle();
-
+        exp.defaultTitle = metadataMgr.getMetadata().defaultTitle;
         exp.title = document.title;
 
         cfg = cfg || {};
 
         var getHeadingText = cfg.getHeadingText || function () { return; };
 
-/*        var updateLocalTitle = function (newTitle) {
-            console.error(newTitle);
-            exp.title = newTitle;
-            onLocal();
-            if (typeof cfg.updateLocalTitle === "function") {
-                cfg.updateLocalTitle(newTitle);
-            } else {
-                document.title = newTitle;
-            }
-        };*/
-
         var $title;
         exp.setToolbar = function (toolbar) {
-            $title = toolbar && toolbar.title;
+            $title = toolbar && (toolbar.title || toolbar.pageTitle);
+            console.log('SET TOOLBAR');
         };
 
         exp.getTitle = function () { return exp.title; };
+
         var isDefaultTitle = exp.isDefaultTitle = function (){return exp.title === exp.defaultTitle;};
 
         var suggestTitle = exp.suggestTitle = function (fallback) {
@@ -40,32 +39,29 @@ define(['jquery'], function ($) {
             }
         };
 
-        /*var renameCb = function (err, newTitle) {
-            if (err) { return; }
-            onLocal();
-            //updateLocalTitle(newTitle);
-        };*/
-
-        // update title: href is optional; if not specified, we use window.location.href
         exp.updateTitle = function (newTitle, cb) {
             cb = cb || $.noop;
-            if (newTitle === exp.title) { return; }
-            Common.updateTitle(newTitle, cb);
+            if (newTitle === exp.title) { return void cb(); }
+            metadataMgr.updateTitle(newTitle);
+            titleUpdated = cb;
         };
-
-        // TODO not needed?
-        /*exp.updateDefaultTitle = function (newDefaultTitle) {
-            exp.defaultTitle = newDefaultTitle;
-            if (!$title) { return; }
-            $title.find('input').attr("placeholder", exp.defaultTitle);
-        };*/
 
         metadataMgr.onChange(function () {
             var md = metadataMgr.getMetadata();
-            $title.find('span.title').text(md.title || md.defaultTitle);
-            $title.find('input').val(md.title || md.defaultTitle);
+            if ($title) {
+                $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
+                $title.find('input').val(md.title || md.defaultTitle);
+            }
             exp.title = md.title;
-            //exp.updateTitle(md.title || md.defaultTitle);
+        });
+        metadataMgr.onTitleChange(function (title) {
+            sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
+                if (err === 'E_OVER_LIMIT') {
+                    return void UI.alert(Messages.pinLimitNotPinned, null, true);
+                } else if (err) { return; }
+                evTitleChange.fire(title);
+                if (titleUpdated) { titleUpdated(undefined, title); }
+            });
         });
 
         exp.getTitleConfig = function () {
@@ -75,6 +71,8 @@ define(['jquery'], function ($) {
                 defaultName: exp.defaultTitle
             };
         };
+
+        exp.onTitleChange = evTitleChange.reg;
 
         return exp;
     };

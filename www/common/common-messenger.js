@@ -1,10 +1,11 @@
 define([
-    'jquery',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/curve.js',
     '/common/common-hash.js',
-    '/common/common-realtime.js'
-], function ($, Crypto, Curve, Hash, Realtime) {
+    '/common/common-util.js',
+    '/common/common-realtime.js',
+    '/common/common-constants.js',
+], function (Crypto, Curve, Hash, Util, Realtime, Constants) {
     'use strict';
     var Msg = {
         inputs: [],
@@ -27,7 +28,7 @@ define([
     var createData = Msg.createData = function (proxy, hash) {
         return {
             channel: hash || Hash.createChannelId(),
-            displayName: proxy['cryptpad.username'],
+            displayName: proxy[Constants.displayNameKey],
             profile: proxy.profile && proxy.profile.view,
             edPublic: proxy.edPublic,
             curvePublic: proxy.curvePublic,
@@ -49,28 +50,13 @@ define([
         return proxy.friends;
     };
 
-    var eachFriend = function (friends, cb) {
-        Object.keys(friends).forEach(function (id) {
-            if (id === 'me') { return; }
-            cb(friends[id], id, friends);
-        });
-    };
-
-    Msg.getFriendChannelsList = function (proxy) {
-        var list = [];
-        eachFriend(proxy, function (friend) {
-            list.push(friend.channel);
-        });
-        return list;
-    };
-
     var msgAlreadyKnown = function (channel, sig) {
         return channel.messages.some(function (message) {
             return message[0] === sig;
         });
     };
 
-    Msg.messenger = function (common) {
+    Msg.messenger = function (store) {
         var messenger = {
             handlers: {
                 message: [],
@@ -103,9 +89,9 @@ define([
         var joining = {};
 
         // declare common variables
-        var network = common.getNetwork();
-        var proxy = common.getProxy();
-        var realtime = common.getRealtime();
+        var network = store.network;
+        var proxy = store.proxy;
+        var realtime = store.realtime;
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(proxy);
 
@@ -130,6 +116,10 @@ define([
             return messenger.range_requests[txid];
         };
 
+        var deleteRangeRequest = function (txid) {
+            delete messenger.range_requests[txid];
+        };
+
         messenger.getMoreHistory = function (curvePublic, hash, count, cb) {
             if (typeof(cb) !== 'function') { return; }
 
@@ -146,7 +136,7 @@ define([
                 return;
             }
 
-            var txid = common.uid();
+            var txid = Util.uid();
             initRangeRequest(txid, curvePublic, hash, cb);
             var msg = [ 'GET_HISTORY_RANGE', chan.id, {
                     from: hash,
@@ -242,7 +232,7 @@ define([
             if (!proxy.friends) { return; }
             var friends = proxy.friends;
             delete friends[curvePublic];
-            Realtime.whenRealtimeSyncs(common, realtime, cb);
+            Realtime.whenRealtimeSyncs(realtime, cb);
         };
 
         var pushMsg = function (channel, cryptMsg) {
@@ -349,7 +339,7 @@ define([
             return cb();
         };
 
-        var onDirectMessage = function (common, msg, sender) {
+        var onDirectMessage = function (msg, sender) {
             if (sender !== Msg.hk) { return void onIdMessage(msg, sender); }
             var parsed = JSON.parse(msg);
 
@@ -394,7 +384,8 @@ define([
                     });
 
                     orderMessages(curvePublic, decrypted, req.sig);
-                    return void req.cb(void 0, decrypted);
+                    req.cb(void 0, decrypted);
+                    return deleteRangeRequest(txid);
                 } else {
                     console.log(parsed);
                 }
@@ -439,7 +430,7 @@ define([
 
         // listen for messages...
         network.on('message', function(msg, sender) {
-            onDirectMessage(common, msg, sender);
+            onDirectMessage(msg, sender);
         });
 
         messenger.removeFriend = function (curvePublic, cb) {
@@ -472,7 +463,7 @@ define([
                 channel.wc.bcast(cryptMsg).then(function () {
                     delete friends[curvePublic];
                     delete channels[curvePublic];
-                    Realtime.whenRealtimeSyncs(common, realtime, function () {
+                    Realtime.whenRealtimeSyncs(realtime, function () {
                         cb();
                     });
                 }, function (err) {
@@ -493,7 +484,7 @@ define([
             };
             var msg = ['GET_HISTORY', chan.id, cfg];
             network.sendto(network.historyKeeper, JSON.stringify(msg))
-              .then($.noop, function (err) {
+              .then(function () {}, function (err) {
                 throw new Error(err);
             });
         };
@@ -638,7 +629,7 @@ define([
         messenger.getMyInfo = function (cb) {
             cb(void 0, {
                 curvePublic: proxy.curvePublic,
-                displayName: common.getDisplayName(),
+                displayName: proxy[Constants.displayNameKey]
             });
         };
 

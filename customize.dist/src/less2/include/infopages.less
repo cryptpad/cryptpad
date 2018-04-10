@@ -1,4 +1,4 @@
-@import (once) "./colortheme.less";
+@import (once) "./colortheme-all.less";
 
 @infopages_infobar-height: 64px;
 @infopages_padding: 32px;
@@ -89,7 +89,6 @@
                 color: #fff;
                 padding-top: 30%;
                 margin-bottom: 0;
-                
             }
 
         }
@@ -117,7 +116,7 @@
 .infopages_topbar () {
     .cp-topbar {
         background: #fff;
-        z-index: 9001;
+        z-index: 10000; //Z infopage toolbar
         position: fixed;
         top: 0;
         display: flex;
@@ -152,8 +151,8 @@
     }
 }
 
-// navigation top bar 
-.navbar  {
+// navigation top bar
+.navbar {
     background: #fff;
     .navbar-brand {
         display: block;
@@ -165,6 +164,7 @@
     }
     a {
         border: 2px solid transparent;
+        white-space: nowrap;
     }
     .nav-link {
         padding: 0.5em 0.7em;
@@ -173,7 +173,8 @@
         };
     }
     .cp-register-btn {
-            border: 2px solid #4591C4;
+        border: 2px solid #4591C4;
+        display: inline-block;
     }
     button:focus {
         outline: none;
@@ -192,21 +193,9 @@
     }
     .cp-register-btn {
         margin-right: 13px;
-        margin-left: 83vw;
         text-align: center;
      }
 }
-@media (max-width: 687px) {
-    .cp-register-btn {
-         margin-left: 75vw;
-    }
-}
-@media (max-width: 467px) {
-    .cp-register-btn {
-         margin-left: 63vw;
-    }
-}
-
 
 //footer general styles
 
