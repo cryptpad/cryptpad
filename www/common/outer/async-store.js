@@ -918,8 +918,12 @@ define([
                 channel.data = padData || {};
                 postMessage("PAD_READY");
             }, // post EV_PAD_READY
-            onMessage: function (m) {
-                postMessage("PAD_MESSAGE", m);
+            onMessage: function (user, m, validateKey) {
+                postMessage("PAD_MESSAGE", {
+                    user: user,
+                    msg: m,
+                    validateKey: validateKey
+                });
             }, // post EV_PAD_MESSAGE
             onJoin: function (m) {
                 postMessage("PAD_JOIN", m);

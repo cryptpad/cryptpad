@@ -39,9 +39,11 @@ define([], function () {
         });
 
         // shim between chainpad and netflux
-        var msgIn = function (msg) {
+        var msgIn = function (peer, msg) {
             try {
-                var decryptedMsg = Crypto.decrypt(msg, isNewHash);
+                var isHk = peer.length !== 32;
+                var key = isNewHash ? validateKey : false;
+                var decryptedMsg = Crypto.decrypt(msg, key, isHk);
                 return decryptedMsg;
             } catch (err) {
                 console.error(err);
@@ -67,8 +69,11 @@ define([], function () {
             padRpc.sendPadMsg(msg, cb);
         });
 
-        var onMessage = function(msg) {
-            var message = msgIn(msg);
+        var onMessage = function(msgObj) {
+            if (msgObj.validateKey && !validateKey) {
+                validateKey = msgObj.validateKey;
+            }
+            var message = msgIn(msgObj.user, msgObj.msg);
 
             verbose(message);
 

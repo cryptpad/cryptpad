@@ -325,7 +325,9 @@ define([
                     validateKey: secret.keys.validateKey
                 }, function (encryptedMsgs) {
                     cb(encryptedMsgs.map(function (msg) {
-                        return crypto.decrypt(msg, true);
+                        // The 3rd parameter "true" means we're going to skip signature validation.
+                        // We don't need it since the message is already validated serverside by hk
+                        return crypto.decrypt(msg, true, true);
                     }));
                 });
             });

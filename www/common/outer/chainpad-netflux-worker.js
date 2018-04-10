@@ -130,7 +130,7 @@ define([], function () {
             message = unBencode(message);//.slice(message.indexOf(':[') + 1);
 
             // pass the message into Chainpad
-            onMessage(message);
+            onMessage(peer, message, validateKey);
             //sframeChan.query('Q_RT_MESSAGE', message, function () { });
         };
 
