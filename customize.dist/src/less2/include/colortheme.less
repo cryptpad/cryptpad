@@ -2,6 +2,9 @@
 @colortheme_app-font-size: 16px;
 @colortheme_app-font: @colortheme_app-font-size @colortheme_font;
 
+@colortheme_logo-1: #326599;
+@colortheme_logo-2: #4591c4;
+
 @colortheme_link-color: #0275D8;
 @colortheme_link-color-visited: #005999;
 @colortheme_info-background: #fafafa;
@@ -15,13 +18,22 @@
 @colortheme_cp-red: #FA5858; // remove red
 @colortheme_cp-green: #46E981;
 
+@colortheme_form-border: #bbbbbb;
+@colortheme_form-bg: @colortheme_logo-2;
+@colortheme_form-color: #ffffff;
+@colortheme_form-bg-alt: #ffffff;
+@colortheme_form-color-alt: @colortheme_logo-1;
+@colortheme_form-warning: #f49842;
+@colortheme_form-warning-hov: darken(@colortheme_form-warning, 5%);
+
 @colortheme_modal-bg: #222;
 @colortheme_modal-fg: #fff;
 @colortheme_modal-link: #eee;
 @colortheme_modal-link-visited: lighten(@colortheme_modal-link, 10%);
 @colortheme_modal-dim: rgba(0, 0, 0, 0.4);
 
-@colortheme_loading-bg: #222;
+@colortheme_loading-bg: @colortheme_logo-1;
+@colortheme_loading-bg-alt: @colortheme_logo-2;
 @colortheme_loading-color: @colortheme_old-fore;
 
 @colortheme_modal-input: #111;
@@ -110,9 +122,9 @@
 @cryptpad_header_col: #1E1F1F;
 @cryptpad_text_col: #3F4141;
 
-@colortheme_checkmark-back0: #ffffff;
-@colortheme_checkmark-back0-active: #bbbbbb;
-@colortheme_checkmark-back1: #FF0073;
-@colortheme_checkmark-col1: #ffffff;
-@colortheme_checkmark-back2: #FFFFFF;
-@colortheme_checkmark-col2: #000000;
+@colortheme_checkmark-back0: @colortheme_form-bg-alt;
+@colortheme_checkmark-back0-active: @colortheme_form-border;
+@colortheme_checkmark-back1: @colortheme_form-bg;
+@colortheme_checkmark-col1: @colortheme_form-color;
+@colortheme_checkmark-back2: @colortheme_form-bg-alt;
+@colortheme_checkmark-col2: @colortheme_form-color-alt;

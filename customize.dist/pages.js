@@ -633,7 +633,7 @@ define([
                     src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
                 }),
                 h('div.cp-loading-spinner-container',
-                    h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
+                    h('span.fa.fa-circle-o-notch.fa-spin.fa-8x.fa-fw')),
                 h('p'),
             ])
         );

@@ -5,7 +5,7 @@
     @width: round(@size / 8);
     @dim1: round(@size / 3);
     @dim2: round(2 * @size / 3);
-    @top: round(@size / 12);
+    @top: round(@size / 12) - 1;
     // <label.cp-checkmark><input><span.cp-checkmark-mark></span>Text</label>
     .cp-checkmark {
         margin: 0;
@@ -51,6 +51,7 @@
             background-color: @colortheme_checkmark-back0;
             display: flex;
             justify-content: center;
+            border: 1px solid @colortheme_form-border;
             &:after {
                 content: "";
                 display: none;

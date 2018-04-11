@@ -1,3 +1,5 @@
+// dark #326599
+// light #4591c4
 define([], function () {
     var loadingStyle = (function(){/*
 #cp-loading {
@@ -9,24 +11,29 @@ define([], function () {
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background: #222;
+  background: linear-gradient(to right, #326599 0%, #326599 50%, #4591c4 50%, #4591c4 100%);
   color: #fafafa;
   text-align: center;
   font-size: 1.5em;
   opacity: 1;
+  display: flex;
+  justify-content: center;
 }
 #cp-loading.cp-loading-hidden {
   opacity: 0;
   visibility: hidden;
 }
 #cp-loading .cp-loading-container {
-  margin-top: 50vh;
-  transform: translateY(-50%);
+  align-self: center;
 }
 #cp-loading .cp-loading-cryptofist {
   margin-left: auto;
   margin-right: auto;
-  height: 300px;
+  //height: 300px;
+  max-width: 90vw;
+  max-height: 300px;
+  width: auto;
+  height: auto;
   margin-bottom: 2em;
 }
 @media screen and (max-height: 450px) {
@@ -76,11 +83,11 @@ define([], function () {
         loadingStyle,
         '</style>',
         '<div class="cp-loading-container">',
-            '<img class="cp-loading-cryptofist" src="/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/customize/alt-favicon.png?' + urlArgs + '">',
             '<div class="cp-loading-spinner-container">',
                 '<span class="fa fa-circle-o-notch fa-spin fa-4x fa-fw"></span>',
             '</div>',
-            '<p id="cp-loading-message"></p>',
+            //'<p id="cp-loading-message"></p>',
         '</div>'
     ].join('');
     var intr;

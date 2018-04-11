@@ -1858,11 +1858,15 @@ define([
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
+        var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
+        var l = h('div.cp-creation-logo', h('img', { src: '/customize/alt-favicon.png?' + urlArgs }));
+        $(l).appendTo($creationContainer);
         var $creation = $('<div>', { id: 'cp-creation', tabindex: 1 }).appendTo($creationContainer);
 
         // Title
         var colorClass = 'cp-icon-color-'+type;
-        $creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
+        //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
+        $creation.append(h('h3.cp-creation-title', Messages['button_new'+type]));
         //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));
 
         // Deleted pad warning
@@ -1874,7 +1878,7 @@ define([
 
         var origin = common.getMetadataMgr().getPrivateData().origin;
         var createHelper = function (href, text) {
-            var q = h('a.cp-creation-help.fa.fa-question', {
+            var q = h('a.cp-creation-help.fa.fa-question-circle', {
                 title: text,
                 href: origin + href,
                 target: "_blank"
@@ -1907,8 +1911,7 @@ define([
                 h('span.cp-checkmark-mark'),
                 Messages.creation_expire
             ]),
-            createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
-            h('div.cp-creation-expire-picker.cp-creation-slider', [
+            h('span.cp-creation-expire-picker.cp-creation-slider', [
                 h('input#cp-creation-expire-val', {
                     type: "number",
                     min: 1,
@@ -1923,18 +1926,14 @@ define([
                         selected: 'selected'
                     }, Messages.creation_expireMonths)
                 ])
-            ])
+            ]),
+            createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
         ]);
 
-        var createDiv = h('div.cp-creation-create');
-        var $create = $(createDiv);
-
         var templates = h('div.cp-creation-template', [
-            h('h3.cp-creation-title.'+colorClass, Messages['button_new'+type]),
             h('div.cp-creation-template-container', [
                 h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')
-            ]),
-            createDiv
+            ])
         ]);
 
         var settings = h('div.cp-creation-remember', [
@@ -1947,14 +1946,21 @@ define([
                 Messages.creation_saveSettings
             ]),
             createHelper('/settings/#creation', Messages.creation_settings),
-            h('div.cp-creation-remember-help.cp-creation-slider', Messages.creation_rememberHelp)
+            h('div.cp-creation-remember-help.cp-creation-slider', [
+                h('span.fa.fa-exclamation-circle.cp-creation-warning'),
+                Messages.creation_rememberHelp
+            ])
         ]);
+
+        var createDiv = h('div.cp-creation-create');
+        var $create = $(createDiv);
 
         $(h('div#cp-creation-form', [
             owned,
             expire,
             settings,
-            templates
+            templates,
+            createDiv
         ])).appendTo($creation);
 
         // Display templates
@@ -1963,19 +1969,20 @@ define([
             if (!res.data || !Array.isArray(res.data)) {
                 return void console.error("Error: get the templates list");
             }
+            // TODO Sort the templates by number of use?
             var data = res.data.slice().sort(function (a, b) {
                 if (a.name === b.name) { return 0; }
                 return a.name < b.name ? -1 : 1;
+            }).slice(0, 2);
+            data.unshift({
+                name: Messages.creation_newTemplate,
+                id: -1,
+                icon: h('span.fa.fa-bookmark')
             });
             data.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
                 icon: h('span.fa.fa-file')
-            });
-            data.push({
-                name: Messages.creation_newTemplate,
-                id: -1,
-                icon: h('span.fa.fa-bookmark')
             });
             var $container = $(templates).find('.cp-creation-template-container').html('');
             data.forEach(function (obj, idx) {
@@ -2019,10 +2026,12 @@ define([
         $creation.find('#cp-creation-expire').on('change', function () {
             if ($(this).is(':checked')) {
                 $creation.find('.cp-creation-expire-picker:not(.active)').addClass('active');
+                $creation.find('.cp-creation-expire:not(.active)').addClass('active');
                 $creation.find('#cp-creation-expire-val').focus();
                 return;
             }
             $creation.find('.cp-creation-expire-picker').removeClass('active');
+            $creation.find('.cp-creation-expire').removeClass('active');
             $creation.focus();
         });
 

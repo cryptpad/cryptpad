@@ -308,7 +308,7 @@ define([
             if (!readOnly) { onLocal(); }
             evOnReady.fire(newPad);
 
-            UI.removeLoadingScreen(emitResize);
+            //UI.removeLoadingScreen(emitResize);
 
             var privateDat = cpNfInner.metadataMgr.getPrivateData();
             var hash = privateDat.availableHashes.editHash ||

@@ -574,14 +574,14 @@ define([
             $spinner.show();
             $('body').append($loading);
         }
-        if (Messages.tips && !hideTips) {
+        /*if (Messages.tips && !hideTips) {
             var $loadingTip = $('<div>', {'id': 'cp-loading-tip'});
             $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
             $loadingTip.css({
                 'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
             });
             $('body').append($loadingTip);
-        }
+        }*/
     };
     UI.removeLoadingScreen = function (cb) {
         // Release the test blocker, hopefully every test has been registered.
