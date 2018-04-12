@@ -256,7 +256,10 @@ define([
                                 // logMeIn should reset registering = false
                                 UI.removeLoadingScreen(function () {
                                     UI.confirm(Messages.register_alreadyRegistered, function (yes) {
-                                        if (!yes) { return; }
+                                        if (!yes) {
+                                            hashing = false;
+                                            return;
+                                        }
                                         proxy.login_name = uname;
 
                                         if (!proxy[Constants.displayNameKey]) {
