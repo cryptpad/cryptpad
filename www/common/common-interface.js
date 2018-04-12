@@ -6,13 +6,13 @@ define([
     '/common/common-notifier.js',
     '/customize/application_config.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/common/tippy.min.js',
+    '/common/tippy/tippy.min.js',
     '/customize/pages.js',
     '/common/hyperscript.js',
     '/common/test.js',
 
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
-    'css!/common/tippy.css',
+    'css!/common/tippy/tippy.css',
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
             Alertify, Tippy, Pages, h, Test) {
     var UI = {};
@@ -660,18 +660,37 @@ define([
         });
     };
 
+    var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
+    $.extend(true, Tippy.defaults, {
+        placement: 'bottom',
+        performance: true,
+        delay: [delay, 0],
+        //sticky: true,
+        theme: 'cryptpad',
+        arrow: true,
+        maxWidth: '200px',
+        flip: false,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: { boundariesElement: 'window' }
+            }
+        },
+        //arrowType: 'round',
+        arrowTransform: 'scale(2)',
+    });
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
-        var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
         var addTippy = function (i, el) {
             if (el.nodeName === 'IFRAME') { return; }
-            Tippy(el, {
-                position: 'bottom',
-                distance: 0,
-                performance: true,
-                delay: [delay, 0],
-                sticky: true
+            var opts = {
+                distance: 15
+            };
+            Array.prototype.slice.apply(el.attributes).filter(function (obj) {
+                return /^data-tippy-/.test(obj.name);
+            }).forEach(function (obj) {
+                opts[obj.name.slice(11)] = obj.value;
             });
+            Tippy(el, opts);
         };
         // This is the robust solution to remove dangling tooltips
         // The mutation observer does not always find removed nodes.

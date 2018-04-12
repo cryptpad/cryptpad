@@ -13,8 +13,6 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
-
-    'css!/common/tippy.css',
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
              Messages, AppConfig, NThen) {
     var UIElements = {};
@@ -1881,7 +1879,8 @@ define([
             var q = h('a.cp-creation-help.fa.fa-question-circle', {
                 title: text,
                 href: origin + href,
-                target: "_blank"
+                target: "_blank",
+                'data-tippy-placement': "right"
             });
             return q;
         };
