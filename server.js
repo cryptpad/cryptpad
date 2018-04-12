@@ -188,6 +188,7 @@ var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
 var send404 = function (res, path) {
     if (!path && path !== four04_path) { path = four04_path; }
     Fs.exists(path, function (exists) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
         if (exists) { return Fs.createReadStream(path).pipe(res); }
         send404(res);
     });
