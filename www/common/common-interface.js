@@ -23,7 +23,7 @@ define([
     UI.Alertify = Alertify;
 
     // set notification timeout
-    Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
+    Alertify._$$alertify.delay = 6000000 || AppConfig.notificationTimeout || 5000;
 
     var findCancelButton = UI.findCancelButton = function (root) {
         if (root) {
@@ -557,9 +557,9 @@ define([
             $loading.removeClass('cp-loading-hidden');
             $('.cp-loading-spinner-container').show();
             if (loadingText) {
-                $('#' + LOADING).find('p').text(loadingText);
+                $('#' + LOADING).find('p').show().text(loadingText);
             } else {
-                $('#' + LOADING).find('p').text('');
+                $('#' + LOADING).find('p').hide().text('');
             }
             $container = $loading.find('.cp-loading-container');
         } else {
@@ -610,8 +610,8 @@ define([
         }
         $('.cp-loading-spinner-container').hide();
         $('#cp-loading-tip').remove();
-        if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
-        $('#' + LOADING).find('p').html(error || Messages.error);
+        if (transparent) { $('#' + LOADING).css('opacity', 0.9); }
+        $('#' + LOADING).find('p').show().html(error || Messages.error);
         if (exitable) {
             $(window).focus();
             $(window).keydown(function (e) {
@@ -677,6 +677,7 @@ define([
         },
         //arrowType: 'round',
         arrowTransform: 'scale(2)',
+        zIndex: 100000001
     });
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;

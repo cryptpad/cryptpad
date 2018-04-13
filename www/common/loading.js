@@ -72,6 +72,13 @@ define([], function () {
   #cp-loading .cp-loading-cryptofist {
   }
 }
+#cp-loading-message {
+    background: #FFF;
+    padding: 20px;
+    width: 100%;
+    color: #000;
+    display: none;
+}
 #cp-loading .cp-loading-spinner-container {
   position: relative;
   height: 100px;
@@ -120,7 +127,7 @@ define([], function () {
             '<div class="cp-loading-spinner-container">',
                 '<span class="fa fa-circle-o-notch fa-spin fa-4x fa-fw"></span>',
             '</div>',
-            //'<p id="cp-loading-message"></p>',
+            '<p id="cp-loading-message"></p>',
         '</div>'
     ].join('');
     var intr;

@@ -26,24 +26,32 @@
 @colortheme_form-warning: #f49842;
 @colortheme_form-warning-hov: darken(@colortheme_form-warning, 5%);
 
-@colortheme_modal-bg: #222;
-@colortheme_modal-fg: #fff;
+@colortheme_modal-bg: @colortheme_form-bg-alt; // TODO Modals bg
+@colortheme_modal-fg: @colortheme_form-color-alt;
 @colortheme_modal-link: #eee;
 @colortheme_modal-link-visited: lighten(@colortheme_modal-link, 10%);
-@colortheme_modal-dim: rgba(0, 0, 0, 0.4);
+@colortheme_modal-dim: fade(@colortheme_logo-2, 50%); // TODO transparent background behind modals
+@colortheme_modal-input: @colortheme_form-bg;
+@colortheme_modal-input-fg: @colortheme_form-color;
 
 @colortheme_loading-bg: @colortheme_logo-1;
 @colortheme_loading-bg-alt: @colortheme_logo-2;
 @colortheme_loading-color: @colortheme_old-fore;
 
-@colortheme_modal-input: #111;
 
+// TODO modals buttons
 @colortheme_alertify-red: #E55236;
+@colortheme_alertify-red-border: transparent;
 @colortheme_alertify-green: #77C825;
-@colortheme_alertify-primary: #fff;
-@colortheme_alertify-primary-text: #000;
+@colortheme_alertify-green-border: transparent;
+@colortheme_alertify-primary: @colortheme_form-bg;
+@colortheme_alertify-primary-text: @colortheme_form-color;
+@colortheme_alertify-primary-border: transparent;
+@colortheme_alertify-cancel: @colortheme_modal-bg;
+@colortheme_alertify-cancel-border: #ccc;
 
 @colortheme_notification-log: rgba(0, 0, 0, 0.8);
+@colortheme_notification-log: fade(@colortheme_logo-1, 90%);
 @colortheme_notification-warn: rgba(205, 37, 50, 0.8);
 
 @colortheme_dropdown-bg: #f9f9f9;

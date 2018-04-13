@@ -183,8 +183,13 @@
     #cp-app-toolbar-creation-dialog.cp-modal-container {
         .icons_main();
 
-        li:hover {
-            border: 1px solid white;
+        li {
+            border: 1px solid @colortheme_modal-fg;
+            &:hover {
+                //border: 1px solid @colortheme_modal-fg;
+                background: @colortheme_modal-fg;
+                color: @colortheme_modal-bg;
+            }
         }
         .cp-modal {
             display: flex;
