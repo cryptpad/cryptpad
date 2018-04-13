@@ -1,3 +1,4 @@
+@import (once) "./colortheme-all.less";
 @import (once) "./toolbar.less";
 @import (once) './fileupload.less';
 @import (once) './alertify.less';
@@ -21,4 +22,20 @@
         @color: @color
     );
 }
+
+.framework_min_main(
+    @color: @colortheme_default-color, // Color of the text for the toolbar
+    @bg-color: @colortheme_default-bg, // color of the toolbar background
+    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
+) {
+    .toolbar_main(
+        @bg-color: @bg-color,
+        @warn-color: @warn-color,
+        @color: @color
+    );
+    .fileupload_main();
+    .alertify_main();
+    .tippy_main();
+}
+
 

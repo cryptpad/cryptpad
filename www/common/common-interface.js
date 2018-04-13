@@ -669,7 +669,7 @@ define([
         theme: 'cryptpad',
         arrow: true,
         maxWidth: '200px',
-        flip: false,
+        flip: true,
         popperOptions: {
             modifiers: {
                 preventOverflow: { boundariesElement: 'window' }
