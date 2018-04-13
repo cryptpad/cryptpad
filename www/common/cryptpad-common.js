@@ -424,6 +424,7 @@ define([
         // it allows us to add owners and expiration time if it is a new file
         var parsed = Hash.parsePadUrl(href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
+        postMessage("INCREMENT_TEMPLATE_USE", href);
         Crypt.get(parsed.hash, function (err, val) {
             if (err) { throw new Error(err); }
             var p = Hash.parsePadUrl(window.location.href);

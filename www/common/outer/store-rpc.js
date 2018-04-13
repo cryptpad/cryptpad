@@ -126,6 +126,9 @@ define([
             case 'GET_STRONGER_HASH': {
                 Store.getStrongerHash(data, cb); break;
             }
+            case 'INCREMENT_TEMPLATE_USE': {
+                Store.incrementTemplateUse(data); break;
+            }
             // Messaging
             case 'INVITE_FROM_USERLIST': {
                 Store.inviteFromUserlist(data, cb); break;

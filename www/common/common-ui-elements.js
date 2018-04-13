@@ -1780,10 +1780,14 @@ define([
         var sframeChan = common.getSframeChannel();
         var focus;
 
-        var pickerCfg = {
+        var pickerCfgInit = {
             types: [type],
             where: ['template'],
             hidden: true
+        };
+        var pickerCfg = {
+            types: [type],
+            where: ['template'],
         };
         var onConfirm = function (yes) {
             if (!yes) {
@@ -1812,7 +1816,7 @@ define([
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
             if (data) {
-                common.openFilePicker(pickerCfg);
+                common.openFilePicker(pickerCfgInit);
                 focus = document.activeElement;
                 if (force) { return void onConfirm(true); }
                 UI.confirm(Messages.useTemplate, onConfirm, {
@@ -1968,10 +1972,13 @@ define([
             if (!res.data || !Array.isArray(res.data)) {
                 return void console.error("Error: get the templates list");
             }
-            // TODO Sort the templates by number of use?
             var data = res.data.slice().sort(function (a, b) {
-                if (a.name === b.name) { return 0; }
-                return a.name < b.name ? -1 : 1;
+                if (a.used === b.used) {
+                    // Sort by name
+                    if (a.name === b.name) { return 0; }
+                    return a.name < b.name ? -1 : 1;
+                }
+                return b.used - a.used;
             }).slice(0, 2);
             data.unshift({
                 name: Messages.creation_newTemplate,

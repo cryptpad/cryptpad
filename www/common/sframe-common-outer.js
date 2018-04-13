@@ -431,6 +431,8 @@ define([
             // File picker
             var FP = {};
             var initFilePicker = function (cfg) {
+                // cfg.hidden means pre-loading the filepicker while keeping it hidden.
+                // if cfg.hidden is true and the iframe already exists, do nothing
                 if (!FP.$iframe) {
                     var config = {};
                     config.onFilePicked = function (data) {
@@ -449,7 +451,7 @@ define([
                     };
                     FP.$iframe = $('<iframe>', {id: 'sbox-filePicker-iframe'}).appendTo($('body'));
                     FP.picker = FilePicker.create(config);
-                } else {
+                } else if (!cfg.hidden) {
                     FP.$iframe.show();
                     FP.picker.refresh(cfg);
                 }
@@ -491,7 +493,8 @@ define([
                                 res.push({
                                     id: el,
                                     name: data[el].filename || data[el].title || '?',
-                                    thumbnail: thumb
+                                    thumbnail: thumb,
+                                    used: data[el].used || 0
                                 });
                             }));
                         });
