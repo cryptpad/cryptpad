@@ -1866,7 +1866,7 @@ define([
         var $creation = $('<div>', { id: 'cp-creation', tabindex: 1 }).appendTo($creationContainer);
 
         // Title
-        var colorClass = 'cp-icon-color-'+type;
+        //var colorClass = 'cp-icon-color-'+type;
         //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
         $creation.append(h('h3.cp-creation-title', Messages['button_new'+type]));
         //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));

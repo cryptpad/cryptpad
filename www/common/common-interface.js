@@ -539,16 +539,16 @@ define([
 
     var LOADING = 'cp-loading';
 
-    var getRandomTip = function () {
+    /*var getRandomTip = function () {
         if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
         var keys = Object.keys(Messages.tips);
         var rdm = Math.floor(Math.random() * keys.length);
         return Messages.tips[keys[rdm]];
-    };
+    };*/
     UI.addLoadingScreen = function (config) {
         config = config || {};
         var loadingText = config.loadingText;
-        var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
+        //var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
         var hideLogo = config.hideLogo;
         var $loading, $container;
         if ($('#' + LOADING).length) {
