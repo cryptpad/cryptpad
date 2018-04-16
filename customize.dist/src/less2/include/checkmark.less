@@ -52,6 +52,7 @@
             display: flex;
             justify-content: center;
             border: 1px solid @colortheme_form-border;
+            flex-shrink: 0;
             &:after {
                 content: "";
                 display: none;
@@ -61,6 +62,70 @@
                 transform: rotate(45deg);
                 border: solid @colortheme_checkmark-col1;
                 border-width: 0 @width @width 0;
+            }
+        }
+
+    }
+
+    .cp-radio {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        &.cp-radio-secondary {
+            .cp-radio-mark {
+                &:after {
+                    border-color: @colortheme_checkmark-col2;
+                }
+            }
+            input {
+                &:checked ~ .cp-radio-mark {
+                    background-color: @colortheme_checkmark-back2;
+                }
+            }
+        }
+        &:hover .cp-radio-mark {
+            background-color: @colortheme_checkmark-back0-active;
+        }
+
+        input {
+            display: none;
+            &:checked ~ .cp-radio-mark {
+                background-color: @colortheme_checkmark-back1;
+                &:after {
+                    display: block;
+                }
+            }
+        }
+        @radio-size: @dim1 * 3;
+        .cp-radio-mark {
+            margin-right: 10px;
+            position: relative;
+            height: @radio-size;
+            width: @radio-size;
+            background-color: @colortheme_checkmark-back0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid @colortheme_form-border;
+            flex-shrink: 0;
+            &:after {
+                display: none;
+                content: "";
+                border-radius: 50%;
+                background: white;
+                width: @dim1;
+                height: @dim1;
+
+                //transform: rotate(45deg);
+                //border: solid @colortheme_checkmark-col1;
+                //border-width: 0 @width @width 0;
             }
         }
 

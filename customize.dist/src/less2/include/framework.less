@@ -5,6 +5,7 @@
 @import (once) './tokenfield.less';
 @import (once) './creation.less';
 @import (once) './tippy.less';
+@import (once) "./checkmark.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
     .toolbar_main(
@@ -16,6 +17,7 @@
     .alertify_main();
     .tokenfield_main();
     .tippy_main();
+    .checkmark_main(20px);
     .creation_main(
         @bg-color: @bg-color,
         @warn-color: @warn-color,
@@ -36,6 +38,7 @@
     .fileupload_main();
     .alertify_main();
     .tippy_main();
+    .checkmark_main(20px);
 }
 
 

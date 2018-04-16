@@ -235,7 +235,9 @@ define([
         var link = h('div.cp-share-modal', [
             h('label', Messages.share_linkAccess),
             h('br'),
-            h('input#cp-share-editable-true.cp-share-editable-value', {
+            UI.createRadio('cp-share-editable', 'cp-share-editable-true', Messages.share_linkEdit, true),
+            UI.createRadio('cp-share-editable', 'cp-share-editable-false', Messages.share_linkView, false),
+            /*h('input#cp-share-editable-true.cp-share-editable-value', {
                 type: 'radio',
                 name: 'cp-share-editable',
                 value: 1,
@@ -246,23 +248,12 @@ define([
                 name: 'cp-share-editable',
                 value: 0
             }),
-            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),
-            h('br'),
+            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),*/
             h('br'),
             h('label', Messages.share_linkOptions),
             h('br'),
-            h('input#cp-share-embed', {
-                type: 'checkbox',
-                name: 'cp-share-embed'
-            }),
-            h('label', { 'for': 'cp-share-embed' }, Messages.share_linkEmbed),
-            h('br'),
-            h('input#cp-share-present', {
-                type: 'checkbox',
-                name: 'cp-share-present'
-            }),
-            h('label', { 'for': 'cp-share-present' }, Messages.share_linkPresent),
-            h('br'),
+            UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed),
+            UI.createCheckbox('cp-share-present', Messages.share_linkPresent),
             h('br'),
             UI.dialog.selectable('', { id: 'cp-share-link-preview' })
         ]);
@@ -1892,28 +1883,13 @@ define([
         // Owned pads
         // Default is Owned pad
         var owned = h('div.cp-creation-owned', [
-            h('label.cp-checkmark', [
-                h('input', {
-                    type: 'checkbox',
-                    id: 'cp-creation-owned',
-                    checked: 'checked'
-                }),
-                h('span.cp-checkmark-mark'),
-                Messages.creation_owned
-            ]),
+            UI.createCheckbox('cp-creation-owned', Messages.creation_owned, true),
             createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
         ]);
 
         // Life time
         var expire = h('div.cp-creation-expire', [
-            h('label.cp-checkmark', [
-                h('input', {
-                    type: 'checkbox',
-                    id: 'cp-creation-expire'
-                }),
-                h('span.cp-checkmark-mark'),
-                Messages.creation_expire
-            ]),
+            UI.createCheckbox('cp-creation-expire', Messages.creation_expire, false),
             h('span.cp-creation-expire-picker.cp-creation-slider', [
                 h('input#cp-creation-expire-val', {
                     type: "number",
@@ -1940,14 +1916,7 @@ define([
         ]);
 
         var settings = h('div.cp-creation-remember', [
-            h('label.cp-checkmark', [
-                h('input', {
-                    type: 'checkbox',
-                    id: 'cp-creation-remember'
-                }),
-                h('span.cp-checkmark-mark'),
-                Messages.creation_saveSettings
-            ]),
+            UI.createCheckbox('cp-creation-remember', Messages.creation_saveSettings, false),
             createHelper('/settings/#creation', Messages.creation_settings),
             h('div.cp-creation-remember-help.cp-creation-slider', [
                 h('span.fa.fa-exclamation-circle.cp-creation-warning'),
