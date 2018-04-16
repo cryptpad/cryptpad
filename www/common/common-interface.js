@@ -23,7 +23,7 @@ define([
     UI.Alertify = Alertify;
 
     // set notification timeout
-    Alertify._$$alertify.delay = 6000000 || AppConfig.notificationTimeout || 5000;
+    Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
 
     var findCancelButton = UI.findCancelButton = function (root) {
         if (root) {
