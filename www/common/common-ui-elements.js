@@ -235,8 +235,10 @@ define([
         var link = h('div.cp-share-modal', [
             h('label', Messages.share_linkAccess),
             h('br'),
-            UI.createRadio('cp-share-editable', 'cp-share-editable-true', Messages.share_linkEdit, true),
-            UI.createRadio('cp-share-editable', 'cp-share-editable-false', Messages.share_linkView, false),
+            UI.createRadio('cp-share-editable', 'cp-share-editable-true',
+                           Messages.share_linkEdit, true, { mark: {tabindex:1} }),
+            UI.createRadio('cp-share-editable', 'cp-share-editable-false',
+                           Messages.share_linkView, false, { mark: {tabindex:1} }),
             /*h('input#cp-share-editable-true.cp-share-editable-value', {
                 type: 'radio',
                 name: 'cp-share-editable',
@@ -252,10 +254,10 @@ define([
             h('br'),
             h('label', Messages.share_linkOptions),
             h('br'),
-            UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed),
-            UI.createCheckbox('cp-share-present', Messages.share_linkPresent),
+            UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
+            UI.createCheckbox('cp-share-present', Messages.share_linkPresent, false, { mark: {tabindex:1} }),
             h('br'),
-            UI.dialog.selectable('', { id: 'cp-share-link-preview' })
+            UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 })
         ]);
         if (!hashes.editHash) {
             $(link).find('#cp-share-editable-false').attr('checked', true);
@@ -1674,14 +1676,10 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var c = (priv.settings.general && priv.settings.general.creation) || {};
         if (AppConfig.displayCreationScreen && common.isLoggedIn() && c.skip) {
-            $advanced = $('<input>', {
-                type: 'checkbox',
-                checked: 'checked',
-                id: 'cp-app-toolbar-creation-advanced'
-            }).appendTo($advancedContainer);
-            $('<label>', {
-                for: 'cp-app-toolbar-creation-advanced'
-            }).text(Messages.creation_newPadModalAdvanced).appendTo($advancedContainer);
+            var $cboxLabel = $(UI.createCheckbox('cp-app-toolbar-creation-advanced',
+                                                 Messages.creation_newPadModalAdvanced, true))
+                                 .appendTo($advancedContainer);
+            $advanced = $cboxLabel.find('input');
             $description.append('<br>');
             $description.append(Messages.creation_newPadModalDescriptionAdvanced);
         }

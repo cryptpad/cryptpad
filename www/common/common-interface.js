@@ -740,33 +740,9 @@ define([
         });
     };
 
-    UI.createCheckbox = function (id, label, checked) {
-        var inputOpts = {
-            type: 'checkbox',
-            id: id
-        };
-        if (checked) { inputOpts.checked = 'checked'; }
-        console.log(inputOpts);
-        return h('label.cp-checkmark', [
-            h('input', inputOpts),
-            h('span.cp-checkmark-mark'),
-            label
-        ]);
-    };
+    UI.createCheckbox = Pages.createCheckbox;
 
-    UI.createRadio = function (name, id, label, checked) {
-        var inputOpts = {
-            type: 'radio',
-            id: id,
-            name: name
-        };
-        if (checked) { inputOpts.checked = 'checked'; }
-        return h('label.cp-radio', [
-            h('input', inputOpts),
-            h('span.cp-radio-mark'),
-            label
-        ]);
-    };
+    UI.createRadio = Pages.createRadio;
 
     return UI;
 });

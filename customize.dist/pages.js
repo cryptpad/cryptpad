@@ -639,6 +639,81 @@ define([
         );
     };
 
+    Pages.createCheckbox = function (id, label, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'checkbox',
+            id: id
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
+
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-checkmark-mark', markOpts);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+            }
+        });
+
+        return h('label.cp-checkmark', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
+    };
+
+    Pages.createRadio = function (name, id, label, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'radio',
+            id: id,
+            name: name
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
+
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-radio-mark', markOpts);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+            }
+        });
+
+        return h('label.cp-radio', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
+    };
+
     var hiddenLoader = function () {
         var loader = loadingScreen();
         loader.style.display = 'none';
@@ -688,27 +763,10 @@ define([
                         placeholder: Msg.login_confirm,
                     }),
                     h('div.checkbox-container', [
-                        h('input#import-recent', {
-                            name: 'import-recent',
-                            type: 'checkbox',
-                            checked: true
-                        }),
-                        // hscript doesn't generate for on label for some
-                        // reason... use jquery as a temporary fallback
-                        setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
-                        /*h('label', {
-                            'for': 'import-recent',
-                        }, Msg.register_importRecent),*/
+                        Pages.createCheckbox('import-recent', Msg.register_importRecent, true)
                     ]),
                     h('div.checkbox-container', [
-                        h('input#accept-terms', {
-                            name: 'accept-terms',
-                            type: 'checkbox'
-                        }),
-                        setHTML($('<label for="accept-terms"></label>')[0], Msg.register_acceptTerms)
-                        /*setHTML(h('label', {
-                            'for': 'accept-terms',
-                        }), Msg.register_acceptTerms),*/
+                        $(Pages.createCheckbox('import-recent')).append(Msg.register_acceptTerms)[0]
                     ]),
                     h('button#register.btn.cp-login-register', Msg.login_register)
                 ])
@@ -750,17 +808,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.checkbox-container', [
-                            h('input#import-recent', {
-                                name: 'import-recent',
-                                type: 'checkbox',
-                                checked: true
-                            }),
-                            // hscript doesn't generate for on label for some
-                            // reason... use jquery as a temporary fallback
-                            setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
-                            /*h('label', {
-                                'for': 'import-recent',
-                            }, Msg.register_importRecent),*/
+                            Pages.createCheckbox('import-recent', Msg.register_importRecent, true),
                         ]),
                         h('div.extra', [
                             h('button.login.first.btn', Msg.login_login)
