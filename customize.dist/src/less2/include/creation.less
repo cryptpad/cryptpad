@@ -195,6 +195,25 @@
             div.cp-creation-template {
                 width: 100%;
                 flex: 1 0 auto;
+                flex-wrap: nowrap;
+                .cp-creation-template-more {
+                    font-size: 30px;
+                    cursor: pointer;
+                    margin: 0 5px;
+                    text-align: center;
+                    &:first-child {
+                        left: 5px;
+                    }
+                    &:last-child {
+                        right: 5px;
+                    }
+                    &:hover {
+                        color: #888;
+                    }
+                    &.hidden {
+                        visibility: hidden;
+                    }
+                }
             }
             .cp-creation-template-container {
                 width: 100%;
@@ -202,7 +221,7 @@
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
-                overflow-y: auto;
+                //overflow-y: auto;
                 align-items: center;
                 .cp-creation-template-element {
                     box-shadow: 2px 2px 7px @colortheme_form-border;

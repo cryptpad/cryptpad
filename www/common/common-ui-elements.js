@@ -1907,10 +1907,14 @@ define([
             createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
         ]);
 
+        var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
+        var left = h('span.fa.fa-chevron-left.cp-creation-template-more');
         var templates = h('div.cp-creation-template', [
+            left,
             h('div.cp-creation-template-container', [
                 h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')
-            ])
+            ]),
+            right
         ]);
 
         var settings = h('div.cp-creation-remember', [
@@ -1934,66 +1938,96 @@ define([
         ])).appendTo($creation);
 
         // Display templates
-        var selected = 0;
+
+        var selected = 0; // Selected template in the list (highlighted)
+        var TEMPLATES_DISPLAYED = 4; // Max templates displayed per page
+        var next = function () {}; // Function called when pressing tab to highlight the next template
+        var i = 0; // Index of the first template displayed in the current page
         sframeChan.query("Q_CREATE_TEMPLATES", type, function (err, res) {
             if (!res.data || !Array.isArray(res.data)) {
                 return void console.error("Error: get the templates list");
             }
-            var data = res.data.slice().sort(function (a, b) {
+            var allData = res.data.slice().sort(function (a, b) {
                 if (a.used === b.used) {
                     // Sort by name
                     if (a.name === b.name) { return 0; }
                     return a.name < b.name ? -1 : 1;
                 }
                 return b.used - a.used;
-            }).slice(0, 2);
-            data.unshift({
+            });
+            allData.unshift({
                 name: Messages.creation_newTemplate,
                 id: -1,
                 icon: h('span.fa.fa-bookmark')
             });
-            data.unshift({
+            allData.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
                 icon: h('span.fa.fa-file')
             });
-            var $container = $(templates).find('.cp-creation-template-container').html('');
-            data.forEach(function (obj, idx) {
-                var name = obj.name;
-                var $span = $('<span>', {
-                    'class': 'cp-creation-template-element',
-                    'title': name,
-                }).appendTo($container);
-                $span.data('id', obj.id);
-                if (idx === 0) { $span.addClass('cp-creation-template-selected'); }
-                $span.append(obj.icon || UI.getFileIcon({type: type}));
-                $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
-                    .appendTo($span);
-                $span.click(function () {
-                    $container.find('.cp-creation-template-selected')
-                        .removeClass('cp-creation-template-selected');
-                    $span.addClass('cp-creation-template-selected');
-                    selected = idx;
+            var redraw = function (index) {
+                if (index < 0) { i = 0; }
+                else if (index > allData.length - 1) { return; }
+                else { i = index; }
+                var data = allData.slice(i, i + TEMPLATES_DISPLAYED);
+                var $container = $(templates).find('.cp-creation-template-container').html('');
+                data.forEach(function (obj, idx) {
+                    var name = obj.name;
+                    var $span = $('<span>', {
+                        'class': 'cp-creation-template-element',
+                        'title': name,
+                    }).appendTo($container);
+                    $span.data('id', obj.id);
+                    if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
+                    $span.append(obj.icon || UI.getFileIcon({type: type}));
+                    $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
+                        .appendTo($span);
+                    $span.click(function () {
+                        $container.find('.cp-creation-template-selected')
+                            .removeClass('cp-creation-template-selected');
+                        $span.addClass('cp-creation-template-selected');
+                        selected = idx;
+                    });
+
+                    // Add thumbnail if it exists
+                    if (obj.thumbnail) {
+                        common.addThumbnail(obj.thumbnail, $span, function () {});
+                    }
                 });
+                $(right).off('click').removeClass('hidden').click(function () {
+                    selected = 0;
+                    redraw(i + TEMPLATES_DISPLAYED);
+                });
+                if (i >= allData.length - TEMPLATES_DISPLAYED ) { $(right).addClass('hidden'); }
+                $(left).off('click').removeClass('hidden').click(function () {
+                    selected = TEMPLATES_DISPLAYED - 1;
+                    redraw(i - TEMPLATES_DISPLAYED);
+                });
+                if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
+            };
+            redraw(0);
 
-                // Add thumbnail if it exists
-                if (obj.thumbnail) {
-                    common.addThumbnail(obj.thumbnail, $span, function () {});
+            // Change template selection when Tab is pressed
+            next = function (revert) {
+                var max = $creation.find('.cp-creation-template-element').length;
+                if (selected + 1 === max && !revert) {
+                    selected = i + TEMPLATES_DISPLAYED < allData.length ? 0 : max;
+                    return void redraw(i + TEMPLATES_DISPLAYED);
                 }
-            });
-        });
-        // Change template selection when Tab is pressed
-        var next = function (revert) {
-            var max = $creation.find('.cp-creation-template-element').length;
-            selected = revert ?
-                        (--selected < 0 ? max-1 : selected) :
-                        ++selected % max;
-            $creation.find('.cp-creation-template-element')
-                .removeClass('cp-creation-template-selected');
-            $($creation.find('.cp-creation-template-element').get(selected))
-                .addClass('cp-creation-template-selected');
-        };
+                if (selected === 0 && revert) {
+                    selected = i - TEMPLATES_DISPLAYED >= 0 ? TEMPLATES_DISPLAYED - 1 : 0;
+                    return void redraw(i - TEMPLATES_DISPLAYED);
+                }
+                selected = revert ?
+                            (--selected < 0 ? 0 : selected) :
+                            ++selected >= max ? max-1 : selected;
+                $creation.find('.cp-creation-template-element')
+                    .removeClass('cp-creation-template-selected');
+                $($creation.find('.cp-creation-template-element').get(selected))
+                    .addClass('cp-creation-template-selected');
+            };
 
+        });
 
         // Display expiration form when checkbox checked
         $creation.find('#cp-creation-expire').on('change', function () {
