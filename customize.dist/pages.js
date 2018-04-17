@@ -666,6 +666,7 @@ define([
                 e.stopPropagation();
                 e.preventDefault();
                 $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
             }
         });
 
