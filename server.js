@@ -123,6 +123,9 @@ app.get(mainPagePattern, Express.static(__dirname + '/customize.dist'));
 app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob')), {
     maxAge: DEV_MODE? "0d": "365d"
 }));
+app.use("/datastore", Express.static(Path.join(__dirname, (config.filePath || './datastore')), {
+    maxAge: "0d"
+}));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
@@ -188,6 +191,7 @@ var custom_four04_path = Path.resolve(__dirname + '/customize/404.html');
 var send404 = function (res, path) {
     if (!path && path !== four04_path) { path = four04_path; }
     Fs.exists(path, function (exists) {
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
         if (exists) { return Fs.createReadStream(path).pipe(res); }
         send404(res);
     });
