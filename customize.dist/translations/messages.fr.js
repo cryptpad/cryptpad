@@ -37,6 +37,7 @@ define(function () {
     out.chainpadError = 'Une erreur critique est survenue lors de la mise à jour du contenu. Le pad est désormais en mode lecture seule afin de s\'assurer que vous ne perdiez pas davantage de données.<br>' +
                         'Appuyez sur <em>Échap</em> pour voir le pad ou rechargez la page pour pouvoir le modifier à nouveau.';
     out.errorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
+    out.errorRedirectToHome = 'Appuyez sur <em>Échap</em> pour retourner vers votre CryptDrive.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";

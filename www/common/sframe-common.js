@@ -435,6 +435,15 @@ define([
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
 
+            ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
+                if (err === 'DELETED') {
+                    var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
+                    UI.errorLoadingScreen(msg, false, function () {
+                        funcs.gotoURL('/drive/');
+                    });
+                }
+            });
+
             ctx.sframeChan.on('EV_LOGOUT', function () {
                 $(window).on('keyup', function (e) {
                     if (e.keyCode === 27) {

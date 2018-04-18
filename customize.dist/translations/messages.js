@@ -38,6 +38,7 @@ define(function () {
     out.chainpadError = 'A critical error occurred when updating your content. This page is in read-only mode to make sure you won\'t lose your work.<br>' +
                         'Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.';
     out.errorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
+    out.errorRedirectToHome = 'Press <em>Esc</em> to be redirected to your CryptDrive.';
 
     out.loading = "Loading...";
     out.error = "Error";
