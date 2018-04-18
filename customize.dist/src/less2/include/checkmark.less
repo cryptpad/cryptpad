@@ -49,6 +49,11 @@
             }
         }
 
+        .cp-checkmark-label {
+            &:empty {
+                display: none;
+            }
+        }
         .cp-checkmark-mark {
             margin-right: 10px;
             position: relative;
@@ -68,6 +73,7 @@
                 transform: rotate(45deg);
                 border: solid @colortheme_checkmark-col1;
                 border-width: 0 @width @width 0;
+                position: absolute;
             }
             &:focus {
                 //border-color: #FF007C !important;
@@ -114,6 +120,13 @@
                 }
             }
         }
+
+        .cp-checkmark-label {
+            &:empty {
+                display: none;
+            }
+        }
+
         @radio-size: @dim1 * 3;
         .cp-radio-mark {
             margin-right: 10px;

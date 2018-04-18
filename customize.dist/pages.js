@@ -639,7 +639,7 @@ define([
         );
     };
 
-    Pages.createCheckbox = function (id, label, checked, opts) {
+    Pages.createCheckbox = function (id, labelTxt, checked, opts) {
         opts = opts|| {};
         // Input properties
         var inputOpts = {
@@ -660,6 +660,7 @@ define([
 
         var input = h('input', inputOpts);
         var mark = h('span.cp-checkmark-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
 
         $(mark).keydown(function (e) {
             if (e.which === 32) {
@@ -677,7 +678,7 @@ define([
         ]);
     };
 
-    Pages.createRadio = function (name, id, label, checked, opts) {
+    Pages.createRadio = function (name, id, labelTxt, checked, opts) {
         opts = opts|| {};
         // Input properties
         var inputOpts = {
@@ -699,12 +700,14 @@ define([
 
         var input = h('input', inputOpts);
         var mark = h('span.cp-radio-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
 
         $(mark).keydown(function (e) {
             if (e.which === 32) {
                 e.stopPropagation();
                 e.preventDefault();
                 $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
             }
         });
 
@@ -767,7 +770,7 @@ define([
                         Pages.createCheckbox('import-recent', Msg.register_importRecent, true)
                     ]),
                     h('div.checkbox-container', [
-                        $(Pages.createCheckbox('import-recent')).append(Msg.register_acceptTerms)[0]
+                        $(Pages.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
                     ]),
                     h('button#register.btn.cp-login-register', Msg.login_register)
                 ])
