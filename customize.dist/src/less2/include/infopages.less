@@ -161,6 +161,7 @@
         background-size: contain;
         height: 50px;
         width: 250px;
+        margin-right: 0;
     }
     a {
         border: 2px solid transparent;
@@ -169,7 +170,8 @@
     .nav-link {
         padding: 0.5em 0.7em;
         &:hover {
-            transform: scale(1.05);
+            font-size: 1.05em;
+            //transform: scale(1.05);
         };
     }
     .cp-register-btn {
@@ -184,9 +186,18 @@
         color: #4591C4;
     }
 }
-@media (max-width: 991px) {
+@media (max-width: 1000px) {
     #menuCollapse {
         text-align: right;
+/*        @media (min-width: 576px) {
+            top: 100%;
+            background: rgba(255,255,255,0.8);
+            position: absolute;
+            right: 0px;
+            padding: 0 20px;
+            z-index: 1;
+        }
+*/
     }
     .navbar-nav a {
         text-align: right !important;
@@ -194,7 +205,7 @@
     .cp-register-btn {
         margin-right: 13px;
         text-align: center;
-     }
+    }
 }
 
 //footer general styles
