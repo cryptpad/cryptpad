@@ -13,8 +13,6 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
-
-    'css!/common/tippy.css',
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
              Messages, AppConfig, NThen) {
     var UIElements = {};
@@ -237,7 +235,11 @@ define([
         var link = h('div.cp-share-modal', [
             h('label', Messages.share_linkAccess),
             h('br'),
-            h('input#cp-share-editable-true.cp-share-editable-value', {
+            UI.createRadio('cp-share-editable', 'cp-share-editable-true',
+                           Messages.share_linkEdit, true, { mark: {tabindex:1} }),
+            UI.createRadio('cp-share-editable', 'cp-share-editable-false',
+                           Messages.share_linkView, false, { mark: {tabindex:1} }),
+            /*h('input#cp-share-editable-true.cp-share-editable-value', {
                 type: 'radio',
                 name: 'cp-share-editable',
                 value: 1,
@@ -248,25 +250,14 @@ define([
                 name: 'cp-share-editable',
                 value: 0
             }),
-            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),
-            h('br'),
+            h('label', { 'for': 'cp-share-editable-false' }, Messages.share_linkView),*/
             h('br'),
             h('label', Messages.share_linkOptions),
             h('br'),
-            h('input#cp-share-embed', {
-                type: 'checkbox',
-                name: 'cp-share-embed'
-            }),
-            h('label', { 'for': 'cp-share-embed' }, Messages.share_linkEmbed),
+            UI.createCheckbox('cp-share-embed', Messages.share_linkEmbed, false, { mark: {tabindex:1} }),
+            UI.createCheckbox('cp-share-present', Messages.share_linkPresent, false, { mark: {tabindex:1} }),
             h('br'),
-            h('input#cp-share-present', {
-                type: 'checkbox',
-                name: 'cp-share-present'
-            }),
-            h('label', { 'for': 'cp-share-present' }, Messages.share_linkPresent),
-            h('br'),
-            h('br'),
-            UI.dialog.selectable('', { id: 'cp-share-link-preview' })
+            UI.dialog.selectable('', { id: 'cp-share-link-preview', tabindex: 1 })
         ]);
         if (!hashes.editHash) {
             $(link).find('#cp-share-editable-false').attr('checked', true);
@@ -1685,14 +1676,10 @@ define([
         var priv = common.getMetadataMgr().getPrivateData();
         var c = (priv.settings.general && priv.settings.general.creation) || {};
         if (AppConfig.displayCreationScreen && common.isLoggedIn() && c.skip) {
-            $advanced = $('<input>', {
-                type: 'checkbox',
-                checked: 'checked',
-                id: 'cp-app-toolbar-creation-advanced'
-            }).appendTo($advancedContainer);
-            $('<label>', {
-                for: 'cp-app-toolbar-creation-advanced'
-            }).text(Messages.creation_newPadModalAdvanced).appendTo($advancedContainer);
+            var $cboxLabel = $(UI.createCheckbox('cp-app-toolbar-creation-advanced',
+                                                 Messages.creation_newPadModalAdvanced, true))
+                                 .appendTo($advancedContainer);
+            $advanced = $cboxLabel.find('input');
             $description.append('<br>');
             $description.append(Messages.creation_newPadModalDescriptionAdvanced);
         }
@@ -1782,10 +1769,14 @@ define([
         var sframeChan = common.getSframeChannel();
         var focus;
 
-        var pickerCfg = {
+        var pickerCfgInit = {
             types: [type],
             where: ['template'],
             hidden: true
+        };
+        var pickerCfg = {
+            types: [type],
+            where: ['template'],
         };
         var onConfirm = function (yes) {
             if (!yes) {
@@ -1814,7 +1805,7 @@ define([
 
         sframeChan.query("Q_TEMPLATE_EXIST", type, function (err, data) {
             if (data) {
-                common.openFilePicker(pickerCfg);
+                common.openFilePicker(pickerCfgInit);
                 focus = document.activeElement;
                 if (force) { return void onConfirm(true); }
                 UI.confirm(Messages.useTemplate, onConfirm, {
@@ -1858,11 +1849,15 @@ define([
 
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
+        var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
+        var l = h('div.cp-creation-logo', h('img', { src: '/customize/alt-favicon.png?' + urlArgs }));
+        $(l).appendTo($creationContainer);
         var $creation = $('<div>', { id: 'cp-creation', tabindex: 1 }).appendTo($creationContainer);
 
         // Title
-        var colorClass = 'cp-icon-color-'+type;
-        $creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
+        //var colorClass = 'cp-icon-color-'+type;
+        //$creation.append(h('h2.cp-creation-title', Messages.newButtonTitle));
+        $creation.append(h('h3.cp-creation-title', Messages['button_new'+type]));
         //$creation.append(h('h2.cp-creation-title.'+colorClass, Messages.newButtonTitle));
 
         // Deleted pad warning
@@ -1874,10 +1869,11 @@ define([
 
         var origin = common.getMetadataMgr().getPrivateData().origin;
         var createHelper = function (href, text) {
-            var q = h('a.cp-creation-help.fa.fa-question', {
+            var q = h('a.cp-creation-help.fa.fa-question-circle', {
                 title: text,
                 href: origin + href,
-                target: "_blank"
+                target: "_blank",
+                'data-tippy-placement': "right"
             });
             return q;
         };
@@ -1885,30 +1881,14 @@ define([
         // Owned pads
         // Default is Owned pad
         var owned = h('div.cp-creation-owned', [
-            h('label.cp-checkmark', [
-                h('input', {
-                    type: 'checkbox',
-                    id: 'cp-creation-owned',
-                    checked: 'checked'
-                }),
-                h('span.cp-checkmark-mark'),
-                Messages.creation_owned
-            ]),
+            UI.createCheckbox('cp-creation-owned', Messages.creation_owned, true),
             createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
         ]);
 
         // Life time
         var expire = h('div.cp-creation-expire', [
-            h('label.cp-checkmark', [
-                h('input', {
-                    type: 'checkbox',
-                    id: 'cp-creation-expire'
-                }),
-                h('span.cp-checkmark-mark'),
-                Messages.creation_expire
-            ]),
-            createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
-            h('div.cp-creation-expire-picker.cp-creation-slider', [
+            UI.createCheckbox('cp-creation-expire', Messages.creation_expire, false),
+            h('span.cp-creation-expire-picker.cp-creation-slider', [
                 h('input#cp-creation-expire-val', {
                     type: "number",
                     min: 1,
@@ -1923,106 +1903,142 @@ define([
                         selected: 'selected'
                     }, Messages.creation_expireMonths)
                 ])
+            ]),
+            createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
+        ]);
+
+        var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
+        var left = h('span.fa.fa-chevron-left.cp-creation-template-more');
+        var templates = h('div.cp-creation-template', [
+            left,
+            h('div.cp-creation-template-container', [
+                h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')
+            ]),
+            right
+        ]);
+
+        var settings = h('div.cp-creation-remember', [
+            UI.createCheckbox('cp-creation-remember', Messages.creation_saveSettings, false),
+            createHelper('/settings/#creation', Messages.creation_settings),
+            h('div.cp-creation-remember-help.cp-creation-slider', [
+                h('span.fa.fa-exclamation-circle.cp-creation-warning'),
+                Messages.creation_rememberHelp
             ])
         ]);
 
         var createDiv = h('div.cp-creation-create');
         var $create = $(createDiv);
 
-        var templates = h('div.cp-creation-template', [
-            h('h3.cp-creation-title.'+colorClass, Messages['button_new'+type]),
-            h('div.cp-creation-template-container', [
-                h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')
-            ]),
-            createDiv
-        ]);
-
-        var settings = h('div.cp-creation-remember', [
-            h('label.cp-checkmark', [
-                h('input', {
-                    type: 'checkbox',
-                    id: 'cp-creation-remember'
-                }),
-                h('span.cp-checkmark-mark'),
-                Messages.creation_saveSettings
-            ]),
-            createHelper('/settings/#creation', Messages.creation_settings),
-            h('div.cp-creation-remember-help.cp-creation-slider', Messages.creation_rememberHelp)
-        ]);
-
         $(h('div#cp-creation-form', [
             owned,
             expire,
             settings,
-            templates
+            templates,
+            createDiv
         ])).appendTo($creation);
 
         // Display templates
-        var selected = 0;
+
+        var selected = 0; // Selected template in the list (highlighted)
+        var TEMPLATES_DISPLAYED = 4; // Max templates displayed per page
+        var next = function () {}; // Function called when pressing tab to highlight the next template
+        var i = 0; // Index of the first template displayed in the current page
         sframeChan.query("Q_CREATE_TEMPLATES", type, function (err, res) {
             if (!res.data || !Array.isArray(res.data)) {
                 return void console.error("Error: get the templates list");
             }
-            var data = res.data.slice().sort(function (a, b) {
-                if (a.name === b.name) { return 0; }
-                return a.name < b.name ? -1 : 1;
+            var allData = res.data.slice().sort(function (a, b) {
+                if (a.used === b.used) {
+                    // Sort by name
+                    if (a.name === b.name) { return 0; }
+                    return a.name < b.name ? -1 : 1;
+                }
+                return b.used - a.used;
             });
-            data.unshift({
-                name: Messages.creation_noTemplate,
-                id: 0,
-                icon: h('span.fa.fa-file')
-            });
-            data.push({
+            allData.unshift({
                 name: Messages.creation_newTemplate,
                 id: -1,
                 icon: h('span.fa.fa-bookmark')
             });
-            var $container = $(templates).find('.cp-creation-template-container').html('');
-            data.forEach(function (obj, idx) {
-                var name = obj.name;
-                var $span = $('<span>', {
-                    'class': 'cp-creation-template-element',
-                    'title': name,
-                }).appendTo($container);
-                $span.data('id', obj.id);
-                if (idx === 0) { $span.addClass('cp-creation-template-selected'); }
-                $span.append(obj.icon || UI.getFileIcon({type: type}));
-                $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
-                    .appendTo($span);
-                $span.click(function () {
-                    $container.find('.cp-creation-template-selected')
-                        .removeClass('cp-creation-template-selected');
-                    $span.addClass('cp-creation-template-selected');
-                    selected = idx;
-                });
-
-                // Add thumbnail if it exists
-                if (obj.thumbnail) {
-                    common.addThumbnail(obj.thumbnail, $span, function () {});
-                }
+            allData.unshift({
+                name: Messages.creation_noTemplate,
+                id: 0,
+                icon: h('span.fa.fa-file')
             });
-        });
-        // Change template selection when Tab is pressed
-        var next = function (revert) {
-            var max = $creation.find('.cp-creation-template-element').length;
-            selected = revert ?
-                        (--selected < 0 ? max-1 : selected) :
-                        ++selected % max;
-            $creation.find('.cp-creation-template-element')
-                .removeClass('cp-creation-template-selected');
-            $($creation.find('.cp-creation-template-element').get(selected))
-                .addClass('cp-creation-template-selected');
-        };
+            var redraw = function (index) {
+                if (index < 0) { i = 0; }
+                else if (index > allData.length - 1) { return; }
+                else { i = index; }
+                var data = allData.slice(i, i + TEMPLATES_DISPLAYED);
+                var $container = $(templates).find('.cp-creation-template-container').html('');
+                data.forEach(function (obj, idx) {
+                    var name = obj.name;
+                    var $span = $('<span>', {
+                        'class': 'cp-creation-template-element',
+                        'title': name,
+                    }).appendTo($container);
+                    $span.data('id', obj.id);
+                    if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
+                    $span.append(obj.icon || UI.getFileIcon({type: type}));
+                    $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
+                        .appendTo($span);
+                    $span.click(function () {
+                        $container.find('.cp-creation-template-selected')
+                            .removeClass('cp-creation-template-selected');
+                        $span.addClass('cp-creation-template-selected');
+                        selected = idx;
+                    });
 
+                    // Add thumbnail if it exists
+                    if (obj.thumbnail) {
+                        common.addThumbnail(obj.thumbnail, $span, function () {});
+                    }
+                });
+                $(right).off('click').removeClass('hidden').click(function () {
+                    selected = 0;
+                    redraw(i + TEMPLATES_DISPLAYED);
+                });
+                if (i >= allData.length - TEMPLATES_DISPLAYED ) { $(right).addClass('hidden'); }
+                $(left).off('click').removeClass('hidden').click(function () {
+                    selected = TEMPLATES_DISPLAYED - 1;
+                    redraw(i - TEMPLATES_DISPLAYED);
+                });
+                if (i < TEMPLATES_DISPLAYED) { $(left).addClass('hidden'); }
+            };
+            redraw(0);
+
+            // Change template selection when Tab is pressed
+            next = function (revert) {
+                var max = $creation.find('.cp-creation-template-element').length;
+                if (selected + 1 === max && !revert) {
+                    selected = i + TEMPLATES_DISPLAYED < allData.length ? 0 : max;
+                    return void redraw(i + TEMPLATES_DISPLAYED);
+                }
+                if (selected === 0 && revert) {
+                    selected = i - TEMPLATES_DISPLAYED >= 0 ? TEMPLATES_DISPLAYED - 1 : 0;
+                    return void redraw(i - TEMPLATES_DISPLAYED);
+                }
+                selected = revert ?
+                            (--selected < 0 ? 0 : selected) :
+                            ++selected >= max ? max-1 : selected;
+                $creation.find('.cp-creation-template-element')
+                    .removeClass('cp-creation-template-selected');
+                $($creation.find('.cp-creation-template-element').get(selected))
+                    .addClass('cp-creation-template-selected');
+            };
+
+        });
 
         // Display expiration form when checkbox checked
         $creation.find('#cp-creation-expire').on('change', function () {
             if ($(this).is(':checked')) {
                 $creation.find('.cp-creation-expire-picker:not(.active)').addClass('active');
+                $creation.find('.cp-creation-expire:not(.active)').addClass('active');
                 $creation.find('#cp-creation-expire-val').focus();
                 return;
             }
             $creation.find('.cp-creation-expire-picker').removeClass('active');
+            $creation.find('.cp-creation-expire').removeClass('active');
             $creation.focus();
         });
 

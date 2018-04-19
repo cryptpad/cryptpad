@@ -1,25 +1,16 @@
 @import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) "../../customize/src/less2/include/markdown.less";
-@import (once) '../../customize/src/less2/include/fileupload.less';
-@import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/tokenfield.less';
+@import (once) '../../customize/src/less2/include/framework.less';
 
-.toolbar_main(
+.framework_min_main(
     @bg-color: @colortheme_file-bg,
     @warn-color: @colortheme_file-warn,
     @color: @colortheme_file-color
 );
-.fileupload_main();
-.alertify_main();
 .tokenfield_main();
 
 @button-border: 2px;
-
-/*html, body {
-    margin: 0px;
-    height: 100%;
-}*/
 
 // body
 display: flex;

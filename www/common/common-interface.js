@@ -6,13 +6,13 @@ define([
     '/common/common-notifier.js',
     '/customize/application_config.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/common/tippy.min.js',
+    '/common/tippy/tippy.min.js',
     '/customize/pages.js',
     '/common/hyperscript.js',
     '/common/test.js',
 
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
-    'css!/common/tippy.css',
+    'css!/common/tippy/tippy.css',
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
             Alertify, Tippy, Pages, h, Test) {
     var UI = {};
@@ -539,16 +539,16 @@ define([
 
     var LOADING = 'cp-loading';
 
-    var getRandomTip = function () {
+    /*var getRandomTip = function () {
         if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
         var keys = Object.keys(Messages.tips);
         var rdm = Math.floor(Math.random() * keys.length);
         return Messages.tips[keys[rdm]];
-    };
+    };*/
     UI.addLoadingScreen = function (config) {
         config = config || {};
         var loadingText = config.loadingText;
-        var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
+        //var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
         var hideLogo = config.hideLogo;
         var $loading, $container;
         if ($('#' + LOADING).length) {
@@ -557,9 +557,9 @@ define([
             $loading.removeClass('cp-loading-hidden');
             $('.cp-loading-spinner-container').show();
             if (loadingText) {
-                $('#' + LOADING).find('p').text(loadingText);
+                $('#' + LOADING).find('p').show().text(loadingText);
             } else {
-                $('#' + LOADING).find('p').text('');
+                $('#' + LOADING).find('p').hide().text('');
             }
             $container = $loading.find('.cp-loading-container');
         } else {
@@ -574,14 +574,14 @@ define([
             $spinner.show();
             $('body').append($loading);
         }
-        if (Messages.tips && !hideTips) {
+        /*if (Messages.tips && !hideTips) {
             var $loadingTip = $('<div>', {'id': 'cp-loading-tip'});
             $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
             $loadingTip.css({
                 'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
             });
             $('body').append($loadingTip);
-        }
+        }*/
     };
     UI.removeLoadingScreen = function (cb) {
         // Release the test blocker, hopefully every test has been registered.
@@ -610,8 +610,8 @@ define([
         }
         $('.cp-loading-spinner-container').hide();
         $('#cp-loading-tip').remove();
-        if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
-        $('#' + LOADING).find('p').html(error || Messages.error);
+        if (transparent) { $('#' + LOADING).css('opacity', 0.9); }
+        $('#' + LOADING).find('p').show().html(error || Messages.error);
         if (exitable) {
             $(window).focus();
             $(window).keydown(function (e) {
@@ -660,18 +660,38 @@ define([
         });
     };
 
+    var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
+    $.extend(true, Tippy.defaults, {
+        placement: 'bottom',
+        performance: true,
+        delay: [delay, 0],
+        //sticky: true,
+        theme: 'cryptpad',
+        arrow: true,
+        maxWidth: '200px',
+        flip: true,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: { boundariesElement: 'window' }
+            }
+        },
+        //arrowType: 'round',
+        arrowTransform: 'scale(2)',
+        zIndex: 100000001
+    });
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
-        var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
         var addTippy = function (i, el) {
             if (el.nodeName === 'IFRAME') { return; }
-            Tippy(el, {
-                position: 'bottom',
-                distance: 0,
-                performance: true,
-                delay: [delay, 0],
-                sticky: true
+            var opts = {
+                distance: 15
+            };
+            Array.prototype.slice.apply(el.attributes).filter(function (obj) {
+                return /^data-tippy-/.test(obj.name);
+            }).forEach(function (obj) {
+                opts[obj.name.slice(11)] = obj.value;
             });
+            Tippy(el, opts);
         };
         // This is the robust solution to remove dangling tooltips
         // The mutation observer does not always find removed nodes.
@@ -719,6 +739,10 @@ define([
             subtree: true
         });
     };
+
+    UI.createCheckbox = Pages.createCheckbox;
+
+    UI.createRadio = Pages.createRadio;
 
     return UI;
 });

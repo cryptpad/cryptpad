@@ -1,8 +1,11 @@
+@import (once) "./colortheme-all.less";
 @import (once) "./toolbar.less";
 @import (once) './fileupload.less';
 @import (once) './alertify.less';
 @import (once) './tokenfield.less';
 @import (once) './creation.less';
+@import (once) './tippy.less';
+@import (once) "./checkmark.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
     .toolbar_main(
@@ -13,6 +16,29 @@
     .fileupload_main();
     .alertify_main();
     .tokenfield_main();
-    .creation_main();
+    .tippy_main();
+    .checkmark_main(20px);
+    .creation_main(
+        @bg-color: @bg-color,
+        @warn-color: @warn-color,
+        @color: @color
+    );
 }
+
+.framework_min_main(
+    @color: @colortheme_default-color, // Color of the text for the toolbar
+    @bg-color: @colortheme_default-bg, // color of the toolbar background
+    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
+) {
+    .toolbar_main(
+        @bg-color: @bg-color,
+        @warn-color: @warn-color,
+        @color: @color
+    );
+    .fileupload_main();
+    .alertify_main();
+    .tippy_main();
+    .checkmark_main(20px);
+}
+
 

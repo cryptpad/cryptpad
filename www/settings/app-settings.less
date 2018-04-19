@@ -1,18 +1,15 @@
-@import (once) "../../customize/src/less2/include/colortheme-all.less";
 @import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) "../../customize/src/less2/include/markdown.less";
-@import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/sidebar-layout.less';
 @import (once) "../../customize/src/less2/include/limit-bar.less";
 @import (once) "../../customize/src/less2/include/creation.less";
+@import (once) '../../customize/src/less2/include/framework.less';
 
-.toolbar_main(
+.framework_min_main(
     @bg-color: @colortheme_settings-bg,
     @warn-color: @colortheme_settings-warn,
     @color: @colortheme_settings-color
 );
-.alertify_main();
 .sidebar-layout_main();
 .limit-bar_main();
 .creation_main();
@@ -21,6 +18,7 @@
 &.cp-app-settings {
     display: flex;
     flex-flow: column;
+    font: @colortheme_app-font;
     #cp-sidebarlayout-container {
         #cp-sidebarlayout-rightside {
             input[type="checkbox"] {

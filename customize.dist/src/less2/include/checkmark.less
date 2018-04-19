@@ -5,7 +5,7 @@
     @width: round(@size / 8);
     @dim1: round(@size / 3);
     @dim2: round(2 * @size / 3);
-    @top: round(@size / 12);
+    @top: round(@size / 12) - 1;
     // <label.cp-checkmark><input><span.cp-checkmark-mark></span>Text</label>
     .cp-checkmark {
         margin: 0;
@@ -17,6 +17,10 @@
         -ms-user-select: none;
         user-select: none;
 
+        & > a {
+            margin-left: 0.25em;
+        }
+
         &.cp-checkmark-secondary {
             .cp-checkmark-mark {
                 &:after {
@@ -26,6 +30,7 @@
             input {
                 &:checked ~ .cp-checkmark-mark {
                     background-color: @colortheme_checkmark-back2;
+                    border-color: @colortheme_checkmark-back2;
                 }
             }
         }
@@ -37,12 +42,19 @@
             display: none;
             &:checked ~ .cp-checkmark-mark {
                 background-color: @colortheme_checkmark-back1;
+                border-color: @colortheme_checkmark-back1;
                 &:after {
                     display: block;
                 }
             }
         }
 
+        .cp-checkmark-label {
+            cursor: default;
+            &:empty {
+                display: none;
+            }
+        }
         .cp-checkmark-mark {
             margin-right: 10px;
             position: relative;
@@ -51,6 +63,8 @@
             background-color: @colortheme_checkmark-back0;
             display: flex;
             justify-content: center;
+            border: 1px solid @colortheme_form-border;
+            flex-shrink: 0;
             &:after {
                 content: "";
                 display: none;
@@ -60,6 +74,90 @@
                 transform: rotate(45deg);
                 border: solid @colortheme_checkmark-col1;
                 border-width: 0 @width @width 0;
+                position: absolute;
+            }
+            &:focus {
+                //border-color: #FF007C !important;
+                box-shadow: 0px 0px 5px @colortheme_checkmark-back1;
+                outline: none;
+            }
+        }
+
+    }
+
+    .cp-radio {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        position: relative;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        &.cp-radio-secondary {
+            .cp-radio-mark {
+                &:after {
+                    border-color: @colortheme_checkmark-col2;
+                }
+            }
+            input {
+                &:checked ~ .cp-radio-mark {
+                    background-color: @colortheme_checkmark-back2;
+                }
+            }
+        }
+        &:hover .cp-radio-mark {
+            background-color: @colortheme_checkmark-back0-active;
+        }
+
+        input {
+            display: none;
+            &:checked ~ .cp-radio-mark {
+                background-color: @colortheme_checkmark-back1;
+                border-color: @colortheme_checkmark-back1;
+                &:after {
+                    display: block;
+                }
+            }
+        }
+
+        .cp-checkmark-label {
+            cursor: default;
+            &:empty {
+                display: none;
+            }
+        }
+
+        @radio-size: @dim1 * 3;
+        .cp-radio-mark {
+            margin-right: 10px;
+            position: relative;
+            height: @radio-size;
+            width: @radio-size;
+            background-color: @colortheme_checkmark-back0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid @colortheme_form-border;
+            flex-shrink: 0;
+            &:after {
+                display: none;
+                content: "";
+                border-radius: 50%;
+                background: white;
+                width: @dim1;
+                height: @dim1;
+
+                //transform: rotate(45deg);
+                //border: solid @colortheme_checkmark-col1;
+                //border-width: 0 @width @width 0;
+            }
+            &:focus {
+                //border-color: #FF007C !important;
+                box-shadow: 0px 0px 5px @colortheme_checkmark-back1;
+                outline: none;
             }
         }
 

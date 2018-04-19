@@ -3,10 +3,12 @@
 @import (once) '../../customize/src/less2/include/icon-colors.less';
 @import (once) '../../customize/src/less2/include/fileupload.less';
 @import (once) '../../customize/src/less2/include/alertify.less';
+@import (once) '../../customize/src/less2/include/tippy.less';
 
 .iconColors_main();
 .fileupload_main();
 .alertify_main();
+.tippy_main();
 
 #cp-filepicker-dialog {
     display: none;
@@ -36,7 +38,8 @@
             line-height: 1em;
             cursor: pointer;
 
-            background-color: #111;
+            background-color: @colortheme_modal-bg;
+            box-shadow: 2px 2px 5px #000;
             color: @darker;
 
             transition: all 0.1s;

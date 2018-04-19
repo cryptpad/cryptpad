@@ -1,3 +1,5 @@
+// dark #326599
+// light #4591c4
 define([], function () {
     var loadingStyle = (function(){/*
 #cp-loading {
@@ -9,30 +11,73 @@ define([], function () {
   bottom: 0px;
   left: 0px;
   right: 0px;
-  background: #222;
+  background: linear-gradient(to right, #326599 0%, #326599 50%, #4591c4 50%, #4591c4 100%);
   color: #fafafa;
-  text-align: center;
   font-size: 1.5em;
   opacity: 1;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
 }
 #cp-loading.cp-loading-hidden {
   opacity: 0;
   visibility: hidden;
 }
+#cp-loading .cp-loading-logo {
+    height: 300px;
+    width: 300px;
+    margin-top: 50px;
+    flex: 0 1 auto;
+    min-height: 0;
+    text-align: center;
+}
+#cp-loading .cp-loading-logo img {
+    max-width: 100%;
+    max-height: 100%;
+}
 #cp-loading .cp-loading-container {
-  margin-top: 50vh;
-  transform: translateY(-50%);
+    width: 700px;
+    max-width: 90vw;
+    height: 500px;
+    max-height: calc(100vh - 20px);
+    margin: 50px;
+    flex-shrink: 0;
+    display: flex;
+    flex-flow: column;
+    justify-content: center;
+    align-items: center;
+}
+@media screen and (max-height: 800px) {
+    #cp-loading .cp-loading-container {
+        height: auto;
+    }
+}
+@media screen and (max-width: 600px) {
+    #cp-loading .cp-loading-container {
+        height: auto;
+    }
 }
 #cp-loading .cp-loading-cryptofist {
   margin-left: auto;
   margin-right: auto;
-  height: 300px;
+  //height: 300px;
+  max-width: 90vw;
+  max-height: 300px;
+  width: auto;
+  height: auto;
   margin-bottom: 2em;
 }
 @media screen and (max-height: 450px) {
   #cp-loading .cp-loading-cryptofist {
-    display: none;
   }
+}
+#cp-loading-message {
+    background: #FFF;
+    padding: 20px;
+    width: 100%;
+    color: #000;
+    display: none;
 }
 #cp-loading .cp-loading-spinner-container {
   position: relative;
@@ -75,8 +120,10 @@ define([], function () {
         '<style>',
         loadingStyle,
         '</style>',
+        '<div class="cp-loading-logo">',
+            '<img class="cp-loading-cryptofist" src="/customize/alt-favicon.png?' + urlArgs + '">',
+        '</div>',
         '<div class="cp-loading-container">',
-            '<img class="cp-loading-cryptofist" src="/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs + '">',
             '<div class="cp-loading-spinner-container">',
                 '<span class="fa fa-circle-o-notch fa-spin fa-4x fa-fw"></span>',
             '</div>',

@@ -660,6 +660,15 @@ define([
         });
         cb(res);
     };
+    Store.incrementTemplateUse = function (href) {
+        store.userObject.getPadAttribute(href, 'used', function (err, data) {
+            // This is a not critical function, abort in case of error to make sure we won't
+            // create any issue with the user object or the async store
+            if (err) { return; }
+            var used = typeof data === "number" ? ++data : 1;
+            store.userObject.setPadAttribute(href, 'used', used);
+        });
+    };
 
     // Pads
     Store.moveToTrash = function (data, cb) {
