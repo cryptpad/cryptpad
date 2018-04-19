@@ -549,11 +549,8 @@ define([
     UI.addLoadingScreen = function (config) {
         config = config || {};
         var loadingText = config.loadingText;
-        //var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
-        var hideLogo = config.hideLogo;
-        var $loading, $container;
         var todo = function () {
-            $loading = $('#' + LOADING); //.show();
+            var $loading = $('#' + LOADING); //.show();
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $('.cp-loading-spinner-container').show();
