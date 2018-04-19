@@ -23,7 +23,13 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
             },
         ],
         onShow: function () {
-            var el = editor.plugins.mediatag.clicked;
+            var sel = editor.getSelection();
+            element = sel.getSelectedElement();
+            if (!element) { return; }
+
+            var el = element.findOne('media-tag');
+            if (!el) { return; }
+
             var rect = el.getClientRect();
             var dialog = this.parts.contents.$;
             var inputs = dialog.querySelectorAll('input');
@@ -34,7 +40,14 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
         },
         onOk: function() {
             var dialog = this;
-            var el = editor.plugins.mediatag.clicked;
+
+            var sel = editor.getSelection();
+            element = sel.getSelectedElement();
+            if (!element) { return; }
+
+            var el = element.findOne('media-tag');
+            if (!el) { return; }
+
             var dialog = this.parts.contents.$;
             var inputs = dialog.querySelectorAll('input');
             var wInput = inputs[0];

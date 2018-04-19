@@ -168,6 +168,30 @@ define([
                         return true;
                     }
                 }
+
+
+
+
+                    // CkEditor drag&drop icon container
+                    if (info.node && info.node.tagName === 'SPAN' &&
+                            info.node.getAttribute('class') &&
+                            info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler_container') !== -1) {
+                        //console.log('Preventing removal of the drag&drop icon container of a macro', info.node);
+                        return true;
+                    }
+                    // CkEditor drag&drop title (language fight)
+                    if (info.node && info.node.getAttribute &&
+                            info.node.getAttribute('class') &&
+                            (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
+                             info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1 ) ) {
+                        //console.log('Preventing removal of the drag&drop icon container of a macro', info.node);
+                        return true;
+                    }
+
+
+
+
+
                 /*
                     Also reject any elements which would insert any one of
                     our forbidden tag types: script, iframe, object,
@@ -370,8 +394,11 @@ define([
 
         framework.setMediaTagEmbedder(function ($mt) {
             $mt.attr('contenteditable', 'false');
-            $mt.attr('tabindex', '1');
-            editor.insertElement(new window.CKEDITOR.dom.element($mt[0]));
+            //$mt.attr('tabindex', '1');
+            console.log($mt);
+            var element = new window.CKEDITOR.dom.element($mt[0]);
+            editor.insertElement(element);
+            editor.widgets.initOn( element, 'mediatag' )
         });
 
         framework.setTitleRecommender(function () {
@@ -404,6 +431,8 @@ define([
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
             displayMediaTags(framework, inner, mediaTagMap);
+            editor.widgets.instances = {};
+            editor.widgets.checkWidgets();
             if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
@@ -463,7 +492,11 @@ define([
                     var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
-                    editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
+                    //editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
+                    //editor.insertHtml(mt);
+                    var element = window.CKEDITOR.dom.element.createFromHtml(mt);
+                    editor.insertElement(element);
+                    editor.widgets.initOn( element, 'mediatag' )
                 }
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
