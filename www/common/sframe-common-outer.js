@@ -650,6 +650,12 @@ define([
                         Cryptpad.getMetadata(waitFor(function (err, m) {
                             cpNfCfg.owners = [m.priv.edPublic];
                         }));
+                    } else if (isNewFile && !cfg.useCreationScreen && window.location.hash) {
+                        console.log("new file with hash in the address bar in an app without pcs and which requires owners");
+                        sframeChan.onReady(function () {
+                            sframeChan.query("EV_LOADING_ERROR", "DELETED");
+                        });
+                        waitFor.abort();
                     }
                 }).nThen(function () {
                     Object.keys(rtConfig).forEach(function (k) {

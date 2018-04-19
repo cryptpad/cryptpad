@@ -154,6 +154,7 @@ define([
                     proxy.login_name = uname;
                     proxy[Constants.displayNameKey] = uname;
                     sessionStorage.createReadme = 1;
+                    if (!shouldImport) { proxy.version = 5; }
                     Feedback.send('REGISTRATION', true);
                 } else {
                     Feedback.send('LOGIN', true);

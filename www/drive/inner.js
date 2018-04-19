@@ -2096,7 +2096,7 @@ define([
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
-                        .append(getFileIcon(href));
+                        .append(getFileIcon(r.id));
                     var $title = $('<td>', {
                         'class': 'cp-app-drive-search-col1 cp-app-drive-search-title'
                     }).text(r.data.title)
