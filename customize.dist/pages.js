@@ -671,6 +671,8 @@ define([
             }
         });
 
+        $(input).change(function () { $(mark).focus(); });
+
         return h('label.cp-checkmark', labelOpts, [
             input,
             mark,
@@ -710,6 +712,8 @@ define([
                 $(input).change();
             }
         });
+
+        $(input).change(function () { $(mark).focus(); });
 
         return h('label.cp-radio', labelOpts, [
             input,
