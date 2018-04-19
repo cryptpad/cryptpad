@@ -213,6 +213,7 @@ define([
                 loadingText: Messages.login_hashing,
                 hideTips: true,
             });
+
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {

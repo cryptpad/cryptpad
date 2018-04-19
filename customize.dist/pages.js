@@ -626,19 +626,6 @@ define([
         ];
     };
 
-    var loadingScreen = Pages.loadingScreen = function () {
-        return h('div#cp-loading', 
-            h('div.cp-loading-container', [
-                h('img.cp-loading-cryptofist', {
-                    src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
-                }),
-                h('div.cp-loading-spinner-container',
-                    h('span.fa.fa-circle-o-notch.fa-spin.fa-8x.fa-fw')),
-                h('p'),
-            ])
-        );
-    };
-
     Pages.createCheckbox = function (id, labelTxt, checked, opts) {
         opts = opts|| {};
         // Input properties
@@ -722,12 +709,6 @@ define([
         ]);
     };
 
-    var hiddenLoader = function () {
-        var loader = loadingScreen();
-        loader.style.display = 'none';
-        return loader;
-    };
-
     Pages['/user/'] = Pages['/user/index.html'] = function () {
         return h('div#container');
     };
@@ -789,7 +770,6 @@ define([
             ]),
 
             infopageFooter(),
-            hiddenLoader(),
         ])];
     };
 
@@ -825,7 +805,6 @@ define([
                 ]),
             ]),
             infopageFooter(),
-            hiddenLoader(),
         ])];
     };
 

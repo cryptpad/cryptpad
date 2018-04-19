@@ -9,12 +9,13 @@ define([
     '/common/tippy/tippy.min.js',
     '/customize/pages.js',
     '/common/hyperscript.js',
+    '/customize/loading.js',
     '/common/test.js',
 
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/common/tippy/tippy.css',
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, Pages, h, Test) {
+            Alertify, Tippy, Pages, h, Loading, Test) {
     var UI = {};
 
     /*
@@ -551,7 +552,7 @@ define([
         //var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
         var hideLogo = config.hideLogo;
         var $loading, $container;
-        if ($('#' + LOADING).length) {
+        var todo = function () {
             $loading = $('#' + LOADING); //.show();
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
@@ -561,27 +562,13 @@ define([
             } else {
                 $('#' + LOADING).find('p').hide().text('');
             }
-            $container = $loading.find('.cp-loading-container');
+        };
+        if ($('#' + LOADING).length) {
+            todo();
         } else {
-            $loading = $(Pages.loadingScreen());
-            $container = $loading.find('.cp-loading-container');
-            if (hideLogo) {
-                $loading.find('img').hide();
-            } else {
-                $loading.find('img').show();
-            }
-            var $spinner = $loading.find('.cp-loading-spinner-container');
-            $spinner.show();
-            $('body').append($loading);
+            Loading();
+            todo();
         }
-        /*if (Messages.tips && !hideTips) {
-            var $loadingTip = $('<div>', {'id': 'cp-loading-tip'});
-            $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
-            $loadingTip.css({
-                'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
-            });
-            $('body').append($loadingTip);
-        }*/
     };
     UI.removeLoadingScreen = function (cb) {
         // Release the test blocker, hopefully every test has been registered.
@@ -591,7 +578,6 @@ define([
 
         $('#' + LOADING).addClass("cp-loading-hidden");
         setTimeout(cb, 750);
-        //$('#' + LOADING).fadeOut(750, cb);
         var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
         // and               transition: opacity $fadeout-time
