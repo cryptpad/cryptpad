@@ -1850,7 +1850,7 @@ define([
         var $body = $('body');
         var $creationContainer = $('<div>', { id: 'cp-creation-container' }).appendTo($body);
         var urlArgs = (Config.requireConf && Config.requireConf.urlArgs) || '';
-        var l = h('div.cp-creation-logo', h('img', { src: '/customize/alt-favicon.png?' + urlArgs }));
+        var l = h('div.cp-creation-logo', h('img', { src: '/customize/loading-logo.png?' + urlArgs }));
         $(l).appendTo($creationContainer);
         var $creation = $('<div>', { id: 'cp-creation', tabindex: 1 }).appendTo($creationContainer);
 

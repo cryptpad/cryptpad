@@ -121,7 +121,7 @@ define([], function () {
         loadingStyle,
         '</style>',
         '<div class="cp-loading-logo">',
-            '<img class="cp-loading-cryptofist" src="/customize/alt-favicon.png?' + urlArgs + '">',
+            '<img class="cp-loading-cryptofist" src="/customize/loading-logo.png?' + urlArgs + '">',
         '</div>',
         '<div class="cp-loading-container">',
             '<div class="cp-loading-spinner-container">',
