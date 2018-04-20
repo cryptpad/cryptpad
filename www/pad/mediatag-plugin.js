@@ -40,6 +40,7 @@
 
             editor.widgets.add( 'mediatag', {
 
+                getLabel: function () { return " "; },
                 dialog: pluginName,
                 inline: true,
                 upcast: function( element ) {

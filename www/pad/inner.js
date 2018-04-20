@@ -82,10 +82,64 @@ define([
         Cursor: Cursor,
     };
 
+    // Filter elements to serialize
+    var isWidget = function (el) {
+        return typeof (el.getAttribute) === "function" &&
+                   (el.getAttribute('data-cke-hidden-sel') ||
+                    (el.getAttribute('class') &&
+                        (/cke_widget_drag/.test(el.getAttribute('class')) ||
+                         /cke_image_resizer/.test(el.getAttribute('class')))
+                    )
+                   );
+    };
+
     var isNotMagicLine = function (el) {
         return !(el && typeof(el.getAttribute) === 'function' &&
             el.getAttribute('class') &&
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
+    };
+
+    var shouldSerialize = function (el) {
+        return isNotMagicLine(el) && !isWidget(el);
+    };
+
+    // Filter attributes in the serialized elements
+    var widgetFilter = function (hj) {
+        // Send a widget ID == 0 to avoid a fight between broswers about it and
+        // prevent the container from having the "selected" class (blue border)
+        if (hj[1].class) {
+            var split = hj[1].class.split(' ');
+            /*if (split.indexOf('cke_widget_wrapper') !== -1) {
+                var child = (hj[2] || [])[0];
+                if (child && child[0] === 'MEDIA-TAG') {
+                    delete child[1].class;
+                    delete child[1].contenteditable;
+                    delete child[1]['data-cke-widget-data'];
+                    delete child[1]['data-cke-widget-keep-attr'];
+                    delete child[1]['data-widget'];
+                    hj[0] = child[0];
+                    hj[1] = child[1];
+                    hj[2] = child[2];
+                    return hj;
+                }
+            }*/
+            if (split.indexOf('cke_widget_wrapper') !== -1 &&
+                split.indexOf('cke_widget_block') !== -1) {
+                hj[1].class = "cke_widget_wrapper cke_widget_block";
+                hj[1]['data-cke-widget-id'] = "0";
+            }
+            if (split.indexOf('cke_widget_wrapper') !== -1 &&
+                split.indexOf('cke_widget_inline') !== -1) {
+                hj[1].class = "cke_widget_wrapper cke_widget_inline";
+                hj[1]['data-cke-widget-id'] = "0";
+            }
+            // Remove the title attribute of the drag&drop icons since they are localized and create fights over the language to use
+            if (split.indexOf('cke_widget_drag_handler')  !== -1 ||
+                split.indexOf('cke_image_resizer') !== -1) {
+                hj[1].title = undefined;
+            }
+        }
+        return hj;
     };
 
     var hjsonFilters = function (hj) {
@@ -100,6 +154,7 @@ define([
         };
         brFilter(hj);
         mediatagContentFilter(hj);
+        widgetFilter(hj);
         return hj;
     };
 
@@ -170,7 +225,23 @@ define([
                 }
 
 
+                    // Do not change the widget ids
+                    if (info.node && info.node.tagName === 'SPAN' &&
+                        info.diff.action === 'modifyAttribute' && info.diff.name === 'data-cke-widget-id') {
+                        return true;
+                    }
 
+                    if (info.node && info.node.tagName === 'SPAN' &&
+                        info.node.getAttribute('class') &&
+                        /cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
+                        if (info.diff.action === 'modifyAttribute' && info.diff.name === 'class') {
+                            return true;
+                        }
+                        console.log(info);
+                    }
+                    if (info.node && info.node.tagName === 'MEDIA-TAG') {
+                        console.log(info);
+                    }
 
                     // CkEditor drag&drop icon container
                     if (info.node && info.node.tagName === 'SPAN' &&
@@ -223,20 +294,26 @@ define([
                 if (info.node && info.node.tagName === 'SPAN' &&
                     info.node.getAttribute('contentEditable') === "false") {
                     // it seems to be a magicline plugin element...
+                    // but it can also be a widget (mediatag), in which case the removal was
+                    // probably intentional
+
                     if (info.diff.action === 'removeElement') {
                         // and you're about to remove it...
-                        // this probably isn't what you want
+                        if (!info.node.getAttribute('class') ||
+                            !/cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
+                            // This element is not a widget!
+                            // this probably isn't what you want
+                            /*
+                                I have never seen this in the console, but the
+                                magic line is still getting removed on remote
+                                edits. This suggests that it's getting removed
+                                by something other than diffDom.
+                            */
+                            console.log("preventing removal of the magic line!");
 
-                        /*
-                            I have never seen this in the console, but the
-                            magic line is still getting removed on remote
-                            edits. This suggests that it's getting removed
-                            by something other than diffDom.
-                        */
-                        console.log("preventing removal of the magic line!");
-
-                        // return true to prevent diff application
-                        return true;
+                            // return true to prevent diff application
+                            return true;
+                        }
                     }
                 }
 
@@ -246,6 +323,8 @@ define([
                     return true;
                 }
 
+                                        if (info.diff.action === "removeElement") { console.log(info); }
+                                        if (info.node && info.node.name === "MEDIA-TAG") { console.log(info); }
                 cursor.update();
 
                 // no use trying to recover the cursor if it doesn't exist
@@ -396,9 +475,11 @@ define([
             $mt.attr('contenteditable', 'false');
             //$mt.attr('tabindex', '1');
             console.log($mt);
-            var element = new window.CKEDITOR.dom.element($mt[0]);
-            editor.insertElement(element);
-            editor.widgets.initOn( element, 'mediatag' )
+            //var element = new window.CKEDITOR.dom.element($mt[0]);
+            //editor.insertElement(element);
+            console.log($mt[0].outerHTML);
+            editor.insertHtml($mt[0].outerHTML);
+            //editor.widgets.initOn( element, 'mediatag' )
         });
 
         framework.setTitleRecommender(function () {
@@ -426,12 +507,21 @@ define([
 
             // Deal with adjasent text nodes
             userDocStateDom.normalize();
+
+            $(userDocStateDom).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+                console.log(el);
+                var element = window.CKEDITOR.dom.element.createFromHtml(el);
+                console.log(element);
+                editor.widgets.initOn( element, 'mediatag' )
+                console.log(el, element);
+            });
+
             inner.normalize();
 
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
             displayMediaTags(framework, inner, mediaTagMap);
-            editor.widgets.instances = {};
+            //editor.widgets.instances = {};
             editor.widgets.checkWidgets();
             if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
