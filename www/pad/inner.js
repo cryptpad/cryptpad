@@ -301,8 +301,6 @@ define([
                     return true;
                 }
 
-                                        if (info.diff.action === "removeElement") { console.log(info); }
-                                        if (info.node && info.node.name === "MEDIA-TAG") { console.log(info); }
                 cursor.update();
 
                 // no use trying to recover the cursor if it doesn't exist
