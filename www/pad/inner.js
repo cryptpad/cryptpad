@@ -82,7 +82,8 @@ define([
         Cursor: Cursor,
     };
 
-    // Filter elements to serialize
+    // MEDIATAG: Filter elements to serialize
+    // * Remove the drag&drop and resizers from the hyperjson
     var isWidget = function (el) {
         return typeof (el.getAttribute) === "function" &&
                    (el.getAttribute('data-cke-hidden-sel') ||
@@ -103,26 +104,12 @@ define([
         return isNotMagicLine(el) && !isWidget(el);
     };
 
-    // Filter attributes in the serialized elements
+    // MEDIATAG: Filter attributes in the serialized elements
     var widgetFilter = function (hj) {
-        // Send a widget ID == 0 to avoid a fight between broswers about it and
+        // Send a widget ID == 0 to avoid a fight between browsers and
         // prevent the container from having the "selected" class (blue border)
         if (hj[1].class) {
             var split = hj[1].class.split(' ');
-            /*if (split.indexOf('cke_widget_wrapper') !== -1) {
-                var child = (hj[2] || [])[0];
-                if (child && child[0] === 'MEDIA-TAG') {
-                    delete child[1].class;
-                    delete child[1].contenteditable;
-                    delete child[1]['data-cke-widget-data'];
-                    delete child[1]['data-cke-widget-keep-attr'];
-                    delete child[1]['data-widget'];
-                    hj[0] = child[0];
-                    hj[1] = child[1];
-                    hj[2] = child[2];
-                    return hj;
-                }
-            }*/
             if (split.indexOf('cke_widget_wrapper') !== -1 &&
                 split.indexOf('cke_widget_block') !== -1) {
                 hj[1].class = "cke_widget_wrapper cke_widget_block";
@@ -133,7 +120,7 @@ define([
                 hj[1].class = "cke_widget_wrapper cke_widget_inline";
                 hj[1]['data-cke-widget-id'] = "0";
             }
-            // Remove the title attribute of the drag&drop icons since they are localized and create fights over the language to use
+            // Remove the title attribute of the drag&drop icons (translation conflicts)
             if (split.indexOf('cke_widget_drag_handler')  !== -1 ||
                 split.indexOf('cke_image_resizer') !== -1) {
                 hj[1].title = undefined;
@@ -225,42 +212,33 @@ define([
                 }
 
 
-                    // Do not change the widget ids
-                    if (info.node && info.node.tagName === 'SPAN' &&
-                        info.diff.action === 'modifyAttribute' && info.diff.name === 'data-cke-widget-id') {
+                // MEDIATAG
+                // Never modify widget ids
+                if (info.node && info.node.tagName === 'SPAN' &&
+                    info.diff.action === 'modifyAttribute' && info.diff.name === 'data-cke-widget-id') {
+                    return true;
+                }
+                if (info.node && info.node.tagName === 'SPAN' &&
+                    info.node.getAttribute('class') &&
+                    /cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
+                    if (info.diff.action === 'modifyAttribute' && info.diff.name === 'class') {
                         return true;
                     }
-
-                    if (info.node && info.node.tagName === 'SPAN' &&
+                    //console.log(info);
+                }
+                // CkEditor drag&drop icon container
+                if (info.node && info.node.tagName === 'SPAN' &&
                         info.node.getAttribute('class') &&
-                        /cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
-                        if (info.diff.action === 'modifyAttribute' && info.diff.name === 'class') {
-                            return true;
-                        }
-                        console.log(info);
-                    }
-                    if (info.node && info.node.tagName === 'MEDIA-TAG') {
-                        console.log(info);
-                    }
-
-                    // CkEditor drag&drop icon container
-                    if (info.node && info.node.tagName === 'SPAN' &&
-                            info.node.getAttribute('class') &&
-                            info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler_container') !== -1) {
-                        //console.log('Preventing removal of the drag&drop icon container of a macro', info.node);
-                        return true;
-                    }
-                    // CkEditor drag&drop title (language fight)
-                    if (info.node && info.node.getAttribute &&
-                            info.node.getAttribute('class') &&
-                            (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
-                             info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1 ) ) {
-                        //console.log('Preventing removal of the drag&drop icon container of a macro', info.node);
-                        return true;
-                    }
-
-
-
+                        info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler_container') !== -1) {
+                    return true;
+                }
+                // CkEditor drag&drop title (language fight)
+                if (info.node && info.node.getAttribute &&
+                        info.node.getAttribute('class') &&
+                        (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
+                         info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1 ) ) {
+                    return true;
+                }
 
 
                 /*
@@ -294,7 +272,7 @@ define([
                 if (info.node && info.node.tagName === 'SPAN' &&
                     info.node.getAttribute('contentEditable') === "false") {
                     // it seems to be a magicline plugin element...
-                    // but it can also be a widget (mediatag), in which case the removal was
+                    // but it can also be a widget (MEDIATAG), in which case the removal was
                     // probably intentional
 
                     if (info.diff.action === 'removeElement') {
@@ -474,11 +452,10 @@ define([
         framework.setMediaTagEmbedder(function ($mt) {
             $mt.attr('contenteditable', 'false');
             //$mt.attr('tabindex', '1');
-            console.log($mt);
+            editor.insertHtml($mt[0].outerHTML);
+            //MEDIATAG editor.insertHtml can be replaced by:
             //var element = new window.CKEDITOR.dom.element($mt[0]);
             //editor.insertElement(element);
-            console.log($mt[0].outerHTML);
-            editor.insertHtml($mt[0].outerHTML);
             //editor.widgets.initOn( element, 'mediatag' )
         });
 
@@ -507,22 +484,22 @@ define([
 
             // Deal with adjasent text nodes
             userDocStateDom.normalize();
-
-            $(userDocStateDom).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
-                console.log(el);
-                var element = window.CKEDITOR.dom.element.createFromHtml(el);
-                console.log(element);
-                editor.widgets.initOn( element, 'mediatag' )
-                console.log(el, element);
-            });
-
             inner.normalize();
 
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
+
+            // MEDIATAG: Migrate old mediatags to the widget system
+            $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+                var element = new window.CKEDITOR.dom.element(el);
+                var w = editor.widgets.initOn( element, 'mediatag' )
+            });
+
             displayMediaTags(framework, inner, mediaTagMap);
-            //editor.widgets.instances = {};
+
+            // MEDIATAG: Initialize mediatag widgets inserted in the document by other users
             editor.widgets.checkWidgets();
+
             if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
@@ -544,7 +521,7 @@ define([
         framework.setContentGetter(function () {
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
-            return Hyperjson.fromDOM(inner, isNotMagicLine, hjsonFilters);
+            return Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
         });
 
         $bar.find('#cke_1_toolbar_collapser').hide();
@@ -582,11 +559,11 @@ define([
                     var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
-                    //editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
-                    //editor.insertHtml(mt);
-                    var element = window.CKEDITOR.dom.element.createFromHtml(mt);
-                    editor.insertElement(element);
-                    editor.widgets.initOn( element, 'mediatag' )
+                    editor.insertHtml(mt);
+                    // MEDIATAG: editor.insertHtml can be replaced by:
+                    //var element = window.CKEDITOR.dom.element.createFromHtml(mt);
+                    //editor.insertElement(element);
+                    //editor.widgets.initOn( element, 'mediatag' )
                 }
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);

@@ -5,7 +5,6 @@ CKEDITOR.editorConfig = function( config ) {
     config.needsBrFiller= fixThings;
     config.needsNbspFiller= fixThings;
 
-    config.allowedContent = 'media-tag[*]';
     config.removeButtons= 'Source,Maximize,Anchor';
     // magicline plugin inserts html crap into the document which is not part of the
     // document itself and causes problems when it's sent across the wire and reflected back
