@@ -450,11 +450,10 @@ define([
         framework.setMediaTagEmbedder(function ($mt) {
             $mt.attr('contenteditable', 'false');
             //$mt.attr('tabindex', '1');
-            //editor.insertHtml($mt[0].outerHTML);
-            //MEDIATAG editor.insertHtml can be replaced by:
+            //MEDIATAG
             var element = new window.CKEDITOR.dom.element($mt[0]);
             editor.insertElement(element);
-            editor.widgets.initOn( element, 'mediatag' )
+            editor.widgets.initOn( element, 'mediatag' );
         });
 
         framework.setTitleRecommender(function () {
@@ -490,7 +489,7 @@ define([
             // MEDIATAG: Migrate old mediatags to the widget system
             $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
                 var element = new window.CKEDITOR.dom.element(el);
-                var w = editor.widgets.initOn( element, 'mediatag' )
+                editor.widgets.initOn( element, 'mediatag' );
             });
 
             displayMediaTags(framework, inner, mediaTagMap);
@@ -557,11 +556,10 @@ define([
                     var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
-                    //editor.insertHtml(mt);
-                    // MEDIATAG: editor.insertHtml can be replaced by:
+                    // MEDIATAG
                     var element = window.CKEDITOR.dom.element.createFromHtml(mt);
                     editor.insertElement(element);
-                    editor.widgets.initOn( element, 'mediatag' )
+                    editor.widgets.initOn( element, 'mediatag' );
                 }
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
