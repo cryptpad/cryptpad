@@ -118,7 +118,8 @@ define([
             if (split.indexOf('cke_widget_wrapper') !== -1 &&
                 split.indexOf('cke_widget_inline') !== -1) {
                 hj[1].class = "cke_widget_wrapper cke_widget_inline";
-                hj[1]['data-cke-widget-id'] = "0";
+                delete hj[1]['data-cke-widget-id'];
+                //hj[1]['data-cke-widget-id'] = "0";
             }
             // Remove the title attribute of the drag&drop icons (translation conflicts)
             if (split.indexOf('cke_widget_drag_handler')  !== -1 ||
@@ -214,8 +215,7 @@ define([
 
                 // MEDIATAG
                 // Never modify widget ids
-                if (info.node && info.node.tagName === 'SPAN' &&
-                    info.diff.action === 'modifyAttribute' && info.diff.name === 'data-cke-widget-id') {
+                if (info.node && info.node.tagName === 'SPAN' && info.diff.name === 'data-cke-widget-id') {
                     return true;
                 }
                 if (info.node && info.node.tagName === 'SPAN' &&
@@ -450,11 +450,11 @@ define([
         framework.setMediaTagEmbedder(function ($mt) {
             $mt.attr('contenteditable', 'false');
             //$mt.attr('tabindex', '1');
-            editor.insertHtml($mt[0].outerHTML);
+            //editor.insertHtml($mt[0].outerHTML);
             //MEDIATAG editor.insertHtml can be replaced by:
-            //var element = new window.CKEDITOR.dom.element($mt[0]);
-            //editor.insertElement(element);
-            //editor.widgets.initOn( element, 'mediatag' )
+            var element = new window.CKEDITOR.dom.element($mt[0]);
+            editor.insertElement(element);
+            editor.widgets.initOn( element, 'mediatag' )
         });
 
         framework.setTitleRecommender(function () {
@@ -557,11 +557,11 @@ define([
                     var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
-                    editor.insertHtml(mt);
+                    //editor.insertHtml(mt);
                     // MEDIATAG: editor.insertHtml can be replaced by:
-                    //var element = window.CKEDITOR.dom.element.createFromHtml(mt);
-                    //editor.insertElement(element);
-                    //editor.widgets.initOn( element, 'mediatag' )
+                    var element = window.CKEDITOR.dom.element.createFromHtml(mt);
+                    editor.insertElement(element);
+                    editor.widgets.initOn( element, 'mediatag' )
                 }
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
