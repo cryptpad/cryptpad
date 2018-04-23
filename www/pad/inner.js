@@ -401,7 +401,7 @@ define([
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
                 mediaTagMap[src].forEach(function (n) {
-                    tag.appendChild(n);
+                    tag.appendChild(n.cloneNode());
                 });
             }
         });
