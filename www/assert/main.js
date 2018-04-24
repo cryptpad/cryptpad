@@ -223,6 +223,30 @@ define([
             hd.type === 'invite');
     }, "test support for invite urls");
 
+    // test support for V2
+    assert(function (cb) {
+        var secret = Hash.parsePadUrl('/pad/#/2/pad/edit/oRE0oLCtEXusRDyin7GyLGcS/');
+        return cb(secret.hashData.version === 2 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.type === "pad" &&
+            secret.hashData.channel === "2NUbSuqGPz8FD0f4rSYXUw" &&
+            secret.hashData.key === "oRE0oLCtEXusRDyin7GyLGcS" &&
+            window.nacl.util.encodeBase64(secret.hashData.cryptKey) === "0Ts1M6VVEozErV2Nx/LTv6Im5SCD7io2LlhasyyBPQo=" &&
+            secret.hashData.validateKey === "f5A1FM9Gp55tnOcM75RyHD1oxBG9ZPh9WDA7qe2Fvps=" &&
+            !secret.hashData.present);
+    }, "test support for version 2 hash failed to parse");
+    assert(function (cb) {
+        var secret = Hash.parsePadUrl('/pad/#/2/pad/edit/HGu0tK2od-2BBnwAz2ZNS-t4/p/embed', 'pewpew');
+        return cb(secret.hashData.version === 2 &&
+            secret.hashData.mode === "edit" &&
+            secret.hashData.type === "pad" &&
+            secret.hashData.channel === "P7bck4B9kDr-OQtfeYySyQ" &&
+            secret.hashData.key === "HGu0tK2od-2BBnwAz2ZNS-t4" &&
+            window.nacl.util.encodeBase64(secret.hashData.cryptKey) === "EeCkGJra8eJgVu7v4Yl2Hc3yUjrgpKpxr0Lcc3bSWVs=" &&
+            secret.hashData.validateKey === "WGkBczJf2V6vQZfAScz8V1KY6jKdoxUCckrD+E75gGE=" &&
+            secret.hashData.embed);
+    }, "test support for password in version 2 hash failed to parse");
+
     assert(function (cb) {
         var url = '/pad/?utm_campaign=new_comment&utm_medium=email&utm_source=thread_mailer#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/';
         var secret = Hash.parsePadUrl(url);

@@ -60,6 +60,10 @@ define([
     var getPropertiesData = function (common, cb) {
         var data = {};
         NThen(function (waitFor) {
+            common.getPadAttribute('password', waitFor(function (err, val) {
+                data.password = val;
+            }));
+        }).nThen(function (waitFor) {
             common.getPadAttribute('href', waitFor(function (err, val) {
                 var base = common.getMetadataMgr().getPrivateData().origin;
 
@@ -75,9 +79,9 @@ define([
                 if (parsed.hashData.type !== "pad") { return; }
                 var i = data.href.indexOf('#') + 1;
                 var hBase = data.href.slice(0, i);
-                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
+                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                 if (!hrefsecret.keys) { return; }
-                var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+                var viewHash = Hash.getViewHashFromKeys(hrefsecret);
                 data.roHref = hBase + viewHash;
             }));
             common.getPadAttribute('atime', waitFor(function (err, val) {

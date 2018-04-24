@@ -316,7 +316,7 @@ define([
 
     Store.isNewChannel = function (data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-        var channelId = Hash.hrefToHexChannelId(data.href);
+        var channelId = Hash.hrefToHexChannelId(data.href, data.password);
         store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
             if (e) { return void cb({error: e}); }
             if (response && response.length && typeof(response[0]) === 'boolean') {
@@ -524,7 +524,7 @@ define([
      */
     Store.createReadme = function (data, cb) {
         require(['/common/cryptget.js'], function (Crypt) {
-            var hash = Hash.createRandomHash();
+            var hash = Hash.createRandomHash('pad');
             Crypt.put(hash, data.driveReadme, function (e) {
                 if (e) {
                     return void cb({ error: "Error while creating the default pad:"+ e});
@@ -717,7 +717,7 @@ define([
 
             // If the hash is different but represents the same channel, check if weaker or stronger
             if (!shouldUpdate &&
-                h.version === 1 && h2.version === 1 &&
+                h.version === h2.version &&
                 h.channel === h2.channel) {
                 // We had view & now we have edit, update
                 if (h2.mode === 'view' && h.mode === 'edit') { shouldUpdate = true; }
@@ -1123,7 +1123,7 @@ define([
     };
 
     var connect = function (data, cb) {
-        var hash = data.userHash || data.anonHash || Hash.createRandomHash();
+        var hash = data.userHash || data.anonHash || Hash.createRandomHash('drive');
         storeHash = hash;
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
@@ -1150,7 +1150,7 @@ define([
             store.realtime = info.realtime;
             store.network = info.network;
             if (!data.userHash) {
-                returned.anonHash = Hash.getEditHashFromKeys(info.channel, secret.keys);
+                returned.anonHash = Hash.getEditHashFromKeys(secret);
             }
         }).on('ready', function () {
             if (store.userObject) { return; } // the store is already ready, it is a reconnection

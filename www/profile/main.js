@@ -58,7 +58,7 @@ define([
                     window.location.href = '/drive';
                     return void cb();
                 }
-                var hash = Hash.createRandomHash();
+                var hash = Hash.createRandomHash('profile');
                 var secret = Hash.getSecrets('profile', hash);
                 Cryptpad.pinPads([secret.channel], function (e) {
                     if (e) {
@@ -69,8 +69,8 @@ define([
                         //return void UI.log(Messages._getKey('profile_error', [e])) // TODO
                     }
                     var profile = {};
-                    profile.edit = Utils.Hash.getEditHashFromKeys(secret.channel, secret.keys);
-                    profile.view = Utils.Hash.getViewHashFromKeys(secret.channel, secret.keys);
+                    profile.edit = Utils.Hash.getEditHashFromKeys(secret);
+                    profile.view = Utils.Hash.getViewHashFromKeys(secret);
                     Cryptpad.setNewProfile(profile);
                 });
                 cb(null, secret);

@@ -114,6 +114,7 @@ define([
     };
     funcs.getMediatagFromHref = function (href) {
         var parsed = Hash.parsePadUrl(href);
+        // FILE_HASHES2
         var secret = Hash.getSecrets('file', parsed.hash);
         var data = ctx.metadataMgr.getPrivateData();
         if (secret.keys && secret.channel) {

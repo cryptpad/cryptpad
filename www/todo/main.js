@@ -38,7 +38,7 @@ define([
     }).nThen(function (/*waitFor*/) {
         var getSecrets = function (Cryptpad, Utils, cb) {
             Cryptpad.getTodoHash(function (hash) {
-                var nHash = hash || Utils.Hash.createRandomHash();
+                var nHash = hash || Utils.Hash.createRandomHash('todo');
                 if (!hash) { Cryptpad.setTodoHash(nHash); }
                 cb(null, Utils.Hash.getSecrets('todo', nHash));
             });

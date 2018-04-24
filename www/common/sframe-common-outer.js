@@ -121,11 +121,17 @@ define([
                     });
                 }));
             } else {
-                secret = Utils.Hash.getSecrets();
-                if (!secret.channel) {
+                var parsedType = Utils.Hash.parsePadUrl(window.location.href).type;
+                // XXX prompt the password here if we have a hash containing /p/
+                // OR get it from the pad attributes
+                secret = Utils.Hash.getSecrets(parsedType);
+
+                // TODO: New hashes V2 already contain a channel ID so we can probably remove the following lines
+                //if (!secret.channel) {
                     // New pad: create a new random channel id
-                    secret.channel = Utils.Hash.createChannelId();
-                }
+                    //secret.channel = Utils.Hash.createChannelId();
+                //}
+
                 Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
             }
         }).nThen(function (waitFor) {
@@ -133,7 +139,9 @@ define([
             if (!window.location.hash) { isNewFile = true; return; }
 
             if (realtime) {
-                Cryptpad.isNewChannel(window.location.href, waitFor(function (e, isNew) {
+                // XXX get password
+                var password;
+                Cryptpad.isNewChannel(window.location.href, password, waitFor(function (e, isNew) {
                     if (e) { return console.error(e); }
                     isNewFile = Boolean(isNew);
                 }));
@@ -635,7 +643,7 @@ define([
                     isNewHash: isNewHash,
                     readOnly: readOnly,
                     crypto: Crypto.createEncryptor(secret.keys),
-                    onConnect: function (wc) {
+                    onConnect: function () {
                         if (window.location.hash && window.location.hash !== '#') {
                             window.location = parsed.getUrl({
                                 present: parsed.hashData.present,
@@ -644,7 +652,7 @@ define([
                             return;
                         }
                         if (readOnly || cfg.noHash) { return; }
-                        replaceHash(Utils.Hash.getEditHashFromKeys(wc, secret.keys));
+                        replaceHash(Utils.Hash.getEditHashFromKeys(secret));
                     }
                 };
 
@@ -671,8 +679,10 @@ define([
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }
                 // Create a new hash
-                var newHash = Utils.Hash.createRandomHash();
-                secret = Utils.Hash.getSecrets(parsed.type, newHash);
+                // XXX add password here
+                var password = data.password;
+                var newHash = Utils.Hash.createRandomHash(parsed.type, password);
+                secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
 
                 // Update the hash in the address bar
                 var ohc = window.onhashchange;
@@ -684,7 +694,7 @@ define([
                 // Update metadata values and send new metadata inside
                 parsed = Utils.Hash.parsePadUrl(window.location.href);
                 defaultTitle = Utils.Hash.getDefaultName(parsed);
-                hashes = Utils.Hash.getHashes(secret.channel, secret);
+                hashes = Utils.Hash.getHashes(secret);
                 readOnly = false;
                 updateMeta();
 

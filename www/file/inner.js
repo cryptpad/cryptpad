@@ -61,6 +61,7 @@ define([
         if (!priv.filehash) {
             uploadMode = true;
         } else {
+            // FILE_HASHES2
             secret = Hash.getSecrets('file', priv.filehash);
             if (!secret.keys) { throw new Error("You need a hash"); }
             hexFileName = Util.base64ToHex(secret.channel);

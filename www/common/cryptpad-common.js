@@ -260,8 +260,8 @@ define([
         });
     };
 
-    common.isNewChannel = function (href, cb) {
-        postMessage('IS_NEW_CHANNEL', {href: href}, function (obj) {
+    common.isNewChannel = function (href, password, cb) {
+        postMessage('IS_NEW_CHANNEL', {href: href, password: password}, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             if (!obj) { return void cb('INVALID_RESPONSE'); }
             cb(undefined, obj.isNew);
@@ -395,7 +395,7 @@ define([
     common.saveAsTemplate = function (Cryptput, data, cb) {
         var p = Hash.parsePadUrl(window.location.href);
         if (!p.type) { return; }
-        var hash = Hash.createRandomHash();
+        var hash = Hash.createRandomHash(p.type);
         var href = '/' + p.type + '/#' + hash;
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
@@ -556,13 +556,13 @@ define([
     common.getShareHashes = function (secret, cb) {
         var hashes;
         if (!window.location.hash) {
-            hashes = Hash.getHashes(secret.channel, secret);
+            hashes = Hash.getHashes(secret);
             return void cb(null, hashes);
         }
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
-        hashes = Hash.getHashes(secret.channel, secret);
+        hashes = Hash.getHashes(secret);
 
         if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
             // It means we're using an old hash

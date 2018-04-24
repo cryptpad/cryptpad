@@ -51,7 +51,14 @@ define([
 
                 var b64Key = Nacl.util.encodeBase64(key);
 
-                var hash = Hash.getFileHashFromKeys(id, b64Key);
+                var secret = {
+                    version: 1,
+                    channel: id,
+                    keys: {
+                        fileKeyStr: b64Key
+                    }
+                };
+                var hash = Hash.getFileHashFromKeys(secret);
                 var href = '/file/#' + hash;
 
                 var title = metadata.name;

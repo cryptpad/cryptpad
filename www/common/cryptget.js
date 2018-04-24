@@ -20,9 +20,9 @@ define([
         }
     };
 
-    var makeConfig = function (hash) {
+    var makeConfig = function (hash, password) {
         // We can't use cryptget with a file or a user so we can use 'pad' as hash type
-        var secret = Hash.getSecrets('pad', hash);
+        var secret = Hash.getSecrets('pad', hash, password);
         if (!secret.keys) { secret.keys = secret.key; } // support old hashses
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
@@ -43,12 +43,15 @@ define([
         Object.keys(b).forEach(function (k) { a[k] = b[k]; });
     };
 
+    // XXX make sure we pass the password here in opt
     var get = function (hash, cb, opt) {
         if (typeof(cb) !== 'function') {
             throw new Error('Cryptget expects a callback');
         }
+        opt = opt || {};
+
+        var config = makeConfig(hash, opt.password);
         var Session = { cb: cb, };
-        var config = makeConfig(hash);
 
         config.onReady = function (info) {
             var rt = Session.session = info.realtime;
@@ -60,13 +63,16 @@ define([
         Session.realtime = CPNetflux.start(config);
     };
 
+    // XXX make sure we pass the password here in opt
     var put = function (hash, doc, cb, opt) {
         if (typeof(cb) !== 'function') {
             throw new Error('Cryptput expects a callback');
         }
+        opt = opt || {};
 
-        var config = makeConfig(hash);
+        var config = makeConfig(hash, opt.password);
         var Session = { cb: cb, };
+
         config.onReady = function (info) {
             var realtime = Session.session = info.realtime;
             Session.network = info.network;
