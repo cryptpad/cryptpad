@@ -1144,6 +1144,12 @@ define(function () {
     out.creation_newPadModalDescriptionAdvanced = "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
+    // Password prompt on the loadind screen
+    out.password_info = "The pad you're tyring to open is protected with a password. Enter the correct password to access its content.";
+    out.password_error = "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.";
+    out.password_placeholder = "Type the password here...";
+    out.password_submit = "Submit";
+
     // New share modal
     out.share_linkCategory = "Share link";
     out.share_linkAccess = "Access rights";

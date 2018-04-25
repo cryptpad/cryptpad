@@ -123,6 +123,9 @@ define([
             case 'SET_INITIAL_PATH': {
                 Store.setInitialPath(data); break;
             }
+            case 'SET_NEW_PAD_PASSWORD': {
+                Store.setNewPadPassword(data); break;
+            }
             case 'GET_STRONGER_HASH': {
                 Store.getStrongerHash(data, cb); break;
             }

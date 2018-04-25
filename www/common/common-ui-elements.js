@@ -67,7 +67,7 @@ define([
             common.getPadAttribute('href', waitFor(function (err, val) {
                 var base = common.getMetadataMgr().getPrivateData().origin;
 
-                var parsed = Hash.parsePadUrl(val);
+                var parsed = Hash.parsePadUrl(val, data.password);
                 if (parsed.hashData.mode === "view") {
                     data.roHref = base + val;
                     return;
@@ -285,6 +285,7 @@ define([
 
             var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
+            // Password not needed here since we don't access hashData
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present});
         };
@@ -322,6 +323,7 @@ define([
         var getEmbedValue = function () {
             var hash = hashes.viewHash || hashes.editHash;
             var href = origin + pathname + '#' + hash;
+            // Password not needed here since we don't access hashData
             var parsed = Hash.parsePadUrl(href);
             var url = origin + parsed.getUrl({embed: true, present: true});
             return '<iframe src="' + url + '"></iframe>';
@@ -930,13 +932,13 @@ define([
         };
     };
 
+    var setHTML = function (e, html) {
+        e.innerHTML = html;
+        return e;
+    };
+
     UIElements.createHelpMenu = function (common, categories) {
         var type = common.getMetadataMgr().getMetadata().type || 'pad';
-
-        var setHTML = function (e, html) {
-            e.innerHTML = html;
-            return e;
-        };
 
         var elements = [];
         if (Messages.help && Messages.help.generic) {
@@ -1911,6 +1913,17 @@ define([
             createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
         ]);
 
+        // Password
+        var password = h('div.cp-creation-password', [
+            UI.createCheckbox('cp-creation-password', 'TODO Add a password', false), //XXX
+            h('span.cp-creation-password-picker.cp-creation-slider', [
+                h('input#cp-creation-password-val', {
+                    type: "text" // TODO type password with click to show
+                }),
+            ]),
+            createHelper('#', "TODO: password protection adds another layer of security ........") // TODO
+        ]);
+
         var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
         var left = h('span.fa.fa-chevron-left.cp-creation-template-more');
         var templates = h('div.cp-creation-template', [
@@ -1936,6 +1949,7 @@ define([
         $(h('div#cp-creation-form', [
             owned,
             expire,
+            password,
             settings,
             templates,
             createDiv
@@ -2046,6 +2060,19 @@ define([
             $creation.focus();
         });
 
+        // Display expiration form when checkbox checked
+        $creation.find('#cp-creation-password').on('change', function () {
+            if ($(this).is(':checked')) {
+                $creation.find('.cp-creation-password-picker:not(.active)').addClass('active');
+                $creation.find('.cp-creation-password:not(.active)').addClass('active');
+                $creation.find('#cp-creation-password-val').focus();
+                return;
+            }
+            $creation.find('.cp-creation-password-picker').removeClass('active');
+            $creation.find('.cp-creation-password').removeClass('active');
+            $creation.focus();
+        });
+
         // Display settings help when checkbox checked
         $creation.find('#cp-creation-remember').on('change', function () {
             if ($(this).is(':checked')) {
@@ -2094,12 +2121,16 @@ define([
                 }
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
+            // Password
+            var passwordVal = $('#cp-creation-password').is(':checked') ?
+                                $('#cp-creation-password-val').val() : undefined;
 
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
 
             return {
                 owned: ownedVal,
+                password: passwordVal,
                 expire: expireVal,
                 templateId: templateId
             };
@@ -2167,6 +2198,44 @@ define([
         if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         UI.errorLoadingScreen(msg, true, true);
         (cb || function () {})();
+    };
+
+    UIElements.displayPasswordPrompt = function (common, isError) {
+        var error;
+        if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
+        var info = h('p.cp-password-info', Messages.password_info);
+        var input = h('input', {
+            type: "password",
+            placeholder: Messages.password_placeholder
+        });
+        var button = h('button', Messages.password_submit);
+
+        var submit = function () {
+            var value = $(input).val();
+            UI.addLoadingScreen();
+            common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
+                if (!data) {
+                    UIElements.displayPasswordPrompt(common, true);
+                }
+            });
+        };
+        $(input).on('keydown', function (e) {
+            if (e.which === 13) { submit(); }
+        })
+        $(button).on('click', function () {
+            submit();
+        })
+
+
+        var block = h('div#cp-loading-password-prompt', [
+            error,
+            info,
+            h('p.cp-password-form', [
+                input,
+                button
+            ])
+        ]);
+        UI.errorLoadingScreen(block);
     };
 
     return UIElements;

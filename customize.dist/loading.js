@@ -81,6 +81,38 @@ define([], function () {
     text-align: center;
     display: none;
 }
+#cp-loading-password-prompt {
+    font-size: 18px;
+}
+#cp-loading-password-prompt .cp-password-error {
+    color: white;
+    background: #9e0000;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+#cp-loading-password-prompt .cp-password-info {
+    text-align: left;
+    margin-bottom: 15px;
+}
+#cp-loading-password-prompt .cp-password-form {
+    display: flex;
+    justify-content: space-around;
+}
+#cp-loading-password-prompt .cp-password-form * {
+    background-color: #4591c4;
+    color: white;
+    border: 1px solid #4591c4;
+}
+#cp-loading-password-prompt .cp-password-form input {
+    flex: 1;
+    margin-right: 15px;
+    padding: 0 5px;
+    min-width: 0;
+    text-overflow: ellipsis;
+}
+#cp-loading-password-prompt .cp-password-form button:hover {
+    background-color: #326599;
+}
 #cp-loading .cp-loading-spinner-container {
   position: relative;
   height: 100px;

@@ -24,6 +24,7 @@ define([
         var Utils = {};
         var AppConfig;
         var Test;
+        var password;
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -121,26 +122,53 @@ define([
                     });
                 }));
             } else {
-                var parsedType = Utils.Hash.parsePadUrl(window.location.href).type;
-                // XXX prompt the password here if we have a hash containing /p/
-                // OR get it from the pad attributes
-                secret = Utils.Hash.getSecrets(parsedType);
+                var parsed = Utils.Hash.parsePadUrl(window.location.href);
+                var todo = function () {
+                    secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
+                    Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
+                };
 
-                // TODO: New hashes V2 already contain a channel ID so we can probably remove the following lines
-                //if (!secret.channel) {
-                    // New pad: create a new random channel id
-                    //secret.channel = Utils.Hash.createChannelId();
-                //}
-
-                Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
+                // Prompt the password here if we have a hash containing /p/
+                // or get it from the pad attributes
+                var needPassword = parsed.hashData && parsed.hashData.password;
+                if (needPassword) {
+                    Cryptpad.getPadAttribute('password', waitFor(function (err, val) {
+                        if (val) {
+                            // We already know the password, use it!
+                            password = val;
+                            todo();
+                        } else {
+                            // Ask for the password and check if the pad exists
+                            // If the pad doesn't exist, it means the password is oncorrect
+                            // or the pad has been deleted
+                            var correctPassword = waitFor();
+                            sframeChan.on('Q_PAD_PASSWORD_VALUE', function (data, cb) {
+                                password = data;
+                                Cryptpad.isNewChannel(window.location.href, password, function (e, isNew) {
+                                    if (Boolean(isNew)) {
+                                        // Ask again in the inner iframe
+                                        // We should receive a new Q_PAD_PASSWORD_VALUE
+                                        cb(false);
+                                    } else {
+                                        todo();
+                                        correctPassword();
+                                        cb(true);
+                                    }
+                                });
+                            });
+                            sframeChan.event("EV_PAD_PASSWORD");
+                        }
+                    }));
+                    return;
+                }
+                // If no password, continue...
+                todo();
             }
         }).nThen(function (waitFor) {
             // Check if the pad exists on server
             if (!window.location.hash) { isNewFile = true; return; }
 
             if (realtime) {
-                // XXX get password
-                var password;
                 Cryptpad.isNewChannel(window.location.href, password, waitFor(function (e, isNew) {
                     if (e) { return console.error(e); }
                     isNewFile = Boolean(isNew);
@@ -679,10 +707,11 @@ define([
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }
                 // Create a new hash
-                // XXX add password here
                 var password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
                 secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
+
+                Cryptpad.setNewPadPassword(password);
 
                 // Update the hash in the address bar
                 var ohc = window.onhashchange;

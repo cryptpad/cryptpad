@@ -198,6 +198,7 @@ define([
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
             expire: cfg.expire,
+            password: cfg.password,
             template: cfg.template,
             templateId: cfg.templateId
         }, cb);
@@ -379,6 +380,7 @@ define([
     Object.freeze(funcs);
     return { create: function (cb) {
 
+        console.log('create');
         if (window.CryptPad_sframe_common) {
             throw new Error("Sframe-common should only be created once");
         }
@@ -427,6 +429,14 @@ define([
                 var i = pendingFriends.indexOf(data.netfluxId);
                 if (i !== -1) { pendingFriends.splice(i, 1); }
                 UI.log(data.logText);
+            });
+
+            ctx.sframeChan.on("EV_PAD_PASSWORD", function (data) {
+                UIElements.displayPasswordPrompt(funcs);
+                /*UI.prompt("Password?", "", function (val) {
+                    ctx.sframeChan.event("EV_PAD_PASSWORD_VALUE", val);
+                });
+                $('div.alertify').last().css("z-index", Number.MAX_SAFE_INTEGER);*/
             });
 
             ctx.metadataMgr.onReady(waitFor());

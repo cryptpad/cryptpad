@@ -416,6 +416,7 @@ define([
         var pad = makePad(data.href, data.title);
         if (data.owners) { pad.owners = data.owners; }
         if (data.expire) { pad.expire = data.expire; }
+        if (data.password) { pad.password = data.password; }
         store.userObject.pushData(pad, function (e, id) {
             if (e) { return void cb({error: "Error while adding a template:"+ e}); }
             var path = data.path || ['root'];
@@ -758,8 +759,10 @@ define([
                 title: title,
                 owners: owners,
                 expire: expire,
+                password: store.data && store.data.newPadPassword,
                 path: data.path || (store.data && store.data.initialPath)
             }, cb);
+            delete store.data.newPadPassword;
             return;
         }
         onSync(cb);
@@ -802,6 +805,11 @@ define([
         if (!store.data) { return; }
         store.data.initialPath = path;
     };
+    Store.setNewPadPassword = function (password) {
+        if (!store.data) { return; }
+        store.data.newPadPassword = password;
+    };
+
 
     // Messaging (manage friends from the userlist)
     var getMessagingCfg = function () {
@@ -833,9 +841,9 @@ define([
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
 
         // If we have a stronger version in drive, add it and add a redirect button
-        var stronger = Hash.findStronger(data.href, allPads);
+        var stronger = Hash.findStronger(data.href, allPads, data.password);
         if (stronger) {
-            var parsed2 = Hash.parsePadUrl(stronger);
+            var parsed2 = Hash.parsePadUrl(stronger.href, stronger.password);
             return void cb(parsed2.hash);
         }
         cb();

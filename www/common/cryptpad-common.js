@@ -385,6 +385,7 @@ define([
             if (!type) { return void cb(null, obj); }
 
             var templates = obj.filter(function (f) {
+                // Password not needed here since we don't access hashData
                 var parsed = Hash.parsePadUrl(f.href);
                 return parsed.type === type;
             });
@@ -393,10 +394,13 @@ define([
     };
 
     common.saveAsTemplate = function (Cryptput, data, cb) {
+        // Password not needed here since we don't access hashData
         var p = Hash.parsePadUrl(window.location.href);
         if (!p.type) { return; }
+        // XXX PPP
         var hash = Hash.createRandomHash(p.type);
         var href = '/' + p.type + '/#' + hash;
+        // XXX PPP
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
             postMessage("ADD_PAD", {
@@ -419,16 +423,35 @@ define([
         });
     };
 
-    common.useTemplate = function (href, Crypt, cb, opts) {
+    common.useTemplate = function (href, Crypt, cb, optsPut) {
         // opts is used to overrides options for chainpad-netflux in cryptput
         // it allows us to add owners and expiration time if it is a new file
+
+        // Password not needed here, we only need the hash and to know if
+        // we need to get the password
         var parsed = Hash.parsePadUrl(href);
+        var parsed2 = Hash.parsePadUrl(window.location.href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         postMessage("INCREMENT_TEMPLATE_USE", href);
-        Crypt.get(parsed.hash, function (err, val) {
-            if (err) { throw new Error(err); }
-            var p = Hash.parsePadUrl(window.location.href);
-            Crypt.put(p.hash, val, cb, opts);
+
+        optsPut = optsPut || {};
+        var optsGet = {};
+        Nthen(function (waitFor) {
+            if (parsed.hashData && parsed.hashData.password) {
+                common.getPadAttribute('password', waitFor(function (err, password) {
+                    optsGet.password = password;
+                }), href);
+            }
+            if (parsed2.hashData && parsed2.hashData.password) {
+                common.getPadAttribute('password', waitFor(function (err, password) {
+                    optsPut.password = password;
+                }));
+            }
+        }).nThen(function (waitFor) {
+            Crypt.get(parsed.hash, function (err, val) {
+                if (err) { throw new Error(err); }
+                Crypt.put(parsed2.hash, val, cb, optsPut);
+            }, optsGet);
         });
     };
 
@@ -441,6 +464,8 @@ define([
     // When opening a new pad or renaming it, store the new title
     common.setPadTitle = function (title, padHref, path, cb) {
         var href = padHref || window.location.href;
+
+        // Password not needed here since we don't access hashData
         var parsed = Hash.parsePadUrl(href);
         if (!parsed.hash) { return; }
         href = parsed.getUrl({present: parsed.present});
@@ -476,6 +501,9 @@ define([
     // Set initial path when creating a pad from pad creation screen
     common.setInitialPath = function (path) {
         postMessage("SET_INITIAL_PATH", path);
+    };
+    common.setNewPadPassword = function (password) {
+        postMessage("SET_NEW_PAD_PASSWORD", password);
     };
 
     // Messaging (manage friends from the userlist)
@@ -559,12 +587,13 @@ define([
             hashes = Hash.getHashes(secret);
             return void cb(null, hashes);
         }
+        // Password not needed here since only want the type
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
         hashes = Hash.getHashes(secret);
 
-        if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
+        if (secret.version === 0) {
             // It means we're using an old hash
             hashes.editHash = window.location.hash.slice(1);
             return void cb(null, hashes);
@@ -576,7 +605,8 @@ define([
         }
 
         postMessage("GET_STRONGER_HASH", {
-            href: window.location.href
+            href: window.location.href,
+            password: secret.password
         }, function (hash) {
             if (hash) { hashes.editHash = hash; }
             cb(null, hashes);

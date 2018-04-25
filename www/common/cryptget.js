@@ -43,7 +43,6 @@ define([
         Object.keys(b).forEach(function (k) { a[k] = b[k]; });
     };
 
-    // XXX make sure we pass the password here in opt
     var get = function (hash, cb, opt) {
         if (typeof(cb) !== 'function') {
             throw new Error('Cryptget expects a callback');
@@ -63,7 +62,6 @@ define([
         Session.realtime = CPNetflux.start(config);
     };
 
-    // XXX make sure we pass the password here in opt
     var put = function (hash, doc, cb, opt) {
         if (typeof(cb) !== 'function') {
             throw new Error('Cryptput expects a callback');

@@ -1098,6 +1098,12 @@ define(function () {
     out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads avec propriétaire ou à durée de vie). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
 
+    // Password prompt on the loadind screen
+    out.password_info = "Le pad auquel vous essayez d'accéder est protégé par un mot de passe. Entrez le bon mot de passe pour accéder à son contenu.";
+    out.password_error = "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit le mot de passe est faux, soit le pad a été supprimé du serveur.";
+    out.password_placeholder = "Tapez le mot de passe ici...";
+    out.password_submit = "Valider";
+
     // New share modal
     out.share_linkCategory = "Partage";
     out.share_linkAccess = "Droits d'accès";
