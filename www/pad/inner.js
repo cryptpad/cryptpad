@@ -459,6 +459,7 @@ define([
                 ckeditor: editor,
                 body: $('body'),
                 onUploaded: function (ev, data) {
+                    // PASSWORD_FILES
                     var parsed = Hash.parsePadUrl(data.url);
                     var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;

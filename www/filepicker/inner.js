@@ -40,6 +40,7 @@ define([
             var parsed = Hash.parsePadUrl(data.url);
             hideFileDialog();
             if (parsed.type === 'file') {
+                // PASSWORD_FILES
                 var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                 var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                 sframeChan.event("EV_FILE_PICKED", {

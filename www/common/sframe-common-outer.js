@@ -122,6 +122,7 @@ define([
                     });
                 }));
             } else {
+                // Password not needed here since we only want to know if we need a password
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 var todo = function () {
                     secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
@@ -133,6 +134,7 @@ define([
                 var needPassword = parsed.hashData && parsed.hashData.password;
                 if (needPassword) {
                     Cryptpad.getPadAttribute('password', waitFor(function (err, val) {
+                        console.log(val);
                         if (val) {
                             // We already know the password, use it!
                             password = val;
@@ -158,7 +160,7 @@ define([
                             });
                             sframeChan.event("EV_PAD_PASSWORD");
                         }
-                    }));
+                    }), parsed.getUrl());
                     return;
                 }
                 // If no password, continue...
@@ -182,7 +184,7 @@ define([
                 secret.keys = secret.key;
                 readOnly = false;
             }
-            var parsed = Utils.Hash.parsePadUrl(window.location.href);
+            var parsed = Utils.Hash.parsePadUrl(window.location.href, password);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
             var edPublic;
@@ -224,7 +226,8 @@ define([
                         },
                         isNewFile: isNewFile,
                         isDeleted: isNewFile && window.location.hash.length > 0,
-                        forceCreationScreen: forceCreationScreen
+                        forceCreationScreen: forceCreationScreen,
+                        password: password
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -292,6 +295,7 @@ define([
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
                 currentTitle = newTitle;
                 setDocumentTitle();
+                Cryptpad.setNewPadPassword(password);
                 Cryptpad.setPadTitle(newTitle, undefined, undefined, function (err) {
                     cb(err);
                 });
@@ -414,10 +418,12 @@ define([
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
+                // Password not needed here since we only need something directly in the hash
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 cb(parsed.hashData && parsed.hashData.present);
             });
             sframeChan.on('EV_PRESENT_URL_SET_VALUE', function (data) {
+                // Password not needed here
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 window.location.href = parsed.getUrl({
                     embed: parsed.hashData.embed,
@@ -510,6 +516,7 @@ define([
                 });
             });
             var getKey = function (href) {
+                // Password not needed here. We use the fake channel id for thumbnails at the moment
                 var parsed = Utils.Hash.parsePadUrl(href);
                 return 'thumbnail-' + parsed.type + '-' + parsed.hashData.channel;
             };
@@ -707,7 +714,7 @@ define([
             sframeChan.on('Q_CREATE_PAD', function (data, cb) {
                 if (!isNewFile || rtStarted) { return; }
                 // Create a new hash
-                var password = data.password;
+                password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
                 secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
 
@@ -721,7 +728,7 @@ define([
                 ohc({reset: true});
 
                 // Update metadata values and send new metadata inside
-                parsed = Utils.Hash.parsePadUrl(window.location.href);
+                parsed = Utils.Hash.parsePadUrl(window.location.href, password);
                 defaultTitle = Utils.Hash.getDefaultName(parsed);
                 hashes = Utils.Hash.getHashes(secret);
                 readOnly = false;

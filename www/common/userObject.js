@@ -78,6 +78,7 @@ define([
         exp.isReadOnlyFile = function (element) {
             if (!isFile(element)) { return false; }
             var data = exp.getFileData(element);
+            // Password not needed
             var parsed = Hash.parsePadUrl(data.href);
             if (!parsed) { return false; }
             var pHash = parsed.hashData;
@@ -387,7 +388,7 @@ define([
             var channels64 = channels.slice().map(Util.hexToBase64);
             return getFiles([FILES_DATA]).filter(function (k) {
                 var data = allFilesList[k];
-                var parsed = Hash.parsePadUrl(data.href);
+                var parsed = Hash.parsePadUrl(data.href, data.password);
                 return parsed.hashData && channels64.indexOf(parsed.hashData.channel) !== -1;
             });
         };

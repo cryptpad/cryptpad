@@ -246,8 +246,8 @@ define([
         });
     };
 
-    common.getFileSize = function (href, cb) {
-        postMessage("GET_FILE_SIZE", {href: href}, function (obj) {
+    common.getFileSize = function (href, password, cb) {
+        postMessage("GET_FILE_SIZE", {href: href, password: password}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(undefined, obj.size);
         });
@@ -447,7 +447,7 @@ define([
                     optsPut.password = password;
                 }));
             }
-        }).nThen(function (waitFor) {
+        }).nThen(function () {
             Crypt.get(parsed.hash, function (err, val) {
                 if (err) { throw new Error(err); }
                 Crypt.put(parsed2.hash, val, cb, optsPut);
@@ -843,18 +843,21 @@ define([
             window.onhashchange = function (ev) {
                 if (ev && ev.reset) { oldHref = document.location.href; return; }
                 var newHref = document.location.href;
-                var parsedOld = Hash.parsePadUrl(oldHref).hashData;
-                var parsedNew = Hash.parsePadUrl(newHref).hashData;
-                if (parsedOld && parsedNew && (
+                // Password not needed here since we don't access hashData
+                var parsedOld = Hash.parsePadUrl(oldHref);
+                var parsedNew = Hash.parsePadUrl(newHref);
+                if (parsedOld.hashData && parsedNew.hashData &&
+                    parsedOld.getUrl() !== parsedNew.getUrl()) {
+                    /*parseOld && parsedNew && (
                       parsedOld.type !== parsedNew.type
                       || parsedOld.channel !== parsedNew.channel
                       || parsedOld.mode !== parsedNew.mode
-                      || parsedOld.key !== parsedNew.key)) {
-                    if (!parsedOld.channel) { oldHref = newHref; return; }
+                      || parsedOld.key !== parsedNew.key)) {*/
+                    if (!parsedOld.hashData.channel) { oldHref = newHref; return; }
                     document.location.reload();
                     return;
                 }
-                if (parsedNew) { oldHref = newHref; }
+                if (parsedNew.hashData) { oldHref = newHref; }
             };
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {

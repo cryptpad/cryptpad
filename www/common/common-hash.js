@@ -418,7 +418,7 @@ Version 1
         });
         return weaker;
     };
-    var findStronger = Hash.findStronger = function (href, recents, password) {
+    Hash.findStronger = function (href, recents, password) {
         var rHref = href || getRelativeHref(window.location.href);
         var parsed = parsePadUrl(rHref, password);
         if (!parsed.hash) { return false; }

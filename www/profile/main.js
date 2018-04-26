@@ -79,7 +79,7 @@ define([
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             // Adding a new avatar from the profile: pin it and store it in the object
             sframeChan.on('Q_PROFILE_AVATAR_ADD', function (data, cb) {
-                var chanId = Utils.Hash.hrefToHexChannelId(data);
+                var chanId = Utils.Hash.hrefToHexChannelId(data, null);
                 Cryptpad.pinPads([chanId], function (e) {
                     if (e) { return void cb(e); }
                     Cryptpad.setAvatar(data, cb);
@@ -87,7 +87,7 @@ define([
             });
             // Removing the avatar from the profile: unpin it
             sframeChan.on('Q_PROFILE_AVATAR_REMOVE', function (data, cb) {
-                var chanId = Utils.Hash.hrefToHexChannelId(data);
+                var chanId = Utils.Hash.hrefToHexChannelId(data, null);
                 Cryptpad.unpinPads([chanId], function () {
                     Cryptpad.setAvatar(undefined, cb);
                 });

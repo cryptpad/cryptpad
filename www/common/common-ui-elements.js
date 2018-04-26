@@ -180,7 +180,7 @@ define([
 
         if (common.isLoggedIn() && AppConfig.enablePinning) {
             // check the size of this file...
-            common.getFileSize(data.href, function (e, bytes) {
+            common.getFileSize(data.href, data.password, function (e, bytes) {
                 if (e) {
                     // there was a problem with the RPC
                     console.error(e);
@@ -1146,7 +1146,8 @@ define([
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var hexFileName = Util.base64ToHex(secret.channel);
             var src = Hash.getBlobPathFromHex(hexFileName);
-            Common.getFileSize(href, function (e, data) {
+            // No password for avatars
+            Common.getFileSize(href, null, function (e, data) {
                 if (e) {
                     displayDefault();
                     return void console.error(e);
@@ -2219,12 +2220,8 @@ define([
                 }
             });
         };
-        $(input).on('keydown', function (e) {
-            if (e.which === 13) { submit(); }
-        })
-        $(button).on('click', function () {
-            submit();
-        })
+        $(input).on('keydown', function (e) { if (e.which === 13) { submit(); } });
+        $(button).on('click', function () { submit(); });
 
 
         var block = h('div#cp-loading-password-prompt', [

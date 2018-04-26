@@ -75,7 +75,7 @@ define([
                 return void todo();
             }
             if (!pinPads) { return; }
-            pinPads([Hash.hrefToHexChannelId(data.href)], function (obj) {
+            pinPads([Hash.hrefToHexChannelId(data.href, data.password)], function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
                 todo();
             });
@@ -98,7 +98,7 @@ define([
             exp.getFiles([FILES_DATA]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.getFileData(id);
-                    var channelId = fd && fd.href && Hash.hrefToHexChannelId(fd.href);
+                    var channelId = fd && fd.href && Hash.hrefToHexChannelId(fd.href, fd.password);
                     // If trying to remove an owned pad, remove it from server also
                     if (!isOwnPadRemoved &&
                             fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
@@ -565,6 +565,7 @@ define([
                     if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
                     if (!el.ctime) { el.ctime = el.atime; }
 
+                    // Password not needed here since we only need the type and hash
                     var parsed = Hash.parsePadUrl(el.href);
                     if (!el.title) { el.title = Hash.getDefaultName(parsed); }
                     if (!parsed.hash) {

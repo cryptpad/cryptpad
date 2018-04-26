@@ -315,7 +315,7 @@ define([
                        privateDat.availableHashes.viewHash;
             var href = privateDat.pathname + '#' + hash;
             if (AppConfig.textAnalyzer && textContentGetter) {
-                var channelId = Hash.hrefToHexChannelId(href);
+                var channelId = Hash.hrefToHexChannelId(href, privateDat.password);
                 AppConfig.textAnalyzer(textContentGetter, channelId);
             }
 

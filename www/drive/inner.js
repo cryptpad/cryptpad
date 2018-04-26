@@ -1264,6 +1264,7 @@ define([
             var data = filesOp.getFileData(element);
             if (!data) { return void logError("No data for the file", element); }
 
+            // Password not needed
             var hrefData = Hash.parsePadUrl(data.href);
             if (hrefData.type) {
                 $span.addClass('cp-border-color-'+hrefData.type);
@@ -1835,6 +1836,7 @@ define([
                 var data = filesOp.getFileData(id);
                 if (!data) { return ''; }
                 if (prop === 'type') {
+                    // Password not needed
                     var hrefData = Hash.parsePadUrl(data.href);
                     return hrefData.type;
                 }
@@ -1870,6 +1872,7 @@ define([
                         };
                     }
                     if (prop === 'type') {
+                        // Password not needed
                         var hrefData = Hash.parsePadUrl(e.href);
                         return hrefData.type;
                     }
@@ -2093,6 +2096,7 @@ define([
             filesList.forEach(function (r) {
                 r.paths.forEach(function (path) {
                     var href = r.data.href;
+                    // Password not needed
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
@@ -2649,6 +2653,7 @@ define([
             if (!filesOp.isFile(id)) { return; }
             var data = filesOp.getFileData(id);
             if (!data) { return; }
+            // Password not needed
             var parsed = Hash.parsePadUrl(data.href);
             if (parsed.hashData.type !== "pad") { return; }
             var i = data.href.indexOf('#') + 1;

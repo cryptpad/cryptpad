@@ -232,7 +232,8 @@ define([
                     $dlform.find('#cp-app-file-dlfile, #cp-app-file-dlprogress').click(onClick);
                 };
                 var href = priv.origin + priv.pathname + priv.filehash;
-                common.getFileSize(href, function (e, data) {
+                // PASSWORD_FILES
+                common.getFileSize(href, null, function (e, data) {
                     if (e) {
                         return void UI.errorLoadingScreen(e);
                     }

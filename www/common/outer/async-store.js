@@ -81,16 +81,17 @@ define([
                 var d = store.userObject.getFileData(id);
                 if (d.owners && d.owners.length && edPublic &&
                     d.owners.indexOf(edPublic) === -1) { return; }
-                return Hash.hrefToHexChannelId(d.href);
+                return Hash.hrefToHexChannelId(d.href, d.password);
             })
             .filter(function (x) { return x; });
 
         // Get the avatar
         var profile = store.proxy.profile;
         if (profile) {
-            var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit) : null;
+            // No password for profile or avatar
+            var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit, null) : null;
             if (profileChan) { list.push(profileChan); }
-            var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar) : null;
+            var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar, null) : null;
             if (avatarChan) { list.push(avatarChan); }
         }
 
@@ -115,7 +116,7 @@ define([
             // because of the expiration time
             if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
                     (data.expire && data.expire < (+new Date()))) {
-                list.push(Hash.hrefToHexChannelId(data.href));
+                list.push(Hash.hrefToHexChannelId(data.href, data.password));
             }
         });
         return list;
@@ -303,7 +304,7 @@ define([
     Store.getFileSize = function (data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
 
-        var channelId = Hash.hrefToHexChannelId(data.href);
+        var channelId = Hash.hrefToHexChannelId(data.href, data.password);
         store.anon_rpc.send("GET_FILE_SIZE", channelId, function (e, response) {
             if (e) { return void cb({error: e}); }
             if (response && response.length && typeof(response[0]) === 'number') {
@@ -403,6 +404,7 @@ define([
 
     var makePad = function (href, title) {
         var now = +new Date();
+        // Password not needed here since we only need the type
         return {
             href: href,
             atime: now,
@@ -434,14 +436,16 @@ define([
             // Push channels owned by someone else or channel that should have expired
             // because of the expiration time
             if (data.owners && data.owners.length === 1 && data.owners.indexOf(edPublic) !== -1) {
-                list.push(Hash.hrefToHexChannelId(data.href));
+                list.push(Hash.hrefToHexChannelId(data.href, data.password));
             }
         });
         if (store.proxy.todo) {
-            list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo));
+            // No password for todo
+            list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
         }
         if (store.proxy.profile && store.proxy.profile.edit) {
-            list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit));
+            // No password for todo
+            list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit, null));
         }
         return list;
     };
@@ -615,6 +619,7 @@ define([
         });
     };
     Store.getPadAttribute = function (data, cb) {
+        console.log(data.href, data.attr);
         store.userObject.getPadAttribute(data.href, data.attr, function (err, val) {
             if (err) { return void cb({error: err}); }
             cb(val);
@@ -680,7 +685,8 @@ define([
     Store.setPadTitle = function (data, cb) {
         var title = data.title;
         var href = data.href;
-        var p = Hash.parsePadUrl(href);
+        var padData = store.userObject.getFileData(store.userObject.getIdFromHref(href));
+        var p = Hash.parsePadUrl(href, padData && padData.password);
         var h = p.hashData;
 
         if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
@@ -707,7 +713,7 @@ define([
             var pad = allPads[id];
             if (!pad.href) { continue; }
 
-            var p2 = Hash.parsePadUrl(pad.href);
+            var p2 = Hash.parsePadUrl(pad.href, pad.password);
             var h2 = p2.hashData;
 
             // Different types, proceed to the next one
@@ -788,7 +794,7 @@ define([
         };
         store.userObject.getFiles(where).forEach(function (id) {
             var data = store.userObject.getFileData(id);
-            var parsed = Hash.parsePadUrl(data.href);
+            var parsed = Hash.parsePadUrl(data.href, data.password);
             if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                 hashes.indexOf(parsed.hash) === -1 &&
                 !isFiltered(parsed.type, data)) {

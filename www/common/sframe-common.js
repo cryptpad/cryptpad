@@ -113,8 +113,8 @@ define([
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
     funcs.getMediatagFromHref = function (href) {
+        // PASSWORD_FILES
         var parsed = Hash.parsePadUrl(href);
-        // FILE_HASHES2
         var secret = Hash.getSecrets('file', parsed.hash);
         var data = ctx.metadataMgr.getPrivateData();
         if (secret.keys && secret.channel) {
@@ -127,8 +127,8 @@ define([
         }
         return;
     };
-    funcs.getFileSize = function (href, cb) {
-        var channelId = Hash.hrefToHexChannelId(href);
+    funcs.getFileSize = function (href, password, cb) {
+        var channelId = Hash.hrefToHexChannelId(href, password);
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
             if (!data) { return void cb("No response"); }
             if (data.error) { return void cb(data.error); }
@@ -431,12 +431,8 @@ define([
                 UI.log(data.logText);
             });
 
-            ctx.sframeChan.on("EV_PAD_PASSWORD", function (data) {
+            ctx.sframeChan.on("EV_PAD_PASSWORD", function () {
                 UIElements.displayPasswordPrompt(funcs);
-                /*UI.prompt("Password?", "", function (val) {
-                    ctx.sframeChan.event("EV_PAD_PASSWORD_VALUE", val);
-                });
-                $('div.alertify').last().css("z-index", Number.MAX_SAFE_INTEGER);*/
             });
 
             ctx.metadataMgr.onReady(waitFor());
