@@ -4,7 +4,7 @@
   "version": "1.29.0",
   "license": "AGPL-3.0-or-later",
   "dependencies": {
-    "bower": "ˆ1.8.4",
+    "bower": "^1.8.4",
     "chainpad-server": "^2.0.0",
     "express": "~4.16.0",
     "mkdirp": "^0.5.1",
@@ -27,7 +27,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "postinstall" : "node_modules/bower/bin/bower install --allow-root",
+    "postinstall": "node_modules/bower/bin/bower install --allow-root",
     "dev": "DEV=1 node server.js",
     "fresh": "FRESH=1 node server.js",
     "lint": "jshint --config .jshintrc --exclude-path .jshintignore . && ./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
