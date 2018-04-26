@@ -13,10 +13,10 @@ var nThen = require("nthen");
 
 var config;
 try {
-    config = require('./config');
+    config = require('./config/config');
 } catch (e) {
     console.log("You can customize the configuration by copying config.example.js to config.js");
-    config = require('./config.example');
+    config = require('./config/config.example');
 }
 var websocketPort = config.websocketPort || config.httpPort;
 var useSecureWebsockets = config.useSecureWebsockets || false;
