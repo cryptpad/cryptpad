@@ -27,30 +27,30 @@
     out.button_newwhiteboard = 'Neues Whiteboard';
 
     // NOTE: Remove updated_0_ if we need an updated_1_
-    out.updated_0_common_connectionLost = "<b>Die Verbindung zum Server ist abgebrochen</b><br>Sie verwenden jetzt das Dokument schreibgeschützt, bis die Verbindung wieder funktioniert.";
+    out.updated_0_common_connectionLost = "<b>Die Verbindung zum Server ist abgebrochen</b><br>Du verwendest jetzt das Dokument schreibgeschützt, bis die Verbindung wieder funktioniert.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
 
     out.websocketError = 'Verbindung zum Websocket fehlgeschlagen...';
     out.typeError = "Dieses Dokument ist nicht mit dem Programm kompatibel";
-    out.onLogout = 'Sie sind ausgeloggt. {0}Klicken Sie hier{1}, um wieder einzuloggen,<br>oder drucken Sie die <em>Escape</em>taste, um ihr Dokument schreibgeschützt zu benutzen.';
-    out.wrongApp = "Der Inhalt dieser Echtzeitsitzung kann nicht in ihrem Browser angezeigt werden. Bitte laden Sie die Seite neu.";
-    out.padNotPinned = 'Dieses Dokument wird nach 3 Monaten ohne Zugang auslaufen, {0}loggen Sie sich ein{1} or {2}registrieren Sie sich{3}, um das Auslaufen zu verhindern.';
-    out.anonymousStoreDisabled = "Der Webmaster dieses CryptPad Server hat die anonyme Verwendung deaktiviert. Sie müssen sich einloggen, um CryptDrive zu verwenden.";
+    out.onLogout = 'Du bist ausgeloggt. {0}Klicke hier{1}, um wieder einzuloggen,<br>oder drucke die <em>Escape</em>taste, um dein Dokument schreibgeschützt zu benutzen.';
+    out.wrongApp = "Der Inhalt dieser Echtzeitsitzung kann nicht in deinem Browser angezeigt werden. Bitte lade die Seite neu.";
+    out.padNotPinned = 'Dieses Dokument wird nach 3 Monaten ohne Zugang auslaufen, {0}logge dich ein{1} or {2}registriere dich{3}, um das Auslaufen zu verhindern.';
+    out.anonymousStoreDisabled = "Der Webmaster dieses CryptPad Server hat die anonyme Verwendung deaktiviert. Du muss dich einloggen, um CryptDrive zu verwenden.";
     out.expiredError = 'Dieses Dokument ist abgelaufen und ist nicht mehr verfügbar.';
-    out.deletedError = 'Dieses Dokument wurde von seinem Besitzer gelöscht ust nicht mehr verfügbar.';
-    out.inactiveError = 'Dieses Dokument ist gelöscht wegen Inaktivität gelöscht worden. Drucken Sie auf die Esc-Taste, um ein neues Dokument zu gestalten.';
-    out.chainpadError = 'Ein kritischer Fehler hat stattgefunden, bei den Updates ihres Dokuments. Dieses Dokument ist schreibgeschützt, damit Sie sicher machen können, dass keine Inhalt verloren geht.<br>'+
-                        'Drucken Sie auf <em>Esc</em>, um das Dokument schreibgeschützt zu lesen , oder laden Sie neu, um das Editierien wiederanzufangen.';
-    out.errorCopy = ' Sie können noch den Inhalt woanders kopieren, nachdem Sie <em>Esc</em> drucken.<br>Wenn Sie die Seite verlassen, verschwindet der Inhalt für immer!';
+    out.deletedError = 'Dieses Dokument wurde von seinem Besitzer gelöscht und nicht mehr verfügbar.';
+    out.inactiveError = 'Dieses Dokument ist wegen Inaktivität gelöscht worden. Drucke auf die Esc-Taste, um ein neues Dokument zu gestalten.';
+    out.chainpadError = 'Ein kritischer Fehler hat stattgefunden, bei den Updates deines Dokuments. Dieses Dokument ist schreibgeschützt, damit du sicher machen kannst, dass keine Inhalt verloren geht.<br>'+
+                        'Druck auf <em>Esc</em>, um das Dokument schreibgeschützt zu lesen, oder lade es neu, um das Editierien wiederanzufangen.';
+    out.errorCopy = ' Du kannst noch den Inhalt woanders kopieren, nachdem du <em>Esc</em> drucken.<br>Wenn du die Seite verlässt, verschwindet der Inhalt für immer!';
 
     out.loading = "Laden...";
     out.error = "Fehler";
     out.saved = "Gespeichert";
     out.synced = "Alles gespeichert";
-    out.deleted = "Dokumente, die von ihrem CryptDrive gelöscht wurden";
+    out.deleted = "Dokumente, die von deinem CryptDrive gelöscht wurden";
     out.deletedFromServer = "Dokumente, die vom Server gelöscht wurden";
 
-    out.realtime_unrecoverableError = "Das Echtzeitengine hat ein nicht-reparierbaren Fehler getroffen. Klicken Sie OK, um neuzuladen.";
+    out.realtime_unrecoverableError = "Das Echtzeitengine hat ein nicht-reparierbaren Fehler getroffen. Klicke auf OK, um neuzuladen.";
 
     out.disconnected = 'Getrennt';
     out.synchronizing = 'Synchronisieren';
@@ -71,18 +71,18 @@
     out.viewers = "Betrachter*innen";
     out.editor = "Bearbeiter*in";
     out.editors = "Bearbeiter*innen";
-    out.userlist_offline = "Sie sind aktuell offline, die Benutzerliste ist nicht verfügbar.";
+    out.userlist_offline = "Du bist aktuell offline, die Benutzerliste ist nicht verfügbar.";
 
     out.language = "Sprache";
 
     out.comingSoon = "Kommt bald...";
 
     out.newVersion = '<b>CryptPad wurde aktualisiert!</b><br>' +
-                     'Entdecken Sie, was neu in dieser Version ist:<br>'+
+                     'Entdecke, was neu in dieser Version ist:<br>'+
                      '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Release notes for CryptPad {0}</a>';
 
     out.upgrade = "aufrüsten";
-    out.upgradeTitle = "Rüsten Sie ihr Konto auf, um mehr Speicherplatz zu haben";
+    out.upgradeTitle = "Rüste dein Konto auf, um mehr Speicherplatz zu haben";
 
     out.upgradeAccount = "Konto aufrüsten";
     out.MB = "MB";
@@ -96,18 +96,18 @@
     out.formattedKB = "{0} KB";
 
       out.greenLight = "Alles funktioniert bestens";
-      out.orangeLight = "Deine langsame Verbindung kann die Nutzung beinträchtigen";
+      out.orangeLight = "Deine langsame Verbindung kann die Nutzung beeinträchtigen";
       out.redLight = "Du wurdest von dieser Sitzung getrennt";
 
-    out.pinLimitReached = "Sie haben ihre Speicherplatzgrenze erreicht";
-    out.updated_0_pinLimitReachedAlert = "Sie haben ihre Speicherplatzgrenze erreicht. Neue Dokumente werden nicht mehr in ihrem CryptDrive gespeichert.<br>" +
-        'Sie können entweder Dokument von ihrem CryptDrive wegnehmen oder <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">ein Premiumagenbot anfordern</a>, damit ihre Grenze erhöht wird.';
+    out.pinLimitReached = "Du hast deine Speicherplatzgrenze erreicht";
+    out.updated_0_pinLimitReachedAlert = "Du hast deine Speicherplatzgrenze erreicht. Neue Dokumente werden nicht mehr in deinem CryptDrive gespeichert.<br>" +
+        'Du kannst entweder Dokument von deinem CryptDrive entfernen oder <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">ein Premiumagenbot anfordern</a>, damit deine Grenze erhöht wird.';
     out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
     out.pinLimitReachedAlertNoAccounts = out.pinLimitReached;
-    out.pinLimitNotPinned = "Sie haben ihre Speicherplatzgrenze erreicht.<br>"+
-                            "Dieses Dokument ist nicht in ihrem CryptDrive gespeichert.";
-    out.pinLimitDrive = "Sie haben ihre Speicherplatzgrenze erreicht.<br>" +
-                        "Sie können keine neue Dokumente gestalten.";
+    out.pinLimitNotPinned = "Du hast deine Speicherplatzgrenze erreicht.<br>"+
+                            "Dieses Dokument ist nicht in deinem CryptDrive gespeichert.";
+    out.pinLimitDrive = "Du hast deine Speicherplatzgrenze erreicht.<br>" +
+                        "Du kannst keine neue Dokumente gestalten.";
 
     out.moreActions = "Mehr Aktionen";
 
@@ -118,8 +118,8 @@
       out.exportButtonTitle = 'Exportiere dieses Dokument in eine lokale Datei';
       out.exportPrompt = 'Wie möchtest du die Datei nennen?';
 
-      out.changeNamePrompt = 'Ändere deinen Namen (oder lasse dieses Feld leer um anonym mitzuarbeiten): ';
-    out.user_rename = "Bearbeite dein Name";
+      out.changeNamePrompt = 'Ändere deinen Namen (oder lasse dieses Feld leer, um anonym mitzuarbeiten): ';
+    out.user_rename = "Bearbeite deinen Name";
     out.user_displayName = "Name";
     out.user_accountName = "Kontoname";
 
@@ -129,14 +129,14 @@
       out.forgetButtonTitle = 'Entferne dieses Dokument von deiner Startseitenliste';
     out.forgetButtonTitle = 'Dieses Dokument zum Papierkorb verschieben';
       out.forgetPrompt = 'Mit dem Klick auf OK wird das Dokument aus deinem lokalen Speicher gelöscht. Fortfahren?';
-    out.movedToTrash = 'Dieses Dokument liegt im Papierkorb.<br><a href="/drive/">Zum CryptDrive</a>';
+    out.movedToTrash = 'Dieses Dokument liegt im Papierkorb.<br>Du kannst <a href="/drive/">zum CryptDrive</a> navigieren';
 
       out.shareButton = 'Teilen';
       out.shareSuccess = 'Die URL wurde in die Zwischenablage kopiert';
 
     out.userListButton = "Benutzerliste";
 
-    out.userAccountButton = "Ihr Konto";
+    out.userAccountButton = "Dein Konto";
 
     out.newButton = 'Neu';
     out.newButtonTitle = 'Neues Dokument gestalten';
@@ -165,7 +165,7 @@
 
     out.printText = "Drucken";
     out.printButton = "Drucken (enter)";
-    out.printButtonTitle = "Deine Folien ausdrucken oder sie als PDF Dateien exportieren";
+    out.printButtonTitle = "Deine Präsentation ausdrucken oder als PDF Dateien exportieren";
     out.printOptions = "Druckeinstellungen";
     out.printSlideNumber = "Foliennummer anzeigen";
     out.printDate = "Datum anzeigen";
@@ -178,17 +178,17 @@
     out.printBackgroundNoValue = "<em>Kein Hintergrundbild gewählt</em>";
     out.printBackgroundRemove = "Das Hintergrundbild wählen";
 
-    out.filePickerButton = "Eine Datei ihres CryptDrives einbetten";
+    out.filePickerButton = "Eine Datei deines CryptDrives einbetten";
     out.filePicker_close = "Schliessen";
-    out.filePicker_description = "Bitte wähle eine Datei aus ihrem CryptDrive oder lade eine neue hoch";
+    out.filePicker_description = "Bitte wähle eine Datei aus deinem CryptDrive oder lade eine neue hoch";
     out.filePicker_filter = "Namensfilter";
     out.or = 'oder';
 
     out.tags_title = "Tags (for you only)";
     out.tags_add = "Die Tags dieser Seite bearbeiten";
-    out.tags_searchHint = "Dateien mit Tags in ihrem CryptDrive suchen";
-    out.tags_searchHint = "Die Suche mit dem Tag # in ihrem CryptDrive starten.";
-    out.tags_notShared = "Ihre Tags sind nicht mit anderen Benutzern geteilt";
+    out.tags_searchHint = "Dateien mit Tags in deinem CryptDrive suchen";
+    out.tags_searchHint = "Die Suche mit dem Tag # in deinem CryptDrive starten.";
+    out.tags_notShared = "Deine Tags sind nicht mit anderen Benutzern geteilt";
     out.tags_duplicate = "Doppeltes Tag: {0}";
     out.tags_noentry = "Du kannst ein Tag auf einem gelöschten Dokument nicht hinzufügen!";
 
@@ -202,9 +202,9 @@
     out.themeButton = "Farbschema";
     out.themeButtonTitle = "Wähle das Farbschema um Kode und Folieneditor darzustellen";
 
-      out.editShare = "Mitarbeits-URL teilen";
-      out.editShareTitle = "Mitarbeits-URL in die Zwischenablage kopieren";
-    out.editOpen = "Die Mitarbeit-RUL in ein neues Tab öffnen";
+      out.editShare = "Mitarbeit-URL teilen";
+      out.editShareTitle = "Mitarbeit-URL in die Zwischenablage kopieren";
+    out.editOpen = "Die Mitarbeit-URL in ein neues Tab öffnen";
     out.editOpenTitle = "Öffne dieses Dokument in Mitarbeitmodus in einem neuem Tab";
       out.viewShare = "Schreibgeschützt-URL teilen";
       out.viewShareTitle = "Schreibgeschützt-URL in die Zwischenablage kopieren";
@@ -213,10 +213,10 @@
     out.fileShare = "Link kopieren";
     out.getEmbedCode = "Einbettungscode anzeigen";
     out.viewEmbedTitle = "Das Dokument in einer externe Webseite einbetten";
-    out.viewEmbedTag = "Um dieses Dokument einzubetten, benutzen Sie dieses iframe in ihrer HTML Seite, wie Sie es wollen. Sie können mit CSS oder HTML Attributen das Still erweitern";
+    out.viewEmbedTag = "Um dieses Dokument einzubetten, benutzt du dieses iframe in deiner HTML Seite, wie du wilsst. Du kannst mit CSS oder HTML Attributen das Stil erweitern";
     out.fileEmbedTitle = "Die Datei in einer externen Seite einbetten";
-    out.fileEmbedScript = "Um diese Datei einzubetten, bringen Sie dieses Skript einmal in ihrer Webseite, damit das Media-Tag geladen wird:";
-    out.fileEmbedTag = "Dann könnnen Sie das Media-Tag, wo Sie wollen auf ihrer Seite platzieren:";
+    out.fileEmbedScript = "Um diese Datei einzubetten, bringst du dieses Skript einmal in deiner Webseite, damit das Media-Tag geladen wird:";
+    out.fileEmbedTag = "Dann kannst du das Media-Tag, wo du willst auf einder Seite platzieren:";
 
     out.notifyJoined = "{0} ist in der Mitarbeit-Sitzung ";
     out.notifyRenamed = "{0} ist jetzt als {1} bekannt";
@@ -286,7 +286,7 @@
       out.poll_titleHint = "Titel";
       out.poll_descriptionHint = "Beschreibe deine Abstimmung und publiziere sie mit dem 'Veröffentlichen'-Knopf wenn du fertig bis."+
 			" Die Beschreibung kann mit dem Markdown Syntax geschrieben werden und du kannst Media-Elemente von deinem CryptPad einbetten." +
-			"Jeder mit dem Link kann die Beschreibung ändern, aber es iet kine gute Praxis.";
+			"Jeder mit dem Link kann die Beschreibung ändern, aber es ist keine gute Praxis.";
 
     out.poll_remove = "Entfernen";
     out.poll_edit = "Bearbeiten";
@@ -294,7 +294,7 @@
     out.poll_unlocked = "Editierbar";
 
     out.poll_bookmark_col = 'Setze ein Lesezeichen auf dieser Spalte, damit sie immer editierbar und links immer für dich erscheint.';
-    out.poll_bookmarked_col = 'Dieses ist die Splate mit Lesezeichen für  dich. Es wird immer editierbar und links für dich angezeigt.';
+    out.poll_bookmarked_col = 'Dieses ist die Splate mit Lesezeichen für dich. Sie wird immer editierbar und links für dich angezeigt.';
     out.poll_total = 'SUMME';
 
     out.poll_comment_list = "Komentare";
@@ -327,7 +327,7 @@
     out.profile_upload = " Ein neues Avatar hochladen";
     out.profile_uploadSizeError = "Fehler: Dein Avatar muss kleiner als {0} sein";
     out.profile_uploadTypeError = "Fehler: Das Typ dieses Bild ist nicht unterestützt. Unterstütze Typen sind: {0}";
-    out.profile_error = "Fehler bei der Erstellung ihres Profils: {0}";
+    out.profile_error = "Fehler bei der Erstellung deines Profils: {0}";
     out.profile_register = "Du muss dich einloggen, um ein Profil zu erstellen!";
     out.profile_create = "Ein Profil erstellen";
     out.profile_description = "Beschreibung";
@@ -353,8 +353,8 @@
     out.contacts_typeHere = "Gebe eine Nachricht ein...";
 
     out.contacts_info1 = "Diese ist deine Kontaktliste. Ab hier, kannst du:";
-    out.contacts_info2 = "Auf dem Avatar eines Kontakts, um mit diesem Benutzer zu chatten";
-    out.contacts_info3 = "Das Avatar doppelklicken, um sein Profil zu sichten";
+    out.contacts_info2 = "Auf dem Avatar eines Kontakts klicken, um mit diesem Benutzer zu chatten";
+    out.contacts_info3 = "Das Avatar doppelklicken, um sein Profil anzuzeigen";
     out.contacts_info4 = "Jede Teilnehmer, kann den Chatverlauf löschen";
 
     out.contacts_removeHistoryTitle = 'Den Chatverlauf löschen';
@@ -393,14 +393,14 @@
     out.fm_emptyTrashDialog = "Soll der Papierkorb wirklich gelöscht werden?";
     out.fm_removeSeveralPermanentlyDialog = "Bist sicher, diese {0} Elemente dauerhaft aus deinem CryptDrive zu entfernen?";
     out.fm_removePermanentlyDialog = "Bist sicher, dieses Element dauerhaft aus deinem CryptDrive zu entfernen?";
-    out.fm_removeSeveralDialog = "Bist du sicher, diese {0} Element aus dem Papierkorb zu entfernen?";
+    out.fm_removeSeveralDialog = "Bist du sicher, diese {0} Elemente aus dem Papierkorb zu entfernen?";
     out.fm_removeDialog = "Bist sicher, {0} zum Papierkorb zu verschieben?";
     out.fm_deleteOwnedPad = "Bist du sicher, dieses Dokument aus dem Server dauerhaft zu löschen?";
-    out.fm_deleteOwnedPads = "Bist du sicher, dass du diese Dokumente dauerhaft aus dem Server entfernen möchtests?";
+    out.fm_deleteOwnedPads = "Bist du sicher, dass du diese Dokumente dauerhaft aus dem Server entfernen möchtest?";
     out.fm_restoreDialog = "Bist du sicher, dass du {0} zurück zum originalen Ordner verschieben möchtests?";
     out.fm_unknownFolderError = "Der Ordner, der gerade gewählt oder letzlich besucht wurde, existiert nicht mehr. Der Parentordner wird geöffnet...";
-    out.fm_contextMenuError = "Fehler bei der Öfnnung des Kontextmenü für dieses Element. Wenn dieses Problem wieder kommt, versuche die Seite neuzuladen.";
-    out.fm_selectError = "Fehler bei der Selektierung des Zielelements. Wenn dieses Problem wieder kommt, versuche die Seite neuzuladen.";
+    out.fm_contextMenuError = "Fehler bei der Öfnnung des Kontextmenü für dieses Element. Wenn dieses Problem wieder erscheint, versuche die Seite neuzuladen.";
+    out.fm_selectError = "Fehler bei der Selektierung des Zielelements. Wenn dieses Problem wieder erscheint, versuche die Seite neuzuladen.";
     out.fm_categoryError = "Fehler bei dem Öffnen der selektierten Kategorie. Der Wurzel wird angezeigt.";
     out.fm_info_root = "Gestalte hier soviele Ordnern, wie du willst, um deine Dateien und Dokumente zu organisieren.";
     out.fm_info_unsorted = 'Hier sind alle Dateien, die du besucht hast, noch nicht in "Dokumente" sortiert sind oder zum Papierkorb verschoben wurden.';
@@ -412,14 +412,14 @@
     out.fm_info_anonymous = 'Du bist nicht eingeloggt, daher laufen die Dokumente nach 3 Monaten aus (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">mehr dazu lesen</a>). ' +
                             'Zugang zu den Dokumenten ist in deinem Browser gespeichert, daher wir das Löschen des Browserverlaufs auch die Dokumente verschwinden lassen.<br>' +
                             '<a href="/register/">Registriere dich</a> oder <a href="/login/">logge dich ein</a>, um sie dauerhaft zu machen.<br>';
-    out.fm_info_owned = "Diese Dokumente sind deine eigene. Das heisst, dass du sie vom Server entfernen kannst, wann du willst. Wenn du das machst, dann werden auch andere Benutzer diese Dokumente nicht mehr erreichen.";
+    out.fm_info_owned = "Diese Dokumente sind deine eigene. Das heisst, dass du sie vom Server entfernen kannst, wann du willst. Wenn du das machst, dann wird es auch keinen Zugriff zu diesem für andere Benutzer geben.";
     out.fm_alert_backupUrl = "Backuplink für dieses CryptDrive.<br>" +
                              "Es ist <strong>hoch empfohlen</strong> dieses Link geheim zu halten.<br>" +
                              "Du kannst es benutzen, um deine gesamte Dateien abzurufen, wenn dein Browserspeicher gelöscht wurde.<br>" +
                              "Jede Person, die dieses Link hat, kann die Dateien in deinem CryptDrive bearbeiten oder löschen.<br>";
     out.fm_alert_anonymous = "Hallo, du benutzt CryptPad anonym. Das ist in Ordnung aber Dokumente können nach einer Inaktivitätsperiode gelöscht werden. " +
- 							 "Wir haben fortgeschrittene Aktionen aus dem anonymen CryptDrive entfern, weil wir klar machen wollen, dass es kein sicherer Platz ist, Dinge zu lagern." + 
-							 'Du kannst <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">lesen</a>, weshalb wir das machen und weshable du wirklich ' +
+ 							 "Wir haben fortgeschrittene Aktionen aus dem anonymen CryptDrive entfernt, weil wir klar machen wollen, dass es kein sicherer Platz ist, Dinge zu lagern." + 
+							 'Du kannst <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">lesen</a>, weshalb wir das machen und weshalb du wirklich ' +
 						     '<a href="/register/">registrieren</a> oder <a href="/login/">eingloggen</a> solltest.';
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'Wie soll diese Datei heissen?';
@@ -452,7 +452,7 @@
     out.fo_existingNameError = "Dieser Dokumentname ist in diesem Verzeichnis schon da. Bitte wähle einen Anderen.";
     out.fo_moveFolderToChildError = "Du kannst ein Ordner nicht in eine seine Nachfolgern verchieben";
     out.fo_unableToRestore = "Ein Fehler ist aufgetreten, um diese Datei zu seinem Herkunftordner zu verschieben. Du kannst probieren, diese zu einem anderen Ordner zu verschieben.";
-    out.fo_unavailableName = "Ein Dokument oder Ordner mit dem selben Name existiert in diesem Ordner schon. Bitte benenne zuerst um, und versucht wieder zu verschieben.";
+    out.fo_unavailableName = "Ein Dokument oder Ordner mit dem selben Name existiert in diesem Ordner schon. Bitte benenne es zuerst um, und versucht wieder zu verschieben.";
 
     out.fs_migration = "Dein CryptDrive wird gerade zu einer neueren Version aktualisiert. Daher muss die Seite neugeladen werden.<br><strong>Bite lade die Seite neu, um sie weiter zu verwenden.</strong>";
 
@@ -524,7 +524,7 @@
 
     out.settings_resetNewTitle = "CryptDrive säubern";
     out.settings_resetButton = "Löschen";
-    out.settings_reset = "Alle Dateien und Ordnern aus ihrem CryptDrive löschen";
+    out.settings_reset = "Alle Dateien und Ordnern aus deinem CryptDrive löschen";
     out.settings_resetPrompt = "Diese Aktion wird alle Dokumente deines CryptDrives entfernen.<br>"+
                                "Bist du sicher, dass du es tun möchtest?<br>" +
                                "Gebe <em>I love CryptPad</em> ein, um zu bestätigen."; // TODO: I love CryptPad should be localized
@@ -549,12 +549,12 @@
     out.settings_importDone = "Import erledigt";
 
     out.settings_userFeedbackTitle = "Rückmeldung";
-    out.settings_userFeedbackHint1 = "CryptPad gibt grundlegende Rückmeldungen zum Server. Es erlaubt uns, wie wir ihre Erfahrung verbessern können.";
+    out.settings_userFeedbackHint1 = "CryptPad gibt grundlegende Rückmeldungen zum Server. Es erlaubt uns, wie wir deine Erfahrung verbessern können.";
     out.settings_userFeedbackHint2 = "Der Inhalt deiner Dokumente wird nie mit dem Server geteilt.";
     out.settings_userFeedback = "Rückmeldungen aktivieren";
 
     out.settings_deleteTitle = "Löschung des Kontos";
-    out.settings_deleteHint = "Die Löschung eines Kontos ist dauerhaft. Dein CryptDrive und eigene Dokmente werden alle von dem Server gelöscht. Die restliche Dokumente werden nach 90 Tage gelöscht, wenn keine andere diese bei sich gelagert haben.";
+    out.settings_deleteHint = "Die Löschung eines Kontos ist dauerhaft. Dein CryptDrive und eigene Dokumente werden alle von dem Server gelöscht. Die restliche Dokumente werden nach 90 Tage gelöscht, wenn keine andere diese bei sich gelagert haben.";
     out.settings_deleteButton = "Dein Konto löschen";
     out.settings_deleteModal = "Gebe die folgende Information zu deinem CryptPad Adminstrator, damit er die Daten vom Server löschen kann.";
     out.settings_deleteConfirm = "OK klicken wird dein Konto dauerhaft löschen. Bist du sicher?";
@@ -567,7 +567,7 @@
     out.settings_usageTitle = "Die Gesamtgrösse deiner Dokumente in MB"; // TODO: pinned ??
     out.settings_pinningNotAvailable = "Genagelte Dokumente sind nur für angemeldete Benutzer verfügbar.";
     out.settings_pinningError = "Etwas ging schief";
-    out.settings_usageAmount = "Ihre genagelte Dokumente verwenden {0}MB";
+    out.settings_usageAmount = "Deine genagelte Dokumente verwenden {0}MB";
 
     out.settings_logoutEverywhereButton = "Ausloggen";
     out.settings_logoutEverywhereTitle = "Von jeden Browsers ausloggen";
@@ -586,7 +586,7 @@
     out.settings_creationSkipTrue = "vermeiden";
     out.settings_creationSkipFalse = "anzeigen";
 
-    out.settings_templateSkip = "Die Wahl der Template vermeiden";
+    out.settings_templateSkip = "Die Wahl der Vorlage vermeiden";
     out.settings_templateSkipHint = "Wenn du ein neues Dokument erstellt, und wenn Vorlagen da sind, erscheint ein Dialog, wo du die Vorlage wählen kannst. Hier kannst du dieses Dialog vermeiden und somit keine Vorlage verwenden." 
 
     out.upload_title = "Datei hochladen";
@@ -596,8 +596,8 @@
     out.upload_serverError = "Serverfehler: Die Datei kann nicht aktuell hochgeladen werden. ";
     out.upload_uploadPending = "Ein anderes Hochladen passiert gerade. Willst du es abbrechen und deine neue Datei hochladen?";
     out.upload_success = "Deine Datei ({0}) wurde erfolgreich hochgeladen und in deinem CryptDrive hinzugefügt.";
-    out.upload_notEnoughSpace = "Der verfügbare Volum auf deinem CryptDrive ist leider reicht nicht für diese Datei ausreichend.";
-    out.upload_notEnoughSpaceBrief = "Unsaureichende Volum";
+    out.upload_notEnoughSpace = "Der verfügbare Speicherplatz auf deinem CryptDrive reicht leider nicht für diese Datei.";
+    out.upload_notEnoughSpaceBrief = "Unsaureichende Volumen";
     out.upload_tooLarge = "Diese Datei ist zu gross, um hochgeladen zu werden.";
     out.upload_tooLargeBrief = 'Datei zu gross';
     out.upload_choose = "Eine Datei wählen";
@@ -654,11 +654,11 @@
     out.main_about_p25 = 'uns ein Email schicken';
     out.main_about_p26 = 'Wenn du Fragen oder Kommentare hast, freuen wir davon zu hören!';
 
-    out.main_info = "<h2>Vertrauenswürdige Kollaboration</h2> Lass deine Ideen wachsen während die <strong>ohne Preisangabe deiner Informationen</strong> Technologie deinen Datenschutz <strong>sogar gegenüber uns</strong> sichert.";
-    out.main_catch_phrase = "Das Cloud ohne Preisangabe deiner Informationen";
+    out.main_info = "<h2>Vertrauenswürdige Kollaboration</h2> Lass deine Ideen wachsen während die <strong>ohne Preisgabe deiner Informationen</strong> Technologie deinen Datenschutz <strong>sogar gegenüber uns</strong> sichert.";
+    out.main_catch_phrase = "Das Cloud ohne Preisgabe deiner Informationen";
 
     out.main_howitworks = 'Wie fukntioniert es';
-    out.main_zeroKnowledge = 'Ohne Preisangebe deiner Informationen';
+    out.main_zeroKnowledge = 'Ohne Preisgabe deiner Informationen';
     out.main_zeroKnowledge_p = "Du brauchst nicht uns dein Vertrauen geben, dass wir deine Dokumente <em>nicht angucken werden</em>: Mit der Technologie können wir das einfach nicht. Erfahre mehr, wie wir <a href=\"\" title=\"Datenschutz\">dein Datenschutz und Sicherheit</a> sichern.";
 
     out.main_writeItDown = 'Runterschreiben';
@@ -670,9 +670,9 @@
     out.main_organize_p = "Mit CryptPad Drive kannst du deinen Übersicht auf das Wichtiges behalten. Ordnern erlauben, deine Projekte zu organisieren und einen Übersicht behalten, über was geht wo.";
     out.tryIt = 'Versuche es!';
     out.main_richText = 'Rich Text Editor';
-    out.main_richText_p = 'Bearbeite Rich-Text kollaborativ mit unserem echtzeit <a href="http://ckeditor.com" target="_blank">CkEditor</a> ohne Preisangabe deiner Informationen app.';
+    out.main_richText_p = 'Bearbeite Rich-Text kollaborativ mit unserem echtzeit <a href="http://ckeditor.com" target="_blank">CkEditor</a> ohne Preisgabe deiner Informationen app.';
     out.main_code = 'Code Editor';
-    out.main_code_p = 'Bearbeite Code kollaborativ mit unseren echtzeit <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> app ohne Preisangabe deiner Informationen.';
+    out.main_code_p = 'Bearbeite Code kollaborativ mit unseren echtzeit <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> app ohne Preisgabe deiner Informationen.';
     out.main_slide = 'Präsentationeneditor';
     out.main_slide_p = 'Gestalte Präsentationen mit der Markdown Syntax und zeige sid im Browser an.';
     out.main_poll = 'Umfragen';
@@ -694,7 +694,7 @@
 
     out.about = "Über uns";
     out.privacy = "Datenschutz";
-    out.contact = "Kontact";
+    out.contact = "Kontakt";
     out.terms = "Servicebendingungen";
     out.blog = "Blog";
 
@@ -716,7 +716,7 @@
     out.whatis_drive_p2 = 'Mit dem einfachsten Ziehen und Schieben Gesten kannst du die Dokumente herum von deinem Drive umplatzieren. Die Links zu diesen Dokumenten bleiben erhalten damit Kollaboratoren nie Zugang verlieren.';
     out.whatis_drive_p3 = 'Du kannst auch Dateien in dein CryptDrive hochladen und mit deinen Kollegen teilen. Hochgeladene Dateien können genau so wie kollaborative Dokumente organisiert werden.';
     out.whatis_business = 'CryptPad im Business';
-    out.whatis_business_p1 = 'Der Grundprinzip von CryptPad (_Verschlüsselung ohne Preisangabe der Information_) ist ausgezeichnet, um die Effektivität von existierenden Protokolle, indem die Zugangsberechtigungen des Unternehmens in die Kryptografie umgesetzt werden. Weil hochsensible Medien nur mit Angestelltenzugang entschlüsselt werden kann, kann CryptPad das Jackpot der Hackers wegnehmen, was in der Natur von tradionellen IT Servers liegt. Lese das <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a>, um mehr zu erfahren, wir CryptPad dein Unternehmen helfen kann.'
+    out.whatis_business_p1 = 'Der Grundprinzip von CryptPad (_Verschlüsselung ohne Preisgabe der Information_) ist ausgezeichnet, um die Effektivität von existierenden Protokolle, indem die Zugangsberechtigungen des Unternehmens in die Kryptografie umgesetzt werden. Weil hochsensible Medien nur mit Angestelltenzugang entschlüsselt werden kann, kann CryptPad das Jackpot der Hackers wegnehmen, was in der Natur von tradionellen IT Servers liegt. Lese das <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a>, um mehr zu erfahren, wir CryptPad dein Unternehmen helfen kann.'
     out.whatis_business_p2 = 'CryptPad kann auf eigenen Rechnern installiert werden. <a href="https://cryptpad.fr/about.html">CryptPad Entwicklers</a> at XWiki SAS können kommerzielle Unterstützung, Customisierung und Entwicklung anbieten. Bitte schicke ein Email zu <a href="mailto:sales@cryptpad.fr">sales@cryptpad.fr</a>, um mehr zu erfahren.';
 
       // privacy.html
@@ -750,7 +750,7 @@
     out.features_f_pad = "Ein Dokument erstellen/bearbeiten/ansehen";
     out.features_f_pad_notes = "Rich Text, Code, Präsentation, Umfrage und Whiteboard Apps";
     out.features_f_history = "Verlauf";
-    out.features_f_history_notes = "Jegliche Version ihres Dokuments ansehen und zurückbringen";
+    out.features_f_history_notes = "Jegliche Version deines Dokuments ansehen und zurückbringen";
     out.features_f_todo = "Eine ToDo-Liste erstellen";
     out.features_f_drive = "CryptDrive";
     out.features_f_drive_notes = "Einfache Funktionen für anonyme Benutzer";
@@ -792,7 +792,7 @@
         owned: {
             q: "What ist ein eigenes Dokument?",
             a: "Ein <em>eigenes Dokument</em> ist ein Dokument mit einem definierten Eigentümer, der anhand ein <em>einer Unterschrift mit öffentlichen Schlüssel</em> erkannt wird." +
-				"Der Eigentümer eines Dokuments kann entscheiden, das Dokument zu löschen. In diesem Fall macht er das Dokument unverfügbar für weitere Kollaboration, egal ob das Dokument in ihrem CryptDrive war oder nicht."
+				"Der Eigentümer eines Dokuments kann entscheiden, das Dokument zu löschen. In diesem Fall macht er das Dokument unverfügbar für weitere Kollaboration, egal ob das Dokument in deinem CryptDrive war oder nicht."
         },
         expiring: {
             q: "What is der Ablaufsdatum eines Dokuments?",
@@ -1055,14 +1055,14 @@
 
     out.initialState = [
         '<p>',
-        'Hier ist is&nbsp;<strong>CryptPad</strong>, das Echtzeit kollaboratives Editor ohne Preisangabe deiner Informationen. Alles wird beim Tippen direkt gespeichert.',
+        'Hier ist is&nbsp;<strong>CryptPad</strong>, das Echtzeit kollaboratives Editor ohne Preisgabe deiner Informationen. Alles wird beim Tippen direkt gespeichert.',
         '<br>',
         'Teile das Link zu diesem, um mit Bekannten zu kooperieren, oder verwende den Knopf <span class="fa fa-share-alt"></span>, um ein <em>schreibgeschütztes Link</em>&nbsp; zu teilen. Es erlaubt der Ansicht ohne die Bearbeitung.',
         '</p>',
     ].join('');
 
     out.codeInitialState = [
-        '# CryptPad: Kollaboratives Code Editor ohne Preisangabe deiner Information\n',
+        '# CryptPad: Kollaboratives Code Editor ohne Preisgabe deiner Information\n',
         '\n',
         '* Was du hier tippst, ist Verschlüsselt. Nur Personen die das vollen Link haben können es zugreifen.\n',
         '* Du kannst die Programmierungsprache für die Syntaxhervorhebung sowie das Farbschema oben rechts wählen.'
