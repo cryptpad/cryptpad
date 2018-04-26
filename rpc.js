@@ -1209,7 +1209,7 @@ const mkEvent = function (once) {
 };
 
 /*::
-const flow_Config = require('./config.example.js');
+const flow_Config = require('./config/config.example.js');
 type Config_t = typeof(flow_Config);
 import type { ChainPadServer_Storage_t } from './storage/file.js'
 type NetfluxWebsocketSrvContext_t = {
