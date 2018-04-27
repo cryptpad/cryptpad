@@ -139,7 +139,7 @@ define([
                         });
 
                         // Add thumbnail if it exists
-                        common.displayThumbnail(data.href, $span);
+                        common.displayThumbnail(data.href, data.channel, $span);
                     });
                     $input.focus();
                 };

@@ -385,7 +385,6 @@ define([
             if (!type) { return void cb(null, obj); }
 
             var templates = obj.filter(function (f) {
-                // Password not needed here since we don't access hashData
                 var parsed = Hash.parsePadUrl(f.href);
                 return parsed.type === type;
             });
@@ -394,13 +393,12 @@ define([
     };
 
     common.saveAsTemplate = function (Cryptput, data, cb) {
-        // Password not needed here since we don't access hashData
         var p = Hash.parsePadUrl(window.location.href);
         if (!p.type) { return; }
-        // XXX PPP
+        // PPP: password for the new template?
         var hash = Hash.createRandomHash(p.type);
         var href = '/' + p.type + '/#' + hash;
-        // XXX PPP
+        // PPP: add password as cryptput option
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
             postMessage("ADD_PAD", {
@@ -427,8 +425,6 @@ define([
         // opts is used to overrides options for chainpad-netflux in cryptput
         // it allows us to add owners and expiration time if it is a new file
 
-        // Password not needed here, we only need the hash and to know if
-        // we need to get the password
         var parsed = Hash.parsePadUrl(href);
         var parsed2 = Hash.parsePadUrl(window.location.href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
@@ -576,7 +572,6 @@ define([
             hashes = Hash.getHashes(secret);
             return void cb(null, hashes);
         }
-        // Password not needed here since only want the type
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
@@ -832,17 +827,14 @@ define([
             window.onhashchange = function (ev) {
                 if (ev && ev.reset) { oldHref = document.location.href; return; }
                 var newHref = document.location.href;
-                // Password not needed here since we don't access hashData
+
+                // Compare the URLs without /embed and /present
                 var parsedOld = Hash.parsePadUrl(oldHref);
                 var parsedNew = Hash.parsePadUrl(newHref);
                 if (parsedOld.hashData && parsedNew.hashData &&
                     parsedOld.getUrl() !== parsedNew.getUrl()) {
-                    /*parseOld && parsedNew && (
-                      parsedOld.type !== parsedNew.type
-                      || parsedOld.channel !== parsedNew.channel
-                      || parsedOld.mode !== parsedNew.mode
-                      || parsedOld.key !== parsedNew.key)) {*/
-                    if (!parsedOld.hashData.channel) { oldHref = newHref; return; }
+                    if (!parsedOld.hashData.key) { oldHref = newHref; return; }
+                    // If different, reload
                     document.location.reload();
                     return;
                 }

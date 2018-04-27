@@ -61,7 +61,7 @@ define([
         if (!priv.filehash) {
             uploadMode = true;
         } else {
-            // FILE_HASHES2
+            // PASSWORD_FILES
             secret = Hash.getSecrets('file', priv.filehash);
             if (!secret.keys) { throw new Error("You need a hash"); }
             hexFileName = Util.base64ToHex(secret.channel);
@@ -232,8 +232,7 @@ define([
                     $dlform.find('#cp-app-file-dlfile, #cp-app-file-dlprogress').click(onClick);
                 };
                 var href = priv.origin + priv.pathname + priv.filehash;
-                // PASSWORD_FILES
-                common.getFileSize(href, null, function (e, data) {
+                common.getFileSize(hexFileName, function (e, data) {
                     if (e) {
                         return void UI.errorLoadingScreen(e);
                     }

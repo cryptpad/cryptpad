@@ -122,10 +122,10 @@ define([
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
                         if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href
-                        if (Hash.findStronger(href, newRecentPads, oldRecentPads[id].password)) { return; }
+                        if (Hash.findStronger(href, oldRecentPads[id].channel, newRecentPads)) { return; }
                         // If we have a weaker version, replace the href by the new one
                         // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
-                        var weaker = Hash.findWeaker(href, newRecentPads, oldRecentPads[id].password);
+                        var weaker = Hash.findWeaker(href, oldRecentPads[id].channel, newRecentPads);
                         if (weaker) {
                             // Update RECENTPADS
                             weaker.href = href;

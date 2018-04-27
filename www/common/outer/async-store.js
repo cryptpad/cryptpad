@@ -68,8 +68,9 @@ define([
         var userHash = storeHash;
         if (!userHash) { return null; }
 
-        var userParsedHash = Hash.parseTypeHash('drive', userHash);
-        var userChannel = userParsedHash && userParsedHash.channel;
+        // No password for drive
+        var secret = Hash.getSecrets('drive', userHash);
+        var userChannel = secret.channel;
         if (!userChannel) { return null; }
 
         // Get the list of pads' channel ID in your drive
@@ -81,14 +82,13 @@ define([
                 var d = store.userObject.getFileData(id);
                 if (d.owners && d.owners.length && edPublic &&
                     d.owners.indexOf(edPublic) === -1) { return; }
-                return Hash.hrefToHexChannelId(d.href, d.password);
+                return d.channel;
             })
             .filter(function (x) { return x; });
 
         // Get the avatar
         var profile = store.proxy.profile;
         if (profile) {
-            // No password for profile or avatar
             var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit, null) : null;
             if (profileChan) { list.push(profileChan); }
             var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar, null) : null;
@@ -100,7 +100,7 @@ define([
             list = list.concat(fList);
         }
 
-        list.push(Util.base64ToHex(userChannel));
+        list.push(userChannel);
         list.sort();
 
         return list;
@@ -116,7 +116,7 @@ define([
             // because of the expiration time
             if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
                     (data.expire && data.expire < (+new Date()))) {
-                list.push(Hash.hrefToHexChannelId(data.href, data.password));
+                list.push(data.channel);
             }
         });
         return list;
@@ -404,7 +404,6 @@ define([
 
     var makePad = function (href, title) {
         var now = +new Date();
-        // Password not needed here since we only need the type
         return {
             href: href,
             atime: now,
@@ -419,6 +418,7 @@ define([
         if (data.owners) { pad.owners = data.owners; }
         if (data.expire) { pad.expire = data.expire; }
         if (data.password) { pad.password = data.password; }
+        if (data.channel) { pad.channel = data.channel; }
         store.userObject.pushData(pad, function (e, id) {
             if (e) { return void cb({error: "Error while adding a template:"+ e}); }
             var path = data.path || ['root'];
@@ -436,7 +436,7 @@ define([
             // Push channels owned by someone else or channel that should have expired
             // because of the expiration time
             if (data.owners && data.owners.length === 1 && data.owners.indexOf(edPublic) !== -1) {
-                list.push(Hash.hrefToHexChannelId(data.href, data.password));
+                list.push(data.channel);
             }
         });
         if (store.proxy.todo) {
@@ -444,7 +444,7 @@ define([
             list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
         }
         if (store.proxy.profile && store.proxy.profile.edit) {
-            // No password for todo
+            // No password for profile
             list.push(Hash.hrefToHexChannelId('/profile/#' + store.proxy.profile.edit, null));
         }
         return list;
@@ -466,6 +466,7 @@ define([
 
     Store.deleteAccount = function (data, cb) {
         var edPublic = store.proxy.edPublic;
+        // No password for drive
         var secret = Hash.getSecrets('drive', storeHash);
         Store.anonRpcMsg({
             msg: 'GET_METADATA',
@@ -535,19 +536,13 @@ define([
                     return void cb({ error: "Error while creating the default pad:"+ e});
                 }
                 var href = '/pad/#' + hash;
+                var channel = Hash.hrefToHexChannelId(href, null);
                 var fileData = {
                     href: href,
+                    channel: channel,
                     title: data.driveReadmeTitle,
-                    atime: +new Date(),
-                    ctime: +new Date()
                 };
-                store.userObject.pushData(fileData, function (e, id) {
-                    if (e) {
-                        return void cb({ error: "Error while creating the default pad:"+ e});
-                    }
-                    store.userObject.add(id);
-                    onSync(cb);
-                });
+                addPad(fileData, cb);
             });
         });
     };
@@ -619,7 +614,6 @@ define([
         });
     };
     Store.getPadAttribute = function (data, cb) {
-        console.log(data.href, data.attr);
         store.userObject.getPadAttribute(data.href, data.attr, function (err, val) {
             if (err) { return void cb({error: err}); }
             cb(val);
@@ -689,18 +683,18 @@ define([
         var p = Hash.parsePadUrl(href);
         var h = p.hashData;
 
-        console.log(channel, data);
         if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
 
         var owners;
-        if (Store.channel && Store.channel.wc && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+        if (Store.channel && Store.channel.wc && channel === Store.channel.wc.id) {
             owners = Store.channel.data.owners || undefined;
         }
         var expire;
-        if (Store.channel && Store.channel.wc && Util.base64ToHex(h.channel) === Store.channel.wc.id) {
+        if (Store.channel && Store.channel.wc && channel === Store.channel.wc.id) {
             expire = +Store.channel.data.expire || undefined;
         }
 
+        console.log(owners, expire);
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
         var isStronger;
 
@@ -795,7 +789,7 @@ define([
         };
         store.userObject.getFiles(where).forEach(function (id) {
             var data = store.userObject.getFileData(id);
-            var parsed = Hash.parsePadUrl(data.href, data.password);
+            var parsed = Hash.parsePadUrl(data.href);
             if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                 hashes.indexOf(parsed.hash) === -1 &&
                 !isFiltered(parsed.type, data)) {
@@ -840,9 +834,9 @@ define([
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
 
         // If we have a stronger version in drive, add it and add a redirect button
-        var stronger = Hash.findStronger(data.href, allPads, data.password);
+        var stronger = Hash.findStronger(data.href, data.channel, allPads);
         if (stronger) {
-            var parsed2 = Hash.parsePadUrl(stronger.href, stronger.password);
+            var parsed2 = Hash.parsePadUrl(stronger.href);
             return void cb(parsed2.hash);
         }
         cb();
@@ -1135,6 +1129,7 @@ define([
         if (!hash) {
             throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
         }
+        // No password for drive
         var secret = Hash.getSecrets('drive', hash);
         var listmapConfig = {
             data: {},

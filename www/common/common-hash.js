@@ -96,7 +96,6 @@ define([
 
     Hash.createRandomHash = function (type, password) {
         var cryptor = Crypto.createEditCryptor2(void 0, void 0, password);
-        console.log(cryptor);
         return getEditHashFromKeys({
             password: Boolean(password),
             version: 2,
@@ -112,7 +111,7 @@ Version 1
     /code/#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI
 */
 
-    var parseTypeHash = Hash.parseTypeHash = function (type, hash, password) {
+    var parseTypeHash = Hash.parseTypeHash = function (type, hash) {
         if (!hash) { return; }
         var parsed = {};
         var hashArr = fixDuplicateSlashes(hash).split('/');
@@ -123,6 +122,7 @@ Version 1
                 parsed.channel = hash.slice(0, 32);
                 parsed.key = hash.slice(32, 56);
                 parsed.version = 0;
+                parsed.getHash = function () { return hash; };
                 return parsed;
             }
             var options;
@@ -135,6 +135,13 @@ Version 1
                 options = hashArr.slice(5);
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
+
+                parsed.getHash = function (opts) {
+                    var hash = hashArr.slice(0, 5).join('/') + '/';
+                    if (opts.embed) { hash += 'embed/'; }
+                    if (opts.present) { hash += 'present/'; }
+                    return hash;
+                };
                 return parsed;
             }
             if (hashArr[1] && hashArr[1] === '2') { // Version 2
@@ -143,24 +150,23 @@ Version 1
                 parsed.mode = hashArr[3];
                 parsed.key = hashArr[4];
 
-                var cryptor;
-                if (parsed.mode === "edit") {
-                    cryptor = Crypto.createEditCryptor2(parsed.key, void 0, password);
-                } else if (parsed.mode === "view") {
-                    cryptor = Crypto.createViewCryptor2(parsed.key, password);
-                }
-                parsed.channel = cryptor.chanId;
-                parsed.cryptKey = cryptor.cryptKey;
-                parsed.validateKey = cryptor.validateKey;
-
                 options = hashArr.slice(5);
                 parsed.password = options.indexOf('p') !== -1;
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
+
+                parsed.getHash = function (opts) {
+                    var hash = hashArr.slice(0, 5).join('/') + '/';
+                    if (parsed.password) { hash += 'p/'; }
+                    if (opts.embed) { hash += 'embed/'; }
+                    if (opts.present) { hash += 'present/'; }
+                    return hash;
+                };
                 return parsed;
             }
             return parsed;
         }
+        parsed.getHash = function () { return hashArr.join('/'); };
         if (['media', 'file'].indexOf(type) !== -1) {
             parsed.type = 'file';
             if (hashArr[1] && hashArr[1] === '1') {
@@ -193,7 +199,7 @@ Version 1
         }
         return;
     };
-    var parsePadUrl = Hash.parsePadUrl = function (href, password) {
+    var parsePadUrl = Hash.parsePadUrl = function (href) {
         var patt = /^https*:\/\/([^\/]*)\/(.*?)\//i;
 
         var ret = {};
@@ -212,31 +218,8 @@ Version 1
             if (!ret.hashData) { return url; }
             if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
             if (ret.hashData.version === 0) { return url + '#' + ret.hash; }
-            var hash;
-            if (typeof (options.readOnly === "undefined") && ret.hashData.mode === "view") {
-                hash = getViewHashFromKeys({
-                    version: ret.hashData.version,
-                    type: ret.hashData.app,
-                    channel: base64ToHex(ret.hashData.channel || ''),
-                    password: ret.hashData.password,
-                    keys: {
-                        viewKeyStr: ret.hashData.key
-                    }
-                });
-            } else {
-                hash = getEditHashFromKeys({
-                    version: ret.hashData.version,
-                    type: ret.hashData.app,
-                    channel: base64ToHex(ret.hashData.channel || ''),
-                    password: ret.hashData.password,
-                    keys: {
-                        editKeyStr: ret.hashData.key
-                    }
-                });
-            }
+            var hash = ret.hashData.getHash(options);
             url += '#' + hash;
-            if (options.embed) { url += 'embed/'; }
-            if (options.present) { url += 'present/'; }
             return url;
         };
 
@@ -244,7 +227,7 @@ Version 1
             idx = href.indexOf('/#');
             ret.type = href.slice(1, idx);
             ret.hash = href.slice(idx + 2);
-            ret.hashData = parseTypeHash(ret.type, ret.hash, password);
+            ret.hashData = parseTypeHash(ret.type, ret.hash);
             return ret;
         }
 
@@ -254,15 +237,15 @@ Version 1
             return '';
         });
         idx = href.indexOf('/#');
+        if (idx === -1) { return ret; }
         ret.hash = href.slice(idx + 2);
-        ret.hashData = parseTypeHash(ret.type, ret.hash, password);
+        ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
     };
 
     var getRelativeHref = Hash.getRelativeHref = function (href) {
         if (!href) { return; }
         if (href.indexOf('#') === -1) { return; }
-        // Password not needed to get the type or the hash
         var parsed = parsePadUrl(href);
         return '/' + parsed.type + '/#' + parsed.hash;
     };
@@ -288,11 +271,9 @@ Version 1
             var hash;
             if (secretHash) {
                 if (!type) { throw new Error("getSecrets with a hash requires a type parameter"); }
-                // Password not needed here, we only use the hash key
                 parsed = parseTypeHash(type, secretHash);
                 hash = secretHash;
             } else {
-                // Password not needed here, we only use the hash key
                 var pHref = parsePadUrl(window.location.href);
                 parsed = pHref.hashData;
                 hash = pHref.hash;
@@ -390,16 +371,17 @@ Version 1
     };
 
     // STORAGE
-    Hash.findWeaker = function (href, recents, password) {
-        var rHref = href || getRelativeHref(window.location.href);
-        var parsed = parsePadUrl(rHref, password);
+    Hash.findWeaker = function (href, channel, recents) {
+        var parsed = parsePadUrl(href);
         if (!parsed.hash) { return false; }
         var weaker;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];
-            var p = parsePadUrl(pad.href, pad.password);
+            var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
+            if (channel !== pad.channel) { return; } // Not the same channel
+
             var pHash = p.hashData;
             var parsedHash = parsed.hashData;
             if (!parsedHash || !pHash) { return; }
@@ -408,7 +390,6 @@ Version 1
             if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
 
             if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.channel !== parsedHash.channel) { return; }
             if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
                 weaker = pad;
                 return true;
@@ -417,18 +398,19 @@ Version 1
         });
         return weaker;
     };
-    Hash.findStronger = function (href, recents, password) {
-        var rHref = href || getRelativeHref(window.location.href);
-        var parsed = parsePadUrl(rHref, password);
+    Hash.findStronger = function (href, channel, recents) {
+        var parsed = parsePadUrl(href);
         if (!parsed.hash) { return false; }
         // We can't have a stronger hash if we're already in edit mode
         if (parsed.hashData && parsed.hashData.mode === 'edit') { return; }
         var stronger;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];
-            var p = parsePadUrl(pad.href, pad.password);
+            var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
+            if (channel !== pad.channel) { return; } // Not the same channel
+
             var pHash = p.hashData;
             var parsedHash = parsed.hashData;
             if (!parsedHash || !pHash) { return; }
@@ -437,7 +419,6 @@ Version 1
             if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
 
             if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.channel !== parsedHash.channel) { return; }
             if (pHash.mode === 'edit' && parsedHash.mode === 'view') {
                 stronger = pad;
                 return true;
@@ -448,23 +429,10 @@ Version 1
     };
 
     Hash.hrefToHexChannelId = function (href, password) {
-        var parsed = Hash.parsePadUrl(href, password);
+        var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }
-
-        parsed = parsed.hashData;
-        if (parsed.version === 0) {
-            return parsed.channel;
-        } else if (!parsed.version) {
-            console.error("parsed href had no version");
-            console.error(parsed);
-            return;
-        }
-
-        var channel = parsed.channel;
-        if (!channel) { return; }
-
-        var hex = base64ToHex(channel);
-        return hex;
+        var secret = Hash.getSecrets(parsed.type, parsed.hash, password);
+        return secret.channel;
     };
 
     Hash.getBlobPathFromHex = function (id) {

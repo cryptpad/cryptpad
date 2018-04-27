@@ -629,7 +629,6 @@ define([
         var type = data.type;
         if (!href && !type) { return $icon; }
 
-        // Password not needed to get the type
         if (!type) { type = Hash.parsePadUrl(href).type; }
         $icon = UI.getIcon(type);
 

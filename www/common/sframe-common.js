@@ -127,8 +127,7 @@ define([
         }
         return;
     };
-    funcs.getFileSize = function (href, password, cb) {
-        var channelId = Hash.hrefToHexChannelId(href, password);
+    funcs.getFileSize = function (channelId, cb) {
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
             if (!data) { return void cb("No response"); }
             if (data.error) { return void cb(data.error); }

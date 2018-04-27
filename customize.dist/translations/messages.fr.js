@@ -1081,6 +1081,7 @@ define(function () {
     out.creation_expireMonths = "Mois";
     out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
     out.creation_expire2 = "Un pad <b>à durée de vie</b> sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs lorsque cette durée sera dépassée.";
+    out.creation_password = "Ajouter un mot de passe";
     out.creation_noTemplate = "Pas de modèle";
     out.creation_newTemplate = "Nouveau modèle";
     out.creation_create = "Créer";

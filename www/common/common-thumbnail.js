@@ -205,7 +205,7 @@ define([
             if (content === oldThumbnailState) { return; }
             oldThumbnailState = content;
             Thumb.fromDOM(opts, function (err, b64) {
-                Thumb.setPadThumbnail(common, opts.href, b64);
+                Thumb.setPadThumbnail(common, opts.href, null, b64);
             });
         };
         var nafa = Util.notAgainForAnother(mkThumbnail, Thumb.UPDATE_INTERVAL);
@@ -240,20 +240,22 @@ define([
     Thumb.addThumbnail = function(thumb, $span, cb) {
         return addThumbnail(null, thumb, $span, cb);
     };
-    var getKey = function (href) {
-        var parsed = Hash.parsePadUrl(href);
-        return 'thumbnail-' + parsed.type + '-' + parsed.hashData.channel;
+    var getKey = function (type, channel) {
+        return 'thumbnail-' + type + '-' + channel;
     };
-    Thumb.setPadThumbnail = function (common, href, b64, cb) {
+    Thumb.setPadThumbnail = function (common, href, channel, b64, cb) {
         cb = cb || function () {};
-        var k = getKey(href);
+        var parsed = Hash.parsePadUrl(href);
+        var channel = channel || common.getMetadataMgr().getPrivateData().channel;
+        var k = getKey(parsed.type, channel);
         common.setThumbnail(k, b64, cb);
     };
-    Thumb.displayThumbnail = function (common, href, $container, cb) {
+    Thumb.displayThumbnail = function (common, href, channel, $container, cb) {
         cb = cb || function () {};
         var parsed = Hash.parsePadUrl(href);
-        var k = getKey(href);
+        var k = getKey(parsed.type, channel);
         var whenNewThumb = function () {
+            // PASSWORD_FILES
             var secret = Hash.getSecrets('file', parsed.hash);
             var hexFileName = Util.base64ToHex(secret.channel);
             var src = Hash.getBlobPathFromHex(hexFileName);
@@ -270,7 +272,7 @@ define([
                 if (!v) {
                     v = 'EMPTY';
                 }
-                Thumb.setPadThumbnail(common, href, v, function (err) {
+                Thumb.setPadThumbnail(common, href, hexFileName, v, function (err) {
                     if (!metadata.thumbnail) { return; }
                     addThumbnail(err, metadata.thumbnail, $container, cb);
                 });

@@ -40,6 +40,7 @@ define([
             var Hash = Utils.Hash;
             // 1st case: visiting someone else's profile with hash in the URL
             if (window.location.hash) {
+                // No password for profiles
                 return void cb(null, Hash.getSecrets('profile', window.location.hash.slice(1)));
             }
             var editHash;
@@ -50,6 +51,7 @@ define([
                 }));
             }).nThen(function () {
                 if (editHash) {
+                    // No password for profile
                     return void cb(null, Hash.getSecrets('profile', editHash));
                 }
                 // 3rd case: profile creation (create a new random hash, store it later if needed)
@@ -58,6 +60,7 @@ define([
                     window.location.href = '/drive';
                     return void cb();
                 }
+                // No password for profile
                 var hash = Hash.createRandomHash('profile');
                 var secret = Hash.getSecrets('profile', hash);
                 Cryptpad.pinPads([secret.channel], function (e) {

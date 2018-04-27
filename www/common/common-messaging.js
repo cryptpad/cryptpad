@@ -99,7 +99,7 @@ define([
             try {
                 var parsed = Hash.parsePadUrl(window.location.href);
                 if (!parsed.hashData) { return; }
-                var chan = parsed.hashData.channel;
+                var chan = Hash.hrefToHexChannelId(data.href);
                 // Decrypt
                 var keyStr = parsed.hashData.key;
                 var cryptor = Crypto.createEditCryptor(keyStr);
@@ -113,7 +113,7 @@ define([
                 if (!decryptMsg) { return; }
                 // Parse
                 msg = JSON.parse(decryptMsg);
-                if (msg[1] !== parsed.hashData.channel) { return; }
+                if (msg[1] !== chan) { return; }
                 var msgData = msg[2];
                 var msgStr;
                 if (msg[0] === "FRIEND_REQ") {
@@ -199,7 +199,7 @@ define([
         var parsed = Hash.parsePadUrl(data.href);
         if (!parsed.hashData) { return; }
         // Message
-        var chan = parsed.hashData.channel;
+        var chan = Hash.hrefToHexChannelId(data.href);
         var myData = createData(cfg.proxy);
         var msg = ["FRIEND_REQ", chan, myData];
         // Encryption

@@ -115,6 +115,7 @@ define([
 
             if (cfg.getSecrets) {
                 var w = waitFor();
+                // No password for drive, profile and todo
                 cfg.getSecrets(Cryptpad, Utils, waitFor(function (err, s) {
                     secret = s;
                     Cryptpad.getShareHashes(secret, function (err, h) {
@@ -123,7 +124,6 @@ define([
                     });
                 }));
             } else {
-                // Password not needed here since we only want to know if we need a password
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 var todo = function () {
                     secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
@@ -135,7 +135,6 @@ define([
                 var needPassword = parsed.hashData && parsed.hashData.password;
                 if (needPassword) {
                     Cryptpad.getPadAttribute('password', waitFor(function (err, val) {
-                        console.log(val);
                         if (val) {
                             // We already know the password, use it!
                             password = val;
@@ -185,7 +184,7 @@ define([
                 secret.keys = secret.key;
                 readOnly = false;
             }
-            var parsed = Utils.Hash.parsePadUrl(window.location.href, password);
+            var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
             var edPublic;
@@ -228,7 +227,8 @@ define([
                         isNewFile: isNewFile,
                         isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen,
-                        password: password
+                        password: password,
+                        channel: secret.channel
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -424,12 +424,10 @@ define([
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {
-                // Password not needed here since we only need something directly in the hash
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 cb(parsed.hashData && parsed.hashData.present);
             });
             sframeChan.on('EV_PRESENT_URL_SET_VALUE', function (data) {
-                // Password not needed here
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 window.location.href = parsed.getUrl({
                     embed: parsed.hashData.embed,
@@ -521,10 +519,9 @@ define([
                     cb(templates.length > 0);
                 });
             });
-            var getKey = function (href) {
-                // Password not needed here. We use the fake channel id for thumbnails at the moment
+            var getKey = function (href, channel) {
                 var parsed = Utils.Hash.parsePadUrl(href);
-                return 'thumbnail-' + parsed.type + '-' + parsed.hashData.channel;
+                return 'thumbnail-' + parsed.type + '-' + channel;
             };
             sframeChan.on('Q_CREATE_TEMPLATES', function (type, cb) {
                 Cryptpad.getSecureFilesList({
@@ -537,7 +534,7 @@ define([
                     var res = [];
                     nThen(function (waitFor) {
                         Object.keys(data).map(function (el) {
-                            var k = getKey(data[el].href);
+                            var k = getKey(data[el].href, data[el].channel);
                             Utils.LocalStore.getThumbnail(k, waitFor(function (e, thumb) {
                                 res.push({
                                     id: el,
@@ -732,7 +729,7 @@ define([
                 ohc({reset: true});
 
                 // Update metadata values and send new metadata inside
-                parsed = Utils.Hash.parsePadUrl(window.location.href, password);
+                parsed = Utils.Hash.parsePadUrl(window.location.href);
                 defaultTitle = Utils.Hash.getDefaultName(parsed);
                 hashes = Utils.Hash.getHashes(secret);
                 readOnly = false;

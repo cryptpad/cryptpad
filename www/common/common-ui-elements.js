@@ -67,7 +67,7 @@ define([
             common.getPadAttribute('href', waitFor(function (err, val) {
                 var base = common.getMetadataMgr().getPrivateData().origin;
 
-                var parsed = Hash.parsePadUrl(val, data.password);
+                var parsed = Hash.parsePadUrl(val);
                 if (parsed.hashData.mode === "view") {
                     data.roHref = base + val;
                     return;
@@ -75,6 +75,7 @@ define([
 
                 // We're not in a read-only pad
                 data.href = base + val;
+
                 // Get Read-only href
                 if (parsed.hashData.type !== "pad") { return; }
                 var i = data.href.indexOf('#') + 1;
@@ -83,6 +84,9 @@ define([
                 if (!hrefsecret.keys) { return; }
                 var viewHash = Hash.getViewHashFromKeys(hrefsecret);
                 data.roHref = hBase + viewHash;
+            }));
+            common.getPadAttribute('channel', waitFor(function (err, val) {
+                data.channel = val;
             }));
             common.getPadAttribute('atime', waitFor(function (err, val) {
                 data.atime = val;
@@ -180,7 +184,7 @@ define([
 
         if (common.isLoggedIn() && AppConfig.enablePinning) {
             // check the size of this file...
-            common.getFileSize(data.href, data.password, function (e, bytes) {
+            common.getFileSize(data.channel, function (e, bytes) {
                 if (e) {
                     // there was a problem with the RPC
                     console.error(e);
@@ -285,7 +289,6 @@ define([
 
             var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
-            // Password not needed here since we don't access hashData
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present});
         };
@@ -323,7 +326,6 @@ define([
         var getEmbedValue = function () {
             var hash = hashes.viewHash || hashes.editHash;
             var href = origin + pathname + '#' + hash;
-            // Password not needed here since we don't access hashData
             var parsed = Hash.parsePadUrl(href);
             var url = origin + parsed.getUrl({embed: true, present: true});
             return '<iframe src="' + url + '"></iframe>';
@@ -1141,13 +1143,13 @@ define([
             };
             return;
         }
+        // No password for avatars
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var hexFileName = Util.base64ToHex(secret.channel);
             var src = Hash.getBlobPathFromHex(hexFileName);
-            // No password for avatars
-            Common.getFileSize(href, null, function (e, data) {
+            Common.getFileSize(hexFileName, function (e, data) {
                 if (e) {
                     displayDefault();
                     return void console.error(e);
@@ -1916,13 +1918,13 @@ define([
 
         // Password
         var password = h('div.cp-creation-password', [
-            UI.createCheckbox('cp-creation-password', 'TODO Add a password', false), //XXX
+            UI.createCheckbox('cp-creation-password', Messages.creation_password, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
                 h('input#cp-creation-password-val', {
                     type: "text" // TODO type password with click to show
                 }),
             ]),
-            createHelper('#', "TODO: password protection adds another layer of security ........") // TODO
+            //createHelper('#', "TODO: password protection adds another layer of security ........") // TODO
         ]);
 
         var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
