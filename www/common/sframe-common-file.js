@@ -333,6 +333,8 @@ define([
             var editor = config.ckeditor;
             editor.document.on('drop', function (ev) {
                 var dropped = ev.data.$.dataTransfer.files;
+                editor.document.focus();
+                if (!dropped || !dropped.length) { return; }
                 onFileDrop(dropped, ev);
                 ev.data.preventDefault(true);
             });

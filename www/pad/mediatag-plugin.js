@@ -10,7 +10,7 @@
 ( function() {
 
     CKEDITOR.plugins.add( 'mediatag', {
-        requires: 'dialog',
+        requires: 'dialog,widget',
         //icons: 'image',
         //hidpi: true,
         onLoad: function () {
@@ -38,34 +38,15 @@
             // Register the dialog.
             CKEDITOR.dialog.add( pluginName, this.path + 'mediatag-plugin-dialog.js' );
 
-            var allowed = 'media-tag[!data-crypto-key,!src,contenteditable,width,height]{border-style,border-width,float,height,margin,margin-bottom,margin-left,margin-right,margin-top,width}',
-                required = 'media-tag[data-crypto-key,src]';
+            editor.widgets.add( 'mediatag', {
 
-            // Register the command.
-            editor.addCommand( pluginName, new CKEDITOR.dialogCommand( pluginName, {
-                allowedContent: allowed,
-                requiredContent: required,
-                contentTransformations: [
-                    [ 'media-tag{width}: sizeToStyle', 'media-tag[width]: sizeToAttribute' ],
-                    [ 'media-tag{float}: alignmentToStyle', 'media-tag[align]: alignmentToAttribute' ]
-                ]
-            } ) );
-
-            var isMediaTag = function (el) {
-                if (el.is('media-tag')) { return el; }
-                var mt = el.getParents().slice().filter(function (p) {
-                    return p.is('media-tag');
-                });
-                if (mt.length !== 1) { return; }
-                return mt[0];
-            };
-            editor.on('doubleclick', function (evt) {
-                var element = evt.data.element;
-                var mt = isMediaTag(element);
-                if (mt && !element.data('cke-realelement')) {
-                    editor.plugins.mediatag.clicked = mt;
-                    evt.data.dialog = 'mediatag';
+                getLabel: function () { return " "; },
+                dialog: pluginName,
+                inline: true,
+                upcast: function( element ) {
+                    return element.name === 'media-tag';
                 }
+
             });
         },
     } );

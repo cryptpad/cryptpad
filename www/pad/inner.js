@@ -82,10 +82,52 @@ define([
         Cursor: Cursor,
     };
 
+    // MEDIATAG: Filter elements to serialize
+    // * Remove the drag&drop and resizers from the hyperjson
+    var isWidget = function (el) {
+        return typeof (el.getAttribute) === "function" &&
+                   (el.getAttribute('data-cke-hidden-sel') ||
+                    (el.getAttribute('class') &&
+                        (/cke_widget_drag/.test(el.getAttribute('class')) ||
+                         /cke_image_resizer/.test(el.getAttribute('class')))
+                    )
+                   );
+    };
+
     var isNotMagicLine = function (el) {
         return !(el && typeof(el.getAttribute) === 'function' &&
             el.getAttribute('class') &&
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
+    };
+
+    var shouldSerialize = function (el) {
+        return isNotMagicLine(el) && !isWidget(el);
+    };
+
+    // MEDIATAG: Filter attributes in the serialized elements
+    var widgetFilter = function (hj) {
+        // Send a widget ID == 0 to avoid a fight between browsers and
+        // prevent the container from having the "selected" class (blue border)
+        if (hj[1].class) {
+            var split = hj[1].class.split(' ');
+            if (split.indexOf('cke_widget_wrapper') !== -1 &&
+                split.indexOf('cke_widget_block') !== -1) {
+                hj[1].class = "cke_widget_wrapper cke_widget_block";
+                hj[1]['data-cke-widget-id'] = "0";
+            }
+            if (split.indexOf('cke_widget_wrapper') !== -1 &&
+                split.indexOf('cke_widget_inline') !== -1) {
+                hj[1].class = "cke_widget_wrapper cke_widget_inline";
+                delete hj[1]['data-cke-widget-id'];
+                //hj[1]['data-cke-widget-id'] = "0";
+            }
+            // Remove the title attribute of the drag&drop icons (translation conflicts)
+            if (split.indexOf('cke_widget_drag_handler')  !== -1 ||
+                split.indexOf('cke_image_resizer') !== -1) {
+                hj[1].title = undefined;
+            }
+        }
+        return hj;
     };
 
     var hjsonFilters = function (hj) {
@@ -100,6 +142,7 @@ define([
         };
         brFilter(hj);
         mediatagContentFilter(hj);
+        widgetFilter(hj);
         return hj;
     };
 
@@ -168,6 +211,36 @@ define([
                         return true;
                     }
                 }
+
+
+                // MEDIATAG
+                // Never modify widget ids
+                if (info.node && info.node.tagName === 'SPAN' && info.diff.name === 'data-cke-widget-id') {
+                    return true;
+                }
+                if (info.node && info.node.tagName === 'SPAN' &&
+                    info.node.getAttribute('class') &&
+                    /cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
+                    if (info.diff.action === 'modifyAttribute' && info.diff.name === 'class') {
+                        return true;
+                    }
+                    //console.log(info);
+                }
+                // CkEditor drag&drop icon container
+                if (info.node && info.node.tagName === 'SPAN' &&
+                        info.node.getAttribute('class') &&
+                        info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler_container') !== -1) {
+                    return true;
+                }
+                // CkEditor drag&drop title (language fight)
+                if (info.node && info.node.getAttribute &&
+                        info.node.getAttribute('class') &&
+                        (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
+                         info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1 ) ) {
+                    return true;
+                }
+
+
                 /*
                     Also reject any elements which would insert any one of
                     our forbidden tag types: script, iframe, object,
@@ -199,20 +272,26 @@ define([
                 if (info.node && info.node.tagName === 'SPAN' &&
                     info.node.getAttribute('contentEditable') === "false") {
                     // it seems to be a magicline plugin element...
+                    // but it can also be a widget (MEDIATAG), in which case the removal was
+                    // probably intentional
+
                     if (info.diff.action === 'removeElement') {
                         // and you're about to remove it...
-                        // this probably isn't what you want
+                        if (!info.node.getAttribute('class') ||
+                            !/cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
+                            // This element is not a widget!
+                            // this probably isn't what you want
+                            /*
+                                I have never seen this in the console, but the
+                                magic line is still getting removed on remote
+                                edits. This suggests that it's getting removed
+                                by something other than diffDom.
+                            */
+                            console.log("preventing removal of the magic line!");
 
-                        /*
-                            I have never seen this in the console, but the
-                            magic line is still getting removed on remote
-                            edits. This suggests that it's getting removed
-                            by something other than diffDom.
-                        */
-                        console.log("preventing removal of the magic line!");
-
-                        // return true to prevent diff application
-                        return true;
+                            // return true to prevent diff application
+                            return true;
+                        }
                     }
                 }
 
@@ -322,7 +401,7 @@ define([
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
                 mediaTagMap[src].forEach(function (n) {
-                    tag.appendChild(n);
+                    tag.appendChild(n.cloneNode());
                 });
             }
         });
@@ -370,8 +449,11 @@ define([
 
         framework.setMediaTagEmbedder(function ($mt) {
             $mt.attr('contenteditable', 'false');
-            $mt.attr('tabindex', '1');
-            editor.insertElement(new window.CKEDITOR.dom.element($mt[0]));
+            //$mt.attr('tabindex', '1');
+            //MEDIATAG
+            var element = new window.CKEDITOR.dom.element($mt[0]);
+            editor.insertElement(element);
+            editor.widgets.initOn( element, 'mediatag' );
         });
 
         framework.setTitleRecommender(function () {
@@ -403,7 +485,18 @@ define([
 
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
+
+            // MEDIATAG: Migrate old mediatags to the widget system
+            $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+                var element = new window.CKEDITOR.dom.element(el);
+                editor.widgets.initOn( element, 'mediatag' );
+            });
+
             displayMediaTags(framework, inner, mediaTagMap);
+
+            // MEDIATAG: Initialize mediatag widgets inserted in the document by other users
+            editor.widgets.checkWidgets();
+
             if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
@@ -425,7 +518,7 @@ define([
         framework.setContentGetter(function () {
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
-            return Hyperjson.fromDOM(inner, isNotMagicLine, hjsonFilters);
+            return Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
         });
 
         $bar.find('#cke_1_toolbar_collapser').hide();
@@ -463,7 +556,10 @@ define([
                     var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
-                    editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
+                    // MEDIATAG
+                    var element = window.CKEDITOR.dom.element.createFromHtml(mt);
+                    editor.insertElement(element);
+                    editor.widgets.initOn( element, 'mediatag' );
                 }
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
