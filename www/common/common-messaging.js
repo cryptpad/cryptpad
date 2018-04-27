@@ -99,7 +99,7 @@ define([
             try {
                 var parsed = Hash.parsePadUrl(window.location.href);
                 if (!parsed.hashData) { return; }
-                var chan = Hash.hrefToHexChannelId(data.href);
+                var chan = Hash.hrefToHexChannelId(window.location.href);
                 // Decrypt
                 var keyStr = parsed.hashData.key;
                 var cryptor = Crypto.createEditCryptor(keyStr);

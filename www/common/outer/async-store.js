@@ -542,7 +542,7 @@ define([
                     channel: channel,
                     title: data.driveReadmeTitle,
                 };
-                addPad(fileData, cb);
+                Store.addPad(fileData, cb);
             });
         });
     };

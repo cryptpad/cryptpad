@@ -243,7 +243,7 @@ Version 1
         return ret;
     };
 
-    var getRelativeHref = Hash.getRelativeHref = function (href) {
+    Hash.getRelativeHref = function (href) {
         if (!href) { return; }
         if (href.indexOf('#') === -1) { return; }
         var parsed = parsePadUrl(href);

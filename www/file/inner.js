@@ -231,7 +231,6 @@ define([
                     if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
                     $dlform.find('#cp-app-file-dlfile, #cp-app-file-dlprogress').click(onClick);
                 };
-                var href = priv.origin + priv.pathname + priv.filehash;
                 common.getFileSize(hexFileName, function (e, data) {
                     if (e) {
                         return void UI.errorLoadingScreen(e);

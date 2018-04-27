@@ -246,7 +246,7 @@ define([
     Thumb.setPadThumbnail = function (common, href, channel, b64, cb) {
         cb = cb || function () {};
         var parsed = Hash.parsePadUrl(href);
-        var channel = channel || common.getMetadataMgr().getPrivateData().channel;
+        channel = channel || common.getMetadataMgr().getPrivateData().channel;
         var k = getKey(parsed.type, channel);
         common.setThumbnail(k, b64, cb);
     };
