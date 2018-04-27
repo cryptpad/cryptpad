@@ -55,7 +55,16 @@ define([], function () {
             if (readOnly) { return; }
             try {
                 var cmsg = Crypto.encrypt(msg);
-                if (msg.indexOf('[4') === 0) { cmsg = 'cp|' + cmsg; }
+                if (msg.indexOf('[4') === 0) {
+                    var id = '';
+                    if (window.nacl) {
+                        var hash = window.nacl.hash(window.nacl.util.decodeUTF8(msg));
+                        id = window.nacl.util.encodeBase64(hash.slice(0, 8)) + '|';
+                    } else {
+                        console.log("Checkpoint sent without an ID. Nacl is missing.");
+                    }
+                    cmsg = 'cp|' + id + cmsg;
+                }
                 return cmsg;
             } catch (err) {
                 console.log(msg);
