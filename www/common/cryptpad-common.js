@@ -462,22 +462,18 @@ define([
     };
 
     // When opening a new pad or renaming it, store the new title
-    common.setPadTitle = function (title, padHref, path, cb) {
-        var href = padHref || window.location.href;
+    common.setPadTitle = function (data, cb) {
+        if (!data || typeof (data) !== "object") { return cb ('Data is not an object'); }
 
-        // Password not needed here since we don't access hashData
+        var href = data.href || window.location.href;
         var parsed = Hash.parsePadUrl(href);
-        if (!parsed.hash) { return; }
-        href = parsed.getUrl({present: parsed.present});
+        if (!parsed.hash) { return cb ('Invalid hash'); }
+        data.href = parsed.getUrl({present: parsed.present});
 
-        if (title === null) { return; }
-        if (title.trim() === "") { title = Hash.getDefaultName(parsed); }
+        if (typeof (data.title) !== "string") { return cb('Missing title'); }
+        if (data.title.trim() === "") { data.title = Hash.getDefaultName(parsed); }
 
-        postMessage("SET_PAD_TITLE", {
-            href: href,
-            title: title,
-            path: path
-        }, function (obj) {
+        postMessage("SET_PAD_TITLE", data, function (obj) {
             if (obj && obj.error) {
                 console.log("unable to set pad title");
                 return void cb(obj.error);
@@ -497,13 +493,6 @@ define([
         postMessage("GET_PAD_DATA", id, function (data) {
             cb(void 0, data);
         });
-    };
-    // Set initial path when creating a pad from pad creation screen
-    common.setInitialPath = function (path) {
-        postMessage("SET_INITIAL_PATH", path);
-    };
-    common.setNewPadPassword = function (password) {
-        postMessage("SET_NEW_PAD_PASSWORD", password);
     };
 
     // Messaging (manage friends from the userlist)

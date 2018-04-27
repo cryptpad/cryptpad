@@ -685,10 +685,11 @@ define([
     Store.setPadTitle = function (data, cb) {
         var title = data.title;
         var href = data.href;
-        var padData = store.userObject.getFileData(store.userObject.getIdFromHref(href));
-        var p = Hash.parsePadUrl(href, padData && padData.password);
+        var channel = data.channel;
+        var p = Hash.parsePadUrl(href);
         var h = p.hashData;
 
+        console.log(channel, data);
         if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
 
         var owners;
@@ -713,19 +714,19 @@ define([
             var pad = allPads[id];
             if (!pad.href) { continue; }
 
-            var p2 = Hash.parsePadUrl(pad.href, pad.password);
+            var p2 = Hash.parsePadUrl(pad.href);
             var h2 = p2.hashData;
 
             // Different types, proceed to the next one
             // No hash data: corrupted pad?
             if (p.type !== p2.type || !h2) { continue; }
+            // Different channel: continue
+            if (pad.channel !== channel) { continue; }
 
             var shouldUpdate = p.hash.replace(/\/$/, '') === p2.hash.replace(/\/$/, '');
 
             // If the hash is different but represents the same channel, check if weaker or stronger
-            if (!shouldUpdate &&
-                h.version === h2.version &&
-                h.channel === h2.channel) {
+            if (!shouldUpdate && h.version !== 0) {
                 // We had view & now we have edit, update
                 if (h2.mode === 'view' && h.mode === 'edit') { shouldUpdate = true; }
                 // Same mode and we had present URL, update
@@ -762,13 +763,13 @@ define([
         if (!contains) {
             Store.addPad({
                 href: href,
+                channel: channel,
                 title: title,
                 owners: owners,
                 expire: expire,
-                password: store.data && store.data.newPadPassword,
-                path: data.path || (store.data && store.data.initialPath)
+                password: data.password,
+                path: data.path
             }, cb);
-            delete store.data.newPadPassword;
             return;
         }
         onSync(cb);
@@ -806,14 +807,6 @@ define([
     };
     Store.getPadData = function (id, cb) {
         cb(store.userObject.getFileData(id));
-    };
-    Store.setInitialPath = function (path) {
-        if (!store.data) { return; }
-        store.data.initialPath = path;
-    };
-    Store.setNewPadPassword = function (password) {
-        if (!store.data) { return; }
-        store.data.newPadPassword = password;
     };
 
 

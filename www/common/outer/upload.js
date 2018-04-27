@@ -65,7 +65,14 @@ define([
 
                 if (noStore) { return void onComplete(href); }
 
-                common.setPadTitle(title || "", href, path, function (err) {
+                // PASSWORD_FILES
+                var data = {
+                    title: title || "",
+                    href: href,
+                    path: path,
+                    channel: id
+                };
+                common.setPadTitle(data, function (err) {
                     if (err) { return void console.error(err); }
                     onComplete(href);
                     common.setPadAttribute('fileType', metadata.type, null, href);

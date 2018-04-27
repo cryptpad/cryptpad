@@ -213,8 +213,7 @@ Version 1
             if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
             if (ret.hashData.version === 0) { return url + '#' + ret.hash; }
             var hash;
-            if (options.readOnly === true ||
-                    (typeof (options.readOnly === "undefined") && ret.hashData.mode === "view")) {
+            if (typeof (options.readOnly === "undefined") && ret.hashData.mode === "view") {
                 hash = getViewHashFromKeys({
                     version: ret.hashData.version,
                     type: ret.hashData.app,

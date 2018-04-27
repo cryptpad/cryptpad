@@ -25,6 +25,7 @@ define([
         var AppConfig;
         var Test;
         var password;
+        var initialPathInDrive;
 
         nThen(function (waitFor) {
             // Load #2, the loading screen is up so grab whatever you need...
@@ -295,8 +296,13 @@ define([
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
                 currentTitle = newTitle;
                 setDocumentTitle();
-                Cryptpad.setNewPadPassword(password);
-                Cryptpad.setPadTitle(newTitle, undefined, undefined, function (err) {
+                var data = {
+                    password: password,
+                    title: newTitle,
+                    channel: secret.channel,
+                    path: initialPathInDrive // Where to store the pad if we don't have it in our drive
+                };
+                Cryptpad.setPadTitle(data, function (err) {
                     cb(err);
                 });
             });
@@ -718,8 +724,6 @@ define([
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
                 secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
 
-                Cryptpad.setNewPadPassword(password);
-
                 // Update the hash in the address bar
                 var ohc = window.onhashchange;
                 window.onhashchange = function () {};
@@ -744,7 +748,7 @@ define([
                 nThen(function(waitFor) {
                     if (data.templateId) {
                         if (data.templateId === -1) {
-                            Cryptpad.setInitialPath(['template']);
+                            initialPathInDrive = ['template'];
                             return;
                         }
                         Cryptpad.getPadData(data.templateId, waitFor(function (err, d) {
