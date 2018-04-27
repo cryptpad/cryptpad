@@ -68,7 +68,7 @@ define([], function () {
 
         // shim between chainpad and netflux
         var msgIn = function (peerId, msg) {
-            return msg.replace(/^cp\|/, '');
+            return msg.replace(/^cp\|([A-Za-z0-9+\/=]+\|)?/, '');
         };
 
         var msgOut = function (msg) {
