@@ -55,7 +55,7 @@ define([
                 // 3rd case: profile creation (create a new random hash, store it later if needed)
                 if (!Utils.LocalStore.isLoggedIn()) {
                     // Unregistered users can't create a profile
-                    window.location.href = '/drive';
+                    window.location.href = '/drive/';
                     return void cb();
                 }
                 var hash = Hash.createRandomHash();
