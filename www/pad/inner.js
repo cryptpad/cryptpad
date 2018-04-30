@@ -604,6 +604,8 @@ define([
                     Util.blobToImage($(el).data('blob'), waitFor(function (imgSrc) {
                         $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
                             .attr('src', imgSrc);
+                        $clone.find('media-tag').parent()
+                            .find('.cke_widget_drag_handler_container').remove();
                     }));
                 });
             }).nThen(function () {
