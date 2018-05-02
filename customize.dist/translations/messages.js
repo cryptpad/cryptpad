@@ -745,7 +745,7 @@ define(function () {
     out.features_f_history_notes = "View and restore any version of your pads";
     out.features_f_todo = "Create a TODO-list";
     out.features_f_drive = "Basic set of features CryptDrive";
-    out.features_f_drive_full = "Full set of features CryptDrive"
+    out.features_f_drive_full = "Full set of features CryptDrive";
     out.features_f_drive_notes = "Basic features for anonymous users";
     out.features_f_export = "Export/Import";
     out.features_f_export_notes = "For pads and CryptDrive";
