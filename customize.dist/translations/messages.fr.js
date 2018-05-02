@@ -1051,7 +1051,7 @@ define(function () {
     out.tips = {};
     out.tips.shortcuts = "`ctrl+b`, `ctrl+i` et `ctrl+u` sont des raccourcis rapides pour mettre en gras, en italique ou souligner.";
     out.tips.indent = "Dans les listes à puces ou numérotées, vous pouvez utiliser `Tab` ou `Maj+Tab` pour augmenter ou réduire rapidement l'indentation.";
-    out.tips.store = "Dès que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connectés.";
+    out.tips.store = "Dès que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connecté.";
     out.tips.marker = "Vous pouvez surligner du texte dans un pad en utilisant l'option \"marker\" dans le menu déroulant des styles.";
     out.tips.driveUpload = "Les utilisateurs enregistrés peuvent importer des fichiers en les faisant glisser et en les déposant dans leur CryptDrive.";
     out.tips.filenames = "Vous pouvez renommer les fichiers de votre CryptDrive, ce nom ne sera visible que par vous.";
