@@ -3,20 +3,48 @@
 
 .infopages_main();
 .infopages_topbar();
-
-.cp-faq-header {
-    padding: 0;
-    font-size: 1.2em;
-    a {
-        padding: 0;
+#cp-main {
+    background: #fff;
+}
+.cp-faq {
+    padding-top: 3em;
+    padding-bottom: 3em;
+    background-image: url(/customize/coverfaq.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    .container {
+        color: #fff;
+        font-family: "Open Sans";
+    }
+    h1 {
+        font-weight: 700;
+    }
+}
+.cp-faq-ques-det {
+    .cp-faq-header {
+        a {
+            padding: 0;
+            h4 {
+                margin-top: 1.5rem;
+                margin-bottom: 1.5rem;
+                span {
+                    font-family: "Neuropolitical";
+                }
+            }
+        }
     }
 }
 .cp-faq-container {
+    .cp-faq-questions-items {
+        background: #3a84b6;
+        color: #fff;
+        padding: 1rem 1rem 0.5rem 1rem;
+        margin-bottom: 1rem;
+    }
     .cp-faq-questions-q {
-        color: #3a84b6;
         padding: 0;
-        margin-bottom: 0;
-        margin-top: 5px;
+        margin-bottom: 0.5rem;
         cursor: pointer;
         -webkit-touch-callout: none;
         -webkit-user-select: none;
@@ -24,14 +52,32 @@
         -moz-user-select: none;
         -ms-user-select: none;
         user-select: none;
+        &:hover {
+            text-decoration: none;
+        }
+        &:after {
+            content: '\f067';
+            font-family: FontAwesome;
+            font-weight: normal;
+            font-style: normal;
+            float: right;
+            text-decoration: none;
+            font-size: 13px;
+            line-height: 1.5;
+        }
     }
-    .cp-faq-questions-q:hover {
-        color: #2e688f;
-        text-decoration: underline;
+    .cp-faq-questions-q.active-faq {
+        &:after {
+            content: '\f068';
+        }
     }
     .cp-faq-questions-a {
         display: none;
-        padding: 0;
+        padding: 0.5rem;
+        margin-bottom: 0.5rem;
+        background-color: #fff;
+        color: #212529;
     }
+    margin-bottom: 1.5rem;
 }
 

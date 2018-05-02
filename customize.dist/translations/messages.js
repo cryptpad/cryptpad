@@ -744,7 +744,8 @@ define(function () {
     out.features_f_history = "History";
     out.features_f_history_notes = "View and restore any version of your pads";
     out.features_f_todo = "Create a TODO-list";
-    out.features_f_drive = "CryptDrive";
+    out.features_f_drive = "Basic set of features CryptDrive";
+    out.features_f_drive_full = "Full set of features CryptDrive"
     out.features_f_drive_notes = "Basic features for anonymous users";
     out.features_f_export = "Export/Import";
     out.features_f_export_notes = "For pads and CryptDrive";
@@ -765,14 +766,14 @@ define(function () {
     out.features_f_contacts = "Contacts application";
     out.features_f_contacts_notes = "Add contacts and chat with them in an encrypted session";
     out.features_f_storage = "Storage";
-    out.features_f_storage_anon = "Pads deleted after 3 months";
+    out.features_f_storage_anon = "Pads are deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
 
     // faq.html
 
     out.faq_link = "FAQ";
     out.faq_title = "Frequently Asked Questions";
-    out.faq_whatis = "What is CryptPad?";
+    out.faq_whatis = "What is <span>CryptPad</span>?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Keywords',
