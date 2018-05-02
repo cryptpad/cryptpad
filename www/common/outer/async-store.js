@@ -1001,7 +1001,7 @@ define([
             if (parsed[1][3] !== data.channel) { return; }
             msg = parsed[1][4];
             if (msg) {
-                msg = msg.replace(/^cp\|/, '');
+                msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
                 //var decryptedMsg = crypto.decrypt(msg, true);
                 msgs.push(msg);
             }
