@@ -587,7 +587,7 @@
     out.settings_creationSkipFalse = "anzeigen";
 
     out.settings_templateSkip = "Die Wahl der Template vermeiden";
-    out.settings_templateSkipHint = "Wenn du ein neues Dokument erstellt, und wenn Vorlagen da sind, erscheint ein Dialog, wo du die Vorlage wählen kannst. Hier kannst du dieses Dialog vermeiden und somit keine Vorlage verwenden." 
+    out.settings_templateSkipHint = "Wenn du ein neues Dokument erstellt, und wenn Vorlagen da sind, erscheint ein Dialog, wo du die Vorlage wählen kannst. Hier kannst du dieses Dialog vermeiden und somit keine Vorlage verwenden.";
 
     out.upload_title = "Datei hochladen";
     out.upload_rename = "Willst du einen neuen Name für <b>{0}</b> geben, bevor es zum Server hochgeladen wird?<br>" +
@@ -716,7 +716,7 @@
     out.whatis_drive_p2 = 'Mit dem einfachsten Ziehen und Schieben Gesten kannst du die Dokumente herum von deinem Drive umplatzieren. Die Links zu diesen Dokumenten bleiben erhalten damit Kollaboratoren nie Zugang verlieren.';
     out.whatis_drive_p3 = 'Du kannst auch Dateien in dein CryptDrive hochladen und mit deinen Kollegen teilen. Hochgeladene Dateien können genau so wie kollaborative Dokumente organisiert werden.';
     out.whatis_business = 'CryptPad im Business';
-    out.whatis_business_p1 = 'Der Grundprinzip von CryptPad (_Verschlüsselung ohne Preisangabe der Information_) ist ausgezeichnet, um die Effektivität von existierenden Protokolle, indem die Zugangsberechtigungen des Unternehmens in die Kryptografie umgesetzt werden. Weil hochsensible Medien nur mit Angestelltenzugang entschlüsselt werden kann, kann CryptPad das Jackpot der Hackers wegnehmen, was in der Natur von tradionellen IT Servers liegt. Lese das <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a>, um mehr zu erfahren, wir CryptPad dein Unternehmen helfen kann.'
+    out.whatis_business_p1 = 'Der Grundprinzip von CryptPad (_Verschlüsselung ohne Preisangabe der Information_) ist ausgezeichnet, um die Effektivität von existierenden Protokolle, indem die Zugangsberechtigungen des Unternehmens in die Kryptografie umgesetzt werden. Weil hochsensible Medien nur mit Angestelltenzugang entschlüsselt werden kann, kann CryptPad das Jackpot der Hackers wegnehmen, was in der Natur von tradionellen IT Servers liegt. Lese das <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a>, um mehr zu erfahren, wir CryptPad dein Unternehmen helfen kann.';
     out.whatis_business_p2 = 'CryptPad kann auf eigenen Rechnern installiert werden. <a href="https://cryptpad.fr/about.html">CryptPad Entwicklers</a> at XWiki SAS können kommerzielle Unterstützung, Customisierung und Entwicklung anbieten. Bitte schicke ein Email zu <a href="mailto:sales@cryptpad.fr">sales@cryptpad.fr</a>, um mehr zu erfahren.';
 
       // privacy.html
@@ -1114,7 +1114,7 @@
     out.tips.tags = "Bringe Tags auf deinen Dokumenten und starte eine Suche-bei-Tags mit dem # Zeichen in dem CryptDrive Suche.";
 
     out.feedback_about = "Wenn du das liest, fragst du dich weshalb Anfragen an Webseiten schickt, wenn manche Aktionen geführt werden.";
-    out.feedback_privacy = "Wir wollen deinen Datenschutz schonen, aber gleichzeitig wollen wir, dass die Benutzung von CryptPad sehr leicht ist, zB indem wir erfahren, welche UI-Funktion am wichtigsten für unsere Benutzen ist. Dieses wird nachgefragt mit einer genauen Parameterbeschreibung, welche Aktion war gemacht."
+    out.feedback_privacy = "Wir wollen deinen Datenschutz schonen, aber gleichzeitig wollen wir, dass die Benutzung von CryptPad sehr leicht ist, zB indem wir erfahren, welche UI-Funktion am wichtigsten für unsere Benutzen ist. Dieses wird nachgefragt mit einer genauen Parameterbeschreibung, welche Aktion war gemacht.";
     out.feedback_optout = "Wenn du es aber nicht möchtest. besuche <a href='/settings/'>deine Einstellungen</a>, dort findest du ein Haken, wo du es deaktivieren kannst.";
 
     // Creation page
