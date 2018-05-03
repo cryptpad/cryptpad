@@ -3,6 +3,11 @@ const Fs = require('fs');
 const Semaphore = require('saferphore');
 const nThen = require('nthen');
 
+/*
+    takes contents of a pinFile (UTF8 string)
+    and the pin file's name
+    returns an array of of channel ids which are pinned
+*/
 const hashesFromPinFile = (pinFile, fileName) => {
     var pins = {};
     pinFile.split('\n').filter((x)=>(x)).map((l) => JSON.parse(l)).forEach((l) => {
@@ -10,8 +15,7 @@ const hashesFromPinFile = (pinFile, fileName) => {
             case 'RESET': {
                 pins = {};
                 if (l[1] && l[1].length) { l[1].forEach((x) => { pins[x] = 1; }); }
-                //jshint -W086
-                // fallthrough
+                break;
             }
             case 'PIN': {
                 l[1].forEach((x) => { pins[x] = 1; });
