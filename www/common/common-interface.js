@@ -678,7 +678,7 @@ define([
         };
         // This is the robust solution to remove dangling tooltips
         // The mutation observer does not always find removed nodes.
-        //setInterval(UI.clearTooltips, delay);
+        setInterval(UI.clearTooltips, delay);
         var checkRemoved = function (x) {
             var out = false;
             var xId = $(x).attr('aria-describedby');
