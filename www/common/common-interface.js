@@ -594,7 +594,12 @@ define([
         $('.cp-loading-spinner-container').hide();
         $('#cp-loading-tip').remove();
         if (transparent) { $('#' + LOADING).css('opacity', 0.9); }
-        $('#' + LOADING).find('p').show().html(error || Messages.error);
+        var $error = $('#' + LOADING).find('p').show();
+        if (error instanceof Element) {
+            $error.html('').append(error);
+        } else {
+            $error.html(error || Messages.error);
+        }
         if (exitable) {
             $(window).focus();
             $(window).keydown(function (e) {

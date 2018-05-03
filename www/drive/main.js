@@ -39,6 +39,7 @@ define([
         var getSecrets = function (Cryptpad, Utils, cb) {
             var hash = window.location.hash.slice(1) || Utils.LocalStore.getUserHash() ||
                         Utils.LocalStore.getFSHash();
+            // No password for drive
             cb(null, Utils.Hash.getSecrets('drive', hash));
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {

@@ -1081,6 +1081,7 @@ define(function () {
     out.creation_expireMonths = "Mois";
     out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
     out.creation_expire2 = "Un pad <b>à durée de vie</b> sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs lorsque cette durée sera dépassée.";
+    out.creation_password = "Ajouter un mot de passe";
     out.creation_noTemplate = "Pas de modèle";
     out.creation_newTemplate = "Nouveau modèle";
     out.creation_create = "Créer";
@@ -1097,6 +1098,12 @@ define(function () {
     out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.";
     out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads avec propriétaire ou à durée de vie). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
+
+    // Password prompt on the loadind screen
+    out.password_info = "Le pad auquel vous essayez d'accéder est protégé par un mot de passe. Entrez le bon mot de passe pour accéder à son contenu.";
+    out.password_error = "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit le mot de passe est faux, soit le pad a été supprimé du serveur.";
+    out.password_placeholder = "Tapez le mot de passe ici...";
+    out.password_submit = "Valider";
 
     // New share modal
     out.share_linkCategory = "Partage";

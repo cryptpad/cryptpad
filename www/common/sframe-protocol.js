@@ -230,4 +230,8 @@ define({
 
     // Critical error outside the iframe during loading screen
     'EV_LOADING_ERROR': true,
+
+    // Ask for the pad password when a pad is protected
+    'EV_PAD_PASSWORD': true,
+    'Q_PAD_PASSWORD_VALUE': true,
 });

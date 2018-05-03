@@ -1296,7 +1296,7 @@ define([
             $span.attr('title', name);
 
             var type = Messages.type[hrefData.type] || hrefData.type;
-            common.displayThumbnail(data.href, $span, function ($thumb) {
+            common.displayThumbnail(data.href, data.channel, $span, function ($thumb) {
                 // Called only if the thumbnail exists
                 // Remove the .hide() added by displayThumnail() because it hides the icon in
                 // list mode too
@@ -2653,9 +2653,9 @@ define([
             if (parsed.hashData.type !== "pad") { return; }
             var i = data.href.indexOf('#') + 1;
             var base = data.href.slice(0, i);
-            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
+            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             if (!hrefsecret.keys) { return; }
-            var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+            var viewHash = Hash.getViewHashFromKeys(hrefsecret);
             return base + viewHash;
         };
 
@@ -2720,24 +2720,6 @@ define([
                 $(window).focus();
                 if (!res) { return; }
                 filesOp.delete(pathsList, refresh);
-                /*
-                // Try to delete each selected pad from server, and delete from drive if no error
-                var n = nThen(function () {});
-                pathsList.forEach(function (p) {
-                    var el = filesOp.find(p);
-                    var data = filesOp.getFileData(el);
-                    var parsed = Hash.parsePadUrl(data.href);
-                    var channel = Util.base64ToHex(parsed.hashData.channel);
-                    n = n.nThen(function (waitFor) {
-                        sframeChan.query('Q_REMOVE_OWNED_CHANNEL', channel,
-                                         waitFor(function (e) {
-                            if (e) { return void console.error(e); }
-                            filesOp.delete([p], function () {}, false, true);
-                        }));
-                    });
-                });
-                n.nThen(function () { refresh(); });
-                */
             });
         };
         $contextMenu.on("click", "a", function(e) {

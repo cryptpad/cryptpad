@@ -577,8 +577,7 @@ define([
         var pd = config.metadataMgr.getPrivateData();
         var o = pd.origin;
         var hashes = pd.availableHashes;
-        var url = pd.origin + pd.pathname + '#' + (hashes.editHash || hashes.viewHash);
-        var cid = Hash.hrefToHexChannelId(url);
+        var cid = pd.channel;
         Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
             if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
             if (x.response[0] === true) {

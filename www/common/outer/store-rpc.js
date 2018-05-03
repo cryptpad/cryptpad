@@ -120,9 +120,6 @@ define([
             case 'GET_PAD_DATA': {
                 Store.getPadData(data, cb); break;
             }
-            case 'SET_INITIAL_PATH': {
-                Store.setInitialPath(data); break;
-            }
             case 'GET_STRONGER_HASH': {
                 Store.getStrongerHash(data, cb); break;
             }
