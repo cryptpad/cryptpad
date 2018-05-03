@@ -158,8 +158,15 @@ if (!module.parent) {
     let config = {};
     if (process.argv.indexOf('--unpinned') > -1) { config.unpinned = true; }
     const ot = process.argv.indexOf('--olderthan');
-    config.olderthan = ot > -1 && new Date(process.argv[ot+1]);
+    if (ot > -1) {
+        config.olderthan = Number(process.argv[ot+1]) ? new Date(Number(process.argv[ot+1]))
+                                                      : new Date(process.argv[ot+1]);
+    }
     const bot = process.argv.indexOf('--blobsolderthan');
+    if (bot > -1) {
+        config.blobsolderthan = Number(process.argv[bot+1]) ? new Date(Number(process.argv[bot+1]))
+                                                      : new Date(process.argv[bot+1]);
+    }
     config.blobsolderthan = bot > -1 && new Date(process.argv[bot+1]);
     module.exports.load(config, function (err, data) {
         if (err) { throw new Error(err); }
