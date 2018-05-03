@@ -1052,10 +1052,12 @@ define([
                 postMessage("DRIVE_LOG", msg);
             }
         });
-        var todo = function () {
+        nThen(function (waitFor) {
+            userObject.migrate(waitFor());
+        }).nThen(function (waitFor) {
+            Migrate(proxy, waitFor());
+        }).nThen(function () {
             userObject.fixFiles();
-
-            Migrate(proxy);
 
             var requestLogin = function () {
                 postMessage("REQUEST_LOGIN");
@@ -1119,8 +1121,7 @@ define([
             proxy.on('change', [Constants.tokenKey], function () {
                 postMessage("UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
             });
-        };
-        userObject.migrate(todo);
+        });
     };
 
     var connect = function (data, cb) {
@@ -1139,7 +1140,7 @@ define([
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
             userName: 'fs',
-            logLevel: 1,
+            logLevel: 2,
             ChainPad: ChainPad,
             classic: true,
         };
