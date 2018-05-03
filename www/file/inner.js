@@ -124,6 +124,12 @@ define([
 
                     var rightsideDisplayed = false;
                     $(window.document).on('decryption', function (e) {
+                        /* FIXME
+                            we're listening for decryption events and assuming that only
+                            the main media-tag exists. In practice there is also your avatar
+                            and there could be other things in the future, so we should
+                            figure out a generic way target media-tag decryption events.
+                        */
                         var decrypted = e.originalEvent;
                         if (decrypted.callback) {
                             decrypted.callback();
@@ -133,9 +139,6 @@ define([
                         $dlform.hide();
                         var $dlButton = $dlview.find('media-tag button');
                         if (ev) { $dlButton.click(); }
-                        if (!$dlButton.length) {
-                            $appContainer.css('background', 'white');
-                        }
                         $dlButton.addClass('btn btn-success');
                         var text = Messages.download_mt_button + '<br>';
                         text += '<b>' + Util.fixHTML(title) + '</b><br>';
