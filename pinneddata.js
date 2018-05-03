@@ -194,16 +194,15 @@ module.exports.load = function (config, cb) {
                     // check if it's a blob or a 'pad'
                     const isBlob = dsFileStats[f].filename.indexOf('.ndjson') === -1;
 
-                    // if the atime is newer than the specified value for its file type, ignore this file
+                    // if the mtime is newer than the specified value for its file type, ignore this file
 
-                    // TODO consider using mtime instead of atime
-                    if ((+dsFileStats[f].atime) >= ((isBlob) ? blobsbefore : before)) { return; }
+                    if ((+dsFileStats[f].mtime) >= ((isBlob) ? blobsbefore : before)) { return; }
 
-                    // otherwise push it to the list of files, with its filename, size, and atime
+                    // otherwise push it to the list of files, with its filename, size, and mtime
                     files.push({
                         filename: dsFileStats[f].filename,
                         size: dsFileStats[f].size,
-                        atime: dsFileStats[f].atime
+                        mtime: dsFileStats[f].mtime
                     });
                 }
             });
@@ -256,8 +255,8 @@ if (!module.parent) {
         if (err) { throw new Error(err); } // throw errors
         if (!Array.isArray(data)) { return; } // if the returned value is not an array, you're done
         if (config.unpinned) {
-            // display the list of unpinned files with their size and atime
-            data.forEach((f) => { console.log(f.filename + " " + f.size + " " + (+f.atime)); });
+            // display the list of unpinned files with their size and mtime
+            data.forEach((f) => { console.log(f.filename + " " + f.size + " " + (+f.mtime)); });
         } else {
             // display the list of public keys and the size of the data they have pinned in megabytes
             data.forEach((x) => { console.log(x[0] + '  ' + x[1] + ' MB'); });
@@ -271,15 +270,15 @@ if (!module.parent) {
 # display the list of public keys and the size of the data the have pinned in megabytes
 node pinneddata.js
 
-# display the list of unpinned pads and blobs with their size and atime
+# display the list of unpinned pads and blobs with their size and mtime
 node pinneddata.js --unpinned
 
-# display the list of unpinned pads and blobs older than 12345 with their size and atime
+# display the list of unpinned pads and blobs older than 12345 with their size and mtime
 node pinneddata.js --unpinned --olderthan 12345
 
 
 # display the list of unpinned pads older than 12345 and unpinned blobs older than 123
-# each with their size and atime
+# each with their size and mtime
 node pinneddata.js --unpinned --olderthan 12345 --blobsolderthan 123
 
 */
