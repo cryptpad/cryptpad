@@ -29,7 +29,7 @@
     "json.sortify": "~2.1.0",
     "secure-fabric.js": "secure-v1.7.9",
     "hyperjson": "~1.4.0",
-    "chainpad-crypto": "^0.1.8",
+    "chainpad-crypto": "^0.2.0",
     "chainpad-listmap": "^0.5.0",
     "chainpad": "^5.1.0",
     "chainpad-netflux": "^0.7.0",
