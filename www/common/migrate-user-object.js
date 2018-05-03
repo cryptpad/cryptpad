@@ -103,7 +103,6 @@ define([
                 userObject.version = version = 5;
             }
         }).nThen(function (waitFor) {
-            console.log('start');
             var addChannelId = function () {
                 var data = userObject.drive.filesData;
                 var el, parsed;
@@ -135,7 +134,6 @@ define([
                 userObject.version = version = 6;
             }
         }).nThen(function () {
-            console.log('done');
             cb();
         });
     };

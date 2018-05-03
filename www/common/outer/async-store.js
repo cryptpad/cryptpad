@@ -1140,7 +1140,7 @@ define([
             validateKey: secret.keys.validateKey || undefined,
             crypto: Crypto.createEncryptor(secret.keys),
             userName: 'fs',
-            logLevel: 2,
+            logLevel: 1,
             ChainPad: ChainPad,
             classic: true,
         };
