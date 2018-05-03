@@ -576,7 +576,6 @@ define([
         if (Common.isLoggedIn()) { return; }
         var pd = config.metadataMgr.getPrivateData();
         var o = pd.origin;
-        var hashes = pd.availableHashes;
         var cid = pd.channel;
         Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
             if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
