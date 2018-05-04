@@ -379,7 +379,6 @@ define([
     Object.freeze(funcs);
     return { create: function (cb) {
 
-        console.log('create');
         if (window.CryptPad_sframe_common) {
             throw new Error("Sframe-common should only be created once");
         }

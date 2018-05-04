@@ -177,16 +177,15 @@
             .cp-creation-password {
                 .cp-creation-password-picker {
                     text-align: center;
-                    input {
-                        width: 150px;
-                    }
-                }
-                &.active {
-                    label {
-                        flex: unset;
-                    }
-                    .cp-creation-slider {
-                        flex: 1;
+                    width: 100%;
+                    .cp-password-container {
+                        input {
+                            width: 150px;
+                            padding: 0 5px;
+                        }
+                        label {
+                            flex: unset;
+                        }
                     }
                 }
             }
@@ -335,7 +334,7 @@
                         width: 95%;
                         margin: 10px auto;
                     }
-                    .cp-creation-expire, .cp-creation-password {
+                    .cp-creation-expire{
                         &.active {
                             label {
                                 flex: 1;

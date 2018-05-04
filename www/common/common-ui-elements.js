@@ -143,6 +143,22 @@ define([
         $d.append(UI.dialog.selectable(expire, {
             id: 'cp-app-prop-expire',
         }));
+
+        if (typeof data.password !== "undefined") {
+            $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                .appendTo($d);
+            var password = UI.passwordInput({
+                id: 'cp-app-prop-expire',
+                readonly: 'readonly'
+            });
+            var $pwInput = $(password).find('.cp-password-input');
+            $pwInput.val(data.password).click(function () {
+                $pwInput[0].select();
+            });
+            $(password).find('.cp-checkmark').css('margin-bottom', '15px');
+            $d.append(password);
+        }
+
         cb(void 0, $d);
     };
     var getPadProperties = function (common, data, cb) {
@@ -1920,9 +1936,10 @@ define([
         var password = h('div.cp-creation-password', [
             UI.createCheckbox('cp-creation-password', Messages.creation_password, false),
             h('span.cp-creation-password-picker.cp-creation-slider', [
-                h('input#cp-creation-password-val', {
+                UI.passwordInput({id: 'cp-creation-password-val'})
+                /*h('input#cp-creation-password-val', {
                     type: "text" // TODO type password with click to show
-                }),
+                }),*/
             ]),
             //createHelper('#', "TODO: password protection adds another layer of security ........") // TODO
         ]);
@@ -2207,14 +2224,11 @@ define([
         var error;
         if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
         var info = h('p.cp-password-info', Messages.password_info);
-        var input = h('input', {
-            type: "password",
-            placeholder: Messages.password_placeholder
-        });
+        var password = UI.passwordInput({placeholder: Messages.password_placeholder});
         var button = h('button', Messages.password_submit);
 
         var submit = function () {
-            var value = $(input).val();
+            var value = $(password).find('.cp-password-input').val();
             UI.addLoadingScreen();
             common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
                 if (!data) {
@@ -2222,7 +2236,7 @@ define([
                 }
             });
         };
-        $(input).on('keydown', function (e) { if (e.which === 13) { submit(); } });
+        $(password).find('.cp-password-input').on('keydown', function (e) { if (e.which === 13) { submit(); } });
         $(button).on('click', function () { submit(); });
 
 
@@ -2230,11 +2244,13 @@ define([
             error,
             info,
             h('p.cp-password-form', [
-                input,
+                password,
                 button
             ])
         ]);
         UI.errorLoadingScreen(block);
+
+        $(password).find('.cp-password-input').focus();
     };
 
     return UIElements;

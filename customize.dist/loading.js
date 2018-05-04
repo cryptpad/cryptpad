@@ -97,15 +97,20 @@ define([], function () {
 #cp-loading-password-prompt .cp-password-form {
     display: flex;
     justify-content: space-around;
+    flex-wrap: wrap;
 }
-#cp-loading-password-prompt .cp-password-form * {
+#cp-loading-password-prompt .cp-password-form button,
+#cp-loading-password-prompt .cp-password-form .cp-password-input {
     background-color: #4591c4;
     color: white;
     border: 1px solid #4591c4;
 }
+#cp-loading-password-prompt .cp-password-form .cp-password-container {
+    flex-shrink: 1;
+    min-width: 0;
+}
 #cp-loading-password-prompt .cp-password-form input {
     flex: 1;
-    margin-right: 15px;
     padding: 0 5px;
     min-width: 0;
     text-overflow: ellipsis;

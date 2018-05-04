@@ -513,6 +513,50 @@ define([
         Alertify.error(Util.fixHTML(msg));
     };
 
+    UI.passwordInput = function (opts, displayEye) {
+        opts = opts || {};
+        var attributes = merge({
+            type: 'password'
+        }, opts);
+
+        var input = h('input.cp-password-input', attributes);
+        var reveal = UI.createCheckbox('cp-password-reveal', Messages.password_show);
+        var eye = h('span.fa.fa-eye.cp-password-reveal');
+
+        $(reveal).find('input').on('change', function () {
+            if($(this).is(':checked')) {
+                $(input).prop('type', 'text');
+                $(input).focus();
+                return;
+            }
+            $(input).prop('type', 'password');
+            $(input).focus();
+        });
+
+        $(eye).mousedown(function () {
+            $(input).prop('type', 'text');
+            $(input).focus();
+        }).mouseup(function(){
+            $(input).prop('type', 'password');
+            $(input).focus();
+        }).mouseout(function(){
+            $(input).prop('type', 'password');
+            $(input).focus();
+        });
+        if (displayEye) {
+            $(reveal).hide();
+        } else {
+            $(eye).hide();
+        }
+
+        return h('span.cp-password-container', [
+            input,
+            reveal,
+            eye
+        ]);
+    };
+
+
     /*
      *  spinner
      */

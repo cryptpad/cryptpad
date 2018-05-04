@@ -6,6 +6,7 @@
 @import (once) './creation.less';
 @import (once) './tippy.less';
 @import (once) "./checkmark.less";
+@import (once) "./password-input.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
     .toolbar_main(
@@ -18,6 +19,7 @@
     .tokenfield_main();
     .tippy_main();
     .checkmark_main(20px);
+    .password_main();
     .creation_main(
         @bg-color: @bg-color,
         @warn-color: @warn-color,
@@ -39,6 +41,7 @@
     .alertify_main();
     .tippy_main();
     .checkmark_main(20px);
+    .password_main();
 }
 
 

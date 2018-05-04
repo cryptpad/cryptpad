@@ -1139,6 +1139,7 @@ define(function () {
     out.creation_ownedByOther = "Owned by another user";
     out.creation_noOwner = "No owner";
     out.creation_expiration = "Expiration time";
+    out.creation_passwordValue = "Password";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
     out.creation_newPadModalDescription = "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.";
@@ -1150,6 +1151,7 @@ define(function () {
     out.password_error = "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.";
     out.password_placeholder = "Type the password here...";
     out.password_submit = "Submit";
+    out.password_show = "Show";
 
     // New share modal
     out.share_linkCategory = "Share link";

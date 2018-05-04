@@ -1093,6 +1093,7 @@ define(function () {
     out.creation_ownedByOther = "Appartient à un autre utilisateur";
     out.creation_noOwner = "Pas de propriétaire";
     out.creation_expiration = "Date d'expiration";
+    out.creation_passwordValue = "Mot de passe";
     out.creation_propertiesTitle = "Disponibilité";
     out.creation_appMenuName = "Mode avancé (Ctrl + E)";
     out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.";
@@ -1104,6 +1105,7 @@ define(function () {
     out.password_error = "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit le mot de passe est faux, soit le pad a été supprimé du serveur.";
     out.password_placeholder = "Tapez le mot de passe ici...";
     out.password_submit = "Valider";
+    out.password_show = "Afficher";
 
     // New share modal
     out.share_linkCategory = "Partage";
