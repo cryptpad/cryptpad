@@ -234,4 +234,7 @@ define({
     // Ask for the pad password when a pad is protected
     'EV_PAD_PASSWORD': true,
     'Q_PAD_PASSWORD_VALUE': true,
+
+    // Loading events to display in the loading screen
+    'EV_LOADING_INFO': true,
 });

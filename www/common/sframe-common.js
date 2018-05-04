@@ -433,6 +433,10 @@ define([
                 UIElements.displayPasswordPrompt(funcs);
             });
 
+            ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
+                UI.updateLoadingProgress(data, true);
+            });
+
             ctx.metadataMgr.onReady(waitFor());
         }).nThen(function () {
             try {

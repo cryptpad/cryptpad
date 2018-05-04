@@ -90,7 +90,16 @@ define([
                 SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
                     sframeChan = sfc;
                 }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
-                Cryptpad.ready(waitFor(), {
+                Cryptpad.loading.onDriveEvent.reg(function (data) {
+                    if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
+                });
+                Cryptpad.ready(waitFor(function () {
+                    if (sframeChan) {
+                        sframeChan.event('EV_LOADING_INFO', {
+                            state: -1
+                        });
+                    }
+                }), {
                     messenger: cfg.messaging,
                     driveEvents: cfg.driveEvents
                 });

@@ -590,6 +590,11 @@ define([
         var rdm = Math.floor(Math.random() * keys.length);
         return Messages.tips[keys[rdm]];
     };*/
+    var loading = {
+        error: false,
+        driveState: 0,
+        padState: 0
+    };
     UI.addLoadingScreen = function (config) {
         config = config || {};
         var loadingText = config.loadingText;
@@ -598,17 +603,80 @@ define([
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $('.cp-loading-spinner-container').show();
-            if (loadingText) {
-                $('#' + LOADING).find('p').show().text(loadingText);
-            } else {
-                $('#' + LOADING).find('p').hide().text('');
+            if (config.progress && !$loading.find('.cp-loading-progress').length) {
+                var progress = h('div.cp-loading-progress', [
+                    h('p.cp-loading-progress-drive'),
+                    h('p.cp-loading-progress-pad')
+                ]);
+                $loading.find('.cp-loading-container').append(progress);
+            } else if (!config.progress) {
+                $loading.find('.cp-loading-progress').remove();
             }
+            if (loadingText) {
+                $('#' + LOADING).find('#cp-loading-message').show().text(loadingText);
+            } else {
+                $('#' + LOADING).find('#cp-loading-message').hide().text('');
+            }
+            loading.error = false;
         };
         if ($('#' + LOADING).length) {
             todo();
         } else {
             Loading();
             todo();
+        }
+    };
+    UI.updateLoadingProgress = function (data, isDrive) {
+        var $loading = $('#' + LOADING);
+        if (!$loading.length || loading.error) { return; }
+        var $progress;
+        if (isDrive) {
+            console.log(data);
+            // Drive state
+            if (loading.driveState === -1) { return; } // Already loaded
+            $progress = $loading.find('.cp-loading-progress-drive');
+            if (!$progress.length) { return; } // Can't find the box to display data
+
+            // If state is -1, remove the box, drive is loaded
+            if (data.state === -1) {
+                loading.driveState = -1;
+                $progress.remove();
+            } else {
+                if (data.state < loading.driveState) { return; } // We should not display old data
+                // Update the current state
+                loading.driveState = data.state;
+                data.progress = data.progress || 100;
+                data.msg = Messages['loading_drive_'+data.state] || '';
+                $progress.html(data.msg);
+                if (data.progress) {
+                    $progress.append(h('div.cp-loading-progress-bar', [
+                        h('div.cp-loading-progress-bar-value', {style: 'width:'+data.progress+'%;'})
+                    ]));
+                }
+            }
+        } else {
+            // Pad state
+            if (loading.padState === -1) { return; } // Already loaded
+            $progress = $loading.find('.cp-loading-progress-pad');
+            if (!$progress.length) { return; } // Can't find the box to display data
+
+            // If state is -1, remove the box, pad is loaded
+            if (data.state === -1) {
+                loading.padState = -1;
+                $progress.remove();
+            } else {
+                if (data.state < loading.padState) { return; } // We should not display old data
+                // Update the current state
+                loading.padState = data.state;
+                data.progress = data.progress || 100;
+                data.msg = Messages['loading_pad_'+data.state] || '';
+                $progress.html(data.msg);
+                if (data.progress) {
+                    $progress.append(h('div.cp-loading-progress-bar', [
+                        h('div.cp-loading-progress-bar-value', {style: 'width:'+data.progress+'%;'})
+                    ]));
+                }
+            }
         }
     };
     UI.removeLoadingScreen = function (cb) {
@@ -619,6 +687,7 @@ define([
 
         $('#' + LOADING).addClass("cp-loading-hidden");
         setTimeout(cb, 750);
+        loading.error = false;
         var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
         // and               transition: opacity $fadeout-time
@@ -632,13 +701,16 @@ define([
         // jquery.fadeout can get stuck
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
-        if (!$('#' + LOADING).is(':visible') || $('#' + LOADING).hasClass('cp-loading-hidden')) {
+        var $loading = $('#' + LOADING);
+        if (!$loading.is(':visible') || $loading.hasClass('cp-loading-hidden')) {
             UI.addLoadingScreen({hideTips: true});
         }
+        loading.error = true;
+        $loading.find('.cp-loading-progress').remove();
         $('.cp-loading-spinner-container').hide();
         $('#cp-loading-tip').remove();
-        if (transparent) { $('#' + LOADING).css('opacity', 0.9); }
-        var $error = $('#' + LOADING).find('p').show();
+        if (transparent) { $loading.css('opacity', 0.9); }
+        var $error = $loading.find('#cp-loading-message').show();
         if (error instanceof Element) {
             $error.html('').append(error);
         } else {
@@ -648,7 +720,8 @@ define([
             $(window).focus();
             $(window).keydown(function (e) {
                 if (e.which === 27) {
-                    $('#' + LOADING).hide();
+                    $loading.hide();
+                    loading.error = false;
                     if (typeof(exitable) === "function") { exitable(); }
                 }
             });

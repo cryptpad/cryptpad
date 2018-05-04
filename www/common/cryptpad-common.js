@@ -562,6 +562,10 @@ define([
     pad.onDisconnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
 
+    // Loading events
+    common.loading = {};
+    common.loading.onDriveEvent = Util.mkEvent();
+
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
     };
@@ -725,6 +729,10 @@ define([
             // Account deletion
             case 'DELETE_ACCOUNT': {
                 common.startAccountDeletion(cb); break;
+            }
+            // Loading
+            case 'LOADING_DRIVE': {
+                common.loading.onDriveEvent.fire(data); break;
             }
         }
     };

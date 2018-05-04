@@ -9,7 +9,7 @@ define([
     // 1: migrate pad attributes
     // 2: migrate indent settings (codemirror)
 
-    return function (userObject, cb) {
+    return function (userObject, cb, progress) {
         var version = userObject.version || 0;
 
         nThen(function () {
@@ -107,7 +107,8 @@ define([
                 var data = userObject.drive.filesData;
                 var el, parsed;
                 var n = nThen(function () {});
-                Object.keys(data).forEach(function (k) {
+                var padsLength = Object.keys(data).length;
+                Object.keys(data).forEach(function (k, i) {
                     n = n.nThen(function (w) {
                         setTimeout(w(function () {
                             el = data[k];
@@ -121,6 +122,7 @@ define([
                                     var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
                                     el.channel = secret.channel;
                                 }
+                                progress(6, Math.round(100*i/padsLength));
                                 console.log('Adding missing channel in filesData ', el.channel);
                             }
                         }));
@@ -133,6 +135,16 @@ define([
                 Feedback.send('Migrate-6', true);
                 userObject.version = version = 6;
             }
+        /*}).nThen(function (waitFor) {
+            // Test progress bar in the loading screen
+            var i = 0;
+            var w = waitFor();
+            var it = setInterval(function () {
+                i += 5;
+                if (i >= 100) { w(); clearInterval(it); i = 100;}
+                progress(0, i);
+            }, 500);
+            progress(0, 0);*/
         }).nThen(function () {
             cb();
         });

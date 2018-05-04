@@ -1120,5 +1120,12 @@ define(function () {
     out.share_embedCategory = "Intégration";
     out.share_mediatagCopy = "Copier le mediatag";
 
+    // Loading info
+    out.loading_pad_1 = "Initialisation du pad";
+    out.loading_pad_2 = "Chargement du contenu du pad";
+    out.loading_drive_1 = "Préparation des données de l'utilisateur";
+    out.loading_drive_2 = "Mise à jour des données de l'utilisateur";
+    out.loading_drive_3 = "Vérification des données de l'utilisateur";
+
     return out;
 });

@@ -279,6 +279,8 @@ define([
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
 
+            UI.updateLoadingProgress({ state: -1 }, false);
+
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
 
@@ -429,8 +431,11 @@ define([
         };
 
         nThen(function (waitFor) {
-            UI.addLoadingScreen();
+            UI.addLoadingScreen({progress: true});
             SFCommon.create(waitFor(function (c) { common = c; }));
+            UI.updateLoadingProgress({
+                state: 1
+            }, false);
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
@@ -442,7 +447,7 @@ define([
                 patchTransformer: options.patchTransformer || ChainPad.SmartJSONTransformer,
 
                 // cryptpad debug logging (default is 1)
-                logLevel: 2,
+                logLevel: 1,
                 validateContent: options.validateContent || function (content) {
                     try {
                         JSON.parse(content);
@@ -456,7 +461,12 @@ define([
                 },
                 onRemote: onRemote,
                 onLocal: onLocal,
-                onInit: function () { stateChange(STATE.INITIALIZING); },
+                onInit: function () {
+                    UI.updateLoadingProgress({
+                        state: 2
+                    }, false);
+                    stateChange(STATE.INITIALIZING);
+                },
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
                 onError: onError

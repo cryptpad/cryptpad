@@ -151,6 +151,24 @@ define([], function () {
   max-width: 60%;
   display: inline-block;
 }
+.cp-loading-progress {
+    width: 100%;
+    margin: 20px;
+}
+.cp-loading-progress p {
+    margin: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.cp-loading-progress-bar {
+    height: 5px;
+    background: white;
+}
+.cp-loading-progress-bar-value {
+    height: 100%;
+    background: #00ff37;
+}
 */}).toString().slice(14, -3);
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
     var elem = document.createElement('div');

@@ -1166,6 +1166,12 @@ define(function () {
     out.share_embedCategory = "Embed";
     out.share_mediatagCopy = "Copy mediatag to clipboard";
 
+    // Loading info
+    out.loading_pad_1 = "Initializing pad";
+    out.loading_pad_2 = "Loading pad content";
+    out.loading_drive_1 = "Preparing user data";
+    out.loading_drive_2 = "Upgrading user data to the latest version";
+    out.loading_drive_3 = "Checking user data integrity";
 
     return out;
 });

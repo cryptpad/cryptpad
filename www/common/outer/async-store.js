@@ -694,7 +694,6 @@ define([
             expire = +Store.channel.data.expire || undefined;
         }
 
-        console.log(owners, expire);
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
         var isStronger;
 
@@ -1053,10 +1052,21 @@ define([
             }
         });
         nThen(function (waitFor) {
+            postMessage('LOADING_DRIVE', {
+                state: 2
+            });
             userObject.migrate(waitFor());
         }).nThen(function (waitFor) {
-            Migrate(proxy, waitFor());
+            Migrate(proxy, waitFor(), function (version, progress) {
+                postMessage('LOADING_DRIVE', {
+                    state: 2,
+                    progress: progress
+                });
+            });
         }).nThen(function () {
+            postMessage('LOADING_DRIVE', {
+                state: 3
+            });
             userObject.fixFiles();
 
             var requestLogin = function () {
@@ -1164,6 +1174,7 @@ define([
                 && !drive['filesData']) {
                 drive[Constants.oldStorageKey] = [];
             }
+            postMessage('LOADING_DRIVE', { state: 1 });
             // Drive already exist: return the existing drive, don't load data from legacy store
             onReady(returned, cb);
         })
