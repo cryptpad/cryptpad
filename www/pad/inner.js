@@ -32,6 +32,7 @@ define([
     '/common/common-util.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/customize/application_config.js',
+    '/common/test.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -52,7 +53,9 @@ define([
     Hash,
     Util,
     ChainPad,
-    AppConfig)
+    AppConfig,
+    Test
+)
 {
     var DiffDom = window.diffDOM;
 
@@ -160,7 +163,12 @@ define([
     ];
 
     var getHTML = function (inner) {
-        return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
+        return ('<!DOCTYPE html>\n' + '<html>\n' +
+                '  <head><meta charset="utf-8"></head>\n  <body>' +
+            inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/,
+                function(match,realElt){ return unescape(realElt); }) +
+            '  </body>\n</html>'
+        );
     };
 
     var CKEDITOR_CHECK_INTERVAL = 100;
@@ -752,6 +760,51 @@ define([
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
+            function launchAnchorTest(test) {
+                // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
+                console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');
+
+                // TODO: cleanup fixme, too much ---, and removed tests
+                // TODO: any other unwanted changes (sframe-app?)?
+                // TODO: upgrade to latest of master, create branch
+                // TODO: any way to make sure that content contains anchors? Seems to need selenium-driven clicks and inputs
+                function tryAndTestExport() {
+                    //  window.setContent("This goes before the anchor");
+                    var anchors = CKEDITOR.plugins["link"].getEditorAnchors(editor);
+                    if(!anchors || anchors.length===0) {
+                        test.fail("No anchors found. Please adjust document");
+                    } else {
+                        console.log(anchors.length + " anchors found.");
+                        var exported = getHTML(inner);
+                        console.log("Obtained exported: " + exported);
+                        var allFound = true;
+                        for(var i=0; i<anchors.length; i++) {
+                            var anchor = anchors[i];
+                            console.log("Anchor " + anchor.name);
+                            var expected = "<a id=\"" + anchor.id + "\" name=\"" + anchor.name + "\" ";
+                            var found = exported.indexOf(expected)>=0;
+                            console.log("Found " + expected + " " + found + ".");
+                            allFound = allFound && found;
+                        }
+                        console.log("Finished anchor test.");
+                        if(allFound) {test.pass();}
+                        else
+                        {test.fail("Not all expected a elements found.");}
+                    }
+                }
+                var intervalHandle = window.setInterval(function() {
+                    if(editor.status==="ready") {
+                        window.clearInterval(intervalHandle);
+                        tryAndTestExport();
+                    } else {
+                        console.log("Waiting for editor to be ready.");
+                    }
+                }, 100);
+            }
+            Test(function(test) {
+
+                launchAnchorTest(test);
+            });
             andThen2(editor, Ckeditor, framework);
         });
     };
