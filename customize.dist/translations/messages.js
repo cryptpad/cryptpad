@@ -1169,9 +1169,9 @@ define(function () {
     // Loading info
     out.loading_pad_1 = "Initializing pad";
     out.loading_pad_2 = "Loading pad content";
-    out.loading_drive_1 = "Preparing user data";
-    out.loading_drive_2 = "Upgrading user data to the latest version";
-    out.loading_drive_3 = "Checking user data integrity";
+    out.loading_drive_1 = "Loading data";
+    out.loading_drive_2 = "Updating data format";
+    out.loading_drive_3 = "Verifying data integrity";
 
     return out;
 });

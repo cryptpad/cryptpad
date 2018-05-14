@@ -69,8 +69,9 @@ define([], function () {
   height: auto;
   margin-bottom: 2em;
 }
-@media screen and (max-height: 450px) {
-  #cp-loading .cp-loading-cryptofist {
+@media screen and (max-height: 500px) {
+  #cp-loading .cp-loading-logo {
+      display: none;
   }
 }
 #cp-loading-message {
@@ -162,12 +163,12 @@ define([], function () {
     text-overflow: ellipsis;
 }
 .cp-loading-progress-bar {
-    height: 5px;
+    height: 24px;
     background: white;
 }
 .cp-loading-progress-bar-value {
     height: 100%;
-    background: #00ff37;
+    background: #5cb85c;
 }
 */}).toString().slice(14, -3);
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });

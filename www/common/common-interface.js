@@ -603,13 +603,13 @@ define([
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $('.cp-loading-spinner-container').show();
-            if (config.progress && !$loading.find('.cp-loading-progress').length) {
+            if (!config.noProgress && !$loading.find('.cp-loading-progress').length) {
                 var progress = h('div.cp-loading-progress', [
                     h('p.cp-loading-progress-drive'),
                     h('p.cp-loading-progress-pad')
                 ]);
                 $loading.find('.cp-loading-container').append(progress);
-            } else if (!config.progress) {
+            } else if (config.noProgress) {
                 $loading.find('.cp-loading-progress').remove();
             }
             if (loadingText) {

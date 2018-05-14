@@ -279,7 +279,7 @@ define([
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
 
-            UI.updateLoadingProgress({ state: -1 }, false);
+            //UI.updateLoadingProgress({ state: -1 }, false);
 
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
@@ -431,11 +431,11 @@ define([
         };
 
         nThen(function (waitFor) {
-            UI.addLoadingScreen({progress: true});
+            UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
-            UI.updateLoadingProgress({
+            /*UI.updateLoadingProgress({
                 state: 1
-            }, false);
+            }, false);*/
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
@@ -462,9 +462,9 @@ define([
                 onRemote: onRemote,
                 onLocal: onLocal,
                 onInit: function () {
-                    UI.updateLoadingProgress({
+                    /*UI.updateLoadingProgress({
                         state: 2
-                    }, false);
+                    }, false);*/
                     stateChange(STATE.INITIALIZING);
                 },
                 onReady: function () { evStart.reg(onReady); },
