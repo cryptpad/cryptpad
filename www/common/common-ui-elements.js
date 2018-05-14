@@ -701,9 +701,9 @@ define([
             case 'save': // OnlyOffice save
                 button = $('<button>', {
                     'class': 'fa fa-save',
-                    title: 'TODO OnlyOffice save',
+                    title: Messages.settings_save,
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
-                .text('TODO: OnlyOffice save'))
+                .text(Messages.settings_save))
                 .click(common.prepareFeedback(type));
                 if (callback) { button.click(callback); }
                 break;
