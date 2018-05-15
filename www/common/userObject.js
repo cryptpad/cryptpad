@@ -627,6 +627,21 @@ define([
             if (typeof cb === "function") { cb(); }
         };
 
+        // Tags
+        exp.getTagsList = function () {
+            var tags = {};
+            var data;
+            var pushTag = function (tag) {
+                tags[tag] = tags[tag] ? ++tags[tag] : 1;
+            };
+            for (var id in files[FILES_DATA]) {
+                data = files[FILES_DATA][id];
+                if (!data.tags || !Array.isArray(data.tags)) { continue; }
+                data.tags.forEach(pushTag);
+            }
+            return tags;
+        };
+
         return exp;
     };
     return module;

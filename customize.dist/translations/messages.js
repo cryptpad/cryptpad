@@ -368,6 +368,7 @@ define(function () {
     out.fm_searchName = "Search";
     out.fm_recentPadsName = "Recent pads";
     out.fm_ownedPadsName = "Owned";
+    out.fm_tagsName = "Tags";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
@@ -430,6 +431,8 @@ define(function () {
     out.fm_padIsOwned = "You are the owner of this pad";
     out.fm_padIsOwnedOther = "This pad is owned by another user";
     out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
+    out.fm_tags_name = "Tag name";
+    out.fm_tags_used = "Number of uses";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";

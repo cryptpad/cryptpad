@@ -23,20 +23,27 @@ define([
     }
 
     UIElements.updateTags = function (common, href) {
-        var sframeChan = common.getSframeChannel();
-        sframeChan.query('Q_TAGS_GET', href || null, function (err, res) {
-            if (err || res.error) {
-                if (res.error === 'NO_ENTRY') {
-                    UI.alert(Messages.tags_noentry);
+        var existing, tags;
+        NThen(function(waitFor) {
+            common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function(err, res) {
+                if (err || res.error) { return void console.error(err || res.error); }
+                existing = Object.keys(res.tags).sort();
+            }));
+        }).nThen(function (waitFor) {
+            common.getPadAttribute('tags', waitFor(function (err, res) {
+                if (err) {
+                    if (err === 'NO_ENTRY') {
+                        UI.alert(Messages.tags_noentry);
+                    }
+                    waitFor.abort();
+                    return void console.error(err);
                 }
-                return void console.error(err || res.error);
-            }
-            UI.dialog.tagPrompt(res.data, function (tags) {
-                if (!Array.isArray(tags)) { return; }
-                sframeChan.event('EV_TAGS_SET', {
-                    tags: tags,
-                    href: href,
-                });
+                tags = res || [];
+            }), href);
+        }).nThen(function () {
+            UI.dialog.tagPrompt(tags, existing, function (newTags) {
+                if (!Array.isArray(newTags)) { return; }
+                common.setPadAttribute('tags', newTags, null, href);
             });
         });
     };
