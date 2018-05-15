@@ -781,12 +781,14 @@ define([
             }
         },
         //arrowType: 'round',
+        dynamicTitle: true,
         arrowTransform: 'scale(2)',
         zIndex: 100000001
     });
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
         var addTippy = function (i, el) {
+            if (el._tippy) { return; }
             if (el.nodeName === 'IFRAME') { return; }
             var opts = {
                 distance: 15
