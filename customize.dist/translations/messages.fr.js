@@ -8,6 +8,7 @@ define(function () {
     out.type.pad = 'Texte';
     out.type.code = 'Code';
     out.type.poll = 'Sondage';
+    out.type.kanban = 'Kanban';
     out.type.slide = 'Présentation';
     out.type.drive = 'CryptDrive';
     out.type.whiteboard = "Tableau Blanc";
@@ -21,6 +22,7 @@ define(function () {
     out.button_newpoll = 'Nouveau sondage';
     out.button_newslide = 'Nouvelle présentation';
     out.button_newwhiteboard = 'Nouveau tableau blanc';
+    out.button_newkanban = 'Nouveau kanban';
 
     out.updated_0_common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
