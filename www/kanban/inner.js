@@ -193,7 +193,24 @@ define([
                 };
             },
             addItemButton: true,
-            boards: boards
+            boards: boards,
+            dragcancelEl: function (el, boardId) {
+                // XXX
+                var pos = kanban.findElementPosition(el);
+                UI.confirm("Are you sure...??", function (yes) {
+                    if (!yes) { return; }
+                    var board;
+                    kanban.options.boards.some(function (b) {
+                        if (b.id === boardId) {
+                            return (board = b);
+                        }
+                    });
+                    if (!board) { return; }
+                    board.item.splice(pos, 1);
+                    $(el).remove();
+                    kanban.onChange();
+                });
+            }
         });
 
         var addBoardDefault = document.getElementById('kanban-addboard');

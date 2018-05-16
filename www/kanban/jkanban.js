@@ -59,6 +59,7 @@
                     dragEl: function (el, source) {},
                     dragendEl: function (el) {},
                     dropEl: function (el, target, source, sibling) {},
+                    dragcancelEl: function (el, boardId) {},
                     dragBoard: function (el, source) {},
                     dragendBoard: function (el) {},
                     dropBoard: function (el, target, source, sibling) {},
@@ -157,15 +158,9 @@
                             })
                             .on('cancel', function (el, container, source) {
                                 console.log("In cancel");
-                                if (confirm("Do you want to remove this item?")) {
-                                    var board1 = self.options.boards.find(function (element) {
-                                        return element.id == $(source.parentNode).attr("data-id");
-                                    });
-                                    var pos1 = self.dragItemPos;
-                                    board1.item.splice(pos1, 1);
-                                    $(el).remove();
-                                    self.onChange();
-                                }
+                                // FIXME custom code
+                                var boardId = source.parentNode.dataset.id;
+                                self.options.dragcancelEl(el, boardId);
                             })
                             .on('drop', function (el, target, source, sibling) {
                                 console.log("In drop");
