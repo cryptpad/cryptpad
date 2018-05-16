@@ -248,6 +248,15 @@ define(function () {
     out.pad_mediatagWidth = "Largeur (px)";
     out.pad_mediatagHeight = "Hauteur (px)";
 
+    // Kanban
+    out.kanban_newBoard = "Nouveau tableau";
+    out.kanban_item = "Élément {0}"; // Item number for initial content
+    out.kanban_todo = "À faire";
+    out.kanban_done = "Terminé";
+    out.kanban_working = "En cours";
+    out.kanban_deleteBoard = "Êtes-vous sûr de vouloir supprimer ce tableau ?";
+    out.kanban_deleteItem = "Êtes-vous sûr de vouloir supprimer cet élément?";
+
     // Polls
 
     out.poll_title = "Sélecteur de date Zero Knowledge";

@@ -25,35 +25,32 @@ define([
 
     // Kanban code
     var initKanban = function (framework, boards) {
-        var defaultBoards = [{ // XXX
+        var defaultBoards = [{
             "id": "todo",
-            "title": "To Do",
+            "title": Messages.kanban_todo,
             "color": "blue",
-            "item": [
-                {
-                    "title": "Item 1"
-                },
-                {
-                    "title": "Item 2"
-                }
-            ]
+            "item": [{
+                "title": Messages._getKey('kanban_item', [1])
+            }, {
+                "title": Messages._getKey('kanban_item', [2])
+            }]
         }, {
             "id": "working",
-            "title": "Working",
+            "title": Messages.kanban_working,
             "color": "orange",
             "item": [{
-                "title": "Item 3",
+                "title": Messages._getKey('kanban_item', [3])
             }, {
-                "title": "Item 4",
+                "title": Messages._getKey('kanban_item', [4])
             }]
         }, {
             "id": "done",
-            "title": "Done",
+            "title": Messages.kanban_done,
             "color": "green",
             "item": [{
-                "title": "Item 5",
+                "title": Messages._getKey('kanban_item', [5])
             }, {
-                "title": "Item 6",
+                "title": Messages._getKey('kanban_item', [6])
             }]
         }];
 
@@ -154,12 +151,10 @@ define([
 
             },
             removeClick: function (el, boardId) {
-                // XXX
-                UI.confirm("Do you want to delete this board?", function (yes) {
+                UI.confirm(Messages.kanban_deleteBoard, function (yes) {
                     if (!yes) { return; }
                     console.log("Delete board");
                     var boardName = $(el.parentNode.parentNode).attr("data-id");
-                    console.log(boardName, boardId); // TODO
                     for (var index in kanban.options.boards) {
                         if (kanban.options.boards[index].id === boardName) {
                             break;
@@ -195,9 +190,8 @@ define([
             addItemButton: true,
             boards: boards,
             dragcancelEl: function (el, boardId) {
-                // XXX
                 var pos = kanban.findElementPosition(el);
-                UI.confirm("Are you sure...??", function (yes) {
+                UI.confirm(Messages.kanban_deleteItem, function (yes) {
                     if (!yes) { return; }
                     var board;
                     kanban.options.boards.some(function (b) {
@@ -222,13 +216,12 @@ define([
                 counter++;
             }
 
-            // XXX
             kanban.addBoards([{
                 "id": "board" + counter,
-                "title": "New Board",
+                "title": Messages.kanban_newBoard,
                 "color": "yellow",
                 "item": [{
-                    "title": "Item 1",
+                    "title": Messages._getKey('kanban_item', [1]),
                 }]
             }]);
             kanban.onChange();

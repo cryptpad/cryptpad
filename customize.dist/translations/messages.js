@@ -251,7 +251,13 @@ define(function () {
     out.pad_mediatagHeight = "Height (px)";
 
     // Kanban
-    out.kanban_title = "Kanban";
+    out.kanban_newBoard = "New board";
+    out.kanban_item = "Item {0}"; // Item number for initial content
+    out.kanban_todo = "To Do";
+    out.kanban_done = "Done";
+    out.kanban_working = "Working";
+    out.kanban_deleteBoard = "Are you sure you want to delete this board?";
+    out.kanban_deleteItem = "Are you sure you want to delete this item?";
 
     // Polls
 
