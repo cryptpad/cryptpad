@@ -20,7 +20,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
 ], function (
     $,
@@ -389,7 +389,7 @@ define([
                 var D = Thumb.getResizedDimensions($canvas[0], 'pad');
                 Thumb.fromCanvas($canvas[0], D, function (err, b64) {
                     oldThumbnailState = content;
-                    Thumb.setPadThumbnail(common, href, b64);
+                    Thumb.setPadThumbnail(common, href, privateDat.channel, b64);
                 });
             };
             window.setInterval(mkThumbnail, Thumb.UPDATE_INTERVAL);

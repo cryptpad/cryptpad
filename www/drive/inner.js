@@ -18,7 +18,7 @@ define([
     '/customize/messages.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
 ], function (
     $,
@@ -51,20 +51,65 @@ define([
 
     var E_OVER_LIMIT = 'E_OVER_LIMIT';
 
-    var SEARCH = "search";
-    var SEARCH_NAME = Messages.fm_searchName;
     var ROOT = "root";
     var ROOT_NAME = Messages.fm_rootName;
+    var SEARCH = "search";
+    var SEARCH_NAME = Messages.fm_searchName;
+    var TRASH = "trash";
+    var TRASH_NAME = Messages.fm_trashName;
     var FILES_DATA = Constants.storageKey;
     var FILES_DATA_NAME = Messages.fm_filesDataName;
     var TEMPLATE = "template";
     var TEMPLATE_NAME = Messages.fm_templateName;
-    var TRASH = "trash";
-    var TRASH_NAME = Messages.fm_trashName;
     var RECENT = "recent";
     var RECENT_NAME = Messages.fm_recentPadsName;
     var OWNED = "owned";
     var OWNED_NAME = Messages.fm_ownedPadsName;
+    var TAGS = "tags";
+    var TAGS_NAME = Messages.fm_tagsName;
+
+    // Icons
+    var faFolder = 'fa-folder';
+    var faFolderOpen = 'fa-folder-open';
+    var faReadOnly = 'fa-eye';
+    var faRename = 'fa-pencil';
+    var faTrash = 'fa-trash';
+    var faDelete = 'fa-eraser';
+    var faProperties = 'fa-database';
+    var faTags = 'fa-hashtag';
+    var faEmpty = 'fa-trash-o';
+    var faRestore = 'fa-repeat';
+    var faShowParent = 'fa-location-arrow';
+    var $folderIcon = $('<span>', {
+        "class": faFolder + " fa cp-app-drive-icon-folder cp-app-drive-content-icon"
+    });
+    //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
+    var $folderEmptyIcon = $folderIcon.clone();
+    var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " fa cp-app-drive-icon-folder"});
+    //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
+    var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
+    //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
+    var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
+    var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
+    var $recentIcon = $('<span>', {"class": "fa fa-clock-o"});
+    var $trashIcon = $('<span>', {"class": "fa " + faTrash});
+    var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
+    //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
+    var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
+    var $emptyTrashIcon = $('<button>', {"class": "fa fa-ban"});
+    var $listIcon = $('<button>', {"class": "fa fa-list"});
+    var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
+    var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
+    var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
+    var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
+    //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
+    var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-con"});
+    var $addIcon = $('<span>', {"class": "fa fa-plus"});
+    var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
+    var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
+    var $ownedIcon = $('<span>', {"class": "fa fa-id-card-o"});
+    var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
+    var $tagsIcon = $('<span>', {"class": "fa " + faTags});
 
     var LS_LAST = "app-drive-lastOpened";
     var LS_OPENED = "app-drive-openedFolders";
@@ -156,48 +201,6 @@ define([
             $('[draggable="false"]').attr('draggable', true);
         }
     };
-
-    // Icons
-    var faFolder = 'fa-folder';
-    var faFolderOpen = 'fa-folder-open';
-    var faReadOnly = 'fa-eye';
-    var faRename = 'fa-pencil';
-    var faTrash = 'fa-trash';
-    var faDelete = 'fa-eraser';
-    var faProperties = 'fa-database';
-    var faTags = 'fa-hashtag';
-    var faEmpty = 'fa-trash-o';
-    var faRestore = 'fa-repeat';
-    var faShowParent = 'fa-location-arrow';
-    var $folderIcon = $('<span>', {
-        "class": faFolder + " fa cp-app-drive-icon-folder cp-app-drive-content-icon"
-    });
-    //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
-    var $folderEmptyIcon = $folderIcon.clone();
-    var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " fa cp-app-drive-icon-folder"});
-    //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
-    var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-    //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
-    var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
-    var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
-    var $recentIcon = $('<span>', {"class": "fa fa-clock-o"});
-    var $trashIcon = $('<span>', {"class": "fa " + faTrash});
-    var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
-    //var $collapseIcon = $('<span>', {"class": "fa fa-minus-square-o cp-app-drive-icon-expcol"});
-    var $expandIcon = $('<span>', {"class": "fa fa-plus-square-o cp-app-drive-icon-expcol"});
-    var $emptyTrashIcon = $('<button>', {"class": "fa fa-ban"});
-    var $listIcon = $('<button>', {"class": "fa fa-list"});
-    var $gridIcon = $('<button>', {"class": "fa fa-th-large"});
-    var $sortAscIcon = $('<span>', {"class": "fa fa-angle-up sortasc"});
-    var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
-    var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
-    //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
-    var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-con"});
-    var $addIcon = $('<span>', {"class": "fa fa-plus"});
-    var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
-    var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
-    var $ownedIcon = $('<span>', {"class": "fa fa-id-card-o"});
-    var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
 
     var history = {
         isHistoryMode: false,
@@ -360,17 +363,24 @@ define([
         // Categories dislayed in the menu
         // _WORKGROUP_ : do not display unsorted
         var displayedCategories = [ROOT, TRASH, SEARCH, RECENT];
+
+        // PCS enabled: display owned pads
         if (AppConfig.displayCreationScreen) { displayedCategories.push(OWNED); }
+        // Templates enabled: display template category
         if (AppConfig.enableTemplates) { displayedCategories.push(TEMPLATE); }
+        // Tags used: display Tags category
+        if (Object.keys(filesOp.getTagsList()).length) { displayedCategories.push(TAGS); }
+
         if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
-        var virtualCategories = [SEARCH, RECENT, OWNED];
+        var virtualCategories = [SEARCH, RECENT, OWNED, TAGS];
 
         if (!APP.loggedIn) {
             displayedCategories = [FILES_DATA];
             currentPath = [FILES_DATA];
             $tree.hide();
             if (Object.keys(files.root).length && !proxy.anonymousAlert) {
-                UI.alert(Messages.fm_alert_anonymous, null, true);
+                var msg = common.fixLinks($('<div>').html(Messages.fm_alert_anonymous));
+                UI.alert(msg);
                 proxy.anonymousAlert = true;
             }
         }
@@ -1295,7 +1305,7 @@ define([
             $span.attr('title', name);
 
             var type = Messages.type[hrefData.type] || hrefData.type;
-            common.displayThumbnail(data.href, $span, function ($thumb) {
+            common.displayThumbnail(data.href, data.channel, $span, function ($thumb) {
                 // Called only if the thumbnail exists
                 // Remove the .hide() added by displayThumnail() because it hides the icon in
                 // list mode too
@@ -1443,6 +1453,7 @@ define([
                 case SEARCH: pName = SEARCH_NAME; break;
                 case RECENT: pName = RECENT_NAME; break;
                 case OWNED: pName = OWNED_NAME; break;
+                case TAGS: pName = TAGS_NAME; break;
                 default: pName = name;
             }
             return pName;
@@ -1511,18 +1522,14 @@ define([
                 case OWNED:
                     msg = Messages.fm_info_owned;
                     break;
+                case TAGS:
+                    break;
                 default:
                     msg = undefined;
             }
             if (!APP.loggedIn) {
                 msg = Messages.fm_info_anonymous;
-                $box.html(msg);
-                $box.find('a[target!="_blank"]').click(function (e) {
-                    e.preventDefault();
-                    var href = $(this).attr('href');
-                    common.gotoURL(href);
-                });
-                return $box;
+                return $(common.fixLinks($box.html(msg)));
             }
             if (!msg || APP.store['hide-info-' + path[0]] === '1') {
                 $box.hide();
@@ -2057,6 +2064,7 @@ define([
                 $element.data('context', 'default');
                 $container.append($element);
             });
+            createGhostIcon($container);
         };
 
         var displayTrashRoot = function ($list, $folderHeader, $fileHeader) {
@@ -2100,7 +2108,7 @@ define([
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
                     var $icon = $('<td>', {'rowspan': '3', 'class': 'cp-app-drive-search-icon'})
-                        .append(getFileIcon(href));
+                        .append(getFileIcon(r.id));
                     var $title = $('<td>', {
                         'class': 'cp-app-drive-search-col1 cp-app-drive-search-title'
                     }).text(r.data.title)
@@ -2139,6 +2147,13 @@ define([
                         });
                     }
                     var $openDir = $('<td>', {'class': 'cp-app-drive-search-opendir'}).append($a);
+
+                    $('<a>').text(Messages.fc_prop).click(function () {
+                        APP.getProperties(r.id, function (e, $prop) {
+                            if (e) { return void logError(e); }
+                            UI.alert($prop[0], undefined, true);
+                        });
+                    }).appendTo($openDir);
 
                     // rows 1-3
                     $('<tr>').append($icon).append($title).append($typeName).append($type).appendTo($table);
@@ -2230,6 +2245,35 @@ define([
             });
         };
 
+        // Tags category
+        var displayTags = function ($container) {
+            var list = filesOp.getTagsList();
+            if (Object.keys(list).length === 0) { return; }
+            var sortedTags = Object.keys(list);
+            sortedTags.sort(function (a, b) {
+                return list[b] - list[a];
+            });
+            var lines = [
+                h('tr', [
+                    h('th', Messages.fm_tags_name),
+                    h('th', Messages.fm_tags_used)
+                ])
+            ];
+            sortedTags.forEach(function (tag) {
+                var tagLink = h('a', { href: '#' }, '#' + tag);
+                $(tagLink).click(function () {
+                    if (displayedCategories.indexOf(SEARCH) !== -1) {
+                        APP.Search.$input.val('#' + tag).keyup();
+                    }
+                });
+                lines.push(h('tr', [
+                    h('td', tagLink),
+                    h('td.cp-app-drive-tags-used', list[tag])
+                ]));
+            });
+            $(h('li.cp-app-drive-tags-list', h('table', lines))).appendTo($container);
+        };
+
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
         // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
@@ -2259,10 +2303,9 @@ define([
             var isTrashRoot = filesOp.comparePath(path, [TRASH]);
             var isTemplate = filesOp.comparePath(path, [TEMPLATE]);
             var isAllFiles = filesOp.comparePath(path, [FILES_DATA]);
-            var isSearch = path[0] === SEARCH;
-            var isRecent = path[0] === RECENT;
-            var isOwned = path[0] === OWNED;
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
+            var isSearch = path[0] === SEARCH;
+            var isTags = path[0] === TAGS;
 
             var root = isVirtual ? undefined : filesOp.find(path);
             if (!isVirtual && typeof(root) === "undefined") {
@@ -2296,7 +2339,7 @@ define([
 
             var $dirContent = $('<div>', {id: FOLDER_CONTENT_ID});
             $dirContent.data('path', path);
-            if (!isSearch) {
+            if (!isSearch && !isTags) {
                 var mode = getViewMode();
                 if (mode) {
                     $dirContent.addClass(getViewModeClass());
@@ -2358,10 +2401,12 @@ define([
                 displayTrashRoot($list, $folderHeader, $fileHeader);
             } else if (isSearch) {
                 displaySearch($list, path[1]);
-            } else if (isRecent) {
+            } else if (path[0] === RECENT) {
                 displayRecent($list);
-            } else if (isOwned) {
+            } else if (path[0] === OWNED) {
                 displayOwned($list);
+            } else if (isTags) {
+                displayTags($list);
             } else {
                 $dirContent.contextmenu(openContextMenu('content'));
                 if (filesOp.hasSubfolder(root)) { $list.append($folderHeader); }
@@ -2503,25 +2548,6 @@ define([
             });
         };
 
-        var createTemplate = function ($container, path) {
-            var $icon = $templateIcon.clone();
-            var isOpened = filesOp.comparePath(path, currentPath);
-            var $element = createTreeElement(TEMPLATE_NAME, $icon, [TEMPLATE], false, true, false, isOpened);
-            $element.addClass('cp-app-drive-tree-root');
-            var $list = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($element);
-            $container.append($list);
-        };
-
-        var createAllFiles = function ($container, path) {
-            var $icon = $unsortedIcon.clone();
-            var isOpened = filesOp.comparePath(path, currentPath);
-            var $allfilesElement = createTreeElement(FILES_DATA_NAME, $icon, [FILES_DATA], false, false, false, isOpened);
-            $allfilesElement.addClass('root');
-            var $allfilesList = $('<ul>', { 'class': 'cp-app-drive-tree-category' })
-                .append($allfilesElement);
-            $container.append($allfilesList);
-        };
-
         var createTrash = function ($container, path) {
             var $icon = filesOp.isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
             var isOpened = filesOp.comparePath(path, currentPath);
@@ -2534,29 +2560,11 @@ define([
             $container.append($trashList);
         };
 
-        var createRecent = function ($container, path) {
-            var $icon = $recentIcon.clone();
-            var isOpened = filesOp.comparePath(path, currentPath);
-            var $element = createTreeElement(RECENT_NAME, $icon, [RECENT], false, false, false, isOpened);
-            $element.addClass('root');
-            var $list = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($element);
-            $container.append($list);
-        };
-
-        var createOwned = function ($container, path) {
-            var $icon = $ownedIcon.clone(); // TODO
-            var isOpened = filesOp.comparePath(path, currentPath);
-            var $element = createTreeElement(OWNED_NAME, $icon, [OWNED], false, false, false, isOpened);
-            $element.addClass('root');
-            var $list = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($element);
-            $container.append($list);
-        };
-
         var search = APP.Search = {};
         var createSearch = function ($container) {
             var isInSearch = currentPath[0] === SEARCH;
             var $div = $('<div>', {'id': 'cp-app-drive-tree-search', 'class': 'cp-unselectable'});
-            var $input = $('<input>', {
+            var $input = APP.Search.$input = $('<input>', {
                 id: 'cp-app-drive-tree-search-input',
                 type: 'text',
                 draggable: false,
@@ -2606,6 +2614,38 @@ define([
             $container.append($div);
         };
 
+        var categories = {};
+        categories[FILES_DATA] = {
+            name: FILES_DATA_NAME,
+            $icon: $unsortedIcon
+        };
+        categories[TEMPLATE] = {
+            name: TEMPLATE_NAME,
+            droppable: true,
+            $icon: $templateIcon
+        };
+        categories[RECENT] = {
+            name: RECENT_NAME,
+            $icon: $recentIcon
+        };
+        categories[OWNED] = {
+            name: OWNED_NAME,
+            $icon: $ownedIcon
+        };
+        categories[TAGS] = {
+            name: TAGS_NAME,
+            $icon: $tagsIcon
+        };
+        var createCategory = function ($container, cat) {
+            var options = categories[cat];
+            var $icon = options.$icon.clone();
+            var isOpened = filesOp.comparePath([cat], currentPath);
+            var $element = createTreeElement(options.name, $icon, [cat], options.draggable, options.droppable, false, isOpened);
+            $element.addClass('cp-app-drive-tree-root');
+            var $list = $('<ul>', { 'class': 'cp-app-drive-tree-category' }).append($element);
+            $container.append($list);
+        };
+
         APP.resetTree = function () {
             var $categories = $tree.find('.cp-app-drive-tree-categories-container');
             var s = $categories.scrollTop() || 0;
@@ -2614,11 +2654,12 @@ define([
             if (displayedCategories.indexOf(SEARCH) !== -1) { createSearch($tree); }
             var $div = $('<div>', {'class': 'cp-app-drive-tree-categories-container'})
                 .appendTo($tree);
-            if (displayedCategories.indexOf(RECENT) !== -1) { createRecent($div, [RECENT]); }
-            if (displayedCategories.indexOf(OWNED) !== -1) { createOwned($div, [OWNED]); }
+            if (displayedCategories.indexOf(TAGS) !== -1) { createCategory($div, TAGS); }
+            if (displayedCategories.indexOf(RECENT) !== -1) { createCategory($div, RECENT); }
+            if (displayedCategories.indexOf(OWNED) !== -1) { createCategory($div, OWNED); }
             if (displayedCategories.indexOf(ROOT) !== -1) { createTree($div, [ROOT]); }
-            if (displayedCategories.indexOf(TEMPLATE) !== -1) { createTemplate($div, [TEMPLATE]); }
-            if (displayedCategories.indexOf(FILES_DATA) !== -1) { createAllFiles($div, [FILES_DATA]); }
+            if (displayedCategories.indexOf(TEMPLATE) !== -1) { createCategory($div, TEMPLATE); }
+            if (displayedCategories.indexOf(FILES_DATA) !== -1) { createCategory($div, FILES_DATA); }
             if (displayedCategories.indexOf(TRASH) !== -1) { createTrash($div, [TRASH]); }
 
             $tree.append(APP.$limit);
@@ -2657,9 +2698,9 @@ define([
             if (parsed.hashData.type !== "pad") { return; }
             var i = data.href.indexOf('#') + 1;
             var base = data.href.slice(0, i);
-            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
+            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
             if (!hrefsecret.keys) { return; }
-            var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+            var viewHash = Hash.getViewHashFromKeys(hrefsecret);
             return base + viewHash;
         };
 
@@ -2672,7 +2713,7 @@ define([
             }
         });
 
-        var getProperties = function (el, cb) {
+        var getProperties = APP.getProperties = function (el, cb) {
             if (!filesOp.isFile(el)) {
                 return void cb('NOT_FILE');
             }
@@ -2724,24 +2765,6 @@ define([
                 $(window).focus();
                 if (!res) { return; }
                 filesOp.delete(pathsList, refresh);
-                /*
-                // Try to delete each selected pad from server, and delete from drive if no error
-                var n = nThen(function () {});
-                pathsList.forEach(function (p) {
-                    var el = filesOp.find(p);
-                    var data = filesOp.getFileData(el);
-                    var parsed = Hash.parsePadUrl(data.href);
-                    var channel = Util.base64ToHex(parsed.hashData.channel);
-                    n = n.nThen(function (waitFor) {
-                        sframeChan.query('Q_REMOVE_OWNED_CHANNEL', channel,
-                                         waitFor(function (e) {
-                            if (e) { return void console.error(e); }
-                            filesOp.delete([p], function () {}, false, true);
-                        }));
-                    });
-                });
-                n.nThen(function () { refresh(); });
-                */
             });
         };
         $contextMenu.on("click", "a", function(e) {

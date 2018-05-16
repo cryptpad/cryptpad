@@ -113,6 +113,7 @@ define([
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
     funcs.getMediatagFromHref = function (href) {
+        // PASSWORD_FILES
         var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('file', parsed.hash);
         var data = ctx.metadataMgr.getPrivateData();
@@ -126,8 +127,7 @@ define([
         }
         return;
     };
-    funcs.getFileSize = function (href, cb) {
-        var channelId = Hash.hrefToHexChannelId(href);
+    funcs.getFileSize = function (channelId, cb) {
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
             if (!data) { return void cb("No response"); }
             if (data.error) { return void cb(data.error); }
@@ -170,6 +170,7 @@ define([
 
     // Store
     funcs.handleNewFile = function (waitFor) {
+        if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};
@@ -196,6 +197,7 @@ define([
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
             expire: cfg.expire,
+            password: cfg.password,
             template: cfg.template,
             templateId: cfg.templateId
         }, cb);
@@ -233,17 +235,20 @@ define([
         });
     };
 
-    funcs.getPadAttribute = function (key, cb) {
+    // href is optional here: if not provided, we use the href of the current tab
+    funcs.getPadAttribute = function (key, cb, href) {
         ctx.sframeChan.query('Q_GET_PAD_ATTRIBUTE', {
-            key: key
+            key: key,
+            href: href
         }, function (err, res) {
             cb (err || res.error, res.data);
         });
     };
-    funcs.setPadAttribute = function (key, value, cb) {
+    funcs.setPadAttribute = function (key, value, cb, href) {
         cb = cb || $.noop;
         ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
             key: key,
+            href: href,
             value: value
         }, cb);
     };
@@ -343,6 +348,27 @@ define([
         window.open(bounceHref);
     };
 
+    funcs.fixLinks = function (domElement) {
+        var origin = ctx.metadataMgr.getPrivateData().origin;
+        $(domElement).find('a[target="_blank"]').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var href = $(this).attr('href');
+            var absolute = /^https?:\/\//i;
+            if (!absolute.test(href)) {
+                if (href.slice(0,1) !== '/') { href = '/' + href; }
+                href = origin + href;
+            }
+            funcs.openUnsafeURL(href);
+        });
+        $(domElement).find('a[target!="_blank"]').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            funcs.gotoURL($(this).attr('href'));
+        });
+        return $(domElement)[0];
+    };
+
     funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
     var logoutHandlers = [];
@@ -397,19 +423,6 @@ define([
 
             UI.addTooltips();
 
-            ctx.sframeChan.on('EV_LOGOUT', function () {
-                $(window).on('keyup', function (e) {
-                    if (e.keyCode === 27) {
-                        UI.removeLoadingScreen();
-                    }
-                });
-                UI.addLoadingScreen({hideTips: true});
-                UI.errorLoadingScreen(Messages.onLogout, true);
-                logoutHandlers.forEach(function (h) {
-                    if (typeof (h) === "function") { h(); }
-                });
-            });
-
             ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
                 UI.confirm(confirmMsg, cb, null, true);
             });
@@ -419,12 +432,46 @@ define([
                 UI.log(data.logText);
             });
 
+            ctx.sframeChan.on("EV_PAD_PASSWORD", function () {
+                UIElements.displayPasswordPrompt(funcs);
+            });
+
+            ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
+                UI.updateLoadingProgress(data, true);
+            });
+
             ctx.metadataMgr.onReady(waitFor());
         }).nThen(function () {
             try {
                 var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
+
+            ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
+                if (err === 'DELETED') {
+                    var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
+                    UI.errorLoadingScreen(msg, false, function () {
+                        funcs.gotoURL('/drive/');
+                    });
+                }
+            });
+
+            ctx.sframeChan.on('EV_LOGOUT', function () {
+                $(window).on('keyup', function (e) {
+                    if (e.keyCode === 27) {
+                        UI.removeLoadingScreen();
+                    }
+                });
+                UI.addLoadingScreen({hideTips: true});
+                var origin = ctx.metadataMgr.getPrivateData().origin;
+                var href = origin + "/login/";
+                var onLogoutMsg = Messages._getKey('onLogout', ['<a href="' + href + '" target="_blank">', '</a>']);
+                UI.errorLoadingScreen(onLogoutMsg, true);
+                logoutHandlers.forEach(function (h) {
+                    if (typeof (h) === "function") { h(); }
+                });
+            });
+
             ctx.sframeChan.ready();
             cb(funcs);
         });

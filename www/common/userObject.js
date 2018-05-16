@@ -384,11 +384,9 @@ define([
         // Get drive ids of files from their channel ids
         exp.findChannels = function (channels) {
             var allFilesList = files[FILES_DATA];
-            var channels64 = channels.slice().map(Util.hexToBase64);
             return getFiles([FILES_DATA]).filter(function (k) {
                 var data = allFilesList[k];
-                var parsed = Hash.parsePadUrl(data.href);
-                return parsed.hashData && channels64.indexOf(parsed.hashData.channel) !== -1;
+                return channels.indexOf(data.channel) !== -1;
             });
         };
 
@@ -627,6 +625,21 @@ define([
             if (getTitle(element, 'name') === newName) { return; }
             data.filename = newName;
             if (typeof cb === "function") { cb(); }
+        };
+
+        // Tags
+        exp.getTagsList = function () {
+            var tags = {};
+            var data;
+            var pushTag = function (tag) {
+                tags[tag] = tags[tag] ? ++tags[tag] : 1;
+            };
+            for (var id in files[FILES_DATA]) {
+                data = files[FILES_DATA][id];
+                if (!data.tags || !Array.isArray(data.tags)) { continue; }
+                data.tags.forEach(pushTag);
+            }
+            return tags;
         };
 
         return exp;

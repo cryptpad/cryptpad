@@ -6,15 +6,18 @@ define([
     '/common/common-notifier.js',
     '/customize/application_config.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
-    '/common/tippy.min.js',
+    '/common/tippy/tippy.min.js',
     '/customize/pages.js',
     '/common/hyperscript.js',
+    '/customize/loading.js',
     '/common/test.js',
 
+    '/common/jquery-ui/jquery-ui.min.js',
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
-    'css!/common/tippy.css',
+    'css!/common/tippy/tippy.css',
+    'css!/common/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, Pages, h, Test) {
+            Alertify, Tippy, Pages, h, Loading, Test) {
     var UI = {};
 
     /*
@@ -182,11 +185,17 @@ define([
         ]);
     };
 
-    UI.tokenField = function (target) {
+    UI.tokenField = function (target, autocomplete) {
         var t = {
             element: target || h('input'),
         };
-        var $t = t.tokenfield = $(t.element).tokenfield();
+        var $t = t.tokenfield = $(t.element).tokenfield({
+            autocomplete: {
+                source: autocomplete,
+                delay: 100
+            },
+            showAutocompleteOnFocus: false
+        });
 
         t.getTokens = function (ignorePending) {
             var tokens = $t.tokenfield('getTokens').map(function (token) {
@@ -209,10 +218,17 @@ define([
 
         t.preventDuplicates = function (cb) {
             $t.on('tokenfield:createtoken', function (ev) {
+                // Close the suggest list when a token is added because we're going to wipe the input
+                var $input = $t.closest('.tokenfield').find('.token-input');
+                $input.autocomplete('close');
+
                 var val;
                 ev.attrs.value = ev.attrs.value.toLowerCase();
                 if (t.getTokens(true).some(function (t) {
-                    if (t === ev.attrs.value) { return ((val = t)); }
+                    if (t === ev.attrs.value) {
+                        ev.preventDefault();
+                        return ((val = t));
+                    }
                 })) {
                     ev.preventDefault();
                     if (typeof(cb) === 'function') { cb(val); }
@@ -240,7 +256,7 @@ define([
         return t;
     };
 
-    dialog.tagPrompt = function (tags, cb) {
+    dialog.tagPrompt = function (tags, existing, cb) {
         var input = dialog.textInput();
 
         var tagger = dialog.frame([
@@ -254,7 +270,7 @@ define([
             dialog.nav(),
         ]);
 
-        var field = UI.tokenField(input).preventDuplicates(function (val) {
+        var field = UI.tokenField(input, existing).preventDuplicates(function (val) {
             UI.warn(Messages._getKey('tags_duplicate', [val]));
         });
 
@@ -395,7 +411,7 @@ define([
             stopListening(listener);
             cb();
         });
-        listener = listenForKeys(close, close, ok);
+        listener = listenForKeys(close, close);
         var $ok = $(ok).click(close);
 
         document.body.appendChild(frame);
@@ -512,6 +528,50 @@ define([
         Alertify.error(Util.fixHTML(msg));
     };
 
+    UI.passwordInput = function (opts, displayEye) {
+        opts = opts || {};
+        var attributes = merge({
+            type: 'password'
+        }, opts);
+
+        var input = h('input.cp-password-input', attributes);
+        var reveal = UI.createCheckbox('cp-password-reveal', Messages.password_show);
+        var eye = h('span.fa.fa-eye.cp-password-reveal');
+
+        $(reveal).find('input').on('change', function () {
+            if($(this).is(':checked')) {
+                $(input).prop('type', 'text');
+                $(input).focus();
+                return;
+            }
+            $(input).prop('type', 'password');
+            $(input).focus();
+        });
+
+        $(eye).mousedown(function () {
+            $(input).prop('type', 'text');
+            $(input).focus();
+        }).mouseup(function(){
+            $(input).prop('type', 'password');
+            $(input).focus();
+        }).mouseout(function(){
+            $(input).prop('type', 'password');
+            $(input).focus();
+        });
+        if (displayEye) {
+            $(reveal).hide();
+        } else {
+            $(eye).hide();
+        }
+
+        return h('span.cp-password-container', [
+            input,
+            reveal,
+            eye
+        ]);
+    };
+
+
     /*
      *  spinner
      */
@@ -539,48 +599,99 @@ define([
 
     var LOADING = 'cp-loading';
 
-    var getRandomTip = function () {
+    /*var getRandomTip = function () {
         if (!Messages.tips || !Object.keys(Messages.tips).length) { return ''; }
         var keys = Object.keys(Messages.tips);
         var rdm = Math.floor(Math.random() * keys.length);
         return Messages.tips[keys[rdm]];
+    };*/
+    var loading = {
+        error: false,
+        driveState: 0,
+        padState: 0
     };
     UI.addLoadingScreen = function (config) {
         config = config || {};
         var loadingText = config.loadingText;
-        var hideTips = config.hideTips || AppConfig.hideLoadingScreenTips;
-        var hideLogo = config.hideLogo;
-        var $loading, $container;
-        if ($('#' + LOADING).length) {
-            $loading = $('#' + LOADING); //.show();
+        var todo = function () {
+            var $loading = $('#' + LOADING); //.show();
             $loading.css('display', '');
             $loading.removeClass('cp-loading-hidden');
             $('.cp-loading-spinner-container').show();
+            if (!config.noProgress && !$loading.find('.cp-loading-progress').length) {
+                var progress = h('div.cp-loading-progress', [
+                    h('p.cp-loading-progress-drive'),
+                    h('p.cp-loading-progress-pad')
+                ]);
+                $loading.find('.cp-loading-container').append(progress);
+            } else if (config.noProgress) {
+                $loading.find('.cp-loading-progress').remove();
+            }
             if (loadingText) {
-                $('#' + LOADING).find('p').text(loadingText);
+                $('#' + LOADING).find('#cp-loading-message').show().text(loadingText);
             } else {
-                $('#' + LOADING).find('p').text('');
+                $('#' + LOADING).find('#cp-loading-message').hide().text('');
             }
-            $container = $loading.find('.cp-loading-container');
+            loading.error = false;
+        };
+        if ($('#' + LOADING).length) {
+            todo();
         } else {
-            $loading = $(Pages.loadingScreen());
-            $container = $loading.find('.cp-loading-container');
-            if (hideLogo) {
-                $loading.find('img').hide();
-            } else {
-                $loading.find('img').show();
-            }
-            var $spinner = $loading.find('.cp-loading-spinner-container');
-            $spinner.show();
-            $('body').append($loading);
+            Loading();
+            todo();
         }
-        if (Messages.tips && !hideTips) {
-            var $loadingTip = $('<div>', {'id': 'cp-loading-tip'});
-            $('<span>', {'class': 'tips'}).text(getRandomTip()).appendTo($loadingTip);
-            $loadingTip.css({
-                'bottom': $('body').height()/2 - $container.height()/2 + 20 + 'px'
-            });
-            $('body').append($loadingTip);
+    };
+    UI.updateLoadingProgress = function (data, isDrive) {
+        var $loading = $('#' + LOADING);
+        if (!$loading.length || loading.error) { return; }
+        var $progress;
+        if (isDrive) {
+            console.log(data);
+            // Drive state
+            if (loading.driveState === -1) { return; } // Already loaded
+            $progress = $loading.find('.cp-loading-progress-drive');
+            if (!$progress.length) { return; } // Can't find the box to display data
+
+            // If state is -1, remove the box, drive is loaded
+            if (data.state === -1) {
+                loading.driveState = -1;
+                $progress.remove();
+            } else {
+                if (data.state < loading.driveState) { return; } // We should not display old data
+                // Update the current state
+                loading.driveState = data.state;
+                data.progress = data.progress || 100;
+                data.msg = Messages['loading_drive_'+data.state] || '';
+                $progress.html(data.msg);
+                if (data.progress) {
+                    $progress.append(h('div.cp-loading-progress-bar', [
+                        h('div.cp-loading-progress-bar-value', {style: 'width:'+data.progress+'%;'})
+                    ]));
+                }
+            }
+        } else {
+            // Pad state
+            if (loading.padState === -1) { return; } // Already loaded
+            $progress = $loading.find('.cp-loading-progress-pad');
+            if (!$progress.length) { return; } // Can't find the box to display data
+
+            // If state is -1, remove the box, pad is loaded
+            if (data.state === -1) {
+                loading.padState = -1;
+                $progress.remove();
+            } else {
+                if (data.state < loading.padState) { return; } // We should not display old data
+                // Update the current state
+                loading.padState = data.state;
+                data.progress = data.progress || 100;
+                data.msg = Messages['loading_pad_'+data.state] || '';
+                $progress.html(data.msg);
+                if (data.progress) {
+                    $progress.append(h('div.cp-loading-progress-bar', [
+                        h('div.cp-loading-progress-bar-value', {style: 'width:'+data.progress+'%;'})
+                    ]));
+                }
+            }
         }
     };
     UI.removeLoadingScreen = function (cb) {
@@ -591,7 +702,7 @@ define([
 
         $('#' + LOADING).addClass("cp-loading-hidden");
         setTimeout(cb, 750);
-        //$('#' + LOADING).fadeOut(750, cb);
+        loading.error = false;
         var $tip = $('#cp-loading-tip').css('top', '')
         // loading.less sets transition-delay: $wait-time
         // and               transition: opacity $fadeout-time
@@ -605,18 +716,27 @@ define([
         // jquery.fadeout can get stuck
     };
     UI.errorLoadingScreen = function (error, transparent, exitable) {
-        if (!$('#' + LOADING).is(':visible') || $('#' + LOADING).hasClass('cp-loading-hidden')) {
+        var $loading = $('#' + LOADING);
+        if (!$loading.is(':visible') || $loading.hasClass('cp-loading-hidden')) {
             UI.addLoadingScreen({hideTips: true});
         }
+        loading.error = true;
+        $loading.find('.cp-loading-progress').remove();
         $('.cp-loading-spinner-container').hide();
         $('#cp-loading-tip').remove();
-        if (transparent) { $('#' + LOADING).css('opacity', 0.8); }
-        $('#' + LOADING).find('p').html(error || Messages.error);
+        if (transparent) { $loading.css('opacity', 0.9); }
+        var $error = $loading.find('#cp-loading-message').show();
+        if (error instanceof Element) {
+            $error.html('').append(error);
+        } else {
+            $error.html(error || Messages.error);
+        }
         if (exitable) {
             $(window).focus();
             $(window).keydown(function (e) {
                 if (e.which === 27) {
-                    $('#' + LOADING).hide();
+                    $loading.hide();
+                    loading.error = false;
                     if (typeof(exitable) === "function") { exitable(); }
                 }
             });
@@ -660,18 +780,40 @@ define([
         });
     };
 
+    var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
+    $.extend(true, Tippy.defaults, {
+        placement: 'bottom',
+        performance: true,
+        delay: [delay, 0],
+        //sticky: true,
+        theme: 'cryptpad',
+        arrow: true,
+        maxWidth: '200px',
+        flip: true,
+        popperOptions: {
+            modifiers: {
+                preventOverflow: { boundariesElement: 'window' }
+            }
+        },
+        //arrowType: 'round',
+        dynamicTitle: true,
+        arrowTransform: 'scale(2)',
+        zIndex: 100000001
+    });
     UI.addTooltips = function () {
         var MutationObserver = window.MutationObserver;
-        var delay = typeof(AppConfig.tooltipDelay) === "number" ? AppConfig.tooltipDelay : 500;
         var addTippy = function (i, el) {
+            if (el._tippy) { return; }
             if (el.nodeName === 'IFRAME') { return; }
-            Tippy(el, {
-                position: 'bottom',
-                distance: 0,
-                performance: true,
-                delay: [delay, 0],
-                sticky: true
+            var opts = {
+                distance: 15
+            };
+            Array.prototype.slice.apply(el.attributes).filter(function (obj) {
+                return /^data-tippy-/.test(obj.name);
+            }).forEach(function (obj) {
+                opts[obj.name.slice(11)] = obj.value;
             });
+            Tippy(el, opts);
         };
         // This is the robust solution to remove dangling tooltips
         // The mutation observer does not always find removed nodes.
@@ -719,6 +861,10 @@ define([
             subtree: true
         });
     };
+
+    UI.createCheckbox = Pages.createCheckbox;
+
+    UI.createRadio = Pages.createRadio;
 
     return UI;
 });

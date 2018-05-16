@@ -165,10 +165,6 @@ define({
     // Put one entry in the parent sessionStorage
     'Q_SESSIONSTORAGE_PUT': true,
 
-    // Set and get the tags using the tag prompt button
-    'Q_TAGS_GET': true,
-    'EV_TAGS_SET': true,
-
     // Merge the anonymous drive (FS_hash) into the current logged in user's drive, to keep the pads
     // in the drive at registration.
     'Q_MERGE_ANON_DRIVE': true,
@@ -227,4 +223,17 @@ define({
     // This is for sending data out of the iframe when we are in testing mode
     // The exact protocol is defined in common/test.js
     'EV_TESTDATA': true,
+
+    // Critical error outside the iframe during loading screen
+    'EV_LOADING_ERROR': true,
+
+    // Ask for the pad password when a pad is protected
+    'EV_PAD_PASSWORD': true,
+    'Q_PAD_PASSWORD_VALUE': true,
+
+    // Loading events to display in the loading screen
+    'EV_LOADING_INFO': true,
+
+    // Get all existing tags
+    'Q_GET_ALL_TAGS': true,
 });

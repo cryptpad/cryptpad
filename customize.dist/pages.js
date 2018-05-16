@@ -73,7 +73,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.28.0 (toString)")
+            h('div.cp-version-footer', "CryptPad v2.0.0 (Alpaca)")
         ]);
     };
 
@@ -93,16 +93,25 @@ define([
             ]);
         }
 
+        var button = h('button.navbar-toggler', {
+            'type':'button',
+            /*'data-toggle':'collapse',
+            'data-target':'#menuCollapse',
+            'aria-controls': 'menuCollapse',
+            'aria-expanded':'false',
+            'aria-label':'Toggle navigation'*/
+        }, h('i.fa.fa-bars '));
+
+        $(button).click(function () {
+            if ($('#menuCollapse').is(':visible')) {
+                return void $('#menuCollapse').slideUp();
+            }
+            $('#menuCollapse').slideDown();
+        });
+
         return h('nav.navbar.navbar-expand-lg',
             h('a.navbar-brand', { href: '/index.html'}),
-            h('button.navbar-toggler', {
-                'type':'button',
-                'data-toggle':'collapse',
-                'data-target':'#menuCollapse',
-                'aria-controls': 'menuCollapse',
-                'aria-expanded':'false',
-                'aria-label':'Toggle navigation'
-            }, h('i.fa.fa-bars ')),
+            button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
                 h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
@@ -619,23 +628,87 @@ define([
         ];
     };
 
-    var loadingScreen = Pages.loadingScreen = function () {
-        return h('div#cp-loading', 
-            h('div.cp-loading-container', [
-                h('img.cp-loading-cryptofist', {
-                    src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
-                }),
-                h('div.cp-loading-spinner-container',
-                    h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
-                h('p'),
-            ])
-        );
+    Pages.createCheckbox = function (id, labelTxt, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'checkbox',
+            id: id
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
+
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-checkmark-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
+            }
+        });
+
+        $(input).change(function () { $(mark).focus(); });
+
+        return h('label.cp-checkmark', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
     };
 
-    var hiddenLoader = function () {
-        var loader = loadingScreen();
-        loader.style.display = 'none';
-        return loader;
+    Pages.createRadio = function (name, id, labelTxt, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'radio',
+            id: id,
+            name: name
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
+
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-radio-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
+            }
+        });
+
+        $(input).change(function () { $(mark).focus(); });
+
+        return h('label.cp-radio', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
     };
 
     Pages['/user/'] = Pages['/user/index.html'] = function () {
@@ -681,27 +754,10 @@ define([
                         placeholder: Msg.login_confirm,
                     }),
                     h('div.checkbox-container', [
-                        h('input#import-recent', {
-                            name: 'import-recent',
-                            type: 'checkbox',
-                            checked: true
-                        }),
-                        // hscript doesn't generate for on label for some
-                        // reason... use jquery as a temporary fallback
-                        setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
-                        /*h('label', {
-                            'for': 'import-recent',
-                        }, Msg.register_importRecent),*/
+                        Pages.createCheckbox('import-recent', Msg.register_importRecent, true)
                     ]),
                     h('div.checkbox-container', [
-                        h('input#accept-terms', {
-                            name: 'accept-terms',
-                            type: 'checkbox'
-                        }),
-                        setHTML($('<label for="accept-terms"></label>')[0], Msg.register_acceptTerms)
-                        /*setHTML(h('label', {
-                            'for': 'accept-terms',
-                        }), Msg.register_acceptTerms),*/
+                        $(Pages.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
                     ]),
                     h('button#register.btn.cp-login-register', Msg.login_register)
                 ])
@@ -716,7 +772,6 @@ define([
             ]),
 
             infopageFooter(),
-            hiddenLoader(),
         ])];
     };
 
@@ -743,17 +798,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.checkbox-container', [
-                            h('input#import-recent', {
-                                name: 'import-recent',
-                                type: 'checkbox',
-                                checked: true
-                            }),
-                            // hscript doesn't generate for on label for some
-                            // reason... use jquery as a temporary fallback
-                            setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
-                            /*h('label', {
-                                'for': 'import-recent',
-                            }, Msg.register_importRecent),*/
+                            Pages.createCheckbox('import-recent', Msg.register_importRecent, true),
                         ]),
                         h('div.extra', [
                             h('button.login.first.btn', Msg.login_login)
@@ -762,7 +807,6 @@ define([
                 ]),
             ]),
             infopageFooter(),
-            hiddenLoader(),
         ])];
     };
 

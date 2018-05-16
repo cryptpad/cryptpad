@@ -29,10 +29,10 @@
     "json.sortify": "~2.1.0",
     "secure-fabric.js": "secure-v1.7.9",
     "hyperjson": "~1.4.0",
-    "chainpad-crypto": "^0.1.3",
-    "chainpad-listmap": "^0.4.2",
-    "chainpad": "^5.0.0",
-    "chainpad-netflux": "^0.6.1",
+    "chainpad-crypto": "^0.2.0",
+    "chainpad-listmap": "^0.5.0",
+    "chainpad": "^5.1.0",
+    "chainpad-netflux": "^0.7.0",
     "file-saver": "1.3.1",
     "alertifyjs": "1.0.11",
     "scrypt-async": "1.2.0",
@@ -46,7 +46,8 @@
     "localforage": "^1.5.2",
     "html2canvas": "^0.4.1",
     "croppie": "^2.5.0",
-    "sortablejs": "#^1.6.0"
+    "sortablejs": "#^1.6.0",
+    "saferphore": "^0.0.1"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0"

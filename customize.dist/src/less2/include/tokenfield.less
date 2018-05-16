@@ -1,25 +1,31 @@
 @import (once) "./tools.less";
 
 .tokenfield_main () {
+    .ui-autocomplete {
+        z-index: 100001; // alertify + 1
+    }
     .tokenfield {
         .tools_unselectable();
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
         height: auto;
         min-height: 34px;
         padding-bottom: 0px;
         background-color: unset;
         border: none;
-        display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        padding: 0 10px;
+        margin: 0 10px;
+        padding: 0;
+        width: ~"calc(100% - 20px)";
         .token {
             box-sizing: border-box;
             border-radius: 3px;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
             border: 1px solid #d9d9d9;
             background-color: #ededed;
             white-space: nowrap;
-            margin: 10px 5px;
+            margin: 2px 0;
             height: 24px;
             vertical-align: middle;
             cursor: default;
@@ -50,7 +56,7 @@
             .close {
                 font-family: Arial;
                 display: inline-block;
-                line-height: 24px;
+                line-height: 1.49em;
                 font-size: 1.1em;
                 margin-left: 5px;
                 float: none;
@@ -73,6 +79,8 @@
             margin: 0 !important; // Override alertify
             box-shadow: none;
             max-width: 100%;
+            width: 100%;
+            min-width: 100% !important;
             &:focus {
                 border-color: transparent;
                 outline: 0;

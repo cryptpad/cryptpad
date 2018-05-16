@@ -17,7 +17,7 @@ define([
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
 ], function (
     $,
@@ -279,6 +279,8 @@ define([
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
 
+            //UI.updateLoadingProgress({ state: -1 }, false);
+
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
 
@@ -315,8 +317,7 @@ define([
                        privateDat.availableHashes.viewHash;
             var href = privateDat.pathname + '#' + hash;
             if (AppConfig.textAnalyzer && textContentGetter) {
-                var channelId = Hash.hrefToHexChannelId(href);
-                AppConfig.textAnalyzer(textContentGetter, channelId);
+                AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
             }
 
             if (options.thumbnail && privateDat.thumbnails) {
@@ -432,6 +433,9 @@ define([
         nThen(function (waitFor) {
             UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
+            /*UI.updateLoadingProgress({
+                state: 1
+            }, false);*/
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
@@ -443,7 +447,7 @@ define([
                 patchTransformer: options.patchTransformer || ChainPad.SmartJSONTransformer,
 
                 // cryptpad debug logging (default is 1)
-                // logLevel: 2,
+                logLevel: 1,
                 validateContent: options.validateContent || function (content) {
                     try {
                         JSON.parse(content);
@@ -457,7 +461,12 @@ define([
                 },
                 onRemote: onRemote,
                 onLocal: onLocal,
-                onInit: function () { stateChange(STATE.INITIALIZING); },
+                onInit: function () {
+                    /*UI.updateLoadingProgress({
+                        state: 2
+                    }, false);*/
+                    stateChange(STATE.INITIALIZING);
+                },
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
                 onError: onError
@@ -571,6 +580,9 @@ define([
                 var $templateButton = common.createButton('template', true, templateObj);
                 toolbar.$rightside.append($templateButton);
             }
+
+            var $importTemplateButton = common.createButton('importtemplate', true);
+            toolbar.$drawer.append($importTemplateButton);
 
             /* add a forget button */
             toolbar.$rightside.append(common.createButton('forget', true, {}, function (err) {

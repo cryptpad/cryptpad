@@ -30,7 +30,7 @@ define(function () {
 
     out.websocketError = 'Unable to connect to the websocket server...';
     out.typeError = "This pad is not compatible with the selected application";
-    out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
+    out.onLogout = 'You are logged out, {0}click here{1} to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
@@ -40,6 +40,7 @@ define(function () {
     out.chainpadError = 'A critical error occurred when updating your content. This page is in read-only mode to make sure you won\'t lose your work.<br>' +
                         'Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.';
     out.errorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
+    out.errorRedirectToHome = 'Press <em>Esc</em> to be redirected to your CryptDrive.';
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -148,6 +149,8 @@ define(function () {
     out.useTemplate = "Start with a template?"; //Would you like to "You have available templates for this type of pad. Do you want to use one?";
     out.useTemplateOK = 'Pick a template (Enter)';
     out.useTemplateCancel = 'Start fresh (Esc)';
+    out.template_import = "Import a template";
+    out.template_empty = "No template available";
 
     out.previewButtonTitle = "Display or hide the Markdown preview mode";
 
@@ -370,6 +373,7 @@ define(function () {
     out.fm_searchName = "Search";
     out.fm_recentPadsName = "Recent pads";
     out.fm_ownedPadsName = "Owned";
+    out.fm_tagsName = "Tags";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
@@ -432,6 +436,8 @@ define(function () {
     out.fm_padIsOwned = "You are the owner of this pad";
     out.fm_padIsOwnedOther = "This pad is owned by another user";
     out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
+    out.fm_tags_name = "Tag name";
+    out.fm_tags_used = "Number of uses";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
@@ -555,6 +561,8 @@ define(function () {
     out.settings_deleteHint = "Account deletion is permanent. Your CryptDrive and your list of pads will be deleted from the server. The rest of your pads will be deleted in 90 days if nobody else has stored them in their CryptDrive.";
     out.settings_deleteButton = "Delete your account";
     out.settings_deleteModal = "Share the following information with your CryptPad administrator in order to have your data removed from their server.";
+    out.settings_deleteConfirm = "Clicking OK will delete your account permanently. Are you sure?";
+    out.settings_deleted = "Your user account is now deleted. Press OK to go to the home page.";
 
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
     out.settings_publicSigningKey = "Public Signing Key";
@@ -617,9 +625,6 @@ define(function () {
     // pad
     out.pad_showToolbar = "Show toolbar";
     out.pad_hideToolbar = "Hide toolbar";
-
-    // general warnings
-    out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
 
     // markdown toolbar
     out.mdToolbar_button = "Show or hide the Markdown toolbar";
@@ -999,9 +1004,6 @@ define(function () {
 
     // Header.html
 
-    out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">With <img class="bottom-bar-heart" src="/customize/heart.png" alt="love" /> from <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="France"/> by <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
-
-    out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Go to your CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
     out.header_homeTitle = 'Go to CryptPad homepage';
@@ -1133,6 +1135,7 @@ define(function () {
     out.creation_expireMonths = "Month(s)";
     out.creation_expire1 = "An <b>unlimited</b> pad will not be removed from the server until its owner deletes it.";
     out.creation_expire2 = "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives.";
+    out.creation_password = "Add a password";
     out.creation_noTemplate = "No template";
     out.creation_newTemplate = "New template";
     out.creation_create = "Create";
@@ -1144,11 +1147,19 @@ define(function () {
     out.creation_ownedByOther = "Owned by another user";
     out.creation_noOwner = "No owner";
     out.creation_expiration = "Expiration time";
+    out.creation_passwordValue = "Password";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
     out.creation_newPadModalDescription = "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.";
     out.creation_newPadModalDescriptionAdvanced = "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
+
+    // Password prompt on the loadind screen
+    out.password_info = "The pad you're tyring to open is protected with a password. Enter the correct password to access its content.";
+    out.password_error = "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.";
+    out.password_placeholder = "Type the password here...";
+    out.password_submit = "Submit";
+    out.password_show = "Show";
 
     // New share modal
     out.share_linkCategory = "Share link";
@@ -1163,6 +1174,12 @@ define(function () {
     out.share_embedCategory = "Embed";
     out.share_mediatagCopy = "Copy mediatag to clipboard";
 
+    // Loading info
+    out.loading_pad_1 = "Initializing pad";
+    out.loading_pad_2 = "Loading pad content";
+    out.loading_drive_1 = "Loading data";
+    out.loading_drive_2 = "Updating data format";
+    out.loading_drive_3 = "Verifying data integrity";
 
     return out;
 });

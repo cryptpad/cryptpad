@@ -92,7 +92,7 @@ define([
         });
     };
     var logoutHandlers = [];
-    LocalStore.logout = function (cb) {
+    LocalStore.logout = function (cb, isDeletion) {
         [
             Constants.userNameKey,
             Constants.userHashKey,
@@ -108,13 +108,15 @@ define([
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
         if (!LocalStore.getFSHash()) {
-            LocalStore.setFSHash(Hash.createRandomHash());
+            LocalStore.setFSHash(Hash.createRandomHash('drive'));
         }
         eraseTempSessionValues();
 
-        logoutHandlers.forEach(function (h) {
-            if (typeof (h) === "function") { h(); }
-        });
+        if (!isDeletion) {
+            logoutHandlers.forEach(function (h) {
+                if (typeof (h) === "function") { h(); }
+            });
+        }
 
         if (typeof(AppConfig.customizeLogout) === 'function') {
             return void AppConfig.customizeLogout(cb);

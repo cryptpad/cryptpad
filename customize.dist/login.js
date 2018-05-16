@@ -154,6 +154,7 @@ define([
                     proxy.login_name = uname;
                     proxy[Constants.displayNameKey] = uname;
                     sessionStorage.createReadme = 1;
+                    if (!shouldImport) { proxy.version = 6; }
                     Feedback.send('REGISTRATION', true);
                 } else {
                     Feedback.send('LOGIN', true);
@@ -212,6 +213,7 @@ define([
                 loadingText: Messages.login_hashing,
                 hideTips: true,
             });
+
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
@@ -256,7 +258,10 @@ define([
                                 // logMeIn should reset registering = false
                                 UI.removeLoadingScreen(function () {
                                     UI.confirm(Messages.register_alreadyRegistered, function (yes) {
-                                        if (!yes) { return; }
+                                        if (!yes) {
+                                            hashing = false;
+                                            return;
+                                        }
                                         proxy.login_name = uname;
 
                                         if (!proxy[Constants.displayNameKey]) {

@@ -38,7 +38,7 @@ define(function () {
 
     out.websocketError = 'Incapaz de se conectar com o servidor websocket...';
     out.typeError = "Este bloco não é compatível com a aplicação selecionada";
-    out.onLogout = 'você foi desconectado, <a href="/" target="_blank">clique aqui</a> para se conectar, <br>ou pressione <em>ESC</em> para acessar seu bloco em modo somente leitura.';
+    out.onLogout = 'você foi desconectado, {0}clique aqui{1} para se conectar, <br>ou pressione <em>ESC</em> para acessar seu bloco em modo somente leitura.';
     out.wrongApp = "Incapaz de mostrar o conteúdo em tempo real no seu navegador. Por favor tente recarregar a página.";
 
     out.loading = "Carregando...";

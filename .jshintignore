@@ -1,6 +1,8 @@
 node_modules/
 www/bower_components/
 www/common/pdfjs/
+www/common/tippy/
+www/common/jquery-ui/
 
 server.js
 www/common/media-tag.js
@@ -8,7 +10,6 @@ www/scratch
 
 www/common/toolbar.js
 www/common/hyperscript.js
-www/common/tippy.min.js
 
 www/pad/wysiwygarea-plugin.js
 www/pad/mediatag-plugin.js

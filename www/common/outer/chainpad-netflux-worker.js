@@ -68,7 +68,7 @@ define([], function () {
 
         // shim between chainpad and netflux
         var msgIn = function (peerId, msg) {
-            return msg.replace(/^cp\|/, '');
+            return msg.replace(/^cp\|([A-Za-z0-9+\/=]+\|)?/, '');
         };
 
         var msgOut = function (msg) {
@@ -130,7 +130,7 @@ define([], function () {
             message = unBencode(message);//.slice(message.indexOf(':[') + 1);
 
             // pass the message into Chainpad
-            onMessage(message);
+            onMessage(peer, message, validateKey);
             //sframeChan.query('Q_RT_MESSAGE', message, function () { });
         };
 

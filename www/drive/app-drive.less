@@ -1,20 +1,17 @@
 @import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) "../../customize/src/less2/include/markdown.less";
-@import (once) '../../customize/src/less2/include/fileupload.less';
-@import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/leftside-menu.less';
 @import (once) "../../customize/src/less2/include/tools.less";
 @import (once) "../../customize/src/less2/include/limit-bar.less";
 @import (once) "../../customize/src/less2/include/tokenfield.less";
+@import (once) '../../customize/src/less2/include/framework.less';
 
-.toolbar_main(
+.framework_min_main(
     @bg-color: @colortheme_drive-bg,
     @warn-color: @colortheme_drive-warn,
     @color: @colortheme_drive-color
 );
-.fileupload_main();
-.alertify_main();
+
 .limit-bar_main();
 .tokenfield_main();
 
@@ -465,6 +462,8 @@ span {
                         padding-right: 15px;
                     }
                     .cp-app-drive-search-opendir {
+                        display: flex;
+                        justify-content: space-between;
                         a {
                             cursor: pointer;
                             color: #41b7d8;
@@ -495,6 +494,19 @@ span {
                     td.cp-app-drive-search-icon {
                         width: 50px;
                         font-size: 40px;
+                    }
+                }
+            }
+            &.cp-app-drive-tags-list {
+                width: 100%;
+                table {
+                    margin: 10px 50px;
+                    width: ~"calc(100% - 100px)";
+                    table-layout: fixed;
+                    td, th {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                     }
                 }
             }
@@ -547,6 +559,10 @@ span {
             cursor: pointer;
             opacity: 0.5;
             padding: 0;
+            flex-flow: column;
+            align-items: center;
+            justify-content: center;
+            display: inline-flex;
             &:hover {
                 opacity: 0.7;
             }

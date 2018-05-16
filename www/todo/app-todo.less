@@ -1,17 +1,13 @@
 @import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/toolbar.less";
 @import (once) "../../customize/src/less2/include/markdown.less";
-@import (once) '../../customize/src/less2/include/fileupload.less';
-@import (once) '../../customize/src/less2/include/alertify.less';
 @import (once) '../../customize/src/less2/include/avatar.less';
+@import (once) '../../customize/src/less2/include/framework.less';
 
-.toolbar_main(
+.framework_min_main(
     @bg-color: @colortheme_todo-bg,
     @warn-color: @colortheme_todo-warn,
     @color: @colortheme_todo-color
 );
-.fileupload_main();
-.alertify_main();
 
 // body
 &.cp-app-todo {

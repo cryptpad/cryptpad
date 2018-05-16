@@ -2,7 +2,6 @@ define([
     'jquery',
     '/common/toolbar3.js',
     '/common/common-util.js',
-    '/common/cryptget.js',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-realtime.js',
@@ -26,13 +25,12 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
 ], function (
     $,
     Toolbar,
     Util,
-    Cryptget,
     nThen,
     SFCommon,
     CommonRealtime,

@@ -34,7 +34,7 @@ define([
                 url: '/common/feedback.html?NO_LOCALSTORAGE=' + (+new Date()),
             });
         });
-        window.alert("CryptPad needs localStorage to work, try a different browser");
+        window.alert("CryptPad needs localStorage to work. Try changing your cookie permissions, or using a different browser");
     };
 
     window.onerror = function (e) {

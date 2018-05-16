@@ -16,7 +16,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
     'less!/customize/src/less2/main.less',
 
 ], function (
@@ -61,6 +61,7 @@ define([
         if (!priv.filehash) {
             uploadMode = true;
         } else {
+            // PASSWORD_FILES
             secret = Hash.getSecrets('file', priv.filehash);
             if (!secret.keys) { throw new Error("You need a hash"); }
             hexFileName = Util.base64ToHex(secret.channel);
@@ -124,6 +125,12 @@ define([
 
                     var rightsideDisplayed = false;
                     $(window.document).on('decryption', function (e) {
+                        /* FIXME
+                            we're listening for decryption events and assuming that only
+                            the main media-tag exists. In practice there is also your avatar
+                            and there could be other things in the future, so we should
+                            figure out a generic way target media-tag decryption events.
+                        */
                         var decrypted = e.originalEvent;
                         if (decrypted.callback) {
                             decrypted.callback();
@@ -133,9 +140,6 @@ define([
                         $dlform.hide();
                         var $dlButton = $dlview.find('media-tag button');
                         if (ev) { $dlButton.click(); }
-                        if (!$dlButton.length) {
-                            $appContainer.css('background', 'white');
-                        }
                         $dlButton.addClass('btn btn-success');
                         var text = Messages.download_mt_button + '<br>';
                         text += '<b>' + Util.fixHTML(title) + '</b><br>';
@@ -230,8 +234,7 @@ define([
                     if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
                     $dlform.find('#cp-app-file-dlfile, #cp-app-file-dlprogress').click(onClick);
                 };
-                var href = priv.origin + priv.pathname + priv.filehash;
-                common.getFileSize(href, function (e, data) {
+                common.getFileSize(hexFileName, function (e, data) {
                     if (e) {
                         return void UI.errorLoadingScreen(e);
                     }

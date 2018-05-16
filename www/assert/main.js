@@ -223,6 +223,33 @@ define([
             hd.type === 'invite');
     }, "test support for invite urls");
 
+    // test support for V2
+    assert(function (cb) {
+        var parsed = Hash.parsePadUrl('/pad/#/2/pad/edit/oRE0oLCtEXusRDyin7GyLGcS/');
+        var secret = Hash.getSecrets('pad', '/2/pad/edit/oRE0oLCtEXusRDyin7GyLGcS/');
+        return cb(parsed.hashData.version === 2 &&
+            parsed.hashData.mode === "edit" &&
+            parsed.hashData.type === "pad" &&
+            parsed.hashData.key === "oRE0oLCtEXusRDyin7GyLGcS" &&
+            secret.channel === "d8d51b4aea863f3f050f47f8ad261753" &&
+            window.nacl.util.encodeBase64(secret.keys.cryptKey) === "0Ts1M6VVEozErV2Nx/LTv6Im5SCD7io2LlhasyyBPQo=" &&
+            secret.keys.validateKey === "f5A1FM9Gp55tnOcM75RyHD1oxBG9ZPh9WDA7qe2Fvps=" &&
+            !parsed.hashData.present);
+    }, "test support for version 2 hash failed to parse");
+    assert(function (cb) {
+        var parsed = Hash.parsePadUrl('/pad/#/2/pad/edit/HGu0tK2od-2BBnwAz2ZNS-t4/p/embed');
+        var secret = Hash.getSecrets('pad', '/2/pad/edit/HGu0tK2od-2BBnwAz2ZNS-t4/p/embed', 'pewpew');
+        return cb(parsed.hashData.version === 2 &&
+            parsed.hashData.mode === "edit" &&
+            parsed.hashData.type === "pad" &&
+            parsed.hashData.key === "HGu0tK2od-2BBnwAz2ZNS-t4" &&
+            secret.channel === "3fb6dc93807d903aff390b5f798c92c9" &&
+            window.nacl.util.encodeBase64(secret.keys.cryptKey) === "EeCkGJra8eJgVu7v4Yl2Hc3yUjrgpKpxr0Lcc3bSWVs=" &&
+            secret.keys.validateKey === "WGkBczJf2V6vQZfAScz8V1KY6jKdoxUCckrD+E75gGE=" &&
+            parsed.hashData.embed &&
+            parsed.hashData.password);
+    }, "test support for password in version 2 hash failed to parse");
+
     assert(function (cb) {
         var url = '/pad/?utm_campaign=new_comment&utm_medium=email&utm_source=thread_mailer#/1/edit/3Ujt4F2Sjnjbis6CoYWpoQ/usn4+9CqVja8Q7RZOGTfRgqI/';
         var secret = Hash.parsePadUrl(url);

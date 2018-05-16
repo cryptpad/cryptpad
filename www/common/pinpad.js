@@ -165,6 +165,17 @@ define([
                 });
             };
 
+            exp.removePins = function (cb) {
+                rpc.send('REMOVE_PINS', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length && response[0] === "OK") {
+                        cb();
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+
             exp.uploadComplete = function (cb) {
                 rpc.send('UPLOAD_COMPLETE', null, function (e, res) {
                     if (e) { return void cb(e); }

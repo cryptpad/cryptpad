@@ -2,7 +2,7 @@
 /*
     globals module
 */
-var domain = ' http://localhost:3000/';
+var domain = 'http://localhost:3000/';
 
 // You can `kill -USR2` the node process and it will write out a heap dump.
 // If your system doesn't support dumping, comment this out and install with
@@ -12,6 +12,10 @@ var domain = ' http://localhost:3000/';
 // to enable this feature, uncomment the line below:
 // require('heapdump');
 
+
+// we prepend a space because every usage expects it
+// requiring admins to preserve it is unnecessarily confusing
+domain = ' ' + domain;
 module.exports = {
 
     // the address you want to bind to, :: means all ipv4 and ipv6 addresses

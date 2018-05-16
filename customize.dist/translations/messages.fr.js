@@ -27,7 +27,7 @@ define(function () {
 
     out.websocketError = 'Impossible de se connecter au serveur WebSocket...';
     out.typeError = "Ce pad n'est pas compatible avec l'application sélectionnée";
-    out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, <a href="/" target="_blank">cliquez ici</a> pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
+    out.onLogout = 'Vous êtes déconnecté de votre compte utilisateur, {0}cliquez ici{1} pour vous authentifier<br>ou appuyez sur <em>Échap</em> pour accéder au pad en mode lecture seule.';
     out.wrongApp = "Impossible d'afficher le contenu de ce document temps-réel dans votre navigateur. Vous pouvez essayer de recharger la page.";
     out.padNotPinned = 'Ce pad va expirer après 3 mois d\'inactivité, {0}connectez-vous{1} ou {2}enregistrez-vous{3} pour le préserver.';
     out.anonymousStoreDisabled = "L'administrateur de cette instance de CryptPad a désactivé le drive pour les utilisateurs non enregistrés. Vous devez vous connecter pour pouvoir utiliser CryptDrive.";
@@ -37,6 +37,7 @@ define(function () {
     out.chainpadError = 'Une erreur critique est survenue lors de la mise à jour du contenu. Le pad est désormais en mode lecture seule afin de s\'assurer que vous ne perdiez pas davantage de données.<br>' +
                         'Appuyez sur <em>Échap</em> pour voir le pad ou rechargez la page pour pouvoir le modifier à nouveau.';
     out.errorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
+    out.errorRedirectToHome = 'Appuyez sur <em>Échap</em> pour retourner vers votre CryptDrive.';
 
     out.loading = "Chargement...";
     out.error = "Erreur";
@@ -145,6 +146,8 @@ define(function () {
     out.useTemplate = "Commencer avec un modèle?";
     out.useTemplateOK = 'Choisir un modèle (Entrée)';
     out.useTemplateCancel = 'Document vierge (Échap)';
+    out.template_import = "Importer un modèle";
+    out.template_empty = "Aucun modèle disponible";
 
     out.previewButtonTitle = "Afficher ou cacher la prévisualisation de Markdown";
 
@@ -364,6 +367,7 @@ define(function () {
     out.fm_searchName = "Recherche";
     out.fm_recentPadsName = "Pads récents";
     out.fm_ownedPadsName = "Pads en votre possession";
+    out.fm_tagsName = "Mots-clés";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
@@ -426,6 +430,8 @@ define(function () {
     out.fm_padIsOwned = "Vous êtes le propriétaire de ce pad";
     out.fm_padIsOwnedOther = "Ce pad est la propriété d'un autre utilisateur";
     out.fm_deletedPads = "Ces pads n'existent plus sur le serveur, ils ont été supprimés de votre CryptDrive: {0}";
+    out.fm_tags_name = "Mot-clé";
+    out.fm_tags_used = "Nombre d'utilisations";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -546,6 +552,8 @@ define(function () {
     out.settings_deleteHint = "La suppression de votre compte utilisateur est permanente. Votre CryptDrive et votre liste de pads seront supprimés du serveur. Le reste de vos pads sera supprimé après 90 jours d'inactivité si personne ne les a stockés dans leur CryptDrive.";
     out.settings_deleteButton = "Supprimer votre compte";
     out.settings_deleteModal = "Veuillez envoyer les informations suivantes à votre administrateur CryptPad afin que vos données soient supprimées du serveur.";
+    out.settings_deleteConfirm = "Êtes-vous sûr de vouloir supprimer votre compte utilisateur ? Cette action est irréversible.";
+    out.settings_deleted = "Votre compte utilisateur a été supprimé. Appuyez sur OK pour être rédirigé(e) vers la page d'accueil.";
 
     out.settings_anonymous = "Vous n'êtes pas connecté. Ces préférences seront utilisées pour ce navigateur.";
     out.settings_publicSigningKey = "Clé publique de signature";
@@ -608,9 +616,6 @@ define(function () {
     // pad
     out.pad_showToolbar = "Afficher la barre d'outils";
     out.pad_hideToolbar = "Cacher la barre d'outils";
-
-    // general warnings
-    out.warn_notPinned = "Ce pad n'est stocké dans aucun CryptDrive. Il va expirer après 3 mois d'inactivité. <a href='/about.html#pinning'>En savoir plus...</a>";
 
     // markdown toolbar
     out.mdToolbar_button = "Afficher ou cacher la barre d'outils Markdown";
@@ -950,8 +955,6 @@ define(function () {
 
     // Header.html
 
-    out.header_france = '<a href="http://www.xwiki.com/fr" target="_blank" rel="noopener noreferrer">Fait avec <img class="bottom-bar-heart" src="/customize/heart.png" alt="amour" /> en <img class="bottom-bar-fr" title="France" alt="France" src="/customize/fr.png" /> par <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
-    out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Retourner vers votre CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
     out.header_homeTitle = "Aller sur la page d'accueil";
@@ -1051,7 +1054,7 @@ define(function () {
     out.tips = {};
     out.tips.shortcuts = "`ctrl+b`, `ctrl+i` et `ctrl+u` sont des raccourcis rapides pour mettre en gras, en italique ou souligner.";
     out.tips.indent = "Dans les listes à puces ou numérotées, vous pouvez utiliser `Tab` ou `Maj+Tab` pour augmenter ou réduire rapidement l'indentation.";
-    out.tips.store = "Dès que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connectés.";
+    out.tips.store = "Dès que vous ouvrez un nouveau pad, il est automatiquement stocké dans votre CryptDrive si vous êtes connecté.";
     out.tips.marker = "Vous pouvez surligner du texte dans un pad en utilisant l'option \"marker\" dans le menu déroulant des styles.";
     out.tips.driveUpload = "Les utilisateurs enregistrés peuvent importer des fichiers en les faisant glisser et en les déposant dans leur CryptDrive.";
     out.tips.filenames = "Vous pouvez renommer les fichiers de votre CryptDrive, ce nom ne sera visible que par vous.";
@@ -1081,6 +1084,7 @@ define(function () {
     out.creation_expireMonths = "Mois";
     out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
     out.creation_expire2 = "Un pad <b>à durée de vie</b> sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs lorsque cette durée sera dépassée.";
+    out.creation_password = "Ajouter un mot de passe";
     out.creation_noTemplate = "Pas de modèle";
     out.creation_newTemplate = "Nouveau modèle";
     out.creation_create = "Créer";
@@ -1092,11 +1096,19 @@ define(function () {
     out.creation_ownedByOther = "Appartient à un autre utilisateur";
     out.creation_noOwner = "Pas de propriétaire";
     out.creation_expiration = "Date d'expiration";
+    out.creation_passwordValue = "Mot de passe";
     out.creation_propertiesTitle = "Disponibilité";
     out.creation_appMenuName = "Mode avancé (Ctrl + E)";
     out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.";
     out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads avec propriétaire ou à durée de vie). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
+
+    // Password prompt on the loadind screen
+    out.password_info = "Le pad auquel vous essayez d'accéder est protégé par un mot de passe. Entrez le bon mot de passe pour accéder à son contenu.";
+    out.password_error = "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit le mot de passe est faux, soit le pad a été supprimé du serveur.";
+    out.password_placeholder = "Tapez le mot de passe ici...";
+    out.password_submit = "Valider";
+    out.password_show = "Afficher";
 
     // New share modal
     out.share_linkCategory = "Partage";
@@ -1110,6 +1122,13 @@ define(function () {
     out.share_linkCopy = "Copier le lien";
     out.share_embedCategory = "Intégration";
     out.share_mediatagCopy = "Copier le mediatag";
+
+    // Loading info
+    out.loading_pad_1 = "Initialisation du pad";
+    out.loading_pad_2 = "Chargement du contenu du pad";
+    out.loading_drive_1 = "Chargement des données";
+    out.loading_drive_2 = "Mise à jour du format des données";
+    out.loading_drive_3 = "Vérification de l'intégrité des données";
 
     return out;
 });
