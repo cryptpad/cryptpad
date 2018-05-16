@@ -21,7 +21,6 @@ define([
     Modes,
     Messages)
 {
-    console.log(Messages);
 
     // Kanban code
     var initKanban = function (framework, boards) {
@@ -64,6 +63,14 @@ define([
         // Remove any existing elements
         $(".kanban-container-outer").remove();
 
+        var getInput = function () {
+            return $('<input>', {
+                'type': 'text',
+                'id': 'kanban-edit',
+                'size': '30'
+            });
+        };
+
         var kanban = new window.jKanban({
             element: '#cp-app-kanban-content',
             gutter: '15px',
@@ -80,30 +87,41 @@ define([
                 kanban.inEditMode = true;
                 var name = $(el).text();
                 $(el).html('');
-                $('<input></input>')
-                    .attr({
-                        'type': 'text',
-                        'name': 'text',
-                        'id': 'kanban_edit',
-                        'size': '30',
-                        'value': name
-                    })
-                    .appendTo(el);
-                $('#kanban_edit').focus();
-                $('#kanban_edit').blur(function () {
-                    var name = $('#kanban_edit').val();
+                var $input = getInput().val(name).appendTo(el).focus();
+                $input[0].select();
+                var save = function () {
+                    // Store the value
+                    var name = $input.val();
+                    // Remove the input
                     $(el).text(name);
+                    // Save the value for the correct board
                     var board = $(el.parentNode.parentNode).attr("data-id");
                     var pos = kanban.findElementPosition(el);
-                    console.log(pos);
-                    console.log(board);
                     kanban.getBoardJSON(board).item[pos].title = name;
                     kanban.onChange();
+                    // Unlock edit mode
                     kanban.inEditMode = false;
+                };
+                $input.blur(save);
+                $input.keydown(function (e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        save();
+                        return;
+                    }
+                    if (e.which === 27) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $(el).text(name);
+                        kanban.inEditMode = false;
+                        return;
+                    }
                 });
 
             },
-            boardTitleClick: function (el) {
+            boardTitleClick: function (el, e) {
+                e.stopPropagation();
                 if (kanban.inEditMode) {
                     console.log("An edit is already active");
                     return;
@@ -111,25 +129,36 @@ define([
                 kanban.inEditMode = true;
                 var name = $(el).text();
                 $(el).html('');
-                $('<input></input>')
-                    .attr({
-                        'type': 'text',
-                        'name': 'text',
-                        'id': 'kanban_edit',
-                        'size': '30',
-                        'value': name
-                    })
-                    .appendTo(el);
-                $('#kanban_edit').focus();
-                $('#kanban_edit').blur(function () {
-                    var name = $('#kanban_edit').val();
+                var $input = getInput().val(name).appendTo(el).focus();
+                $input[0].select();
+                var save = function () {
+                    // Store the value
+                    var name = $input.val();
+                    // Remove the input
                     $(el).text(name);
+                    // Save the value for the correct board
                     var board = $(el.parentNode.parentNode).attr("data-id");
                     kanban.getBoardJSON(board).title = name;
                     kanban.onChange();
+                    // Unlock edit mode
                     kanban.inEditMode = false;
+                };
+                $input.blur(save);
+                $input.keydown(function (e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        save();
+                        return;
+                    }
+                    if (e.which === 27) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $(el).text(name);
+                        kanban.inEditMode = false;
+                        return;
+                    }
                 });
-
             },
             colorClick: function (el) {
                 console.log("in color click");
@@ -150,7 +179,7 @@ define([
                 kanban.onChange();
 
             },
-            removeClick: function (el, boardId) {
+            removeClick: function (el) {
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {
                     if (!yes) { return; }
                     console.log("Delete board");
@@ -166,26 +195,41 @@ define([
                     kanban.onChange();
                 });
             },
-            buttonClick: function (el, boardId) {
-                console.log(el);
-                console.log(boardId);
+            buttonClick: function (el, boardId, e) {
+                e.stopPropagation();
+                if (kanban.inEditMode) {
+                    console.log("An edit is already active");
+                    return;
+                }
+                kanban.inEditMode = true;
                 // create a form to enter element 
-                var formItem = document.createElement('form');
-                formItem.setAttribute("class", "itemform");
-                formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
-
-                kanban.addForm(boardId, formItem);
-                formItem.addEventListener("submit", function (e) {
-                    e.preventDefault();
-                    var text = e.target[0].value;
+                var $item = $('<div>', {'class': 'kanban-item'});
+                var $input = getInput().val(name).appendTo($item);
+                kanban.addForm(boardId, $item[0]);
+                $input.focus();
+                var save = function () {
+                    $item.remove();
                     kanban.addElement(boardId, {
-                        "title": text,
+                        "title": $input.val(),
                     });
-                    formItem.parentNode.removeChild(formItem);
-                });
-                document.getElementById('CancelBtn').onclick = function () {
-                    formItem.parentNode.removeChild(formItem);
+                    kanban.inEditMode = false;
                 };
+                $input.blur(save);
+                $input.keydown(function (e) {
+                    if (e.which === 13) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        save();
+                        return;
+                    }
+                    if (e.which === 27) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        $(el).text(name);
+                        kanban.inEditMode = false;
+                        return;
+                    }
+                });
             },
             addItemButton: true,
             boards: boards,

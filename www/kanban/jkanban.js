@@ -463,7 +463,7 @@
                 function __onboardTitleClickHandler(nodeItem, clickfn) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
-                        self.options.boardTitleClick(this);
+                        self.options.boardTitleClick(this, e);
                         if (typeof (this.clickfn) === 'function')
                             this.clickfn(this);
                     });
@@ -490,7 +490,7 @@
                 function __onButtonClickHandler(nodeItem, boardId) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
-                        self.options.buttonClick(this, boardId);
+                        self.options.buttonClick(this, boardId, e);
                         // if(typeof(this.clickfn) === 'function')
                         //     this.clickfn(this);
                     });

@@ -1,23 +1,5 @@
-.kanban-container-outer {
-    position: relative;
-    box-sizing: border-box;
-    width: 100%;
-    overflow: scroll;
-}
-
-.kanban-container {
-    width: 200%;
-    padding: 15px;
-}
-
 .kanban-container * {
     box-sizing: border-box;
-}
-
-.kanban-container:after {
-    clear: both;
-    display: block;
-    content: "";
 }
 
 .kanban-board {
@@ -27,6 +9,8 @@
     transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
     margin: 10px;
     vertical-align: top;
+    display: flex;
+    flex-flow: column;
 }
 
 .kanban-board.disabled-board {
@@ -63,12 +47,7 @@
 .kanban-board .kanban-drag {
     min-height: 200px;
     padding: 20px;
-}
-
-.kanban-board:after {
-    clear: both;
-    display: block;
-    content: "";
+    flex: 1;
 }
 
 .kanban-item {
@@ -89,50 +68,6 @@
 .kanban-item.is-moving.gu-mirror {
     transform: rotate(3deg);
     height: auto !important;
-}
-
-.kanban-header-yellow {
-    background: #FC3;
-}
-
-.kanban-header-orange {
-    background: #F91;
-}
-
-.kanban-header-blue {
-    background: #0AC;
-}
-
-.kanban-header-red {
-    background: #E43;
-}
-
-.kanban-header-green {
-    background: #8C4;
-}
-
-#kanban-addboard {
-    float: left;
-    margin: 30px;
-    margin-right: 10px;
-    padding: 5px;
-    padding-top: 3;
-    padding-bottom: 3px;
-    border: 1px solid;
-    width: 30px;
-    text-align: center;
-    background: #d4d4e8;
-    font-weight: bold;
-}
-
-.kanban-removeboard {
-    float: right;
-    margin: 10px;
-    padding: 3px;
-    width: 30px;
-    text-align: center;
-    background: #eee;
-    font-weight: bold;
 }
 
 /* Dragula CSS  */
