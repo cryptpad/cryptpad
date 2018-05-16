@@ -5,6 +5,7 @@ define([
     '/common/sframe-app-framework.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/common/common-interface.js',
     '/common/modes.js',
     '/customize/messages.js',
     '/kanban/jkanban.js',
@@ -16,53 +17,47 @@ define([
     Framework,
     Util,
     Hash,
+    UI,
     Modes,
-    Messages) {
+    Messages)
+{
+    console.log(Messages);
 
     // Kanban code
     var initKanban = function (framework, boards) {
-        var defaultBoards = [
-            {
-                "id": "todo",
-                "title": "To Do",
-                "color": "blue",
-                "item": [
-                    {
-                        "title": "Item 1"
-                    },
-                    {
-                        "title": "Item 2"
-                    }
-	]
-   },
-            {
-                "id": "working",
-                "title": "Working",
-                "color": "orange",
-                "item": [
-                    {
-                        "title": "Item 3",
-	},
-                    {
-                        "title": "Item 4",
-	}
-	]
-   },
-            {
-                "id": "done",
-                "title": "Done",
-                "color": "green",
-                "item": [
-                    {
-                        "title": "Item 5",
-	},
-                    {
-                        "title": "Item 6",
-	}
-	]
-   }];
+        var defaultBoards = [{ // XXX
+            "id": "todo",
+            "title": "To Do",
+            "color": "blue",
+            "item": [
+                {
+                    "title": "Item 1"
+                },
+                {
+                    "title": "Item 2"
+                }
+            ]
+        }, {
+            "id": "working",
+            "title": "Working",
+            "color": "orange",
+            "item": [{
+                "title": "Item 3",
+            }, {
+                "title": "Item 4",
+            }]
+        }, {
+            "id": "done",
+            "title": "Done",
+            "color": "green",
+            "item": [{
+                "title": "Item 5",
+            }, {
+                "title": "Item 6",
+            }]
+        }];
 
-        if (boards == null) {
+        if (!boards) {
             console.log("Initializing with default boards content");
             boards = defaultBoards;
         } else {
@@ -72,7 +67,7 @@ define([
         // Remove any existing elements
         $(".kanban-container-outer").remove();
 
-        var kanban = new jKanban({
+        var kanban = new window.jKanban({
             element: '#cp-app-kanban-content',
             gutter: '15px',
             widthBoard: '300px',
@@ -139,18 +134,17 @@ define([
                 });
 
             },
-            colorClick: function (el, boardId) {
+            colorClick: function (el) {
                 console.log("in color click");
                 var board = $(el.parentNode).attr("data-id");
                 var boardJSON = kanban.getBoardJSON(board);
                 var currentColor = boardJSON.color;
                 console.log("Current color " + currentColor);
                 var index = kanban.options.colors.findIndex(function (element) {
-                    return (element == currentColor)
+                    return (element === currentColor);
                 }) + 1;
                 console.log("Next index " + index);
-                if (index >= kanban.options.colors.length)
-                    index = 0;
+                if (index >= kanban.options.colors.length) { index = 0; }
                 var nextColor = kanban.options.colors[index];
                 console.log("Next color " + nextColor);
                 boardJSON.color = nextColor;
@@ -160,11 +154,14 @@ define([
 
             },
             removeClick: function (el, boardId) {
-                if (confirm("Do you want to delete this board?")) {
+                // XXX
+                UI.confirm("Do you want to delete this board?", function (yes) {
+                    if (!yes) { return; }
                     console.log("Delete board");
                     var boardName = $(el.parentNode.parentNode).attr("data-id");
-                    for (index in kanban.options.boards) {
-                        if (kanban.options.boards[index].id == boardName) {
+                    console.log(boardName, boardId); // TODO
+                    for (var index in kanban.options.boards) {
+                        if (kanban.options.boards[index].id === boardName) {
                             break;
                         }
                         index++;
@@ -172,7 +169,7 @@ define([
                     kanban.options.boards.splice(index, 1);
                     kanban.removeBoard(boardName);
                     kanban.onChange();
-                }
+                });
             },
             buttonClick: function (el, boardId) {
                 console.log(el);
@@ -180,20 +177,20 @@ define([
                 // create a form to enter element 
                 var formItem = document.createElement('form');
                 formItem.setAttribute("class", "itemform");
-                formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>'
+                formItem.innerHTML = '<div class="form-group"><textarea class="form-control" rows="2" autofocus></textarea></div><div class="form-group"><button type="submit" class="btn btn-primary btn-xs">Submit</button><button type="button" id="CancelBtn" class="btn btn-default btn-xs pull-right">Cancel</button></div>';
 
                 kanban.addForm(boardId, formItem);
                 formItem.addEventListener("submit", function (e) {
                     e.preventDefault();
-                    var text = e.target[0].value
+                    var text = e.target[0].value;
                     kanban.addElement(boardId, {
                         "title": text,
-                    })
+                    });
                     formItem.parentNode.removeChild(formItem);
                 });
                 document.getElementById('CancelBtn').onclick = function () {
-                    formItem.parentNode.removeChild(formItem)
-                }
+                    formItem.parentNode.removeChild(formItem);
+                };
             },
             addItemButton: true,
             boards: boards
@@ -202,29 +199,21 @@ define([
         var addBoardDefault = document.getElementById('kanban-addboard');
         addBoardDefault.addEventListener('click', function () {
             var counter = 1;
-            found = false;
-            while (found) {
-                for (var board in kanban.options.boards) {
-                    if (board.id == "board" + counter) {
-                        counter++;
-                        break;
-                    }
-                }
-                found = true;
+
+            // Get the new board id
+            while (kanban.options.boards.indexOf("board" + counter) !== -1) {
+                counter++;
             }
 
-            kanban.addBoards(
-				[{
-                    "id": "board" + counter,
-                    "title": "New Board",
-                    "color": "yellow",
-                    "item": [
-                        {
-                            "title": "Item 1",
-				}
-				]
-				}]
-            )
+            // XXX
+            kanban.addBoards([{
+                "id": "board" + counter,
+                "title": "New Board",
+                "color": "yellow",
+                "item": [{
+                    "title": "Item 1",
+                }]
+            }]);
             kanban.onChange();
         });
 
@@ -234,15 +223,15 @@ define([
     // Start of the main loop
     var andThen2 = function (framework) {
 
-        var kanban = initKanban(framework);  
+        var kanban = initKanban(framework);
 
         framework.onContentUpdate(function (newContent) {
             // Need to update the content
             console.log("Content should be updated to " + newContent);
             var currentContent = kanban.getBoardsJSON();
             var remoteContent = newContent.content;
-            
-            if (currentContent !== remoteContent) { 
+
+            if (currentContent !== remoteContent) {
                // reinit kanban (TODO: optimize to diff only)
                console.log("Content is different.. Applying content");
                kanban.setBoards(remoteContent);
@@ -258,7 +247,7 @@ define([
             };
         });
 
-        framework.onReady(function (newPad) {          
+        framework.onReady(function () {
             $("#cp-app-kanban-content").focus();
         });
 
@@ -273,8 +262,7 @@ define([
             Framework.create({
                 toolbarContainer: '#cme_toolbox',
                 contentContainer: '#cp-app-kanban-editor',
-            }, waitFor(function (fw) {
-                framework = fw;
+            }, waitFor(function (framework) {
                 andThen2(framework);
             }));
         });
