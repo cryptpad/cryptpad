@@ -68,17 +68,18 @@
         border: 1px solid rgba(0,0,0,0.3);
     }
 
+    @button-size: 50px;
     #kanban-addboard {
         margin: 30px;
         border: 1px solid;
-        width: 100px;
+        width: @button-size;
+        height: @button-size;
+        line-height: @button-size;
         text-align: center;
         background: @colortheme_kanban-bg;
         font-weight: bold;
-        height: 100px;
         align-self: flex-start;
         font-size: 50px;
-        line-height: 100px;
         cursor: pointer;
         .tools_unselectable();
     }
