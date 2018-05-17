@@ -766,10 +766,11 @@ define([
                         // Pass rtConfig to useTemplate because Cryptput will create the file and
                         // we need to have the owners and expiration time in the first line on the
                         // server
+                        var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
                         Cryptpad.useTemplate(data.template, Cryptget, function () {
                             startRealtime();
                             cb();
-                        }, rtConfig);
+                        }, cryptputCfg);
                         return;
                     }
                     // Start realtime outside the iframe and callback

@@ -438,7 +438,7 @@ define([
                     optsGet.password = password;
                 }), href);
             }
-            if (parsed2.hashData && parsed2.hashData.password) {
+            if (parsed2.hashData && parsed2.hashData.password && !optsPut.password) {
                 common.getPadAttribute('password', waitFor(function (err, password) {
                     optsPut.password = password;
                 }));
