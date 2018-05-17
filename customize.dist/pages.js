@@ -72,7 +72,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v2.0.0 (Alpaca)")
+            h('div.cp-version-footer', "CryptPad v2.1.0 (Badger)")
         ]);
     };
 

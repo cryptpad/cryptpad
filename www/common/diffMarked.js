@@ -41,6 +41,7 @@ define([
     };
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
+            // PASSWORD_FILES
             var parsed = Hash.parsePadUrl(href);
             var hexFileName = Util.base64ToHex(parsed.hashData.channel);
             var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;

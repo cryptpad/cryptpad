@@ -246,8 +246,8 @@ define([
         });
     };
 
-    common.getFileSize = function (href, cb) {
-        postMessage("GET_FILE_SIZE", {href: href}, function (obj) {
+    common.getFileSize = function (href, password, cb) {
+        postMessage("GET_FILE_SIZE", {href: href, password: password}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(undefined, obj.size);
         });
@@ -260,8 +260,8 @@ define([
         });
     };
 
-    common.isNewChannel = function (href, cb) {
-        postMessage('IS_NEW_CHANNEL', {href: href}, function (obj) {
+    common.isNewChannel = function (href, password, cb) {
+        postMessage('IS_NEW_CHANNEL', {href: href, password: password}, function (obj) {
             if (obj.error) { return void cb(obj.error); }
             if (!obj) { return void cb('INVALID_RESPONSE'); }
             cb(undefined, obj.isNew);
@@ -395,8 +395,10 @@ define([
     common.saveAsTemplate = function (Cryptput, data, cb) {
         var p = Hash.parsePadUrl(window.location.href);
         if (!p.type) { return; }
-        var hash = Hash.createRandomHash();
+        // PPP: password for the new template?
+        var hash = Hash.createRandomHash(p.type);
         var href = '/' + p.type + '/#' + hash;
+        // PPP: add password as cryptput option
         Cryptput(hash, data.toSave, function (e) {
             if (e) { throw new Error(e); }
             postMessage("ADD_PAD", {
@@ -419,16 +421,33 @@ define([
         });
     };
 
-    common.useTemplate = function (href, Crypt, cb, opts) {
+    common.useTemplate = function (href, Crypt, cb, optsPut) {
         // opts is used to overrides options for chainpad-netflux in cryptput
         // it allows us to add owners and expiration time if it is a new file
+
         var parsed = Hash.parsePadUrl(href);
+        var parsed2 = Hash.parsePadUrl(window.location.href);
         if(!parsed) { throw new Error("Cannot get template hash"); }
         postMessage("INCREMENT_TEMPLATE_USE", href);
-        Crypt.get(parsed.hash, function (err, val) {
-            if (err) { throw new Error(err); }
-            var p = Hash.parsePadUrl(window.location.href);
-            Crypt.put(p.hash, val, cb, opts);
+
+        optsPut = optsPut || {};
+        var optsGet = {};
+        Nthen(function (waitFor) {
+            if (parsed.hashData && parsed.hashData.password) {
+                common.getPadAttribute('password', waitFor(function (err, password) {
+                    optsGet.password = password;
+                }), href);
+            }
+            if (parsed2.hashData && parsed2.hashData.password) {
+                common.getPadAttribute('password', waitFor(function (err, password) {
+                    optsPut.password = password;
+                }));
+            }
+        }).nThen(function () {
+            Crypt.get(parsed.hash, function (err, val) {
+                if (err) { throw new Error(err); }
+                Crypt.put(parsed2.hash, val, cb, optsPut);
+            }, optsGet);
         });
     };
 
@@ -439,20 +458,18 @@ define([
     };
 
     // When opening a new pad or renaming it, store the new title
-    common.setPadTitle = function (title, padHref, path, cb) {
-        var href = padHref || window.location.href;
+    common.setPadTitle = function (data, cb) {
+        if (!data || typeof (data) !== "object") { return cb ('Data is not an object'); }
+
+        var href = data.href || window.location.href;
         var parsed = Hash.parsePadUrl(href);
-        if (!parsed.hash) { return; }
-        href = parsed.getUrl({present: parsed.present});
+        if (!parsed.hash) { return cb ('Invalid hash'); }
+        data.href = parsed.getUrl({present: parsed.present});
 
-        if (title === null) { return; }
-        if (title.trim() === "") { title = Hash.getDefaultName(parsed); }
+        if (typeof (data.title) !== "string") { return cb('Missing title'); }
+        if (data.title.trim() === "") { data.title = Hash.getDefaultName(parsed); }
 
-        postMessage("SET_PAD_TITLE", {
-            href: href,
-            title: title,
-            path: path
-        }, function (obj) {
+        postMessage("SET_PAD_TITLE", data, function (obj) {
             if (obj && obj.error) {
                 console.log("unable to set pad title");
                 return void cb(obj.error);
@@ -472,10 +489,6 @@ define([
         postMessage("GET_PAD_DATA", id, function (data) {
             cb(void 0, data);
         });
-    };
-    // Set initial path when creating a pad from pad creation screen
-    common.setInitialPath = function (path) {
-        postMessage("SET_INITIAL_PATH", path);
     };
 
     // Messaging (manage friends from the userlist)
@@ -549,6 +562,10 @@ define([
     pad.onDisconnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
 
+    // Loading events
+    common.loading = {};
+    common.loading.onDriveEvent = Util.mkEvent();
+
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
     };
@@ -556,15 +573,15 @@ define([
     common.getShareHashes = function (secret, cb) {
         var hashes;
         if (!window.location.hash) {
-            hashes = Hash.getHashes(secret.channel, secret);
+            hashes = Hash.getHashes(secret);
             return void cb(null, hashes);
         }
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
         if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
-        hashes = Hash.getHashes(secret.channel, secret);
+        hashes = Hash.getHashes(secret);
 
-        if (!hashes.editHash && !hashes.viewHash && parsed.hashData && !parsed.hashData.mode) {
+        if (secret.version === 0) {
             // It means we're using an old hash
             hashes.editHash = window.location.hash.slice(1);
             return void cb(null, hashes);
@@ -576,7 +593,8 @@ define([
         }
 
         postMessage("GET_STRONGER_HASH", {
-            href: window.location.href
+            href: window.location.href,
+            password: secret.password
         }, function (hash) {
             if (hash) { hashes.editHash = hash; }
             cb(null, hashes);
@@ -712,6 +730,10 @@ define([
             case 'DELETE_ACCOUNT': {
                 common.startAccountDeletion(cb); break;
             }
+            // Loading
+            case 'LOADING_DRIVE': {
+                common.loading.onDriveEvent.fire(data); break;
+            }
         }
     };
 
@@ -813,18 +835,18 @@ define([
             window.onhashchange = function (ev) {
                 if (ev && ev.reset) { oldHref = document.location.href; return; }
                 var newHref = document.location.href;
-                var parsedOld = Hash.parsePadUrl(oldHref).hashData;
-                var parsedNew = Hash.parsePadUrl(newHref).hashData;
-                if (parsedOld && parsedNew && (
-                      parsedOld.type !== parsedNew.type
-                      || parsedOld.channel !== parsedNew.channel
-                      || parsedOld.mode !== parsedNew.mode
-                      || parsedOld.key !== parsedNew.key)) {
-                    if (!parsedOld.channel) { oldHref = newHref; return; }
+
+                // Compare the URLs without /embed and /present
+                var parsedOld = Hash.parsePadUrl(oldHref);
+                var parsedNew = Hash.parsePadUrl(newHref);
+                if (parsedOld.hashData && parsedNew.hashData &&
+                    parsedOld.getUrl() !== parsedNew.getUrl()) {
+                    if (!parsedOld.hashData.key) { oldHref = newHref; return; }
+                    // If different, reload
                     document.location.reload();
                     return;
                 }
-                if (parsedNew) { oldHref = newHref; }
+                if (parsedNew.hashData) { oldHref = newHref; }
             };
             // Listen for login/logout in other tabs
             window.addEventListener('storage', function (e) {

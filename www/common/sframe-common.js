@@ -113,6 +113,7 @@ define([
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
     funcs.getMediatagFromHref = function (href) {
+        // PASSWORD_FILES
         var parsed = Hash.parsePadUrl(href);
         var secret = Hash.getSecrets('file', parsed.hash);
         var data = ctx.metadataMgr.getPrivateData();
@@ -126,8 +127,7 @@ define([
         }
         return;
     };
-    funcs.getFileSize = function (href, cb) {
-        var channelId = Hash.hrefToHexChannelId(href);
+    funcs.getFileSize = function (channelId, cb) {
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
             if (!data) { return void cb("No response"); }
             if (data.error) { return void cb(data.error); }
@@ -197,6 +197,7 @@ define([
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
             expire: cfg.expire,
+            password: cfg.password,
             template: cfg.template,
             templateId: cfg.templateId
         }, cb);
@@ -426,6 +427,14 @@ define([
                 var i = pendingFriends.indexOf(data.netfluxId);
                 if (i !== -1) { pendingFriends.splice(i, 1); }
                 UI.log(data.logText);
+            });
+
+            ctx.sframeChan.on("EV_PAD_PASSWORD", function () {
+                UIElements.displayPasswordPrompt(funcs);
+            });
+
+            ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
+                UI.updateLoadingProgress(data, true);
             });
 
             ctx.metadataMgr.onReady(waitFor());

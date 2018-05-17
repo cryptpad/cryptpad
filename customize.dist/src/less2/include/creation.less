@@ -145,16 +145,18 @@
                     max-height: 100px;
                 }
             }
+
+            input, select {
+                font-size: 14px;
+                border: 1px solid @colortheme_form-border;
+                height: 26px;
+                background-color: @colortheme_form-bg;
+                color: @colortheme_form-color;
+            }
+
             .cp-creation-expire {
                 .cp-creation-expire-picker {
                     text-align: center;
-                    input, select {
-                        font-size: 14px;
-                        border: 1px solid @colortheme_form-border;
-                        height: 26px;
-                        background-color: @colortheme_form-bg;
-                        color: @colortheme_form-color;
-                    }
                     input {
                         width: 50px;
                         margin: 0 5px;
@@ -169,6 +171,21 @@
                     }
                     .cp-creation-slider {
                         flex: 1;
+                    }
+                }
+            }
+            .cp-creation-password {
+                .cp-creation-password-picker {
+                    text-align: center;
+                    width: 100%;
+                    .cp-password-container {
+                        input {
+                            width: 150px;
+                            padding: 0 5px;
+                        }
+                        label {
+                            flex: unset;
+                        }
                     }
                 }
             }

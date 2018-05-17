@@ -60,6 +60,10 @@ define([
     var getPropertiesData = function (common, cb) {
         var data = {};
         NThen(function (waitFor) {
+            common.getPadAttribute('password', waitFor(function (err, val) {
+                data.password = val;
+            }));
+        }).nThen(function (waitFor) {
             common.getPadAttribute('href', waitFor(function (err, val) {
                 var base = common.getMetadataMgr().getPrivateData().origin;
 
@@ -71,14 +75,18 @@ define([
 
                 // We're not in a read-only pad
                 data.href = base + val;
+
                 // Get Read-only href
                 if (parsed.hashData.type !== "pad") { return; }
                 var i = data.href.indexOf('#') + 1;
                 var hBase = data.href.slice(0, i);
-                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash);
+                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
                 if (!hrefsecret.keys) { return; }
-                var viewHash = Hash.getViewHashFromKeys(hrefsecret.channel, hrefsecret.keys);
+                var viewHash = Hash.getViewHashFromKeys(hrefsecret);
                 data.roHref = hBase + viewHash;
+            }));
+            common.getPadAttribute('channel', waitFor(function (err, val) {
+                data.channel = val;
             }));
             common.getPadAttribute('atime', waitFor(function (err, val) {
                 data.atime = val;
@@ -135,6 +143,22 @@ define([
         $d.append(UI.dialog.selectable(expire, {
             id: 'cp-app-prop-expire',
         }));
+
+        if (typeof data.password !== "undefined") {
+            $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                .appendTo($d);
+            var password = UI.passwordInput({
+                id: 'cp-app-prop-expire',
+                readonly: 'readonly'
+            });
+            var $pwInput = $(password).find('.cp-password-input');
+            $pwInput.val(data.password).click(function () {
+                $pwInput[0].select();
+            });
+            $(password).find('.cp-checkmark').css('margin-bottom', '15px');
+            $d.append(password);
+        }
+
         cb(void 0, $d);
     };
     var getPadProperties = function (common, data, cb) {
@@ -176,7 +200,7 @@ define([
 
         if (common.isLoggedIn() && AppConfig.enablePinning) {
             // check the size of this file...
-            common.getFileSize(data.href, function (e, bytes) {
+            common.getFileSize(data.channel, function (e, bytes) {
                 if (e) {
                     // there was a problem with the RPC
                     console.error(e);
@@ -926,13 +950,13 @@ define([
         };
     };
 
+    var setHTML = function (e, html) {
+        e.innerHTML = html;
+        return e;
+    };
+
     UIElements.createHelpMenu = function (common, categories) {
         var type = common.getMetadataMgr().getMetadata().type || 'pad';
-
-        var setHTML = function (e, html) {
-            e.innerHTML = html;
-            return e;
-        };
 
         var elements = [];
         if (Messages.help && Messages.help.generic) {
@@ -1135,12 +1159,13 @@ define([
             };
             return;
         }
+        // No password for avatars
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
             var cryptKey = secret.keys && secret.keys.fileKeyStr;
             var hexFileName = Util.base64ToHex(secret.channel);
             var src = Hash.getBlobPathFromHex(hexFileName);
-            Common.getFileSize(href, function (e, data) {
+            Common.getFileSize(hexFileName, function (e, data) {
                 if (e) {
                     displayDefault();
                     return void console.error(e);
@@ -1907,6 +1932,18 @@ define([
             createHelper('/faq.html#keywords-expiring', Messages.creation_expire2),
         ]);
 
+        // Password
+        var password = h('div.cp-creation-password', [
+            UI.createCheckbox('cp-creation-password', Messages.creation_password, false),
+            h('span.cp-creation-password-picker.cp-creation-slider', [
+                UI.passwordInput({id: 'cp-creation-password-val'})
+                /*h('input#cp-creation-password-val', {
+                    type: "text" // TODO type password with click to show
+                }),*/
+            ]),
+            //createHelper('#', "TODO: password protection adds another layer of security ........") // TODO
+        ]);
+
         var right = h('span.fa.fa-chevron-right.cp-creation-template-more');
         var left = h('span.fa.fa-chevron-left.cp-creation-template-more');
         var templates = h('div.cp-creation-template', [
@@ -1932,6 +1969,7 @@ define([
         $(h('div#cp-creation-form', [
             owned,
             expire,
+            password,
             settings,
             templates,
             createDiv
@@ -2042,6 +2080,19 @@ define([
             $creation.focus();
         });
 
+        // Display expiration form when checkbox checked
+        $creation.find('#cp-creation-password').on('change', function () {
+            if ($(this).is(':checked')) {
+                $creation.find('.cp-creation-password-picker:not(.active)').addClass('active');
+                $creation.find('.cp-creation-password:not(.active)').addClass('active');
+                $creation.find('#cp-creation-password-val').focus();
+                return;
+            }
+            $creation.find('.cp-creation-password-picker').removeClass('active');
+            $creation.find('.cp-creation-password').removeClass('active');
+            $creation.focus();
+        });
+
         // Display settings help when checkbox checked
         $creation.find('#cp-creation-remember').on('change', function () {
             if ($(this).is(':checked')) {
@@ -2090,12 +2141,16 @@ define([
                 }
                 expireVal = ($('#cp-creation-expire-val').val() || 0) * unit;
             }
+            // Password
+            var passwordVal = $('#cp-creation-password').is(':checked') ?
+                                $('#cp-creation-password-val').val() : undefined;
 
             var $template = $creation.find('.cp-creation-template-selected');
             var templateId = $template.data('id') || undefined;
 
             return {
                 owned: ownedVal,
+                password: passwordVal,
                 expire: expireVal,
                 templateId: templateId
             };
@@ -2163,6 +2218,39 @@ define([
         if (toolbar && typeof toolbar.deleted === "function") { toolbar.deleted(); }
         UI.errorLoadingScreen(msg, true, true);
         (cb || function () {})();
+    };
+
+    UIElements.displayPasswordPrompt = function (common, isError) {
+        var error;
+        if (isError) { error = setHTML(h('p.cp-password-error'), Messages.password_error); }
+        var info = h('p.cp-password-info', Messages.password_info);
+        var password = UI.passwordInput({placeholder: Messages.password_placeholder});
+        var button = h('button', Messages.password_submit);
+
+        var submit = function () {
+            var value = $(password).find('.cp-password-input').val();
+            UI.addLoadingScreen();
+            common.getSframeChannel().query('Q_PAD_PASSWORD_VALUE', value, function (err, data) {
+                if (!data) {
+                    UIElements.displayPasswordPrompt(common, true);
+                }
+            });
+        };
+        $(password).find('.cp-password-input').on('keydown', function (e) { if (e.which === 13) { submit(); } });
+        $(button).on('click', function () { submit(); });
+
+
+        var block = h('div#cp-loading-password-prompt', [
+            error,
+            info,
+            h('p.cp-password-form', [
+                password,
+                button
+            ])
+        ]);
+        UI.errorLoadingScreen(block);
+
+        $(password).find('.cp-password-input').focus();
     };
 
     return UIElements;

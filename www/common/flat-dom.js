@@ -17,8 +17,7 @@ define([], function () {
         return data;
     };
 
-    var identity = function (x) { return x; };
-    Flat.fromDOM = function (dom) {
+    Flat.fromDOM = function (dom, predicate, filter) {
         var data = {
             map: {},
         };
@@ -34,14 +33,21 @@ define([], function () {
                 return id;
             }
             if (!el || !el.attributes) { return; }
+            if (predicate) {
+                if (!predicate(el)) { return; } // shortcircuit
+            }
+
             id = uid();
-            data.map[id] = [
+            var temp = [
                 el.tagName,
                 getAttrs(el),
                 slice(el.childNodes).map(function (e) {
                     return process(e);
-                }).filter(identity)
+                }).filter(Boolean)
             ];
+
+            data.map[id] = filter? filter(temp): temp;
+
             return id;
         };
 

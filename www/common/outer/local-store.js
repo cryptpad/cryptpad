@@ -108,7 +108,7 @@ define([
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
         if (!LocalStore.getFSHash()) {
-            LocalStore.setFSHash(Hash.createRandomHash());
+            LocalStore.setFSHash(Hash.createRandomHash('drive'));
         }
         eraseTempSessionValues();
 

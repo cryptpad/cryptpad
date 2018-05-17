@@ -75,7 +75,7 @@ define([
                 return void todo();
             }
             if (!pinPads) { return; }
-            pinPads([Hash.hrefToHexChannelId(data.href)], function (obj) {
+            pinPads([data.channel], function (obj) {
                 if (obj && obj.error) { return void cb(obj.error); }
                 todo();
             });
@@ -98,7 +98,7 @@ define([
             exp.getFiles([FILES_DATA]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.getFileData(id);
-                    var channelId = fd && fd.href && Hash.hrefToHexChannelId(fd.href);
+                    var channelId = fd.channel;
                     // If trying to remove an owned pad, remove it from server also
                     if (!isOwnPadRemoved &&
                             fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
@@ -552,30 +552,50 @@ define([
                 for (var id in fd) {
                     id = Number(id);
                     var el = fd[id];
+
+                    // Clean corrupted data
                     if (!el || typeof(el) !== "object") {
                         debug("An element in filesData was not an object.", el);
                         toClean.push(id);
                         continue;
                     }
+                    // Clean missing href
                     if (!el.href) {
                         debug("Removing an element in filesData with a missing href.", el);
                         toClean.push(id);
                         continue;
                     }
-                    if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
-                    if (!el.ctime) { el.ctime = el.atime; }
 
                     var parsed = Hash.parsePadUrl(el.href);
-                    if (!el.title) { el.title = Hash.getDefaultName(parsed); }
+                    // Clean invalid hash
                     if (!parsed.hash) {
                         debug("Removing an element in filesData with a invalid href.", el);
                         toClean.push(id);
                         continue;
                     }
+                    // Clean invalid type
                     if (!parsed.type) {
                         debug("Removing an element in filesData with a invalid type.", el);
                         toClean.push(id);
                         continue;
+                    }
+
+                    // Fix href
+                    if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
+                    // Fix creation time
+                    if (!el.ctime) { el.ctime = el.atime; }
+                    // Fix title
+                    if (!el.title) { el.title = Hash.getDefaultName(parsed); }
+                    // Fix channel
+                    if (!el.channel) {
+                        if (parsed.hashData && parsed.hashData.type === "file") {
+                            // PASSWORD_FILES
+                            el.channel = Util.base64ToHex(parsed.hashData.channel);
+                        } else {
+                            var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                            el.channel = secret.channel;
+                        }
+                        console.log('Adding missing channel in filesData ', el.channel);
                     }
 
                     if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {

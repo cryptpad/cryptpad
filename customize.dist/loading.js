@@ -69,8 +69,9 @@ define([], function () {
   height: auto;
   margin-bottom: 2em;
 }
-@media screen and (max-height: 450px) {
-  #cp-loading .cp-loading-cryptofist {
+@media screen and (max-height: 500px) {
+  #cp-loading .cp-loading-logo {
+      display: none;
   }
 }
 #cp-loading-message {
@@ -80,6 +81,43 @@ define([], function () {
     color: #000;
     text-align: center;
     display: none;
+}
+#cp-loading-password-prompt {
+    font-size: 18px;
+}
+#cp-loading-password-prompt .cp-password-error {
+    color: white;
+    background: #9e0000;
+    padding: 5px;
+    margin-bottom: 15px;
+}
+#cp-loading-password-prompt .cp-password-info {
+    text-align: left;
+    margin-bottom: 15px;
+}
+#cp-loading-password-prompt .cp-password-form {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+#cp-loading-password-prompt .cp-password-form button,
+#cp-loading-password-prompt .cp-password-form .cp-password-input {
+    background-color: #4591c4;
+    color: white;
+    border: 1px solid #4591c4;
+}
+#cp-loading-password-prompt .cp-password-form .cp-password-container {
+    flex-shrink: 1;
+    min-width: 0;
+}
+#cp-loading-password-prompt .cp-password-form input {
+    flex: 1;
+    padding: 0 5px;
+    min-width: 0;
+    text-overflow: ellipsis;
+}
+#cp-loading-password-prompt .cp-password-form button:hover {
+    background-color: #326599;
 }
 #cp-loading .cp-loading-spinner-container {
   position: relative;
@@ -113,6 +151,24 @@ define([], function () {
   padding: 15px;
   max-width: 60%;
   display: inline-block;
+}
+.cp-loading-progress {
+    width: 100%;
+    margin: 20px;
+}
+.cp-loading-progress p {
+    margin: 5px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.cp-loading-progress-bar {
+    height: 24px;
+    background: white;
+}
+.cp-loading-progress-bar-value {
+    height: 100%;
+    background: #5cb85c;
 }
 */}).toString().slice(14, -3);
     var urlArgs = window.location.href.replace(/^.*\?([^\?]*)$/, function (all, x) { return x; });
