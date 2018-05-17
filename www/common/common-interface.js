@@ -631,7 +631,6 @@ define([
         if (!$loading.length || loading.error) { return; }
         var $progress;
         if (isDrive) {
-            console.log(data);
             // Drive state
             if (loading.driveState === -1) { return; } // Already loaded
             $progress = $loading.find('.cp-loading-progress-drive');
