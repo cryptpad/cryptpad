@@ -132,6 +132,40 @@ define([
         strungJSON(orig);
     });
 
+    HTML_list.forEach(function (sel) {
+        var el = $(sel)[0];
+
+        var pred = function (el) {
+            if (el.nodeName === 'DIV') {
+                return true;
+            }
+        };
+
+        var filter = function (x) {
+            console.log(x);
+            if (x[1]['class']) {
+                x[1]['class'] = x[1]['class'].replace(/cke/g, '');
+            }
+            return x;
+        };
+
+        assert(function (cb) {
+            // FlatDOM output
+            var map = Flat.fromDOM(el, pred, filter);
+
+            // Hyperjson output
+            var hj = Hyperjson.fromDOM(el, pred, filter);
+
+            var x = Flat.toDOM(map);
+            var y = Hyperjson.toDOM(hj);
+
+            console.error(x.outerHTML);
+            console.error(y.outerHTML);
+
+            cb(x.outerHTML === y.outerHTML);
+        }, "Test equality of FlatDOM and HyperJSON");
+    });
+
     // check that old hashes parse correctly
     assert(function (cb) {
         //if (1) { return cb(true); } // TODO(cjd): This is a test failure which is a known bug
