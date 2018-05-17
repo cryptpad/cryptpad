@@ -51,14 +51,28 @@ define([
 
                 var b64Key = Nacl.util.encodeBase64(key);
 
-                var hash = Hash.getFileHashFromKeys(id, b64Key);
+                var secret = {
+                    version: 1,
+                    channel: id,
+                    keys: {
+                        fileKeyStr: b64Key
+                    }
+                };
+                var hash = Hash.getFileHashFromKeys(secret);
                 var href = '/file/#' + hash;
 
                 var title = metadata.name;
 
                 if (noStore) { return void onComplete(href); }
 
-                common.setPadTitle(title || "", href, path, function (err) {
+                // PASSWORD_FILES
+                var data = {
+                    title: title || "",
+                    href: href,
+                    path: path,
+                    channel: id
+                };
+                common.setPadTitle(data, function (err) {
                     if (err) { return void console.error(err); }
                     onComplete(href);
                     common.setPadAttribute('fileType', metadata.type, null, href);

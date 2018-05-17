@@ -122,21 +122,15 @@ define([
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
                         if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href
-                        if (Hash.findStronger(href, newRecentPads)) { return; }
+                        if (Hash.findStronger(href, oldRecentPads[id].channel, newRecentPads)) { return; }
                         // If we have a weaker version, replace the href by the new one
                         // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
-                        var weaker = Hash.findWeaker(href, newRecentPads);
+                        var weaker = Hash.findWeaker(href, oldRecentPads[id].channel, newRecentPads);
                         if (weaker) {
                             // Update RECENTPADS
-                            newRecentPads.some(function (pad) {
-                                if (pad.href === weaker) {
-                                    pad.href = href;
-                                    return true;
-                                }
-                                return;
-                            });
+                            weaker.href = href;
                             // Update the file in the drive
-                            newFo.replace(weaker, href);
+                            newFo.replace(weaker.href, href);
                             return;
                         }
                         // Here it means we have a new href, so we should add it to the drive at its old location

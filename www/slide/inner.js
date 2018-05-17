@@ -500,9 +500,7 @@ define([
                 dropArea: $('.CodeMirror'),
                 body: $('body'),
                 onUploaded: function (ev, data) {
-                    //var cursor = editor.getCursor();
-                    //var cleanName = data.name.replace(/[\[\]]/g, '');
-                    //var text = '!['+cleanName+']('+data.url+')';
+                    // PASSWORD_FILES
                     var parsed = Hash.parsePadUrl(data.url);
                     var hexFileName = Util.base64ToHex(parsed.hashData.channel);
                     var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;

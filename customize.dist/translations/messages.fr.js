@@ -1081,6 +1081,7 @@ define(function () {
     out.creation_expireMonths = "Mois";
     out.creation_expire1 = "Un pad <b>illimité</b> ne sera pas supprimé du serveur à moins que son propriétaire ne le décide.";
     out.creation_expire2 = "Un pad <b>à durée de vie</b> sera supprimé automatiquement du serveur et du CryptDrive des utilisateurs lorsque cette durée sera dépassée.";
+    out.creation_password = "Ajouter un mot de passe";
     out.creation_noTemplate = "Pas de modèle";
     out.creation_newTemplate = "Nouveau modèle";
     out.creation_create = "Créer";
@@ -1092,11 +1093,19 @@ define(function () {
     out.creation_ownedByOther = "Appartient à un autre utilisateur";
     out.creation_noOwner = "Pas de propriétaire";
     out.creation_expiration = "Date d'expiration";
+    out.creation_passwordValue = "Mot de passe";
     out.creation_propertiesTitle = "Disponibilité";
     out.creation_appMenuName = "Mode avancé (Ctrl + E)";
     out.creation_newPadModalDescription = "Cliquez sur un type de pad pour le créer. Vous pouvez aussi appuyer sur <b>Tab</b> pour sélectionner un type et appuyer sur <b>Entrée</b> pour valider.";
     out.creation_newPadModalDescriptionAdvanced = "Cochez la case si vous souhaitez voir l'écran de création de pads (pour les pads avec propriétaire ou à durée de vie). Vous pouvez appuyer sur <b>Espace</b> pour changer sa valeur.";
     out.creation_newPadModalAdvanced = "Afficher l'écran de création de pads";
+
+    // Password prompt on the loadind screen
+    out.password_info = "Le pad auquel vous essayez d'accéder est protégé par un mot de passe. Entrez le bon mot de passe pour accéder à son contenu.";
+    out.password_error = "Pad introuvable !<br>Cette erreur peut provenir de deux facteurs. Soit le mot de passe est faux, soit le pad a été supprimé du serveur.";
+    out.password_placeholder = "Tapez le mot de passe ici...";
+    out.password_submit = "Valider";
+    out.password_show = "Afficher";
 
     // New share modal
     out.share_linkCategory = "Partage";
@@ -1110,6 +1119,13 @@ define(function () {
     out.share_linkCopy = "Copier le lien";
     out.share_embedCategory = "Intégration";
     out.share_mediatagCopy = "Copier le mediatag";
+
+    // Loading info
+    out.loading_pad_1 = "Initialisation du pad";
+    out.loading_pad_2 = "Chargement du contenu du pad";
+    out.loading_drive_1 = "Chargement des données";
+    out.loading_drive_2 = "Mise à jour du format des données";
+    out.loading_drive_3 = "Vérification de l'intégrité des données";
 
     return out;
 });

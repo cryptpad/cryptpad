@@ -384,11 +384,9 @@ define([
         // Get drive ids of files from their channel ids
         exp.findChannels = function (channels) {
             var allFilesList = files[FILES_DATA];
-            var channels64 = channels.slice().map(Util.hexToBase64);
             return getFiles([FILES_DATA]).filter(function (k) {
                 var data = allFilesList[k];
-                var parsed = Hash.parsePadUrl(data.href);
-                return parsed.hashData && channels64.indexOf(parsed.hashData.channel) !== -1;
+                return channels.indexOf(data.channel) !== -1;
             });
         };
 

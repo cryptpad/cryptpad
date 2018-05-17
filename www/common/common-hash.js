@@ -19,7 +19,50 @@ define([
             .decodeUTF8(JSON.stringify(list))));
     };
 
-    var getEditHashFromKeys = Hash.getEditHashFromKeys = function (chanKey, keys) {
+    var getEditHashFromKeys = Hash.getEditHashFromKeys = function (secret) {
+        var version = secret.version;
+        var data = secret.keys;
+        if (version === 0) {
+            return secret.channel + secret.key;
+        }
+        if (version === 1) {
+            if (!data.editKeyStr) { return; }
+            return '/1/edit/' + hexToBase64(secret.channel) +
+                   '/' + Crypto.b64RemoveSlashes(data.editKeyStr) + '/';
+        }
+        if (version === 2) {
+            if (!data.editKeyStr) { return; }
+            var pass = secret.password ? 'p/' : '';
+            return '/2/' + secret.type + '/edit/' + Crypto.b64RemoveSlashes(data.editKeyStr) + '/' + pass;
+        }
+    };
+    var getViewHashFromKeys = Hash.getViewHashFromKeys = function (secret) {
+        var version = secret.version;
+        var data = secret.keys;
+        if (version === 0) { return; }
+        if (version === 1) {
+            if (!data.viewKeyStr) { return; }
+            return '/1/view/' + hexToBase64(secret.channel) +
+                   '/'+Crypto.b64RemoveSlashes(data.viewKeyStr)+'/';
+        }
+        if (version === 2) {
+            if (!data.viewKeyStr) { return; }
+            var pass = secret.password ? 'p/' : '';
+            return '/2/' + secret.type + '/view/' + Crypto.b64RemoveSlashes(data.viewKeyStr) + '/' + pass;
+        }
+    };
+    var getFileHashFromKeys = Hash.getFileHashFromKeys = function (secret) {
+        var version = secret.version;
+        var data = secret.keys;
+        if (version === 0) { return; }
+        if (version === 1) {
+            return '/1/' + hexToBase64(secret.channel) + '/' +
+                   Crypto.b64RemoveSlashes(data.fileKeyStr) + '/';
+        }
+    };
+
+    // V1
+    /*var getEditHashFromKeys = Hash.getEditHashFromKeys = function (chanKey, keys) {
         if (typeof keys === 'string') {
             return chanKey + keys;
         }
@@ -34,13 +77,31 @@ define([
     };
     var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
         return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
-    };
+    };*/
     Hash.getUserHrefFromKeys = function (origin, username, pubkey) {
         return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
 
     var fixDuplicateSlashes = function (s) {
         return s.replace(/\/+/g, '/');
+    };
+
+    Hash.createChannelId = function () {
+        var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
+        if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
+            throw new Error('channel ids must consist of 32 hex characters');
+        }
+        return id;
+    };
+
+    Hash.createRandomHash = function (type, password) {
+        var cryptor = Crypto.createEditCryptor2(void 0, void 0, password);
+        return getEditHashFromKeys({
+            password: Boolean(password),
+            version: 2,
+            type: type,
+            keys: { editKeyStr: cryptor.editKeyStr }
+        });
     };
 
 /*
@@ -56,25 +117,56 @@ Version 1
         var hashArr = fixDuplicateSlashes(hash).split('/');
         if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
             parsed.type = 'pad';
-            if (hash.slice(0,1) !== '/' && hash.length >= 56) {
+            if (hash.slice(0,1) !== '/' && hash.length >= 56) { // Version 0
                 // Old hash
                 parsed.channel = hash.slice(0, 32);
                 parsed.key = hash.slice(32, 56);
                 parsed.version = 0;
+                parsed.getHash = function () { return hash; };
                 return parsed;
             }
-            if (hashArr[1] && hashArr[1] === '1') {
+            var options;
+            if (hashArr[1] && hashArr[1] === '1') { // Version 1
                 parsed.version = 1;
                 parsed.mode = hashArr[2];
                 parsed.channel = hashArr[3];
-                parsed.key = hashArr[4].replace(/-/g, '/');
-                var options = hashArr.slice(5);
+                parsed.key = Crypto.b64AddSlashes(hashArr[4]);
+
+                options = hashArr.slice(5);
                 parsed.present = options.indexOf('present') !== -1;
                 parsed.embed = options.indexOf('embed') !== -1;
+
+                parsed.getHash = function (opts) {
+                    var hash = hashArr.slice(0, 5).join('/') + '/';
+                    if (opts.embed) { hash += 'embed/'; }
+                    if (opts.present) { hash += 'present/'; }
+                    return hash;
+                };
+                return parsed;
+            }
+            if (hashArr[1] && hashArr[1] === '2') { // Version 2
+                parsed.version = 2;
+                parsed.app = hashArr[2];
+                parsed.mode = hashArr[3];
+                parsed.key = hashArr[4];
+
+                options = hashArr.slice(5);
+                parsed.password = options.indexOf('p') !== -1;
+                parsed.present = options.indexOf('present') !== -1;
+                parsed.embed = options.indexOf('embed') !== -1;
+
+                parsed.getHash = function (opts) {
+                    var hash = hashArr.slice(0, 5).join('/') + '/';
+                    if (parsed.password) { hash += 'p/'; }
+                    if (opts.embed) { hash += 'embed/'; }
+                    if (opts.present) { hash += 'present/'; }
+                    return hash;
+                };
                 return parsed;
             }
             return parsed;
         }
+        parsed.getHash = function () { return hashArr.join('/'); };
         if (['media', 'file'].indexOf(type) !== -1) {
             parsed.type = 'file';
             if (hashArr[1] && hashArr[1] === '1') {
@@ -125,17 +217,9 @@ Version 1
             url += ret.type + '/';
             if (!ret.hashData) { return url; }
             if (ret.hashData.type !== 'pad') { return url + '#' + ret.hash; }
-            if (ret.hashData.version !== 1) { return url + '#' + ret.hash; }
-            url += '#/' + ret.hashData.version +
-                   '/' + ret.hashData.mode +
-                   '/' + ret.hashData.channel.replace(/\//g, '-') +
-                   '/' + ret.hashData.key.replace(/\//g, '-') +'/';
-            if (options.embed) {
-                url += 'embed/';
-            }
-            if (options.present) {
-                url += 'present/';
-            }
+            if (ret.hashData.version === 0) { return url + '#' + ret.hash; }
+            var hash = ret.hashData.getHash(options);
+            url += '#' + hash;
             return url;
         };
 
@@ -153,12 +237,13 @@ Version 1
             return '';
         });
         idx = href.indexOf('/#');
+        if (idx === -1) { return ret; }
         ret.hash = href.slice(idx + 2);
         ret.hashData = parseTypeHash(ret.type, ret.hash);
         return ret;
     };
 
-    var getRelativeHref = Hash.getRelativeHref = function (href) {
+    Hash.getRelativeHref = function (href) {
         if (!href) { return; }
         if (href.indexOf('#') === -1) { return; }
         var parsed = parsePadUrl(href);
@@ -170,11 +255,13 @@ Version 1
      * - no argument: use the URL hash or create one if it doesn't exist
      * - secretHash provided: use secretHash to find the keys
      */
-    Hash.getSecrets = function (type, secretHash) {
+    Hash.getSecrets = function (type, secretHash, password) {
         var secret = {};
         var generate = function () {
-            secret.keys = Crypto.createEditCryptor();
-            secret.key = Crypto.createEditCryptor().editKeyStr;
+            secret.keys = Crypto.createEditCryptor2(void 0, void 0, password);
+            secret.channel = base64ToHex(secret.keys.chanId);
+            secret.version = 2;
+            secret.type = type;
         };
         if (!secretHash && !window.location.hash) { //!/#/.test(window.location.href)) {
             generate();
@@ -191,7 +278,6 @@ Version 1
                 parsed = pHref.hashData;
                 hash = pHref.hash;
             }
-            //var parsed = parsePadUrl(window.location.href);
             //var hash = secretHash || window.location.hash.slice(1);
             if (hash.length === 0) {
                 generate();
@@ -203,9 +289,10 @@ Version 1
                 // Old hash
                 secret.channel = parsed.channel;
                 secret.key = parsed.key;
-            }
-            else if (parsed.version === 1) {
+                secret.version = 0;
+            } else if (parsed.version === 1) {
                 // New hash
+                secret.version = 1;
                 if (parsed.type === "pad") {
                     secret.channel = base64ToHex(parsed.channel);
                     if (parsed.mode === 'edit') {
@@ -229,49 +316,63 @@ Version 1
                     // version 2 hashes are to be used for encrypted blobs
                     throw new Error("User hashes can't be opened (yet)");
                 }
+            } else if (parsed.version === 2) {
+                // New hash
+                secret.version = 2;
+                secret.type = type;
+                secret.password = password;
+                if (parsed.type === "pad") {
+                    if (parsed.mode === 'edit') {
+                        secret.keys = Crypto.createEditCryptor2(parsed.key, void 0, password);
+                        secret.channel = base64ToHex(secret.keys.chanId);
+                        secret.key = secret.keys.editKeyStr;
+                        if (secret.channel.length !== 32 || secret.key.length !== 24) {
+                            throw new Error("The channel key and/or the encryption key is invalid");
+                        }
+                    }
+                    else if (parsed.mode === 'view') {
+                        secret.keys = Crypto.createViewCryptor2(parsed.key, password);
+                        secret.channel = base64ToHex(secret.keys.chanId);
+                        if (secret.channel.length !== 32) {
+                            throw new Error("The channel key is invalid");
+                        }
+                    }
+                } else if (parsed.type === "file") {
+                    throw new Error("File hashes should be version 1");
+                } else if (parsed.type === "user") {
+                    throw new Error("User hashes can't be opened (yet)");
+                }
             }
         }
         return secret;
     };
 
-    Hash.getHashes = function (channel, secret) {
+    Hash.getHashes = function (secret) {
         var hashes = {};
-        if (!secret.keys) {
+        secret = JSON.parse(JSON.stringify(secret));
+
+        if (!secret.keys && !secret.key) {
             console.error('e');
             return hashes;
+        } else if (!secret.keys) {
+            secret.keys = {};
         }
-        if (secret.keys.editKeyStr) {
-            hashes.editHash = getEditHashFromKeys(channel, secret.keys);
+
+        if (secret.keys.editKeyStr || (secret.version === 0 && secret.key)) {
+            hashes.editHash = getEditHashFromKeys(secret);
         }
         if (secret.keys.viewKeyStr) {
-            hashes.viewHash = getViewHashFromKeys(channel, secret.keys);
+            hashes.viewHash = getViewHashFromKeys(secret);
         }
         if (secret.keys.fileKeyStr) {
-            hashes.fileHash = getFileHashFromKeys(channel, secret.keys.fileKeyStr);
+            hashes.fileHash = getFileHashFromKeys(secret);
         }
         return hashes;
     };
 
-    var createChannelId = Hash.createChannelId = function () {
-        var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
-        if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
-            throw new Error('channel ids must consist of 32 hex characters');
-        }
-        return id;
-    };
-
-    Hash.createRandomHash = function () {
-        // 16 byte channel Id
-        var channelId = Util.hexToBase64(createChannelId());
-        // 18 byte encryption key
-        var key = Crypto.b64RemoveSlashes(Crypto.rand64(18));
-        return '/1/edit/' + [channelId, key].join('/') + '/';
-    };
-
     // STORAGE
-    Hash.findWeaker = function (href, recents) {
-        var rHref = href || getRelativeHref(window.location.href);
-        var parsed = parsePadUrl(rHref);
+    Hash.findWeaker = function (href, channel, recents) {
+        var parsed = parsePadUrl(href);
         if (!parsed.hash) { return false; }
         var weaker;
         Object.keys(recents).some(function (id) {
@@ -279,6 +380,8 @@ Version 1
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
+            if (channel !== pad.channel) { return; } // Not the same channel
+
             var pHash = p.hashData;
             var parsedHash = parsed.hashData;
             if (!parsedHash || !pHash) { return; }
@@ -287,18 +390,16 @@ Version 1
             if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
 
             if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.channel !== parsedHash.channel) { return; }
             if (pHash.mode === 'view' && parsedHash.mode === 'edit') {
-                weaker = pad.href;
+                weaker = pad;
                 return true;
             }
             return;
         });
         return weaker;
     };
-    var findStronger = Hash.findStronger = function (href, recents) {
-        var rHref = href || getRelativeHref(window.location.href);
-        var parsed = parsePadUrl(rHref);
+    Hash.findStronger = function (href, channel, recents) {
+        var parsed = parsePadUrl(href);
         if (!parsed.hash) { return false; }
         // We can't have a stronger hash if we're already in edit mode
         if (parsed.hashData && parsed.hashData.mode === 'edit') { return; }
@@ -308,6 +409,8 @@ Version 1
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
+            if (channel !== pad.channel) { return; } // Not the same channel
+
             var pHash = p.hashData;
             var parsedHash = parsed.hashData;
             if (!parsedHash || !pHash) { return; }
@@ -316,37 +419,20 @@ Version 1
             if (pHash.type !== 'pad' && parsedHash.type !== 'pad') { return; }
 
             if (pHash.version !== parsedHash.version) { return; }
-            if (pHash.channel !== parsedHash.channel) { return; }
             if (pHash.mode === 'edit' && parsedHash.mode === 'view') {
-                stronger = pad.href;
+                stronger = pad;
                 return true;
             }
             return;
         });
         return stronger;
     };
-    Hash.isNotStrongestStored = function (href, recents) {
-        return findStronger(href, recents);
-    };
 
-    Hash.hrefToHexChannelId = function (href) {
+    Hash.hrefToHexChannelId = function (href, password) {
         var parsed = Hash.parsePadUrl(href);
         if (!parsed || !parsed.hash) { return; }
-
-        parsed = parsed.hashData;
-        if (parsed.version === 0) {
-            return parsed.channel;
-        } else if (parsed.version !== 1 && parsed.version !== 2) {
-            console.error("parsed href had no version");
-            console.error(parsed);
-            return;
-        }
-
-        var channel = parsed.channel;
-        if (!channel) { return; }
-
-        var hex = base64ToHex(channel);
-        return hex;
+        var secret = Hash.getSecrets(parsed.type, parsed.hash, password);
+        return secret.channel;
     };
 
     Hash.getBlobPathFromHex = function (id) {
