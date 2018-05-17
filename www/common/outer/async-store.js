@@ -92,7 +92,7 @@ define([
             var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit, null) : null;
             if (profileChan) { list.push(profileChan); }
             var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar, null) : null;
-            if (avatarChan) { list.push(avatarChan); }
+            if (avatarChan) { list.push(Util.base64ToHex(avatarChan)); }
         }
 
         if (store.proxy.friends) {

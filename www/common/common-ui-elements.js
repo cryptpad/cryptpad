@@ -1166,9 +1166,9 @@ define([
             var hexFileName = Util.base64ToHex(secret.channel);
             var src = Hash.getBlobPathFromHex(hexFileName);
             Common.getFileSize(hexFileName, function (e, data) {
-                if (e) {
+                if (e || !data) {
                     displayDefault();
-                    return void console.error(e);
+                    return void console.error(e || "404 avatar");
                 }
                 if (typeof data !== "number") { return void displayDefault(); }
                 if (Util.bytesToMegabytes(data) > 0.5) { return void displayDefault(); }
