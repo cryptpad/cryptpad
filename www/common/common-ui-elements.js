@@ -2080,7 +2080,7 @@ define([
             $creation.focus();
         });
 
-        // Display expiration form when checkbox checked
+        // Display password form when checkbox checked
         $creation.find('#cp-creation-password').on('change', function () {
             if ($(this).is(':checked')) {
                 $creation.find('.cp-creation-password-picker:not(.active)').addClass('active');
