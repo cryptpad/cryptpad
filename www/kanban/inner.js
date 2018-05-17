@@ -22,6 +22,9 @@ define([
     Messages)
 {
 
+    var verbose = function (x) { console.log(x); };
+    verbose = function () {}; // comment out to enable verbose logging
+
     // Kanban code
     var initKanban = function (framework, boards) {
         var defaultBoards = [{
@@ -54,10 +57,10 @@ define([
         }];
 
         if (!boards) {
-            console.log("Initializing with default boards content");
+            verbose("Initializing with default boards content");
             boards = defaultBoards;
         } else {
-            console.log("Initializing with boards content " + boards);
+            verbose("Initializing with boards content " + boards);
         }
 
         // Remove any existing elements
@@ -76,12 +79,12 @@ define([
             gutter: '15px',
             widthBoard: '300px',
             onChange: function () {
-                console.log("Board object has changed");
+                verbose("Board object has changed");
                 framework.localChange();
             },
             click: function (el) {
                 if (kanban.inEditMode) {
-                    console.log("An edit is already active");
+                    verbose("An edit is already active");
                     return;
                 }
                 kanban.inEditMode = true;
@@ -123,7 +126,7 @@ define([
             boardTitleClick: function (el, e) {
                 e.stopPropagation();
                 if (kanban.inEditMode) {
-                    console.log("An edit is already active");
+                    verbose("An edit is already active");
                     return;
                 }
                 kanban.inEditMode = true;
@@ -161,18 +164,18 @@ define([
                 });
             },
             colorClick: function (el) {
-                console.log("in color click");
+                verbose("in color click");
                 var board = $(el.parentNode).attr("data-id");
                 var boardJSON = kanban.getBoardJSON(board);
                 var currentColor = boardJSON.color;
-                console.log("Current color " + currentColor);
+                verbose("Current color " + currentColor);
                 var index = kanban.options.colors.findIndex(function (element) {
                     return (element === currentColor);
                 }) + 1;
-                console.log("Next index " + index);
+                verbose("Next index " + index);
                 if (index >= kanban.options.colors.length) { index = 0; }
                 var nextColor = kanban.options.colors[index];
-                console.log("Next color " + nextColor);
+                verbose("Next color " + nextColor);
                 boardJSON.color = nextColor;
                 $(el).removeClass("kanban-header-" + currentColor);
                 $(el).addClass("kanban-header-" + nextColor);
@@ -182,7 +185,7 @@ define([
             removeClick: function (el) {
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {
                     if (!yes) { return; }
-                    console.log("Delete board");
+                    verbose("Delete board");
                     var boardName = $(el.parentNode.parentNode).attr("data-id");
                     for (var index in kanban.options.boards) {
                         if (kanban.options.boards[index].id === boardName) {
@@ -198,7 +201,7 @@ define([
             buttonClick: function (el, boardId, e) {
                 e.stopPropagation();
                 if (kanban.inEditMode) {
-                    console.log("An edit is already active");
+                    verbose("An edit is already active");
                     return;
                 }
                 kanban.inEditMode = true;
@@ -281,13 +284,13 @@ define([
 
         framework.onContentUpdate(function (newContent) {
             // Need to update the content
-            console.log("Content should be updated to " + newContent);
+            verbose("Content should be updated to " + newContent);
             var currentContent = kanban.getBoardsJSON();
             var remoteContent = newContent.content;
 
             if (currentContent !== remoteContent) {
                // reinit kanban (TODO: optimize to diff only)
-               console.log("Content is different.. Applying content");
+               verbose("Content is different.. Applying content");
                kanban.setBoards(remoteContent);
             }
         });
@@ -295,7 +298,7 @@ define([
         framework.setContentGetter(function () {
             // var content = $("#cp-app-kanban-content").val();
             var content = kanban.getBoardsJSON();
-            console.log("Content current value is " + content);
+            verbose("Content current value is " + content);
             return {
                 content: content
             };
