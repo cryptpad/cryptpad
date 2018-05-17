@@ -1,3 +1,38 @@
+# Badger release (v2.1.0)
+
+## Goals
+
+This is a small release due to a surplus of holidays in France during the Month of May.
+We'd been planning to implement _Password-protected Pads_ for a long time, but we had not found a good opportunity to do so within our roadmap.
+After a generous donation from one of our users who considered this a critical feature, we were able to dedicate some resources towards delivering it to all of our users.
+
+## Update notes
+
+This release depends on new APIs in our `chainpad-crypto` module. Additionally, we have fixed a critical bug in `chainpad-listmap`.
+Admins will need to update their clientside dependencies with `bower update` when deploying.
+
+## What's new
+
+### For Users
+
+* Users can now protect their new pads with a password.
+  * This makes it safer to share very sensitive links over email or messengers, as anyone who gains access to the link will still need the password to edit or view pads.
+  * This also protects your pads against browsers which share your history across devices via the cloud.
+  * We recommend that you share passwords using a different messenger tool.
+  * Passwords cannot be set or changed after creation time (yet), so we also recommend you consider how secure your pad will need to be when you create it.
+* Password protection coincides with an update to our URL encoding scheme. URLs are generally quite a bit shorter than before, while offering more functionality.
+* Existing users will have a short delay the first time that they load this version of CryptPad, as it contains a migration of their CryptDrive's data format.
+  * This migration is very tolerant of interuptions, so if you need to close your browser while it is in progress, you are free to do so.
+
+### For Admins
+
+* Admins can look forward to happier users!
+
+### Bug fixes
+
+* data loss when reconnecting in our poll app
+* we've fixed a minor bug in our poll app which caused an increasing number of tooltips to be added to elements
+
 # Alpaca release (v2.0.0)
 
 This is the first release of our 2.0 cycle.
