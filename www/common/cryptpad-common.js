@@ -578,7 +578,7 @@ define([
         }
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
-        if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
+        if (parsed.type === 'file' && typeof(parsed.channel) === 'string') { secret.channel = Util.base64ToHex(secret.channel); }
         hashes = Hash.getHashes(secret);
 
         if (secret.version === 0) {
