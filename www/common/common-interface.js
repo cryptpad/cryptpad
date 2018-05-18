@@ -12,8 +12,10 @@ define([
     '/customize/loading.js',
     '/common/test.js',
 
+    '/common/jquery-ui/jquery-ui.min.js',
     '/bower_components/bootstrap-tokenfield/dist/bootstrap-tokenfield.js',
     'css!/common/tippy/tippy.css',
+    'css!/common/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
             Alertify, Tippy, Pages, h, Loading, Test) {
     var UI = {};
@@ -183,11 +185,17 @@ define([
         ]);
     };
 
-    UI.tokenField = function (target) {
+    UI.tokenField = function (target, autocomplete) {
         var t = {
             element: target || h('input'),
         };
-        var $t = t.tokenfield = $(t.element).tokenfield();
+        var $t = t.tokenfield = $(t.element).tokenfield({
+            autocomplete: {
+                source: autocomplete,
+                delay: 100
+            },
+            showAutocompleteOnFocus: false
+        });
 
         t.getTokens = function (ignorePending) {
             var tokens = $t.tokenfield('getTokens').map(function (token) {
@@ -210,10 +218,17 @@ define([
 
         t.preventDuplicates = function (cb) {
             $t.on('tokenfield:createtoken', function (ev) {
+                // Close the suggest list when a token is added because we're going to wipe the input
+                var $input = $t.closest('.tokenfield').find('.token-input');
+                $input.autocomplete('close');
+
                 var val;
                 ev.attrs.value = ev.attrs.value.toLowerCase();
                 if (t.getTokens(true).some(function (t) {
-                    if (t === ev.attrs.value) { return ((val = t)); }
+                    if (t === ev.attrs.value) {
+                        ev.preventDefault();
+                        return ((val = t));
+                    }
                 })) {
                     ev.preventDefault();
                     if (typeof(cb) === 'function') { cb(val); }
@@ -241,7 +256,7 @@ define([
         return t;
     };
 
-    dialog.tagPrompt = function (tags, cb) {
+    dialog.tagPrompt = function (tags, existing, cb) {
         var input = dialog.textInput();
 
         var tagger = dialog.frame([
@@ -255,7 +270,7 @@ define([
             dialog.nav(),
         ]);
 
-        var field = UI.tokenField(input).preventDuplicates(function (val) {
+        var field = UI.tokenField(input, existing).preventDuplicates(function (val) {
             UI.warn(Messages._getKey('tags_duplicate', [val]));
         });
 
@@ -396,7 +411,7 @@ define([
             stopListening(listener);
             cb();
         });
-        listener = listenForKeys(close, close, ok);
+        listener = listenForKeys(close, close);
         var $ok = $(ok).click(close);
 
         document.body.appendChild(frame);

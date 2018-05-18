@@ -8,6 +8,7 @@ define(function () {
     out.type.pad = 'Rich text';
     out.type.code = 'Code';
     out.type.poll = 'Poll';
+    out.type.kanban = 'Kanban';
     out.type.slide = 'Presentation';
     out.type.drive = 'CryptDrive';
     out.type.whiteboard = 'Whiteboard';
@@ -21,6 +22,7 @@ define(function () {
     out.button_newpoll = 'New Poll';
     out.button_newslide = 'New Presentation';
     out.button_newwhiteboard = 'New Whiteboard';
+    out.button_newkanban = 'New Kanban';
 
     // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
@@ -248,6 +250,15 @@ define(function () {
     out.pad_mediatagWidth = "Width (px)";
     out.pad_mediatagHeight = "Height (px)";
 
+    // Kanban
+    out.kanban_newBoard = "New board";
+    out.kanban_item = "Item {0}"; // Item number for initial content
+    out.kanban_todo = "To Do";
+    out.kanban_done = "Done";
+    out.kanban_working = "Working";
+    out.kanban_deleteBoard = "Are you sure you want to delete this board?";
+    out.kanban_deleteItem = "Are you sure you want to delete this item?";
+
     // Polls
 
     out.poll_title = "Zero Knowledge Date Picker";
@@ -368,6 +379,7 @@ define(function () {
     out.fm_searchName = "Search";
     out.fm_recentPadsName = "Recent pads";
     out.fm_ownedPadsName = "Owned";
+    out.fm_tagsName = "Tags";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
@@ -430,6 +442,8 @@ define(function () {
     out.fm_padIsOwned = "You are the owner of this pad";
     out.fm_padIsOwnedOther = "This pad is owned by another user";
     out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
+    out.fm_tags_name = "Tag name";
+    out.fm_tags_used = "Number of uses";
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_rename = "Rename";
