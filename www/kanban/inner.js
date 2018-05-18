@@ -289,9 +289,10 @@ define([
             var remoteContent = newContent.content;
 
             if (currentContent !== remoteContent) {
-               // reinit kanban (TODO: optimize to diff only)
-               verbose("Content is different.. Applying content");
-               kanban.setBoards(remoteContent);
+                // reinit kanban (TODO: optimize to diff only)
+                verbose("Content is different.. Applying content");
+                kanban.setBoards(remoteContent);
+                kanban.inEditMode = false;
             }
         });
 
