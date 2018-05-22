@@ -1,16 +1,36 @@
 define([
     '/api/config',
     '/common/hyperscript.js',
+    '/common/common-language.js',
     '/customize/messages.js',
     'jquery',
     '/customize/application_config.js',
-], function (Config, h, Msg, $, AppConfig) {
+], function (Config, h, Language, Msg, $, AppConfig) {
     var Pages = {};
     var urlArgs = Config.requireConf.urlArgs;
 
     var setHTML = function (e, html) {
         e.innerHTML = html;
         return e;
+    };
+
+    var languageSelector = function () {
+        var options = [];
+        var languages = Msg._languages;
+        var selected = Msg._languageUsed;
+        var keys = Object.keys(languages).sort();
+        keys.forEach(function (l) {
+            var attr = { value: l };
+            if (selected === l) { attr.selected = 'selected'; }
+            options.push(h('option', attr, languages[l]));
+        });
+        var select = h('select', {}, options);
+        $(select).change(function () {
+            Language.setLanguage($(select).val() || '', null, function () {
+                window.location.reload();
+            });
+        });
+        return select;
     };
 
     var footerCol = function (title, L, literal) {
@@ -47,7 +67,8 @@ define([
                 h('div.row', [
                     footerCol(null, [
                         h('div.cp-bio-foot', [
-                            h('p', Msg.main_footerText)
+                            h('p', Msg.main_footerText),
+                            languageSelector()
                         ])
                     ], ''),
                     footerCol('footer_applications', [
