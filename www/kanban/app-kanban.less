@@ -84,16 +84,27 @@
         .tools_unselectable();
     }
 
-    .kanban-removeboard {
+    .kanban-additem, .kanban-remove-item {
         float: right;
-        margin: 10px;
+        background: #EEE;
+        padding: .25rem .5rem;
+        line-height: 1;
+        &:hover {
+            background: transparent;
+        }
+/*      margin: 10px;
         padding: 3px;
         width: 30px;
         text-align: center;
         background: #eee;
         font-weight: bold;
         cursor: pointer;
-        .tools_unselectable();
+        .tools_unselectable(); */
+    }
+
+    .kanban-additem {
+        margin-bottom: 5px;
+        margin-right: 5px;
     }
 
     .kanban-header-yellow {

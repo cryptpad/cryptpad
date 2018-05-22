@@ -67,7 +67,7 @@
                     boardTitleclick: function (el, boardId) {},
                     buttonClick: function (el, boardId) {},
                     colorClick: function (el, boardId) {},
-                    removeClick: function (el, boardId) {},
+                    addItemClick: function (el, boardId) {},
                     onChange: function () {}
                 };
 
@@ -257,13 +257,6 @@
                         if (self.options.boards !== boards)
                             self.options.boards.push(board);
 
-                        //add width to container
-                        /*if (self.container.style.width === '') {
-                            self.container.style.width = parseInt(boardWidth) + (parseInt(self.options.gutter) * 2) + 'px';
-                        } else {
-                            self.container.style.width = parseInt(self.container.style.width) + parseInt(boardWidth) + (parseInt(self.options.gutter) * 2) + 'px';
-                        }*/
-
                         //create node
                         var boardNode = document.createElement('div');
                         boardNode.dataset.id = board.id;
@@ -325,12 +318,12 @@
                         }
                         //footer board
                         var footerBoard = document.createElement('footer');
-                        //remove button
-                        var removeBoard = document.createElement('div');
-                        $(removeBoard).text("-")
-                        $(removeBoard).addClass("kanban-removeboard");
-                        footerBoard.appendChild(removeBoard);
-                        __onRemoveClickHandler(removeBoard);
+                        //add button
+                        var addBoardItem = document.createElement('button');
+                        $(addBoardItem).text("＋")
+                        $(addBoardItem).addClass("kanban-additem btn btn-default");
+                        footerBoard.appendChild(addBoardItem);
+                        __onAddItemClickHandler(addBoardItem);
 
                         //board assembly
                         boardNode.appendChild(headerBoard);
@@ -347,9 +340,9 @@
                 }
 
                 this.setBoards = function (boards) {
-                    for (var boardkey in boards) {
-                        // single board
-                        var board = boards[boardkey];
+                    self.element
+                    for (var boardkey in this.options.boards) {
+                        var board = this.options.boards[boardkey];
                         this.removeBoard(board.id);
                     }
                     this.options.boards = [];
@@ -478,10 +471,10 @@
                     });
                 }
 
-                function __onRemoveClickHandler(nodeItem, clickfn) {
+                function __onAddItemClickHandler(nodeItem, clickfn) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
-                        self.options.removeClick(this);
+                        self.options.addItemClick(this);
                         if (typeof (this.clickfn) === 'function')
                             this.clickfn(this);
                     });
@@ -489,6 +482,7 @@
 
                 function __onButtonClickHandler(nodeItem, boardId) {
                     nodeItem.addEventListener('click', function (e) {
+                        e.stopPropagation();
                         e.preventDefault;
                         self.options.buttonClick(this, boardId, e);
                         // if(typeof(this.clickfn) === 'function')

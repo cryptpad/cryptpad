@@ -1,5 +1,6 @@
 define([
     'jquery',
+    'json.sortify',
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/sframe-app-framework.js',
@@ -12,6 +13,7 @@ define([
     'css!/kanban/jkanban.css',
 ], function (
     $,
+    Sortify,
     nThen,
     SFCommon,
     Framework,
@@ -24,6 +26,23 @@ define([
 
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
+
+    var addRemoveItemButton = function (framework, kanban) {
+        var $container = $(kanban.element);
+        $container.find('.kanban-remove-item').remove();
+        $container.find('.kanban-board .kanban-item').each(function (i, el) {
+            var pos = kanban.findElementPosition(el);
+            var board = kanban.options.boards.find(function (b) {
+                return b.id === $(el.parentNode.parentNode).attr('data-id');
+            });
+            $('<button>', {'class': 'kanban-remove-item btn btn-default'}).click(function (e) {
+                e.stopPropagation();
+                board.item.splice(pos, 1);
+                $(el).remove();
+                kanban.onChange();
+            }).text('🗙').appendTo($(el));
+        });
+    };
 
     // Kanban code
     var initKanban = function (framework, boards) {
@@ -78,9 +97,13 @@ define([
             element: '#cp-app-kanban-content',
             gutter: '15px',
             widthBoard: '300px',
+            buttonContent: '🗙',
             onChange: function () {
                 verbose("Board object has changed");
                 framework.localChange();
+                if (kanban) {
+                    addRemoveItemButton(framework, kanban);
+                }
             },
             click: function (el) {
                 if (kanban.inEditMode) {
@@ -182,40 +205,42 @@ define([
                 kanban.onChange();
 
             },
-            removeClick: function (el) {
+            buttonClick: function (el, boardId, e) {
+                e.stopPropagation();
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {
                     if (!yes) { return; }
                     verbose("Delete board");
-                    var boardName = $(el.parentNode.parentNode).attr("data-id");
+                    //var boardName = $(el.parentNode.parentNode).attr("data-id");
                     for (var index in kanban.options.boards) {
-                        if (kanban.options.boards[index].id === boardName) {
+                        if (kanban.options.boards[index].id === boardId) {
                             break;
                         }
                         index++;
                     }
                     kanban.options.boards.splice(index, 1);
-                    kanban.removeBoard(boardName);
+                    kanban.removeBoard(boardId);
                     kanban.onChange();
                 });
             },
-            buttonClick: function (el, boardId, e) {
-                e.stopPropagation();
+            addItemClick: function (el) {
                 if (kanban.inEditMode) {
                     verbose("An edit is already active");
                     return;
                 }
                 kanban.inEditMode = true;
                 // create a form to enter element 
+                var boardId = $(el.parentNode.parentNode).attr("data-id");
                 var $item = $('<div>', {'class': 'kanban-item'});
                 var $input = getInput().val(name).appendTo($item);
                 kanban.addForm(boardId, $item[0]);
                 $input.focus();
                 var save = function () {
                     $item.remove();
+                    kanban.inEditMode = false;
+                    if (!$input.val()) { return; }
                     kanban.addElement(boardId, {
                         "title": $input.val(),
                     });
-                    kanban.inEditMode = false;
                 };
                 $input.blur(save);
                 $input.keydown(function (e) {
@@ -236,7 +261,7 @@ define([
             },
             addItemButton: true,
             boards: boards,
-            dragcancelEl: function (el, boardId) {
+            /*dragcancelEl: function (el, boardId) {
                 var pos = kanban.findElementPosition(el);
                 UI.confirm(Messages.kanban_deleteItem, function (yes) {
                     if (!yes) { return; }
@@ -251,7 +276,7 @@ define([
                     $(el).remove();
                     kanban.onChange();
                 });
-            }
+            }*/
         });
 
         var addBoardDefault = document.getElementById('kanban-addboard');
@@ -259,9 +284,8 @@ define([
             var counter = 1;
 
             // Get the new board id
-            while (kanban.options.boards.indexOf("board" + counter) !== -1) {
-                counter++;
-            }
+            var boardExists = function (b) { return b.id === "board" + counter; };
+            while (kanban.options.boards.some(boardExists)) { counter++; }
 
             kanban.addBoards([{
                 "id": "board" + counter,
@@ -280,24 +304,32 @@ define([
     // Start of the main loop
     var andThen2 = function (framework) {
 
-        var kanban = initKanban(framework);
+        var kanban;
 
         framework.onContentUpdate(function (newContent) {
+            // Init if needed
+            if (!kanban) {
+                kanban = initKanban(framework, (newContent || {}).content);
+                addRemoveItemButton(framework, kanban);
+                return;
+            }
+
             // Need to update the content
             verbose("Content should be updated to " + newContent);
             var currentContent = kanban.getBoardsJSON();
             var remoteContent = newContent.content;
 
-            if (currentContent !== remoteContent) {
+            if (Sortify(currentContent) !== Sortify(remoteContent)) {
                 // reinit kanban (TODO: optimize to diff only)
                 verbose("Content is different.. Applying content");
                 kanban.setBoards(remoteContent);
                 kanban.inEditMode = false;
+                addRemoveItemButton(framework, kanban);
             }
         });
 
         framework.setContentGetter(function () {
-            // var content = $("#cp-app-kanban-content").val();
+            if (!kanban) { return; }
             var content = kanban.getBoardsJSON();
             verbose("Content current value is " + content);
             return {
