@@ -130,8 +130,8 @@ define([
             h('div.container-fluid.cp-about-intro', [
                 h('div.container', [
                     h('center', [
-                    h('h1', Msg.about),
-                    setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
+                        h('h1', Msg.about),
+                        setHTML(h('p'), Msg.about_intro),
                     ]),
                 ]),
             ]),
@@ -139,7 +139,7 @@ define([
                 h('div.row', [
                     h('div.cp-develop-about.col-12',[
                             h('div.cp-icon-cent'),
-                            h('h2.text-center', 'Core Developers')
+                            h('h2.text-center', Msg.about_core)
                         ]),
                     ]),
                 h('div.row.align-items-center', [
@@ -190,7 +190,7 @@ define([
                 h('div.row', [
                     h('div.cp-develop-about.col-12.cp-contrib',[
                             h('div.cp-icon-cent'),
-                            h('h2.text-center', 'Key Contributors')
+                            h('h2.text-center', Msg.about_contributors)
                         ]),
                     ]),
                 h('div.row.align-items-center', [

@@ -647,38 +647,24 @@ define(function () {
     // index.html
 
     //about.html
-    out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
-    out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
+    out.about_intro = 'CryptPad est développé au sein de l\'équipe Recherche d\'<a href="http://xwiki.com">XWiki SAS</a>, une petite entreprise située à Paris en France et à Iasi en Roumanie. Il y a 3 développeurs principaux qui travaillent sur CryptPad, ainsi que quelques contributeurs à la fois dans et en dehors d\'XWiki SAS';
+    out.about_core = 'Développeurs principaux';
+    out.about_contributors = 'Contributeurs clés';
+
     //contact.html
-    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker"><i class="fa fa-github"></i>GitHub</a>, venir dire bonjour sur <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">notre <i class="fa fa-comment"></i>salle Matrix</a> ou IRC (#cryptpad sur irc.freenode.net), ou bien encore <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>nous envoyer un email</a>.';
     out.main_about_p22 = 'Tweetez nous';
     out.main_about_p23 = 'Ouvrez un ticket (GitHub)';
     out.main_about_p24 = 'Dites Bonjour (Matrix)';
     out.main_about_p25 = 'Envoyez-nous un email';
     out.main_about_p26 = 'Si vous avez une question ou des remarques, n\'hésitez pas à nous contacter !';
 
-
     out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
     out.main_catch_phrase = "Le Cloud Zero Knowledge";
 
-    out.main_howitworks = 'Comment ça fonctionne';
-    out.main_zeroKnowledge = 'Zero Knowledge';
-    out.main_zeroKnowledge_p = "Vous n'avez pas besoin de croire que nous n'<em>allons</em> pas regarder vos pads. Avec la technologie Zero Knowledge de CryptPad, nous ne <em>pouvons</em> pas le faire. Apprenez-en plus sur notre manière de <a href=\"privacy.html\" title='Protection des données'>protéger vos données</a>.";
-    out.main_writeItDown = 'Prenez-en note';
-    out.main_writeItDown_p = "Les plus grands projets naissent des plus petites idées. Prenez note de vos moments d'inspiration et de vos idées inattendues car vous ne savez pas lesquels seront des découvertes capitales.";
-    out.main_share = 'Partagez le lien, partagez le pad';
-    out.main_share_p = "Faites croître vos idées à plusieurs : réalisez des réunions efficaces, collaborez sur vos listes de tâches et réalisez des présentations rapides avec tous vos amis sur tous vos appareils.";
-    out.main_organize = 'Soyez organisé';
-    out.main_organize_p = "Avec CryptDrive, vous pouvez garder vos vues sur ce qui est important. Les dossiers vous permettent de garder la trace de vos projets et d'avoir une vision globale du travail effectué.";
-    out.tryIt = 'Essayez-le !';
     out.main_richText = 'Éditeur de texte';
-    out.main_richText_p = 'Éditez des documents texte collaborativement avec notre application <a href="http://ckeditor.com" target="_blank">CkEditor</a> temps-réel et Zero Knowledge.';
     out.main_code = 'Éditeur de code';
-    out.main_code_p = 'Modifiez votre code collaborativement grâce à notre application <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> temps-réel et Zero Knowledge.';
     out.main_slide = 'Présentations';
-    out.main_slide_p = 'Créez vos présentations en syntaxe Markdown collaborativement de manière sécurisée et affichez les dans votre navigateur.';
     out.main_poll = 'Sondages';
-    out.main_poll_p = 'Planifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
     out.main_drive = 'CryptDrive';
 
     out.main_richTextPad = 'Pad de Texte Riche';

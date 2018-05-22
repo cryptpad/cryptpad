@@ -652,11 +652,11 @@ define(function () {
 
 
     //about.html
-    out.main_p2 = 'This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.';
-    out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
+    out.about_intro = 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.';
+    out.about_core = 'Core Developers';
+    out.about_contributors = 'Key Contributors';
 
     // contact.html
-    out.main_about_p2 = 'If you have any questions or comments, feel free to reach out!<br/>You can <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on <i class="fa fa-github"></i>GitHub</a>. Come say hi on <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">our <i class="fa fa-comment"></i>Matrix channel</a> or IRC (#cryptpad on irc.freenode.net), or <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>send us an email</a>.';
     out.main_about_p22 = 'Tweet us';
     out.main_about_p23 = 'open an issue on GitHub';
     out.main_about_p24 = 'say Hello (Matrix)';
@@ -666,25 +666,10 @@ define(function () {
     out.main_info = "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.";
     out.main_catch_phrase = "The Zero Knowledge Cloud";
 
-    out.main_howitworks = 'How It Works';
-    out.main_zeroKnowledge = 'Zero Knowledge';
-    out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your <a href=\"/privacy.html\" title='Privacy'>Privacy and Security</a>.";
-    out.main_writeItDown = 'Write it down';
-
-    out.main_writeItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
-    out.main_share = 'Share the link, share the pad';
-    out.main_share_p = "Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.";
-    out.main_organize = 'Get organized';
-    out.main_organize_p = "With CryptPad Drive, you can keep your sights on what's important. Folders allow you to keep track of your projects and have a global vision of where things are going.";
-    out.tryIt = 'Try it out!';
     out.main_richText = 'Rich Text editor';
-    out.main_richText_p = 'Edit rich text pads collaboratively with our realtime Zero Knowledge <a href="http://ckeditor.com" target="_blank">CkEditor</a> application.';
     out.main_code = 'Code editor';
-    out.main_code_p = 'Edit code from your software collaboratively with our realtime Zero Knowledge <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> application.';
     out.main_slide = 'Slide editor';
-    out.main_slide_p = 'Create your presentations using the Markdown syntax, and display them in your browser.';
     out.main_poll = 'Polls';
-    out.main_poll_p = 'Plan your meeting or your event, or vote for the best solution regarding your problem.';
     out.main_drive = 'CryptDrive';
 
     out.main_richTextPad = 'Rich Text Pad';
