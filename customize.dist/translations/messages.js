@@ -2,7 +2,6 @@ define(function () {
     var out = {};
 
     out.main_title = "CryptPad: Zero Knowledge, Collaborative Real Time Editing";
-    out.main_slogan = "Unity is Strength - Collaboration is Key"; // TODO remove?
 
     out.type = {};
     out.type.pad = 'Rich text';
@@ -257,7 +256,8 @@ define(function () {
     out.kanban_done = "Done";
     out.kanban_working = "Working";
     out.kanban_deleteBoard = "Are you sure you want to delete this board?";
-    out.kanban_deleteItem = "Are you sure you want to delete this item?";
+    out.kanban_addBoard = "Add a board";
+    out.kanban_removeItem = "Remove this item";
 
     // Polls
 
@@ -1044,6 +1044,9 @@ define(function () {
         embed: 'Embed images from your disk <span class="fa fa-file-image-o"></span> or your CryptDrive <span class="fa fa-image"></span> and export them as PNG to your disk <span class="fa fa-download"></span> or your CryptDrive <span class="fa fa-cloud-upload"></span>'
     };
 
+    out.help.kanban = {
+        //add: ''
+    };
 
     out.initialState = [
         '<p>',

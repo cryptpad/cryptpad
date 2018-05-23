@@ -2,7 +2,6 @@ define(function () {
     var out = {};
 
     out.main_title = "CryptPad : Éditeur collaboratif en temps réel, zero knowledge";
-    out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
     out.type = {};
     out.type.pad = 'Texte';
@@ -255,7 +254,8 @@ define(function () {
     out.kanban_done = "Terminé";
     out.kanban_working = "En cours";
     out.kanban_deleteBoard = "Êtes-vous sûr de vouloir supprimer ce tableau ?";
-    out.kanban_deleteItem = "Êtes-vous sûr de vouloir supprimer cet élément?";
+    out.kanban_addBoard = "Ajouter un tableau";
+    out.kanban_removeItem = "Supprimer cet élément";
 
     // Polls
 

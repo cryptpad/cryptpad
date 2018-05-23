@@ -36,7 +36,10 @@ define([
             var board = kanban.options.boards.find(function (b) {
                 return b.id === $(el.parentNode.parentNode).attr('data-id');
             });
-            $('<button>', {'class': 'kanban-remove-item btn btn-default'}).click(function (e) {
+            $('<button>', {
+                'class': 'kanban-remove-item btn btn-default',
+                title: Messages.kanban_removeItem
+            }).click(function (e) {
                 e.stopPropagation();
                 board.item.splice(pos, 1);
                 $(el).remove();
@@ -267,26 +270,11 @@ define([
                 });
             },
             addItemButton: true,
-            boards: boards,
-            /*dragcancelEl: function (el, boardId) {
-                var pos = kanban.findElementPosition(el);
-                UI.confirm(Messages.kanban_deleteItem, function (yes) {
-                    if (!yes) { return; }
-                    var board;
-                    kanban.options.boards.some(function (b) {
-                        if (b.id === boardId) {
-                            return (board = b);
-                        }
-                    });
-                    if (!board) { return; }
-                    board.item.splice(pos, 1);
-                    $(el).remove();
-                    kanban.onChange();
-                });
-            }*/
+            boards: boards
         });
 
         var addBoardDefault = document.getElementById('kanban-addboard');
+        $(addBoardDefault).attr('title', Messages.kanban_addBoard);
         addBoardDefault.addEventListener('click', function () {
             if (framework.isReadOnly()) { return; }
             var counter = 1;
@@ -309,11 +297,21 @@ define([
         return kanban;
     };
 
+    var mkHelpMenu = function (framework) {
+        var $toolbarContainer = $('#cp-app-kanban-container');
+        var helpMenu = framework._.sfCommon.createHelpMenu(['kanban']);
+        $toolbarContainer.prepend(helpMenu.menu);
+
+        framework._.toolbar.$drawer.append(helpMenu.button);
+    };
+
     // Start of the main loop
     var andThen2 = function (framework) {
 
         var kanban;
         var $container = $('#cp-app-kanban-content');
+
+        mkHelpMenu(framework);
 
         if (framework.isReadOnly()) {
             $container.addClass('cp-app-readonly');
