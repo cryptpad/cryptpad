@@ -28,6 +28,7 @@ define([
     verbose = function () {}; // comment out to enable verbose logging
 
     var addRemoveItemButton = function (framework, kanban) {
+        if (framework.isReadOnly() || framework.isLocked()) { return; }
         var $container = $(kanban.element);
         $container.find('.kanban-remove-item').remove();
         $container.find('.kanban-board .kanban-item').each(function (i, el) {
@@ -40,7 +41,7 @@ define([
                 board.item.splice(pos, 1);
                 $(el).remove();
                 kanban.onChange();
-            }).text('🗙').appendTo($(el));
+            }).text('❌').appendTo($(el));
         });
     };
 
@@ -97,7 +98,8 @@ define([
             element: '#cp-app-kanban-content',
             gutter: '15px',
             widthBoard: '300px',
-            buttonContent: '🗙',
+            buttonContent: '❌',
+            readOnly: framework.isReadOnly(),
             onChange: function () {
                 verbose("Board object has changed");
                 framework.localChange();
@@ -106,11 +108,13 @@ define([
                 }
             },
             click: function (el) {
+                if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
                     verbose("An edit is already active");
                     return;
                 }
                 kanban.inEditMode = true;
+                $(el).find('button').remove();
                 var name = $(el).text();
                 $(el).html('');
                 var $input = getInput().val(name).appendTo(el).focus();
@@ -141,6 +145,7 @@ define([
                         e.stopPropagation();
                         $(el).text(name);
                         kanban.inEditMode = false;
+                        addRemoveItemButton(framework, kanban);
                         return;
                     }
                 });
@@ -148,6 +153,7 @@ define([
             },
             boardTitleClick: function (el, e) {
                 e.stopPropagation();
+                if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
                     verbose("An edit is already active");
                     return;
@@ -187,6 +193,7 @@ define([
                 });
             },
             colorClick: function (el) {
+                if (framework.isReadOnly() || framework.isLocked()) { return; }
                 verbose("in color click");
                 var board = $(el.parentNode).attr("data-id");
                 var boardJSON = kanban.getBoardJSON(board);
@@ -203,10 +210,10 @@ define([
                 $(el).removeClass("kanban-header-" + currentColor);
                 $(el).addClass("kanban-header-" + nextColor);
                 kanban.onChange();
-
             },
             buttonClick: function (el, boardId, e) {
                 e.stopPropagation();
+                if (framework.isReadOnly() || framework.isLocked()) { return; }
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {
                     if (!yes) { return; }
                     verbose("Delete board");
@@ -223,6 +230,7 @@ define([
                 });
             },
             addItemClick: function (el) {
+                if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
                     verbose("An edit is already active");
                     return;
@@ -253,7 +261,6 @@ define([
                     if (e.which === 27) {
                         e.preventDefault();
                         e.stopPropagation();
-                        $(el).text(name);
                         kanban.inEditMode = false;
                         return;
                     }
@@ -281,6 +288,7 @@ define([
 
         var addBoardDefault = document.getElementById('kanban-addboard');
         addBoardDefault.addEventListener('click', function () {
+            if (framework.isReadOnly()) { return; }
             var counter = 1;
 
             // Get the new board id
@@ -305,6 +313,21 @@ define([
     var andThen2 = function (framework) {
 
         var kanban;
+        var $container = $('#cp-app-kanban-content');
+
+        if (framework.isReadOnly()) {
+            $container.addClass('cp-app-readonly');
+        }
+        framework.onEditableChange(function (unlocked) {
+            if (framework.isReadOnly()) { return; }
+            if (unlocked) {
+                addRemoveItemButton(framework, kanban);
+                kanban.options.readOnly = false;
+                return void $container.removeClass('cp-app-readonly');
+            }
+            kanban.options.readOnly = true;
+            $container.addClass('cp-app-readonly');
+        });
 
         framework.onContentUpdate(function (newContent) {
             // Init if needed

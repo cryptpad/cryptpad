@@ -56,6 +56,7 @@
                     dragBoards: true,
                     addItemButton: false,
                     buttonContent: '+',
+                    readOnly: false,
                     dragEl: function (el, source) {},
                     dragendEl: function (el) {},
                     dropEl: function (el, target, source, sibling) {},
@@ -84,10 +85,12 @@
                         //Init Drag Board
                         self.drakeBoard = self.dragula([self.container], {
                                 moves: function (el, source, handle, sibling) {
+                                    if (self.options.readOnly) { return false; }
                                     if (!self.options.dragBoards) return false;
                                     return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
                                 },
                                 accepts: function (el, target, source, sibling) {
+                                    if (self.options.readOnly) { return false; }
                                     return target.classList.contains('kanban-container');
                                 },
                                 revertOnSpill: true,
@@ -129,7 +132,15 @@
                             });
 
                         //Init Drag Item
-                        self.drake = self.dragula(self.boardContainer, function () {
+                        self.drake = self.dragula(self.boardContainer, {
+                                moves: function (el, source, handle, sibling) {
+                                    if (self.options.readOnly) { return false; }
+                                    return handle.classList.contains('kanban-item');
+                                },
+                                accepts: function (el, target, source, sibling) {
+                                    if (self.options.readOnly) { return false; }
+                                    return true;
+                                },
                                 revertOnSpill: true
                             })
                             .on('drag', function (el, source) {

@@ -34,12 +34,20 @@
             flex: 1;
             display: flex;
             align-items: center;
+            min-height: -webkit-min-content;
+            min-height: min-content;
             .kanban-container {
                 flex: 1;
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: space-evenly;
             }
+        }
+
+        .kanban-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .kanban-board {
@@ -60,78 +68,86 @@
                 }
             }
         }
-    }
 
-    #kanban-edit {
-        width: 100%;
-        background: transparent;
-        border: 1px solid rgba(0,0,0,0.3);
-    }
-
-    @button-size: 50px;
-    #kanban-addboard {
-        margin: 30px;
-        border: 1px solid;
-        width: @button-size;
-        height: @button-size;
-        line-height: @button-size;
-        text-align: center;
-        background: @colortheme_kanban-bg;
-        font-weight: bold;
-        align-self: flex-start;
-        font-size: 50px;
-        cursor: pointer;
-        .tools_unselectable();
-    }
-
-    .kanban-additem, .kanban-remove-item {
-        float: right;
-        background: #EEE;
-        padding: .25rem .5rem;
-        line-height: 1;
-        &:hover {
+        #kanban-edit {
+            width: 100%;
             background: transparent;
+            border: 1px solid rgba(0,0,0,0.3);
         }
-/*      margin: 10px;
-        padding: 3px;
-        width: 30px;
-        text-align: center;
-        background: #eee;
-        font-weight: bold;
-        cursor: pointer;
-        .tools_unselectable(); */
-    }
 
-    .kanban-additem {
-        margin-bottom: 5px;
-        margin-right: 5px;
-    }
+        @button-size: 50px;
+        #kanban-addboard {
+            margin: 30px;
+            border: 1px solid;
+            width: @button-size;
+            height: @button-size;
+            line-height: @button-size;
+            text-align: center;
+            background: @colortheme_kanban-bg;
+            font-weight: bold;
+            align-self: flex-start;
+            font-size: 50px;
+            cursor: pointer;
+            .tools_unselectable();
+        }
 
-    .kanban-header-yellow {
-        background: #FC3;
-    }
+        .kanban-remove-item {
+            padding: 0 0.5em;
+        }
+        .kanban-additem {
+            float: right;
+            background: #EEE;
+            padding: 5px .5rem 4px;
+            line-height: 1;
+            margin-bottom: 5px;
+            margin-right: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+            &:hover {
+                background: transparent;
+            }
+        }
 
-    .kanban-header-orange {
-        background: #F91;
-    }
+        .kanban-additem {
+        }
 
-    .kanban-header-blue {
-        background: #0AC;
-    }
+        .kanban-header-yellow {
+            background: #FC3;
+        }
 
-    .kanban-header-red {
-        background: #E43;
-    }
+        .kanban-header-orange {
+            background: #F91;
+        }
 
-    .kanban-header-green {
-        background: #8C4;
-    }
+        .kanban-header-blue {
+            background: #0AC;
+        }
 
-    @media (max-width: @browser_media-medium-screen) {
-        #cp-app-kanban-container {
-            flex: 1;
-            max-width: 100%;
-            resize: none;
+        .kanban-header-red {
+            background: #E43;
+        }
+
+        .kanban-header-green {
+            background: #8C4;
+        }
+
+        @media (max-width: @browser_media-medium-screen) {
+            #cp-app-kanban-container {
+                flex: 1;
+                max-width: 100%;
+                resize: none;
+            }
+        }
+
+        &.cp-app-readonly {
+            .kanban-item, .kanban-title-board {
+                cursor: default !important;
+                .tools_unselectable();
+            }
+            .kanban-title-button, #kanban-addboard, .kanban-remove-item, .kanban-additem {
+                display: none !important;
+            }
         }
     }
+
 }
