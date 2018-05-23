@@ -117,12 +117,12 @@ Version 1
         var hashArr = fixDuplicateSlashes(hash).split('/');
         if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
             parsed.type = 'pad';
+            parsed.getHash = function () { return hash; };
             if (hash.slice(0,1) !== '/' && hash.length >= 56) { // Version 0
                 // Old hash
                 parsed.channel = hash.slice(0, 32);
                 parsed.key = hash.slice(32, 56);
                 parsed.version = 0;
-                parsed.getHash = function () { return hash; };
                 return parsed;
             }
             var options;

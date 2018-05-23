@@ -68,7 +68,11 @@ define([], function () {
 
         // shim between chainpad and netflux
         var msgIn = function (peerId, msg) {
-            return msg.replace(/^cp\|([A-Za-z0-9+\/=]+\|)?/, '');
+            // NOTE: Hash version 0 contains a 32 characters nonce followed by a pipe
+            // at the beginning of each message on the server.
+            // We have to make sure our regex ignores this nonce using {0,20} (our IDs
+            // should only be 8 characters long)
+            return msg.replace(/^cp\|([A-Za-z0-9+\/=]{0,20}\|)?/, '');
         };
 
         var msgOut = function (msg) {

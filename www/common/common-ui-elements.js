@@ -310,7 +310,7 @@ define([
             var embed = initValue ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
             var present = initValue ? val.present : Util.isChecked($(link).find('#cp-share-present'));
 
-            var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
+            var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present});
