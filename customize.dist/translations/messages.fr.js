@@ -256,6 +256,7 @@ define(function () {
     out.kanban_deleteBoard = "Êtes-vous sûr de vouloir supprimer ce tableau ?";
     out.kanban_addBoard = "Ajouter un tableau";
     out.kanban_removeItem = "Supprimer cet élément";
+    out.kanban_removeItemConfirm = "Êtes-vous sûr de vouloir supprimer cet élément ?";
 
     // Polls
 

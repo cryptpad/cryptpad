@@ -258,6 +258,7 @@ define(function () {
     out.kanban_deleteBoard = "Are you sure you want to delete this board?";
     out.kanban_addBoard = "Add a board";
     out.kanban_removeItem = "Remove this item";
+    out.kanban_removeItemConfirm = "Are you sure you want to delete this item?";
 
     // Polls
 

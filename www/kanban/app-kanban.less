@@ -93,7 +93,14 @@
 
         .kanban-remove-item {
             padding: 0 0.5em;
+            visibility: hidden;
         }
+        .kanban-item:hover {
+            .kanban-remove-item {
+                visibility: visible;
+            }
+        }
+
         .kanban-additem {
             float: right;
             background: #EEE;
@@ -106,9 +113,6 @@
             &:hover {
                 background: transparent;
             }
-        }
-
-        .kanban-additem {
         }
 
         .kanban-header-yellow {
@@ -129,6 +133,22 @@
 
         .kanban-header-green {
             background: #8C4;
+        }
+
+        .kanban-header-purple {
+            background: #c851ff;
+        }
+
+        .kanban-header-cyan {
+            background: #00ffff;
+        }
+
+        .kanban-header-lightgreen {
+            background: #c3ff5b;
+        }
+
+        .kanban-header-lightblue {
+            background: #adeeff;
         }
 
         @media (max-width: @browser_media-medium-screen) {

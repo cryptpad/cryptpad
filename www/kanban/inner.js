@@ -27,6 +27,8 @@ define([
     var verbose = function (x) { console.log(x); };
     verbose = function () {}; // comment out to enable verbose logging
 
+    var COLORS = ['yellow', 'green', 'orange', 'blue', 'red', 'purple', 'cyan', 'lightgreen', 'lightblue'];
+
     var addRemoveItemButton = function (framework, kanban) {
         if (framework.isReadOnly() || framework.isLocked()) { return; }
         var $container = $(kanban.element);
@@ -41,9 +43,12 @@ define([
                 title: Messages.kanban_removeItem
             }).click(function (e) {
                 e.stopPropagation();
-                board.item.splice(pos, 1);
-                $(el).remove();
-                kanban.onChange();
+                UI.confirm(Messages.kanban_removeItemConfirm, function (yes) {
+                    if (!yes) { return; }
+                    board.item.splice(pos, 1);
+                    $(el).remove();
+                    kanban.onChange();
+                });
             }).text('❌').appendTo($(el));
         });
     };
@@ -102,6 +107,7 @@ define([
             gutter: '15px',
             widthBoard: '300px',
             buttonContent: '❌',
+            colors: COLORS,
             readOnly: framework.isReadOnly(),
             onChange: function () {
                 verbose("Board object has changed");
@@ -264,6 +270,7 @@ define([
                     if (e.which === 27) {
                         e.preventDefault();
                         e.stopPropagation();
+                        $item.remove();
                         kanban.inEditMode = false;
                         return;
                     }
@@ -286,7 +293,7 @@ define([
             kanban.addBoards([{
                 "id": "board" + counter,
                 "title": Messages.kanban_newBoard,
-                "color": "yellow",
+                "color": COLORS[Math.floor(Math.random()*COLORS.length)], // random color
                 "item": [{
                     "title": Messages._getKey('kanban_item', [1]),
                 }]
