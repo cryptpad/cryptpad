@@ -116,12 +116,23 @@
 
                                 // TODO: update board object board order
                                 console.log("Drop " + $(el).attr("data-id") + " just before " + (sibling ? $(sibling).attr("data-id") : " end "));
-                                var index1 = self.options.boards.findIndex(function (element) {
-                                    return element.id == $(el).attr("data-id");
+                                var index1, index2;
+                                self.options.boards.some(function (element, index) {
+                                    if (element.id === $(el).attr("data-id")) {
+                                        index1 = index;
+                                        return true;
+                                    }
                                 });
-                                var index2 = sibling ? self.options.boards.findIndex(function (element) {
-                                    return element.id == $(sibling).attr("data-id");
-                                }) : self.options.boards.length;
+                                if (sibling) {
+                                    self.options.boards.some(function (element, index) {
+                                        if (element.id === $(sibling).attr("data-id")) {
+                                            index2 = index;
+                                            return true;
+                                        }
+                                    })
+                                } else {
+                                    index2 = self.options.boards.length;
+                                }
                                 console.log("Switch " + index1 + " and " + index2);
                                 if (index1 < index2)
                                     index2 = index2 - 1;
@@ -177,11 +188,17 @@
                                 console.log("In drop");
 
                                 // TODO: update board object board order
-                                var board1 = self.options.boards.find(function (element) {
-                                    return element.id == $(source.parentNode).attr("data-id");
+                                var board1;
+                                self.options.boards.some(function (element) {
+                                    if (element.id === $(source.parentNode).attr("data-id")) {
+                                        return board1 = element;
+                                    }
                                 });
-                                var board2 = self.options.boards.find(function (element) {
-                                    return element.id == $(target.parentNode).attr("data-id");
+                                var board2;
+                                self.options.boards.some(function (element) {
+                                    if (element.id === $(target.parentNode).attr("data-id")) {
+                                        return board2 = element;
+                                    }
                                 });
                                 var pos1 = self.dragItemPos;
                                 var pos2 = (sibling) ? self.findElementPosition(sibling) : (board2.item.length + 1);
