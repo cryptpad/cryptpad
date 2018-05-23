@@ -594,6 +594,7 @@ define([
 
         postMessage("GET_STRONGER_HASH", {
             href: window.location.href,
+            channel: secret.channel,
             password: secret.password
         }, function (hash) {
             if (hash) { hashes.editHash = hash; }
