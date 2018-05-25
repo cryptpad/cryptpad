@@ -30,6 +30,7 @@ define([
     var COLORS = ['yellow', 'green', 'orange', 'blue', 'red', 'purple', 'cyan', 'lightgreen', 'lightblue'];
 
     var addRemoveItemButton = function (framework, kanban) {
+        if (!kanban) { return; }
         if (framework.isReadOnly() || framework.isLocked()) { return; }
         var $container = $(kanban.element);
         $container.find('.kanban-remove-item').remove();
@@ -325,6 +326,7 @@ define([
         }
         framework.onEditableChange(function (unlocked) {
             if (framework.isReadOnly()) { return; }
+            if (!kanban) { return; }
             if (unlocked) {
                 addRemoveItemButton(framework, kanban);
                 kanban.options.readOnly = false;
@@ -357,7 +359,11 @@ define([
         });
 
         framework.setContentGetter(function () {
-            if (!kanban) { return; }
+            if (!kanban) {
+                return {
+                    content: []
+                };
+            }
             var content = kanban.getBoardsJSON();
             verbose("Content current value is " + content);
             return {
@@ -367,6 +373,10 @@ define([
 
         framework.onReady(function () {
             $("#cp-app-kanban-content").focus();
+        });
+
+        framework.onDefaultContentNeeded(function () {
+            kanban = initKanban(framework);
         });
 
         framework.start();
