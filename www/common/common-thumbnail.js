@@ -250,17 +250,15 @@ define([
         var k = getKey(parsed.type, channel);
         common.setThumbnail(k, b64, cb);
     };
-    Thumb.displayThumbnail = function (common, href, channel, $container, cb) {
+    Thumb.displayThumbnail = function (common, href, channel, password, $container, cb) {
         cb = cb || function () {};
         var parsed = Hash.parsePadUrl(href);
         var k = getKey(parsed.type, channel);
         var whenNewThumb = function () {
-            // PASSWORD_FILES
-            var secret = Hash.getSecrets('file', parsed.hash);
-            var hexFileName = Util.base64ToHex(secret.channel);
+            var secret = Hash.getSecrets('file', parsed.hash, password);
+            var hexFileName = channel;
             var src = Hash.getBlobPathFromHex(hexFileName);
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var key = Nacl.util.decodeBase64(cryptKey);
+            var key = secret.keys && secret.keys.cryptKey;
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
                     if (e === 'XHR_ERROR') { return; }

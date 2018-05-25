@@ -13,7 +13,16 @@ define([
         // if it exists, path contains the new pad location in the drive
         var path = file.path;
 
-        var key = Nacl.randomBytes(32);
+        // XXX
+        // PASSWORD_FILES
+        var password;
+        var hash = Hash.createRandomHash('file', password);
+        var secret = Hash.getSecrets('file', hash, password);
+        var key = secret.keys.cryptKey;
+        var id = secret.channel;
+        //var key = Nacl.randomBytes(32);
+
+        // XXX provide channel id to "next"
         var next = FileCrypto.encrypt(u8, metadata, key);
 
         var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
@@ -44,21 +53,11 @@ define([
             }
 
             // if not box then done
-            common.uploadComplete(function (e, id) {
+            common.uploadComplete(function (e/*, id*/) { // XXX id is given, not asked
                 if (e) { return void console.error(e); }
                 var uri = ['', 'blob', id.slice(0,2), id].join('/');
                 console.log("encrypted blob is now available as %s", uri);
 
-                var b64Key = Nacl.util.encodeBase64(key);
-
-                var secret = {
-                    version: 1,
-                    channel: id,
-                    keys: {
-                        fileKeyStr: b64Key
-                    }
-                };
-                var hash = Hash.getFileHashFromKeys(secret);
                 var href = '/file/#' + hash;
 
                 var title = metadata.name;

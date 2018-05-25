@@ -552,11 +552,11 @@ define([
                 ckeditor: editor,
                 body: $('body'),
                 onUploaded: function (ev, data) {
-                    // PASSWORD_FILES
                     var parsed = Hash.parsePadUrl(data.url);
-                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
-                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-                    var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
+                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                    var src = Hash.getBlobPathFromHex(secret.channel);
+                    var key = Hash.encodeBase64(secret.keys.cryptKey);
+                    var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
                     // MEDIATAG
                     var element = window.CKEDITOR.dom.element.createFromHtml(mt);
                     editor.insertElement(element);

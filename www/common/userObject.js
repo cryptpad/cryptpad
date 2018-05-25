@@ -590,7 +590,6 @@ define([
                     }
                 }, cb);
             }
-            console.log(path, newName);
             if (path.length <= 1) {
                 logError('Renaming `root` is forbidden');
                 return;

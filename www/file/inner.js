@@ -54,17 +54,14 @@ define([
 
         var uploadMode = false;
         var secret;
-        var hexFileName;
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
         if (!priv.filehash) {
             uploadMode = true;
         } else {
-            // PASSWORD_FILES
-            secret = Hash.getSecrets('file', priv.filehash);
+            secret = Hash.getSecrets('file', priv.filehash, priv.password);
             if (!secret.keys) { throw new Error("You need a hash"); }
-            hexFileName = Util.base64ToHex(secret.channel);
         }
 
         var Title = common.createTitle({});
@@ -87,9 +84,10 @@ define([
         toolbar.$rightside.html('');
 
         if (!uploadMode) {
+            var hexFileName = secret.channel;
             var src = Hash.getBlobPathFromHex(hexFileName);
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var key = Nacl.util.decodeBase64(cryptKey);
+            var key = secret.keys && secret.keys.cryptKey;
+            var cryptKey = Nacl.util.encodeBase64(key);
 
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
@@ -118,9 +116,7 @@ define([
                     };
 
                     var $mt = $dlview.find('media-tag');
-                    var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                    var hexFileName = Util.base64ToHex(secret.channel);
-                    $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
+                    $mt.attr('src', src);
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
                     var rightsideDisplayed = false;
@@ -263,7 +259,7 @@ define([
             dropArea: $form,
             hoverArea: $label,
             body: $body,
-            keepTable: true // Don't fadeOut the tbale with the uploaded files
+            keepTable: true // Don't fadeOut the table with the uploaded files
         };
 
         var FM = common.createFileManager(fmConfig);

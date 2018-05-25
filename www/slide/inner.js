@@ -500,11 +500,11 @@ define([
                 dropArea: $('.CodeMirror'),
                 body: $('body'),
                 onUploaded: function (ev, data) {
-                    // PASSWORD_FILES
                     var parsed = Hash.parsePadUrl(data.url);
-                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
-                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                    var src = Hash.getBlobPathFromHex(secret.channel);
+                    var key = Hash.encodeBase64(secret.keys.cryptKey);
+                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
                     editor.replaceSelection(mt);
                 }
             };
