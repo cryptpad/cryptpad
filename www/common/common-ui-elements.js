@@ -394,8 +394,11 @@ define([
             val = val || {};
             if (val.edit === false) {
                 $(link).find('#cp-share-editable-false').prop('checked', true);
+                $(link).find('#cp-share-editable-true').prop('checked', false);
+            } else {
+                $(link).find('#cp-share-editable-true').prop('checked', true);
+                $(link).find('#cp-share-editable-false').prop('checked', false);
             }
-            else { $(link).find('#cp-share-editable-true').prop('checked', true); }
             if (val.embed) { $(link).find('#cp-share-embed').prop('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').prop('checked', true); }
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));
