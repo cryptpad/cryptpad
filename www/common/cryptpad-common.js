@@ -204,8 +204,8 @@ define([
         });
     };
 
-    common.uploadComplete = function (cb) {
-        postMessage("UPLOAD_COMPLETE", null, function (obj) {
+    common.uploadComplete = function (id, cb) {
+        postMessage("UPLOAD_COMPLETE", id, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -218,8 +218,8 @@ define([
         });
     };
 
-    common.uploadCancel = function (cb) {
-        postMessage("UPLOAD_CANCEL", null, function (obj) {
+    common.uploadCancel = function (size, cb) {
+        postMessage("UPLOAD_CANCEL", {size: size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });

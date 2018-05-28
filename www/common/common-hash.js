@@ -67,23 +67,6 @@ define([
         }
     };
 
-    // V1
-    /*var getEditHashFromKeys = Hash.getEditHashFromKeys = function (chanKey, keys) {
-        if (typeof keys === 'string') {
-            return chanKey + keys;
-        }
-        if (!keys.editKeyStr) { return; }
-        return '/1/edit/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.editKeyStr)+'/';
-    };
-    var getViewHashFromKeys = Hash.getViewHashFromKeys = function (chanKey, keys) {
-        if (typeof keys === 'string') {
-            return;
-        }
-        return '/1/view/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.viewKeyStr)+'/';
-    };
-    var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
-        return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
-    };*/
     Hash.getUserHrefFromKeys = function (origin, username, pubkey) {
         return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
@@ -108,7 +91,7 @@ define([
                 password: Boolean(password),
                 version: 2,
                 type: type,
-                keys: cryptor.fileKeyStr
+                keys: cryptor
             });
         }
         cryptor = Crypto.createEditCryptor2(void 0, void 0, password);
@@ -116,7 +99,7 @@ define([
             password: Boolean(password),
             version: 2,
             type: type,
-            keys: cryptor.editKeyStr
+            keys: cryptor
         });
     };
 
@@ -374,8 +357,8 @@ Version 1
                         }
                     }
                 } else if (parsed.type === "file") {
-                    secret.channel = base64ToHex(secret.keys.chanId);
                     secret.keys = Crypto.createFileCryptor2(parsed.key, password);
+                    secret.channel = base64ToHex(secret.keys.chanId);
                     secret.key = secret.keys.fileKeyStr;
                     if (secret.channel.length !== 48 || secret.key.length !== 24) {
                         throw new Error("The channel key and/or the encryption key is invalid");

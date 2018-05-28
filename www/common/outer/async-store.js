@@ -230,9 +230,9 @@ define([
         });
     };
 
-    Store.uploadComplete = function (data, cb) {
+    Store.uploadComplete = function (id, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.uploadComplete(function (err, res) {
+        store.rpc.uploadComplete(id, function (err, res) {
             if (err) { return void cb({error:err}); }
             cb(res);
         });
@@ -248,7 +248,7 @@ define([
 
     Store.uploadCancel = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.uploadCancel(function (err, res) {
+        store.rpc.uploadCancel(data.size, function (err, res) {
             if (err) { return void cb({error:err}); }
             cb(res);
         });

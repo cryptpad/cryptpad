@@ -53,9 +53,15 @@ var uint8ArrayToHex = function (a) {
     }).join('');
 };
 
+var testFileId = function (id) {
+    if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
+        return false;
+    }
+    return true;
+};
 var createFileId = function () {
     var id = uint8ArrayToHex(Nacl.randomBytes(24));
-    if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
+    if (!testFileId(id)) {
         throw new Error('file ids must consist of 48 hex characters');
     }
     return id;
@@ -876,7 +882,7 @@ var upload = function (Env, publicKey, content, cb) {
     var session = getSession(Env.Sessions, publicKey);
 
     if (typeof(session.currentUploadSize) !== 'number' ||
-        typeof(session.currentUploadSize) !== 'number') {
+        typeof(session.pendingUploadSize) !== 'number') {
         // improperly initialized... maybe they didn't check before uploading?
         // reject it, just in case
         return cb('NOT_READY');
@@ -902,12 +908,12 @@ var upload = function (Env, publicKey, content, cb) {
     }
 };
 
-var upload_cancel = function (Env, publicKey, cb) {
+var upload_cancel = function (Env, publicKey, fileSize, cb) {
     var paths = Env.paths;
 
     var session = getSession(Env.Sessions, publicKey);
-    delete session.currentUploadSize;
-    delete session.pendingUploadSize;
+    session.pendingUploadSize = fileSize;
+    session.currentUploadSize = 0;
     if (session.blobstage) { session.blobstage.close(); }
 
     var path = makeFilePath(paths.staging, publicKey);
@@ -933,13 +939,14 @@ var isFile = function (filePath, cb) {
     });
 };
 
-var upload_complete = function (Env, publicKey, cb) {
+var upload_complete = function (Env, publicKey, id, cb) {
     var paths = Env.paths;
     var session = getSession(Env.Sessions, publicKey);
 
-    if (session.blobstage && session.blobstage.close) {
-        session.blobstage.close();
-        delete session.blobstage;
+    if (!testFileId(id)) {
+        console.log(id);
+        WARN('uploadComplete', "id is invalid");
+        return void cb('RENAME_ERR');
     }
 
     var oldPath = makeFilePath(paths.staging, publicKey);
@@ -948,8 +955,7 @@ var upload_complete = function (Env, publicKey, cb) {
         return void cb('RENAME_ERR');
     }
 
-    var tryRandomLocation = function (cb) {
-        var id = createFileId();
+    var tryLocation = function (cb) {
         var prefix = id.slice(0, 2);
         var newPath = makeFilePath(paths.blob, id);
         if (typeof(newPath) !== 'string') {
@@ -968,7 +974,8 @@ var upload_complete = function (Env, publicKey, cb) {
                     return void cb(e);
                 }
                 if (yes) {
-                    return void tryRandomLocation(cb);
+                    WARN('isFile', 'FILE EXISTS!');
+                    return void cb('RENAME_ERR');
                 }
 
                 cb(void 0, newPath, id);
@@ -976,38 +983,27 @@ var upload_complete = function (Env, publicKey, cb) {
         });
     };
 
-    var retries = 3;
-
     var handleMove = function (e, newPath, id) {
         if (e || !oldPath || !newPath) {
-            if (retries--) {
-                setTimeout(function () {
-                    return tryRandomLocation(handleMove);
-                }, 750);
-            } else {
-                cb(e);
-            }
-            return;
+            return void cb(e || 'PATH_ERR');
+        }
+
+        if (session.blobstage && session.blobstage.close) {
+            session.blobstage.close();
+            delete session.blobstage;
         }
 
         // lol wut handle ur errors
         Fs.rename(oldPath, newPath, function (e) {
             if (e) {
                 WARN('rename', e);
-
-                if (retries--) {
-                    return void setTimeout(function () {
-                        tryRandomLocation(handleMove);
-                    }, 750);
-                }
-
                 return void cb('RENAME_ERR');
             }
             cb(void 0, id);
         });
     };
 
-    tryRandomLocation(handleMove);
+    tryLocation(handleMove);
 };
 
 var owned_upload_complete = function (Env, safeKey, cb) {
@@ -1504,7 +1500,7 @@ RPC.create = function (
                 });
             case 'UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void upload_complete(Env, safeKey, function (e, hash) {
+                return void upload_complete(Env, safeKey, msg[1], function (e, hash) {
                     WARN(e, hash);
                     Respond(e, hash);
                 });
@@ -1516,8 +1512,11 @@ RPC.create = function (
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
-                return void upload_cancel(Env, safeKey, function (e) {
-                    WARN(e);
+                // msg[1] is fileSize
+                // if we pass it here, we can start an upload right away without calling
+                // UPLOAD_STATUS again
+                return void upload_cancel(Env, safeKey, msg[1], function (e) {
+                    WARN(e, 'UPLOAD_CANCEL');
                     Respond(e);
                 });
             default:

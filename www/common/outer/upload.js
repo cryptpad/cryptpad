@@ -13,16 +13,14 @@ define([
         // if it exists, path contains the new pad location in the drive
         var path = file.path;
 
-        // XXX
-        // PASSWORD_FILES
-        var password;
+        var password = file.password;
         var hash = Hash.createRandomHash('file', password);
         var secret = Hash.getSecrets('file', hash, password);
         var key = secret.keys.cryptKey;
         var id = secret.channel;
-        //var key = Nacl.randomBytes(32);
 
-        // XXX provide channel id to "next"
+        // XXX check id here (getFileSize)
+
         var next = FileCrypto.encrypt(u8, metadata, key);
 
         var estimate = FileCrypto.computeEncryptedSize(u8.length, metadata);
@@ -53,7 +51,7 @@ define([
             }
 
             // if not box then done
-            common.uploadComplete(function (e/*, id*/) { // XXX id is given, not asked
+            common.uploadComplete(id, function (e) {
                 if (e) { return void console.error(e); }
                 var uri = ['', 'blob', id.slice(0,2), id].join('/');
                 console.log("encrypted blob is now available as %s", uri);
@@ -64,11 +62,11 @@ define([
 
                 if (noStore) { return void onComplete(href); }
 
-                // PASSWORD_FILES
                 var data = {
                     title: title || "",
                     href: href,
                     path: path,
+                    password: password,
                     channel: id
                 };
                 common.setPadTitle(data, function (err) {
@@ -89,11 +87,10 @@ define([
             if (pending) {
                 return void onPending(function () {
                     // if the user wants to cancel the pending upload to execute that one
-                    common.uploadCancel(function (e, res) {
+                    common.uploadCancel(estimate, function (e) {
                         if (e) {
                             return void console.error(e);
                         }
-                        console.log(res);
                         next(again);
                     });
                 });
