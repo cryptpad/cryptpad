@@ -32,6 +32,7 @@ define([
         });
         return select;
     };
+    languageSelector = languageSelector; // jshint
 
     var footerCol = function (title, L, literal) {
         return h('div.col-6.col-sm-3', [
@@ -68,7 +69,7 @@ define([
                     footerCol(null, [
                         h('div.cp-bio-foot', [
                             h('p', Msg.main_footerText),
-                            languageSelector()
+                            //languageSelector()
                         ])
                     ], ''),
                     footerCol('footer_applications', [
