@@ -53,6 +53,7 @@ define([
 
             data.name = file.metadata.name;
             data.url = href;
+            data.password = file.password;
             if (file.metadata.type.slice(0,6) === 'image/') {
                 data.mediatag = true;
             }
