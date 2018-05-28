@@ -212,8 +212,10 @@ define([
             queue.next();
         };
 
-        // Don't show the rename prompt if we don't want to store the file in the drive (avatar)
+        // Don't show the rename and password prompts if we don't store the file in the drive
+        // e.g. avatar
         var showNamePrompt = !config.noStore;
+        var showPasswordPrompt = !config.noStore;
 
         var promptName = function (file, cb) {
             var extIdx = file.name.lastIndexOf('.');
@@ -225,6 +227,7 @@ define([
             ]);
             UI.prompt(msg, name, function (newName) {
                 if (newName === null) {
+                    // "Don't ask me again"
                     showNamePrompt = false;
                     return void cb (file.name);
                 }
@@ -235,6 +238,19 @@ define([
                 cb(newName);
             }, {cancel: Messages.doNotAskAgain}, true);
         };
+
+        var promptPassword = function (file, cb) {
+            var msg = Messages.upload_password;
+            UI.prompt(msg, '', function (password) {
+                if (password === null) {
+                    // "Don't ask me again"
+                    showPasswordPrompt = false;
+                    return void cb ();
+                }
+                cb(password);
+            }, {cancel: Messages.doNotAskAgain, password: true}, true);
+        };
+
         var handleFileState = {
             queue: [],
             inProgress: false
@@ -246,6 +262,7 @@ define([
             var thumb;
             var file_arraybuffer;
             var name = file.name;
+            var password;
             var finish = function () {
                 var metadata = {
                     name: name,
@@ -255,6 +272,7 @@ define([
                 queue.push({
                     blob: file_arraybuffer,
                     metadata: metadata,
+                    password: password,
                     dropEvent: e
                 });
                 handleFileState.inProgress = false;
@@ -263,11 +281,18 @@ define([
                     handleFile(next[0], next[1]);
                 }
             };
+            var getPassword = function () {
+                if (!showPasswordPrompt) { return void finish(); }
+                promptPassword(file, function (pw) {
+                    password = pw;
+                    finish();
+                });
+            };
             var getName = function () {
-                if (!showNamePrompt) { return void finish(); }
+                if (!showNamePrompt) { return void getPassword(); }
                 promptName(file, function (newName) {
                     name = newName;
-                    finish();
+                    getPassword();
                 });
             };
 

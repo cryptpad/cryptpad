@@ -600,6 +600,8 @@ define(function () {
     out.upload_rename = "Souhaitez-vous renommer <b>{0}</b> avant son stockage en ligne ?<br>" +
                         "<em>L'extension du fichier ({1}) sera ajoutée automatiquement. "+
                         "Ce nom sera permanent et visible par les autres utilisateurs</em>.";
+    out.upload_password = "Souhaitez-vous protéger ce fichier avec un mot de passe ?<br>" +
+                          "Choisir <em>Ne plus demander</em> implique qu'aucun fichier importé durant cette session n'aura de mot de passe.";
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
     out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";

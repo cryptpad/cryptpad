@@ -425,8 +425,13 @@ define([
         cb = cb || function () {};
         opt = opt || {};
 
-        var input = dialog.textInput();
+        var inputBlock = opt.password ? UI.passwordInput() : dialog.textInput();
+        var input = opt.password ? $(inputBlock).find('input')[0] : inputBlock;
         input.value = typeof(def) === 'string'? def: '';
+
+        if (opt.password) {
+            $(inputBlock).find('.cp-checkmark').css('margin-bottom', '15px');
+        }
 
         var message;
         if (typeof(msg) === 'string') {
@@ -441,7 +446,7 @@ define([
         var cancel = dialog.cancelButton(opt.cancel);
         var frame = dialog.frame([
             message,
-            input,
+            inputBlock,
             dialog.nav([ cancel, ok, ]),
         ]);
 
