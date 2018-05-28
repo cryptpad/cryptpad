@@ -1046,7 +1046,9 @@ define(function () {
     };
 
     out.help.kanban = {
-        //add: ''
+        add: 'Add new boards using the <span class="fa fa-plus"></span> button in the top-right corner',
+        task: 'Move the items by dragging and dropping them from a board to another',
+        color: 'Change the colors by clicking on the colored part next to the board titles',
     };
 
     out.initialState = [
