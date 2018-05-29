@@ -11,6 +11,10 @@ define([
         var u8 = file.blob; // This is not a blob but a uint8array
         var metadata = file.metadata;
 
+        var owned = file.isOwned;
+// XXX
+owned = true;
+
         // if it exists, path contains the new pad location in the drive
         var path = file.path;
 
@@ -34,9 +38,16 @@ define([
             });
         };
 
+        var edPublic;
         nThen(function (waitFor) {
             // Generate a hash and check if the resulting id is valid (not already used)
             getValidHash(waitFor());
+        }).nThen(function (waitFor) {
+            if (!owned) { return; }
+            common.getMetadata(waitFor(function (err, m) {
+                edPublic = m.priv.edPublic;
+                metadata.owners = [edPublic];
+            }));
         }).nThen(function () {
             var next = FileCrypto.encrypt(u8, metadata, key);
 
@@ -68,7 +79,7 @@ define([
                 }
 
                 // if not box then done
-                common.uploadComplete(id, function (e) {
+                common.uploadComplete(id, owned, function (e) {
                     if (e) { return void console.error(e); }
                     var uri = ['', 'blob', id.slice(0,2), id].join('/');
                     console.log("encrypted blob is now available as %s", uri);
@@ -89,6 +100,7 @@ define([
                         if (err) { return void console.error(err); }
                         onComplete(href);
                         common.setPadAttribute('fileType', metadata.type, null, href);
+                        common.setPadAttribute('owners', metadata.owners, null, href);
                     });
                 });
             };

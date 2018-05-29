@@ -943,10 +943,14 @@ var upload_complete = function (Env, publicKey, id, cb) {
     var paths = Env.paths;
     var session = getSession(Env.Sessions, publicKey);
 
+    if (session.blobstage && session.blobstage.close) {
+        session.blobstage.close();
+        delete session.blobstage;
+    }
+
     if (!testFileId(id)) {
-        console.log(id);
         WARN('uploadComplete', "id is invalid");
-        return void cb('RENAME_ERR');
+        return void cb('EINVAL_ID');
     }
 
     var oldPath = makeFilePath(paths.staging, publicKey);
@@ -986,11 +990,6 @@ var upload_complete = function (Env, publicKey, id, cb) {
     var handleMove = function (e, newPath, id) {
         if (e || !oldPath || !newPath) {
             return void cb(e || 'PATH_ERR');
-        }
-
-        if (session.blobstage && session.blobstage.close) {
-            session.blobstage.close();
-            delete session.blobstage;
         }
 
         // lol wut handle ur errors
@@ -1096,6 +1095,118 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         // clean up their session when you're done
         // call back with the blob id...
         cb(void 0, blobId);
+    });
+};
+
+var owned_upload_complete_2 = function (Env, safeKey, id, cb) {
+    var session = getSession(Env.Sessions, safeKey);
+
+    // the file has already been uploaded to the staging area
+    // close the pending writestream
+    if (session.blobstage && session.blobstage.close) {
+        session.blobstage.close();
+        delete session.blobstage;
+    }
+
+    if (!testFileId(id)) {
+        WARN('ownedUploadComplete', "id is invalid");
+        return void cb('EINVAL_ID');
+    }
+
+    var oldPath = makeFilePath(Env.paths.staging, safeKey);
+    if (typeof(oldPath) !== 'string') {
+        return void cb('EINVAL_CONFIG');
+    }
+
+    // construct relevant paths
+    var root = Env.paths.blob;
+
+    //var safeKey = escapeKeyCharacters(safeKey);
+    var safeKeyPrefix = safeKey.slice(0, 3);
+
+    //var blobId = createFileId();
+    var blobIdPrefix = id.slice(0, 2);
+
+    var ownPath = Path.join(root, safeKeyPrefix, safeKey, blobIdPrefix);
+    var filePath = Path.join(root, blobIdPrefix);
+
+    var tryId = function (path, cb) {
+        Fs.access(path, Fs.constants.R_OK | Fs.constants.W_OK, function (e) {
+            if (!e) {
+                // generate a new id (with the same prefix) and recurse
+                WARN('ownedUploadComplete', 'id is already used '+ id);
+                return void cb('EEXISTS');
+            } else if (e.code === 'ENOENT') {
+                // no entry, so it's safe for us to proceed
+                return void cb();
+            } else {
+                // it failed in an unexpected way. log it
+                WARN(e, 'ownedUploadComplete');
+                return void cb(e.code);
+            }
+        });
+    };
+
+    // the user wants to move it into blob and create a empty file with the same id
+    // in their own space:
+    // /blob/safeKeyPrefix/safeKey/blobPrefix/blobID
+
+    var finalPath;
+    var finalOwnPath;
+    nThen(function (w) {
+        // make the requisite directory structure using Mkdirp
+        Mkdirp(filePath, w(function (e /*, path */) {
+            if (e) { // does not throw error if the directory already existed
+                w.abort();
+                return void cb(e);
+            }
+        }));
+        Mkdirp(ownPath, w(function (e /*, path */) {
+            if (e) { // does not throw error if the directory already existed
+                w.abort();
+                return void cb(e);
+            }
+        }));
+    }).nThen(function (w) {
+        // make sure the id does not collide with another
+        finalPath = Path.join(filePath, id);
+        finalOwnPath = Path.join(ownPath, id);
+        tryId(finalPath, w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+        }));
+    }).nThen(function (w) {
+        // Create the empty file proving ownership
+        Fs.writeFile(finalOwnPath, '', w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e.code);
+            }
+            // otherwise it worked...
+        }));
+    }).nThen(function (w) {
+        // move the existing file to its new path
+
+        // flow is dumb and I need to guard against this which will never happen
+        /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
+        Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
+            if (e) {
+                // Remove the ownership file
+                // XXX not needed if we have a cleanup script?
+                Fs.unlink(finalOwnPath, function (e) {
+                    WARN(e, 'Removing ownership file ownedUploadComplete');
+                });
+                w.abort();
+                return void cb(e.code);
+            }
+            // otherwise it worked...
+        }));
+    }).nThen(function () {
+        // clean up their session when you're done
+        // call back with the blob id...
+        cb(void 0, id);
     });
 };
 
@@ -1506,7 +1617,7 @@ RPC.create = function (
                 });
             case 'OWNED_UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void owned_upload_complete(Env, safeKey, function (e, blobId) {
+                return void owned_upload_complete_2(Env, safeKey, msg[1], function (e, blobId) {
                     WARN(e, blobId);
                     Respond(e, blobId);
                 });

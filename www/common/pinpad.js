@@ -187,6 +187,17 @@ define([
                 });
             };
 
+            exp.ownedUploadComplete = function (id, cb) {
+                rpc.send('OWNED_UPLOAD_COMPLETE', id, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var id = res[0];
+                    if (typeof(id) !== 'string') {
+                        return void cb('INVALID_ID');
+                    }
+                    cb(void 0, id);
+                });
+            };
+
             exp.uploadStatus = function (size, cb) {
                 if (typeof(size) !== 'number') {
                     return void setTimeout(function () {

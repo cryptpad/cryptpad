@@ -104,6 +104,10 @@ define([
                     toolbar.$rightside.append(common.createButton('hashtag', true));
                 }
 
+                var owners = metadata.owners;
+                if (owners) {
+                    common.setPadAttribute('owners', owners);
+                }
 
                 common.setPadAttribute('fileType', metadata.type);
 
