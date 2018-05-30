@@ -817,6 +817,16 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
+var isFile = function (filePath /*:string*/, cb) {
+    Fs.stat(filePath, function (e, stats) {
+        if (e) {
+            if (e.code === 'ENOENT') { return void cb(void 0, false); }
+            return void cb(e.message);
+        }
+        return void cb(void 0, stats.isFile());
+    });
+};
+
 var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     if (typeof(channelId) !== 'string' || channelId.length !== 32) {
         return cb('INVALID_ARGUMENTS');
@@ -840,9 +850,63 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
+var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
+    var safeKey = escapeKeyCharacters(unsafeKey);
+    var safeKeyPrefix = safeKey.slice(0,3);
+    var blobPrefix = blobId.slice(0,2);
+
+    var blobPath = makeFilePath(Env.paths.blob, blobId);
+    var ownPath = Path.join(Env.paths.blob, safeKeyPrefix, safeKey, blobPrefix, blobId);
+
+    nThen(function (w) {
+        // Check if the blob exists
+        isFile(blobPath, w(function (e, isFile) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+            if (!isFile) {
+                WARN('removeOwnedBlob', 'The provided blob ID is not a file!');
+                w.abort();
+                return void cb('EINVAL_BLOBID');
+            }
+        }));
+    }).nThen(function (w) {
+        // Check if you're the owner
+        isFile(ownPath, w(function (e, isFile) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+            if (!isFile) {
+                WARN('removeOwnedBlob', 'Incorrect owner');
+                w.abort();
+                return void cb('INSUFFICIENT_PERMISSIONS');
+            }
+        }));
+    }).nThen(function (w) {
+        // Delete the blob
+        Fs.unlink(blobPath, w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+        }));
+    }).nThen(function () {
+        // Delete the proof of ownership
+        Fs.unlink(ownPath, function (e) {
+            cb(e);
+        });
+    });
+};
+
 var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
-    if (typeof(channelId) !== 'string' || channelId.length !== 32) {
+    if (typeof(channelId) !== 'string' || !isValidId(channelId)) {
         return cb('INVALID_ARGUMENTS');
+    }
+
+    if (testFileId(channelId)) {
+        return void removeOwnedBlob(Env, channelId, unsafeKey, cb);
     }
 
     if (!(Env.msgStore && Env.msgStore.removeChannel && Env.msgStore.getChannelMetadata)) {
@@ -926,16 +990,6 @@ var upload_cancel = function (Env, publicKey, fileSize, cb) {
     Fs.unlink(path, function (e) {
         if (e) { return void cb('E_UNLINK'); }
         cb(void 0);
-    });
-};
-
-var isFile = function (filePath, cb) {
-    Fs.stat(filePath, function (e, stats) {
-        if (e) {
-            if (e.code === 'ENOENT') { return void cb(void 0, false); }
-            return void cb(e.message);
-        }
-        return void cb(void 0, stats.isFile());
     });
 };
 
@@ -1098,7 +1152,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
     });
 };
 
-var owned_upload_complete_2 = function (Env, safeKey, id, cb) {
+owned_upload_complete = function (Env, safeKey, id, cb) {
     var session = getSession(Env.Sessions, safeKey);
 
     // the file has already been uploaded to the staging area
@@ -1617,7 +1671,7 @@ RPC.create = function (
                 });
             case 'OWNED_UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void owned_upload_complete_2(Env, safeKey, msg[1], function (e, blobId) {
+                return void owned_upload_complete(Env, safeKey, msg[1], function (e, blobId) {
                     WARN(e, blobId);
                     Respond(e, blobId);
                 });

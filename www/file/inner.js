@@ -96,20 +96,25 @@ define([
                     }
                     return void console.error(e);
                 }
+
+                // Add pad attributes when the file is saved in the drive
+                Title.onTitleChange(function () {
+                    var owners = metadata.owners;
+                    if (owners) {
+                        common.setPadAttribute('owners', owners);
+                    }
+                    common.setPadAttribute('fileType', metadata.type);
+                });
+
+                // Save to the drive or update the acces time
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
+
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
                 toolbar.$rightside.append(common.createButton('forget', true));
                 if (common.isLoggedIn()) {
                     toolbar.$rightside.append(common.createButton('hashtag', true));
                 }
-
-                var owners = metadata.owners;
-                if (owners) {
-                    common.setPadAttribute('owners', owners);
-                }
-
-                common.setPadAttribute('fileType', metadata.type);
 
                 var displayFile = function (ev, sizeMb, CB) {
                     var called_back;

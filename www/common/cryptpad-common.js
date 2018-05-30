@@ -205,7 +205,7 @@ define([
     };
 
     common.uploadComplete = function (id, owned, cb) {
-        postMessage("UPLOAD_COMPLETE", {id: id, owned, owned}, function (obj) {
+        postMessage("UPLOAD_COMPLETE", {id: id, owned: owned}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
