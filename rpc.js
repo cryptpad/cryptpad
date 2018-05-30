@@ -817,7 +817,8 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
-var isFile = function (filePath /*:string*/, cb) {
+var isFile = function (filePath, cb) {
+    /*:: if (typeof(filePath) !== 'string') { throw new Error('should never happen'); } */
     Fs.stat(filePath, function (e, stats) {
         if (e) {
             if (e.code === 'ENOENT') { return void cb(void 0, false); }
@@ -886,6 +887,7 @@ var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
         }));
     }).nThen(function (w) {
         // Delete the blob
+        /*:: if (typeof(blobPath) !== 'string') { throw new Error('should never happen'); } */
         Fs.unlink(blobPath, w(function (e) {
             if (e) {
                 w.abort();
@@ -1059,6 +1061,7 @@ var upload_complete = function (Env, publicKey, id, cb) {
     tryLocation(handleMove);
 };
 
+/*
 var owned_upload_complete = function (Env, safeKey, cb) {
     var session = getSession(Env.Sessions, safeKey);
 
@@ -1118,7 +1121,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
     var finalPath;
     nThen(function (w) {
         // make the requisite directory structure using Mkdirp
-        Mkdirp(plannedPath, w(function (e /*, path */) {
+        Mkdirp(plannedPath, w(function (e) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e);
@@ -1137,8 +1140,8 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         // move the existing file to its new path
 
         // flow is dumb and I need to guard against this which will never happen
-        /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
-        Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
+        // / *:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } * /
+        Fs.rename(oldPath, finalPath, w(function (e) {
             if (e) {
                 w.abort();
                 return void cb(e.code);
@@ -1151,8 +1154,9 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         cb(void 0, blobId);
     });
 };
+*/
 
-owned_upload_complete = function (Env, safeKey, id, cb) {
+var owned_upload_complete = function (Env, safeKey, id, cb) {
     var session = getSession(Env.Sessions, safeKey);
 
     // the file has already been uploaded to the staging area
