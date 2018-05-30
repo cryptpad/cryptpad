@@ -112,6 +112,7 @@ define([
 
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
                 toolbar.$rightside.append(common.createButton('forget', true));
+                toolbar.$rightside.append(common.createButton('properties', true));
                 if (common.isLoggedIn()) {
                     toolbar.$rightside.append(common.createButton('hashtag', true));
                 }
