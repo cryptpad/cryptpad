@@ -40,7 +40,7 @@ define([
                 return b.id === $(el.parentNode.parentNode).attr('data-id');
             });
             $('<button>', {
-                'class': 'kanban-remove-item btn btn-default',
+                'class': 'kanban-remove-item btn btn-default fa fa-times',
                 title: Messages.kanban_removeItem
             }).click(function (e) {
                 e.stopPropagation();
@@ -50,7 +50,7 @@ define([
                     $(el).remove();
                     kanban.onChange();
                 });
-            }).text('❌').appendTo($(el));
+            }).appendTo($(el));
         });
     };
 
@@ -100,7 +100,7 @@ define([
                 'type': 'text',
                 'id': 'kanban-edit',
                 'size': '30'
-            });
+            }).click(function (e) { e.stopPropagation(); });
         };
 
         var kanban = new window.jKanban({
@@ -120,8 +120,9 @@ define([
             click: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
+                    $(el).focus();
                     verbose("An edit is already active");
-                    return;
+                    //return;
                 }
                 kanban.inEditMode = true;
                 $(el).find('button').remove();
@@ -165,8 +166,9 @@ define([
                 e.stopPropagation();
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
+                    $(el).focus();
                     verbose("An edit is already active");
-                    return;
+                    //return;
                 }
                 kanban.inEditMode = true;
                 var name = $(el).text();
@@ -242,8 +244,9 @@ define([
             addItemClick: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
+                    $(el).focus();
                     verbose("An edit is already active");
-                    return;
+                    //return;
                 }
                 kanban.inEditMode = true;
                 // create a form to enter element 

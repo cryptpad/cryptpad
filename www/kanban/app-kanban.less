@@ -48,12 +48,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            padding: 10px 5px 10px 10px;
         }
 
         .kanban-board {
             header {
                 display: flex;
                 align-items: center;
+                padding: 13px 10px;
                 .kanban-title-board {
                     flex: 1;
                     margin-right: 10px;
@@ -84,9 +86,8 @@
             line-height: @button-size;
             text-align: center;
             background: @colortheme_kanban-bg;
-            font-weight: bold;
             align-self: flex-start;
-            font-size: 50px;
+            font-size: 30px;
             cursor: pointer;
             .tools_unselectable();
         }
@@ -108,8 +109,6 @@
             line-height: 1;
             margin-bottom: 5px;
             margin-right: 5px;
-            font-weight: bold;
-            font-size: 1.2em;
             &:hover {
                 background: transparent;
             }
