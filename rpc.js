@@ -36,6 +36,7 @@ var isValidId = function (chan) {
         [32, 48].indexOf(chan.length) > -1;
 };
 
+/*
 var uint8ArrayToHex = function (a) {
     // call slice so Uint8Arrays work as expected
     return Array.prototype.slice.call(a).map(function (e) {
@@ -52,6 +53,7 @@ var uint8ArrayToHex = function (a) {
         }
     }).join('');
 };
+*/
 
 var testFileId = function (id) {
     if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
@@ -59,6 +61,8 @@ var testFileId = function (id) {
     }
     return true;
 };
+
+/*
 var createFileId = function () {
     var id = uint8ArrayToHex(Nacl.randomBytes(24));
     if (!testFileId(id)) {
@@ -66,6 +70,7 @@ var createFileId = function () {
     }
     return id;
 };
+*/
 
 var makeToken = function () {
     return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
