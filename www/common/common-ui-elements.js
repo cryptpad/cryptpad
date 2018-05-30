@@ -23,20 +23,27 @@ define([
     }
 
     UIElements.updateTags = function (common, href) {
-        var sframeChan = common.getSframeChannel();
-        sframeChan.query('Q_TAGS_GET', href || null, function (err, res) {
-            if (err || res.error) {
-                if (res.error === 'NO_ENTRY') {
-                    UI.alert(Messages.tags_noentry);
+        var existing, tags;
+        NThen(function(waitFor) {
+            common.getSframeChannel().query("Q_GET_ALL_TAGS", null, waitFor(function(err, res) {
+                if (err || res.error) { return void console.error(err || res.error); }
+                existing = Object.keys(res.tags).sort();
+            }));
+        }).nThen(function (waitFor) {
+            common.getPadAttribute('tags', waitFor(function (err, res) {
+                if (err) {
+                    if (err === 'NO_ENTRY') {
+                        UI.alert(Messages.tags_noentry);
+                    }
+                    waitFor.abort();
+                    return void console.error(err);
                 }
-                return void console.error(err || res.error);
-            }
-            UI.dialog.tagPrompt(res.data, function (tags) {
-                if (!Array.isArray(tags)) { return; }
-                sframeChan.event('EV_TAGS_SET', {
-                    tags: tags,
-                    href: href,
-                });
+                tags = res || [];
+            }), href);
+        }).nThen(function () {
+            UI.dialog.tagPrompt(tags, existing, function (newTags) {
+                if (!Array.isArray(newTags)) { return; }
+                common.setPadAttribute('tags', newTags, null, href);
             });
         });
     };
@@ -303,7 +310,7 @@ define([
             var embed = initValue ? val.embed : Util.isChecked($(link).find('#cp-share-embed'));
             var present = initValue ? val.present : Util.isChecked($(link).find('#cp-share-present'));
 
-            var hash = (edit && hashes.editHash) ? hashes.editHash : hashes.viewHash;
+            var hash = (!hashes.viewHash || (edit && hashes.editHash)) ? hashes.editHash : hashes.viewHash;
             var href = origin + pathname + '#' + hash;
             var parsed = Hash.parsePadUrl(href);
             return origin + parsed.getUrl({embed: embed, present: present});
@@ -387,8 +394,11 @@ define([
             val = val || {};
             if (val.edit === false) {
                 $(link).find('#cp-share-editable-false').prop('checked', true);
+                $(link).find('#cp-share-editable-true').prop('checked', false);
+            } else {
+                $(link).find('#cp-share-editable-true').prop('checked', true);
+                $(link).find('#cp-share-editable-false').prop('checked', false);
             }
-            else { $(link).find('#cp-share-editable-true').prop('checked', true); }
             if (val.embed) { $(link).find('#cp-share-embed').prop('checked', true); }
             if (val.present) { $(link).find('#cp-share-present').prop('checked', true); }
             $(link).find('#cp-share-link-preview').val(getLinkValue(val));

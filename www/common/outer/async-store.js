@@ -636,18 +636,7 @@ define([
 
     // Tags
     Store.listAllTags = function (data, cb) {
-        var all = [];
-        var files = Util.find(store.proxy, ['drive', 'filesData']);
-
-        if (typeof(files) !== 'object') { return cb({error: 'invalid_drive'}); }
-        Object.keys(files).forEach(function (k) {
-            var file = files[k];
-            if (!Array.isArray(file.tags)) { return; }
-            file.tags.forEach(function (tag) {
-                if (all.indexOf(tag) === -1) { all.push(tag); }
-            });
-        });
-        cb(all);
+        cb(store.userObject.getTagsList());
     };
 
     // Templates

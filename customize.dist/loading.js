@@ -45,8 +45,7 @@ define([], function () {
     flex-shrink: 0;
     display: flex;
     flex-flow: column;
-    justify-content: center;
-    justify-content: space-evenly;
+    justify-content: space-around;
     align-items: center;
 }
 @media screen and (max-height: 800px) {

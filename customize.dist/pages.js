@@ -1,10 +1,11 @@
 define([
     '/api/config',
     '/common/hyperscript.js',
+    '/common/common-language.js',
     '/customize/messages.js',
     'jquery',
     '/customize/application_config.js',
-], function (Config, h, Msg, $, AppConfig) {
+], function (Config, h, Language, Msg, $, AppConfig) {
     var Pages = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -12,6 +13,26 @@ define([
         e.innerHTML = html;
         return e;
     };
+
+    var languageSelector = function () {
+        var options = [];
+        var languages = Msg._languages;
+        var selected = Msg._languageUsed;
+        var keys = Object.keys(languages).sort();
+        keys.forEach(function (l) {
+            var attr = { value: l };
+            if (selected === l) { attr.selected = 'selected'; }
+            options.push(h('option', attr, languages[l]));
+        });
+        var select = h('select', {}, options);
+        $(select).change(function () {
+            Language.setLanguage($(select).val() || '', null, function () {
+                window.location.reload();
+            });
+        });
+        return select;
+    };
+    languageSelector = languageSelector; // jshint
 
     var footerCol = function (title, L, literal) {
         return h('div.col-6.col-sm-3', [
@@ -47,7 +68,8 @@ define([
                 h('div.row', [
                     footerCol(null, [
                         h('div.cp-bio-foot', [
-                            h('p', Msg.main_footerText)
+                            h('p', Msg.main_footerText),
+                            //languageSelector()
                         ])
                     ], ''),
                     footerCol('footer_applications', [
@@ -56,6 +78,7 @@ define([
                         footLink('/code/', 'main_code'),
                         footLink('/slide/', 'main_slide'),
                         footLink('/poll/', 'main_poll'),
+                        footLink('/kanban/', 'main_kanban'),
                         footLink('/whiteboard/', null, Msg.type.whiteboard)
                     ]),
                     footerCol('footer_aboutUs', [
@@ -72,7 +95,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v2.1.0 (Badger)")
+            h('div.cp-version-footer', "CryptPad v2.2.0 (Coati)")
         ]);
     };
 
@@ -129,8 +152,8 @@ define([
             h('div.container-fluid.cp-about-intro', [
                 h('div.container', [
                     h('center', [
-                    h('h1', Msg.about),
-                    setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
+                        h('h1', Msg.about),
+                        setHTML(h('p'), Msg.about_intro),
                     ]),
                 ]),
             ]),
@@ -138,7 +161,7 @@ define([
                 h('div.row', [
                     h('div.cp-develop-about.col-12',[
                             h('div.cp-icon-cent'),
-                            h('h2.text-center', 'Core Developers')
+                            h('h2.text-center', Msg.about_core)
                         ]),
                     ]),
                 h('div.row.align-items-center', [
@@ -189,7 +212,7 @@ define([
                 h('div.row', [
                     h('div.cp-develop-about.col-12.cp-contrib',[
                             h('div.cp-icon-cent'),
-                            h('h2.text-center', 'Key Contributors')
+                            h('h2.text-center', Msg.about_contributors)
                         ]),
                     ]),
                 h('div.row.align-items-center', [
@@ -566,6 +589,7 @@ define([
                 [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
                 [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
                 [ 'poll', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
+                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'fa-calendar' ],
                 [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
                 [ 'recent', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
             ].filter(function (x) {

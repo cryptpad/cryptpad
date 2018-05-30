@@ -2,12 +2,12 @@ define(function () {
     var out = {};
 
     out.main_title = "CryptPad : Éditeur collaboratif en temps réel, zero knowledge";
-    out.main_slogan = "L'unité est la force, la collaboration est la clé";
 
     out.type = {};
     out.type.pad = 'Texte';
     out.type.code = 'Code';
     out.type.poll = 'Sondage';
+    out.type.kanban = 'Kanban';
     out.type.slide = 'Présentation';
     out.type.drive = 'CryptDrive';
     out.type.whiteboard = "Tableau Blanc";
@@ -21,6 +21,7 @@ define(function () {
     out.button_newpoll = 'Nouveau sondage';
     out.button_newslide = 'Nouvelle présentation';
     out.button_newwhiteboard = 'Nouveau tableau blanc';
+    out.button_newkanban = 'Nouveau kanban';
 
     out.updated_0_common_connectionLost = "<b>Connexion au serveur perdue</b><br>Vous êtes désormais en mode lecture seule jusqu'au retour de la connexion.";
     out.common_connectionLost = out.updated_0_common_connectionLost;
@@ -246,6 +247,17 @@ define(function () {
     out.pad_mediatagWidth = "Largeur (px)";
     out.pad_mediatagHeight = "Hauteur (px)";
 
+    // Kanban
+    out.kanban_newBoard = "Nouveau tableau";
+    out.kanban_item = "Élément {0}"; // Item number for initial content
+    out.kanban_todo = "À faire";
+    out.kanban_done = "Terminé";
+    out.kanban_working = "En cours";
+    out.kanban_deleteBoard = "Êtes-vous sûr de vouloir supprimer ce tableau ?";
+    out.kanban_addBoard = "Ajouter un tableau";
+    out.kanban_removeItem = "Supprimer cet élément";
+    out.kanban_removeItemConfirm = "Êtes-vous sûr de vouloir supprimer cet élément ?";
+
     // Polls
 
     out.poll_title = "Sélecteur de date Zero Knowledge";
@@ -367,6 +379,7 @@ define(function () {
     out.fm_searchName = "Recherche";
     out.fm_recentPadsName = "Pads récents";
     out.fm_ownedPadsName = "Pads en votre possession";
+    out.fm_tagsName = "Mots-clés";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
@@ -429,6 +442,8 @@ define(function () {
     out.fm_padIsOwned = "Vous êtes le propriétaire de ce pad";
     out.fm_padIsOwnedOther = "Ce pad est la propriété d'un autre utilisateur";
     out.fm_deletedPads = "Ces pads n'existent plus sur le serveur, ils ont été supprimés de votre CryptDrive: {0}";
+    out.fm_tags_name = "Mot-clé";
+    out.fm_tags_used = "Nombre d'utilisations";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_rename = "Renommer";
@@ -633,38 +648,24 @@ define(function () {
     // index.html
 
     //about.html
-    out.main_p2 = 'Ce projet utilise l\'éditeur visuel (WYSIWYG) <a href="http://ckeditor.com/">CKEditor</a>, l\'éditeur de code source <a href="https://codemirror.net/">CodeMirror</a>, et le moteur temps-réel <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a>.';
-    out.main_howitworks_p1 = 'CryptPad utilise une variante de l\'algorithme d\'<a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> qui est capable de trouver un consensus distribué en utilisant <a href="https://bitcoin.org/bitcoin.pdf">une chaîne de bloc Nakamoto</a>, un outil popularisé par le <a href="https://fr.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. De cette manière, l\'algorithme évite la nécessité d\'utiliser un serveur central pour résoudre les conflits d\'édition de l\'Operational Transformation, et sans ce besoin de résolution des conflits le serveur peut rester ignorant du contenu qui est édité dans le pad.';
+    out.about_intro = 'CryptPad est développé au sein de l\'équipe Recherche d\'<a href="http://xwiki.com">XWiki SAS</a>, une petite entreprise située à Paris en France et à Iasi en Roumanie. Il y a 3 développeurs principaux qui travaillent sur CryptPad, ainsi que quelques contributeurs à la fois dans et en dehors d\'XWiki SAS';
+    out.about_core = 'Développeurs principaux';
+    out.about_contributors = 'Contributeurs clés';
+
     //contact.html
-    out.main_about_p2 = 'Si vous avez des questions ou commentaires, vous pouvez <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>nous tweeter</a>, ouvrir une issue sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker"><i class="fa fa-github"></i>GitHub</a>, venir dire bonjour sur <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">notre <i class="fa fa-comment"></i>salle Matrix</a> ou IRC (#cryptpad sur irc.freenode.net), ou bien encore <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>nous envoyer un email</a>.';
     out.main_about_p22 = 'Tweetez nous';
     out.main_about_p23 = 'Ouvrez un ticket (GitHub)';
     out.main_about_p24 = 'Dites Bonjour (Matrix)';
     out.main_about_p25 = 'Envoyez-nous un email';
     out.main_about_p26 = 'Si vous avez une question ou des remarques, n\'hésitez pas à nous contacter !';
 
-
     out.main_info = "<h2>Collaborez avec confiance</h2><br>Développez vos idées en groupe avec des documents partagés; la technologie <strong>Zero Knowledge</strong> sécurise vos données.";
     out.main_catch_phrase = "Le Cloud Zero Knowledge";
 
-    out.main_howitworks = 'Comment ça fonctionne';
-    out.main_zeroKnowledge = 'Zero Knowledge';
-    out.main_zeroKnowledge_p = "Vous n'avez pas besoin de croire que nous n'<em>allons</em> pas regarder vos pads. Avec la technologie Zero Knowledge de CryptPad, nous ne <em>pouvons</em> pas le faire. Apprenez-en plus sur notre manière de <a href=\"privacy.html\" title='Protection des données'>protéger vos données</a>.";
-    out.main_writeItDown = 'Prenez-en note';
-    out.main_writeItDown_p = "Les plus grands projets naissent des plus petites idées. Prenez note de vos moments d'inspiration et de vos idées inattendues car vous ne savez pas lesquels seront des découvertes capitales.";
-    out.main_share = 'Partagez le lien, partagez le pad';
-    out.main_share_p = "Faites croître vos idées à plusieurs : réalisez des réunions efficaces, collaborez sur vos listes de tâches et réalisez des présentations rapides avec tous vos amis sur tous vos appareils.";
-    out.main_organize = 'Soyez organisé';
-    out.main_organize_p = "Avec CryptDrive, vous pouvez garder vos vues sur ce qui est important. Les dossiers vous permettent de garder la trace de vos projets et d'avoir une vision globale du travail effectué.";
-    out.tryIt = 'Essayez-le !';
     out.main_richText = 'Éditeur de texte';
-    out.main_richText_p = 'Éditez des documents texte collaborativement avec notre application <a href="http://ckeditor.com" target="_blank">CkEditor</a> temps-réel et Zero Knowledge.';
     out.main_code = 'Éditeur de code';
-    out.main_code_p = 'Modifiez votre code collaborativement grâce à notre application <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> temps-réel et Zero Knowledge.';
     out.main_slide = 'Présentations';
-    out.main_slide_p = 'Créez vos présentations en syntaxe Markdown collaborativement de manière sécurisée et affichez les dans votre navigateur.';
     out.main_poll = 'Sondages';
-    out.main_poll_p = 'Planifiez vos réunions ou évènements, ou votez pour la meilleure solution concernant votre problème.';
     out.main_drive = 'CryptDrive';
 
     out.main_richTextPad = 'Pad de Texte Riche';
@@ -719,7 +720,7 @@ define(function () {
     out.policy_whatwetell = 'Ce que nous dévoilons à d\'autres à propos de vous';
     out.policy_whatwetell_p1 = 'Nous ne fournissons aucune information que nous récoltons ou que vous nous fournissez à des tierces parties à moins d\'y être contraints par la loi.';
     out.policy_links = 'Liens vers d\'autres sites';
-    out.policy_links_p1 = 'Ce site contient des liens vers d\'autres sites, certains étant produits par d\'autres organisations. Nous ne sommes responsables des pratiques de confidentialité ou du contenu d\'aucun site externe. De manière générale, les liens vers des sites externes sont lancés dans une nouvelle fenêtre (ou onglet) du navigateur, pour rendre clair le fait que vous quittez CryptpPad.fr.';
+    out.policy_links_p1 = 'Ce site contient des liens vers d\'autres sites, certains étant produits par d\'autres organisations. Nous ne sommes responsables des pratiques de confidentialité ou du contenu d\'aucun site externe. De manière générale, les liens vers des sites externes sont lancés dans une nouvelle fenêtre (ou onglet) du navigateur, pour rendre clair le fait que vous quittez CryptPad.fr.';
     out.policy_ads = 'Publicité';
     out.policy_ads_p1 = 'Nous n\'affichons pas de publicité en ligne, bien que nous puissions afficher des liens vers les sites des organisations qui financent nos recherches.';
     out.policy_choices = 'Vos choix';
@@ -1001,6 +1002,11 @@ define(function () {
         embed: 'Intégrez des images de votre disque <span class="fa fa-file-image-o"></span> ou de votre CryptDrive <span class="fa fa-image"></span> et exporter le contenu en tant que PNG sur votre disque <span class="fa fa-download"></span> ou votre CryptDrive <span class="fa fa-cloud-upload"></span>'
     };
 
+    out.help.kanban = {
+        add: 'Ajoutez un tableau en utilisant le bouton <span class="fa fa-plus"></span> dans le coin supérieur-droit',
+        task: 'Déplacez les éléments en les faisant glisser d\'un tableau à l\'autre',
+        color: 'Modifiez les couleurs en cliquant sur les parties colorées à côté du titre de chaque tableau'
+    };
 
     out.initialState = [
         '<p>',

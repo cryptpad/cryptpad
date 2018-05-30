@@ -462,6 +462,8 @@ span {
                         padding-right: 15px;
                     }
                     .cp-app-drive-search-opendir {
+                        display: flex;
+                        justify-content: space-between;
                         a {
                             cursor: pointer;
                             color: #41b7d8;
@@ -492,6 +494,19 @@ span {
                     td.cp-app-drive-search-icon {
                         width: 50px;
                         font-size: 40px;
+                    }
+                }
+            }
+            &.cp-app-drive-tags-list {
+                width: 100%;
+                table {
+                    margin: 10px 50px;
+                    width: ~"calc(100% - 100px)";
+                    table-layout: fixed;
+                    td, th {
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        white-space: nowrap;
                     }
                 }
             }

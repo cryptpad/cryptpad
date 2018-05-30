@@ -18,6 +18,7 @@
 @poll-th-user-bg: darken(@poll-th-bg, 10%);
 @poll-editing: lighten(@poll-th-bg, 10%);
 @poll-winner: darken(@poll-th-bg, 15%);
+@poll-highlighted: lighten(@poll-th-bg, 15%);
 @poll-td-bg: @poll-th-bg;
 @poll-td-fg: @poll-th-fg;
 
@@ -511,6 +512,13 @@ div.cp-app-poll-realtime {
                 td:not(:first-child) {
                     label {
                         border-top: 1px solid @poll-border-color;
+                    }
+                }
+            }
+            tr:not(:last-child) {
+                &:hover {
+                    td:first-child {
+                        background-color: @poll-highlighted;
                     }
                 }
             }

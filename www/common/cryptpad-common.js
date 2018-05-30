@@ -578,7 +578,7 @@ define([
         }
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
-        if (parsed.type === 'file') { secret.channel = Util.base64ToHex(secret.channel); }
+        if (parsed.type === 'file' && typeof(parsed.channel) === 'string') { secret.channel = Util.base64ToHex(secret.channel); }
         hashes = Hash.getHashes(secret);
 
         if (secret.version === 0) {
@@ -594,6 +594,7 @@ define([
 
         postMessage("GET_STRONGER_HASH", {
             href: window.location.href,
+            channel: secret.channel,
             password: secret.password
         }, function (hash) {
             if (hash) { hashes.editHash = hash; }

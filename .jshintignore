@@ -2,6 +2,7 @@ node_modules/
 www/bower_components/
 www/common/pdfjs/
 www/common/tippy/
+www/common/jquery-ui/
 
 server.js
 www/common/media-tag.js
@@ -13,6 +14,8 @@ www/common/hyperscript.js
 www/pad/wysiwygarea-plugin.js
 www/pad/mediatag-plugin.js
 www/pad/mediatag-plugin-dialog.js
+
+www/kanban/jkanban.js
 
 www/common/media-tag-nacl.min.js
 

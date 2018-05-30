@@ -588,6 +588,7 @@ define([
                     if (!el.title) { el.title = Hash.getDefaultName(parsed); }
                     // Fix channel
                     if (!el.channel) {
+                        try {
                         if (parsed.hashData && parsed.hashData.type === "file") {
                             // PASSWORD_FILES
                             el.channel = Util.base64ToHex(parsed.hashData.channel);
@@ -596,6 +597,9 @@ define([
                             el.channel = secret.channel;
                         }
                         console.log('Adding missing channel in filesData ', el.channel);
+                        } catch (e) {
+                            console.error(e);
+                        }
                     }
 
                     if ((loggedIn || config.testMode) && rootFiles.indexOf(id) === -1) {

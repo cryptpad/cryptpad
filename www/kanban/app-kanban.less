@@ -1,0 +1,173 @@
+@import (once) "../../customize/src/less2/include/browser.less";
+@import (once) "../../customize/src/less2/include/framework.less";
+@import (once) "../../customize/src/less2/include/tools.less";
+
+.framework_main( @bg-color: @colortheme_kanban-bg,
+@warn-color: @colortheme_kanban-warn,
+@color: @colortheme_kanban-color);
+
+// body
+&.cp-app-kanban {
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+    min-height: auto;
+
+    #cp-app-kanban-container {
+        flex: 1;
+        display: flex;
+        flex-flow: column;
+    }
+    #cp-app-kanban-editor {
+        flex: 1;
+        display: flex;
+        flex-flow: row;
+        height: 100%;
+        overflow: hidden;
+    }
+    #cp-app-kanban-content {
+        flex: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-flow: column;
+        .kanban-container-outer {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            min-height: -webkit-min-content;
+            min-height: min-content;
+            .kanban-container {
+                flex: 1;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+            }
+        }
+
+        .kanban-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kanban-board {
+            header {
+                display: flex;
+                align-items: center;
+                .kanban-title-board {
+                    flex: 1;
+                    margin-right: 10px;
+                    min-width: 0;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                }
+                #kanban-edit {
+                    color: black;
+                    font-weight: bold;
+                }
+            }
+        }
+
+        #kanban-edit {
+            width: 100%;
+            background: transparent;
+            border: 1px solid rgba(0,0,0,0.3);
+        }
+
+        @button-size: 50px;
+        #kanban-addboard {
+            margin: 30px;
+            border: 1px solid;
+            width: @button-size;
+            height: @button-size;
+            line-height: @button-size;
+            text-align: center;
+            background: @colortheme_kanban-bg;
+            font-weight: bold;
+            align-self: flex-start;
+            font-size: 50px;
+            cursor: pointer;
+            .tools_unselectable();
+        }
+
+        .kanban-remove-item {
+            padding: 0 0.5em;
+            visibility: hidden;
+        }
+        .kanban-item:hover {
+            .kanban-remove-item {
+                visibility: visible;
+            }
+        }
+
+        .kanban-additem {
+            float: right;
+            background: #EEE;
+            padding: 5px .5rem 4px;
+            line-height: 1;
+            margin-bottom: 5px;
+            margin-right: 5px;
+            font-weight: bold;
+            font-size: 1.2em;
+            &:hover {
+                background: transparent;
+            }
+        }
+
+        .kanban-header-yellow {
+            background: #FC3;
+        }
+
+        .kanban-header-orange {
+            background: #F91;
+        }
+
+        .kanban-header-blue {
+            background: #0AC;
+        }
+
+        .kanban-header-red {
+            background: #E43;
+        }
+
+        .kanban-header-green {
+            background: #8C4;
+        }
+
+        .kanban-header-purple {
+            background: #c851ff;
+        }
+
+        .kanban-header-cyan {
+            background: #00ffff;
+        }
+
+        .kanban-header-lightgreen {
+            background: #c3ff5b;
+        }
+
+        .kanban-header-lightblue {
+            background: #adeeff;
+        }
+
+        @media (max-width: @browser_media-medium-screen) {
+            #cp-app-kanban-container {
+                flex: 1;
+                max-width: 100%;
+                resize: none;
+            }
+        }
+
+        &.cp-app-readonly {
+            .kanban-item, .kanban-title-board {
+                cursor: default !important;
+                .tools_unselectable();
+            }
+            .kanban-title-button, #kanban-addboard, .kanban-remove-item, .kanban-additem {
+                display: none !important;
+            }
+        }
+    }
+
+}

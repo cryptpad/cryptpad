@@ -165,10 +165,6 @@ define({
     // Put one entry in the parent sessionStorage
     'Q_SESSIONSTORAGE_PUT': true,
 
-    // Set and get the tags using the tag prompt button
-    'Q_TAGS_GET': true,
-    'EV_TAGS_SET': true,
-
     // Merge the anonymous drive (FS_hash) into the current logged in user's drive, to keep the pads
     // in the drive at registration.
     'Q_MERGE_ANON_DRIVE': true,
@@ -237,4 +233,7 @@ define({
 
     // Loading events to display in the loading screen
     'EV_LOADING_INFO': true,
+
+    // Get all existing tags
+    'Q_GET_ALL_TAGS': true,
 });

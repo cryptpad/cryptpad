@@ -393,6 +393,7 @@ define([
                     // If we have a stronger hash, use it for pad attributes
                     href = window.location.pathname + '#' + hashes.editHash;
                 }
+                if (data.href) { href = data.href; }
                 Cryptpad.getPadAttribute(data.key, function (e, data) {
                     cb({
                         error: e,
@@ -406,6 +407,7 @@ define([
                     // If we have a stronger hash, use it for pad attributes
                     href = window.location.pathname + '#' + hashes.editHash;
                 }
+                if (data.href) { href = data.href; }
                 Cryptpad.setPadAttribute(data.key, data.value, function (e) {
                     cb({error:e});
                 }, href);
@@ -573,19 +575,6 @@ define([
                 }
             });
 
-            sframeChan.on('Q_TAGS_GET', function (data, cb) {
-                Cryptpad.getPadTags(data, function (err, data) {
-                    cb({
-                        error: err,
-                        data: data
-                    });
-                });
-            });
-
-            sframeChan.on('EV_TAGS_SET', function (data) {
-                Cryptpad.resetTags(data.href, data.tags);
-            });
-
             sframeChan.on('Q_PIN_GET_USAGE', function (data, cb) {
                 Cryptpad.isOverPinLimit(function (err, overLimit, data) {
                     cb({
@@ -604,6 +593,15 @@ define([
             });
             sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
                 Cryptpad.removeOwnedChannel(channel, cb);
+            });
+
+            sframeChan.on('Q_GET_ALL_TAGS', function (data, cb) {
+                Cryptpad.listAllTags(function (err, tags) {
+                    cb({
+                        error: err,
+                        tags: tags
+                    });
+                });
             });
 
             if (cfg.addRpc) {
