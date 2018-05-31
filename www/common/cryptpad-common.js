@@ -7,12 +7,13 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
-    '/common/outer/store-rpc.js',
+    //'/common/outer/store-rpc.js',
+    '/common/outer/worker-channel.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, AStore,
+            Messaging, Constants, Feedback, LocalStore, /*AStore, */Channel,
             AppConfig, Nthen) {
 
 
@@ -22,10 +23,11 @@ define([
 
     Additionally, there is some basic functionality for import/export.
 */
-    var postMessage = function (cmd, data, cb) {
-        setTimeout(function () {
+    var postMessage = function (/*cmd, data, cb*/) {
+        /*setTimeout(function () {
             AStore.query(cmd, data, cb);
-        });
+        });*/
+        console.error('NOT_READY');
     };
     var tryParsing = function (x) {
         try { return JSON.parse(x); }
@@ -510,6 +512,11 @@ define([
     var messaging = common.messaging = {};
     messaging.onFriendRequest = Util.mkEvent();
     messaging.onFriendComplete = Util.mkEvent();
+    messaging.addHandlers = function (href) {
+        postMessage("ADD_DIRECT_MESSAGE_HANDLERS", {
+            href: href
+        });
+    };
 
     // Messenger
     var messenger = common.messenger = {};
@@ -641,14 +648,58 @@ define([
         window.location.href = '/login/';
     };
 
-    common.startAccountDeletion = function (cb) {
+    common.startAccountDeletion = function (data, cb) {
         // Logout other tabs
         LocalStore.logout(null, true);
         cb();
     };
 
+    var queries = {
+        REQUEST_LOGIN: requestLogin,
+        UPDATE_METADATA: common.changeMetadata,
+        UPDATE_TOKEN: function (data) {
+            var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
+            if (localToken !== data.token) { requestLogin(); }
+        },
+        // Messaging
+        Q_FRIEND_REQUEST: common.messaging.onFriendRequest.fire,
+        EV_FIREND_COMPLETE: common.messaging.onFriendComplete.fire,
+        // Network
+        NETWORK_DISCONNECT: common.onNetworkDisconnect.fire,
+        NETWORK_RECONNECT: common.onNetworkReconnect.fire,
+        // Messenger
+        CONTACTS_MESSAGE: common.messenger.onMessageEvent.fire,
+        CONTACTS_JOIN: common.messenger.onJoinEvent.fire,
+        CONTACTS_LEAVE: common.messenger.onLeaveEvent.fire,
+        CONTACTS_UPDATE: common.messenger.onUpdateEvent.fire,
+        CONTACTS_FRIEND: common.messenger.onFriendEvent.fire,
+        CONTACTS_UNFRIEND: common.messenger.onUnfriendEvent.fire,
+        // Pad
+        PAD_READY: common.padRpc.onReadyEvent.fire,
+        PAD_MESSAGE: common.padRpc.onMessageEvent.fire,
+        PAD_JOIN: common.padRpc.onJoinEvent.fire,
+        PAD_LEAVE: common.padRpc.onLeaveEvent.fire,
+        PAD_DISCONNECT: common.padRpc.onDisconnectEvent.fire,
+        PAD_ERROR: common.padRpc.onErrorEvent.fire,
+        // Drive
+        DRIVE_LOG: common.drive.onLog.fire,
+        DRIVE_CHANGE: common.drive.onChange.fire,
+        DRIVE_REMOVE: common.drive.onRemove.fire,
+        // Account deletion
+        DELETE_ACCOUNT: common.startAccountDeletion,
+        // Loading
+        LOADING_DRIVE: common.loading.onDriveEvent.fire
+    };
+
+    /*
     var onMessage = function (cmd, data, cb) {
         cb = cb || function () {};
+        if (queries[cmd]) {
+            return void queries[cmd](data, cb);
+        } else {
+            console.error("Unhandled command " + cmd);
+        }
+        /*
         switch (cmd) {
             case 'REQUEST_LOGIN': {
                 requestLogin();
@@ -735,7 +786,7 @@ define([
                 common.loading.onDriveEvent.fire(data); break;
             }
         }
-    };
+    };*/
 
     common.ready = (function () {
         var env = {};
@@ -792,7 +843,8 @@ define([
             }
         }).nThen(function (waitFor) {
             var cfg = {
-                query: onMessage, // TODO temporary, will be replaced by a webworker channel
+                init: true,
+                //query: onMessage, // TODO temporary, will be replaced by a webworker channel
                 userHash: LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
@@ -804,7 +856,7 @@ define([
                 cfg.initialPath = sessionStorage[Constants.newPadPathKey];
                 delete sessionStorage[Constants.newPadPathKey];
             }
-            AStore.query("CONNECT", cfg, waitFor(function (data) {
+            /*AStore.query("CONNECT", cfg, waitFor(function (data) {
                 if (data.error) { throw new Error(data.error); }
                 if (data.state === 'ALREADY_INIT') {
                     data = data.returned;
@@ -812,11 +864,11 @@ define([
 
                 if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
-                /*if (cfg.userHash && sessionStorage) {
+                / *if (cfg.userHash && sessionStorage) {
                     // copy User_hash into sessionStorage because cross-domain iframes
                     // on safari replaces localStorage with sessionStorage or something
                     sessionStorage.setItem(Constants.userHashKey, cfg.userHash);
-                }*/
+                }* /
 
                 if (cfg.userHash) {
                     var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
@@ -828,7 +880,68 @@ define([
 
                 initFeedback(data.feedback);
                 initialized = true;
-            }));
+            }));*/
+
+            var msgEv = Util.mkEvent();
+            var worker = new Worker('/common/outer/webworker.js');
+            worker.onmessage = function (ev) {
+                msgEv.fire(ev);
+            };
+            var postMsg = function (data) {
+                worker.postMessage(data);
+            };
+            Channel.create(msgEv, postMsg, waitFor(function (chan) {
+                console.log('outer ready');
+                Object.keys(queries).forEach(function (q) {
+                    chan.on(q, function (data, cb) {
+                        try {
+                            queries[q](data, cb);
+                        } catch (e) {
+                            console.error("Error in outer when executing query " + q);
+                            console.error(e);
+                            console.log(data);
+                        }
+                    });
+                });
+
+                postMessage = function (cmd, data, cb) {
+                    /*setTimeout(function () {
+                        AStore.query(cmd, data, cb);
+                    });*/
+                    chan.query(cmd, data, function (err, data) {
+                        if (err) { return void cb ({error: err}); }
+                        cb(data);
+                    });
+                };
+
+                postMessage('CONNECT', cfg, waitFor(function (data) {
+                    if (data.error) { throw new Error(data.error); }
+                    if (data.state === 'ALREADY_INIT') {
+                        data = data.returned;
+                    }
+
+                    if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
+
+                    /*if (cfg.userHash && sessionStorage) {
+                        // copy User_hash into sessionStorage because cross-domain iframes
+                        // on safari replaces localStorage with sessionStorage or something
+                        sessionStorage.setItem(Constants.userHashKey, cfg.userHash);
+                    }*/
+
+                    if (cfg.userHash) {
+                        var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
+                        if (localToken === null) {
+                            // if that number hasn't been set to localStorage, do so.
+                            localStorage.setItem(Constants.tokenKey, data[Constants.tokenKey]);
+                        }
+                    }
+
+                    initFeedback(data.feedback);
+                    initialized = true;
+                }));
+
+            }), false);
+
         }).nThen(function (waitFor) {
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;

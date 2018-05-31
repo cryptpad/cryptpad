@@ -828,6 +828,10 @@ define([
         var messagingCfg = getMessagingCfg();
         Messaging.inviteFromUserlist(messagingCfg, data, cb);
     };
+    Store.addDirectMessageHandlers = function (data) {
+        var messagingCfg = getMessagingCfg();
+        Messaging.addDirectMessageHandler(messagingCfg, data.href);
+    };
 
     // Messenger
 
@@ -976,7 +980,6 @@ define([
         channel.sendMessage(data, cb);
     };
 
-    // TODO
     // GET_FULL_HISTORY from sframe-common-outer
     Store.getFullHistory = function (data, cb) {
         var network = store.network;
@@ -1232,9 +1235,6 @@ define([
             store.returned = ret;
 
             callback(ret);
-
-            var messagingCfg = getMessagingCfg();
-            Messaging.addDirectMessageHandler(messagingCfg);
 
             // Send events whenever there is a change or a removal in the drive
             if (data.driveEvents) {

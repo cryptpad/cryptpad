@@ -699,6 +699,9 @@ define([
                     readOnly: readOnly,
                     crypto: Crypto.createEncryptor(secret.keys),
                     onConnect: function () {
+                        var href = parsed.getUrl();
+                        // Add friends requests handlers when we have the final href
+                        Cryptpad.messaging.addHandlers(href);
                         if (window.location.hash && window.location.hash !== '#') {
                             window.location = parsed.getUrl({
                                 present: parsed.hashData.present,
