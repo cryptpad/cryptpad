@@ -316,9 +316,7 @@
                         // if add button is true, add button to the board
                         if (addButton) {
                             var btn = document.createElement("BUTTON");
-                            var t = document.createTextNode(buttonContent);
-                            btn.setAttribute("class", "kanban-title-button btn btn-default btn-xs");
-                            btn.appendChild(t);
+                            btn.setAttribute("class", "kanban-title-button btn btn-default btn-xs fa fa-times");
                             //var buttonHtml = '<button class="kanban-title-button btn btn-default btn-xs">'+buttonContent+'</button>'
                             headerBoard.appendChild(btn);
                             __onButtonClickHandler(btn, board.id);
@@ -348,8 +346,7 @@
                         var footerBoard = document.createElement('footer');
                         //add button
                         var addBoardItem = document.createElement('button');
-                        $(addBoardItem).text("＋")
-                        $(addBoardItem).addClass("kanban-additem btn btn-default");
+                        $(addBoardItem).addClass("kanban-additem btn btn-default fa fa-plus");
                         footerBoard.appendChild(addBoardItem);
                         __onAddItemClickHandler(addBoardItem);
 
@@ -459,7 +456,7 @@
                     boardContainerOuter.appendChild(boardContainer);
                     var addBoard = document.createElement('div');
                     addBoard.id = 'kanban-addboard';
-                    $(addBoard).text("+");
+                    addBoard.setAttribute('class', 'fa fa-plus');
                     boardContainerOuter.appendChild(addBoard);
 
                     self.container = boardContainer;
@@ -502,6 +499,7 @@
                 function __onAddItemClickHandler(nodeItem, clickfn) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
+                        e.stopPropagation();
                         self.options.addItemClick(this);
                         if (typeof (this.clickfn) === 'function')
                             this.clickfn(this);

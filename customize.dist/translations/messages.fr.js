@@ -1002,6 +1002,11 @@ define(function () {
         embed: 'Intégrez des images de votre disque <span class="fa fa-file-image-o"></span> ou de votre CryptDrive <span class="fa fa-image"></span> et exporter le contenu en tant que PNG sur votre disque <span class="fa fa-download"></span> ou votre CryptDrive <span class="fa fa-cloud-upload"></span>'
     };
 
+    out.help.kanban = {
+        add: 'Ajoutez un tableau en utilisant le bouton <span class="fa fa-plus"></span> dans le coin supérieur-droit',
+        task: 'Déplacez les éléments en les faisant glisser d\'un tableau à l\'autre',
+        color: 'Modifiez les couleurs en cliquant sur les parties colorées à côté du titre de chaque tableau'
+    };
 
     out.initialState = [
         '<p>',

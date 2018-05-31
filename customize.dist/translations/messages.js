@@ -254,7 +254,7 @@ define(function () {
     out.kanban_item = "Item {0}"; // Item number for initial content
     out.kanban_todo = "To Do";
     out.kanban_done = "Done";
-    out.kanban_working = "Working";
+    out.kanban_working = "In progress";
     out.kanban_deleteBoard = "Are you sure you want to delete this board?";
     out.kanban_addBoard = "Add a board";
     out.kanban_removeItem = "Remove this item";
@@ -1046,7 +1046,9 @@ define(function () {
     };
 
     out.help.kanban = {
-        //add: ''
+        add: 'Add new boards using the <span class="fa fa-plus"></span> button in the top-right corner',
+        task: 'Move items by dragging and dropping them from one board to another',
+        color: 'Change the colors by clicking on the colored part next to the board titles',
     };
 
     out.initialState = [

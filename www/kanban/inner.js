@@ -30,6 +30,7 @@ define([
     var COLORS = ['yellow', 'green', 'orange', 'blue', 'red', 'purple', 'cyan', 'lightgreen', 'lightblue'];
 
     var addRemoveItemButton = function (framework, kanban) {
+        if (!kanban) { return; }
         if (framework.isReadOnly() || framework.isLocked()) { return; }
         var $container = $(kanban.element);
         $container.find('.kanban-remove-item').remove();
@@ -39,7 +40,7 @@ define([
                 return b.id === $(el.parentNode.parentNode).attr('data-id');
             });
             $('<button>', {
-                'class': 'kanban-remove-item btn btn-default',
+                'class': 'kanban-remove-item btn btn-default fa fa-times',
                 title: Messages.kanban_removeItem
             }).click(function (e) {
                 e.stopPropagation();
@@ -49,7 +50,7 @@ define([
                     $(el).remove();
                     kanban.onChange();
                 });
-            }).text('❌').appendTo($(el));
+            }).appendTo($(el));
         });
     };
 
@@ -99,7 +100,7 @@ define([
                 'type': 'text',
                 'id': 'kanban-edit',
                 'size': '30'
-            });
+            }).click(function (e) { e.stopPropagation(); });
         };
 
         var kanban = new window.jKanban({
@@ -119,8 +120,9 @@ define([
             click: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
+                    $(el).focus();
                     verbose("An edit is already active");
-                    return;
+                    //return;
                 }
                 kanban.inEditMode = true;
                 $(el).find('button').remove();
@@ -164,8 +166,9 @@ define([
                 e.stopPropagation();
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
+                    $(el).focus();
                     verbose("An edit is already active");
-                    return;
+                    //return;
                 }
                 kanban.inEditMode = true;
                 var name = $(el).text();
@@ -241,8 +244,9 @@ define([
             addItemClick: function (el) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 if (kanban.inEditMode) {
+                    $(el).focus();
                     verbose("An edit is already active");
-                    return;
+                    //return;
                 }
                 kanban.inEditMode = true;
                 // create a form to enter element 
@@ -325,6 +329,7 @@ define([
         }
         framework.onEditableChange(function (unlocked) {
             if (framework.isReadOnly()) { return; }
+            if (!kanban) { return; }
             if (unlocked) {
                 addRemoveItemButton(framework, kanban);
                 kanban.options.readOnly = false;
@@ -357,7 +362,11 @@ define([
         });
 
         framework.setContentGetter(function () {
-            if (!kanban) { return; }
+            if (!kanban) {
+                return {
+                    content: []
+                };
+            }
             var content = kanban.getBoardsJSON();
             verbose("Content current value is " + content);
             return {
@@ -367,6 +376,10 @@ define([
 
         framework.onReady(function () {
             $("#cp-app-kanban-content").focus();
+        });
+
+        framework.onDefaultContentNeeded(function () {
+            kanban = initKanban(framework);
         });
 
         framework.start();
