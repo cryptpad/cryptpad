@@ -601,11 +601,9 @@ define(function () {
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
     out.upload_title = "File upload";
-    out.upload_rename = "Do you want to rename <b>{0}</b> before uploading it to the server?<br>" +
-                        "<em>The file extension ({1}) will be added automatically. "+
-                        "This name will be permanent and visible to other users.</em>";
-    out.upload_password = "Do you want to protect your file with a password?<br>" +
-                          "If you choose <em>Do not ask me again</em>, uploaded files won't have a password.";
+    out.upload_modal_title = "File upload options";
+    out.upload_modal_filename = "File name (extension <em>{0}</em> added automatically)";
+    out.upload_modal_owner = "Owned file";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
     out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";

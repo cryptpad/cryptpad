@@ -429,10 +429,6 @@ define([
         var input = opt.password ? $(inputBlock).find('input')[0] : inputBlock;
         input.value = typeof(def) === 'string'? def: '';
 
-        if (opt.password) {
-            $(inputBlock).find('.cp-checkmark').css('margin-bottom', '15px');
-        }
-
         var message;
         if (typeof(msg) === 'string') {
             if (!force) { msg = Util.fixHTML(msg); }

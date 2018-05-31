@@ -162,7 +162,6 @@ define([
             $pwInput.val(data.password).click(function () {
                 $pwInput[0].select();
             });
-            $(password).find('.cp-checkmark').css('margin-bottom', '15px');
             $d.append(password);
         }
 
@@ -957,7 +956,7 @@ define([
         };
     };
 
-    var setHTML = function (e, html) {
+    var setHTML = UIElements.setHTML = function (e, html) {
         e.innerHTML = html;
         return e;
     };
