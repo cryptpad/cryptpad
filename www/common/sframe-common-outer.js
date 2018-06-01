@@ -315,12 +315,10 @@ define([
             sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
                 currentTitle = newTitle;
                 setDocumentTitle();
-                var channel = parsed.type === 'file' ? Utils.Util.base64ToHex(secret.channel)
-                                                     : secret.channel;
                 var data = {
                     password: password,
                     title: newTitle,
-                    channel: channel,
+                    channel: secret.channel,
                     path: initialPathInDrive // Where to store the pad if we don't have it in our drive
                 };
                 Cryptpad.setPadTitle(data, function (err) {
