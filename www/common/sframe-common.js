@@ -113,16 +113,16 @@ define([
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
     funcs.getMediatagFromHref = function (href) {
-        // PASSWORD_FILES
-        var parsed = Hash.parsePadUrl(href);
-        var secret = Hash.getSecrets('file', parsed.hash);
+        // XXX: Should only be used with the current href
         var data = ctx.metadataMgr.getPrivateData();
+        var parsed = Hash.parsePadUrl(href);
+        var secret = Hash.getSecrets('file', parsed.hash, data.password);
         if (secret.keys && secret.channel) {
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = Util.base64ToHex(secret.channel);
+            var key = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
+            var hexFileName = secret.channel;
             var origin = data.fileHost || data.origin;
             var src = origin + Hash.getBlobPathFromHex(hexFileName);
-            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + cryptKey + '">' +
+            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '">' +
                    '</media-tag>';
         }
         return;

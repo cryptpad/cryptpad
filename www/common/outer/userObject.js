@@ -589,14 +589,9 @@ define([
                     // Fix channel
                     if (!el.channel) {
                         try {
-                        if (parsed.hashData && parsed.hashData.type === "file") {
-                            // PASSWORD_FILES
-                            el.channel = Util.base64ToHex(parsed.hashData.channel);
-                        } else {
                             var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
                             el.channel = secret.channel;
-                        }
-                        console.log('Adding missing channel in filesData ', el.channel);
+                            console.log('Adding missing channel in filesData ', el.channel);
                         } catch (e) {
                             console.error(e);
                         }

@@ -36,6 +36,7 @@ var isValidId = function (chan) {
         [32, 48].indexOf(chan.length) > -1;
 };
 
+/*
 var uint8ArrayToHex = function (a) {
     // call slice so Uint8Arrays work as expected
     return Array.prototype.slice.call(a).map(function (e) {
@@ -52,14 +53,24 @@ var uint8ArrayToHex = function (a) {
         }
     }).join('');
 };
+*/
 
+var testFileId = function (id) {
+    if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
+        return false;
+    }
+    return true;
+};
+
+/*
 var createFileId = function () {
     var id = uint8ArrayToHex(Nacl.randomBytes(24));
-    if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
+    if (!testFileId(id)) {
         throw new Error('file ids must consist of 48 hex characters');
     }
     return id;
 };
+*/
 
 var makeToken = function () {
     return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
@@ -811,6 +822,17 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
+var isFile = function (filePath, cb) {
+    /*:: if (typeof(filePath) !== 'string') { throw new Error('should never happen'); } */
+    Fs.stat(filePath, function (e, stats) {
+        if (e) {
+            if (e.code === 'ENOENT') { return void cb(void 0, false); }
+            return void cb(e.message);
+        }
+        return void cb(void 0, stats.isFile());
+    });
+};
+
 var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     if (typeof(channelId) !== 'string' || channelId.length !== 32) {
         return cb('INVALID_ARGUMENTS');
@@ -834,9 +856,64 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
+var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
+    var safeKey = escapeKeyCharacters(unsafeKey);
+    var safeKeyPrefix = safeKey.slice(0,3);
+    var blobPrefix = blobId.slice(0,2);
+
+    var blobPath = makeFilePath(Env.paths.blob, blobId);
+    var ownPath = Path.join(Env.paths.blob, safeKeyPrefix, safeKey, blobPrefix, blobId);
+
+    nThen(function (w) {
+        // Check if the blob exists
+        isFile(blobPath, w(function (e, isFile) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+            if (!isFile) {
+                WARN('removeOwnedBlob', 'The provided blob ID is not a file!');
+                w.abort();
+                return void cb('EINVAL_BLOBID');
+            }
+        }));
+    }).nThen(function (w) {
+        // Check if you're the owner
+        isFile(ownPath, w(function (e, isFile) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+            if (!isFile) {
+                WARN('removeOwnedBlob', 'Incorrect owner');
+                w.abort();
+                return void cb('INSUFFICIENT_PERMISSIONS');
+            }
+        }));
+    }).nThen(function (w) {
+        // Delete the blob
+        /*:: if (typeof(blobPath) !== 'string') { throw new Error('should never happen'); } */
+        Fs.unlink(blobPath, w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+        }));
+    }).nThen(function () {
+        // Delete the proof of ownership
+        Fs.unlink(ownPath, function (e) {
+            cb(e);
+        });
+    });
+};
+
 var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
-    if (typeof(channelId) !== 'string' || channelId.length !== 32) {
+    if (typeof(channelId) !== 'string' || !isValidId(channelId)) {
         return cb('INVALID_ARGUMENTS');
+    }
+
+    if (testFileId(channelId)) {
+        return void removeOwnedBlob(Env, channelId, unsafeKey, cb);
     }
 
     if (!(Env.msgStore && Env.msgStore.removeChannel && Env.msgStore.getChannelMetadata)) {
@@ -876,7 +953,7 @@ var upload = function (Env, publicKey, content, cb) {
     var session = getSession(Env.Sessions, publicKey);
 
     if (typeof(session.currentUploadSize) !== 'number' ||
-        typeof(session.currentUploadSize) !== 'number') {
+        typeof(session.pendingUploadSize) !== 'number') {
         // improperly initialized... maybe they didn't check before uploading?
         // reject it, just in case
         return cb('NOT_READY');
@@ -902,12 +979,12 @@ var upload = function (Env, publicKey, content, cb) {
     }
 };
 
-var upload_cancel = function (Env, publicKey, cb) {
+var upload_cancel = function (Env, publicKey, fileSize, cb) {
     var paths = Env.paths;
 
     var session = getSession(Env.Sessions, publicKey);
-    delete session.currentUploadSize;
-    delete session.pendingUploadSize;
+    session.pendingUploadSize = fileSize;
+    session.currentUploadSize = 0;
     if (session.blobstage) { session.blobstage.close(); }
 
     var path = makeFilePath(paths.staging, publicKey);
@@ -923,17 +1000,7 @@ var upload_cancel = function (Env, publicKey, cb) {
     });
 };
 
-var isFile = function (filePath, cb) {
-    Fs.stat(filePath, function (e, stats) {
-        if (e) {
-            if (e.code === 'ENOENT') { return void cb(void 0, false); }
-            return void cb(e.message);
-        }
-        return void cb(void 0, stats.isFile());
-    });
-};
-
-var upload_complete = function (Env, publicKey, cb) {
+var upload_complete = function (Env, publicKey, id, cb) {
     var paths = Env.paths;
     var session = getSession(Env.Sessions, publicKey);
 
@@ -942,14 +1009,18 @@ var upload_complete = function (Env, publicKey, cb) {
         delete session.blobstage;
     }
 
+    if (!testFileId(id)) {
+        WARN('uploadComplete', "id is invalid");
+        return void cb('EINVAL_ID');
+    }
+
     var oldPath = makeFilePath(paths.staging, publicKey);
     if (!oldPath) {
         WARN('safeMkdir', "oldPath is null");
         return void cb('RENAME_ERR');
     }
 
-    var tryRandomLocation = function (cb) {
-        var id = createFileId();
+    var tryLocation = function (cb) {
         var prefix = id.slice(0, 2);
         var newPath = makeFilePath(paths.blob, id);
         if (typeof(newPath) !== 'string') {
@@ -968,7 +1039,8 @@ var upload_complete = function (Env, publicKey, cb) {
                     return void cb(e);
                 }
                 if (yes) {
-                    return void tryRandomLocation(cb);
+                    WARN('isFile', 'FILE EXISTS!');
+                    return void cb('RENAME_ERR');
                 }
 
                 cb(void 0, newPath, id);
@@ -976,40 +1048,25 @@ var upload_complete = function (Env, publicKey, cb) {
         });
     };
 
-    var retries = 3;
-
     var handleMove = function (e, newPath, id) {
         if (e || !oldPath || !newPath) {
-            if (retries--) {
-                setTimeout(function () {
-                    return tryRandomLocation(handleMove);
-                }, 750);
-            } else {
-                cb(e);
-            }
-            return;
+            return void cb(e || 'PATH_ERR');
         }
 
         // lol wut handle ur errors
         Fs.rename(oldPath, newPath, function (e) {
             if (e) {
                 WARN('rename', e);
-
-                if (retries--) {
-                    return void setTimeout(function () {
-                        tryRandomLocation(handleMove);
-                    }, 750);
-                }
-
                 return void cb('RENAME_ERR');
             }
             cb(void 0, id);
         });
     };
 
-    tryRandomLocation(handleMove);
+    tryLocation(handleMove);
 };
 
+/*
 var owned_upload_complete = function (Env, safeKey, cb) {
     var session = getSession(Env.Sessions, safeKey);
 
@@ -1069,7 +1126,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
     var finalPath;
     nThen(function (w) {
         // make the requisite directory structure using Mkdirp
-        Mkdirp(plannedPath, w(function (e /*, path */) {
+        Mkdirp(plannedPath, w(function (e) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e);
@@ -1088,8 +1145,8 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         // move the existing file to its new path
 
         // flow is dumb and I need to guard against this which will never happen
-        /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
-        Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
+        // / *:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } * /
+        Fs.rename(oldPath, finalPath, w(function (e) {
             if (e) {
                 w.abort();
                 return void cb(e.code);
@@ -1100,6 +1157,119 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         // clean up their session when you're done
         // call back with the blob id...
         cb(void 0, blobId);
+    });
+};
+*/
+
+var owned_upload_complete = function (Env, safeKey, id, cb) {
+    var session = getSession(Env.Sessions, safeKey);
+
+    // the file has already been uploaded to the staging area
+    // close the pending writestream
+    if (session.blobstage && session.blobstage.close) {
+        session.blobstage.close();
+        delete session.blobstage;
+    }
+
+    if (!testFileId(id)) {
+        WARN('ownedUploadComplete', "id is invalid");
+        return void cb('EINVAL_ID');
+    }
+
+    var oldPath = makeFilePath(Env.paths.staging, safeKey);
+    if (typeof(oldPath) !== 'string') {
+        return void cb('EINVAL_CONFIG');
+    }
+
+    // construct relevant paths
+    var root = Env.paths.blob;
+
+    //var safeKey = escapeKeyCharacters(safeKey);
+    var safeKeyPrefix = safeKey.slice(0, 3);
+
+    //var blobId = createFileId();
+    var blobIdPrefix = id.slice(0, 2);
+
+    var ownPath = Path.join(root, safeKeyPrefix, safeKey, blobIdPrefix);
+    var filePath = Path.join(root, blobIdPrefix);
+
+    var tryId = function (path, cb) {
+        Fs.access(path, Fs.constants.R_OK | Fs.constants.W_OK, function (e) {
+            if (!e) {
+                // generate a new id (with the same prefix) and recurse
+                WARN('ownedUploadComplete', 'id is already used '+ id);
+                return void cb('EEXISTS');
+            } else if (e.code === 'ENOENT') {
+                // no entry, so it's safe for us to proceed
+                return void cb();
+            } else {
+                // it failed in an unexpected way. log it
+                WARN(e, 'ownedUploadComplete');
+                return void cb(e.code);
+            }
+        });
+    };
+
+    // the user wants to move it into blob and create a empty file with the same id
+    // in their own space:
+    // /blob/safeKeyPrefix/safeKey/blobPrefix/blobID
+
+    var finalPath;
+    var finalOwnPath;
+    nThen(function (w) {
+        // make the requisite directory structure using Mkdirp
+        Mkdirp(filePath, w(function (e /*, path */) {
+            if (e) { // does not throw error if the directory already existed
+                w.abort();
+                return void cb(e);
+            }
+        }));
+        Mkdirp(ownPath, w(function (e /*, path */) {
+            if (e) { // does not throw error if the directory already existed
+                w.abort();
+                return void cb(e);
+            }
+        }));
+    }).nThen(function (w) {
+        // make sure the id does not collide with another
+        finalPath = Path.join(filePath, id);
+        finalOwnPath = Path.join(ownPath, id);
+        tryId(finalPath, w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+        }));
+    }).nThen(function (w) {
+        // Create the empty file proving ownership
+        Fs.writeFile(finalOwnPath, '', w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e.code);
+            }
+            // otherwise it worked...
+        }));
+    }).nThen(function (w) {
+        // move the existing file to its new path
+
+        // flow is dumb and I need to guard against this which will never happen
+        /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
+        Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
+            if (e) {
+                // Remove the ownership file
+                // XXX not needed if we have a cleanup script?
+                Fs.unlink(finalOwnPath, function (e) {
+                    WARN(e, 'Removing ownership file ownedUploadComplete');
+                });
+                w.abort();
+                return void cb(e.code);
+            }
+            // otherwise it worked...
+        }));
+    }).nThen(function () {
+        // clean up their session when you're done
+        // call back with the blob id...
+        cb(void 0, id);
     });
 };
 
@@ -1504,20 +1674,23 @@ RPC.create = function (
                 });
             case 'UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void upload_complete(Env, safeKey, function (e, hash) {
+                return void upload_complete(Env, safeKey, msg[1], function (e, hash) {
                     WARN(e, hash);
                     Respond(e, hash);
                 });
             case 'OWNED_UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void owned_upload_complete(Env, safeKey, function (e, blobId) {
+                return void owned_upload_complete(Env, safeKey, msg[1], function (e, blobId) {
                     WARN(e, blobId);
                     Respond(e, blobId);
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
-                return void upload_cancel(Env, safeKey, function (e) {
-                    WARN(e);
+                // msg[1] is fileSize
+                // if we pass it here, we can start an upload right away without calling
+                // UPLOAD_STATUS again
+                return void upload_cancel(Env, safeKey, msg[1], function (e) {
+                    WARN(e, 'UPLOAD_CANCEL');
                     Respond(e);
                 });
             default:

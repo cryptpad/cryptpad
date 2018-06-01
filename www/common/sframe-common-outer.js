@@ -150,12 +150,12 @@ define([
                             todo();
                         } else {
                             // Ask for the password and check if the pad exists
-                            // If the pad doesn't exist, it means the password is oncorrect
+                            // If the pad doesn't exist, it means the password isn't correct
                             // or the pad has been deleted
                             var correctPassword = waitFor();
                             sframeChan.on('Q_PAD_PASSWORD_VALUE', function (data, cb) {
                                 password = data;
-                                Cryptpad.isNewChannel(window.location.href, password, function (e, isNew) {
+                                var next = function (e, isNew) {
                                     if (Boolean(isNew)) {
                                         // Ask again in the inner iframe
                                         // We should receive a new Q_PAD_PASSWORD_VALUE
@@ -165,7 +165,17 @@ define([
                                         correctPassword();
                                         cb(true);
                                     }
-                                });
+                                };
+                                if (parsed.type === "file") {
+                                    // `isNewChannel` doesn't work for files (not a channel)
+                                    // `getFileSize` is not adapted to channels because of metadata
+                                    Cryptpad.getFileSize(window.location.href, password, function (e, size) {
+                                        next(e, size === 0);
+                                    });
+                                    return;
+                                }
+                                // Not a file, so we can use `isNewChannel`
+                                Cryptpad.isNewChannel(window.location.href, password, next);
                             });
                             sframeChan.event("EV_PAD_PASSWORD");
                         }

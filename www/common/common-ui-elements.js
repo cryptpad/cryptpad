@@ -162,7 +162,6 @@ define([
             $pwInput.val(data.password).click(function () {
                 $pwInput[0].select();
             });
-            $(password).find('.cp-checkmark').css('margin-bottom', '15px');
             $d.append(password);
         }
 
@@ -960,7 +959,7 @@ define([
         };
     };
 
-    var setHTML = function (e, html) {
+    var setHTML = UIElements.setHTML = function (e, html) {
         e.innerHTML = html;
         return e;
     };
@@ -1172,8 +1171,8 @@ define([
         // No password for avatars
         var secret = Hash.getSecrets('file', parsed.hash);
         if (secret.keys && secret.channel) {
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = Util.base64ToHex(secret.channel);
+            var hexFileName = secret.channel;
+            var cryptKey = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var src = Hash.getBlobPathFromHex(hexFileName);
             Common.getFileSize(hexFileName, function (e, data) {
                 if (e || !data) {

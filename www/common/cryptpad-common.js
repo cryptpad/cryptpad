@@ -204,8 +204,8 @@ define([
         });
     };
 
-    common.uploadComplete = function (cb) {
-        postMessage("UPLOAD_COMPLETE", null, function (obj) {
+    common.uploadComplete = function (id, owned, cb) {
+        postMessage("UPLOAD_COMPLETE", {id: id, owned: owned}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -218,8 +218,8 @@ define([
         });
     };
 
-    common.uploadCancel = function (cb) {
-        postMessage("UPLOAD_CANCEL", null, function (obj) {
+    common.uploadCancel = function (size, cb) {
+        postMessage("UPLOAD_CANCEL", {size: size}, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -578,7 +578,6 @@ define([
         }
         var parsed = Hash.parsePadUrl(window.location.href);
         if (!parsed.type || !parsed.hashData) { return void cb('E_INVALID_HREF'); }
-        if (parsed.type === 'file' && typeof(parsed.channel) === 'string') { secret.channel = Util.base64ToHex(secret.channel); }
         hashes = Hash.getHashes(secret);
 
         if (secret.version === 0) {

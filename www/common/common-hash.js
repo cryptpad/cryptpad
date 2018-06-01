@@ -11,6 +11,7 @@ define([
     var uint8ArrayToHex = Util.uint8ArrayToHex;
     var hexToBase64 = Util.hexToBase64;
     var base64ToHex = Util.base64ToHex;
+    Hash.encodeBase64 = Nacl.util.encodeBase64;
 
     // This implementation must match that on the server
     // it's used for a checksum
@@ -59,25 +60,13 @@ define([
             return '/1/' + hexToBase64(secret.channel) + '/' +
                    Crypto.b64RemoveSlashes(data.fileKeyStr) + '/';
         }
+        if (version === 2) {
+            if (!data.fileKeyStr) { return; }
+            var pass = secret.password ? 'p/' : '';
+            return '/2/' + secret.type + '/' + Crypto.b64RemoveSlashes(data.fileKeyStr) + '/' + pass;
+        }
     };
 
-    // V1
-    /*var getEditHashFromKeys = Hash.getEditHashFromKeys = function (chanKey, keys) {
-        if (typeof keys === 'string') {
-            return chanKey + keys;
-        }
-        if (!keys.editKeyStr) { return; }
-        return '/1/edit/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.editKeyStr)+'/';
-    };
-    var getViewHashFromKeys = Hash.getViewHashFromKeys = function (chanKey, keys) {
-        if (typeof keys === 'string') {
-            return;
-        }
-        return '/1/view/' + hexToBase64(chanKey) + '/'+Crypto.b64RemoveSlashes(keys.viewKeyStr)+'/';
-    };
-    var getFileHashFromKeys = Hash.getFileHashFromKeys = function (fileKey, cryptKey) {
-        return '/1/' + hexToBase64(fileKey) + '/' + Crypto.b64RemoveSlashes(cryptKey) + '/';
-    };*/
     Hash.getUserHrefFromKeys = function (origin, username, pubkey) {
         return origin + '/user/#/1/' + username + '/' + pubkey.replace(/\//g, '-');
     };
@@ -95,12 +84,22 @@ define([
     };
 
     Hash.createRandomHash = function (type, password) {
-        var cryptor = Crypto.createEditCryptor2(void 0, void 0, password);
+        var cryptor;
+        if (type === 'file') {
+            cryptor = Crypto.createFileCryptor2(void 0, password);
+            return getFileHashFromKeys({
+                password: Boolean(password),
+                version: 2,
+                type: type,
+                keys: cryptor
+            });
+        }
+        cryptor = Crypto.createEditCryptor2(void 0, void 0, password);
         return getEditHashFromKeys({
             password: Boolean(password),
             version: 2,
             type: type,
-            keys: { editKeyStr: cryptor.editKeyStr }
+            keys: cryptor
         });
     };
 
@@ -113,6 +112,7 @@ Version 1
 
     var parseTypeHash = Hash.parseTypeHash = function (type, hash) {
         if (!hash) { return; }
+        var options;
         var parsed = {};
         var hashArr = fixDuplicateSlashes(hash).split('/');
         if (['media', 'file', 'user', 'invite'].indexOf(type) === -1) {
@@ -125,7 +125,6 @@ Version 1
                 parsed.version = 0;
                 return parsed;
             }
-            var options;
             if (hashArr[1] && hashArr[1] === '1') { // Version 1
                 parsed.version = 1;
                 parsed.mode = hashArr[2];
@@ -173,6 +172,25 @@ Version 1
                 parsed.version = 1;
                 parsed.channel = hashArr[2].replace(/-/g, '/');
                 parsed.key = hashArr[3].replace(/-/g, '/');
+                return parsed;
+            }
+            if (hashArr[1] && hashArr[1] === '2') { // Version 2
+                parsed.version = 2;
+                parsed.app = hashArr[2];
+                parsed.key = hashArr[3];
+
+                options = hashArr.slice(4);
+                parsed.password = options.indexOf('p') !== -1;
+                parsed.present = options.indexOf('present') !== -1;
+                parsed.embed = options.indexOf('embed') !== -1;
+
+                parsed.getHash = function (opts) {
+                    var hash = hashArr.slice(0, 4).join('/') + '/';
+                    if (parsed.password) { hash += 'p/'; }
+                    if (opts.embed) { hash += 'embed/'; }
+                    if (opts.present) { hash += 'present/'; }
+                    return hash;
+                };
                 return parsed;
             }
             return parsed;
@@ -309,11 +327,12 @@ Version 1
                         }
                     }
                 } else if (parsed.type === "file") {
-                    // version 2 hashes are to be used for encrypted blobs
-                    secret.channel = parsed.channel;
-                    secret.keys = { fileKeyStr: parsed.key };
+                    secret.channel = base64ToHex(parsed.channel);
+                    secret.keys = {
+                        fileKeyStr: parsed.key,
+                        cryptKey: Nacl.util.decodeBase64(parsed.key)
+                    };
                 } else if (parsed.type === "user") {
-                    // version 2 hashes are to be used for encrypted blobs
                     throw new Error("User hashes can't be opened (yet)");
                 }
             } else if (parsed.version === 2) {
@@ -338,7 +357,12 @@ Version 1
                         }
                     }
                 } else if (parsed.type === "file") {
-                    throw new Error("File hashes should be version 1");
+                    secret.keys = Crypto.createFileCryptor2(parsed.key, password);
+                    secret.channel = base64ToHex(secret.keys.chanId);
+                    secret.key = secret.keys.fileKeyStr;
+                    if (secret.channel.length !== 48 || secret.key.length !== 24) {
+                        throw new Error("The channel key and/or the encryption key is invalid");
+                    }
                 } else if (parsed.type === "user") {
                     throw new Error("User hashes can't be opened (yet)");
                 }

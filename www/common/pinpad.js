@@ -151,7 +151,7 @@ define([
             };
 
             exp.removeOwnedChannel = function (channel, cb) {
-                if (typeof(channel) !== 'string' || channel.length !== 32) {
+                if (typeof(channel) !== 'string' || [32,48].indexOf(channel.length) === -1) {
                     // can't use this on files because files can't be owned...
                     return void cb('INVALID_ARGUMENTS');
                 }
@@ -176,8 +176,19 @@ define([
                 });
             };
 
-            exp.uploadComplete = function (cb) {
-                rpc.send('UPLOAD_COMPLETE', null, function (e, res) {
+            exp.uploadComplete = function (id, cb) {
+                rpc.send('UPLOAD_COMPLETE', id, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var id = res[0];
+                    if (typeof(id) !== 'string') {
+                        return void cb('INVALID_ID');
+                    }
+                    cb(void 0, id);
+                });
+            };
+
+            exp.ownedUploadComplete = function (id, cb) {
+                rpc.send('OWNED_UPLOAD_COMPLETE', id, function (e, res) {
                     if (e) { return void cb(e); }
                     var id = res[0];
                     if (typeof(id) !== 'string') {
@@ -203,8 +214,8 @@ define([
                 });
             };
 
-            exp.uploadCancel = function (cb) {
-                rpc.send('UPLOAD_CANCEL', void 0, function (e) {
+            exp.uploadCancel = function (size, cb) {
+                rpc.send('UPLOAD_CANCEL', size, function (e) {
                     if (e) { return void cb(e); }
                     cb();
                 });

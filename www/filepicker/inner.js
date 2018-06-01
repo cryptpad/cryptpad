@@ -40,14 +40,14 @@ define([
             var parsed = Hash.parsePadUrl(data.url);
             hideFileDialog();
             if (parsed.type === 'file') {
-                // PASSWORD_FILES
-                var hexFileName = Util.base64ToHex(parsed.hashData.channel);
-                var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
+                var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                var src = Hash.getBlobPathFromHex(secret.channel);
+                var key = Hash.encodeBase64(secret.keys.cryptKey);
                 sframeChan.event("EV_FILE_PICKED", {
                     type: parsed.type,
                     src: src,
                     name: data.name,
-                    key: parsed.hashData.key
+                    key: key
                 });
                 return;
             }
@@ -69,8 +69,8 @@ define([
         APP.FM = common.createFileManager(fmConfig);
 
         // Create file picker
-        var onSelect = function (url, name) {
-            onFilePicked({url: url, name: name});
+        var onSelect = function (url, name, password) {
+            onFilePicked({url: url, name: name, password: password});
         };
         var data = {
             FM: APP.FM
@@ -135,11 +135,13 @@ define([
                         $('<span>', {'class': 'cp-filepicker-content-element-name'}).text(name)
                             .appendTo($span);
                         $span.click(function () {
-                            if (typeof onSelect === "function") { onSelect(data.href, name); }
+                            if (typeof onSelect === "function") {
+                                onSelect(data.href, name, data.password);
+                            }
                         });
 
                         // Add thumbnail if it exists
-                        common.displayThumbnail(data.href, data.channel, $span);
+                        common.displayThumbnail(data.href, data.channel, data.password, $span);
                     });
                     $input.focus();
                 };

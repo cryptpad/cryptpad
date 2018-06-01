@@ -425,7 +425,8 @@ define([
         cb = cb || function () {};
         opt = opt || {};
 
-        var input = dialog.textInput();
+        var inputBlock = opt.password ? UI.passwordInput() : dialog.textInput();
+        var input = opt.password ? $(inputBlock).find('input')[0] : inputBlock;
         input.value = typeof(def) === 'string'? def: '';
 
         var message;
@@ -441,7 +442,7 @@ define([
         var cancel = dialog.cancelButton(opt.cancel);
         var frame = dialog.frame([
             message,
-            input,
+            inputBlock,
             dialog.nav([ cancel, ok, ]),
         ]);
 

@@ -115,13 +115,8 @@ define([
                             parsed = Hash.parsePadUrl(el.href);
                             if (!el.href) { return; }
                             if (!el.channel) {
-                                if (parsed.hashData && parsed.hashData.type === "file") {
-                                    // PASSWORD_FILES
-                                    el.channel = Util.base64ToHex(parsed.hashData.channel);
-                                } else {
-                                    var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
-                                    el.channel = secret.channel;
-                                }
+                                var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                                el.channel = secret.channel;
                                 progress(6, Math.round(100*i/padsLength));
                                 console.log('Adding missing channel in filesData ', el.channel);
                             }

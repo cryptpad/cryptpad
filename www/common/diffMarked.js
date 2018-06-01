@@ -41,11 +41,15 @@ define([
     };
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
-            // PASSWORD_FILES
+            // DEPRECATED
+            // Mediatag using markdown syntax should not be used anymore so they don't support
+            // password-protected files
+            console.log('DEPRECATED: mediatag using markdown syntax!');
             var parsed = Hash.parsePadUrl(href);
-            var hexFileName = Util.base64ToHex(parsed.hashData.channel);
-            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '">';
+            var secret = Hash.getSecrets('file', parsed.hash);
+            var src = Hash.getBlobPathFromHex(secret.channel);
+            var key = Hash.encodeBase64(secret.keys.cryptKey);
+            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
             if (mediaMap[src]) {
                 mt += mediaMap[src];
             }

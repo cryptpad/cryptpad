@@ -597,9 +597,9 @@ define(function () {
     out.settings_templateSkipHint = "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.";
 
     out.upload_title = "Hébergement de fichiers";
-    out.upload_rename = "Souhaitez-vous renommer <b>{0}</b> avant son stockage en ligne ?<br>" +
-                        "<em>L'extension du fichier ({1}) sera ajoutée automatiquement. "+
-                        "Ce nom sera permanent et visible par les autres utilisateurs</em>.";
+    out.upload_modal_title = "Options d'importation du fichier";
+    out.upload_modal_filename = "Nom (extension <em>{0}</em> ajoutée automatiquement)";
+    out.upload_modal_owner = "Être propriétaire du fichier";
     out.upload_serverError = "Erreur interne: impossible d'importer le fichier pour l'instant.";
     out.upload_uploadPending = "Vous avez déjà un fichier en cours d'importation. Souhaitez-vous l'annuler et importer ce nouveau fichier ?";
     out.upload_success = "Votre fichier ({0}) a été importé avec succès et ajouté à votre CryptDrive.";

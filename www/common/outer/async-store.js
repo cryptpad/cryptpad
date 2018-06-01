@@ -92,7 +92,7 @@ define([
             var profileChan = profile.edit ? Hash.hrefToHexChannelId('/profile/#' + profile.edit, null) : null;
             if (profileChan) { list.push(profileChan); }
             var avatarChan = profile.avatar ? Hash.hrefToHexChannelId(profile.avatar, null) : null;
-            if (avatarChan) { list.push(Util.base64ToHex(avatarChan)); }
+            if (avatarChan) { list.push(avatarChan); }
         }
 
         if (store.proxy.friends) {
@@ -232,7 +232,16 @@ define([
 
     Store.uploadComplete = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.uploadComplete(function (err, res) {
+        if (data.owned) {
+            // Owned file
+            store.rpc.ownedUploadComplete(data.id, function (err, res) {
+                if (err) { return void cb({error:err}); }
+                cb(res);
+            });
+            return;
+        }
+        // Normal upload
+        store.rpc.uploadComplete(data.id, function (err, res) {
             if (err) { return void cb({error:err}); }
             cb(res);
         });
@@ -248,7 +257,7 @@ define([
 
     Store.uploadCancel = function (data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
-        store.rpc.uploadCancel(function (err, res) {
+        store.rpc.uploadCancel(data.size, function (err, res) {
             if (err) { return void cb({error:err}); }
             cb(res);
         });
@@ -678,6 +687,7 @@ define([
         if (Store.channel && Store.channel.wc && channel === Store.channel.wc.id) {
             owners = Store.channel.data.owners || undefined;
         }
+
         var expire;
         if (Store.channel && Store.channel.wc && channel === Store.channel.wc.id) {
             expire = +Store.channel.data.expire || undefined;
@@ -726,7 +736,11 @@ define([
                 contains = true;
                 pad.atime = +new Date();
                 pad.title = title;
-                pad.owners = owners;
+                if (owners || h.type !== "file") {
+                    // OWNED_FILES
+                    // Never remove owner for files
+                    pad.owners = owners;
+                }
                 pad.expire = expire;
 
                 // If the href is different, it means we have a stronger one

@@ -54,17 +54,14 @@ define([
 
         var uploadMode = false;
         var secret;
-        var hexFileName;
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
         if (!priv.filehash) {
             uploadMode = true;
         } else {
-            // PASSWORD_FILES
-            secret = Hash.getSecrets('file', priv.filehash);
+            secret = Hash.getSecrets('file', priv.filehash, priv.password);
             if (!secret.keys) { throw new Error("You need a hash"); }
-            hexFileName = Util.base64ToHex(secret.channel);
         }
 
         var Title = common.createTitle({});
@@ -87,9 +84,10 @@ define([
         toolbar.$rightside.html('');
 
         if (!uploadMode) {
+            var hexFileName = secret.channel;
             var src = Hash.getBlobPathFromHex(hexFileName);
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var key = Nacl.util.decodeBase64(cryptKey);
+            var key = secret.keys && secret.keys.cryptKey;
+            var cryptKey = Nacl.util.encodeBase64(key);
 
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
@@ -98,16 +96,26 @@ define([
                     }
                     return void console.error(e);
                 }
+
+                // Add pad attributes when the file is saved in the drive
+                Title.onTitleChange(function () {
+                    var owners = metadata.owners;
+                    if (owners) {
+                        common.setPadAttribute('owners', owners);
+                    }
+                    common.setPadAttribute('fileType', metadata.type);
+                });
+
+                // Save to the drive or update the acces time
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
+
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
                 toolbar.$rightside.append(common.createButton('forget', true));
+                toolbar.$rightside.append(common.createButton('properties', true));
                 if (common.isLoggedIn()) {
                     toolbar.$rightside.append(common.createButton('hashtag', true));
                 }
-
-
-                common.setPadAttribute('fileType', metadata.type);
 
                 var displayFile = function (ev, sizeMb, CB) {
                     var called_back;
@@ -118,9 +126,7 @@ define([
                     };
 
                     var $mt = $dlview.find('media-tag');
-                    var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                    var hexFileName = Util.base64ToHex(secret.channel);
-                    $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
+                    $mt.attr('src', src);
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
                     var rightsideDisplayed = false;
@@ -263,7 +269,7 @@ define([
             dropArea: $form,
             hoverArea: $label,
             body: $body,
-            keepTable: true // Don't fadeOut the tbale with the uploaded files
+            keepTable: true // Don't fadeOut the table with the uploaded files
         };
 
         var FM = common.createFileManager(fmConfig);

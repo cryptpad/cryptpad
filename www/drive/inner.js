@@ -1305,7 +1305,7 @@ define([
             $span.attr('title', name);
 
             var type = Messages.type[hrefData.type] || hrefData.type;
-            common.displayThumbnail(data.href, data.channel, $span, function ($thumb) {
+            common.displayThumbnail(data.href, data.channel, data.password, $span, function ($thumb) {
                 // Called only if the thumbnail exists
                 // Remove the .hide() added by displayThumnail() because it hides the icon in
                 // list mode too
