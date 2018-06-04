@@ -5,7 +5,7 @@ var Express = require('express');
 var Http = require('http');
 var Https = require('https');
 var Fs = require('fs');
-var WebSocketServer = require('ws').Server;
+var SocketIO = require('socket.io');
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
@@ -246,7 +246,10 @@ var nt = nThen(function (w) {
         console.log("setting up a new websocket server");
         wsConfig = { port: websocketPort};
     }
-    var wsSrv = new WebSocketServer(wsConfig);
+    var wsSrv = new SocketIO(httpServer, {
+        path: config.websocketPath || '/cryptpad_websocket'
+    });
+
     Storage.create(config, function (store) {
         NetfluxSrv.run(store, wsSrv, config, rpc);
     });
