@@ -42,6 +42,9 @@ define([
         exp.updateTitle = function (newTitle, cb) {
             cb = cb || $.noop;
             if (newTitle === exp.title) { return void cb(); }
+            if (newTitle === exp.defaultTitle) {
+                newTitle = "";
+            }
             metadataMgr.updateTitle(newTitle);
             titleUpdated = cb;
         };
@@ -51,7 +54,9 @@ define([
             if ($title) {
                 $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
                 $title.find('input').val(md.title || md.defaultTitle);
+                $title.find('input').prop('placeholder', md.defaultTitle);
             }
+            exp.defaultTitle = md.defaultTitle;
             exp.title = md.title;
         });
         metadataMgr.onTitleChange(function (title) {
