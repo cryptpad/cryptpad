@@ -1,4 +1,5 @@
-var id = Math.floor(Math.random()*100000);
+var id;
+//= Math.floor(Math.random()*100000);
 
 var postMsg = function (client, data) {
     client.postMessage(data);
@@ -42,6 +43,9 @@ self.addEventListener('message', function (e) {
     console.log(e.source);
     var cId = e.source.id;
     if (e.data === "INIT") {
+        if (!id) {
+            id = Math.floor(Math.random()*100000);
+        }
         broadcast(cId + ' has joined!', [cId]);
         postMsg(e.source, {state: 'READY'});
         postMsg(e.source, "Welcome to SW " + id + "!");

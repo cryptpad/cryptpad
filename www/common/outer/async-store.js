@@ -24,6 +24,8 @@ define([
     var Store = {};
 
     var postMessage = function () {};
+    var broadcast = function () {};
+    var sendDriveEvent = function () {};
 
     var storeHash;
 
@@ -35,10 +37,10 @@ define([
     };
 
 
-    Store.get = function (key, cb) {
+    Store.get = function (clientId, key, cb) {
         cb(Util.find(store.proxy, key));
     };
-    Store.set = function (data, cb) {
+    Store.set = function (clientId, data, cb) {
         var path = data.key.slice();
         var key = path.pop();
         var obj = Util.find(store.proxy, path);
@@ -48,6 +50,8 @@ define([
         } else {
             obj[key] = data.value;
         }
+        console.log('broadcasting displayName');
+        broadcast([clientId], "UPDATE_METADATA");
         onSync(cb);
     };
 
@@ -131,7 +135,7 @@ define([
     /////////////////////// RPC //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
 
-    Store.pinPads = function (data, cb) {
+    Store.pinPads = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         if (typeof(cb) !== 'function') {
             console.error('expected a callback');
@@ -143,7 +147,7 @@ define([
         });
     };
 
-    Store.unpinPads = function (data, cb) {
+    Store.unpinPads = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
         store.rpc.unpin(data, function (e, hash) {
@@ -154,7 +158,7 @@ define([
 
     var account = {};
 
-    Store.getPinnedUsage = function (data, cb) {
+    Store.getPinnedUsage = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
         store.rpc.getFileListSize(function (err, bytes) {
@@ -166,7 +170,7 @@ define([
     };
 
     // Update for all users from accounts and return current user limits
-    Store.updatePinLimit = function (data, cb) {
+    Store.updatePinLimit = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.updatePinLimits(function (e, limit, plan, note) {
             if (e) { return void cb({error: e}); }
@@ -177,7 +181,7 @@ define([
         });
     };
     // Get current user limits
-    Store.getPinLimit = function (data, cb) {
+    Store.getPinLimit = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
 
         var ALWAYS_REVALIDATE = true;
@@ -195,14 +199,14 @@ define([
         cb(account);
     };
 
-    Store.clearOwnedChannel = function (data, cb) {
+    Store.clearOwnedChannel = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.clearOwnedChannel(data, function (err) {
             cb({error:err});
         });
     };
 
-    Store.removeOwnedChannel = function (data, cb) {
+    Store.removeOwnedChannel = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.removeOwnedChannel(data, function (err) {
             cb({error:err});
@@ -230,7 +234,7 @@ define([
         });
     };
 
-    Store.uploadComplete = function (data, cb) {
+    Store.uploadComplete = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         if (data.owned) {
             // Owned file
@@ -247,7 +251,7 @@ define([
         });
     };
 
-    Store.uploadStatus = function (data, cb) {
+    Store.uploadStatus = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.uploadStatus(data.size, function (err, res) {
             if (err) { return void cb({error:err}); }
@@ -255,7 +259,7 @@ define([
         });
     };
 
-    Store.uploadCancel = function (data, cb) {
+    Store.uploadCancel = function (clientId, data, cb) {
         if (!store.rpc) { return void cb({error: 'RPC_NOT_READY'}); }
         store.rpc.uploadCancel(data.size, function (err, res) {
             if (err) { return void cb({error:err}); }
@@ -263,7 +267,7 @@ define([
         });
     };
 
-    Store.uploadChunk = function (data, cb) {
+    Store.uploadChunk = function (clientId, data, cb) {
         store.rpc.send.unauthenticated('UPLOAD', data.chunk, function (e, msg) {
             cb({
                 error: e,
@@ -272,14 +276,15 @@ define([
         });
     };
 
-    Store.initRpc = function (data, cb) {
+    Store.initRpc = function (clientId, data, cb) {
+        if (store.rpc) { return void cb(account); }
         require(['/common/pinpad.js'], function (Pinpad) {
             Pinpad.create(store.network, store.proxy, function (e, call) {
                 if (e) { return void cb({error: e}); }
 
                 store.rpc = call;
 
-                Store.getPinLimit(null, function (obj) {
+                Store.getPinLimit(null, null, function (obj) {
                     if (obj.error) { console.error(obj.error); }
                     account.limit = obj.limit;
                     account.plan = obj.plan;
@@ -302,7 +307,7 @@ define([
     //////////////////////////////////////////////////////////////////
     ////////////////// ANON RPC //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
-    Store.anonRpcMsg = function (data, cb) {
+    Store.anonRpcMsg = function (clientId, data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
         store.anon_rpc.send(data.msg, data.data, function (err, res) {
             if (err) { return void cb({error: err}); }
@@ -310,7 +315,7 @@ define([
         });
     };
 
-    Store.getFileSize = function (data, cb) {
+    Store.getFileSize = function (clientId, data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
 
         var channelId = Hash.hrefToHexChannelId(data.href, data.password);
@@ -324,7 +329,7 @@ define([
         });
     };
 
-    Store.isNewChannel = function (data, cb) {
+    Store.isNewChannel = function (clientId, data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
         var channelId = Hash.hrefToHexChannelId(data.href, data.password);
         store.anon_rpc.send("IS_NEW_CHANNEL", channelId, function (e, response) {
@@ -339,7 +344,7 @@ define([
         });
     };
 
-    Store.getMultipleFileSize = function (data, cb) {
+    Store.getMultipleFileSize = function (clientId, data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
         if (!Array.isArray(data.files)) {
             return void cb({error: 'INVALID_FILE_LIST'});
@@ -355,7 +360,7 @@ define([
         });
     };
 
-    Store.getDeletedPads = function (data, cb) {
+    Store.getDeletedPads = function (clientId, data, cb) {
         if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
         var list = getCanonicalChannelList(true);
         if (!Array.isArray(list)) {
@@ -372,7 +377,8 @@ define([
         });
     };
 
-    Store.initAnonRpc = function (data, cb) {
+    Store.initAnonRpc = function (clientId, data, cb) {
+        if (store.anon_rpc) { return void cb(); }
         require([
             '/common/rpc.js',
         ], function (Rpc) {
@@ -389,7 +395,7 @@ define([
     //////////////////////////////////////////////////////////////////
 
     // Get the metadata for sframe-common-outer
-    Store.getMetadata = function (data, cb) {
+    Store.getMetadata = function (clientId, data, cb) {
         var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
         var metadata = {
             // "user" is shared with everybody via the userlist
@@ -421,7 +427,7 @@ define([
         };
     };
 
-    Store.addPad = function (data, cb) {
+    Store.addPad = function (clientId, data, cb) {
         if (!data.href) { return void cb({error:'NO_HREF'}); }
         var pad = makePad(data.href, data.title);
         if (data.owners) { pad.owners = data.owners; }
@@ -432,6 +438,9 @@ define([
             if (e) { return void cb({error: "Error while adding a template:"+ e}); }
             var path = data.path || ['root'];
             store.userObject.add(id, path);
+            sendDriveEvent('DRIVE_CHANGE', {
+                path: ['drive', UserObject.FILES_DATA]
+            }, clientId);
             onSync(cb);
         });
     };
@@ -465,7 +474,7 @@ define([
         ownedPads.forEach(function (c) {
             var w = waitFor();
             sem.take(function (give) {
-                Store.removeOwnedChannel(c, give(function (obj) {
+                Store.removeOwnedChannel(null, c, give(function (obj) {
                     if (obj && obj.error) { console.error(obj.error); }
                     w();
                 }));
@@ -473,11 +482,11 @@ define([
         });
     };
 
-    Store.deleteAccount = function (data, cb) {
+    Store.deleteAccount = function (clientId, data, cb) {
         var edPublic = store.proxy.edPublic;
         // No password for drive
         var secret = Hash.getSecrets('drive', storeHash);
-        Store.anonRpcMsg({
+        Store.anonRpcMsg(clientId, {
             msg: 'GET_METADATA',
             data: secret.channel
         }, function (data) {
@@ -488,7 +497,7 @@ define([
                 nThen(function (waitFor) {
                     var token = Math.floor(Math.random()*Number.MAX_SAFE_INTEGER);
                     store.proxy[Constants.tokenKey] = token;
-                    postMessage("DELETE_ACCOUNT", token, waitFor());
+                    postMessage(clientId, "DELETE_ACCOUNT", token, waitFor());
                 }).nThen(function (waitFor) {
                     removeOwnedPads(waitFor);
                 }).nThen(function (waitFor) {
@@ -498,7 +507,7 @@ define([
                     }));
                 }).nThen(function (waitFor) {
                     // Delete Drive
-                    Store.removeOwnedChannel(secret.channel, waitFor());
+                    Store.removeOwnedChannel(clientId, secret.channel, waitFor());
                 }).nThen(function () {
                     store.network.disconnect();
                     cb({
@@ -537,7 +546,7 @@ define([
      *   - driveReadme
      *   - driveReadmeTitle
      */
-    Store.createReadme = function (data, cb) {
+    Store.createReadme = function (clientId, data, cb) {
         require(['/common/cryptget.js'], function (Crypt) {
             var hash = Hash.createRandomHash('pad');
             Crypt.put(hash, data.driveReadme, function (e) {
@@ -551,7 +560,7 @@ define([
                     channel: channel,
                     title: data.driveReadmeTitle,
                 };
-                Store.addPad(fileData, cb);
+                Store.addPad(clientId, fileData, cb);
             });
         });
     };
@@ -562,7 +571,7 @@ define([
      * data
      *   - anonHash
      */
-    Store.migrateAnonDrive = function (data, cb) {
+    Store.migrateAnonDrive = function (clientId, data, cb) {
         require(['/common/mergeDrive.js'], function (Merge) {
             var hash = data.anonHash;
             Merge.anonDriveIntoUser(store, hash, cb);
@@ -573,6 +582,7 @@ define([
         if (typeof attr === "string") {
             console.error('DEPRECATED: use setAttribute with an array, not a string');
             return {
+                path: ['settings'],
                 obj: store.proxy.settings,
                 key: attr
             };
@@ -589,23 +599,28 @@ define([
             obj = obj[el];
         });
         return {
+            path: ['settings'].concat(attr),
             obj: obj,
             key: attr[attr.length-1]
         };
     };
 
     // Set the display name (username) in the proxy
-    Store.setDisplayName = function (value, cb) {
+    Store.setDisplayName = function (clientId, value, cb) {
         store.proxy[Constants.displayNameKey] = value;
+        broadcast([clientId], "UPDATE_METADATA");
         onSync(cb);
     };
 
     // Reset the drive part of the userObject (from settings)
-    Store.resetDrive = function (data, cb) {
+    Store.resetDrive = function (clientId, data, cb) {
         nThen(function (waitFor) {
             removeOwnedPads(waitFor);
         }).nThen(function () {
             store.proxy.drive = store.fo.getStructure();
+            sendDriveEvent('DRIVE_CHANGE', {
+                path: ['drive', 'filesData']
+            }, clientId);
             onSync(cb);
         });
     };
@@ -617,25 +632,28 @@ define([
      *   - attr (Array)
      *   - value (String)
      */
-    Store.setPadAttribute = function (data, cb) {
+    Store.setPadAttribute = function (clientId, data, cb) {
         store.userObject.setPadAttribute(data.href, data.attr, data.value, function () {
+            sendDriveEvent('DRIVE_CHANGE', {
+                path: ['drive', UserObject.FILES_DATA]
+            }, clientId);
             onSync(cb);
         });
     };
-    Store.getPadAttribute = function (data, cb) {
+    Store.getPadAttribute = function (clientId, data, cb) {
         store.userObject.getPadAttribute(data.href, data.attr, function (err, val) {
             if (err) { return void cb({error: err}); }
             cb(val);
         });
     };
-    Store.setAttribute = function (data, cb) {
+    Store.setAttribute = function (clientId, data, cb) {
         try {
             var object = getAttributeObject(data.attr);
             object.obj[object.key] = data.value;
         } catch (e) { return void cb({error: e}); }
         onSync(cb);
     };
-    Store.getAttribute = function (data, cb) {
+    Store.getAttribute = function (clientId, data, cb) {
         var object;
         try {
             object = getAttributeObject(data.attr);
@@ -644,12 +662,12 @@ define([
     };
 
     // Tags
-    Store.listAllTags = function (data, cb) {
+    Store.listAllTags = function (clientId, data, cb) {
         cb(store.userObject.getTagsList());
     };
 
     // Templates
-    Store.getTemplates = function (data, cb) {
+    Store.getTemplates = function (clientId, data, cb) {
         var templateFiles = store.userObject.getFiles(['template']);
         var res = [];
         templateFiles.forEach(function (f) {
@@ -658,7 +676,7 @@ define([
         });
         cb(res);
     };
-    Store.incrementTemplateUse = function (href) {
+    Store.incrementTemplateUse = function (clientId, href) {
         store.userObject.getPadAttribute(href, 'used', function (err, data) {
             // This is a not critical function, abort in case of error to make sure we won't
             // create any issue with the user object or the async store
@@ -669,12 +687,15 @@ define([
     };
 
     // Pads
-    Store.moveToTrash = function (data, cb) {
+    Store.moveToTrash = function (clientId, data, cb) {
         var href = Hash.getRelativeHref(data.href);
         store.userObject.forget(href);
+        sendDriveEvent('DRIVE_CHANGE', {
+            path: ['drive', UserObject.FILES_DATA]
+        }, clientId);
         onSync(cb);
     };
-    Store.setPadTitle = function (data, cb) {
+    Store.setPadTitle = function (clientId, data, cb) {
         var title = data.title;
         var href = data.href;
         var channel = data.channel;
@@ -683,14 +704,16 @@ define([
 
         if (AppConfig.disableAnonymousStore && !store.loggedIn) { return void cb(); }
 
+        var channelData = Store.channels && Store.channels[channel];
+
         var owners;
-        if (Store.channel && Store.channel.wc && channel === Store.channel.wc.id) {
-            owners = Store.channel.data.owners || undefined;
+        if (channelData && channelData.wc && channel === channelData.wc.id) {
+            owners = channelData.data.owners || undefined;
         }
 
         var expire;
-        if (Store.channel && Store.channel.wc && channel === Store.channel.wc.id) {
-            expire = +Store.channel.data.expire || undefined;
+        if (channelData && channelData.wc && channel === channelData.wc.id) {
+            expire = +channelData.data.expire || undefined;
         }
 
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
@@ -757,7 +780,7 @@ define([
 
         // Add the pad if it does not exist in our drive
         if (!contains) {
-            Store.addPad({
+            Store.addPad(clientId, {
                 href: href,
                 channel: channel,
                 title: title,
@@ -767,12 +790,16 @@ define([
                 path: data.path
             }, cb);
             return;
+        } else {
+            sendDriveEvent('DRIVE_CHANGE', {
+                path: ['drive', UserObject.FILES_DATA]
+            }, clientId);
         }
         onSync(cb);
     };
 
     // Filepicker app
-    Store.getSecureFilesList = function (query, cb) {
+    Store.getSecureFilesList = function (clientId, query, cb) {
         var list = {};
         var hashes = [];
         var types = query.types;
@@ -801,42 +828,42 @@ define([
         });
         cb(list);
     };
-    Store.getPadData = function (id, cb) {
+    Store.getPadData = function (clientId, id, cb) {
         cb(store.userObject.getFileData(id));
     };
 
 
     // Messaging (manage friends from the userlist)
-    var getMessagingCfg = function () {
+    var getMessagingCfg = function (clientId) {
         return {
             proxy: store.proxy,
             realtime: store.realtime,
             network: store.network,
             updateMetadata: function () {
-                postMessage("UPDATE_METADATA");
+                postMessage(clientId, "UPDATE_METADATA");
             },
-            pinPads: Store.pinPads,
+            pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
             friendComplete: function (data) {
-                postMessage("EV_FRIEND_COMPLETE", data);
+                postMessage(clientId, "EV_FRIEND_COMPLETE", data);
             },
             friendRequest: function (data, cb) {
-                postMessage("Q_FRIEND_REQUEST", data, cb);
+                postMessage(clientId, "Q_FRIEND_REQUEST", data, cb);
             },
         };
     };
-    Store.inviteFromUserlist = function (data, cb) {
-        var messagingCfg = getMessagingCfg();
+    Store.inviteFromUserlist = function (clientId, data, cb) {
+        var messagingCfg = getMessagingCfg(clientId);
         Messaging.inviteFromUserlist(messagingCfg, data, cb);
     };
-    Store.addDirectMessageHandlers = function (data) {
-        var messagingCfg = getMessagingCfg();
+    Store.addDirectMessageHandlers = function (clientId, data, cb) {
+        var messagingCfg = getMessagingCfg(clientId);
         Messaging.addDirectMessageHandler(messagingCfg, data.href);
     };
 
     // Messenger
 
     // Get hashes for the share button
-    Store.getStrongerHash = function (data, cb) {
+    Store.getStrongerHash = function (clientId, data, cb) {
         var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
 
         // If we have a stronger version in drive, add it and add a redirect button
@@ -922,49 +949,106 @@ define([
     /////////////////////// PAD //////////////////////////////////////
     //////////////////////////////////////////////////////////////////
 
-    // TODO with sharedworker
-    // channel will be an object storing the webchannel associated to each browser tab
-    var channel = Store.channel = {
-        queue: [],
-        data: {}
-    };
-    Store.joinPad = function (data, cb) {
+    var channels = Store.channels = {};
+
+    Store.joinPad = function (clientId, data, cb) {
+        var isNew = typeof channels[data.channel] === "undefined";
+        var channel = channels[data.channel] = channels[data.channel] || {
+            queue: [],
+            data: {},
+            clients: [],
+            bcast: function (cmd, data, notMe) {
+                channel.clients.forEach(function (cId) {
+                    if (cId === notMe) { return; }
+                    postMessage(cId, cmd, data);
+                });
+            },
+            history: [],
+            pushHistory: function (msg, isCp) {
+                if (isCp) {
+                    channel.history.push('cp|' + msg);
+                    var i, cpCount = 1;
+                    for (i = channel.history.length - 2; i > 0; i--) {
+                        if (/^cp\|/.test(channel.history[i])) { break; }
+                    }
+                    channel.history = channel.history.slice(i);
+                    return;
+                }
+                channel.history.push(msg);
+            }
+        };
+        if (channel.clients.indexOf(clientId) === -1) {
+            channel.clients.push(clientId);
+        }
+
+        if (!isNew && channel.wc) {
+            channel.wc.members.forEach(function (m) {
+                postMessage(clientId, "PAD_JOIN", m);
+            });
+            channel.history.forEach(function (msg) {
+                postMessage(clientId, "PAD_MESSAGE", {
+                    msg: CpNfWorker.removeCp(msg),
+                    user: channel.wc.myID,
+                    validateKey: channel.data.validateKey
+                });
+            });
+            postMessage(clientId, "PAD_READY");
+            cb({
+                myID: channel.wc.myID,
+                id: channel.wc.id,
+                members: channel.wc.members
+            });
+
+            return;
+        }
         var conf = {
             onReady: function (padData) {
                 channel.data = padData || {};
-                postMessage("PAD_READY");
-            }, // post EV_PAD_READY
-            onMessage: function (user, m, validateKey) {
-                postMessage("PAD_MESSAGE", {
+                postMessage(clientId, "PAD_READY");
+            },
+            onMessage: function (user, m, validateKey, isCp) {
+                channel.pushHistory(m, isCp);
+                channel.bcast("PAD_MESSAGE", {
                     user: user,
                     msg: m,
                     validateKey: validateKey
                 });
-            }, // post EV_PAD_MESSAGE
+            },
             onJoin: function (m) {
-                postMessage("PAD_JOIN", m);
-            }, // post EV_PAD_JOIN
+                channel.bcast("PAD_JOIN", m);
+            },
             onLeave: function (m) {
-                postMessage("PAD_LEAVE", m);
-            }, // post EV_PAD_LEAVE
+                channel.bcast("PAD_LEAVE", m);
+            },
             onDisconnect: function () {
-                postMessage("PAD_DISCONNECT");
-            }, // post EV_PAD_DISCONNECT
+                channel.bcast("PAD_DISCONNECT");
+            },
             onError: function (err) {
-                postMessage("PAD_ERROR", err);
-            }, // post EV_PAD_ERROR
+                channel.bcast("PAD_ERROR", err);
+                delete channels[data.channel]; // TODO test?
+            },
             channel: data.channel,
             validateKey: data.validateKey,
             owners: data.owners,
             password: data.password,
             expire: data.expire,
             network: store.network,
-            readOnly: data.readOnly,
+            //readOnly: data.readOnly,
             onConnect: function (wc, sendMessage) {
-                channel.sendMessage = sendMessage;
+                channel.sendMessage = function (msg, cId, cb) {
+                    // Send to server
+                    sendMessage(msg, cb);
+                    // Broadcast to other tabs
+                    channel.pushHistory(CpNfWorker.removeCp(msg), /^cp\|/.test(msg));
+                    channel.bcast("PAD_MESSAGE", {
+                        user: wc.myID,
+                        msg: CpNfWorker.removeCp(msg),
+                        validateKey: channel.data.validateKey
+                    }, cId);
+                };
                 channel.wc = wc;
                 channel.queue.forEach(function (data) {
-                    sendMessage(data.message);
+                    channel.sendMessage(data.message, clientId);
                 });
                 cb({
                     myID: wc.myID,
@@ -975,13 +1059,23 @@ define([
         };
         CpNfWorker.start(conf);
     };
-    Store.sendPadMsg = function (data, cb) {
-        if (!channel.wc) { channel.queue.push(data); }
-        channel.sendMessage(data, cb);
+    Store.sendPadMsg = function (clientId, data, cb) {
+        console.log('sendPadMsg ' + data.channel);
+        var msg = data.msg;
+        var channel = channels[data.channel];
+        if (!channel) { 
+            console.log('no channel...');
+            return; }
+        if (!channel.wc) {
+            console.log('no WC, push to queue');
+            channel.queue.push(msg);
+            return void cb();
+        }
+        channel.sendMessage(msg, clientId, cb);
     };
 
     // GET_FULL_HISTORY from sframe-common-outer
-    Store.getFullHistory = function (data, cb) {
+    Store.getFullHistory = function (clientId, data, cb) {
         var network = store.network;
         var hkn = network.historyKeeper;
         //var crypto = Crypto.createEncryptor(data.keys);
@@ -1016,67 +1110,178 @@ define([
         network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
     };
 
-    // TODO with sharedworker
-    // when the tab is closed, leave the pad
-
     // Drive
-    Store.userObjectCommand = function (cmdData, cb) {
+    Store.userObjectCommand = function (clientId, cmdData, cb) {
         if (!cmdData || !cmdData.cmd) { return; }
         var data = cmdData.data;
+        var cb2 = function (data2) {
+            var paths = data.paths || [data.path] || [];
+            paths = paths.concat(data.newPath || []);
+            paths.forEach(function (p) {
+                sendDriveEvent('DRIVE_CHANGE', {
+                    //path: ['drive', UserObject.FILES_DATA]
+                    path: ['drive'].concat(p)
+                }, clientId);
+            });
+            cb(data2);
+        };
         switch (cmdData.cmd) {
             case 'move':
-                store.userObject.move(data.paths, data.newPath, cb); break;
+                store.userObject.move(data.paths, data.newPath, cb2); break;
             case 'restore':
-                store.userObject.restore(data.path, cb); break;
+                store.userObject.restore(data.path, cb2); break;
             case 'addFolder':
-                store.userObject.addFolder(data.path, data.name, cb); break;
+                store.userObject.addFolder(data.path, data.name, cb2); break;
             case 'delete':
-                store.userObject.delete(data.paths, cb, data.nocheck, data.isOwnPadRemoved); break;
+                store.userObject.delete(data.paths, cb2, data.nocheck, data.isOwnPadRemoved); break;
             case 'emptyTrash':
-                store.userObject.emptyTrash(cb); break;
+                store.userObject.emptyTrash(cb2); break;
             case 'rename':
-                store.userObject.rename(data.path, data.newName, cb); break;
+                store.userObject.rename(data.path, data.newName, cb2); break;
             default:
                 cb();
         }
     };
 
+    // Clients management
+    var driveEventClients = [];
+    var messengerEventClients = [];
+
+    Store._removeClient = function (clientId) {
+        var driveIdx = driveEventClients.indexOf(clientId);
+        if (driveIdx !== -1) {
+            driveEventClients.splice(driveIdx, 1);
+        }
+        var messengerIdx = messengerEventClients.indexOf(clientId);
+        if (messengerIdx !== -1) {
+            messengerEventClients.splice(messengerIdx, 1);
+        }
+        Object.keys(Store.channels).forEach(function (chanId) {
+            var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
+            if (chanIdx !== -1) {
+                Store.channels[chanId].clients.splice(chanIdx, 1);
+            }
+        });
+    };
+
+    // Special events
+
+    var driveEventInit = false;
+    sendDriveEvent = function (q, data, sender) {
+        console.log('driveevent '+q);
+        console.log(JSON.stringify(driveEventClients));
+        driveEventClients.forEach(function (cId) {
+            if (cId === sender) { return; }
+            postMessage(cId, q, data);
+        });
+    };
+    Store._subscribeToDrive = function (clientId) {
+        if (driveEventClients.indexOf(clientId) === -1) {
+            driveEventClients.push(clientId);
+        }
+        if (!driveEventInit) {
+            store.proxy.on('change', [], function (o, n, p) {
+                sendDriveEvent('DRIVE_CHANGE', {
+                    old: o,
+                    new: n,
+                    path: p
+                });
+            });
+            store.proxy.on('remove', [], function (o, p) {
+                sendDriveEvent(clientId, 'DRIVE_REMOVE', {
+                    old: o,
+                    path: p
+                });
+            });
+            driveEventInit = true;
+        }
+    };
+
+    var messengerEventInit = false;
+    var sendMessengerEvent = function (q, data) {
+        messengerEventClients.forEach(function (cId) {
+            postMessage(cId, q, data);
+        });
+    };
+    Store._subscribeToMessenger = function (clientId) {
+        if (messengerEventClients.indexOf(clientId) === -1) {
+            messengerEventClients.push(clientId);
+        }
+        if (!messengerEventInit) {
+            var messenger = store.messenger = Messenger.messenger(store);
+            messenger.on('message', function (message) {
+                sendMessengerEvent('CONTACTS_MESSAGE', message);
+            });
+            messenger.on('join', function (curvePublic, channel) {
+                sendMessengerEvent('CONTACTS_JOIN', {
+                    curvePublic: curvePublic,
+                    channel: channel,
+                });
+            });
+            messenger.on('leave', function (curvePublic, channel) {
+                sendMessengerEvent('CONTACTS_LEAVE', {
+                    curvePublic: curvePublic,
+                    channel: channel,
+                });
+            });
+            messenger.on('update', function (info, curvePublic) {
+                sendMessengerEvent('CONTACTS_UPDATE', {
+                    curvePublic: curvePublic,
+                    info: info,
+                });
+            });
+            messenger.on('friend', function (curvePublic) {
+                sendMessengerEvent('CONTACTS_FRIEND', {
+                    curvePublic: curvePublic,
+                });
+            });
+            messenger.on('unfriend', function (curvePublic) {
+                sendMessengerEvent('CONTACTS_UNFRIEND', {
+                    curvePublic: curvePublic,
+                });
+            });
+            messengerEventInit = true;
+        }
+    };
+
+
     //////////////////////////////////////////////////////////////////
     /////////////////////// Init /////////////////////////////////////
     //////////////////////////////////////////////////////////////////
 
-    var onReady = function (returned, cb) {
+    var onReady = function (clientId, returned, cb) {
         var proxy = store.proxy;
         var userObject = store.userObject = UserObject.init(proxy.drive, {
-            pinPads: Store.pinPads,
-            unpinPads: Store.unpinPads,
-            removeOwnedChannel: Store.removeOwnedChannel,
+            pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
+            unpinPads: function (data, cb) { Store.unpinPads(null, data, cb); },
+            removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel(null, data, cb); },
             edPublic: store.proxy.edPublic,
             loggedIn: store.loggedIn,
             log: function (msg) {
-                postMessage("DRIVE_LOG", msg);
+                // broadcast to all drive apps
+                sendDriveEvent("DRIVE_LOG", msg);
             }
         });
         nThen(function (waitFor) {
-            postMessage('LOADING_DRIVE', {
+            postMessage(clientId, 'LOADING_DRIVE', {
                 state: 2
             });
             userObject.migrate(waitFor());
         }).nThen(function (waitFor) {
             Migrate(proxy, waitFor(), function (version, progress) {
-                postMessage('LOADING_DRIVE', {
+                postMessage(clientId, 'LOADING_DRIVE', {
                     state: 2,
                     progress: progress
                 });
             });
         }).nThen(function () {
-            postMessage('LOADING_DRIVE', {
+            postMessage(clientId, 'LOADING_DRIVE', {
                 state: 3
             });
             userObject.fixFiles();
 
             var requestLogin = function () {
-                postMessage("REQUEST_LOGIN");
+                broadcast([], "REQUEST_LOGIN");
             };
 
             if (store.loggedIn) {
@@ -1121,26 +1326,26 @@ define([
 
             proxy.on('change', [Constants.displayNameKey], function (o, n) {
                 if (typeof(n) !== "string") { return; }
-                postMessage("UPDATE_METADATA");
+                broadcast([], "UPDATE_METADATA");
             });
             proxy.on('change', ['profile'], function () {
                 // Trigger userlist update when the avatar has changed
-                postMessage("UPDATE_METADATA");
+                broadcast([], "UPDATE_METADATA");
             });
             proxy.on('change', ['friends'], function () {
                 // Trigger userlist update when the friendlist has changed
-                postMessage("UPDATE_METADATA");
+                broadcast([], "UPDATE_METADATA");
             });
             proxy.on('change', ['settings'], function () {
-                postMessage("UPDATE_METADATA");
+                broadcast([], "UPDATE_METADATA");
             });
             proxy.on('change', [Constants.tokenKey], function () {
-                postMessage("UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
+                broadcast([], "UPDATE_TOKEN", { token: proxy[Constants.tokenKey] });
             });
         });
     };
 
-    var connect = function (data, cb) {
+    var connect = function (clientId, data, cb) {
         var hash = data.userHash || data.anonHash || Hash.createRandomHash('drive');
         storeHash = hash;
         if (!hash) {
@@ -1180,9 +1385,9 @@ define([
                 && !drive['filesData']) {
                 drive[Constants.oldStorageKey] = [];
             }
-            postMessage('LOADING_DRIVE', { state: 1 });
+            postMessage(clientId, 'LOADING_DRIVE', { state: 1 });
             // Drive already exist: return the existing drive, don't load data from legacy store
-            onReady(returned, cb);
+            onReady(clientId, returned, cb);
         })
         .on('change', ['drive', 'migrate'], function () {
             var path = arguments[2];
@@ -1190,15 +1395,15 @@ define([
             if (path[0] === 'drive' && path[1] === "migrate" && value === 1) {
                 rt.network.disconnect();
                 rt.realtime.abort();
-                postMessage('NETWORK_DISCONNECT');
+                broadcast([], 'NETWORK_DISCONNECT');
             }
         });
 
         rt.proxy.on('disconnect', function () {
-            postMessage('NETWORK_DISCONNECT');
+            broadcast([], 'NETWORK_DISCONNECT');
         });
         rt.proxy.on('reconnect', function (info) {
-            postMessage('NETWORK_RECONNECT', {myId: info.myId});
+            broadcast([], 'NETWORK_RECONNECT', {myId: info.myId});
         });
     };
 
@@ -1213,7 +1418,7 @@ define([
      *   - requestLogin
      */
     var initialized = false;
-    Store.init = function (data, callback) {
+    Store.init = function (clientId, data, callback) {
         if (initialized) {
             return void callback({
                 state: 'ALREADY_INIT',
@@ -1221,72 +1426,21 @@ define([
             });
         }
         initialized = true;
-        postMessage = function (cmd, d, cb) {
-            setTimeout(function () {
-                data.query(cmd, d, cb); // TODO temporary, will be replaced by webworker channel
-            });
+        postMessage = function (clientId, cmd, d, cb) {
+            data.query(clientId, cmd, d, cb);
+        };
+        broadcast = function (excludes, cmd, d, cb) {
+            data.broadcast(excludes, cmd, d, cb);
         };
 
         store.data = data;
-        connect(data, function (ret) {
+        connect(clientId, data, function (ret) {
             if (Object.keys(store.proxy).length === 1) {
                 Feedback.send("FIRST_APP_USE", true);
             }
             store.returned = ret;
 
             callback(ret);
-
-            // Send events whenever there is a change or a removal in the drive
-            if (data.driveEvents) {
-                store.proxy.on('change', [], function (o, n, p) {
-                    postMessage('DRIVE_CHANGE', {
-                        old: o,
-                        new: n,
-                        path: p
-                    });
-                });
-                store.proxy.on('remove', [], function (o, p) {
-                    postMessage('DRIVE_REMOVE', {
-                        old: o,
-                        path: p
-                    });
-                });
-            }
-
-            if (data.messenger) {
-                var messenger = store.messenger = Messenger.messenger(store);
-                messenger.on('message', function (message) {
-                    postMessage('CONTACTS_MESSAGE', message);
-                });
-                messenger.on('join', function (curvePublic, channel) {
-                    postMessage('CONTACTS_JOIN', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
-                });
-                messenger.on('leave', function (curvePublic, channel) {
-                    postMessage('CONTACTS_LEAVE', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
-                });
-                messenger.on('update', function (info, curvePublic) {
-                    postMessage('CONTACTS_UPDATE', {
-                        curvePublic: curvePublic,
-                        info: info,
-                    });
-                });
-                messenger.on('friend', function (curvePublic) {
-                    postMessage('CONTACTS_FRIEND', {
-                        curvePublic: curvePublic,
-                    });
-                });
-                messenger.on('unfriend', function (curvePublic) {
-                    postMessage('CONTACTS_UNFRIEND', {
-                        curvePublic: curvePublic,
-                    });
-                });
-            }
         });
     };
 
