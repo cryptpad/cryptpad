@@ -858,6 +858,7 @@ define([
                     });
 
                     postMessage = function (cmd, data, cb) {
+                        cb = cb || function () {}
                         chan.query(cmd, data, function (err, data) {
                             if (err) { return void cb ({error: err}); }
                             cb(data);

@@ -981,6 +981,11 @@ define([
         }
 
         if (!isNew && channel.wc) {
+            postMessage(clientId, "PAD_CONNECT", {
+                myID: channel.wc.myID,
+                id: channel.wc.id,
+                members: channel.wc.members
+            });
             channel.wc.members.forEach(function (m) {
                 postMessage(clientId, "PAD_JOIN", m);
             });
@@ -992,11 +997,6 @@ define([
                 });
             });
             postMessage(clientId, "PAD_READY");
-            cb({
-                myID: channel.wc.myID,
-                id: channel.wc.id,
-                members: channel.wc.members
-            });
 
             return;
         }
