@@ -116,6 +116,10 @@ define([], function () {
             sframeChan.event('EV_RT_DISCONNECT');
         });
 
+        padRpc.onConnectEvent.reg(function (data) {
+            onOpen(data);
+        });
+
         padRpc.onErrorEvent.reg(function (err) {
             sframeChan.event('EV_RT_ERROR', err);
         });
@@ -128,8 +132,6 @@ define([], function () {
             owners: owners,
             password: password,
             expire: expire
-        }, function(data) {
-            onOpen(data);
         });
     };
 

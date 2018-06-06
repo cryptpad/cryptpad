@@ -1049,7 +1049,7 @@ define([
                 channel.queue.forEach(function (data) {
                     channel.sendMessage(data.message, clientId);
                 });
-                cb({
+                postMessage("PAD_CONNECT", {
                     myID: wc.myID,
                     id: wc.id,
                     members: wc.members
