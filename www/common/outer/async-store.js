@@ -928,7 +928,7 @@ define([
         queue: [],
         data: {}
     };
-    Store.joinPad = function (data, cb) {
+    Store.joinPad = function (data) {
         var conf = {
             onReady: function (padData) {
                 channel.data = padData || {};

@@ -1,3 +1,5 @@
+/* jshint ignore:start */
+
 var id = Math.floor(Math.random()*100000);
 
 var postMsg = function (client, data) {
