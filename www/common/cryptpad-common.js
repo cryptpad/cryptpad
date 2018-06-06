@@ -769,8 +769,10 @@ define([
             var postMsg, worker;
             Nthen(function (waitFor2) {
                 if (SharedWorker) {
-                    worker = new SharedWorker('/common/outer/sharedworker.js' + urlArgs);
-                    console.log(worker);
+                    worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
+                    worker.onerror = function (e) {
+                        console.error(e);
+                    };
                     worker.port.onmessage = function (ev) {
                         if (ev.data === "SW_READY") {
                             return;
@@ -789,7 +791,7 @@ define([
                         if (worker) { return void worker.postMessage(data); }
                     };
 
-                    navigator.serviceWorker.register('/common/outer/serviceworker.js' + urlArgs, {scope: '/'})
+                    navigator.serviceWorker.register('/common/outer/serviceworker.js?' + urlArgs, {scope: '/'})
                         .then(function(reg) {
                             // Add handler for receiving messages from the service worker
                             navigator.serviceWorker.addEventListener('message', function (ev) {
@@ -829,7 +831,7 @@ define([
                             /**/console.log('Registration failed with ' + error);
                         });
                 } else if (Worker) {
-                    worker = new Worker('/common/outer/webworker.js' + urlArgs);
+                    worker = new Worker('/common/outer/webworker.js?' + urlArgs);
                     worker.onmessage = function (ev) {
                         msgEv.fire(ev);
                     };
