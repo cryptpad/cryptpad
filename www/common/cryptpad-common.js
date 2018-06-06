@@ -16,13 +16,14 @@ define([
             Messaging, Constants, Feedback, LocalStore, /*AStore, */Channel,
             AppConfig, Nthen) {
 
-
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
 
     Additionally, there is some basic functionality for import/export.
 */
+    var urlArgs = Util.find(Config, ['requireConf', 'urlArgs']) || '';
+
     var postMessage = function (/*cmd, data, cb*/) {
         /*setTimeout(function () {
             AStore.query(cmd, data, cb);
@@ -768,7 +769,7 @@ define([
             var postMsg, worker;
             Nthen(function (waitFor2) {
                 if (SharedWorker) {
-                    worker = new SharedWorker('/common/outer/sharedworker.js');
+                    worker = new SharedWorker('/common/outer/sharedworker.js' + urlArgs);
                     console.log(worker);
                     worker.port.onmessage = function (ev) {
                         if (ev.data === "SW_READY") {
@@ -788,7 +789,7 @@ define([
                         if (worker) { return void worker.postMessage(data); }
                     };
 
-                    navigator.serviceWorker.register('/common/outer/serviceworker.js', {scope: '/'})
+                    navigator.serviceWorker.register('/common/outer/serviceworker.js' + urlArgs, {scope: '/'})
                         .then(function(reg) {
                             // Add handler for receiving messages from the service worker
                             navigator.serviceWorker.addEventListener('message', function (ev) {
@@ -828,7 +829,7 @@ define([
                             /**/console.log('Registration failed with ' + error);
                         });
                 } else if (Worker) {
-                    worker = new Worker('/common/outer/webworker.js');
+                    worker = new Worker('/common/outer/webworker.js' + urlArgs);
                     worker.onmessage = function (ev) {
                         msgEv.fire(ev);
                     };

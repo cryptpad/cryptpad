@@ -1,3 +1,4 @@
+/* jshint ignore:start */
 var id;
 //= Math.floor(Math.random()*100000);
 
