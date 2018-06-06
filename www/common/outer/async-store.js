@@ -950,7 +950,7 @@ define([
 
     var channels = Store.channels = {};
 
-    Store.joinPad = function (clientId, data, cb) {
+    Store.joinPad = function (clientId, data) {
         var isNew = typeof channels[data.channel] === "undefined";
         var channel = channels[data.channel] = channels[data.channel] || {
             queue: [],
