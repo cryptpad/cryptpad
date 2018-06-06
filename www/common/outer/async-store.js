@@ -854,7 +854,7 @@ define([
         var messagingCfg = getMessagingCfg(clientId);
         Messaging.inviteFromUserlist(messagingCfg, data, cb);
     };
-    Store.addDirectMessageHandlers = function (clientId, data, cb) {
+    Store.addDirectMessageHandlers = function (clientId, data) {
         var messagingCfg = getMessagingCfg(clientId);
         Messaging.addDirectMessageHandler(messagingCfg, data.href);
     };
@@ -966,7 +966,7 @@ define([
             pushHistory: function (msg, isCp) {
                 if (isCp) {
                     channel.history.push('cp|' + msg);
-                    var i, cpCount = 1;
+                    var i;
                     for (i = channel.history.length - 2; i > 0; i--) {
                         if (/^cp\|/.test(channel.history[i])) { break; }
                     }
