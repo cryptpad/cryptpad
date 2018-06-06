@@ -16,13 +16,14 @@ define([
             Messaging, Constants, Feedback, LocalStore, /*AStore, */Channel,
             AppConfig, Nthen) {
 
-
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
     about pads to your local storage for future use and improved usability.
 
     Additionally, there is some basic functionality for import/export.
 */
+    var urlArgs = Util.find(Config, ['requireConf', 'urlArgs']) || '';
+
     var postMessage = function (/*cmd, data, cb*/) {
         /*setTimeout(function () {
             AStore.query(cmd, data, cb);
@@ -885,7 +886,7 @@ define([
             }));*/
 
             var msgEv = Util.mkEvent();
-            var worker = new Worker('/common/outer/webworker.js');
+            var worker = new Worker('/common/outer/webworker.js?' + urlArgs);
             worker.onmessage = function (ev) {
                 msgEv.fire(ev);
             };
