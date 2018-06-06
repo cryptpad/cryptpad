@@ -556,8 +556,8 @@ define([
 
     // Pad RPC
     var pad = common.padRpc = {};
-    pad.joinPad = function (data, cb) {
-        postMessage("JOIN_PAD", data, cb);
+    pad.joinPad = function (data) {
+        postMessage("JOIN_PAD", data);
     };
     pad.sendPadMsg = function (data, cb) {
         postMessage("SEND_PAD_MSG", data, cb);
@@ -567,6 +567,7 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+    pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
 
     // Loading events
@@ -680,6 +681,7 @@ define([
         PAD_JOIN: common.padRpc.onJoinEvent.fire,
         PAD_LEAVE: common.padRpc.onLeaveEvent.fire,
         PAD_DISCONNECT: common.padRpc.onDisconnectEvent.fire,
+        PAD_CONNECT: common.padRpc.onConnectEvent.fire,
         PAD_ERROR: common.padRpc.onErrorEvent.fire,
         // Drive
         DRIVE_LOG: common.drive.onLog.fire,

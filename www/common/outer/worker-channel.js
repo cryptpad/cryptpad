@@ -24,7 +24,7 @@ define([
             var txid = mkTxid();
             var timeout = setTimeout(function () {
                 delete queries[txid];
-                console.log("Timeout making query " + q);
+                //console.log("Timeout making query " + q);
             }, 30000);
             queries[txid] = function (data, msg) {
                 clearTimeout(timeout);
