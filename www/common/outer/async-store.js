@@ -50,7 +50,6 @@ define([
         } else {
             obj[key] = data.value;
         }
-        console.log('broadcasting displayName');
         broadcast([clientId], "UPDATE_METADATA");
         onSync(cb);
     };
@@ -1060,14 +1059,11 @@ define([
         CpNfWorker.start(conf);
     };
     Store.sendPadMsg = function (clientId, data, cb) {
-        console.log('sendPadMsg ' + data.channel);
         var msg = data.msg;
         var channel = channels[data.channel];
-        if (!channel) { 
-            console.log('no channel...');
+        if (!channel) {
             return; }
         if (!channel.wc) {
-            console.log('no WC, push to queue');
             channel.queue.push(msg);
             return void cb();
         }
@@ -1168,8 +1164,6 @@ define([
 
     var driveEventInit = false;
     sendDriveEvent = function (q, data, sender) {
-        console.log('driveevent '+q);
-        console.log(JSON.stringify(driveEventClients));
         driveEventClients.forEach(function (cId) {
             if (cId === sender) { return; }
             postMessage(cId, q, data);
