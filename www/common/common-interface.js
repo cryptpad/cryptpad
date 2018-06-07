@@ -144,13 +144,15 @@ define([
     };
 
     dialog.frame = function (content) {
-        return h('div.alertify', {
+        return $(h('div.alertify', {
             tabindex: 1,
         }, [
             h('div.dialog', [
                 h('div', content),
             ])
-        ]);
+        ])).click(function (e) {
+            e.stopPropagation();
+        })[0];
     };
 
     /**
