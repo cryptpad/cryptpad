@@ -83,8 +83,9 @@
             },
             download: function (metadata, url, content, cfg, cb) {
                 var btn = document.createElement('button');
+                btn.setAttribute('class', 'btn btn-success');
                 btn.innerHTML = cfg.download.text + '<br>' +
-                                metadata.name ? '<b>' + fixHTML(metadata.name) + '</b>' : '';
+                                (metadata.name ? '<b>' + fixHTML(metadata.name) + '</b>' : '');
                 btn.addEventListener('click', function () {
                     saveFile(content, url, metadata.name);
                 });
@@ -317,11 +318,6 @@
 
         addMissingConfig(cfg, config);
 
-        // Add support for old mediatag library
-        if (!cfg.pdf.viewer && init.PdfPlugin && init.PdfPlugin.viewer) {
-            cfg.pdf.viewer = init.PdfPlugin.viewer;
-        }
-
         // Handle jQuery elements
         if (typeof(el) === "object" && el.jQuery) { el = el[0]; }
 
@@ -424,7 +420,9 @@
     // Add the cache as a property of MediaTag
     cache = init.__Cryptpad_Cache = {};
 
-    init.PdfPlugin = {};
+    init.setDefaultConfig = function (key, value) {
+        config[key] = value;
+    };
 
     return init;
 }));

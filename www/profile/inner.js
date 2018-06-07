@@ -43,16 +43,6 @@ define([
         _onRefresh: []
     };
 
-    // Decryption event for avatar mediatag (TODO not needed anymore?)
-    $(window.document).on('decryption', function (e) {
-        var decrypted = e.originalEvent;
-        if (decrypted.callback) { decrypted.callback(); }
-    })
-    .on('decryptionError', function (e) {
-        var error = e.originalEvent;
-        UI.alert(error.message);
-    });
-
     $(window).click(function () {
         $('.cp-dropdown-content').hide();
     });

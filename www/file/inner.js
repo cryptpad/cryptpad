@@ -37,6 +37,9 @@ define([
     var Nacl = window.nacl;
 
     var APP = window.APP = {};
+    MediaTag.setDefaultConfig('download', {
+        text: Messages.download_mt_button
+    });
 
     var andThen = function (common) {
         var $appContainer = $('#cp-app-file-content');
@@ -130,32 +133,17 @@ define([
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
                     var rightsideDisplayed = false;
-                    $(window.document).on('decryption', function (e) {
-                        /* FIXME
-                            we're listening for decryption events and assuming that only
-                            the main media-tag exists. In practice there is also your avatar
-                            and there could be other things in the future, so we should
-                            figure out a generic way target media-tag decryption events.
-                        */
-                        var decrypted = e.originalEvent;
-                        if (decrypted.callback) {
-                            decrypted.callback();
-                        }
 
+                    MediaTag($mt[0]).on('complete', function (decrypted) {
                         $dlview.show();
                         $dlform.hide();
                         var $dlButton = $dlview.find('media-tag button');
                         if (ev) { $dlButton.click(); }
-                        $dlButton.addClass('btn btn-success');
-                        var text = Messages.download_mt_button + '<br>';
-                        text += '<b>' + Util.fixHTML(title) + '</b><br>';
-                        text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
-                        $dlButton.html(text);
 
                         if (!rightsideDisplayed) {
                             toolbar.$rightside
                             .append(common.createButton('export', true, {}, function () {
-                                saveAs(decrypted.blob, decrypted.metadata.name);
+                                saveAs(decrypted.content, decrypted.metadata.name);
                             }));
                             rightsideDisplayed = true;
                         }
@@ -178,42 +166,12 @@ define([
                         } else {
                             cb();
                         }
-                    })
-                    .on('decryptionError', function (e) {
-                        var error = e.originalEvent;
-                        //UI.alert(error.message);
-                        cb(error.message);
-                    })
-                    .on('decryptionProgress', function (e) {
-                        var progress = e.originalEvent;
-                        var p = progress.percent +'%';
+                    }).on('progress', function (data) {
+                        var p = data.progress +'%';
                         $progress.width(p);
+                    }).on('error', function (err) {
+                        console.error(err);
                     });
-
-                    /**
-                     * Allowed mime types that have to be set for a rendering after a decryption.
-                     *
-                     * @type       {Array}
-                     */
-                    var allowedMediaTypes = [
-                        'image/png',
-                        'image/jpeg',
-                        'image/jpg',
-                        'image/gif',
-                        'audio/mp3',
-                        'audio/ogg',
-                        'audio/wav',
-                        'audio/webm',
-                        'video/mp4',
-                        'video/ogg',
-                        'video/webm',
-                        'application/pdf',
-                        'application/dash+xml',
-                        'download'
-                    ];
-                    MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
-
-                    MediaTag($mt[0]);
                 };
 
                 var todoBigFile = function (sizeMb) {

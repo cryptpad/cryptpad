@@ -18,8 +18,10 @@ define([
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
-    if (MediaTag && MediaTag.PdfPlugin) {
-        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
+    if (MediaTag) {
+        MediaTag.setDefaultConfig('pdf', {
+            viewer: '/common/pdfjs/web/viewer.html'
+        });
     }
 
     UIElements.updateTags = function (common, href) {
@@ -1033,52 +1035,6 @@ define([
     };
 
     // Avatars
-
-    // Enable mediatags
-    $(window.document).on('decryption', function (e) {
-        var decrypted = e.originalEvent;
-        if (decrypted.callback) {
-            var cb = decrypted.callback;
-            cb(function (mediaObject) {
-                var root = mediaObject.element;
-                if (!root) { return; }
-
-                if (mediaObject.type === 'image') {
-                    $(root).data('blob', decrypted.blob);
-                }
-
-                if (mediaObject.type !== 'download') { return; }
-
-                var metadata = decrypted.metadata;
-
-                var title = '';
-                var size = 0;
-                if (metadata && metadata.name) {
-                    title = metadata.name;
-                }
-
-                if (decrypted.blob) {
-                    size = decrypted.blob.size;
-                }
-
-                var sizeMb = Util.bytesToMegabytes(size);
-
-                var $btn = $(root).find('button');
-                $btn.addClass('btn btn-success')
-                    .attr('type', 'download')
-                    .html(function () {
-                        var text = Messages.download_mt_button + '<br>';
-                        if (title) {
-                            text += '<b>' + Util.fixHTML(title) + '</b><br>';
-                        }
-                        if (size) {
-                            text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
-                        }
-                        return text;
-                    });
-            });
-        }
-    });
 
     UIElements.displayMediatagImage = function (Common, $tag, cb) {
         if (!$tag.length || !$tag.is('media-tag')) { return void cb('NOT_MEDIATAG'); }
