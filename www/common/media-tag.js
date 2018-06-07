@@ -326,7 +326,7 @@
         if (typeof(el) === "object" && el.jQuery) { el = el[0]; }
 
         // Abort smoothly if the element is not a media-tag
-        if (el.nodeName !== "MEDIA-TAG") {
+        if (!el || el.nodeName !== "MEDIA-TAG") {
             console.error("Not a media-tag!");
             return {
                 on: function () { return this; }
