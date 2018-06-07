@@ -49,6 +49,7 @@ define([
         if (ua[0].indexOf(':') === -1 && ua[0].indexOf('/') && parent) {
             ua[0] = parent.replace(/\/[^\/]*$/, '/') + ua[0];
         }
+        ua[0] = ua[0].replace(/^\/\.\.\//, '/');
         var out = ua.join('#');
         //console.log(url + "  -->  " + out);
         return out;
@@ -91,17 +92,32 @@ define([
     };
 
     var lessEngine;
+    var tempCache = { key: Math.random() };
     var getLessEngine = function (cb) {
         if (lessEngine) {
             cb(lessEngine);
         } else {
             require(['/bower_components/less/dist/less.min.js'], function (Less) {
+                if (lessEngine) { return void cb(lessEngine); }
                 lessEngine = Less;
                 var doXHR = lessEngine.FileManager.prototype.doXHR;
                 lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
                     url = fixURL(url);
-                    //console.log("xhr: " + url);
-                    return doXHR(url, type, callback, errback);
+                    var cached = tempCache[url];
+                    if (cached && cached.res) {
+                        var res = cached.res;
+                        return void setTimeout(function () { callback(res[0], res[1]); });
+                    }
+                    if (cached) { return void cached.queue.push(callback); }
+                    cached = tempCache[url] = { queue: [ callback ], res: undefined };
+                    return doXHR(url, type, function (text, lastModified) {
+                        cached.res = [ text, lastModified ];
+                        var queue = cached.queue;
+                        cached.queue = [];
+                        queue.forEach(function (f) {
+                            setTimeout(function () { f(text, lastModified); });
+                        });
+                    }, errback);
                 };
                 cb(lessEngine);
             });
