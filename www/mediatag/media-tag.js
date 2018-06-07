@@ -4,7 +4,6 @@
     else  { this[name] = definition(); }
 }('MediaTag', function() {
     var cache;
-    var PARANOIA = true;
     var cypherChunkLength = 131088;
 
     // Save a blob on the file system
@@ -106,38 +105,24 @@
     var Decrypt = {
         // Create a nonce
         createNonce: function () {
-            if (!Array.prototype.fill) {
-                // IE support
-                var arr = [];
-                for (var i = 0; i < 24; i++) { arr[i] = 0; }
-                return new Uint8Array(arr);
-            }
-            return new Uint8Array(new Array(24).fill(0));
+            var n = new Uint8Array(24);
+            for (var i = 0; i < 24; i++) { n[i] = 0; }
+            return n;
         },
 
         // Increment a nonce
-        // FIXME: remove throw?
         increment: function (N) {
             var l = N.length;
             while (l-- > 1) {
-                if (PARANOIA) {
-                    if (typeof(N[l]) !== 'number') {
-                        throw new Error('E_UNSAFE_TYPE');
-                    }
-                    if (N[l] > 255) {
-                        throw new Error('E_OUT_OF_BOUNDS');
-                    }
-                }
                 /* .jshint probably suspects this is unsafe because we lack types
                    but as long as this is only used on nonces, it should be safe  */
                 if (N[l] !== 255) { return void N[l]++; } // jshint ignore:line
-                N[l] = 0;
 
                 // you don't need to worry about this running out.
                 // you'd need a REAAAALLY big file
-                if (l === 0) {
-                    throw new Error('E_NONCE_TOO_LARGE');
-                }
+                if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
+
+                N[l] = 0;
             }
         },
 
@@ -151,13 +136,6 @@
         // Convert a Uint8Array into Array.
         slice: function (u8) {
             return Array.prototype.slice.call(u8);
-        },
-
-        // Gets the random key string.
-        getRandomKeyStr: function () {
-            var Nacl = window.nacl;
-            var rdm = Nacl.randomBytes(18);
-            return Nacl.util.encodeBase64(rdm);
         },
 
         // Gets the key from the key string.
@@ -287,7 +265,7 @@
 
         // Get blob URL
         var url = decrypted.url;
-        if (!url) {
+        if (!url && window.URL) {
             url = decrypted.url = window.URL.createObjectURL(new Blob([blob], {
                 type: metadata.type
             }));
