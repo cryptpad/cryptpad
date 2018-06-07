@@ -1,7 +1,8 @@
 // This is stage 1, it can be changed but you must bump the version of the project.
 define([
-    '/common/requireconfig.js'
-], function (RequireConfig) {
+    '/common/requireconfig.js',
+    '/api/config'
+], function (RequireConfig, ApiConfig) {
     require.config(RequireConfig());
 
     // most of CryptPad breaks if you don't support isArray
@@ -24,6 +25,14 @@ define([
     // RPC breaks if you don't support Number.MAX_SAFE_INTEGER
     if (Number && !Number.MAX_SAFE_INTEGER) {
         Number.MAX_SAFE_INTEGER = 9007199254740991;
+    }
+
+    if (!ApiConfig.httpSafeOrigin) {
+        if (ApiConfig.httpSafePort) {
+            ApiConfig.httpSafeOrigin =
+                window.location.origin.replace(/\:[0-9]+$/, ':' +  ApiConfig.httpSafePort);
+        }
+        ApiConfig.httpSafeOrigin = window.location.origin;
     }
 
     var failStore = function () {

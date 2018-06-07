@@ -156,6 +156,32 @@ if (config.privKeyAndCertFiles) {
     };
 }
 
+// TODO race
+let version;
+Fs.readFile('./customize.dist/version.txt', 'utf8', (err, v) => {
+    if (err) { throw err; }
+    version = v;
+});
+app.get('/api/config.json', function (req, res) {
+    const host = req.headers.host.replace(/\:[0-9]+/, '');
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify({
+        requireConf: {
+            waitSeconds: 60,
+            urlArgs: 'ver=' + Package.version + (FRESH_KEY? '-' + FRESH_KEY: '') + (DEV_MODE? '-' + (+new Date()): ''),
+        },
+        removeDonateButton: (config.removeDonateButton === true),
+        allowSubscriptions: (config.allowSubscriptions === true),
+        websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
+        websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
+            websocketPort + '/cryptpad_websocket',
+        httpUnsafeOrigin: config.httpUnsafeOrigin,
+        httpSafeOrigin: config.httpSafeOrigin || null,
+        httpSafePort: config.httpSafePort || null,
+        versionSig: version
+    }));
+});
+
 app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
