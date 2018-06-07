@@ -111,7 +111,7 @@ define([
                                 // RPC may not be responding
                                 // Send a report that can be handled manually
                                 console.error(obj.error);
-                                Feedback.send('ERROR_DELETING_OWNED_PAD=' + channelId, true);
+                                Feedback.send('ERROR_DELETING_OWNED_PAD=' + channelId + '|' + obj.error, true);
                             }
                         });
                     }
