@@ -601,8 +601,8 @@ define([
             var $clone = $(inner).clone();
             nThen(function (waitFor) {
                 $(inner).find('media-tag').each(function (i, el) {
-                    if (!$(el).data('blob')) { return; }
-                    Util.blobToImage($(el).data('blob'), waitFor(function (imgSrc) {
+                    if (!$(el).data('blob') || !el.blob) { return; }
+                    Util.blobToImage(el.blob || $(el).data('blob'), waitFor(function (imgSrc) {
                         $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
                             .attr('src', imgSrc);
                         $clone.find('media-tag').parent()

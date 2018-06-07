@@ -22,6 +22,14 @@
         }
     };
 
+    var fixHTML = function (str) {
+        if (!str) { return ''; }
+        return str.replace(/[<>&"']/g, function (x) {
+            return ({ "<": "&lt;", ">": "&gt", "&": "&amp;", '"': "&#34;", "'": "&#39;" })[x];
+        });
+    };
+
+
     // Default config, can be overriden per media-tag call
     var config = {
         allowed: [
@@ -48,6 +56,7 @@
             image: function (metadata, url, content, cfg, cb) {
                 var img = document.createElement('img');
                 img.setAttribute('src', url);
+                img.blob = content;
                 cb(void 0, img);
             },
             video: function (metadata, url, content, cfg, cb) {
@@ -74,7 +83,8 @@
             },
             download: function (metadata, url, content, cfg, cb) {
                 var btn = document.createElement('button');
-                btn.innerHTML = cfg.download.text;
+                btn.innerHTML = cfg.download.text + '<br>' +
+                                metadata.name ? '<b>' + fixHTML(metadata.name) + '</b>' : '';
                 btn.addEventListener('click', function () {
                     saveFile(content, url, metadata.name);
                 });

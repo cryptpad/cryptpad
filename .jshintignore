@@ -5,7 +5,7 @@ www/common/tippy/
 www/common/jquery-ui/
 
 server.js
-www/common/media-tag.js
+www/common/old-media-tag.js
 www/scratch
 
 www/common/toolbar.js
