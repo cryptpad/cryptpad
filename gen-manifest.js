@@ -4,6 +4,7 @@ const Fs = require('fs');
 const nThen = require('nthen');
 const Crypto = require('crypto');
 const Nacl = require('tweetnacl');
+const Sortify = require('json.sortify');
 //const SigKey = require('~/.cryptpad_signing_key.json');
 
 const KEY_FILE = process.env.HOME + '/.cryptpad_signing_key.json';
@@ -79,7 +80,7 @@ const release = () => {
             elems.forEach((ke) => { obj = obj[ke] = obj[ke] || {}; });
             obj[jsf] = fileHashes[k];
         });
-        Fs.writeFile(MANIFEST_FILE, 'defineManifest(' + JSON.stringify(manifest, null, '  ') + ');', w((err) => {
+        Fs.writeFile(MANIFEST_FILE, 'defineManifest(' + Sortify(manifest, null, '  ') + ');', w((err) => {
             if (err) { throw err; }
         }));
     }).nThen((w) => {

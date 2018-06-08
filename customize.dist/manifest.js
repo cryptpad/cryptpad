@@ -1,260 +1,31 @@
 defineManifest({
   "files": {
-    "customize": {
-      "application_config.js": "ic85GOwINRE0WQc8dR4FpnTbIWsXCkWpSs/ED5rWEwA=",
-      "ckeditor-config.js": "Ypowv6YW2pjfsWPCaZf3XuxiFUUbv1b61hD+yjgaq5Y=",
-      "credential.js": "E/xwRxY1m5DBRHoq6TzracJ4H7sue2rBq1clBgvukYg=",
-      "delta-words.js": "PyVJqoZ6G1qSurMf4dSmKBFx0t/rII+pTzedXl6FCbA=",
-      "four-oh-four.js": "qPc8/IrfDDpP7NG16TAXT3nOWcBl606ZZ4oZGUWyGSI=",
-      "loading.js": "wvxuuHKdw7AvU+q1Kt4WDJCZ2N3LHvyGB0LCXilmOKY=",
-      "login.js": "oHI88PerEhnqbaWUdodkapeN89wunfU80zw0F1NfezI=",
-      "main.js": "aLprowHBsWNDyKs4UKM6H23h3GHjLCMjNTIPJY28zyg=",
-      "manifest.js": "Zuujq89SWvnA13nqCsNhHyx8NwEGqcJl+ofRXmVyURE=",
-      "messages.js": "LD+fuDq/d+3MOcPoE/jQGW2yveHvZdlU6Z7u5ecnr58=",
-      "pages.js": "nVxihrFxZND37sskQwv91MIA4daozrZrC9lyae2DlFU=",
-      "template.js": "Utai2Frdot+RcEMOXwHNO2KCJL/zCw/6QwZKZ7LSLrs=",
-      "translations": {
-        "messages.de.js": "9+NygTQeCor1w3a8tiwshsrFvh3KpZ8yE+jgt4SNwwQ=",
-        "messages.el.js": "Auaj7vdsH/1mSOf+lzsgrQeqcu5Qj0QnwA1SmXcOFtk=",
-        "messages.es.js": "UG3yldLcssquvfsH9yBjtL6GLSQBXpkcZsWg39mk1v8=",
-        "messages.fr.js": "ENfVrFD8yOZfXvGg3dFTm6JIPjWtmFC6ZMlPypZZOH4=",
-        "messages.js": "HOkDHgybnpqikpi9dXP4mRnwBnoG1FW2T8HUhqQySXQ=",
-        "messages.pl.js": "jnaP6Eo70o2QjMgSS2ZjDBzQYWv4E2YYeLRg1NvqRPU=",
-        "messages.pt-br.js": "xiUTUP2Y75AK39zrUWdEmK22mq9YgouQiBOc3ih73+Q=",
-        "messages.ro.js": "9j7A/vL7R9+SyCuNJ6btUTPCtrJoxn5ZwNQf8kozpYw=",
-        "messages.zh.js": "ww01EmGPIooUCoaMy++giBAFggCjv94CMva0GK7Rgm0="
-      }
-    },
     "assert": {
-      "main.js": "ABf3uhmYVHWaHX6vhK8K2jAUY8XqRjjMJ2FqXVGLZE0=",
       "frame": {
         "frame.js": "BrN2JNnK4QJCztw3PyRRPAsEwSq5lczTBrRkzdLAFow=",
         "respond.js": "yO0KFMHiCdE1fXFWPVaFB+Mmh37OCl/UNPpXrYtWF7A="
       },
+      "main.js": "ABf3uhmYVHWaHX6vhK8K2jAUY8XqRjjMJ2FqXVGLZE0=",
       "translations": {
         "main.js": "50Ami2eghyXcGKGYTaDK1vUeEuAEG7kcpvUoCKbUaUU="
       }
     },
-    "bounce": {
-      "main.js": "Q6XwDGtdoUnAZ8C/kNwTzaCVC7+zS7w2BLsQj2Jg0sA="
-    },
     "auth": {
       "main.js": "drf9gISEfT0ipwZxW0+SfMqlF12OoIWucURHVlFRbHk="
     },
-    "code": {
-      "inner.js": "H+pElayDLolIbv3q/jsOIB5UWOjeG5XEDxHSTV7bgE4=",
-      "orgmode.js": "NQNUlnlLWjHIuXOdJxX75xvwmIOJ3rZaJQN1ygbgy10="
-    },
-    "common": {
-      "LessLoader.js": "4gw7t9RGCm/rsUSCyaMHjmFzV6vGWn2dy+JUL5LFT3I=",
-      "RequireLess.js": "saShGzxCjk/sH6B+3yNun6YyT2Cne8Wj8dBz9oUNv8U=",
-      "TypingTests.js": "9OmAY0XeB2av1M7mNZ6YyK1TNk2OZmJREYp4UjJ03aU=",
-      "application_config_internal.js": "977lvWLw22OgcpJYGgixlgj64eN917koSw8P/ZtkE48=",
-      "boot.js": "UglPyWFblBM7bFInkIwFBdOif9qGAmGsH5u/Me76864=",
-      "boot2.js": "sY+z7zcxIflpEJuhWhRQ6AFKdaZ9NkXYExK61HNZCOM=",
-      "clipboard.js": "+V7yoDu3EbsPnV2Xk6hPemvatqJTowbBLYJM7IkVvCc=",
-      "common-constants.js": "V8TxZLCr5GVqeJM6h1G7yfMho4pXjdBAChMQuELH+M8=",
-      "common-feedback.js": "UjeghAfJdmGLzXLxav0Ctnw4MhlMXv8QJcGgitB6IV8=",
-      "common-hash.js": "6HwNTsQV3ykDC9350ADLQ9sqyyJKEx4uDAU5h8QcTgw=",
-      "common-interface.js": "D6rjGzmdruwgN7F+udcxME4xwDEKoYjjRf0R8QAeXVQ=",
-      "common-language.js": "8Iq30/F7cX0YJRNahe9D3aXv6jy7/JJyjljTAEwFH1k=",
-      "common-messaging.js": "GW8weLcsPKe5g1ylLe0vrl+XXddxfWhPKm1KtRc5Rb4=",
-      "common-messenger.js": "cSCdJECxJ1CgiH72TSdMK7TldeAcZNPzSRW2xskM6uo=",
-      "common-notifier.js": "z0faHkLifuAnK4T+Y22bCpejRlT5ZFHj46wIkMJW+2E=",
-      "common-realtime.js": "wmiseagZ/nBrUKjZFUf1Q089OfM6qLWykd5l7drNQjg=",
-      "common-thumbnail.js": "Ol2y1ht3ufb/T2qKZpml++5ImFA4Y+LHKq6ZET559mg=",
-      "common-ui-elements.js": "U8GQJA+kVAFVtlaso/W7rOdBC9cKthNHtKrRlTBZt3c=",
-      "common-util.js": "ySc4Ux5txkoWJTJjRidO0KBFUeeHMOOzr5RsvXV80V4=",
-      "config.js": "ACBMX1O0S0R8Rs+TdtRER8fkMgH8rhC2DciXb5cf/XQ=",
-      "cryptget.js": "HW7cbLkKpJDB6m7brq1Kwey1VNGYC+GdyoQizJFP7LI=",
-      "cryptpad-common.js": "T7AXSBbmAUc4F/On52h/FeH5Ycoj+xWn0ogZA0Csy+w=",
-      "cursor.js": "GCuUBs0HZe+sxbEI0QSwOKQq8Q/oo0yqgwH7uWsLlwc=",
-      "curve-put.js": "44yvCIuttJSPC41uPhk93AKchlO8BOcgYk3OoWI2YN0=",
-      "curve.js": "vPtg2DFJuPz6NuzAsaR9Xm0dzVPNnrgLs5hIqnlM9NA=",
-      "diffMarked.js": "kYWeJeUhy3MzHupVGuV2NUZ6cFRJlOEo24kO2gWEEmU=",
-      "dom-ready.js": "TIbJ5mGuHvI6uNJkiUglVLAE7at1fQgPY/vp4JWWMRQ=",
-      "encode.js": "2i/pErnzPfl6sjcBq911vzK7/tVlzOOCxUiyz3CtFSM=",
-      "feedback-main.js": "mHW5NdvoJJf/ptzf8T2RQywb8qgwp8eFXszz/9JUf98=",
-      "flat-dom.js": "bTR3yt90YR4teyAokSK+MjDoOFg/CB4mL/oCGar/8oc=",
-      "hyperscript.js": "Nkii2uKv29efmdpsWRskr7TtSGx06tUdJbP+WLozKtE=",
-      "loading.js": "pfuhxQJAz+FRxAsF8xNgA5mdc3sd1C7m/yOFgmBdYFg=",
-      "media-tag-nacl.min.js": "Z0iP8OMJnNKQE+Uqjsw2gcx5TRpTx57dsuLYBHC0Nyk=",
-      "media-tag.js": "XT1cpTkLBvTR8lRJxYwC+KBvb5pTz9F9hguVTm5Z3Fc=",
-      "mergeDrive.js": "9Yxp/mqjITjtZZhtw/jh7NT01Kla813DHMCzA6Ttar4=",
-      "metadata-manager.js": "Fqufz7R72q4YtALUyG5AG/bKN2GxCjtzOgw69e9t4Qw=",
-      "migrate-user-object.js": "YulKoaKqHjpbF8VwsEqikPCeoC7EUVdm+hC6HBQ145c=",
-      "modes.js": "9ZjUQRwZbpH5kZ/xPhKPdOVHwNF3gb+BxVH3p7M++VM=",
-      "noscriptfix.js": "X/ZB5PEoNd3FlWNKDvHBYPh4aWohNiUIFh+r6Q2kUNI=",
-      "notify.js": "ideyQ+P+ilfMCAOYsvqrRKLksa3d1t9q3xQgpKV/raA=",
-      "pinpad.js": "ya+HXcfu+lJLLhIEHX5FornKnhZd5GH8fcN3bwrzoWE=",
-      "requireconfig.js": "wCPWJHcRA4AF/NGR8eRM1HP34J8HyikBCPUcBRTIkFc=",
-      "rpc.js": "xtLYr1rfErQrt2o0UoatAlsI4Uy8/cLNsRMuWBHjbYk=",
-      "sboot.js": "zKt3KH6sKFs2vzvo0lYJHVJZDzRz6pljOoVY4hJsiRI=",
-      "sframe-app-framework.js": "Niit3/AL31DhzJZszOFolsbdBiTzOOjL9+ai+pCxewo=",
-      "sframe-app-outer.js": "gwZR1f9jmdI0Our8fotAVXd4pKKC/2U27eOmVK9IQOw=",
-      "sframe-boot.js": "3ogfkzUbhkNkxpwDfYYXS5KuwRuRnSE7idzqSSU395A=",
-      "sframe-boot2.js": "wrygcFz2V7C0+/mvTjB9v8AFg4xtzTB+NiorbCQBjCk=",
-      "sframe-chainpad-netflux-inner.js": "JjEcg0eInFptgb7b23brLq6riTdrjvs6o+Doi1hH9fg=",
-      "sframe-chainpad-netflux-outer.js": "IWYVJk8qQHM0HrC3nYs+pKswgNVVuwMNNXvKaZSdWmg=",
-      "sframe-channel.js": "jKAu7FcK/EyZy+S5jb8DC1T3gTMEo0pMqtlFZvTimaQ=",
-      "sframe-common-codemirror.js": "6C99Rp/v0IUFJikz0yBGCPRvqJUOrGOjdl7ZcdKS76w=",
-      "sframe-common-file.js": "8ulN86yelfmbrHgVGYBAqJfLNRPFN488V1BQE0SacDc=",
-      "sframe-common-history.js": "SJZTsJTR+prwgschIT+Pjqi32yn+/OUzdhE2ksi9mms=",
-      "sframe-common-outer.js": "JoRJNgCjDScvby4nVIj2N/2Lt5DfhBdiJoilg+ZpMNw=",
-      "sframe-common-title.js": "1coNcbAbCVrZ+RLIMZ0MMzzcEbVzx4XcnZJmhuQxwYI=",
-      "sframe-common.js": "ziULrim1w7Kc9GKWTKRsCSpZqSXQ59ySEb8NLsNUmMU=",
-      "sframe-messenger-inner.js": "sSTXnVcoWGP6hBcr7AJuZKNKITmFcM0gCatxE9dNens=",
-      "sframe-protocol.js": "iFMprfMy15JinzSRJUjpqm3CvSG+2cC9ir3ilYNmDIE=",
-      "sframe-sboot.js": "UlBPtJixJa5hY7c/kEpBhVA71G/yAeFDgkTwLwv/KsE=",
-      "test.js": "d4hw/7nv2CWZf6w2x0IKa0D7yrVOSXHhuJ+mQ0fsJ7Y=",
-      "text-cursor.js": "2cuibOkrE7s6u2A5hMfzrjXTJXgcnckEQ3S20i+KnS4=",
-      "themes.js": "PQJN9gLLOs65QXgxjwKpKDARsXLE6v0W0rHVocH+OCw=",
-      "toolbar3.js": "3HNRONcf0ZfEUE6juZ7kInQJvmN+Wx72HOqU53BehcY=",
-      "treesome.js": "x57Ug7H7FD2CDFE5BYB9YcFdID3Q+4wFH8xWpaqB/Dc=",
-      "userObject.js": "eezGdJmIHzKMxR5bo1olImnq5nU8+p7N2t1S+U81nr8=",
-      "visible.js": "4l/0CA1YKcVmA3Xg7Pa8ULTjdepUGzoGQjlRN0q1PY8=",
-      "wire.js": "dL2g92/5DMfPzVM8NOMiYbywIIBLmXL00wvFTo7yMdU=",
-      "jquery-ui": {
-        "jquery-ui.min.js": "Vd6UNVCGkySHuHlHMC1yqeLnPHND4x1NQdIGg985aDs="
-      },
-      "outer": {
-        "async-store.js": "JNkAcmZrcjXQPKr5op2RcQBwn7tkrm5ttbmwVeskp9I=",
-        "chainpad-netflux-worker.js": "aRIO3xCs6s4PG7DCqwLOT/6lPuJ/XdOBqxMzH2QhcNY=",
-        "local-store.js": "SFE30lGABz7af3Sx8kI5RDoK2SModEQaQKQ0upFI48o=",
-        "network-config.js": "rhi5XW8phtyfbk8ax+eKgAz6/Alvjgt+O/AomdO/wJs=",
-        "store-rpc.js": "NgnzRhJxDjH7bfwyU7xm9GHoBBWH9F6mlYhgv07DEWI=",
-        "userObject.js": "xqqnElhqfG9DgJM6nElsABEoB1UHRAw2M29bNTQuENw=",
-        "upload.js": "deDriogptZadbKab6o57VJrUiQH6aY8h8zDvDmsj0CU="
-      },
-      "tippy": {
-        "tippy.min.js": "OMV+lCXCmrLhNTmmyuO9FUzBlEXAALQpmIa6EQLOY3Y="
-      },
-      "pdfjs": {
-        "build": {
-          "pdf.js": "M52JPZFmry38RQGWaQWbz3i1+u4OHgFBkNSC4gf43Dk=",
-          "pdf.worker.js": "aiIBWfQuQIDWqweURE/FctR0Cs9Qo662rBCHPMMajjk="
-        },
-        "js": {
-          "bootstrap.min.js": "iY0FoX8s/FEg3c26R6iFw3jAtGbzDwcA5QJ1fiS0A6E=",
-          "jquery-2.1.0.min.js": "8oQ1OnzE2X9v4gpRVRMb1DWHoPHJilbur1LP9ykQ9H0="
-        },
-        "web": {
-          "viewer.js": "0aPqMluzi3vz5tS+MxTzc7t2we11iMKNEmQEg6limec="
-        },
-        "api": {
-          "draft": {
-            "scripts": {
-              "linenumber.js": "vMEFelUNCGXNj868DnUxt2Im0l1C69+oyrwR8jFMN4c=",
-              "prettify": {
-                "lang-css.js": "m2rEgwM7AlcnFOtNN+4ZkYXEEAjrKz9GoAqw685qIMU=",
-                "prettify.js": "4uV247xgfNF5/1EZRwEPZF00QaNTE67A29BsRDf4O3c="
-              }
-            }
-          }
-        }
-      }
-    },
-    "contacts": {
-      "inner.js": "T38ySYCpNUDTkWyvpaVrJg92yAr+XoWr+56QA3MdTng=",
-      "main.js": "yAsq12f/yAqf0/3jr4okDhRZHjejqTJ9qlzF0vsGchs=",
-      "messenger-ui.js": "1POCVi3RUkSx7uONlivkN3cqZXWoif0dSu9phUKhkmY="
-    },
-    "drive": {
-      "inner.js": "Awi882kSSlwnEM5To2XTo7wRpk8AyV6JmmKjrF1kvIY=",
-      "main.js": "LtNaG7OlNLdTivfUPKhzcs5eao6MIJEjEz8vzPC5hKk=",
-      "tests.js": "vKSqjsJS8e93XpXb/4PeaA5ROkOvrZUrXY7g+OwvU2o="
-    },
-    "file": {
-      "file-crypto.js": "xyLbJh5jDuqnOTMD8SsZrTsKhfj+U2rmHTBHeA3WlaA=",
-      "inner.js": "xmF809fuQA6RUhD/U/ucKfXFyYm5mI1zRv1/9OZWMb0=",
-      "main.js": "M+286VTcTcGbPmHHiK/Voe/tTGnCAkr6PP2u6AD/NUE="
-    },
-    "filepicker": {
-      "inner.js": "DbkMOed+bJlkyDwvcYE/kROM4omrT/wKdWv5er7Xfh0=",
-      "main.js": "wE05p3lxpupnHG5fzQoqPhdKq4yfNa49gsYEGxpcQpg="
-    },
-    "kanban": {
-      "inner.js": "nGZuEKIiLCM6BAiwcY19EsA4dq9vumtNzb9NUjB1wsM=",
-      "jkanban.js": "djMSs9/jNM50bpdUm3lfcUIzUTn8nk+NVNamIIE/u2g="
-    },
-    "invite": {
-      "main.js": "yNLo3EO1HV0GlMKJJaeb0UWi+tjWVPfdNqJIuwO7j3w="
-    },
-    "login": {
-      "main.js": "OWfU02glU0Tqu347gcg5mxEd4Kgqc2s6kw/HU5/CwuA="
-    },
-    "logout": {
-      "main.js": "R62XSgj72DIb7F0CNNK8Q/NC2dJ5MpS2erAcabJ4bsc="
-    },
-    "mediatag": {
-      "main.js": "TNvJvJui4Y1cgrLodzmUugycL1eSfE992SVTJdkX4YQ=",
-      "media-tag.js": "+rntZvt6AC4tfTxYRS4cKUriOxAdPDjGhToPMK2rN70="
-    },
-    "pad": {
-      "inner.js": "fmuo9ty199cM+xAQkcVA7gQpDpAn6tgyAPXuI3EPN4Y=",
-      "links.js": "PeMbF9vRBf6g/3CMTyj7gjCMao2yooXzVj0m2gTzndo=",
-      "mediatag-plugin-dialog.js": "MmLsOmMiafbcLkgobaqV1sEBGhNPQvLya6RvYdE9zC4=",
-      "mediatag-plugin.js": "XcIepE2pWsB4HQwthADcXKpiamHrXsaycGZn1P4g3uc=",
-      "wysiwygarea-plugin.js": "AtP6xHVHoBZpa1sI/6jR4e8PVDH15+j4ht0dKcvxYus="
-    },
-    "poll": {
-      "inner.js": "hnPTIvpkA3O1P+UGiSIewzTiule/4keM/ubYZT9ypnw=",
-      "main.js": "qspnT4VgIYHoTTlFbRvuoJibwfn7JdNIPPS60G0yxMI=",
-      "render.js": "4mOIkRQRH8gT2tN3cqKsWyiyEyEPejLPtNvKVJuX2hY="
-    },
-    "profile": {
-      "inner.js": "Wr3fVDk2a/Ztw4tM6IEbLAGJ33xddDAHmSLaZ3XcCYw=",
-      "main.js": "X42NqY6eipBH3puJgEkcDqK+ddDEV83pkQ20VVPIvXg="
-    },
-    "register": {
-      "main.js": "TkDhRIu07w93V6U1yWEjVYlYyMaNNcI6j4hu+QoyL6M="
-    },
-    "slide": {
-      "inner.js": "kotgVcmkTr+DfOVHGpuh5J4Zq1HWTYwyPT+KNANJaL0=",
-      "slide.js": "ZRxx6I5hIDThVHr6wqUysY4Nn8Z0YYf209IilovYjfo="
-    },
-    "debug": {
-      "colors.js": "W9EQ2XH4UkJYY5WMh5zURPgyaPCbemBtzSREziMbU28=",
-      "inner.js": "H4eLFA27MRKWprB5TJMJdY6tT0xQ4vbZmZCbeIr3MO0=",
-      "main.js": "bSs5e/SRIp4IBFEVXaVUgdQ9XK9n+kTjN7sGe9AVmko="
-    },
-    "todo": {
-      "inner.js": "XW3EmsOZHGL9w2xIPF7iZBHvRI3IYdLHnQeD6NZiuS4=",
-      "main.js": "zZN1Xj7SVrS24LDj+uQm1/DyMhxNpktLd43c2DoOzvk=",
-      "todo.js": "TQO9Z1QENMYE6qcX1cx2xHXqFit8GhFJ+UwwKllCGvY="
-    },
-    "settings": {
-      "inner.js": "o+10fwJPqa/XojRH6Qfm/p+g+RaTby5WS/RTOH+jntc=",
-      "main.js": "4T+in3lYWm/HMwAFJD/7Ls8K3GKVoO40wbRAioUmwCk="
-    },
-    "user": {
-      "main.js": "eg9sGj23SPP4GYSTBmu6yVzV4hQ3OAV9tqBZ6APreSw="
-    },
-    "whiteboard": {
-      "colors.js": "W9EQ2XH4UkJYY5WMh5zURPgyaPCbemBtzSREziMbU28=",
-      "inner.js": "G1qoYafEYQp/LZT0SazgV+Yu4zxrMgpLlONCm6R4lV0=",
-      "main.js": "t4pWkUIbwP1jLcNPxkl2YxvyvBjvtjnZoQ+69azt0YA="
-    },
-    "worker": {
-      "inner.js": "EYAfsowm8FwpAIH+jvHOSq4oJY8cKVEd5aITL6laTkc=",
-      "main.js": "w1nL+SEtY6XHUKSkFwuCdLqCLirkeSVQRnDli3Pde60=",
-      "messages.js": "Ts3t8tLymTSzR9xSx1/ewkJ7z7ilsh2OwiBQwsTtmM8=",
-      "todo.js": "iqa+cinRf8+8K49jGjd+hRmbT/S7wzKWePlmvTPV8Kw=",
-      "worker.js": "47EmUnfRV1jeroOkWXJRS2MRbGW6Y24L84tvsKuZ0eI="
+    "bounce": {
+      "main.js": "Q6XwDGtdoUnAZ8C/kNwTzaCVC7+zS7w2BLsQj2Jg0sA="
     },
     "bower_components": {
-      "chainpad-crypto": {
-        "crypto.js": "J9+44lxsBXD9kx24aazQ8WU1kHx6QQK2HvOmczgzh4g="
-      },
       "alertifyjs": {
-        "karma-ci.conf.js": "zil+ZV3RM3uK26OSqXbpbxrGmzh8tOg0tTn0MN1HF7A=",
-        "karma.conf.js": "OAq5FQsNB957i7l38F0P1VkhSY32JT1LowwNKjVYolc=",
         "dist": {
           "js": {
             "alertify.js": "kyXdnraRCSuhlP7VxnOMy3yJHKgoGSbMhr1A1Kzz3vE=",
             "ngAlertify.js": "vIrKEgvQ2Kojvl1eCJpMLTm3Cfm5Rl7pFNR0Vc49DdA="
           }
         },
+        "karma-ci.conf.js": "zil+ZV3RM3uK26OSqXbpbxrGmzh8tOg0tTn0MN1HF7A=",
+        "karma.conf.js": "OAq5FQsNB957i7l38F0P1VkhSY32JT1LowwNKjVYolc=",
         "src": {
           "js": {
             "alertify.js": "+2ULWd3FHhgynuoGFOsSPz6002qFEHIqv9fiBJ5JdCc=",
@@ -270,18 +41,6 @@ defineManifest({
       },
       "bootstrap": {
         ".babelrc.js": "3wrwE67OcTbTTDoGOQLPh8YYxi1ivngu0dzxE701ybk=",
-        "package.js": "q+itkwx5rJb3XWghNFyA6mCYzbOZYvZTHu+XK+Sp46Q=",
-        "sw.js": "2m7RjfG2HDwZOjNEV1qf1kXLWa1hvvreI/N4Vygschw=",
-        "build": {
-          "change-version.js": "R7UhvKViqDOooTS45EM7j85y3vRLrOvlPrpU7aVevcU=",
-          "generate-sri.js": "Ks99dRoI0Qo1TpQs2PD3QRdTiCSNaXBwfrhffDhiLe8=",
-          "lint-vars.js": "pR5dl91PD0lUBSJ83vJV7qiFMkLBDTpkd4Fj8II1QtM=",
-          "postcss.config.js": "8UMcMGnyHEFnfbe4JAV/8kH4u9N2CEKGG11kpJyDnrY=",
-          "rollup.config.js": "Df8dOconQPl1tWJVzwoUfpw+AFR/xKMQlrQrXLVNJyI=",
-          "saucelabs-unit-test.js": "AODRhxdEBOSJ2i/TXCXqSf0RHMZxSA7OTICQSBiLXEc=",
-          "vnu-jar.js": "QM6t0Ofvm3MycvGLXgJVye3Jx9Y+0j+t+/U89knCYOc=",
-          "workbox.js": "iCmV5JBwu5Y9HdwWsjGr9GSytJpK+i5jLxKGqG9qi2g="
-        },
         "assets": {
           "js": {
             "docs.min.js": "N/RZGbekJFcNAZ6hv+JZug+3F/1Z1Iw7wtcMseWbg/w=",
@@ -300,6 +59,16 @@ defineManifest({
             }
           }
         },
+        "build": {
+          "change-version.js": "R7UhvKViqDOooTS45EM7j85y3vRLrOvlPrpU7aVevcU=",
+          "generate-sri.js": "Ks99dRoI0Qo1TpQs2PD3QRdTiCSNaXBwfrhffDhiLe8=",
+          "lint-vars.js": "pR5dl91PD0lUBSJ83vJV7qiFMkLBDTpkd4Fj8II1QtM=",
+          "postcss.config.js": "8UMcMGnyHEFnfbe4JAV/8kH4u9N2CEKGG11kpJyDnrY=",
+          "rollup.config.js": "Df8dOconQPl1tWJVzwoUfpw+AFR/xKMQlrQrXLVNJyI=",
+          "saucelabs-unit-test.js": "AODRhxdEBOSJ2i/TXCXqSf0RHMZxSA7OTICQSBiLXEc=",
+          "vnu-jar.js": "QM6t0Ofvm3MycvGLXgJVye3Jx9Y+0j+t+/U89knCYOc=",
+          "workbox.js": "iCmV5JBwu5Y9HdwWsjGr9GSytJpK+i5jLxKGqG9qi2g="
+        },
         "dist": {
           "js": {
             "bootstrap.bundle.js": "VEkfzHCH2sMUViL3c3U1E8Z6xJiEZbGiCVs9rhSe1VQ=",
@@ -308,11 +77,37 @@ defineManifest({
             "bootstrap.min.js": "xaF9RpdtRxzwYMWg4ldJoyPWqyDPCRD0Cv7YEEe6Ie8="
           }
         },
+        "docs": {
+          "4.1": {
+            "examples": {
+              "offcanvas": {
+                "offcanvas.js": "dHvs4qVTZKoP8BcWu+K8RPbmCsTuW7DN7QELoU1I+Rw="
+              },
+              "tooltip-viewport": {
+                "tooltip-viewport.js": "n5oEwK+9NC3eVVsWKYBsun123MBdEhQD4y1r8u9KEtM="
+              }
+            }
+          }
+        },
         "js": {
+          "dist": {
+            "alert.js": "SeJCx+PfUIqvydYgVNg5IijAGNWXqaEA6aAtCBIrbZw=",
+            "button.js": "G7tl9WTIOlC0FIUj5vC9haoaSCEgmJ8QccIP/Jj2yxw=",
+            "carousel.js": "KKWKB1/5YDMRHRT7GCHQcgEMDmSUItws4jksRs3i72A=",
+            "collapse.js": "GcJmPIMhk5WCfPTLJCiuINDwUYJdZuE1U/VSpfJ7sAQ=",
+            "dropdown.js": "XD2zwre6FBNnfrl4vP9MrPc6Ie2smozL9sqrWd+123E=",
+            "index.js": "WaYORbkx5sw3VKMFLNGnzWVBPKk6RbMjOtcSNKV7U4M=",
+            "modal.js": "4aGFWjBxUYRZozQn+EJXgZOx7Zw1phuFUqzIUALNALE=",
+            "popover.js": "AC4irvIGjJ3se4HcLfAlYZ0L30p9W8bO9kX0tBu+8oY=",
+            "scrollspy.js": "yljmHjhcxjQOVksUVYezC3wb7JP8PhYo7P0B4kCMoF4=",
+            "tab.js": "1h0lXWNpFXGplLAM/ROIouVGInLLWhEQmHBL7X2LZYE=",
+            "tooltip.js": "CVfYQWERL+xhkhiDv7D/wqONY7w48W5x2WuCv6xCiXY=",
+            "util.js": "PQBV2OZY65U2JFpELXek2ypBS+NQ2/hu514Rbd1FLqk="
+          },
           "src": {
             "alert.js": "9UffmeRPHMefq1kMIJkujia7TT21RWf++UkP2uoOYRY=",
-            "carousel.js": "roe3v/VflhCCuAVWjj5PzLO/WQxm2yO1ub6b39/Pmf4=",
             "button.js": "0LYBuVLRQy8Rb6UjGRUL+DZ1fd87YuIUxYNYu8HI06k=",
+            "carousel.js": "roe3v/VflhCCuAVWjj5PzLO/WQxm2yO1ub6b39/Pmf4=",
             "collapse.js": "nqWPAYATF6lShh92pC56kVrkiVDEECD+kLMsWDGEx6w=",
             "dropdown.js": "jTF/onoAf/ZPdAXIJkDVEwlu2Y+3tgBnEOyG9GWqdfA=",
             "index.js": "pb2Fl8wRSbv4/LPNmsz+vg0AWNI5/bPTfu+Qr+dCGSA=",
@@ -339,51 +134,16 @@ defineManifest({
               "tooltip.js": "WYchFhvPXoO7DBizk35HaNHnEmCKZoqvx82Uo4GWmzA=",
               "util.js": "rSgaojk8ZkKKHf7jqJ1HOHcKtk6s/pxWqidHiUkX7i4="
             }
-          },
-          "dist": {
-            "alert.js": "SeJCx+PfUIqvydYgVNg5IijAGNWXqaEA6aAtCBIrbZw=",
-            "button.js": "G7tl9WTIOlC0FIUj5vC9haoaSCEgmJ8QccIP/Jj2yxw=",
-            "carousel.js": "KKWKB1/5YDMRHRT7GCHQcgEMDmSUItws4jksRs3i72A=",
-            "collapse.js": "GcJmPIMhk5WCfPTLJCiuINDwUYJdZuE1U/VSpfJ7sAQ=",
-            "dropdown.js": "XD2zwre6FBNnfrl4vP9MrPc6Ie2smozL9sqrWd+123E=",
-            "index.js": "WaYORbkx5sw3VKMFLNGnzWVBPKk6RbMjOtcSNKV7U4M=",
-            "modal.js": "4aGFWjBxUYRZozQn+EJXgZOx7Zw1phuFUqzIUALNALE=",
-            "popover.js": "AC4irvIGjJ3se4HcLfAlYZ0L30p9W8bO9kX0tBu+8oY=",
-            "scrollspy.js": "yljmHjhcxjQOVksUVYezC3wb7JP8PhYo7P0B4kCMoF4=",
-            "tab.js": "1h0lXWNpFXGplLAM/ROIouVGInLLWhEQmHBL7X2LZYE=",
-            "tooltip.js": "CVfYQWERL+xhkhiDv7D/wqONY7w48W5x2WuCv6xCiXY=",
-            "util.js": "PQBV2OZY65U2JFpELXek2ypBS+NQ2/hu514Rbd1FLqk="
           }
         },
-        "docs": {
-          "4.1": {
-            "examples": {
-              "offcanvas": {
-                "offcanvas.js": "dHvs4qVTZKoP8BcWu+K8RPbmCsTuW7DN7QELoU1I+Rw="
-              },
-              "tooltip-viewport": {
-                "tooltip-viewport.js": "n5oEwK+9NC3eVVsWKYBsun123MBdEhQD4y1r8u9KEtM="
-              }
-            }
-          }
-        }
+        "package.js": "q+itkwx5rJb3XWghNFyA6mCYzbOZYvZTHu+XK+Sp46Q=",
+        "sw.js": "2m7RjfG2HDwZOjNEV1qf1kXLWa1hvvreI/N4Vygschw="
       },
       "bootstrap-tokenfield": {
         "Gruntfile.js": "HypPzX5qqFDnDlNC50o3PKjQmSCce/ohch5/d1122VU=",
         "dist": {
           "bootstrap-tokenfield.js": "jajpzDydLfOxAWSaDKjkqc3JYWLyvI/cK8JxWs6lynk=",
           "bootstrap-tokenfield.min.js": "427c9dmnCP9fMDB0him0KK0ldc2mINlEbyVIgVmssMI="
-        },
-        "js": {
-          "bootstrap-tokenfield.js": "jajpzDydLfOxAWSaDKjkqc3JYWLyvI/cK8JxWs6lynk="
-        },
-        "test": {
-          "setup.js": "HBlu0XQRFnIGiUD9vWVReLGM+DGfMLT/bYzSaLc+ZmQ=",
-          "test.tokenfield.1.unit.js": "Q7zvqeDlqW+z7LOeJY171fa9xSwDQCAsprjaqWo8foI=",
-          "test.tokenfield.2.integration.js": "eEL9tgAcEHi4NhprJbkuSdX/eiMbZtfVgV1z7j/lRVU=",
-          "helpers": {
-            "jsdom-patch.js": "4IMGAZ1ALjWF0f9kv1JhHMiJrKkvaZPCSLlclJV2jWQ="
-          }
         },
         "docs-assets": {
           "js": {
@@ -394,21 +154,37 @@ defineManifest({
             "typeahead.bundle.js": "GdoJJLqDOFQSIr9DsqdqNq4bJNac6q9RHKMiLtP8TW0=",
             "typeahead.bundle.min.js": "44SmP51vNmrTlSRoPyD17ciT3nP5FWaLlvo3wF2YHhg="
           }
+        },
+        "js": {
+          "bootstrap-tokenfield.js": "jajpzDydLfOxAWSaDKjkqc3JYWLyvI/cK8JxWs6lynk="
+        },
+        "test": {
+          "helpers": {
+            "jsdom-patch.js": "4IMGAZ1ALjWF0f9kv1JhHMiJrKkvaZPCSLlclJV2jWQ="
+          },
+          "setup.js": "HBlu0XQRFnIGiUD9vWVReLGM+DGfMLT/bYzSaLc+ZmQ=",
+          "test.tokenfield.1.unit.js": "Q7zvqeDlqW+z7LOeJY171fa9xSwDQCAsprjaqWo8foI=",
+          "test.tokenfield.2.integration.js": "eEL9tgAcEHi4NhprJbkuSdX/eiMbZtfVgV1z7j/lRVU="
         }
       },
       "chainpad": {
         "chainpad.dist.js": "0Otvn1XZYXqc1sEWUfUUznC3pLld9O/P0f0eGGQ8QuY="
       },
+      "chainpad-crypto": {
+        "crypto.js": "J9+44lxsBXD9kx24aazQ8WU1kHx6QQK2HvOmczgzh4g="
+      },
       "chainpad-listmap": {
         "chainpad-listmap.js": "vsLL29gRWkWjspLySdjCZMtd7C6YavAUk/kyI1/6B28="
       },
+      "chainpad-netflux": {
+        "chainpad-netflux.js": "TxhXW+bS5Y2i75nYLFAs1pZwR2GmQ9HorFcWWevaP/4="
+      },
       "ckeditor": {
-        "ckeditor.js": "hl2fqEpO9CaLAKVbwANGmT10OokWjohjNubCepZW4bw=",
-        "config.js": "89+asgzEAwZ0906w/isCkvG0d4pOw0HvoAhQYBgVcDU=",
-        "styles.js": "UKLywHWOJUlpY1L5vKxh5Nw3lpQLbkintyvJ8ixP7FY=",
         "adapters": {
           "jquery.js": "kWca68zAjkLv7iMEyHDuFKa9KxIij+DiCScmbTMlJHM="
         },
+        "ckeditor.js": "hl2fqEpO9CaLAKVbwANGmT10OokWjohjNubCepZW4bw=",
+        "config.js": "89+asgzEAwZ0906w/isCkvG0d4pOw0HvoAhQYBgVcDU=",
         "lang": {
           "af.js": "1LwUYPgq2laef2hZOBDn8rXTOwfCEQEHzo0UQ33BRa4=",
           "ar.js": "aHzvGZ3N0LsL0CPdIS2a3yhZk2ZpNwX66sS3079YxkE=",
@@ -481,64 +257,89 @@ defineManifest({
           "zh-cn.js": "nQV36ntIVUZ4EgADqVwx7YAFTxJbiAOHQRdATVry2jw=",
           "zh.js": "T42HfteGD3pkFgamNSrX3ADWafk8UQbJrcXwvBCn12E="
         },
-        "samples": {
-          "js": {
-            "sample.js": "uA/Y/YcfFhruwYfpAdwXGtFjo1tiFGW88ZkqiRqya+Q=",
-            "sf.js": "dKSim2TuEcA4Drm81JnHT16ncDLCvAlUtmpHl52SxqU="
-          },
-          "old": {
-            "sample.js": "YZC2vwV82F+7VIgNCsWyDc/kP+BHc81SwLqLshaIzDI=",
-            "assets": {
-              "uilanguages": {
-                "languages.js": "JbgorI6Z2eMNKEDAzDz0miWrNI6Y3fkcS9eV2Uher2U="
-              }
-            },
-            "dialog": {
-              "assets": {
-                "my_dialog.js": "/h9waKik/g1JIvZMbDLfq0SfwxPHqHXgeZydNG2w3tg="
-              }
-            },
-            "htmlwriter": {
-              "assets": {
-                "outputforflash": {
-                  "swfobject.js": "gNTRvfLhPBC/1dPMd+nPfgTmLP/cOZlg41UGdooaC68="
-                }
-              }
-            }
-          },
-          "toolbarconfigurator": {
-            "js": {
-              "abstracttoolbarmodifier.js": "t9hMmjSq97/8eQhke1wB2OnaGoFhDktp0Th6a4jMiio=",
-              "fulltoolbareditor.js": "OfH7O8ZD9pPrVg9eA+butT1hBdKra28UBr5kGhznQ6E=",
-              "toolbarmodifier.js": "er0NqxlUFk/gwojvqp2aImoSNriRXpTLP1wagq8cPjw=",
-              "toolbartextmodifier.js": "q33quCBkL+ne/RJ1ul6TrbHbQ358lVtiCfVbE86Ft1U="
-            },
-            "lib": {
-              "codemirror": {
-                "codemirror.js": "7WvNl2xAWqzLywpLJ3ItJyQy6Dk0xUEuWB6aaZ9qsEc=",
-                "javascript.js": "FTtHp5edx38KSjIOBWuPbOgDpajQ5EPOfiBupzoVvNU=",
-                "show-hint.js": "28U1/ZhpQvaCAJWudyQeaZC1z0RwmkglmLMdpyE56s0="
-              }
-            }
-          }
-        },
-        "skins": {
-          "kama": {
-            "skin.js": "FlW07NBMEPT1pi2zHuzX7D1HC+l/rdtG8IbCMwq43lA="
-          },
-          "moono": {
-            "skin.js": "aAZ40TYBGVgyyX0IVb1rcXXhpyqshVXbIAV3ABVsIwk="
-          }
-        },
         "plugins": {
-          "ajax": {
-            "plugin.js": "7Wh9yUOcUdlriEJi7Dwfxqmc9Oj8/eDv4bbB7vtaoZk="
+          "a11yhelp": {
+            "dialogs": {
+              "a11yhelp.js": "qtAN8ivG3JuiRJYdU/edCcCsG+A28emMA5qW3H6aP/A=",
+              "lang": {
+                "af.js": "rfCtIKztsFhjxZQT364zpkUeJOXSByU5o+4UfeLzLPk=",
+                "ar.js": "Od5rWYWvoQ2di+nIH8RcCF2Fw6cVK6m6BYZ+XAmp+ew=",
+                "az.js": "cytTSAfg34Pck06MoHUNA2IxJKP+Xjxm2eZNPUH4b0U=",
+                "bg.js": "vJGEpxIbiqmUkpNuumF9WfDDbbchxq4mZfgyazBB0VE=",
+                "ca.js": "jZcT8fV4biXlKi70bFpW5p3Vu+XZ5+oRYQpy0W2iav0=",
+                "cs.js": "ZVJNd1rK3B9QEN3aCkGobEZm0T3zOsPIaCOm4cZNTYo=",
+                "cy.js": "+bGqwb2b/0lEj9lJSAzm2O/Lp+OY2fKynlIW8zUFegE=",
+                "da.js": "WelOcvG7qNcX9zg2iyrOd2R3Q2LbCEIRa/GH3dhbWvo=",
+                "de-ch.js": "0xDcckBaDp3xNWxrOYdUeqrrImLEfEN5kPcKf5MsutM=",
+                "de.js": "lKPizb7x8y84GsiiqLIEExUUzU/xvjSijWGeMZ9zoHQ=",
+                "el.js": "U3srdDsUgtGvn7STh1J2K92tCUXrpxr3lhy7K1D62fM=",
+                "en-gb.js": "XAKr6IIDTsQfyozrEJJwwjP/Tp4UOrRF7KNu3xqcfAc=",
+                "en.js": "XMNuZLkrzLvxEkIxrZLh54q6OsqBlV/CsCxjQLM3Gik=",
+                "eo.js": "MEH7AtUJ5FDM4jqX6Bf/QZR9hVRnAZ2DtVHjtKvFhck=",
+                "es-mx.js": "vbRewVEiWzzSLZ3CEOd6z94mHlV4CrvAgRoyEVBDFa0=",
+                "es.js": "E44NoECW1P2PKoOg/FZqu+MIvJ1af+yMwFuSYhxgoUI=",
+                "et.js": "IVDOze5u158+tAs6edoS5vo7QL/8iR6uQTjn0TaglR4=",
+                "eu.js": "t6ZPPYWS5fY4vaIfC+jUwd3nHtvZCmWIar/2HlDWRYI=",
+                "fa.js": "PH5toPSX6QmM+exUhDbTqZnwM501Ix8Zo2rPeusMFlU=",
+                "fi.js": "BPcvJcf9JGhsPUZFRTLQ5FK/LBVSMSXk8QIBWRH2B8o=",
+                "fo.js": "Z9QxB7CKK/rL8FOuOnVGPjCPN0UV6vYZlw58HOxXPRw=",
+                "fr-ca.js": "1JLlKOWuMDQbJ3kuk0THgPqJ4j3aZ0OiavR/aWbz7tI=",
+                "fr.js": "VJ6DNAR+Q8vhUXOCDfaxLq02FBIovi7MxwjflsHrRuY=",
+                "gl.js": "C33mmAA1db/55ooV+EqcZ/HqwYFlR3x41bo8eldGA+I=",
+                "gu.js": "5tPDfZGVFVoFdr/bU64CfGxgk7iH0+hMBfqdXzj6BJw=",
+                "he.js": "rS1k4ebX+1AA9SwIF0ZxAtKtca7PLUAhkDg448sBMd4=",
+                "hi.js": "/W+qP9K2NCSv5BsAAvjjH1dRcggTxjcKHuQhChkdm3E=",
+                "hr.js": "QGrDlWHYKzS7BIFwJiWYUN1ZQfz1zysP9rG6t8oXsRw=",
+                "hu.js": "qwZSieyOpeblhksxh4RrwMG3bIJucWuykwEZ75kHc0g=",
+                "id.js": "1g6fZmPkFqh66544MPMa+c7UF1dIrFWL9jxnbODLLPU=",
+                "it.js": "9zhR4kr0mAn+MPoBB2ig+aGAX6H0dn/FIZBePNbDXjw=",
+                "ja.js": "tXZpBId0PY3G41nfn++EuW83TFrnvKL1yjfA1dCgaZo=",
+                "km.js": "UHu/+1nCpktBM1PABz9AovVRlV5L9vxwpM0WsFyPntE=",
+                "ko.js": "Hmc6bRR/l8LO8+oSbNhd3KE48PG7wXRkGN0WS8vnxPQ=",
+                "ku.js": "L6ovMID6vcS7zsls1NwsKMub81ucIwtybfqKA4jhCI4=",
+                "lt.js": "BjODpaAmYjhnAte700QaptlWEBRofUtIDOO2QXZ2mmU=",
+                "lv.js": "ML7StwnxmU7QkVEMtN7tyKs8/DZO9kUMchxkVYlpM2c=",
+                "mk.js": "Z190y6De4tim1eFwLQ+BRwE01amskwbOCwvM8yMMYmw=",
+                "mn.js": "OAnxTE6mnfmJtU9oLWzVN9yUgJ8wgmJFcxsf62N7Pto=",
+                "nb.js": "/0PsPEOculOZ7O4A9Nm7vxiHdgYrI8fAIt4I12pOe7U=",
+                "nl.js": "G4moaUMi03rBYP4iQhx9bWlkAMiFM7CsMn9vOrKNmZ4=",
+                "no.js": "rA21FMlvn7pOUaOTwsHCMrxLmQKeBfKp34EjpXBThFc=",
+                "oc.js": "36uqhfSbdxlJaXMOJN5nH44awvNj4KbpjxncfmW69Vs=",
+                "pl.js": "VOsPCfXSHgqpQFOmWZtOG4zmj3ISekkEaguD4x8hCkk=",
+                "pt-br.js": "phV5Ah4/scgTVZK1GRPNKoj7u3C+G5aalUhdbBqHiuE=",
+                "pt.js": "16iAvYyCwgU3W+zIC7Gt1Q7MhUPaAVye/V6Q7m2Y5AA=",
+                "ro.js": "0jYm/xYbnU60n2DZpLQ5hJiDMgAZoUCvrs7E0PY+qXg=",
+                "ru.js": "XIqPTwSwVPZI20lHbLueTdYzAksSR1OGOwFWhfOdPaQ=",
+                "si.js": "IeydRYIoVInROKEjgTTqnlQonz+vuQ73zdAe+cuoTJ4=",
+                "sk.js": "LrF2GwXy5ZZKD84neNPymofWiL21p/gjd0wsFTRsVb8=",
+                "sl.js": "F3QA68v7A+mTkEJGTTvOlUWkjuDflgd+LtSI1apgpeo=",
+                "sq.js": "XK4BwWmq3Wx9km5jkwlIcRvkR+0zBXvB123FUlsGMvQ=",
+                "sr-latn.js": "LCl4cTXVMa/IJqO85ZL7N6k/42cR06vjDFcUgq+/jEU=",
+                "sr.js": "T5im4YInViIW0pSYhNAlv4KKR5EgbDlndYxFK/Hi6yU=",
+                "sv.js": "l2Fdf6jckqO1MLpug8z8nM8bhAiJ4BD+Fa9vNZWJN1Q=",
+                "th.js": "L2vqtxBzzVI1KK+07VQsexKpUNAVOLC9EsidIz1ixLw=",
+                "tr.js": "6AjXJrczYE19SjFz+KJSqAtEpMelWK7xVciuQ0JHAKE=",
+                "tt.js": "L/ztBsA70Wj5wfpfRQ+4I7YmL/N+2JtsJGeARGXqV5E=",
+                "ug.js": "J0G5g30Q1z2CJg+IcxCTEIKlY0w/AxhGuYYVdGXjQXY=",
+                "uk.js": "8tgNNDivCcjjrco5ctIKJLzG6ERa/VcWkf/0U4OPy7U=",
+                "vi.js": "r5iTtR0dXe3ca65jHDoX8r8uGf/YYQFgQibz6KJx+z8=",
+                "zh-cn.js": "FfLvl/UivVqDYWPIQ4Z/io0zlyMgTKDXh15v+7h1xyI=",
+                "zh.js": "yqnaby1szOhuc7NMgBWo/wlJ874szVKocq9zJz/EBos="
+              }
+            }
+          },
+          "about": {
+            "dialogs": {
+              "about.js": "OxsTANEVOfT2RW+vF6QzDo4zQaoyY4b9WsZd/Yq5pGA="
+            }
           },
           "adobeair": {
             "plugin.js": "RvCfgNg1guy9bJdBl38j27k3vp/xwqM4juY0ujSepUE="
           },
+          "ajax": {
+            "plugin.js": "7Wh9yUOcUdlriEJi7Dwfxqmc9Oj8/eDv4bbB7vtaoZk="
+          },
           "autoembed": {
-            "plugin.js": "6eFPLKmXHXGGmB5o53f0mD2gvELuaTwGXyiyyxtFeXs=",
             "lang": {
               "az.js": "rl0yExiQcvN0CUB6/1D91vt1jVbq4I8OFzUREqDMcrg=",
               "ca.js": "djGUbOCn+1aUiG5uQH/qQQVy6G5x98Fh/EmFz2PeQ+E=",
@@ -574,22 +375,22 @@ defineManifest({
               "uk.js": "AWD7GPrSlVkONVlso+bEC0tfk2tpbQLqdpTKSvjMLOQ=",
               "zh-cn.js": "zTdKFmlM5UzW1pk5ZSVAbIpxhmShyHvsN0J8blkbSeE=",
               "zh.js": "RgK11xijaefBjlfzESWGCrP6m89Zphot+th7jkvEdV4="
-            }
+            },
+            "plugin.js": "6eFPLKmXHXGGmB5o53f0mD2gvELuaTwGXyiyyxtFeXs="
           },
           "autogrow": {
             "plugin.js": "zesJetviRlc1oSDgvI5B322LpMro2TntaYRtmqgLAj0="
           },
-          "balloonpanel": {
-            "plugin.js": "I/RGAwNojjLLNoHcSIvYsvQB10fw08DxYS+tjHxclc0="
-          },
           "autolink": {
             "plugin.js": "emu2G3yEazUiCm3MarOiJYyU40C55BVoSL0UFVxIYMg="
+          },
+          "balloonpanel": {
+            "plugin.js": "I/RGAwNojjLLNoHcSIvYsvQB10fw08DxYS+tjHxclc0="
           },
           "bbcode": {
             "plugin.js": "EE4ZAxpiQ/sdNmGQi2e/YpprnEpe6N04Z4OojuErNKE="
           },
           "bidi": {
-            "plugin.js": "CyrP0hps5T+TbG9jyeW5GnxlEkf0w6+YAORhj0nOngE=",
             "lang": {
               "af.js": "D+FadvPDBUu+VpMt7ohPqntsCoIHpZ82tphxOBbMRIw=",
               "ar.js": "XuLX2ukFgPEYhDnew6q9KBwsr8IdxOeCDEixkpNIcww=",
@@ -661,10 +462,10 @@ defineManifest({
               "vi.js": "8qEHsvqxUn/PPjIpYDEmMLnqblhZGzPCRj/mv0st0Tc=",
               "zh-cn.js": "wNX+NpJjbAqOA1U2npCHV/V+2BcoAq1YPdt09su15Hw=",
               "zh.js": "wuEffVsaBUBUtSAl7oy7ll+fr2fK+i0xekpT1XB/kZ8="
-            }
+            },
+            "plugin.js": "CyrP0hps5T+TbG9jyeW5GnxlEkf0w6+YAORhj0nOngE="
           },
           "codesnippet": {
-            "plugin.js": "ZhNhTpaSLWcaT7j4S3hdq31UymmeOaR0CJDsy6WX17o=",
             "dialogs": {
               "codesnippet.js": "arwKr2b8cOE0++GzAW79oJRZ1hHhRHQMG4QWXD/Jy+s="
             },
@@ -727,13 +528,88 @@ defineManifest({
               "highlight": {
                 "highlight.pack.js": "SMOUN7gG2DqV300+u6TibkIDUsFfgBSSA+tyM8SYSl8="
               }
-            }
+            },
+            "plugin.js": "ZhNhTpaSLWcaT7j4S3hdq31UymmeOaR0CJDsy6WX17o="
           },
           "codesnippetgeshi": {
             "plugin.js": "McjgqcjTnLvRZGBtenKjVBIQmdU3SUst2JM7tbMTvd4="
           },
+          "colorbutton": {
+            "lang": {
+              "af.js": "0fZ/j4sQ2Xn6ztvqaNoB6qPQARA8BKQ972V4d3mE5AU=",
+              "ar.js": "DGwz4ptgePYuBTfoCoh5vArPuUg8f9/DXu1xfEgPCj4=",
+              "az.js": "nKDbrhLFrDAy1Gp9yyojEzvjORgUP+51F8F9STybuN0=",
+              "bg.js": "JoCWnji7C+ixCptk8bylS8oyh86meWz6JpeZ3F4lifA=",
+              "bn.js": "ISFZ3MMJbJ9kdd3/AqKUtjmIZoLhLFEVEqdkDjDl5/g=",
+              "bs.js": "aw0/sBnhceTQVzzIF0P6LiG/UzjNT81rYh0AVtXG3WY=",
+              "ca.js": "BrpG/4fiAkQaSXheUa9LZZ87tyK+gurMUfPK/Ysgb+s=",
+              "cs.js": "qeAPGxSrv8y//660STPVvz9uh1kBaCUPIOzzNR0PS/E=",
+              "cy.js": "Dx1gXpODB9jwHhkdcShXH+E800EfScnMcECF6lbT8Ew=",
+              "da.js": "2ommpxLALY7EyDIDkQ8/WRMypT0tyUXCqYHw1YL1YGk=",
+              "de-ch.js": "2WPEGfH9Zrirh6uZz3GPdSHo2rjrjtX7rWyQl9BRKF0=",
+              "de.js": "5OnErq4nCpIUysHXLDoqJB9DbdEZvijXId8dVignac0=",
+              "el.js": "msSdVpyOcKYUBRM8VaSRlsT3LK+8oI5xsXyBPcpoUNM=",
+              "en-au.js": "mJaaW3xQt7x9UjjLb1dFs00OTcxk+go9b8RU+hKQu0M=",
+              "en-ca.js": "YH1sTrIlWwOz4NIK8KHdDyEdF7YwgruPwOaRITKxL+o=",
+              "en-gb.js": "9afnqWHMMCgEZFnKaaAymUkaZKHiIhoin1ynlq/5yU0=",
+              "en.js": "PE5BFteSKxDENJZaM8Gw7ZWeVh542nF3SrUF6fjOLqU=",
+              "eo.js": "Onflycfn05XgDRri41ZM4sZoTveVbG614+Bh+w0HOWs=",
+              "es-mx.js": "Otu7Mx6gyqTxTGKqmIMe1Vx5S4Xhj2DLJ45t+scurHI=",
+              "es.js": "ij0IAm3pe7epML6KwQfiXdEJaruAqmnugl7cnRCltqw=",
+              "et.js": "+s0VR2YxBMFsNypnxhQsdHZgRqBTa2LNi8viwjBFSk4=",
+              "eu.js": "PgVwdiYXgr77qgckURDUug83k/JNjzToVurEVONDoCM=",
+              "fa.js": "G429MunRkoKy69j/dgNtWpij5mVVeyWIq56/kmUPLks=",
+              "fi.js": "l25tvLUvCNbi+1udXbIZ7l77t6i9rL+QO4ZIRUooKv4=",
+              "fo.js": "ZXgK/1M+VzX8moRl2ZSJu0FogvG/qkaj5yYIDQmVQ+A=",
+              "fr-ca.js": "FlQ3gDHdNPbgiTKdhD2ycktpamfFzxElt5Vr3ruuoSM=",
+              "fr.js": "J4IByN7Aq8Vqb0NBBwZg/3sZRKU0dHdH/mdzbAhouDg=",
+              "gl.js": "hWqpJDC1rL16kJ28TZg5txNEdpwWoexGV9s0zzE28II=",
+              "gu.js": "70KOpoZHMsNOPlParE7pFxtcXdwVKBsJXbiiYOmwtRI=",
+              "he.js": "rpcKOCzGalYR2dczPn/vQEiS4zpaP0eScwtu6x/6F2o=",
+              "hi.js": "D92iXtGs/u2jLtTMSGakG9iqb5S0HCh2clZl5/ensS8=",
+              "hr.js": "Kin66AUJSn7q+p8/0+Tmvrfy/27I/7hEyJss95E8B4o=",
+              "hu.js": "Hudm4nk2nNvQ1jJSKKDe2ktsueeX+0yWCujg7DfnKR4=",
+              "id.js": "CtQztFFev+bknEd+aCPtgfhC3XxaL+nI/WQF0eIfRjQ=",
+              "is.js": "kvrMrGH4sjkdQYkOeauwQeVP7vc0mT5wuHq0Cv7Pjj0=",
+              "it.js": "qwMgOwR7TgWvj01SIbdnv0YNfw0T+xtncyq3Xz//sRU=",
+              "ja.js": "RMokPFkAGheXBtkEbeEX9bDtL7sVwR1UiiUdE94NOqY=",
+              "ka.js": "D9nOWW/Xyiq1umKjnPUtoii5noP/ImR7d1hxHQ9AtTo=",
+              "km.js": "mFY/56Kn8e+jmFBq4Yhilk+0IxTT/SKB9dc5uu4XDDg=",
+              "ko.js": "37xIAVnYEaQ9E/3WeSFNq4yoesnQDdBfAuOPUWVLtkI=",
+              "ku.js": "GyiW148pBSUpoG1iS/LLKKazG+J1u45dIQqZfn2gNbw=",
+              "lt.js": "+ekK6JALNsq7QuzeaVpB0KRM8v9dg1wh6ab2TndpUoQ=",
+              "lv.js": "DEqyRA0IOagspbcx5q0jpsyde0F9uUyV79Ketdb0CQc=",
+              "mk.js": "uuuWr7DSr19amkvUlQZ8aGMkphjDCmXaEmJlsaRj56s=",
+              "mn.js": "UYdZgGQj8tMB6m+L1naBKXgKWtCiXxtu4SJIPbU7uZc=",
+              "ms.js": "HoB+UdHF2xq9O/Hlbf3YUvPoKxq7VbxLstRoNpNez4w=",
+              "nb.js": "RW4OFkdrRTK0FTxP6ZENPKYK7Cmj3GzopMYDlFbfp4E=",
+              "nl.js": "vuzvm0+96z2EIhmxq+qmpSfoE2yNVXfY2/hxNhkSx8c=",
+              "no.js": "ZM66tbbyV3BqJdV5B+3RpjGOMTAvSj6261vSSurc+aY=",
+              "oc.js": "gD/Es+zffRElBWRtnMYjwSxGm1iKPABtT9+k2KBlz2M=",
+              "pl.js": "XDIusRzEQtYlxq5IicmK2Obm4AaOh812uGeEZgWV3v0=",
+              "pt-br.js": "e9LgSUmUoeZWHr5ZO1owfhQtaMCpO1ErvF02alcTLSU=",
+              "pt.js": "9enWwVxq9sArUnZAXKNTlB8H4HU02l1EyD5vCDIXkmA=",
+              "ro.js": "vVA+ORforwHL3CI42KiO3SPO+x5LEkdFQUQ8+WQhv2Y=",
+              "ru.js": "+h2g74uad+a95/5Jt1Bv3xTsRbOUAnc3S3TPk1j5zyk=",
+              "si.js": "wVCpuAg83RmTjYL/blKY9PImg13fP9EbX2XIk8IKoYM=",
+              "sk.js": "g1IduCFZEp6hbedUYad7d+OHRm3cTDmvrgYwuA+OlCk=",
+              "sl.js": "5XYtEFxIiZJNvPUdGv0y82i/5lsBvATEnla4xp/Sam0=",
+              "sq.js": "9uY9mb/nQC2DPIzYxuTIcX3zDPQeI8sa2pzm8bWV9IQ=",
+              "sr-latn.js": "oEXEPMyHXmC7+9EC6kEDUKkK8UM5fbJ5NhqF7BNyiyA=",
+              "sr.js": "ICHtzd9gTqgJ5NbJdhSC4kZTTbaFQJflw9WxW7LqHOQ=",
+              "sv.js": "8my5juEC5RFj3dDhWzlAX92XshHcOT0LoQ27JKTT5SA=",
+              "th.js": "DHpCFv2LHuIVii60krTcbJ290jsdCKEPcPRMHUljjGk=",
+              "tr.js": "ffqX47o7sJep3NODf4uYCFjjbYMcpCndKPzCv4N5/1Y=",
+              "tt.js": "J0Nn6y9WA7j04y4C7kp+LR8O7V/h3GXRoUIjxYR56Qw=",
+              "ug.js": "Np20aW4o4kqoSlgpfwUIJ/yheX28ujMmQkqNeS3OI/w=",
+              "uk.js": "TfTD+2IPnUH6pR72jfL5AehRHim2/HvG77gvHdyHptI=",
+              "vi.js": "WMF9j7dwJkvuuvLLoLsgbOWucm812yzMSDZXlSyHJ/4=",
+              "zh-cn.js": "XTyxhkhuBxRssr/zcbl5yJCe861deNUpuMC0Uc5ndnQ=",
+              "zh.js": "o+Jbn8sddFHv/deh5cX24w9epZcLAdTIAxIBGXVJXkQ="
+            },
+            "plugin.js": "/+YYcCwYJKJgbV6Te7V8jS4obCNOs/CQ13kVpZK24QY="
+          },
           "colordialog": {
-            "plugin.js": "b9XNYm8wAjeYL08uXJ4jNnsbFpJJ5JpLVVIRsSykQJw=",
             "dialogs": {
               "colordialog.js": "Bn+EGlkx5yNF7IPSc9O/Ez1+ZuttIvEIWpsE1wSfR+k="
             },
@@ -808,85 +684,10 @@ defineManifest({
               "vi.js": "7HaXfOsg+W7/C1cM2auJldysDd4P96uTmCiInFwrpPE=",
               "zh-cn.js": "XLwQ+t2XqGGEk4TnDCdTcAmsQ8fMpL/Vnre3blx+NSQ=",
               "zh.js": "RT97MlM3kZnCBVXeygpQi0vh9/qX4AuHTzBmm2tDZyc="
-            }
-          },
-          "colorbutton": {
-            "plugin.js": "/+YYcCwYJKJgbV6Te7V8jS4obCNOs/CQ13kVpZK24QY=",
-            "lang": {
-              "af.js": "0fZ/j4sQ2Xn6ztvqaNoB6qPQARA8BKQ972V4d3mE5AU=",
-              "ar.js": "DGwz4ptgePYuBTfoCoh5vArPuUg8f9/DXu1xfEgPCj4=",
-              "az.js": "nKDbrhLFrDAy1Gp9yyojEzvjORgUP+51F8F9STybuN0=",
-              "bg.js": "JoCWnji7C+ixCptk8bylS8oyh86meWz6JpeZ3F4lifA=",
-              "bn.js": "ISFZ3MMJbJ9kdd3/AqKUtjmIZoLhLFEVEqdkDjDl5/g=",
-              "bs.js": "aw0/sBnhceTQVzzIF0P6LiG/UzjNT81rYh0AVtXG3WY=",
-              "ca.js": "BrpG/4fiAkQaSXheUa9LZZ87tyK+gurMUfPK/Ysgb+s=",
-              "cs.js": "qeAPGxSrv8y//660STPVvz9uh1kBaCUPIOzzNR0PS/E=",
-              "cy.js": "Dx1gXpODB9jwHhkdcShXH+E800EfScnMcECF6lbT8Ew=",
-              "da.js": "2ommpxLALY7EyDIDkQ8/WRMypT0tyUXCqYHw1YL1YGk=",
-              "de-ch.js": "2WPEGfH9Zrirh6uZz3GPdSHo2rjrjtX7rWyQl9BRKF0=",
-              "de.js": "5OnErq4nCpIUysHXLDoqJB9DbdEZvijXId8dVignac0=",
-              "el.js": "msSdVpyOcKYUBRM8VaSRlsT3LK+8oI5xsXyBPcpoUNM=",
-              "en-au.js": "mJaaW3xQt7x9UjjLb1dFs00OTcxk+go9b8RU+hKQu0M=",
-              "en-ca.js": "YH1sTrIlWwOz4NIK8KHdDyEdF7YwgruPwOaRITKxL+o=",
-              "en-gb.js": "9afnqWHMMCgEZFnKaaAymUkaZKHiIhoin1ynlq/5yU0=",
-              "en.js": "PE5BFteSKxDENJZaM8Gw7ZWeVh542nF3SrUF6fjOLqU=",
-              "eo.js": "Onflycfn05XgDRri41ZM4sZoTveVbG614+Bh+w0HOWs=",
-              "es-mx.js": "Otu7Mx6gyqTxTGKqmIMe1Vx5S4Xhj2DLJ45t+scurHI=",
-              "es.js": "ij0IAm3pe7epML6KwQfiXdEJaruAqmnugl7cnRCltqw=",
-              "et.js": "+s0VR2YxBMFsNypnxhQsdHZgRqBTa2LNi8viwjBFSk4=",
-              "eu.js": "PgVwdiYXgr77qgckURDUug83k/JNjzToVurEVONDoCM=",
-              "fa.js": "G429MunRkoKy69j/dgNtWpij5mVVeyWIq56/kmUPLks=",
-              "fi.js": "l25tvLUvCNbi+1udXbIZ7l77t6i9rL+QO4ZIRUooKv4=",
-              "fo.js": "ZXgK/1M+VzX8moRl2ZSJu0FogvG/qkaj5yYIDQmVQ+A=",
-              "fr-ca.js": "FlQ3gDHdNPbgiTKdhD2ycktpamfFzxElt5Vr3ruuoSM=",
-              "fr.js": "J4IByN7Aq8Vqb0NBBwZg/3sZRKU0dHdH/mdzbAhouDg=",
-              "gl.js": "hWqpJDC1rL16kJ28TZg5txNEdpwWoexGV9s0zzE28II=",
-              "gu.js": "70KOpoZHMsNOPlParE7pFxtcXdwVKBsJXbiiYOmwtRI=",
-              "he.js": "rpcKOCzGalYR2dczPn/vQEiS4zpaP0eScwtu6x/6F2o=",
-              "hi.js": "D92iXtGs/u2jLtTMSGakG9iqb5S0HCh2clZl5/ensS8=",
-              "hr.js": "Kin66AUJSn7q+p8/0+Tmvrfy/27I/7hEyJss95E8B4o=",
-              "hu.js": "Hudm4nk2nNvQ1jJSKKDe2ktsueeX+0yWCujg7DfnKR4=",
-              "id.js": "CtQztFFev+bknEd+aCPtgfhC3XxaL+nI/WQF0eIfRjQ=",
-              "is.js": "kvrMrGH4sjkdQYkOeauwQeVP7vc0mT5wuHq0Cv7Pjj0=",
-              "it.js": "qwMgOwR7TgWvj01SIbdnv0YNfw0T+xtncyq3Xz//sRU=",
-              "ja.js": "RMokPFkAGheXBtkEbeEX9bDtL7sVwR1UiiUdE94NOqY=",
-              "ka.js": "D9nOWW/Xyiq1umKjnPUtoii5noP/ImR7d1hxHQ9AtTo=",
-              "km.js": "mFY/56Kn8e+jmFBq4Yhilk+0IxTT/SKB9dc5uu4XDDg=",
-              "ko.js": "37xIAVnYEaQ9E/3WeSFNq4yoesnQDdBfAuOPUWVLtkI=",
-              "ku.js": "GyiW148pBSUpoG1iS/LLKKazG+J1u45dIQqZfn2gNbw=",
-              "lt.js": "+ekK6JALNsq7QuzeaVpB0KRM8v9dg1wh6ab2TndpUoQ=",
-              "lv.js": "DEqyRA0IOagspbcx5q0jpsyde0F9uUyV79Ketdb0CQc=",
-              "mk.js": "uuuWr7DSr19amkvUlQZ8aGMkphjDCmXaEmJlsaRj56s=",
-              "mn.js": "UYdZgGQj8tMB6m+L1naBKXgKWtCiXxtu4SJIPbU7uZc=",
-              "ms.js": "HoB+UdHF2xq9O/Hlbf3YUvPoKxq7VbxLstRoNpNez4w=",
-              "nb.js": "RW4OFkdrRTK0FTxP6ZENPKYK7Cmj3GzopMYDlFbfp4E=",
-              "nl.js": "vuzvm0+96z2EIhmxq+qmpSfoE2yNVXfY2/hxNhkSx8c=",
-              "no.js": "ZM66tbbyV3BqJdV5B+3RpjGOMTAvSj6261vSSurc+aY=",
-              "oc.js": "gD/Es+zffRElBWRtnMYjwSxGm1iKPABtT9+k2KBlz2M=",
-              "pl.js": "XDIusRzEQtYlxq5IicmK2Obm4AaOh812uGeEZgWV3v0=",
-              "pt-br.js": "e9LgSUmUoeZWHr5ZO1owfhQtaMCpO1ErvF02alcTLSU=",
-              "pt.js": "9enWwVxq9sArUnZAXKNTlB8H4HU02l1EyD5vCDIXkmA=",
-              "ro.js": "vVA+ORforwHL3CI42KiO3SPO+x5LEkdFQUQ8+WQhv2Y=",
-              "ru.js": "+h2g74uad+a95/5Jt1Bv3xTsRbOUAnc3S3TPk1j5zyk=",
-              "si.js": "wVCpuAg83RmTjYL/blKY9PImg13fP9EbX2XIk8IKoYM=",
-              "sk.js": "g1IduCFZEp6hbedUYad7d+OHRm3cTDmvrgYwuA+OlCk=",
-              "sl.js": "5XYtEFxIiZJNvPUdGv0y82i/5lsBvATEnla4xp/Sam0=",
-              "sq.js": "9uY9mb/nQC2DPIzYxuTIcX3zDPQeI8sa2pzm8bWV9IQ=",
-              "sr-latn.js": "oEXEPMyHXmC7+9EC6kEDUKkK8UM5fbJ5NhqF7BNyiyA=",
-              "sr.js": "ICHtzd9gTqgJ5NbJdhSC4kZTTbaFQJflw9WxW7LqHOQ=",
-              "th.js": "DHpCFv2LHuIVii60krTcbJ290jsdCKEPcPRMHUljjGk=",
-              "sv.js": "8my5juEC5RFj3dDhWzlAX92XshHcOT0LoQ27JKTT5SA=",
-              "tr.js": "ffqX47o7sJep3NODf4uYCFjjbYMcpCndKPzCv4N5/1Y=",
-              "tt.js": "J0Nn6y9WA7j04y4C7kp+LR8O7V/h3GXRoUIjxYR56Qw=",
-              "ug.js": "Np20aW4o4kqoSlgpfwUIJ/yheX28ujMmQkqNeS3OI/w=",
-              "uk.js": "TfTD+2IPnUH6pR72jfL5AehRHim2/HvG77gvHdyHptI=",
-              "vi.js": "WMF9j7dwJkvuuvLLoLsgbOWucm812yzMSDZXlSyHJ/4=",
-              "zh-cn.js": "XTyxhkhuBxRssr/zcbl5yJCe861deNUpuMC0Uc5ndnQ=",
-              "zh.js": "o+Jbn8sddFHv/deh5cX24w9epZcLAdTIAxIBGXVJXkQ="
-            }
+            },
+            "plugin.js": "b9XNYm8wAjeYL08uXJ4jNnsbFpJJ5JpLVVIRsSykQJw="
           },
           "copyformatting": {
-            "plugin.js": "bUvSCmuxRWTmQGi+NS1rKCrmtpJ1ey4vs5D7PGEdHm8=",
             "lang": {
               "az.js": "iBVxaaY2JCrPNmOEJR/2lfTMf40kErdylTkJs5++hb0=",
               "de.js": "WkY9O/CR0GCEHI8zm2N53mCoOH1CzTNUtCGMMgV818s=",
@@ -903,10 +704,10 @@ defineManifest({
               "tr.js": "5PbFLTvtcb9u6RGUo5DXsxCcoI+qneupFbmtxgRiWcg=",
               "zh-cn.js": "LORFAKYhTFPIjPK1sIqkFzRj10TSpg3t73o3SbqduM8=",
               "zh.js": "8YeYX7O5kMPcB5vVzOJt1CHLUD9LOVFAzIuiXs6MLdE="
-            }
+            },
+            "plugin.js": "bUvSCmuxRWTmQGi+NS1rKCrmtpJ1ey4vs5D7PGEdHm8="
           },
           "devtools": {
-            "plugin.js": "gIHLvktornvVGx6MpBSfm43ILTKtI6j4rJqjTzOG48o=",
             "lang": {
               "ar.js": "wKKOxIXUBPgcrWITXMuuo1EMUG3Eq4qP0/58IX5x3+8=",
               "az.js": "WRDT2vNdRSjmC8dtoEZWHXCFC5ftosXa+XSE9IavehE=",
@@ -963,7 +764,8 @@ defineManifest({
               "vi.js": "pYpYdTxjZf+XnTMFGOJ8DqhIUDmcFs1H05afiBZ0pKM=",
               "zh-cn.js": "Y9cAoiJJvtTkOdg2aFOarc7ab/BBYrwqB7TXBCk1hZY=",
               "zh.js": "dyjUecR5xlanNXamWTQtbYLVbxQ3tU/9CBUIL1kA484="
-            }
+            },
+            "plugin.js": "gIHLvktornvVGx6MpBSfm43ILTKtI6j4rJqjTzOG48o="
           },
           "dialog": {
             "dialogDefinition.js": "xPaWWLO6APNZ6LaIpgSScd0n+Io+yr1HzaVDfsb8fWQ="
@@ -971,11 +773,7 @@ defineManifest({
           "dialogadvtab": {
             "plugin.js": "6aMWOZsHSPFaIvk6Mlli6po3BtHaCw3OIEx1WSfctoA="
           },
-          "divarea": {
-            "plugin.js": "FM7yDePUIUQmhs4Zu+4wNOaEM77ctPHxi7DJhZ31yZw="
-          },
           "div": {
-            "plugin.js": "a0pP53ce4luCIkdV4pdEvxxWgCcrRTs+Lo6yQ5AxZ0Y=",
             "dialogs": {
               "div.js": "PMt29aMGynEBJBrHt4mfWu2VkbfhFrT14IWw8G4/HL8="
             },
@@ -1050,10 +848,13 @@ defineManifest({
               "vi.js": "HMd4iSwhKwTbDP+Er2kDxTMUM/5wWgjvpZeu1ZVQVgg=",
               "zh-cn.js": "7bgqhF5xCqjFQ/mK8M/ZKrMldQQRHjS1fuscqqfIjck=",
               "zh.js": "kMaoF9dZBa4LOoB+RrszIuAyiReFS3n9P5eFtIn4lYw="
-            }
+            },
+            "plugin.js": "a0pP53ce4luCIkdV4pdEvxxWgCcrRTs+Lo6yQ5AxZ0Y="
+          },
+          "divarea": {
+            "plugin.js": "FM7yDePUIUQmhs4Zu+4wNOaEM77ctPHxi7DJhZ31yZw="
           },
           "docprops": {
-            "plugin.js": "1VPpQRU/RAeiQzMm0S3Rq+XUVNwner50npkf+CXxJeY=",
             "dialogs": {
               "docprops.js": "qh5QGbdHS+Cpkj962dyxnIJ0jnyZc5A0yHekxyHWnSs="
             },
@@ -1128,13 +929,13 @@ defineManifest({
               "vi.js": "pQHiLZ9OTf2QWWkfliD7qtf1qfRUh6j+W8rE36deSEg=",
               "zh-cn.js": "zKZ6e099W8jv9KeE7Gj62T+3E/6TvAfJV7BqNSG9Q2s=",
               "zh.js": "doEoOce5pXYlE5wFNwd2/Ncu2XMWVFcqhavgpfWsZv8="
-            }
+            },
+            "plugin.js": "1VPpQRU/RAeiQzMm0S3Rq+XUVNwner50npkf+CXxJeY="
           },
           "embed": {
             "plugin.js": "lFSDGCono0nyFrCbwcuIW2L/KkUhbBDqDn4GzSKRsT4="
           },
           "embedbase": {
-            "plugin.js": "g0tQUqQSk/rXQcEFSV4rtyBXFE2sCAX261bW8vAq8qw=",
             "dialogs": {
               "embedbase.js": "cUj+kvkZykNx5iQsslU+z4M5aAJLnOBwAAWGiwmmTJA="
             },
@@ -1173,91 +974,13 @@ defineManifest({
               "uk.js": "9vCTcIExdxC9bRRJj3KCGoT72PZ2VSZ/vW58+/Fqj7Q=",
               "zh-cn.js": "LqrBJwrJV/yRS7c0ZeGZL9bnOxbuiQnjSDimWU4xlDw=",
               "zh.js": "SnM3aSgYLC7HTCzIIxJsduIwpDGTGS+X9EYqfUwRPQI="
-            }
-          },
-          "flash": {
-            "plugin.js": "ftwol26RTOH+96rlvstlz4iTK9BuWLyfhfbitGlQCoU=",
-            "dialogs": {
-              "flash.js": "GcAIFiIIYkRLRocTj/xPLMgAlIKoCYSry9AWmnr/pGw="
             },
-            "lang": {
-              "af.js": "kWEG6YxhRPZodNVQpfN31dUCbfMdXguuejjiKBZIH3Q=",
-              "ar.js": "YYpb3TJru3Y/ZnaDEn2Mx86wONT3icA3+qeC7SaThxE=",
-              "az.js": "Z5AuvZx+SzPz72S5k/hCQpLY6ws6rEqTena/Q/w+FAo=",
-              "bg.js": "ZFytokl1itsPuSE03/twlKT1pydfmI+/XqLF6n62S9I=",
-              "bn.js": "8uuS0ihue4Xph+OPKu56yeE9ZLUFLTwpBsCsH9fqTso=",
-              "bs.js": "6slhbOgt9t1QrqUXqF90xdTBtFR3Szy7dSdTuXDq07I=",
-              "ca.js": "XZMU96yoqhfO2/InD5Bj9fey5LqLcp8h+a84j9h/GPY=",
-              "cs.js": "vH/p80rPMjrKwREBwbyIYmFwkxwlNF1hNDb8xJ+zeO8=",
-              "cy.js": "7QjjarpfjC+JjAku9dIj/6P6ivAXiLtrRXwHIqJgpRQ=",
-              "da.js": "JvOmrk4SEbhR6gj/ICDnVyCPL0kCx22p6I7qFwr52kc=",
-              "de-ch.js": "ygiCi9kjxp6X8zfgzlH0K/Ziz2tgmqtEZuKHGwt/cOg=",
-              "de.js": "j9Fc/jA9qmSqQWkommPQmDKDe+N7GfLak6AwUewnOUs=",
-              "el.js": "j28fI97Dpc2+I/lubMAILrsyyYJ8sLAQD25evTEjbgA=",
-              "en-au.js": "0UoPU1Y1R4xEsUKaexZOdf/6jzjABPu907m/ISH5U7w=",
-              "en-ca.js": "kpKNIztq/BtABS2pxMFp9qfWcujYy5rhxVjO431BC2M=",
-              "en-gb.js": "eqSReQJI3nL9OsdOFoY1ZZsSQ0JWDrzqLK002OnJSi4=",
-              "en.js": "OZJL/dYFx8bf24XM6tqge/4VHDdRorCz9nNaGGStO1o=",
-              "eo.js": "aSrDpjwUmwq9/1M74F3KuKTiwuuZz93YxEhWPyG6cvo=",
-              "es-mx.js": "AQbT6mphLWA/AnaRnGJ/hgltDKZf7N4o3WSErbJ0oHA=",
-              "et.js": "9eQla17YvHjYY7lmiyZZcNwQu+DRmohmaWr3KTC/HjY=",
-              "es.js": "W2KiNP7pyk5IqhkrdaYju5EaglGmflv1Mua+/+54r9g=",
-              "eu.js": "n7rZCgBGXHOezhr6cohr9pAZ/fhKoDcyIMsl6s60ckU=",
-              "fa.js": "Bye1qmyq7yLvHdgQbsh+dEbOdFIek1dSR3+7LnnW2tU=",
-              "fi.js": "hleCPHsp5j6JsthYQC7ZnzGrQlYssXZYoZKE6buEImM=",
-              "fo.js": "Zs3IrouWJU6bwpMWQ69tJWDjVPE0lGxlrjT0u9j+YF4=",
-              "fr-ca.js": "JJLmzaP44J4e5Y492kyd/y5HAaCZs8EjjqY/mtkI9bo=",
-              "fr.js": "Hgsoit90LXVRgmBTUpz1kTV5hYE0n30gaEPvIX0sfuA=",
-              "gl.js": "XD4EwcT1IYAKUL8FPNHltdGJ+MzCj746FOWOMRQs37M=",
-              "gu.js": "KceiWKUETdmmDAEuNwmkQRp6bwkpjA0MXcxYLLS/tP4=",
-              "he.js": "rbEBQiEC2yckF2+7nJGcxyLbQJ4Y2ys+/z6mIO9rdBc=",
-              "hi.js": "ZXJ+rPRtno+fwv6IDQk4do45AAvYkqHAIGlFEh6fMqE=",
-              "hr.js": "zr6Nhe+YgU5sIaOtNz651dpZGZ2Vba9sCSpz3pw5gC4=",
-              "hu.js": "hjJxBWepKLqR7QJfnLaoYmS3tebMF++G0cnTyKWl9gg=",
-              "id.js": "WHYRVyJqx9IM4zMH3SG9TD+0E/T48i1xC3qdsUTBLds=",
-              "is.js": "7hSviEcoueBciCmbr/KfyX3k0FnzuTPXdZGdHk+QvfY=",
-              "it.js": "vYvjlTS7hXYLdB2JgQ8y1NtdivPiLTHJOmnO4edq2/g=",
-              "ja.js": "aN1E+yZskmrvF+6GKBtCzzafvRVJpFA3easUASwaJM4=",
-              "ka.js": "i4wIkmLs0lSfN+RFeInVHsvU/3Uw9BG09ft0dGOrYng=",
-              "km.js": "QFK332qIwqqJ7UOkb19iThQ7nWPA8hZw5QR7lmFWMeY=",
-              "ko.js": "YXIBuGjFHe0rMpuey1M+LaebyyhjiDXSyDEa5zSN5c8=",
-              "ku.js": "4UI1+IiwQd7dNrzRmcLPfRfpwyoQP0K9uKtPtHC0bFo=",
-              "lt.js": "k698mrjiE7XUnOXwKWi7paQ77vHxjRLXDovDda6n4oA=",
-              "lv.js": "efS26zjdEECN8fojY/XAMnTe87pfHpFBszZ3tPynGR8=",
-              "mk.js": "50K7gPr5mSwtr92Prn/ftaYArjYGVQwbk98PxGFuJCM=",
-              "mn.js": "orneFLFkkA2qiN2l4Yq6e+ktjJvqF7MzqtVCCkwTqys=",
-              "ms.js": "NYbxnITLmHgwSV5DRmRoRq3vHnSgiOhItB3xvc8QcRk=",
-              "nb.js": "1c37gkciBkyPpdATci1qr5xjuTgawYsG+xbqRPdp9c4=",
-              "nl.js": "8NAiPyYWqPftlNKgonkwePSDI2qdYGhiXAjVmRPUgDk=",
-              "no.js": "7NQF62/laRwCbbJ/ODC2CyOmYML9Uyb0TBCQUsG2tRs=",
-              "oc.js": "zxRhAznifX81v9JH+NbzNKhu6y7oEqFQPXkRCZmb7Ek=",
-              "pl.js": "na6l2oWaGOSEiO1w2bKMQ0B4EzBcKBVgStSpjFeZJow=",
-              "pt-br.js": "WjoyC3LZ4O7rm8uDdk1B4eU/PNAexyouUrWwEL+1X2Y=",
-              "pt.js": "bQX2CUTS/vJioY2dcoTbPX6ZI7hl3LInkAK+64SCbuw=",
-              "ro.js": "22bM1jV0y8Ak9JsU+P257Twi9bzEwEJLl7ee+WIQ7kc=",
-              "ru.js": "6SdRXeOVHjts/v1JmL/APXN0+rzhmXnXFOcKXbV//fk=",
-              "si.js": "9RxmrIgI8BPGRXtZ38MGqfJRQ4oSkB526bV/hqBcwJs=",
-              "sk.js": "8mFcDNDcLeZ+hzJ5N92fsICoIiXK3DkngmtxT0gEYTg=",
-              "sl.js": "S+MOvXT1/RlyuWaembTmf0EDwkdMIAmhJ17HCwHf0wg=",
-              "sq.js": "qfCKEERdqV8aH0VmONzs23f/YOQ0RI6Pv0T5iXlIIto=",
-              "sr-latn.js": "lAG/ZpeGuXFGpnYIBTILYHziil0eS6ZlqHUdBWTZyYQ=",
-              "sr.js": "BC63xQ/ZsVuLbjpL29e8du/5OinC5R8poZYlqhULbBY=",
-              "sv.js": "tuRrVlKEJascAMj+4odUIZNmFTNyR/3dAmSJUnVvFAw=",
-              "th.js": "HY+TEviuJ86iK/dIyY4SdplBapA2GIL5/cQJge3htMA=",
-              "tr.js": "Ucum5qGcjV1sP0nziPjOj+VW4nx2CkZKbAaLBhKaVco=",
-              "tt.js": "P3Q/OTlaAQ0ud87gnm1XJ2dmcSw9WJdR+wA0rVxtpxE=",
-              "ug.js": "TtA69k/U3dMnPnyp55RvDaPuFloRUBI9yZOEY7TBkBo=",
-              "uk.js": "qs9QIYdyw6/c26JpjpwBB4tCB3tew/kM1X51L03X9lk=",
-              "vi.js": "Hl4jFv2/RRZHdnKxTarcoTOB2MDbSWYYV+BxroHCWic=",
-              "zh-cn.js": "7NqLSAlut4Azb7dDf6aqW5B8kdGuBFZCbJvHB7GF4Qc=",
-              "zh.js": "eWAmjqRP1Z9RrXFjBY52L0Om1JChV8JdPw7MtSH8SoM="
-            }
+            "plugin.js": "g0tQUqQSk/rXQcEFSV4rtyBXFE2sCAX261bW8vAq8qw="
           },
           "embedsemantic": {
             "plugin.js": "zZES0jpbgVSwI1uhmN9IEVnMTgRpLZl835/jJbKBwv8="
           },
           "filetools": {
-            "plugin.js": "drWkBIgf05hWy8f+bgFwkS0JOs/QeIB4N6UIg//5ic0=",
             "lang": {
               "az.js": "esOdpK1sZ8SuZQzctD3v7KOk9Q4VLGToFNXmtCBFYcs=",
               "ca.js": "vYWgWh485cZOmoWEOse7GzXyy0CG8TpvV6Ut9ooau0c=",
@@ -1294,10 +1017,10 @@ defineManifest({
               "uk.js": "aq//eCg28zQirXSoxBGoSLWoV/RjvHw/VNU2PBtCSmA=",
               "zh-cn.js": "XhybfxekOrb5UrFygpt1YOQB79feet+dWlBwzQ24UKA=",
               "zh.js": "mO7dJBKyigDJ0Nq3aiP0NqYe6YZ+Uvo1S3laYaN2gRE="
-            }
+            },
+            "plugin.js": "drWkBIgf05hWy8f+bgFwkS0JOs/QeIB4N6UIg//5ic0="
           },
           "find": {
-            "plugin.js": "JBchO58qyUBDOdUCroHrhSmossnRtxsNz7XjiUnMuSU=",
             "dialogs": {
               "find.js": "VMjHzB4NgC/dmi+r1lxn2ozatpMabYPQ46S59Pppbhk="
             },
@@ -1372,10 +1095,88 @@ defineManifest({
               "vi.js": "ni9LBxjU+yle96ut4FHVMi+K4+leIBNPlbBUxJ3im38=",
               "zh-cn.js": "QUd9RGR8osSb/HiWY3YAHrBE0uMlGWIqRtZUC9iDtsI=",
               "zh.js": "0eadzJmssEr4kZfUNvtHNnbTEgChZ56OfkJJ03TILao="
-            }
+            },
+            "plugin.js": "JBchO58qyUBDOdUCroHrhSmossnRtxsNz7XjiUnMuSU="
+          },
+          "flash": {
+            "dialogs": {
+              "flash.js": "GcAIFiIIYkRLRocTj/xPLMgAlIKoCYSry9AWmnr/pGw="
+            },
+            "lang": {
+              "af.js": "kWEG6YxhRPZodNVQpfN31dUCbfMdXguuejjiKBZIH3Q=",
+              "ar.js": "YYpb3TJru3Y/ZnaDEn2Mx86wONT3icA3+qeC7SaThxE=",
+              "az.js": "Z5AuvZx+SzPz72S5k/hCQpLY6ws6rEqTena/Q/w+FAo=",
+              "bg.js": "ZFytokl1itsPuSE03/twlKT1pydfmI+/XqLF6n62S9I=",
+              "bn.js": "8uuS0ihue4Xph+OPKu56yeE9ZLUFLTwpBsCsH9fqTso=",
+              "bs.js": "6slhbOgt9t1QrqUXqF90xdTBtFR3Szy7dSdTuXDq07I=",
+              "ca.js": "XZMU96yoqhfO2/InD5Bj9fey5LqLcp8h+a84j9h/GPY=",
+              "cs.js": "vH/p80rPMjrKwREBwbyIYmFwkxwlNF1hNDb8xJ+zeO8=",
+              "cy.js": "7QjjarpfjC+JjAku9dIj/6P6ivAXiLtrRXwHIqJgpRQ=",
+              "da.js": "JvOmrk4SEbhR6gj/ICDnVyCPL0kCx22p6I7qFwr52kc=",
+              "de-ch.js": "ygiCi9kjxp6X8zfgzlH0K/Ziz2tgmqtEZuKHGwt/cOg=",
+              "de.js": "j9Fc/jA9qmSqQWkommPQmDKDe+N7GfLak6AwUewnOUs=",
+              "el.js": "j28fI97Dpc2+I/lubMAILrsyyYJ8sLAQD25evTEjbgA=",
+              "en-au.js": "0UoPU1Y1R4xEsUKaexZOdf/6jzjABPu907m/ISH5U7w=",
+              "en-ca.js": "kpKNIztq/BtABS2pxMFp9qfWcujYy5rhxVjO431BC2M=",
+              "en-gb.js": "eqSReQJI3nL9OsdOFoY1ZZsSQ0JWDrzqLK002OnJSi4=",
+              "en.js": "OZJL/dYFx8bf24XM6tqge/4VHDdRorCz9nNaGGStO1o=",
+              "eo.js": "aSrDpjwUmwq9/1M74F3KuKTiwuuZz93YxEhWPyG6cvo=",
+              "es-mx.js": "AQbT6mphLWA/AnaRnGJ/hgltDKZf7N4o3WSErbJ0oHA=",
+              "es.js": "W2KiNP7pyk5IqhkrdaYju5EaglGmflv1Mua+/+54r9g=",
+              "et.js": "9eQla17YvHjYY7lmiyZZcNwQu+DRmohmaWr3KTC/HjY=",
+              "eu.js": "n7rZCgBGXHOezhr6cohr9pAZ/fhKoDcyIMsl6s60ckU=",
+              "fa.js": "Bye1qmyq7yLvHdgQbsh+dEbOdFIek1dSR3+7LnnW2tU=",
+              "fi.js": "hleCPHsp5j6JsthYQC7ZnzGrQlYssXZYoZKE6buEImM=",
+              "fo.js": "Zs3IrouWJU6bwpMWQ69tJWDjVPE0lGxlrjT0u9j+YF4=",
+              "fr-ca.js": "JJLmzaP44J4e5Y492kyd/y5HAaCZs8EjjqY/mtkI9bo=",
+              "fr.js": "Hgsoit90LXVRgmBTUpz1kTV5hYE0n30gaEPvIX0sfuA=",
+              "gl.js": "XD4EwcT1IYAKUL8FPNHltdGJ+MzCj746FOWOMRQs37M=",
+              "gu.js": "KceiWKUETdmmDAEuNwmkQRp6bwkpjA0MXcxYLLS/tP4=",
+              "he.js": "rbEBQiEC2yckF2+7nJGcxyLbQJ4Y2ys+/z6mIO9rdBc=",
+              "hi.js": "ZXJ+rPRtno+fwv6IDQk4do45AAvYkqHAIGlFEh6fMqE=",
+              "hr.js": "zr6Nhe+YgU5sIaOtNz651dpZGZ2Vba9sCSpz3pw5gC4=",
+              "hu.js": "hjJxBWepKLqR7QJfnLaoYmS3tebMF++G0cnTyKWl9gg=",
+              "id.js": "WHYRVyJqx9IM4zMH3SG9TD+0E/T48i1xC3qdsUTBLds=",
+              "is.js": "7hSviEcoueBciCmbr/KfyX3k0FnzuTPXdZGdHk+QvfY=",
+              "it.js": "vYvjlTS7hXYLdB2JgQ8y1NtdivPiLTHJOmnO4edq2/g=",
+              "ja.js": "aN1E+yZskmrvF+6GKBtCzzafvRVJpFA3easUASwaJM4=",
+              "ka.js": "i4wIkmLs0lSfN+RFeInVHsvU/3Uw9BG09ft0dGOrYng=",
+              "km.js": "QFK332qIwqqJ7UOkb19iThQ7nWPA8hZw5QR7lmFWMeY=",
+              "ko.js": "YXIBuGjFHe0rMpuey1M+LaebyyhjiDXSyDEa5zSN5c8=",
+              "ku.js": "4UI1+IiwQd7dNrzRmcLPfRfpwyoQP0K9uKtPtHC0bFo=",
+              "lt.js": "k698mrjiE7XUnOXwKWi7paQ77vHxjRLXDovDda6n4oA=",
+              "lv.js": "efS26zjdEECN8fojY/XAMnTe87pfHpFBszZ3tPynGR8=",
+              "mk.js": "50K7gPr5mSwtr92Prn/ftaYArjYGVQwbk98PxGFuJCM=",
+              "mn.js": "orneFLFkkA2qiN2l4Yq6e+ktjJvqF7MzqtVCCkwTqys=",
+              "ms.js": "NYbxnITLmHgwSV5DRmRoRq3vHnSgiOhItB3xvc8QcRk=",
+              "nb.js": "1c37gkciBkyPpdATci1qr5xjuTgawYsG+xbqRPdp9c4=",
+              "nl.js": "8NAiPyYWqPftlNKgonkwePSDI2qdYGhiXAjVmRPUgDk=",
+              "no.js": "7NQF62/laRwCbbJ/ODC2CyOmYML9Uyb0TBCQUsG2tRs=",
+              "oc.js": "zxRhAznifX81v9JH+NbzNKhu6y7oEqFQPXkRCZmb7Ek=",
+              "pl.js": "na6l2oWaGOSEiO1w2bKMQ0B4EzBcKBVgStSpjFeZJow=",
+              "pt-br.js": "WjoyC3LZ4O7rm8uDdk1B4eU/PNAexyouUrWwEL+1X2Y=",
+              "pt.js": "bQX2CUTS/vJioY2dcoTbPX6ZI7hl3LInkAK+64SCbuw=",
+              "ro.js": "22bM1jV0y8Ak9JsU+P257Twi9bzEwEJLl7ee+WIQ7kc=",
+              "ru.js": "6SdRXeOVHjts/v1JmL/APXN0+rzhmXnXFOcKXbV//fk=",
+              "si.js": "9RxmrIgI8BPGRXtZ38MGqfJRQ4oSkB526bV/hqBcwJs=",
+              "sk.js": "8mFcDNDcLeZ+hzJ5N92fsICoIiXK3DkngmtxT0gEYTg=",
+              "sl.js": "S+MOvXT1/RlyuWaembTmf0EDwkdMIAmhJ17HCwHf0wg=",
+              "sq.js": "qfCKEERdqV8aH0VmONzs23f/YOQ0RI6Pv0T5iXlIIto=",
+              "sr-latn.js": "lAG/ZpeGuXFGpnYIBTILYHziil0eS6ZlqHUdBWTZyYQ=",
+              "sr.js": "BC63xQ/ZsVuLbjpL29e8du/5OinC5R8poZYlqhULbBY=",
+              "sv.js": "tuRrVlKEJascAMj+4odUIZNmFTNyR/3dAmSJUnVvFAw=",
+              "th.js": "HY+TEviuJ86iK/dIyY4SdplBapA2GIL5/cQJge3htMA=",
+              "tr.js": "Ucum5qGcjV1sP0nziPjOj+VW4nx2CkZKbAaLBhKaVco=",
+              "tt.js": "P3Q/OTlaAQ0ud87gnm1XJ2dmcSw9WJdR+wA0rVxtpxE=",
+              "ug.js": "TtA69k/U3dMnPnyp55RvDaPuFloRUBI9yZOEY7TBkBo=",
+              "uk.js": "qs9QIYdyw6/c26JpjpwBB4tCB3tew/kM1X51L03X9lk=",
+              "vi.js": "Hl4jFv2/RRZHdnKxTarcoTOB2MDbSWYYV+BxroHCWic=",
+              "zh-cn.js": "7NqLSAlut4Azb7dDf6aqW5B8kdGuBFZCbJvHB7GF4Qc=",
+              "zh.js": "eWAmjqRP1Z9RrXFjBY52L0Om1JChV8JdPw7MtSH8SoM="
+            },
+            "plugin.js": "ftwol26RTOH+96rlvstlz4iTK9BuWLyfhfbitGlQCoU="
           },
           "font": {
-            "plugin.js": "RYQWTvD6H8W18ff9YDBy39+3X37zGRsPd/VwEWj1oPo=",
             "lang": {
               "af.js": "NxgQ5SxK+kxXBPOgX1wT5fPsFbbwocHICYvTOyoOVEg=",
               "ar.js": "9MMyEvKdDXE2NH19cqlf910Mn+gy6QzOpw85jH+jsBg=",
@@ -1447,10 +1248,10 @@ defineManifest({
               "vi.js": "DWFuOdFOiH+03hAjlzR5pqfdveqQ7czAr0zpgfyrGck=",
               "zh-cn.js": "3EppzTHFKNPLfznuoEtEafHzz7hGZDZi+scRFd39WfM=",
               "zh.js": "oO081+cXywwrSuaGSMbf00rXRWUA20l+wAkjLNMXRI0="
-            }
+            },
+            "plugin.js": "RYQWTvD6H8W18ff9YDBy39+3X37zGRsPd/VwEWj1oPo="
           },
           "forms": {
-            "plugin.js": "BPXD7sdAiiHjRCDF9E7goNRKqnH/vGbOyLbUNYyEfc8=",
             "dialogs": {
               "button.js": "y0etm0/UWWaNNuWTtXdMCfEoC9+SF5Aq+I2Qtal56BM=",
               "checkbox.js": "Zf3NfZyNzwOEt34aTMNy8JVilPJrUn+p6PN4Bq2ZVWg=",
@@ -1532,10 +1333,10 @@ defineManifest({
               "vi.js": "vHHhmScobRPKzsa2wY9ETj6KfV+/gPMJaz/zDpc7ZK4=",
               "zh-cn.js": "9oTXZPX9Zqswz//ygk7jfLAUkoXY49B5tqHKTE93ob4=",
               "zh.js": "mDscMeLaO5PVrkqr7cAlF0jH/EFkLhyYeumu1Ya5jXU="
-            }
+            },
+            "plugin.js": "BPXD7sdAiiHjRCDF9E7goNRKqnH/vGbOyLbUNYyEfc8="
           },
           "iframe": {
-            "plugin.js": "9r5lydpHK+qS9/87yv24Ug1s5d57ZVUR7RHjFj2A648=",
             "dialogs": {
               "iframe.js": "PXXOhNUy5B0lj/fp7YTB5ELBMHuJ7B0akQvSC4oFmqo="
             },
@@ -1610,13 +1411,18 @@ defineManifest({
               "vi.js": "RSw222gAMqCK4wTqJ6zoVT2iPgCN6sIvtvrAUmYi/MY=",
               "zh-cn.js": "n6APCrHHxAjiDTUkzpyrD7RKdFl4GY4Vl4OWriPt+yQ=",
               "zh.js": "VUM6+6n6url3d4KV8/6gS5ugGcSKhWaiuugQzylQIgo="
-            }
+            },
+            "plugin.js": "9r5lydpHK+qS9/87yv24Ug1s5d57ZVUR7RHjFj2A648="
           },
           "iframedialog": {
             "plugin.js": "5+oxHy0XzPUsAJhu3ZgkdgyobyeVL+3oXUwnpQ4igjs="
           },
+          "image": {
+            "dialogs": {
+              "image.js": "AhSbsJrB01CvglnQysy35gNk8JHoDaIJn19f1sOFX3M="
+            }
+          },
           "image2": {
-            "plugin.js": "XwddLVQed5hhTefaxkkftJk9qrjK9pIKBkEfICBfAII=",
             "dialogs": {
               "image2.js": "xR+UZzZ1oH8T0ggYCEo/ZiR7FCRDiLfVWLX4lk1AAqU="
             },
@@ -1691,10 +1497,13 @@ defineManifest({
               "vi.js": "xd1Ynf6LUVLpGxvg4YaR1jVS7ohZopqmXPFMk9r6h0Q=",
               "zh-cn.js": "j+U7mZWjOi9Mc0raHK6zWSivCUPOoIVazKTp6UaLiGw=",
               "zh.js": "GntETSO8c/V7TsCwO+3n9Ga/DVdyvPA7mz4SPVG0KQs="
-            }
+            },
+            "plugin.js": "XwddLVQed5hhTefaxkkftJk9qrjK9pIKBkEfICBfAII="
+          },
+          "indentblock": {
+            "plugin.js": "/Sq/oNc+XYiGHRKQstU/51v2RKv7YgY9aKFEP5WJ9Ic="
           },
           "justify": {
-            "plugin.js": "wBpVO/8EI1l5SBLNz6ll1C7VsddGz6beF54oYqFKUnE=",
             "lang": {
               "af.js": "FfWN15RScBFCrNhxfhHDr6ZYxFjkxT6V6Y5usklWVDk=",
               "ar.js": "9Kung8uvHQhSwfCWc3yACsrpTrdYZr1DkdZdM0ebBlw=",
@@ -1766,16 +1575,10 @@ defineManifest({
               "vi.js": "bTNuyc47W7a3+p93Z1YlujFYg0ECmKxF+zSdM+OwI0Y=",
               "zh-cn.js": "EE9vEofhvsEFI3j+SsEgZMxMLJjmmL4HQFMb0UCWvpI=",
               "zh.js": "61xcJ1PfWzi769Lsx5T/3i6HVGpzDnkIwzBa8G0rhTw="
-            }
-          },
-          "lineutils": {
-            "plugin.js": "oFOKAP5IvckLIJokYOj0gGsLQ/amCl3nL13RoRNH2xE="
-          },
-          "indentblock": {
-            "plugin.js": "/Sq/oNc+XYiGHRKQstU/51v2RKv7YgY9aKFEP5WJ9Ic="
+            },
+            "plugin.js": "wBpVO/8EI1l5SBLNz6ll1C7VsddGz6beF54oYqFKUnE="
           },
           "language": {
-            "plugin.js": "p0O5SNxRN4w7K4bwLiwVP8aDl6B61ijVhMW3+NWO0MM=",
             "lang": {
               "ar.js": "UW5niq7AYckzHcTJ2oOtaQvkwitkJZFH9qjeMnwh7bU=",
               "az.js": "PkHSbCssVJ111frm+xKUX8owVoN3jU8KK/QrDqseeVM=",
@@ -1826,10 +1629,19 @@ defineManifest({
               "vi.js": "Bu9DUsXdbiWj6gGbPa1rD+syQEQumwWjGcVyufTN3zM=",
               "zh-cn.js": "ATL9fXsJSYG+GFQZpSahz8NwuGS06Wg+ou45Z1u+7go=",
               "zh.js": "1tkqngJTQbsWK4cP+1H9jYLJf5naNrxDM0CfQy3jk78="
+            },
+            "plugin.js": "p0O5SNxRN4w7K4bwLiwVP8aDl6B61ijVhMW3+NWO0MM="
+          },
+          "lineutils": {
+            "plugin.js": "oFOKAP5IvckLIJokYOj0gGsLQ/amCl3nL13RoRNH2xE="
+          },
+          "link": {
+            "dialogs": {
+              "anchor.js": "RTUJg6rp4zDRhgz+NoJaRHsmP9dZRMcibXxRaZ2dW+o=",
+              "link.js": "I2zfP1lOl7/LmeSfYLtclCssb1Lq7fPzSZi8vpR/U2k="
             }
           },
           "liststyle": {
-            "plugin.js": "cXiwIhB8tgdbC8YuoK7JP9I2qSYBE8GZv6XiPIXAL1c=",
             "dialogs": {
               "liststyle.js": "ItT8t+JXbx/4QOyvUtJphcKNYoOFSDaQyCjGb8sy0H8="
             },
@@ -1904,10 +1716,69 @@ defineManifest({
               "vi.js": "/WwM1JVAfC4OB6qfu/fvCXOyQ74EXgZcCb7v9VP0Og8=",
               "zh-cn.js": "Oth+LUqwi4b2MLMSU/VPlOMIz9ogMtqwhI8Faa7ZTwc=",
               "zh.js": "KuQq7A87Hwv+aDQ2k9uuomRiu2AnbBJgQg0T8WProRM="
-            }
+            },
+            "plugin.js": "cXiwIhB8tgdbC8YuoK7JP9I2qSYBE8GZv6XiPIXAL1c="
+          },
+          "mathjax": {
+            "dialogs": {
+              "mathjax.js": "evDC/0DoBmQxSLt1vOLX3TGH7D15kU/vLHaUBAjQ7I0="
+            },
+            "lang": {
+              "af.js": "fAFaXLTZ4bei6HY4RkJ6IrpZj6Y1vcLjMirhGZgzxzU=",
+              "ar.js": "sqVPIg0v5CNTqeK1nAwnMACsTs4rwmT0W5zbEeBbT2s=",
+              "az.js": "2wVazoYFaD5jAoTLnhNeZbquuePLF4T0g7fCGnBf3KI=",
+              "bg.js": "dXvpchTXpLqFPXfjXAY/upb8lEFPxbwJCORsbEOt6vA=",
+              "ca.js": "08Za1QWYfv3v5y3mZmA/m49bhHP40PoJ206dMe7VAT8=",
+              "cs.js": "K21yW2fQAk0dS6en1VriBg7Fn7/eoiTDTng2qqbNJ2A=",
+              "cy.js": "0PbL/0ZZ/D+7Y1YxHcv2Or2sJbCtsjBOn++3BQvNf/o=",
+              "da.js": "JHygcAFuNRgF6/BbzjJsyRmXOvToCizhYBlVBOArSJ4=",
+              "de-ch.js": "9PQprANOOW1aueQtTgWGFwsmGbKVcLLf0ybAUx1L+W4=",
+              "de.js": "yvucRNUUfN1NFMwX5H3dNEITmkll0G9EjCdCCAvhJm8=",
+              "el.js": "04Pd7k2M05SOPo1FwONJqRfMPskm0MX8LIwtjXE0qPM=",
+              "en-gb.js": "9LGrrd5881Bkuj3Yek5ZntMjUjyW0PvVgaQgPieFaGs=",
+              "en.js": "MtuuDOzEQ1ZY6Yd2pdBOYTF4Fl2yfdGRVUGRnw8fkTM=",
+              "eo.js": "rUahc3n8sNXL/py5kqQYkXb2aak+B959gtdo9ufnFAY=",
+              "es-mx.js": "YOxtEVJhhcz/i+ywF7ajfGFC4jtZ5Z/l0YC7uGKq8OM=",
+              "es.js": "ODMV4uPiFX6guBl/qVDowryTOMPC633kyz3Kkroar94=",
+              "eu.js": "wkGqjhjXDsPZqWmNfwnsNjA9czZfHoN1kc+p76C0sNw=",
+              "fa.js": "qLpxGRDJRHlAFQEkcclPJu6dlWh2H4dRuh/M6MIXn10=",
+              "fi.js": "PK6iX2ss9188mVyHK0wVgE/Gpj+kjx5QgelbPBYmqp4=",
+              "fr.js": "x7FsQHQVb9MfCQLcUQvb+ShlGzrq9VtaeV99reDPnb8=",
+              "gl.js": "CBHPfVVOLFyHqsEuvIuZWxAvB1cqz13QwGCCIzuGhFk=",
+              "he.js": "7WJ1BqAJatFJtqsKn8fLbJo5N20qhP0qsWgcm5RP+ac=",
+              "hr.js": "rRPH40qobjKmnJNVDVPGzXoH1acm0cKMy+hJGEMMSDI=",
+              "hu.js": "iGxpYdmBRSsBaIEyaag81zBCcGiGaSS74InS+RKAtp4=",
+              "id.js": "IX6v4TrooBUBv+ZlpSK5fPmh3Lve3TnhO3Jek6q5QQU=",
+              "it.js": "MHnGKGErXPUqsIGs6+FKjr8e2/4gNXBDJ5kY3S7W8LQ=",
+              "ja.js": "PIKTkrVoSm8VYGQMSrgcu9eArLv7Za4yxbCghUzlAqk=",
+              "km.js": "lsFZ1Tv5xtrd1/WWYddUGI+imEIZde0oSroCT58W7i0=",
+              "ko.js": "N3LMB9VR4BGBrpUPu9ZT7j3a7vSJydyo5vRjsemk3zo=",
+              "ku.js": "LmCIGq2C/YA6CiCHF1Ydjk0mIDm1xfGw4uTPeJCZSJw=",
+              "lt.js": "Bd5U4C0QW5aVVpbXvlZ2/16L2YclSyUebd4jfhCxOLA=",
+              "nb.js": "kNCq6lMi2ZVWF2SMgEnBa4j+M9kw6aV+lO10TVoSu6g=",
+              "nl.js": "cVsvNg11euXRp1tiwh8d62tRSQtJW9VmZDrd5/Tim6w=",
+              "no.js": "CF1yXxLUJO3f7+X12bZuodpUclSl1v8wOszSFNiE3IQ=",
+              "oc.js": "H3ID5WeGH1CQ7FmlQ3NbcDpFb7ciaXeK/1Nig1owM1k=",
+              "pl.js": "RGfuHZGEB3lz6GygGYuF/BG5tmqQLnFf68rHmzAXO/4=",
+              "pt-br.js": "HOSr6IcBxTasxAZEjgvfYuSVSvrkFbXQ0VdQu4KYqRE=",
+              "pt.js": "KKl/w6ElMGum3IHvt07jpbUs9i7tJOXEHrMSD1DCM1o=",
+              "ro.js": "/vwCViZf3cMzdvWF1ZRVsM4OjIcP1vEtX+1acrIDKsc=",
+              "ru.js": "8ZOs2LGU0qQYfvc7pkdw8MF99cx5XIbS1e7+C77PCf4=",
+              "sk.js": "XDw6OPcwW9asdy3/ZaHYH2zx/PEWol5fHCR8395b4XA=",
+              "sl.js": "zFrPC6zYIiiDI4KP6iine/Jq20hGsrc9FGPXQFbcue8=",
+              "sq.js": "RPVgTrSAVgnNofJpoO3d5tYl6LhFZwP5d8ZUeRRtT0Y=",
+              "sv.js": "cXb9ttSpgLJRBGPGbFQcdYUa6wYSx8UUqq4iDuTaCVk=",
+              "tr.js": "HZlD9kYw+zdPBMRQ5c/8as6zeEsXVpXs75BJZ/boGs4=",
+              "tt.js": "1fRLozz2kEXJgbv9w12hBoeBRDupzPCHnI/9Ev4BTcc=",
+              "ug.js": "rTuDuTPtE4KFwXPT1i+uLTGrRdngZt0P1ywQ5NMuPBo=",
+              "uk.js": "a2Bf9E8z58+yQ1rtxF94ZCVrAfcMgWbvWVMlrFI0Jgg=",
+              "vi.js": "BB8b+lwtwI2WA5IeVojK2h8K/ya5XmcKw7UImhSTDyI=",
+              "zh-cn.js": "AcSfZXttHh+lJgqXKbooIKZz12V2CP3RHW5Y2+1Sbeg=",
+              "zh.js": "9CiDockSfOTs7lbw3at4iYnRcuDhI815afAqTjxhWIs="
+            },
+            "plugin.js": "dVOQxr2bIcgfypMKlRhSd5p/lTnhDQftPXXl/uLT/B8="
           },
           "newpage": {
-            "plugin.js": "LFqd375oCQEyZ1hFerYxq7y/uMHR3XVwdLUSeK3zMb8=",
             "lang": {
               "af.js": "7rl7vmyGyXRmGlOmTDG/uA/zujMEqr9pS7JLqdn5K7Q=",
               "ar.js": "efjq3cMP2YVQS9Mw0FIb6sqhX+a2rDonNpb84GEx7qo=",
@@ -1979,72 +1850,13 @@ defineManifest({
               "vi.js": "56+bCqmX1qdy0y2p6gfD+czx8q6o/OhTfLgIh1tjmtM=",
               "zh-cn.js": "0jZUgnKFCCc3aREeB8dQl2S6myVntB6ZDxYvCzZpyDs=",
               "zh.js": "K9TUq7dNoi2E6VEOw/rJrNq+zYlFrhPtLrTyjikkgAk="
-            }
-          },
-          "mathjax": {
-            "plugin.js": "dVOQxr2bIcgfypMKlRhSd5p/lTnhDQftPXXl/uLT/B8=",
-            "dialogs": {
-              "mathjax.js": "evDC/0DoBmQxSLt1vOLX3TGH7D15kU/vLHaUBAjQ7I0="
             },
-            "lang": {
-              "af.js": "fAFaXLTZ4bei6HY4RkJ6IrpZj6Y1vcLjMirhGZgzxzU=",
-              "ar.js": "sqVPIg0v5CNTqeK1nAwnMACsTs4rwmT0W5zbEeBbT2s=",
-              "az.js": "2wVazoYFaD5jAoTLnhNeZbquuePLF4T0g7fCGnBf3KI=",
-              "bg.js": "dXvpchTXpLqFPXfjXAY/upb8lEFPxbwJCORsbEOt6vA=",
-              "ca.js": "08Za1QWYfv3v5y3mZmA/m49bhHP40PoJ206dMe7VAT8=",
-              "cs.js": "K21yW2fQAk0dS6en1VriBg7Fn7/eoiTDTng2qqbNJ2A=",
-              "cy.js": "0PbL/0ZZ/D+7Y1YxHcv2Or2sJbCtsjBOn++3BQvNf/o=",
-              "da.js": "JHygcAFuNRgF6/BbzjJsyRmXOvToCizhYBlVBOArSJ4=",
-              "de-ch.js": "9PQprANOOW1aueQtTgWGFwsmGbKVcLLf0ybAUx1L+W4=",
-              "de.js": "yvucRNUUfN1NFMwX5H3dNEITmkll0G9EjCdCCAvhJm8=",
-              "el.js": "04Pd7k2M05SOPo1FwONJqRfMPskm0MX8LIwtjXE0qPM=",
-              "en-gb.js": "9LGrrd5881Bkuj3Yek5ZntMjUjyW0PvVgaQgPieFaGs=",
-              "en.js": "MtuuDOzEQ1ZY6Yd2pdBOYTF4Fl2yfdGRVUGRnw8fkTM=",
-              "eo.js": "rUahc3n8sNXL/py5kqQYkXb2aak+B959gtdo9ufnFAY=",
-              "es-mx.js": "YOxtEVJhhcz/i+ywF7ajfGFC4jtZ5Z/l0YC7uGKq8OM=",
-              "es.js": "ODMV4uPiFX6guBl/qVDowryTOMPC633kyz3Kkroar94=",
-              "eu.js": "wkGqjhjXDsPZqWmNfwnsNjA9czZfHoN1kc+p76C0sNw=",
-              "fa.js": "qLpxGRDJRHlAFQEkcclPJu6dlWh2H4dRuh/M6MIXn10=",
-              "fi.js": "PK6iX2ss9188mVyHK0wVgE/Gpj+kjx5QgelbPBYmqp4=",
-              "fr.js": "x7FsQHQVb9MfCQLcUQvb+ShlGzrq9VtaeV99reDPnb8=",
-              "gl.js": "CBHPfVVOLFyHqsEuvIuZWxAvB1cqz13QwGCCIzuGhFk=",
-              "he.js": "7WJ1BqAJatFJtqsKn8fLbJo5N20qhP0qsWgcm5RP+ac=",
-              "hr.js": "rRPH40qobjKmnJNVDVPGzXoH1acm0cKMy+hJGEMMSDI=",
-              "hu.js": "iGxpYdmBRSsBaIEyaag81zBCcGiGaSS74InS+RKAtp4=",
-              "id.js": "IX6v4TrooBUBv+ZlpSK5fPmh3Lve3TnhO3Jek6q5QQU=",
-              "it.js": "MHnGKGErXPUqsIGs6+FKjr8e2/4gNXBDJ5kY3S7W8LQ=",
-              "ja.js": "PIKTkrVoSm8VYGQMSrgcu9eArLv7Za4yxbCghUzlAqk=",
-              "km.js": "lsFZ1Tv5xtrd1/WWYddUGI+imEIZde0oSroCT58W7i0=",
-              "ko.js": "N3LMB9VR4BGBrpUPu9ZT7j3a7vSJydyo5vRjsemk3zo=",
-              "ku.js": "LmCIGq2C/YA6CiCHF1Ydjk0mIDm1xfGw4uTPeJCZSJw=",
-              "lt.js": "Bd5U4C0QW5aVVpbXvlZ2/16L2YclSyUebd4jfhCxOLA=",
-              "nb.js": "kNCq6lMi2ZVWF2SMgEnBa4j+M9kw6aV+lO10TVoSu6g=",
-              "nl.js": "cVsvNg11euXRp1tiwh8d62tRSQtJW9VmZDrd5/Tim6w=",
-              "no.js": "CF1yXxLUJO3f7+X12bZuodpUclSl1v8wOszSFNiE3IQ=",
-              "oc.js": "H3ID5WeGH1CQ7FmlQ3NbcDpFb7ciaXeK/1Nig1owM1k=",
-              "pl.js": "RGfuHZGEB3lz6GygGYuF/BG5tmqQLnFf68rHmzAXO/4=",
-              "pt-br.js": "HOSr6IcBxTasxAZEjgvfYuSVSvrkFbXQ0VdQu4KYqRE=",
-              "pt.js": "KKl/w6ElMGum3IHvt07jpbUs9i7tJOXEHrMSD1DCM1o=",
-              "ro.js": "/vwCViZf3cMzdvWF1ZRVsM4OjIcP1vEtX+1acrIDKsc=",
-              "ru.js": "8ZOs2LGU0qQYfvc7pkdw8MF99cx5XIbS1e7+C77PCf4=",
-              "sk.js": "XDw6OPcwW9asdy3/ZaHYH2zx/PEWol5fHCR8395b4XA=",
-              "sl.js": "zFrPC6zYIiiDI4KP6iine/Jq20hGsrc9FGPXQFbcue8=",
-              "sq.js": "RPVgTrSAVgnNofJpoO3d5tYl6LhFZwP5d8ZUeRRtT0Y=",
-              "sv.js": "cXb9ttSpgLJRBGPGbFQcdYUa6wYSx8UUqq4iDuTaCVk=",
-              "tr.js": "HZlD9kYw+zdPBMRQ5c/8as6zeEsXVpXs75BJZ/boGs4=",
-              "tt.js": "1fRLozz2kEXJgbv9w12hBoeBRDupzPCHnI/9Ev4BTcc=",
-              "ug.js": "rTuDuTPtE4KFwXPT1i+uLTGrRdngZt0P1ywQ5NMuPBo=",
-              "uk.js": "a2Bf9E8z58+yQ1rtxF94ZCVrAfcMgWbvWVMlrFI0Jgg=",
-              "vi.js": "BB8b+lwtwI2WA5IeVojK2h8K/ya5XmcKw7UImhSTDyI=",
-              "zh-cn.js": "AcSfZXttHh+lJgqXKbooIKZz12V2CP3RHW5Y2+1Sbeg=",
-              "zh.js": "9CiDockSfOTs7lbw3at4iYnRcuDhI815afAqTjxhWIs="
-            }
+            "plugin.js": "LFqd375oCQEyZ1hFerYxq7y/uMHR3XVwdLUSeK3zMb8="
           },
           "notificationaggregator": {
             "plugin.js": "jVPKRfvBTC9us0N2sBf/blaS6HnLhMrkGFotjHDxU+k="
           },
           "pagebreak": {
-            "plugin.js": "35cUVeNFeqHoHIKWwH2pzPFNsc+aVLL0YY16ensOSEs=",
             "lang": {
               "af.js": "pxROzBkDIFw3c/XA1nJjjlqeJH5kyEKboXyTz09jerI=",
               "ar.js": "HSbG3k2TmSMF6wZj9SmD2BQUJPurmd0gnUU7wzvKMIY=",
@@ -2083,8 +1895,8 @@ defineManifest({
               "is.js": "6oGWWDDNaTfvQz8BaDAdXjmX0japXVrGiG9WIf133Ms=",
               "it.js": "nhwj98oUzm4vuWo9nZrM6VCnKcBYmmAWKiYWkmmQINk=",
               "ja.js": "C7co65TjZbrKvU3eBdJyDv7hrurMBOuythiGZX6+9Mc=",
-              "km.js": "MuaGDpzBc5zc5Lcw+ogKK+ijAINjgXOeRXN06nPi5Bw=",
               "ka.js": "1S1R+rZXDhU84Ju5xIYUEA32O6JJdk5PC/tH1UIk8Vg=",
+              "km.js": "MuaGDpzBc5zc5Lcw+ogKK+ijAINjgXOeRXN06nPi5Bw=",
               "ko.js": "z1TLbrd5oHhOXnHbzEzSPvDF6LjoF2tw8eRk+lKXHzE=",
               "ku.js": "RE6as2yxq6alPSV21+xJk7S4fn84yyfnYJ/mefZe49c=",
               "lt.js": "LBcHMkg+3EbDJJlUEzRHmVwDetkZs7aKhDA/Qn2aWNo=",
@@ -2116,13 +1928,18 @@ defineManifest({
               "vi.js": "QCnE0go0IuZeoohh3S68F6t+A3cyNI9URYFvZhrcFqo=",
               "zh-cn.js": "MBDvGQX4y0DM4tVINPcSkbFGHl/rYORSRE0Y67/JDDc=",
               "zh.js": "7lljWcTHjFGnOnlMxRIFGwUXdmLZl1NKaY4mykJRB54="
-            }
+            },
+            "plugin.js": "35cUVeNFeqHoHIKWwH2pzPFNsc+aVLL0YY16ensOSEs="
           },
           "panelbutton": {
             "plugin.js": "W1FN2iBW0jXLAFpjwFTixDgQ0q0DHi6mDXEEW/m0cII="
           },
+          "pastefromword": {
+            "filter": {
+              "default.js": "jt2qHbzYDfKzkhjFyDGUrB3vy/vg1ETubPPJdfdalcM="
+            }
+          },
           "placeholder": {
-            "plugin.js": "RqEAE5KOxQ9QF3byzwQNTsB3hnOwXkAa+lXmQXDnEIQ=",
             "dialogs": {
               "placeholder.js": "8vubELlZqjjpJzaBHehmXqqMAqX4GVEJUQlwKAxkOnc="
             },
@@ -2181,10 +1998,10 @@ defineManifest({
               "vi.js": "0Z2tJ3IW/eX5/DUNSPUqoujIcTcX0ifGYk7A2Eb5UZ8=",
               "zh-cn.js": "FpN65cFI7maO5/fPS+bTtkUGjQN34VcHYGk/8Au+940=",
               "zh.js": "w/Z8SMclBUh353c1NXjXqhtHm7cBKwRWjJDUGbFGsug="
-            }
+            },
+            "plugin.js": "RqEAE5KOxQ9QF3byzwQNTsB3hnOwXkAa+lXmQXDnEIQ="
           },
           "preview": {
-            "plugin.js": "UBp9FxSBEfZW/wW1RN4Qry5VYgwk6FjpDykPdr8/LCc=",
             "lang": {
               "af.js": "AmctYfhfScBEfJi2rfNzXGW113Uz69/HUO9kkWh54js=",
               "ar.js": "7BGsg00hCySrvDtlhKvPW6xRz/jlxR5d7zd4dkNc1XM=",
@@ -2256,10 +2073,10 @@ defineManifest({
               "vi.js": "EyQnWDujE5R/m27DDDphL2m9wabcHBur9LEGDx+tC/c=",
               "zh-cn.js": "9KEGLmHPb3JBKwiCgQrX2pHRhr/A/Xy89aHjVi+arHE=",
               "zh.js": "+/mFwBzLHUhrkX7nz/6ko2gjjgE9ljJBi4JEW4m2Cyo="
-            }
+            },
+            "plugin.js": "UBp9FxSBEfZW/wW1RN4Qry5VYgwk6FjpDykPdr8/LCc="
           },
           "print": {
-            "plugin.js": "4+PI/+gTroGNRHR8mpQfCz3fs1xLHgbffraxx1m40w8=",
             "lang": {
               "af.js": "HjV1aKJfMt8xdgJVToCdC1/ZpnOL/GYfx5oGW4q3hgo=",
               "ar.js": "ekEpNAO9AaEMroljfeJYBUUNxoEZw7U+TNYETpz9Ci8=",
@@ -2331,10 +2148,10 @@ defineManifest({
               "vi.js": "o03sojHaiV2O0weui/Y3uvgba1R+pPWnybD6kp7WYSE=",
               "zh-cn.js": "Ag1IAoYrZ568zoAYjoBY23plTl4tg3j0M/W49yIC6l0=",
               "zh.js": "HAx2Tkbp1JetbpTrsQgPIX69xtV8t/QZAPsmFFu0CLU="
-            }
+            },
+            "plugin.js": "4+PI/+gTroGNRHR8mpQfCz3fs1xLHgbffraxx1m40w8="
           },
           "save": {
-            "plugin.js": "L2vrVoySBcWILKpxtpJ3uz8vKBHK7oDqRHDR+FjR82c=",
             "lang": {
               "af.js": "JhlrvsVInW8LoItI9E2jywIrq5ZS5KLH4VeqHvZ8vjI=",
               "ar.js": "fEPtrFJO8IKSntYleiz/lSnjU5P++1zKITQhFLPZhzY=",
@@ -2406,13 +2223,15 @@ defineManifest({
               "vi.js": "7Bs53t81xGOvQP63X5LT2B8189TJiBXGcDwstpQgS68=",
               "zh-cn.js": "f7LMuC0m857S8NZLaCERnfP6yjtfJWz9MwS0oeRiNC0=",
               "zh.js": "GPZxHl0VIyUrF/58j9EFm0ay2bFx8c9HMsfSiV34tzI="
+            },
+            "plugin.js": "L2vrVoySBcWILKpxtpJ3uz8vKBHK7oDqRHDR+FjR82c="
+          },
+          "scayt": {
+            "dialogs": {
+              "options.js": "/gmJzslwAMyc39LPKJkK++g8UL6jM9wpHPYBi9x7R18="
             }
           },
-          "sharedspace": {
-            "plugin.js": "5305wrsEGaMSvi7vbREO/inuH1NgOWy/pqmBnte2Sl0="
-          },
           "selectall": {
-            "plugin.js": "tWUexl9T/HWR+mKmNranBKFxqtcS0Tw3TaqN1qh4huo=",
             "lang": {
               "af.js": "Y5Lbvi1D65tc6KEG6Cjl1Ki3O3VGuY2XYreJvP3qt+0=",
               "ar.js": "Uxi7ytgF2ufPVs4rFzrZhfhPdQ7a+OJLxobJyndTJzU=",
@@ -2484,10 +2303,13 @@ defineManifest({
               "vi.js": "PITvRYzNL3qrj6vJOyhBfHMrS3uIYt8iYFokeGcrMtc=",
               "zh-cn.js": "9YsTJvP/+qDf0awvbDq4YYsAkxZkLuw3LiqSAK8RfNw=",
               "zh.js": "YFpm2BUoI0zvRvZ82mK0QaF3t7xFn2+thmJQ5EB7xd0="
-            }
+            },
+            "plugin.js": "tWUexl9T/HWR+mKmNranBKFxqtcS0Tw3TaqN1qh4huo="
+          },
+          "sharedspace": {
+            "plugin.js": "5305wrsEGaMSvi7vbREO/inuH1NgOWy/pqmBnte2Sl0="
           },
           "showblocks": {
-            "plugin.js": "qRXAQ2e4t0a5P2DHRb/0UZB+fzslYLgWaNXROGu8nFU=",
             "lang": {
               "af.js": "h1X04WOmrC44ztt909o0k1OgFpvEQNt1FNzGlEDhyos=",
               "ar.js": "I5m9jfgDq1i0Bp1OfXlyFccKrZNl7fGll4SeVLvX/Uw=",
@@ -2559,87 +2381,10 @@ defineManifest({
               "vi.js": "IXNhrmYDQgDUPmBYqjeTN+op9l3lbMPF379iKUBvzCo=",
               "zh-cn.js": "G7g/iZlAmnD/6uCs41s8w3dpNjumfnIwXtQB5kKvcx0=",
               "zh.js": "fy+kawZVTugC2A9PSG3KBFp4gwXW+jlPdNNgR15le4U="
-            }
-          },
-          "sourcedialog": {
-            "plugin.js": "PGCziLJTqVK11g/YsSX30n4Ni+vu6s/uTtaNc5PgMOk=",
-            "dialogs": {
-              "sourcedialog.js": "qJG7Md6LB0Xsp1QSGbXYPJpLOsnApyqXrKP+LyGbGLM="
             },
-            "lang": {
-              "af.js": "bj1ATG1aadkgkb0UzfeR9gGZTqsXcadsxPfoWSPv6KA=",
-              "ar.js": "GiVOHtdExzh7HDn7wWfc6cEMPGliHZmMXSV3bq4DQEE=",
-              "az.js": "RpOIDdq6mndgWxSmCmW/QSdY0vFMqBFOIK30lmDl2yA=",
-              "bg.js": "VJ0Oi1O/wiTcLjzUTNnMID5ci+hOWkqM5/XwpI7V8EY=",
-              "bn.js": "sJ+/bOBBWY/bsqrnhRqA6x25Dpgn9heWQ1pVrSo2VJs=",
-              "bs.js": "6yVKK98WPu2hpnLIUJjszOeDGOXSNa71plPn+OpmT2I=",
-              "ca.js": "jQuQIXbrstNZc9vuY0Bqh23Z41Ti+H+HrQPgxGqEVms=",
-              "cs.js": "NGakrY4PzjqmjdHhOnjU6CmCLUAslYJl/Khd2ir+EKA=",
-              "cy.js": "OXwafQeJHpprqaNIWoIFPnEQzsWKBbn9/ykVtWDEb64=",
-              "da.js": "GFXfwDUlaV+TQmVdZGXK/iVptxMSdebt/1OI3TA9hb8=",
-              "de-ch.js": "Nd3zYtGW1dsEdqQpDvD5BV7pY6CVtqfRE7KXEy++xPI=",
-              "de.js": "Ny3lEXRrl88m90xgS0QX3PP3qeJetc34CwQRAXXWKF0=",
-              "el.js": "sIZJAamdEL75MhIfa5HCOJzQOGIJT0GdGEAzes+KF6E=",
-              "en-au.js": "eLk8digMBqXTErb0pMfWxWh7TUMmwQ/dDveT4ukE9ik=",
-              "en-ca.js": "aJ3kBfM6hjlzzkX0xbyyKPK1I0gAeJBXcBrL7LAstVQ=",
-              "en-gb.js": "NAVrrLHamDLIfEr0yDTIt9r4L+MLkcaOFPjcmZAieVM=",
-              "en.js": "jAk6kME9uq4N9cyrvVMUx3Kd+SVy/av4kx9PjIne1ZY=",
-              "eo.js": "irlay7nqnCRMkjDLHhEu3XQJ69+WM8PDXqD523+AK8Y=",
-              "es-mx.js": "6zooo84QVg4d1qWJT862BQjiIFIvRpMY6IvVLMiCyes=",
-              "es.js": "nM8kYr0eYWSEJtPpiTniJMEdEiTGtiwLaKYwevPrUJw=",
-              "et.js": "r4ynXBz1iUS3z8EvW5M/TLsRBT5c+jIAE/dGSzZkxbU=",
-              "eu.js": "EU4wP+0r7BXBRYWwdxk5G4O5ta14Sn+9qfYTwbZHx24=",
-              "fa.js": "U/Qifdyew0li8r++Uka59y1hgIQnbC4z8G41gckNStA=",
-              "fi.js": "dnZrIP5IAorsTWo/eM1kQfkDq2W/f3MUkWuxcl6B1YM=",
-              "fo.js": "zezBPE24WQcvXSzglIlB9M7JBd7rMfl8Tw2qsnQ1/Ec=",
-              "fr-ca.js": "QaLDxFsMoCRzomjNyy2H0tzpxhxmuB96h5yh06xSbuc=",
-              "fr.js": "SaLHw4YPIITe03p2sxKx4nS8muiEbXIHPC27uOXqDSE=",
-              "gl.js": "kGdIYtK1pRgunG43e0sAa5asZwgyZQvLck8PjUEW1Aw=",
-              "gu.js": "JvblgisF1gKng1fEMlM74pAaii9HXBuK9GQ1Iu11p5A=",
-              "he.js": "Ld7lgXiGNMo3ProGbAe7LAn9MBtwFgPAqRjv8AtvlB0=",
-              "hi.js": "ODjE8LtMfuMAji8oQey94h8eC0tarqbsW0KZek3l2J0=",
-              "hr.js": "sgLMn8GanIvgjdXbeeTYdKkGrmXzW3yjQYxrgqPurkk=",
-              "hu.js": "Hy9r2/wh0iNTEDlOabHw2pG6ehLOlEgpsbO/3mBgY+0=",
-              "id.js": "WdnjGP8Plnc4leJ4B3BgYe7WhfsGgn3Db2+iU7gP43Q=",
-              "is.js": "vwceFd8IRrifAp23WkU8szK6IGCTTaIkJ09TAmrAdfA=",
-              "it.js": "Tvui3+m4slJCUjoNaaInDkM4pnb87tdjT1dkpitpV24=",
-              "ja.js": "+CY25Y6tQj80DF9quDRNhjRnZqJ6/oebefeBOffmbLY=",
-              "ka.js": "CGv84s0LiSqmc6M0cFRmQ0P/1eroS+VD6qCd/HBL2aU=",
-              "km.js": "zSFFPii0g+o771+XS4Ry5BJwFiGiJ+z7M8hvYYejYkg=",
-              "ko.js": "MDxEcfT8SzpmiuxhpxL06X6bvUKCgdxJtSv1vkm2JWk=",
-              "ku.js": "u5iJoRGh3iH0+eXQHZR4ig5uV8MthXYiNu6C9O3go3g=",
-              "lt.js": "OqEOT1fKejFxEcX71xqDpMXiBM20S7Wab6xe0N0yBPk=",
-              "lv.js": "JxsbsnNfsMycPcr8ZGEOvnapGAc+fOcPcFgRTxm9w1g=",
-              "mn.js": "dmEq5kA9Wqo8zB4C0e9ETSWAnTxy7zSeyiX3LjlZy+c=",
-              "ms.js": "IOo1EyJshWJV5UdKO3smRSCFcw06Sb7HQ5kXR/gEvm4=",
-              "nb.js": "mmmHxwFnwFwbZF2CZSAIu3BDc8Sdj/51p6KlkzRoAnM=",
-              "nl.js": "zYuVjhtoozOxrAiSE8OXo2HQPSQZWY6k1QBqwv9iKqA=",
-              "no.js": "mrx27pcYNMDs+7AktbB3G7C6UNpClf5QHdg1C71MVs0=",
-              "oc.js": "TU0vk6lXlU+vx0BrGZTJ2kNEdN28ogvvH2iyNGoRkfc=",
-              "pl.js": "ZdtIUIZu5BNp4dhHE+XRqSGOiKtkIkvCfpZmiHQtV1U=",
-              "pt-br.js": "kmDqWE7mIPc97wouIzjSTuID6+aPfrMf4fNXVbwIQKU=",
-              "pt.js": "0ozPdbih4mhCqPo5moBfYW9zGuWpCUyrddga6pL73xI=",
-              "ro.js": "rWhtoJW+tXsOGMB/X8ABVdA9KOHyMt4YCasNnKajkvY=",
-              "ru.js": "MZgLRH1YuyaHVLQ3nWnN8pjGncpYd6EOevP6ns0rEfQ=",
-              "si.js": "yur+cbI0GNqEtzTyKrfO071f0n4cOVhUJmEh/qQwH1U=",
-              "sk.js": "N2XMH3+dLZwKF6//cb6lWgn4xXB0RjoFTtC2EJETYPc=",
-              "sl.js": "78eXg9wYHaxG99ldEG4jISTtV9Fc+xmo3VOefPfFxkA=",
-              "sq.js": "aPpQi8YU6rOglXCqAgqCUoQN4hj8raEecjBvvidEA2c=",
-              "sr-latn.js": "/nXkhWne88hN1raMC3gGP36OC312uO9TFtQIpM512yw=",
-              "sr.js": "OmxkjVKj5CSECPENrx/qwWyc0w2HWUqoECgBkAfu6ZY=",
-              "sv.js": "FK0ZPO3fS4Ib8+H8zCZ9q9T6cR/XBYqnmzOjhkHWVhI=",
-              "th.js": "VjZIqSemuxMvs1ivKy1fF1/h27cBQrXK7pzEkI0TOow=",
-              "tr.js": "vKPtkYzzu4y72+P8oNU1mt8ERE6nGbjkxkwF9GXYEn0=",
-              "tt.js": "Vno8Tpf3pNjasbcXG/c2sYiO99bjzivM2h+t80+ydiA=",
-              "ug.js": "y6NSqEJrD45deifQ5qtwtMiccyVIakmSjrQxQ8DkQ1U=",
-              "uk.js": "jGMN5BvecZOA3OWzX/UfYCpSdYBkUrbjBYsmvw9aKzs=",
-              "vi.js": "CH+mrkV3hDZ3r8y1mfz52u1REHMwLkk2GXo7a8YE5qo=",
-              "zh-cn.js": "pT1XrYXBYtpkYRf5E20VcYOH2bJEqy1W5UQGFit5zHw=",
-              "zh.js": "zhT+bbie9qGZRbie9vKX91mWUSeom6qQCuCVNbQzl/o="
-            }
+            "plugin.js": "qRXAQ2e4t0a5P2DHRb/0UZB+fzslYLgWaNXROGu8nFU="
           },
           "smiley": {
-            "plugin.js": "vO2sPiws0pIle+UyeY+oDyHRGwq/GP8awyLFLQYBfxo=",
             "dialogs": {
               "smiley.js": "LgpvrLaEEWgDIDjbgg1IPAjDIMP8wAyB+KshWTGbbDw="
             },
@@ -2714,21 +2459,169 @@ defineManifest({
               "vi.js": "kLvAIwVIzrobR20EL7ZN97qJNMr4u1K2MBYbgowP/zc=",
               "zh-cn.js": "lhj9HeiO7NwNsljsmDy6F/H02aZozs+NnEZtNaBtP9c=",
               "zh.js": "MCDTthKvrl7OHiOksy6tc96+CGNFl+1y9664U7mDtcU="
+            },
+            "plugin.js": "vO2sPiws0pIle+UyeY+oDyHRGwq/GP8awyLFLQYBfxo="
+          },
+          "sourcedialog": {
+            "dialogs": {
+              "sourcedialog.js": "qJG7Md6LB0Xsp1QSGbXYPJpLOsnApyqXrKP+LyGbGLM="
+            },
+            "lang": {
+              "af.js": "bj1ATG1aadkgkb0UzfeR9gGZTqsXcadsxPfoWSPv6KA=",
+              "ar.js": "GiVOHtdExzh7HDn7wWfc6cEMPGliHZmMXSV3bq4DQEE=",
+              "az.js": "RpOIDdq6mndgWxSmCmW/QSdY0vFMqBFOIK30lmDl2yA=",
+              "bg.js": "VJ0Oi1O/wiTcLjzUTNnMID5ci+hOWkqM5/XwpI7V8EY=",
+              "bn.js": "sJ+/bOBBWY/bsqrnhRqA6x25Dpgn9heWQ1pVrSo2VJs=",
+              "bs.js": "6yVKK98WPu2hpnLIUJjszOeDGOXSNa71plPn+OpmT2I=",
+              "ca.js": "jQuQIXbrstNZc9vuY0Bqh23Z41Ti+H+HrQPgxGqEVms=",
+              "cs.js": "NGakrY4PzjqmjdHhOnjU6CmCLUAslYJl/Khd2ir+EKA=",
+              "cy.js": "OXwafQeJHpprqaNIWoIFPnEQzsWKBbn9/ykVtWDEb64=",
+              "da.js": "GFXfwDUlaV+TQmVdZGXK/iVptxMSdebt/1OI3TA9hb8=",
+              "de-ch.js": "Nd3zYtGW1dsEdqQpDvD5BV7pY6CVtqfRE7KXEy++xPI=",
+              "de.js": "Ny3lEXRrl88m90xgS0QX3PP3qeJetc34CwQRAXXWKF0=",
+              "el.js": "sIZJAamdEL75MhIfa5HCOJzQOGIJT0GdGEAzes+KF6E=",
+              "en-au.js": "eLk8digMBqXTErb0pMfWxWh7TUMmwQ/dDveT4ukE9ik=",
+              "en-ca.js": "aJ3kBfM6hjlzzkX0xbyyKPK1I0gAeJBXcBrL7LAstVQ=",
+              "en-gb.js": "NAVrrLHamDLIfEr0yDTIt9r4L+MLkcaOFPjcmZAieVM=",
+              "en.js": "jAk6kME9uq4N9cyrvVMUx3Kd+SVy/av4kx9PjIne1ZY=",
+              "eo.js": "irlay7nqnCRMkjDLHhEu3XQJ69+WM8PDXqD523+AK8Y=",
+              "es-mx.js": "6zooo84QVg4d1qWJT862BQjiIFIvRpMY6IvVLMiCyes=",
+              "es.js": "nM8kYr0eYWSEJtPpiTniJMEdEiTGtiwLaKYwevPrUJw=",
+              "et.js": "r4ynXBz1iUS3z8EvW5M/TLsRBT5c+jIAE/dGSzZkxbU=",
+              "eu.js": "EU4wP+0r7BXBRYWwdxk5G4O5ta14Sn+9qfYTwbZHx24=",
+              "fa.js": "U/Qifdyew0li8r++Uka59y1hgIQnbC4z8G41gckNStA=",
+              "fi.js": "dnZrIP5IAorsTWo/eM1kQfkDq2W/f3MUkWuxcl6B1YM=",
+              "fo.js": "zezBPE24WQcvXSzglIlB9M7JBd7rMfl8Tw2qsnQ1/Ec=",
+              "fr-ca.js": "QaLDxFsMoCRzomjNyy2H0tzpxhxmuB96h5yh06xSbuc=",
+              "fr.js": "SaLHw4YPIITe03p2sxKx4nS8muiEbXIHPC27uOXqDSE=",
+              "gl.js": "kGdIYtK1pRgunG43e0sAa5asZwgyZQvLck8PjUEW1Aw=",
+              "gu.js": "JvblgisF1gKng1fEMlM74pAaii9HXBuK9GQ1Iu11p5A=",
+              "he.js": "Ld7lgXiGNMo3ProGbAe7LAn9MBtwFgPAqRjv8AtvlB0=",
+              "hi.js": "ODjE8LtMfuMAji8oQey94h8eC0tarqbsW0KZek3l2J0=",
+              "hr.js": "sgLMn8GanIvgjdXbeeTYdKkGrmXzW3yjQYxrgqPurkk=",
+              "hu.js": "Hy9r2/wh0iNTEDlOabHw2pG6ehLOlEgpsbO/3mBgY+0=",
+              "id.js": "WdnjGP8Plnc4leJ4B3BgYe7WhfsGgn3Db2+iU7gP43Q=",
+              "is.js": "vwceFd8IRrifAp23WkU8szK6IGCTTaIkJ09TAmrAdfA=",
+              "it.js": "Tvui3+m4slJCUjoNaaInDkM4pnb87tdjT1dkpitpV24=",
+              "ja.js": "+CY25Y6tQj80DF9quDRNhjRnZqJ6/oebefeBOffmbLY=",
+              "ka.js": "CGv84s0LiSqmc6M0cFRmQ0P/1eroS+VD6qCd/HBL2aU=",
+              "km.js": "zSFFPii0g+o771+XS4Ry5BJwFiGiJ+z7M8hvYYejYkg=",
+              "ko.js": "MDxEcfT8SzpmiuxhpxL06X6bvUKCgdxJtSv1vkm2JWk=",
+              "ku.js": "u5iJoRGh3iH0+eXQHZR4ig5uV8MthXYiNu6C9O3go3g=",
+              "lt.js": "OqEOT1fKejFxEcX71xqDpMXiBM20S7Wab6xe0N0yBPk=",
+              "lv.js": "JxsbsnNfsMycPcr8ZGEOvnapGAc+fOcPcFgRTxm9w1g=",
+              "mn.js": "dmEq5kA9Wqo8zB4C0e9ETSWAnTxy7zSeyiX3LjlZy+c=",
+              "ms.js": "IOo1EyJshWJV5UdKO3smRSCFcw06Sb7HQ5kXR/gEvm4=",
+              "nb.js": "mmmHxwFnwFwbZF2CZSAIu3BDc8Sdj/51p6KlkzRoAnM=",
+              "nl.js": "zYuVjhtoozOxrAiSE8OXo2HQPSQZWY6k1QBqwv9iKqA=",
+              "no.js": "mrx27pcYNMDs+7AktbB3G7C6UNpClf5QHdg1C71MVs0=",
+              "oc.js": "TU0vk6lXlU+vx0BrGZTJ2kNEdN28ogvvH2iyNGoRkfc=",
+              "pl.js": "ZdtIUIZu5BNp4dhHE+XRqSGOiKtkIkvCfpZmiHQtV1U=",
+              "pt-br.js": "kmDqWE7mIPc97wouIzjSTuID6+aPfrMf4fNXVbwIQKU=",
+              "pt.js": "0ozPdbih4mhCqPo5moBfYW9zGuWpCUyrddga6pL73xI=",
+              "ro.js": "rWhtoJW+tXsOGMB/X8ABVdA9KOHyMt4YCasNnKajkvY=",
+              "ru.js": "MZgLRH1YuyaHVLQ3nWnN8pjGncpYd6EOevP6ns0rEfQ=",
+              "si.js": "yur+cbI0GNqEtzTyKrfO071f0n4cOVhUJmEh/qQwH1U=",
+              "sk.js": "N2XMH3+dLZwKF6//cb6lWgn4xXB0RjoFTtC2EJETYPc=",
+              "sl.js": "78eXg9wYHaxG99ldEG4jISTtV9Fc+xmo3VOefPfFxkA=",
+              "sq.js": "aPpQi8YU6rOglXCqAgqCUoQN4hj8raEecjBvvidEA2c=",
+              "sr-latn.js": "/nXkhWne88hN1raMC3gGP36OC312uO9TFtQIpM512yw=",
+              "sr.js": "OmxkjVKj5CSECPENrx/qwWyc0w2HWUqoECgBkAfu6ZY=",
+              "sv.js": "FK0ZPO3fS4Ib8+H8zCZ9q9T6cR/XBYqnmzOjhkHWVhI=",
+              "th.js": "VjZIqSemuxMvs1ivKy1fF1/h27cBQrXK7pzEkI0TOow=",
+              "tr.js": "vKPtkYzzu4y72+P8oNU1mt8ERE6nGbjkxkwF9GXYEn0=",
+              "tt.js": "Vno8Tpf3pNjasbcXG/c2sYiO99bjzivM2h+t80+ydiA=",
+              "ug.js": "y6NSqEJrD45deifQ5qtwtMiccyVIakmSjrQxQ8DkQ1U=",
+              "uk.js": "jGMN5BvecZOA3OWzX/UfYCpSdYBkUrbjBYsmvw9aKzs=",
+              "vi.js": "CH+mrkV3hDZ3r8y1mfz52u1REHMwLkk2GXo7a8YE5qo=",
+              "zh-cn.js": "pT1XrYXBYtpkYRf5E20VcYOH2bJEqy1W5UQGFit5zHw=",
+              "zh.js": "zhT+bbie9qGZRbie9vKX91mWUSeom6qQCuCVNbQzl/o="
+            },
+            "plugin.js": "PGCziLJTqVK11g/YsSX30n4Ni+vu6s/uTtaNc5PgMOk="
+          },
+          "specialchar": {
+            "dialogs": {
+              "lang": {
+                "af.js": "mK34Suw4IXrpNTAVKQe9GcZBElHdZQLnACsw3lDDlKk=",
+                "ar.js": "ottQWyw1NmwjflfB9C22sCjhKJDup5gcBWXte8UzqKY=",
+                "az.js": "4VYEULFky7M36FszH1Hxb7Wmk2X+GiALdksxqzJWy9U=",
+                "bg.js": "lwlvl2pfBDTzv4BAtZwnoXXrS6vhwSaY7crBT/4xskw=",
+                "ca.js": "MqtyHrPsC7RYgq7hVASqa89T1gmWwBpMX6d9eDd6zEI=",
+                "cs.js": "DgHx5Am0AK22tL7OYAtbiajMpU7OZaMMwHLT0EaeCQQ=",
+                "cy.js": "JPPRZT/UX0Fh3lynhgQ2fwRQaephZy+3FQDtrn/kwzU=",
+                "da.js": "uScKw16pEg2BN4PTMgf/owwpADkjmoRp6ORbhyQO9bM=",
+                "de-ch.js": "ZzckQzQyF2WUaaV4ZjiTOHsW7Nol4d9Kbf3QLjsebxA=",
+                "de.js": "eKSiBieOgAln9rgcXuS4hHQr2qDHn7dB0oKOcqkSOXs=",
+                "el.js": "+Hj9E2leI0uf40LRb9jdJOdhj2J1MyO1nQ2B4rrSOf8=",
+                "en-au.js": "KJ64uvt2E50xuLw5GKR3odMCoqf7PECy7gyTLmBrWMQ=",
+                "en-ca.js": "rTmmfLj3nkUSWS0U1o2hMbAlcrIDoEcuaDx/NLptDQk=",
+                "en-gb.js": "TQvQEe+GLPotp6obEFbtUOAF91S7Yf37MZkRZu/n2yA=",
+                "en.js": "9iNRPdUiiB8TZlPJ8XyDYeUSeIb31aodD3AzgYjViog=",
+                "eo.js": "qighJ3J30eL5LFzxArEg+LSzo2M6uHABdRrZGUXK59E=",
+                "es-mx.js": "w6gb1VGUw9FB8Ey6Kwvm62/UmJz0gpjCP3cibFGxJYQ=",
+                "es.js": "JuVit5kM8dJqmrGLsZhg8gXOqhNS+bzrSupkLOEhd+U=",
+                "et.js": "vuVOG74XVKESVTv4zeqpim3O9lACo7CRBK8z2n9ZPLM=",
+                "eu.js": "XxiAU6fmH62DL+6XyuzcTymcC8K7oOaaIQ4gTdfq4iY=",
+                "fa.js": "YfnCGQA7Db8v/ikd2hzVomB1VeMjdOGcVE0cKxu0TdI=",
+                "fi.js": "Dy/D1yWW3n5cLKYQ6+9eQQwr93fCGG6f/dbiKqVlyqY=",
+                "fr-ca.js": "vNd5U4PivS2KfQw6mL4O4HCmUsRrB4FUh7b6dNQA8j0=",
+                "fr.js": "R/xBONAyI3P5vJ/hCyq7SP/wvg4l0LCgppzY5o3Izvw=",
+                "gl.js": "P0U1kaO3gbxcSg7gN7WJLVqJEubBXGYo5ak1ItcOb6k=",
+                "he.js": "fVx7/Tf0bGlGvTKeC0jdAVIpjCE5RwYkA38vvGIVja8=",
+                "hr.js": "D93T1t9fxENX5ZqGXsiK+DIt5eeoKHyhz0QLomKPwdI=",
+                "hu.js": "MRMruWPyqn7X8YNIhfC8DkT8Wm/x1E/i5jeR8wIWSYU=",
+                "id.js": "Ov8liZVS7pSUwih84kNYjW2bb2jWgvKCz1NIbLaMd7Y=",
+                "it.js": "uFqDbwLXggJ+yBrV6OSGRaXyGb1JHxyUXjX05lmOYlI=",
+                "ja.js": "EA3AVsNV7a463r71ObtEEgBbvXc2lpi/IpKJc868axE=",
+                "km.js": "7JZP4lG/Wa/woR6UmnV777uzY4Q341WgUnqTyX7La20=",
+                "ko.js": "Jk6TF0PEvXao6RXRgBU5SboBb48oWuC3KjRqFdrO0dQ=",
+                "ku.js": "PHz/Yo/SD7KonGX2MXgceFiqLP8DkfgyjM4X8Mul8o0=",
+                "lt.js": "RdoubICcjYf/0ljhtcSD8+O+V9Myvf/UIFkOoZey7VU=",
+                "lv.js": "aBAQ7aLACxqg10nHs6XHCGhNj//9zrjT8Mb1nhNwj1Y=",
+                "nb.js": "yt9l5LvVGOdyrKG8KwLvRvcp9f8rL6B1qg6TlwCHEoE=",
+                "nl.js": "S3y3ZzaROLNcqvhqEkdLsXW4ACPmEVxz85dTnHsFQFk=",
+                "no.js": "MEnhDhPA5vnzTRAL6lSYwaqbImc7zCU2AhehLb5kV9A=",
+                "oc.js": "HHuDa4pFOJ2QVW8mpYTbeekHz6aNprzwm7Uc0Dt0bB0=",
+                "pl.js": "YaaIEClibW1V8QbD2TG6AsoH/OLTfKxhoO29D3Hhgsg=",
+                "pt-br.js": "X9QH+fPek79S7S9Ou7m+gQ57s4d6X66ZWJ9Z4D67r7Y=",
+                "pt.js": "rpyb5ifHZ3dfqXEViFTCx8Uc+1aJ0/BFBH7fzWXFQwU=",
+                "ru.js": "llurrLZth3G6KzUQpztYMyowsYlsaSDTxKRqR45xlYw=",
+                "si.js": "P3lNjZixjZf1wumVziIPPvIzDd633CsI/l1TAeF3qMQ=",
+                "sk.js": "10vtf0FWv/mKwvPm5NJHYHxbKXBGKSEWioDs/V8LABk=",
+                "sl.js": "8Js9tE+55EvOVdsJXJZ3sCVByIFAbZPa0sTDKUxWyvA=",
+                "sq.js": "1iyCQPMe7dwz/CeFfoSTWnbZuPIbGXmT2RETp/1MSys=",
+                "sv.js": "TuyvVcMMHXMrhqhCsT6ha1JwAblstISaS+Q7/MTwNdE=",
+                "th.js": "4kYLopXq13JRteoVRCfPjC2ZAa604rWoAijAlCsB0xQ=",
+                "tr.js": "rz6mcomOHjUU9MVKhVGRS47Rfu0k8/sRjL8ODrLaQzo=",
+                "tt.js": "tG+xcOj7VNSUA4KXNkEWEq4dKVoywUMWvPvCd3K2wnQ=",
+                "ug.js": "WL/mU93j23EGLXVw1t1yUNNt6eRkvd+crXWcMRyTd8w=",
+                "uk.js": "3fWmMpDV5ItM5XBNTcwk73NL34P7cml+XzebabNfZIM=",
+                "vi.js": "NL3VvNpf9/T5k0+vYIS5XJUQ3trc58Q4fFYk5NsDlnQ=",
+                "zh-cn.js": "bUwu/vV0pf/j6tBnNreB4AeWNj++GcMtAsSWOerNgCY=",
+                "zh.js": "P0lN8qISaqVj3/rRM+QeWkcRx0w6Jgc+8ofx7XOQpJM="
+              },
+              "specialchar.js": "p22Bu0cwmaNko4Kbsp8L90d1I4uKv+4iXbzjfBrDdPg="
             }
           },
           "stylesheetparser": {
             "plugin.js": "7/5NaJwBSxN+LxRWdC0k7hd9hKbeIBMh5qcpu1EMt1E="
           },
+          "table": {
+            "dialogs": {
+              "table.js": "6s618Q6JQTWWUWa+NnesrdEUDDHzmFBnq/JdePNCPRM="
+            }
+          },
           "tableresize": {
             "plugin.js": "kUnQ+CiFylTsahVDjrsK03/DT/uudCohUf3/mbxuZVU="
           },
+          "tabletools": {
+            "dialogs": {
+              "tableCell.js": "z4C5mFwa97zm2gdb8iNLuBQBH9LCu535Kw/tVfXYvmQ="
+            }
+          },
           "templates": {
-            "plugin.js": "1hgDfk0tt99c8yz2CFIGlOW1WgneiZgCKeXS8pIcEIg=",
             "dialogs": {
               "templates.js": "MP5tyc2IGVoU8o3JQ2RbhDQl2ATKFV5OoKbkxZlSmeo="
-            },
-            "templates": {
-              "default.js": "0Stg36QE95huAeZcsoA+AU4FtiZjlDB6C6rpU5x7K8o="
             },
             "lang": {
               "af.js": "BQwHdMG6rMjSS5v+0Et60iUQYM2oek1hs9W+of+QSS0=",
@@ -2738,8 +2631,8 @@ defineManifest({
               "bn.js": "UQFFKBGIpeoS1d/r4vOR7TOD1PLv5Wu9dGQl6IUq8Wo=",
               "bs.js": "C2kVERmIQde3lI/fvJ6B0cF7dKMSy2xTp+8MrRB+Ypk=",
               "ca.js": "yxR9yPdNu0I1ASynNvwYNh6Jhk0+Uik26bzQ4BmM2eU=",
-              "cy.js": "4vlkBCDE5dQp8VjdgNfdDUF8IPdmd4d/EWpDp8s3AZs=",
               "cs.js": "/GEieKC7w0F41/U9IeWOSx7I+Mqsm2YwELb/xM9KqTw=",
+              "cy.js": "4vlkBCDE5dQp8VjdgNfdDUF8IPdmd4d/EWpDp8s3AZs=",
               "da.js": "WUjT8qkywL0M1xRsN1voBv0GQc0GrGaRt/dmt3r9XKQ=",
               "de-ch.js": "70NdmE2JwnhYPR641dKOqjT/xszj+hYH/MNkOEJhhTE=",
               "de.js": "JONTHQt2PLorejZOpQLaUOs/hPB0qpUvfEFdf1OWRm0=",
@@ -2801,10 +2694,13 @@ defineManifest({
               "vi.js": "V3WKIawxgQiBxIEk/SM/ew1Q9/4MmIIj1Az5WXFVnKE=",
               "zh-cn.js": "nvLtj0qmsUmFd8xX8vDSvBa0MBtwMbW8mQhKbVfQQtQ=",
               "zh.js": "PbCnN9mQLLZzSbJEzOe47yTqVZuVqbaQ6m3+Eb6YDXs="
+            },
+            "plugin.js": "1hgDfk0tt99c8yz2CFIGlOW1WgneiZgCKeXS8pIcEIg=",
+            "templates": {
+              "default.js": "0Stg36QE95huAeZcsoA+AU4FtiZjlDB6C6rpU5x7K8o="
             }
           },
           "uicolor": {
-            "plugin.js": "ISC6M+NtHtakZ+a9fumeVtrL86tDEpe1Nax1msDcIyE=",
             "dialogs": {
               "uicolor.js": "vbVkZRjM48/3v/m2zdurvea25NJ5Pz0gFYAh0h79Fv8="
             },
@@ -2863,7 +2759,8 @@ defineManifest({
               "vi.js": "XPo6JgZwwSWaYoQ7bSMhyknF9/qoYnCqoDgTicODs94=",
               "zh-cn.js": "52WvdAsnaTHRG+PcKXBRSh01MISSBECaIy5RvkekKqk=",
               "zh.js": "JYQ0qB3AdhvpQ1rrmct0mC4uZvk8TSLQnfXCx4mng10="
-            }
+            },
+            "plugin.js": "ISC6M+NtHtakZ+a9fumeVtrL86tDEpe1Nax1msDcIyE="
           },
           "uploadfile": {
             "plugin.js": "acQKqUcLqWbUlpehD/zzknwfqSfRDjG8zzlnLuuohW4="
@@ -2872,7 +2769,6 @@ defineManifest({
             "plugin.js": "huYL5ap1WuqUme0YGdLSA3dON3HOymkT1WmwjtMufw0="
           },
           "uploadwidget": {
-            "plugin.js": "ofeozYMO4k3nIjtdjQyKEb0xB+X+P2orW7FQwDXIfts=",
             "lang": {
               "az.js": "eLith6QVptVqUUnqu9z7kdz73a2zbU5919oiHbMLFjg=",
               "ca.js": "G20uFQ6eR8UmRhWlmYh3Hv/NzGpEeB7WWeOhQu6qfK8=",
@@ -2911,13 +2807,10 @@ defineManifest({
               "uk.js": "VlDtw7xv01IOkqhIm/JLOGH+JhKrg9O5BMLyO6glfB8=",
               "zh-cn.js": "+kCVd0g0uUoT6mSE1f0kHMvn7RyjhxlkmhzewwGawZY=",
               "zh.js": "GfFRl57Kie7MdvNsYV1GcshsJEQ2MSNYtYyn6AWkcVM="
-            }
-          },
-          "widgetselection": {
-            "plugin.js": "NcTtQOBnWQnq2ShiGBYMcWiwiS+AcKwsuhOza2pr7No="
+            },
+            "plugin.js": "ofeozYMO4k3nIjtdjQyKEb0xB+X+P2orW7FQwDXIfts="
           },
           "widget": {
-            "plugin.js": "z7DgRBeUIXACIIn9irfEDJdQYn8TReVoKWtWVnFsFLM=",
             "lang": {
               "af.js": "sQ1Qn5JHJYRFkQNHWEpVQ5gdUbtLpoZ/zKP95GGFT/c=",
               "ar.js": "n3+qAacQakovpWShpL3TfxcAvfq8lLc1IyQjQV3CnaA=",
@@ -2969,194 +2862,165 @@ defineManifest({
               "vi.js": "EP1weSRaoh77/XOwaDLBatRwlhYCAYeg+WdH1UMqgrQ=",
               "zh-cn.js": "R1+FZqmTrFsW/sLpp240J8hhjF9JB834/gxlM7DwQgI=",
               "zh.js": "P0rI5j01TW/QuKfVsDvHND6gxWYZCM3bMfG1MEWYI9w="
-            }
+            },
+            "plugin.js": "z7DgRBeUIXACIIn9irfEDJdQYn8TReVoKWtWVnFsFLM="
           },
-          "xml": {
-            "plugin.js": "S3iTGcfz4ILrTrZ2eZfqf30BgCpUubwLepG3kAXaRnk="
-          },
-          "a11yhelp": {
-            "dialogs": {
-              "a11yhelp.js": "qtAN8ivG3JuiRJYdU/edCcCsG+A28emMA5qW3H6aP/A=",
-              "lang": {
-                "af.js": "rfCtIKztsFhjxZQT364zpkUeJOXSByU5o+4UfeLzLPk=",
-                "ar.js": "Od5rWYWvoQ2di+nIH8RcCF2Fw6cVK6m6BYZ+XAmp+ew=",
-                "az.js": "cytTSAfg34Pck06MoHUNA2IxJKP+Xjxm2eZNPUH4b0U=",
-                "bg.js": "vJGEpxIbiqmUkpNuumF9WfDDbbchxq4mZfgyazBB0VE=",
-                "ca.js": "jZcT8fV4biXlKi70bFpW5p3Vu+XZ5+oRYQpy0W2iav0=",
-                "cs.js": "ZVJNd1rK3B9QEN3aCkGobEZm0T3zOsPIaCOm4cZNTYo=",
-                "cy.js": "+bGqwb2b/0lEj9lJSAzm2O/Lp+OY2fKynlIW8zUFegE=",
-                "da.js": "WelOcvG7qNcX9zg2iyrOd2R3Q2LbCEIRa/GH3dhbWvo=",
-                "de-ch.js": "0xDcckBaDp3xNWxrOYdUeqrrImLEfEN5kPcKf5MsutM=",
-                "de.js": "lKPizb7x8y84GsiiqLIEExUUzU/xvjSijWGeMZ9zoHQ=",
-                "el.js": "U3srdDsUgtGvn7STh1J2K92tCUXrpxr3lhy7K1D62fM=",
-                "en-gb.js": "XAKr6IIDTsQfyozrEJJwwjP/Tp4UOrRF7KNu3xqcfAc=",
-                "en.js": "XMNuZLkrzLvxEkIxrZLh54q6OsqBlV/CsCxjQLM3Gik=",
-                "eo.js": "MEH7AtUJ5FDM4jqX6Bf/QZR9hVRnAZ2DtVHjtKvFhck=",
-                "es-mx.js": "vbRewVEiWzzSLZ3CEOd6z94mHlV4CrvAgRoyEVBDFa0=",
-                "es.js": "E44NoECW1P2PKoOg/FZqu+MIvJ1af+yMwFuSYhxgoUI=",
-                "et.js": "IVDOze5u158+tAs6edoS5vo7QL/8iR6uQTjn0TaglR4=",
-                "eu.js": "t6ZPPYWS5fY4vaIfC+jUwd3nHtvZCmWIar/2HlDWRYI=",
-                "fa.js": "PH5toPSX6QmM+exUhDbTqZnwM501Ix8Zo2rPeusMFlU=",
-                "fi.js": "BPcvJcf9JGhsPUZFRTLQ5FK/LBVSMSXk8QIBWRH2B8o=",
-                "fo.js": "Z9QxB7CKK/rL8FOuOnVGPjCPN0UV6vYZlw58HOxXPRw=",
-                "fr-ca.js": "1JLlKOWuMDQbJ3kuk0THgPqJ4j3aZ0OiavR/aWbz7tI=",
-                "fr.js": "VJ6DNAR+Q8vhUXOCDfaxLq02FBIovi7MxwjflsHrRuY=",
-                "gl.js": "C33mmAA1db/55ooV+EqcZ/HqwYFlR3x41bo8eldGA+I=",
-                "gu.js": "5tPDfZGVFVoFdr/bU64CfGxgk7iH0+hMBfqdXzj6BJw=",
-                "he.js": "rS1k4ebX+1AA9SwIF0ZxAtKtca7PLUAhkDg448sBMd4=",
-                "hi.js": "/W+qP9K2NCSv5BsAAvjjH1dRcggTxjcKHuQhChkdm3E=",
-                "hr.js": "QGrDlWHYKzS7BIFwJiWYUN1ZQfz1zysP9rG6t8oXsRw=",
-                "hu.js": "qwZSieyOpeblhksxh4RrwMG3bIJucWuykwEZ75kHc0g=",
-                "id.js": "1g6fZmPkFqh66544MPMa+c7UF1dIrFWL9jxnbODLLPU=",
-                "it.js": "9zhR4kr0mAn+MPoBB2ig+aGAX6H0dn/FIZBePNbDXjw=",
-                "ja.js": "tXZpBId0PY3G41nfn++EuW83TFrnvKL1yjfA1dCgaZo=",
-                "km.js": "UHu/+1nCpktBM1PABz9AovVRlV5L9vxwpM0WsFyPntE=",
-                "ko.js": "Hmc6bRR/l8LO8+oSbNhd3KE48PG7wXRkGN0WS8vnxPQ=",
-                "ku.js": "L6ovMID6vcS7zsls1NwsKMub81ucIwtybfqKA4jhCI4=",
-                "lt.js": "BjODpaAmYjhnAte700QaptlWEBRofUtIDOO2QXZ2mmU=",
-                "lv.js": "ML7StwnxmU7QkVEMtN7tyKs8/DZO9kUMchxkVYlpM2c=",
-                "mk.js": "Z190y6De4tim1eFwLQ+BRwE01amskwbOCwvM8yMMYmw=",
-                "mn.js": "OAnxTE6mnfmJtU9oLWzVN9yUgJ8wgmJFcxsf62N7Pto=",
-                "nb.js": "/0PsPEOculOZ7O4A9Nm7vxiHdgYrI8fAIt4I12pOe7U=",
-                "nl.js": "G4moaUMi03rBYP4iQhx9bWlkAMiFM7CsMn9vOrKNmZ4=",
-                "no.js": "rA21FMlvn7pOUaOTwsHCMrxLmQKeBfKp34EjpXBThFc=",
-                "oc.js": "36uqhfSbdxlJaXMOJN5nH44awvNj4KbpjxncfmW69Vs=",
-                "pl.js": "VOsPCfXSHgqpQFOmWZtOG4zmj3ISekkEaguD4x8hCkk=",
-                "pt-br.js": "phV5Ah4/scgTVZK1GRPNKoj7u3C+G5aalUhdbBqHiuE=",
-                "pt.js": "16iAvYyCwgU3W+zIC7Gt1Q7MhUPaAVye/V6Q7m2Y5AA=",
-                "ro.js": "0jYm/xYbnU60n2DZpLQ5hJiDMgAZoUCvrs7E0PY+qXg=",
-                "ru.js": "XIqPTwSwVPZI20lHbLueTdYzAksSR1OGOwFWhfOdPaQ=",
-                "si.js": "IeydRYIoVInROKEjgTTqnlQonz+vuQ73zdAe+cuoTJ4=",
-                "sk.js": "LrF2GwXy5ZZKD84neNPymofWiL21p/gjd0wsFTRsVb8=",
-                "sl.js": "F3QA68v7A+mTkEJGTTvOlUWkjuDflgd+LtSI1apgpeo=",
-                "sq.js": "XK4BwWmq3Wx9km5jkwlIcRvkR+0zBXvB123FUlsGMvQ=",
-                "sr-latn.js": "LCl4cTXVMa/IJqO85ZL7N6k/42cR06vjDFcUgq+/jEU=",
-                "sr.js": "T5im4YInViIW0pSYhNAlv4KKR5EgbDlndYxFK/Hi6yU=",
-                "sv.js": "l2Fdf6jckqO1MLpug8z8nM8bhAiJ4BD+Fa9vNZWJN1Q=",
-                "th.js": "L2vqtxBzzVI1KK+07VQsexKpUNAVOLC9EsidIz1ixLw=",
-                "tr.js": "6AjXJrczYE19SjFz+KJSqAtEpMelWK7xVciuQ0JHAKE=",
-                "tt.js": "L/ztBsA70Wj5wfpfRQ+4I7YmL/N+2JtsJGeARGXqV5E=",
-                "ug.js": "J0G5g30Q1z2CJg+IcxCTEIKlY0w/AxhGuYYVdGXjQXY=",
-                "uk.js": "8tgNNDivCcjjrco5ctIKJLzG6ERa/VcWkf/0U4OPy7U=",
-                "vi.js": "r5iTtR0dXe3ca65jHDoX8r8uGf/YYQFgQibz6KJx+z8=",
-                "zh-cn.js": "FfLvl/UivVqDYWPIQ4Z/io0zlyMgTKDXh15v+7h1xyI=",
-                "zh.js": "yqnaby1szOhuc7NMgBWo/wlJ874szVKocq9zJz/EBos="
-              }
-            }
-          },
-          "about": {
-            "dialogs": {
-              "about.js": "OxsTANEVOfT2RW+vF6QzDo4zQaoyY4b9WsZd/Yq5pGA="
-            }
-          },
-          "image": {
-            "dialogs": {
-              "image.js": "AhSbsJrB01CvglnQysy35gNk8JHoDaIJn19f1sOFX3M="
-            }
-          },
-          "link": {
-            "dialogs": {
-              "anchor.js": "RTUJg6rp4zDRhgz+NoJaRHsmP9dZRMcibXxRaZ2dW+o=",
-              "link.js": "I2zfP1lOl7/LmeSfYLtclCssb1Lq7fPzSZi8vpR/U2k="
-            }
-          },
-          "pastefromword": {
-            "filter": {
-              "default.js": "jt2qHbzYDfKzkhjFyDGUrB3vy/vg1ETubPPJdfdalcM="
-            }
-          },
-          "scayt": {
-            "dialogs": {
-              "options.js": "/gmJzslwAMyc39LPKJkK++g8UL6jM9wpHPYBi9x7R18="
-            }
-          },
-          "specialchar": {
-            "dialogs": {
-              "specialchar.js": "p22Bu0cwmaNko4Kbsp8L90d1I4uKv+4iXbzjfBrDdPg=",
-              "lang": {
-                "af.js": "mK34Suw4IXrpNTAVKQe9GcZBElHdZQLnACsw3lDDlKk=",
-                "ar.js": "ottQWyw1NmwjflfB9C22sCjhKJDup5gcBWXte8UzqKY=",
-                "az.js": "4VYEULFky7M36FszH1Hxb7Wmk2X+GiALdksxqzJWy9U=",
-                "bg.js": "lwlvl2pfBDTzv4BAtZwnoXXrS6vhwSaY7crBT/4xskw=",
-                "ca.js": "MqtyHrPsC7RYgq7hVASqa89T1gmWwBpMX6d9eDd6zEI=",
-                "cs.js": "DgHx5Am0AK22tL7OYAtbiajMpU7OZaMMwHLT0EaeCQQ=",
-                "cy.js": "JPPRZT/UX0Fh3lynhgQ2fwRQaephZy+3FQDtrn/kwzU=",
-                "da.js": "uScKw16pEg2BN4PTMgf/owwpADkjmoRp6ORbhyQO9bM=",
-                "de-ch.js": "ZzckQzQyF2WUaaV4ZjiTOHsW7Nol4d9Kbf3QLjsebxA=",
-                "de.js": "eKSiBieOgAln9rgcXuS4hHQr2qDHn7dB0oKOcqkSOXs=",
-                "el.js": "+Hj9E2leI0uf40LRb9jdJOdhj2J1MyO1nQ2B4rrSOf8=",
-                "en-au.js": "KJ64uvt2E50xuLw5GKR3odMCoqf7PECy7gyTLmBrWMQ=",
-                "en-ca.js": "rTmmfLj3nkUSWS0U1o2hMbAlcrIDoEcuaDx/NLptDQk=",
-                "en-gb.js": "TQvQEe+GLPotp6obEFbtUOAF91S7Yf37MZkRZu/n2yA=",
-                "en.js": "9iNRPdUiiB8TZlPJ8XyDYeUSeIb31aodD3AzgYjViog=",
-                "eo.js": "qighJ3J30eL5LFzxArEg+LSzo2M6uHABdRrZGUXK59E=",
-                "es-mx.js": "w6gb1VGUw9FB8Ey6Kwvm62/UmJz0gpjCP3cibFGxJYQ=",
-                "es.js": "JuVit5kM8dJqmrGLsZhg8gXOqhNS+bzrSupkLOEhd+U=",
-                "et.js": "vuVOG74XVKESVTv4zeqpim3O9lACo7CRBK8z2n9ZPLM=",
-                "eu.js": "XxiAU6fmH62DL+6XyuzcTymcC8K7oOaaIQ4gTdfq4iY=",
-                "fa.js": "YfnCGQA7Db8v/ikd2hzVomB1VeMjdOGcVE0cKxu0TdI=",
-                "fi.js": "Dy/D1yWW3n5cLKYQ6+9eQQwr93fCGG6f/dbiKqVlyqY=",
-                "fr-ca.js": "vNd5U4PivS2KfQw6mL4O4HCmUsRrB4FUh7b6dNQA8j0=",
-                "fr.js": "R/xBONAyI3P5vJ/hCyq7SP/wvg4l0LCgppzY5o3Izvw=",
-                "gl.js": "P0U1kaO3gbxcSg7gN7WJLVqJEubBXGYo5ak1ItcOb6k=",
-                "he.js": "fVx7/Tf0bGlGvTKeC0jdAVIpjCE5RwYkA38vvGIVja8=",
-                "hr.js": "D93T1t9fxENX5ZqGXsiK+DIt5eeoKHyhz0QLomKPwdI=",
-                "hu.js": "MRMruWPyqn7X8YNIhfC8DkT8Wm/x1E/i5jeR8wIWSYU=",
-                "id.js": "Ov8liZVS7pSUwih84kNYjW2bb2jWgvKCz1NIbLaMd7Y=",
-                "it.js": "uFqDbwLXggJ+yBrV6OSGRaXyGb1JHxyUXjX05lmOYlI=",
-                "ja.js": "EA3AVsNV7a463r71ObtEEgBbvXc2lpi/IpKJc868axE=",
-                "km.js": "7JZP4lG/Wa/woR6UmnV777uzY4Q341WgUnqTyX7La20=",
-                "ko.js": "Jk6TF0PEvXao6RXRgBU5SboBb48oWuC3KjRqFdrO0dQ=",
-                "ku.js": "PHz/Yo/SD7KonGX2MXgceFiqLP8DkfgyjM4X8Mul8o0=",
-                "lt.js": "RdoubICcjYf/0ljhtcSD8+O+V9Myvf/UIFkOoZey7VU=",
-                "lv.js": "aBAQ7aLACxqg10nHs6XHCGhNj//9zrjT8Mb1nhNwj1Y=",
-                "nb.js": "yt9l5LvVGOdyrKG8KwLvRvcp9f8rL6B1qg6TlwCHEoE=",
-                "nl.js": "S3y3ZzaROLNcqvhqEkdLsXW4ACPmEVxz85dTnHsFQFk=",
-                "no.js": "MEnhDhPA5vnzTRAL6lSYwaqbImc7zCU2AhehLb5kV9A=",
-                "oc.js": "HHuDa4pFOJ2QVW8mpYTbeekHz6aNprzwm7Uc0Dt0bB0=",
-                "pl.js": "YaaIEClibW1V8QbD2TG6AsoH/OLTfKxhoO29D3Hhgsg=",
-                "pt-br.js": "X9QH+fPek79S7S9Ou7m+gQ57s4d6X66ZWJ9Z4D67r7Y=",
-                "pt.js": "rpyb5ifHZ3dfqXEViFTCx8Uc+1aJ0/BFBH7fzWXFQwU=",
-                "ru.js": "llurrLZth3G6KzUQpztYMyowsYlsaSDTxKRqR45xlYw=",
-                "si.js": "P3lNjZixjZf1wumVziIPPvIzDd633CsI/l1TAeF3qMQ=",
-                "sk.js": "10vtf0FWv/mKwvPm5NJHYHxbKXBGKSEWioDs/V8LABk=",
-                "sl.js": "8Js9tE+55EvOVdsJXJZ3sCVByIFAbZPa0sTDKUxWyvA=",
-                "sq.js": "1iyCQPMe7dwz/CeFfoSTWnbZuPIbGXmT2RETp/1MSys=",
-                "sv.js": "TuyvVcMMHXMrhqhCsT6ha1JwAblstISaS+Q7/MTwNdE=",
-                "th.js": "4kYLopXq13JRteoVRCfPjC2ZAa604rWoAijAlCsB0xQ=",
-                "tr.js": "rz6mcomOHjUU9MVKhVGRS47Rfu0k8/sRjL8ODrLaQzo=",
-                "tt.js": "tG+xcOj7VNSUA4KXNkEWEq4dKVoywUMWvPvCd3K2wnQ=",
-                "ug.js": "WL/mU93j23EGLXVw1t1yUNNt6eRkvd+crXWcMRyTd8w=",
-                "uk.js": "3fWmMpDV5ItM5XBNTcwk73NL34P7cml+XzebabNfZIM=",
-                "vi.js": "NL3VvNpf9/T5k0+vYIS5XJUQ3trc58Q4fFYk5NsDlnQ=",
-                "zh-cn.js": "bUwu/vV0pf/j6tBnNreB4AeWNj++GcMtAsSWOerNgCY=",
-                "zh.js": "P0lN8qISaqVj3/rRM+QeWkcRx0w6Jgc+8ofx7XOQpJM="
-              }
-            }
-          },
-          "table": {
-            "dialogs": {
-              "table.js": "6s618Q6JQTWWUWa+NnesrdEUDDHzmFBnq/JdePNCPRM="
-            }
-          },
-          "tabletools": {
-            "dialogs": {
-              "tableCell.js": "z4C5mFwa97zm2gdb8iNLuBQBH9LCu535Kw/tVfXYvmQ="
-            }
+          "widgetselection": {
+            "plugin.js": "NcTtQOBnWQnq2ShiGBYMcWiwiS+AcKwsuhOza2pr7No="
           },
           "wsc": {
             "dialogs": {
               "wsc.js": "BSk0GlijjGiKB40JZLhxpsa/rk02Gvp/sYun1Mi5x+o=",
               "wsc_ie.js": "u73hw7D9ScX0GzAMbmdTYVzjRx1nkm8bHSVANVwBF/8="
             }
+          },
+          "xml": {
+            "plugin.js": "S3iTGcfz4ILrTrZ2eZfqf30BgCpUubwLepG3kAXaRnk="
           }
-        }
-      },
-      "chainpad-netflux": {
-        "chainpad-netflux.js": "TxhXW+bS5Y2i75nYLFAs1pZwR2GmQ9HorFcWWevaP/4="
+        },
+        "samples": {
+          "js": {
+            "sample.js": "uA/Y/YcfFhruwYfpAdwXGtFjo1tiFGW88ZkqiRqya+Q=",
+            "sf.js": "dKSim2TuEcA4Drm81JnHT16ncDLCvAlUtmpHl52SxqU="
+          },
+          "old": {
+            "assets": {
+              "uilanguages": {
+                "languages.js": "JbgorI6Z2eMNKEDAzDz0miWrNI6Y3fkcS9eV2Uher2U="
+              }
+            },
+            "dialog": {
+              "assets": {
+                "my_dialog.js": "/h9waKik/g1JIvZMbDLfq0SfwxPHqHXgeZydNG2w3tg="
+              }
+            },
+            "htmlwriter": {
+              "assets": {
+                "outputforflash": {
+                  "swfobject.js": "gNTRvfLhPBC/1dPMd+nPfgTmLP/cOZlg41UGdooaC68="
+                }
+              }
+            },
+            "sample.js": "YZC2vwV82F+7VIgNCsWyDc/kP+BHc81SwLqLshaIzDI="
+          },
+          "toolbarconfigurator": {
+            "js": {
+              "abstracttoolbarmodifier.js": "t9hMmjSq97/8eQhke1wB2OnaGoFhDktp0Th6a4jMiio=",
+              "fulltoolbareditor.js": "OfH7O8ZD9pPrVg9eA+butT1hBdKra28UBr5kGhznQ6E=",
+              "toolbarmodifier.js": "er0NqxlUFk/gwojvqp2aImoSNriRXpTLP1wagq8cPjw=",
+              "toolbartextmodifier.js": "q33quCBkL+ne/RJ1ul6TrbHbQ358lVtiCfVbE86Ft1U="
+            },
+            "lib": {
+              "codemirror": {
+                "codemirror.js": "7WvNl2xAWqzLywpLJ3ItJyQy6Dk0xUEuWB6aaZ9qsEc=",
+                "javascript.js": "FTtHp5edx38KSjIOBWuPbOgDpajQ5EPOfiBupzoVvNU=",
+                "show-hint.js": "28U1/ZhpQvaCAJWudyQeaZC1z0RwmkglmLMdpyE56s0="
+              }
+            }
+          }
+        },
+        "skins": {
+          "kama": {
+            "skin.js": "FlW07NBMEPT1pi2zHuzX7D1HC+l/rdtG8IbCMwq43lA="
+          },
+          "moono": {
+            "skin.js": "aAZ40TYBGVgyyX0IVb1rcXXhpyqshVXbIAV3ABVsIwk="
+          }
+        },
+        "styles.js": "UKLywHWOJUlpY1L5vKxh5Nw3lpQLbkintyvJ8ixP7FY="
       },
       "codemirror": {
-        "rollup.config.js": "MxWwSeMa9ZMaeRtXAiVdKdMZUiLsL+qOZkrXjmQ1GHM=",
+        "addon": {
+          "comment": {
+            "comment.js": "PMztPd0WjBzgiJ4McuMm7XaEtech972Iz4rw3RY0ZE8=",
+            "continuecomment.js": "kqfH5KHq/xKc52VRn8qxC7EWic8bGDLB5ZAlrlFH62g="
+          },
+          "dialog": {
+            "dialog.js": "oRCL9tU8JnTY35IYKvc/N2vtA026JwyuIUnPEeNmA08="
+          },
+          "display": {
+            "autorefresh.js": "ADmSAm8ny/K6dCivADkiRLfJh7AQZyKbPP/sqDZXJ8A=",
+            "fullscreen.js": "gEWmEEzRvSCXzJ+6Ev6+i5uP6jkbqm1ymNkojIZPtEY=",
+            "panel.js": "rxnhs8X0bTVqsfO/f+jESaxdmS+4bMJrMbrgJFDvyTI=",
+            "placeholder.js": "YUesMvUoJzrGTIkt2Z2KI+VK70JnKJARSVAnExZKjC4=",
+            "rulers.js": "a+3dtkQd4wfs+IRuSkADZIeQMkHChvWB3VUe9w2QLgs="
+          },
+          "edit": {
+            "closebrackets.js": "+5rFwVXNB9T8+LxZU9BtEnlmzDoLVSmf02ryLP9Uz2U=",
+            "closetag.js": "/2LbWiLMIJySnw4irgBBFQ4geM6kZej0YtBunJzN8Eo=",
+            "continuelist.js": "S7HQorUPulxbNjmuC8+jrBzQLggg0r9QyFzS5wkJsEg=",
+            "matchbrackets.js": "1ZBoXf1PnYzxJ7zY5+7ZAJbUh9xXYGUUXHn8r21LHWg=",
+            "matchtags.js": "aKA2BMUxAIY3kNKzmYhxUFMCiNL/s/qF3zIxvROsnm8=",
+            "trailingspace.js": "p9V6C891txuDw/3jGuNH2q/rRGh1ND4Q64Nz7ioIYiE="
+          },
+          "fold": {
+            "brace-fold.js": "/zTWJHS+hYSX9H0S1vHdAdG4diVKri1dYcEVFf66cFw=",
+            "comment-fold.js": "OqzED4mNVUKhDi4J5uEVt0Sl2AGdBwHaOU0V+fcDipM=",
+            "foldcode.js": "OACGugamoK8QlA6UXmMIOML5y7zlc74JBEfOKUsyfws=",
+            "foldgutter.js": "FOr7dqBJfuZIdp3ACdmg88poq2ZABUiQ9ChPgPSxGas=",
+            "indent-fold.js": "3Gr3lvn/5E3XJkszPSbQHCb4CMGVhGeyxnCicfNStGQ=",
+            "markdown-fold.js": "R5YhVWLmpmlc0BOsNTEespwY//JxR8SPKhZiPWZWxNQ=",
+            "xml-fold.js": "0NR53Omilqa/gGNsbd6g0IjppcgdSabwMu8jOTk6vFE="
+          },
+          "hint": {
+            "anyword-hint.js": "AutkL+MHgyRlEOwrPMHtxaKhT0FK6hHMUsaKjDzBu1Y=",
+            "css-hint.js": "NzVWW04b4F1iRvW4u8D6TDHoU6Wv4+KY2gxY9rjM8p8=",
+            "html-hint.js": "PYAwKyXj0yz6SYaLuuta0db1qoyLIEdFEKF2pU3OlPw=",
+            "javascript-hint.js": "d+Ayd9lVG1SclyOPL+JNk4SdDZJ1H+aWeQaxC/tMj8I=",
+            "show-hint.js": "s+5S4H8vZk43NLcuQMEILKP4DGbwCQttAT1O5bJmRr4=",
+            "sql-hint.js": "cicUjxjHzgQ+s5nlYO7BjNZ0/bKYM0NU0TV96QOlvA4=",
+            "xml-hint.js": "UT+CWCoO1myeicIZc0iN1zW3Nj+S5k4T7g7jnum9VNg="
+          },
+          "lint": {
+            "coffeescript-lint.js": "sL09rH1LtoNZjHeN+eW7dC2a/sO1ModZ5CFimtSL9P4=",
+            "css-lint.js": "zXEaI30VB9+qHcosylx7TA6iK8bkh6VTLHIC2VYXGlk=",
+            "html-lint.js": "kcGw18FhR2eQvK8TRxI/h8BZIK4xxRhbzfHoqBf4yfA=",
+            "javascript-lint.js": "RpjtgukxuXgvm8jIqvA96sJtCnVXTQyHxQerq7YQJX8=",
+            "json-lint.js": "Typ8ORURbis3vh6qYqIexgCbx5EnhJxe38NEpBIw3KQ=",
+            "lint.js": "2Juixn3iQDBB1tHwXcjJ+X6d4ihPItrLbEXcPU+3Xjw=",
+            "yaml-lint.js": "Y//CTECEZ0UBxqRmrMe4mHb/SuVf4SbL/KrX1g4yGE0="
+          },
+          "merge": {
+            "merge.js": "gDhLnaBUl6uprydhGjyJVqeCSeVBNrXHUc8gewvkej4="
+          },
+          "mode": {
+            "loadmode.js": "CR+I0kA8gpqBcrmz7x2xZseaba9NF8k8oeZ4cpW5Rq8=",
+            "multiplex.js": "KYUvd/gUm1o5CL3tlBTd765B+9t3xOOO4ZHyc/AbVoc=",
+            "multiplex_test.js": "uxm8B0mC+R6GLFeTlT2ZbDeCt/SzhXyPY+PgaTatyT0=",
+            "overlay.js": "8JjrfG53noQtUqtEAZUSL+kWANacvJ/WQd8yQP20Qow=",
+            "simple.js": "mEan6clyeMFs0QPEN+31PA3qYatMVyG2uWyiPYyiRdU="
+          },
+          "runmode": {
+            "colorize.js": "ibfr0B6GmDhzwClBwrOgPBZwL0JWdXa5GXGZjAQGIOM=",
+            "runmode-standalone.js": "kj1Zn3UgiaGLEzhKszilVIh8UWPEUkiCwewHc+nUVqw=",
+            "runmode.js": "9vSZP29WhEENYxHVxMCSTSKFAsHMdIV+xZnwtXPz6s0=",
+            "runmode.node.js": "VPRVx6EcxNo9U3IXnENR/Y6I8rb5l2+BOftFjf09fPY="
+          },
+          "scroll": {
+            "annotatescrollbar.js": "TLYWw5JTU3B1LPnd0M945Dfm+2+M57FA2jP+M/cRROc=",
+            "scrollpastend.js": "HVp0lc8ZVfwc5BwSeSQ59TkJ90aeLo/z0ySNzQ7U+mc=",
+            "simplescrollbars.js": "2IQa9LX21duety4lKkY25Imuc9hwXlq16e7spRlVk8Y="
+          },
+          "search": {
+            "jump-to-line.js": "zojCfO/wScB9MpVN3rnGEc+4sfBKKMPJZUi8Z+xEcFo=",
+            "match-highlighter.js": "qlUHHHpxUsXuEmONNa2TeJlocxvzA3xpBltJdeJhiOA=",
+            "matchesonscrollbar.js": "kItvY3oTWMYUhFgscWDlS/ybN+XW+OegAruQNMCdQfs=",
+            "search.js": "0y222HtVkf1JwDnsHKRpUGBFJlBDSmIV1E3yhlDe9P8=",
+            "searchcursor.js": "MPHukmdD3PvbMl2ux11JpmSVlDyKc2kjLAV67GM4xrE="
+          },
+          "selection": {
+            "active-line.js": "kSDNmDSwK6vPJ7ixOOP1sUuEC6YeqXYLTNBDa+R1f34=",
+            "mark-selection.js": "lsnDzwwCMw1ZLu4cPHdpxzvalANqSzDZu9Aoq4aDEUs=",
+            "selection-pointer.js": "7bBfz6y6gqfuElfOtsjRcqYqwJsrsDUp8ra0mks7hYE="
+          },
+          "tern": {
+            "tern.js": "WYnZsmsgXBhOgE42ta3e9rsL3wc8t1DgNQMufq/cdEE=",
+            "worker.js": "gCdGf/vKCtEzqYQXrOFGCEBCEDc/SgEv2o7GA8HZals="
+          },
+          "wrap": {
+            "hardwrap.js": "iJFY3ne5FRHO5waLeS+KB4oMzYuMi3AWgPWn/7BRq+o="
+          }
+        },
         "keymap": {
           "emacs.js": "bR6Fl6+Bebrq2MK7/vnq5OjelR1Eq1x6D61hhw0yxgo=",
           "sublime.js": "oiK3Q98Vy9etAHi7uN2YOTpoqdLzYA3VcEt6wyENaFU=",
@@ -3165,98 +3029,21 @@ defineManifest({
         "lib": {
           "codemirror.js": "yOFnbYk+n1M+9wWcDfSAAPCiKEo8qUdTdNcyhGnWwLU="
         },
-        "src": {
-          "codemirror.js": "sqG2dmBcZCi23XziGooNJQnUZSzrIpe+kweMptZpJt0=",
-          "modes.js": "+va1dCW3uVoUZQ2l2mpIjN4BPiPBylfkIjFGzNNpIws=",
-          "display": {
-            "Display.js": "2h3acczf+Sp7XiOWECYiUcI/XVM4fMoOe81hd3g+TpA=",
-            "focus.js": "2eYsSZDpX+wsKEAxkE8lN3Or5QHHdAM1j9cz1Pkyygk=",
-            "gutters.js": "TAjfKetAAw3vLW2iLMr5DM8EJGJ8yWJd99un8IOXqwc=",
-            "highlight_worker.js": "/J2L+QU0uabH1aRej495pPiCemYcQnH4EndufD0r3Ak=",
-            "line_numbers.js": "larCIeBLpitl0Wox+0u0rg2L8hQIPPZjd+f1O8wpoUo=",
-            "mode_state.js": "fZhrL5zqOfeCn/1X/nCm2JGvtovaRlV/PTYfzmq93ts=",
-            "operations.js": "lXRR5C4484m9k/AOO00DgM7mp8Nzj4YVyAbQbWnxYv8=",
-            "scroll_events.js": "tb4pTzuMFB2FFgAJjxmViCbODvt05q62UincurnGnLM=",
-            "scrollbars.js": "d+Wf9Jh0qjXytAbzFCSSDy+WwFXvN7E2enU3irARQtE=",
-            "scrolling.js": "L7UNjUeEB2dMlCOyo3PKGjjF8B/A995wjPtuqMDWvHY=",
-            "selection.js": "ZjAxz7L1CBEK7e2e5TzQxdcbbJbWL2oJImY0HTgaWcI=",
-            "update_display.js": "tUCklK+1PbiGzDLQLKTrDfeeG6HGixGKSw5Xjci0eC8=",
-            "update_line.js": "zIngS/L3BGXpT8NaI0DU3usPo3c+l0hchIv14Yr0PbA=",
-            "update_lines.js": "ef7ubRkvtToBwHqROdW6qtQNoF7V63nkJYZDhf4/b3I=",
-            "view_tracking.js": "B384W2kPDHr5l2y3ttK2ChdfdidTp3swYKbbJoal7oE="
-          },
-          "input": {
-            "ContentEditableInput.js": "k+apYN9JtEk4ODZRyZ8eMZieW/u60X9NmfVfHHoLfr4=",
-            "TextareaInput.js": "/KlbkSH5BZAg28DC16/17xhbbjg2TBJmnXaA+PJKTPE=",
-            "indent.js": "8oJgysjrqD3hmJFwnrhUXsqmz6PscW5heZLhTNARJAQ=",
-            "input.js": "jLjAcAr/nGvgUlRGZWr7z7jJRjYHqTUjuQ/9mo/0CRE=",
-            "keymap.js": "+X//3I4+eub8r/HgOLljJMoWTRhnl4Lk+LcMEuWtZh8=",
-            "keynames.js": "avB5VwUilpR71d4gETGOTfJbW5P7bDl9I1WHCqaDQ28=",
-            "movement.js": "e8mSj08WtfgRBNMjLUH+c2P69Wxskoqvu6pBvn9nb3Y="
-          },
-          "edit": {
-            "CodeMirror.js": "tmWxvvcjb8jYb+fiZ64//qNCs0tJKh2jI9eYrXtWkHE=",
-            "commands.js": "Vg9C/IdL5liCZdiqyKbqQqmxw/eew6u3kPaycCgPhEk=",
-            "deleteNearSelection.js": "2slxrVt2GJa4MOlfXiJA4nSPuDyQnvTF6k/R9grgMf0=",
-            "drop_events.js": "nY9piBsq5Up6ymV7OVtsmrQtBl5NCqy2MsJ2pDFyMRY=",
-            "fromTextArea.js": "BHryR5oS5Q5sOrXM5Rdv7dLBXt5vl7zZiEzPPi3CcT8=",
-            "global_events.js": "5KiLTvjqxSR1qzS5IO8gE4tlItMku3sOQgJIOqYSnzk=",
-            "key_events.js": "9vfj+5UhhHCRchbEcoRJ/ftP7vqR5aIXW1bIJf9xeN4=",
-            "legacy.js": "Zj4w35+x9JlAksldWkoqEn1n1ZiWtHlYB6yRJ3OnWaQ=",
-            "main.js": "oWX93dPBVy+9ySYGuXn2qXd6tX16J0qUJTOIsGXbb0w=",
-            "methods.js": "FqweSz7PUoD1msdlDFclppXAHQXztCsg7aJUNzsipiQ=",
-            "mouse_events.js": "02JmGXizL49frOxJ8Y6kB+9YNVqTwsGk3nFS05Wk6gM=",
-            "options.js": "pgKyBsGBKT0fIgJT7dyp6tg0ys7BRRdWBV4g5xVzPGQ=",
-            "utils.js": "BiIPnkJENEkrc+Cuplvruh/nT8MAL4s2ctHQ06RF8g0="
-          },
-          "measurement": {
-            "position_measurement.js": "iAyAiE8uEnFolo4QFbaUr7HAOKfo57/JzzInKbicsiU=",
-            "widgets.js": "CYdK0TqFb60Rs6/QhOWEEXQe4nNeYbTZX+/AYLYL/WU="
-          },
-          "model": {
-            "Doc.js": "AvjSMxEZGeVo1QLCVEFMVGFTLtGhsvRJbdysCUDs1V4=",
-            "change_measurement.js": "NvoWnMJQvSc2YOiSuEPqedL3+kl3JG47StpUzSMA/g4=",
-            "changes.js": "ValvkalwI7DDf/1yZ0T9DN4YoYhiy+UtC+jFScD8SSY=",
-            "chunk.js": "GPVdprOcGxL7VAbHliqIiE4A0hIlZmInhHIMvmEvxnY=",
-            "document_data.js": "7qZILi8Mj3pkxHFLdD9F+eKFIohahWVr1KIGv8xnIhE=",
-            "history.js": "+Jj7QVu8aGPeVMZB94a0NIHZuIq94gf2UwilkBlMecc=",
-            "line_widget.js": "VEkGL+bQC7Q1e08uJx1wL9zh6uUB46OARnJmUYXaOio=",
-            "mark_text.js": "ZuLek15U2gXmI6nwYxfqoMhC9MA5QZ2aIwrvQnpY+is=",
-            "selection.js": "McJI2lJ610UPDz4JLzDiXl8W64N34ygFJYmJN+pHmfw=",
-            "selection_updates.js": "hWHN/RgqHchmIWBTx4WPPHsI5kKIazhQm2NoY8UwOPA="
-          },
-          "line": {
-            "highlight.js": "C7F6iJSBgOcIzcO/+H5MfGOBBrDP6I81tFRvAMeodwg=",
-            "line_data.js": "7Urx16jqv47fm9pLz/g1aU7lIp5oR1qdgf/7bBlVi2w=",
-            "pos.js": "twi/u5zoCdXOLRSQ2AaTP62bRxrGPg9McqMa2lfgX5s=",
-            "saw_special_spans.js": "+xIgYOxQDdmaF5wAL7tqhwnroDC/j3aV2GgQm0cLMf8=",
-            "spans.js": "3ilJveLjSowmP4URkD4b7G0cIKpzMEy0ibeNmEi867w=",
-            "utils_line.js": "qLOf9XttQ9/O2nhjgNbazvexc4qB+2Az51c1AlAdS24="
-          },
-          "util": {
-            "StringStream.js": "nxq1C7pK4QL6XGEdTvWwVtBjpjp/IM/vWe6mTpPD4E4=",
-            "bidi.js": "ovY5GFReoQpX8T4VTaBNZkyY9XCi+lNv6dFBcZfcAtI=",
-            "browser.js": "Fp4VfzJtV6kshD8EyYr0bGA8L2WjndNcB9+97lhFp0M=",
-            "dom.js": "HNPpCK2U0Ca/h0tap9F/iOyZ5iZAvTOyUj9zaFhGg4M=",
-            "event.js": "GxMRP6uHY8PJ4ihNG2vfH4SrNCSZmi6s/793Hqi3VRM=",
-            "feature_detection.js": "Surxl/N5s0UMjCl/I+RJ3zeVqZVL7EjPzd9LNhXV83E=",
-            "misc.js": "QAU+6v9Nv62detTeTnGGCoS60Lq7JJMDrfgAPgyXHCY=",
-            "operation_group.js": "qqnDS9EkCxZIl6QSolfS5pPSrTW+whnPiVlWHeZVnts="
-          }
-        },
         "mode": {
-          "meta.js": "LaWRd9ubmaKzxJ7glU+DejRt3rx0Lb1r9cjwZ5FtxY0=",
           "apl": {
             "apl.js": "1VKf3DXKRsIaQwGQBsvSpy8ycA3bCUk4o1wa9JwMwfQ="
           },
           "asciiarmor": {
             "asciiarmor.js": "BuJhibjnh9KcgGWrFJ4V7gbM+YRjDzZqAwRLAuJZPwo="
           },
-          "brainfuck": {
-            "brainfuck.js": "ebhE/upGwESDGmL+uLEViM7BTxQyGKEfa8F/mCAvcVg="
-          },
           "asn.1": {
             "asn.1.js": "TTH6nFSFkTp6cViFTOcnZktujFz8aZL1A37jo1P7H4k="
+          },
+          "asterisk": {
+            "asterisk.js": "93bQQK4B/rf9oTLvELmHdbd6Cnk04ldS8vg/pkgwULk="
+          },
+          "brainfuck": {
+            "brainfuck.js": "ebhE/upGwESDGmL+uLEViM7BTxQyGKEfa8F/mCAvcVg="
           },
           "clike": {
             "clike.js": "d3bwNaT2hsrEsUcXjc0nUYm08G9fYI2EfRKEdLm6bok="
@@ -3378,9 +3165,6 @@ defineManifest({
           "javascript": {
             "javascript.js": "fJ/Z/0K5VpuOpTR4pxP5nJFg0BIPyky6jJNkoif7aic="
           },
-          "asterisk": {
-            "asterisk.js": "93bQQK4B/rf9oTLvELmHdbd6Cnk04ldS8vg/pkgwULk="
-          },
           "jinja2": {
             "jinja2.js": "zuCCQFdupAUFR3CDl0JBcWnPQeuDNeuCRbe/qiM8pzc="
           },
@@ -3393,11 +3177,11 @@ defineManifest({
           "livescript": {
             "livescript.js": "hUt5VepAF633PIhFY2oQ1skCgc4lygFwyeo4avKZZNw="
           },
-          "markdown": {
-            "markdown.js": "g/U6eLwo9S+WBUYgw+JhmYVCOZxHEl2OWkHfOvAFUSY="
-          },
           "lua": {
             "lua.js": "J/zli8U1qhmXArFpgHEsQeTLk2GCteR8xUJDtp90ho8="
+          },
+          "markdown": {
+            "markdown.js": "g/U6eLwo9S+WBUYgw+JhmYVCOZxHEl2OWkHfOvAFUSY="
           },
           "mathematica": {
             "mathematica.js": "x+PYgxHecU4Aw6D/AulKPL0HzQBgXTOboZiWct+auVs="
@@ -3405,20 +3189,21 @@ defineManifest({
           "mbox": {
             "mbox.js": "w4hQWgcbzHFTECvnfyvJbvDJXTV1tKg9NE7L0BZh/5s="
           },
-          "mscgen": {
-            "mscgen.js": "ESSmF2Hi0cEWOfw9J1CTY6v4Wpuk4UsQXynN3xAVFT4="
-          },
-          "modelica": {
-            "modelica.js": "x/htdtV3xoYBvFhNjl1iPsCLZwXc5MsxkurZlVm3hWs="
+          "meta.js": "LaWRd9ubmaKzxJ7glU+DejRt3rx0Lb1r9cjwZ5FtxY0=",
+          "mirc": {
+            "mirc.js": "ik/jpsNv9xXGcJg/cnqxAYfJT4UOfGEpuVkQlw4zuu4="
           },
           "mllike": {
             "mllike.js": "0U1cAvFVPJB9Int/3iGelBm7QcaLNMR60R5h5n5SOmk="
           },
+          "modelica": {
+            "modelica.js": "x/htdtV3xoYBvFhNjl1iPsCLZwXc5MsxkurZlVm3hWs="
+          },
+          "mscgen": {
+            "mscgen.js": "ESSmF2Hi0cEWOfw9J1CTY6v4Wpuk4UsQXynN3xAVFT4="
+          },
           "mumps": {
             "mumps.js": "8Sk9/1TfbiL5nQQ57s87gciownPQHLQ7bjBzAAjAcFs="
-          },
-          "mirc": {
-            "mirc.js": "ik/jpsNv9xXGcJg/cnqxAYfJT4UOfGEpuVkQlw4zuu4="
           },
           "nginx": {
             "nginx.js": "IfDnbb+Hk6TrUOp/JSPQvJkVT9SWSyKKQ14feeaJYNM="
@@ -3435,20 +3220,23 @@ defineManifest({
           "oz": {
             "oz.js": "hA/TL+CdXq+WQt6WERUfpJp0fAMNFSOBS3BT+spUCNI="
           },
+          "pascal": {
+            "pascal.js": "4YqT7kAedybkVRjqA5a4OGFO0bj358OJKpdnlVGgum8="
+          },
           "pegjs": {
             "pegjs.js": "0GFsQSd+PCxkSS8EQc9UXST/oP71Jm9D5nKLPByKCec="
           },
           "perl": {
             "perl.js": "Lpb+b7GLc9XWDp/J3ui9IQrektgQkc/458SFUMJaA48="
           },
-          "pig": {
-            "pig.js": "jgpdtWrq8aNi3rywyF+FZUAC7iwkz4sdFeNpzslw7yY="
-          },
           "php": {
             "php.js": "5GC7UR5LMpPOzLZ1rOb+nOMX7Mgqpfo4ya2uUmN4X0I="
           },
-          "pascal": {
-            "pascal.js": "4YqT7kAedybkVRjqA5a4OGFO0bj358OJKpdnlVGgum8="
+          "pig": {
+            "pig.js": "jgpdtWrq8aNi3rywyF+FZUAC7iwkz4sdFeNpzslw7yY="
+          },
+          "powershell": {
+            "powershell.js": "96jFAco2J1pzcqzVQtXkHk80543UY76iGU3B0UmN0wc="
           },
           "properties": {
             "properties.js": "LF0r55rlYg5n6r87Rtk+55GTf1W6KsvBzqe8whyyoV4="
@@ -3456,14 +3244,11 @@ defineManifest({
           "protobuf": {
             "protobuf.js": "S56qcbAR5U3ZOdlHD1xV25YRJNooStQKdHm7iDayT38="
           },
-          "puppet": {
-            "puppet.js": "aTnYCVPNXkwGX3dsiWNndbGLoaKWMmQuFBMo3Sf/mLk="
-          },
-          "powershell": {
-            "powershell.js": "96jFAco2J1pzcqzVQtXkHk80543UY76iGU3B0UmN0wc="
-          },
           "pug": {
             "pug.js": "xEyDF2pu93VNh3v/K8wzW4XYZ83385y7s5r5gUzJMqE="
+          },
+          "puppet": {
+            "puppet.js": "aTnYCVPNXkwGX3dsiWNndbGLoaKWMmQuFBMo3Sf/mLk="
           },
           "python": {
             "python.js": "p2pGae+XXWNtn/kybD64mCK+ZojL3M+1a63EtqLPKeg="
@@ -3474,23 +3259,23 @@ defineManifest({
           "r": {
             "r.js": "vrkSTgyYfdzRLgHXzVwOWQN9n1gXYZB8jiTKgJv8gAU="
           },
+          "rpm": {
+            "rpm.js": "9BlWPg5spdR2nd2C/zLU6yKIWPlXTZPawxvwrXOzUik="
+          },
           "rst": {
             "rst.js": "k9sqV0x8nDE2QxNlSh1S1o7dtKnni6+eoXkMxxRRHTY="
           },
           "ruby": {
             "ruby.js": "7QOU0aeCKER6PcZT0yC9smflx/Qw9fgcGqvb7VJv/mc="
           },
-          "rpm": {
-            "rpm.js": "9BlWPg5spdR2nd2C/zLU6yKIWPlXTZPawxvwrXOzUik="
+          "rust": {
+            "rust.js": "Ujjl59zjid9tZSBjD1l5yT+/llzbGSbP9cvPOyJgxZ0="
           },
           "sas": {
             "sas.js": "GBF1uPoeV3TnD7O3hHNdqeOyGbXka43fGKgzaJwHmho="
           },
           "sass": {
             "sass.js": "nrAeu3WfmsNBfxztndfuXseI46i6a5SEdL8Q6SYzVpg="
-          },
-          "rust": {
-            "rust.js": "Ujjl59zjid9tZSBjD1l5yT+/llzbGSbP9cvPOyJgxZ0="
           },
           "scheme": {
             "scheme.js": "10ev4quQQo3r0B60duQT/a5sIzWXqMiONgvc0WqQxdc="
@@ -3501,26 +3286,23 @@ defineManifest({
           "sieve": {
             "sieve.js": "uLrZJEgj++/e/hOV3kr+TZzgAgo+6dBVTPHYCYJ/2C8="
           },
+          "slim": {
+            "slim.js": "2nj8ZXb2LtHgY5MJhAmH4yroblu+Ys7fFuRvxiNj7qI="
+          },
           "smalltalk": {
             "smalltalk.js": "vxigidFhb3I1PCDZi6O+aKbTF3fsR3jenATvGilFBSw="
           },
           "smarty": {
             "smarty.js": "WUrOCAqiLgWvxwFDElgHg7QLGwdUXfg8q9YzY/YzKcs="
           },
-          "slim": {
-            "slim.js": "2nj8ZXb2LtHgY5MJhAmH4yroblu+Ys7fFuRvxiNj7qI="
-          },
           "solr": {
             "solr.js": "3pp6qGH1vUBsjY1JV7Dk3JbTcqXMNrV/6RUKWEmURVY="
-          },
-          "sparql": {
-            "sparql.js": "4Ej9LybQe02K3cu1WJ4DjeAcG/jVah7NKKcB53rL1yY="
           },
           "soy": {
             "soy.js": "/EkLY9EzWgZFAXPudxruotliSjC/n+kzgUVWmhpxZzo="
           },
-          "stex": {
-            "stex.js": "ktI9+BTSkK1ds/0y/GI+5qLm7709fqMMu8Sb74HsCU0="
+          "sparql": {
+            "sparql.js": "4Ej9LybQe02K3cu1WJ4DjeAcG/jVah7NKKcB53rL1yY="
           },
           "spreadsheet": {
             "spreadsheet.js": "mj2gzJuINEBCMqlGOq22bW8P0MW3qVUHKv5EM2QBZdw="
@@ -3528,11 +3310,17 @@ defineManifest({
           "sql": {
             "sql.js": "x+tx1YdcND7/U/JlDP8pOiirDLaVAYUU27Ho3TU2c4M="
           },
+          "stex": {
+            "stex.js": "ktI9+BTSkK1ds/0y/GI+5qLm7709fqMMu8Sb74HsCU0="
+          },
           "stylus": {
             "stylus.js": "kc7JWbK5pN/aSO9pLOeOGCarq7c6I0RTlCvjrcH8bdk="
           },
           "swift": {
             "swift.js": "PFLLdyMitNfHdIgUQawZJgwPE5XuHngcPGV0u4FwyPk="
+          },
+          "tcl": {
+            "tcl.js": "cvDuOxLjUmxztlFE1Q59PpsXig+UEyGc33muIZqx01k="
           },
           "textile": {
             "textile.js": "xSdXbILWE83R/eLhOQMSx8QD4tnKnNlBRENn/NgPNFU="
@@ -3540,41 +3328,38 @@ defineManifest({
           "tiddlywiki": {
             "tiddlywiki.js": "1/zvF6mrdTXm87uF0t1qRFx+zAvwoFFPzjneFW3PLKs="
           },
-          "tcl": {
-            "tcl.js": "cvDuOxLjUmxztlFE1Q59PpsXig+UEyGc33muIZqx01k="
+          "tiki": {
+            "tiki.js": "KkLhKzvVI5Dzi+HQmquxpIeBpRpOXzyXStesxv32iNY="
           },
           "toml": {
             "toml.js": "95JrG6WbAe7qgUocKnoOb1QCC3u7I8gmRAoeCRekZKM="
           },
-          "troff": {
-            "troff.js": "/P56zilyaXeEFQ0PxMjh0SXfA/TVQXeeGVUajjs9k+M="
-          },
           "tornado": {
             "tornado.js": "IagLAXH8wUHi5/8lw3IXTIxoJ9y6/vJFl7igNGx1GEU="
           },
-          "tiki": {
-            "tiki.js": "KkLhKzvVI5Dzi+HQmquxpIeBpRpOXzyXStesxv32iNY="
-          },
-          "turtle": {
-            "turtle.js": "151obrJJaKJ5G+CNcf9Grv4okgjdZp4Obadk6ryzT3o="
-          },
-          "ttcn-cfg": {
-            "ttcn-cfg.js": "x++0vQjwxS2BZP+B+4L3Mx0+MjS9Vu79nO/toSQNvzc="
+          "troff": {
+            "troff.js": "/P56zilyaXeEFQ0PxMjh0SXfA/TVQXeeGVUajjs9k+M="
           },
           "ttcn": {
             "ttcn.js": "Y78lIoeYfNB6BC6kQ51QAX61ua0aC2/C4hJ50dzjL+M="
           },
-          "vb": {
-            "vb.js": "t/8aVFXJnSN5LdFQc1XLC26uo6P/B06+Asm0Uapy1Uk="
+          "ttcn-cfg": {
+            "ttcn-cfg.js": "x++0vQjwxS2BZP+B+4L3Mx0+MjS9Vu79nO/toSQNvzc="
+          },
+          "turtle": {
+            "turtle.js": "151obrJJaKJ5G+CNcf9Grv4okgjdZp4Obadk6ryzT3o="
           },
           "twig": {
             "twig.js": "Knc5n4Y7NtlYa7ugz0S9Pp6zZFMH5VuQp/HysotHLfY="
           },
-          "velocity": {
-            "velocity.js": "K0ZmGsycWrkbfJnLGCFv5EGNk/vywXLabrYalr1fp9M="
+          "vb": {
+            "vb.js": "t/8aVFXJnSN5LdFQc1XLC26uo6P/B06+Asm0Uapy1Uk="
           },
           "vbscript": {
             "vbscript.js": "7GZyf/P7ioSxajiekehFfccYdiyU2tk7jlRIna09lYo="
+          },
+          "velocity": {
+            "velocity.js": "K0ZmGsycWrkbfJnLGCFv5EGNk/vywXLabrYalr1fp9M="
           },
           "verilog": {
             "verilog.js": "GnxG/KN8gBexw7Kn/i/HL6sGXL6UYunUybAZWnUvPxg="
@@ -3607,95 +3392,84 @@ defineManifest({
             "z80.js": "vXdg/2j2Q8bUTuz5K4nck/8WAfK7QyyAzhlMqmjY+3c="
           }
         },
-        "addon": {
-          "comment": {
-            "comment.js": "PMztPd0WjBzgiJ4McuMm7XaEtech972Iz4rw3RY0ZE8=",
-            "continuecomment.js": "kqfH5KHq/xKc52VRn8qxC7EWic8bGDLB5ZAlrlFH62g="
-          },
-          "dialog": {
-            "dialog.js": "oRCL9tU8JnTY35IYKvc/N2vtA026JwyuIUnPEeNmA08="
-          },
+        "rollup.config.js": "MxWwSeMa9ZMaeRtXAiVdKdMZUiLsL+qOZkrXjmQ1GHM=",
+        "src": {
+          "codemirror.js": "sqG2dmBcZCi23XziGooNJQnUZSzrIpe+kweMptZpJt0=",
           "display": {
-            "autorefresh.js": "ADmSAm8ny/K6dCivADkiRLfJh7AQZyKbPP/sqDZXJ8A=",
-            "fullscreen.js": "gEWmEEzRvSCXzJ+6Ev6+i5uP6jkbqm1ymNkojIZPtEY=",
-            "panel.js": "rxnhs8X0bTVqsfO/f+jESaxdmS+4bMJrMbrgJFDvyTI=",
-            "placeholder.js": "YUesMvUoJzrGTIkt2Z2KI+VK70JnKJARSVAnExZKjC4=",
-            "rulers.js": "a+3dtkQd4wfs+IRuSkADZIeQMkHChvWB3VUe9w2QLgs="
+            "Display.js": "2h3acczf+Sp7XiOWECYiUcI/XVM4fMoOe81hd3g+TpA=",
+            "focus.js": "2eYsSZDpX+wsKEAxkE8lN3Or5QHHdAM1j9cz1Pkyygk=",
+            "gutters.js": "TAjfKetAAw3vLW2iLMr5DM8EJGJ8yWJd99un8IOXqwc=",
+            "highlight_worker.js": "/J2L+QU0uabH1aRej495pPiCemYcQnH4EndufD0r3Ak=",
+            "line_numbers.js": "larCIeBLpitl0Wox+0u0rg2L8hQIPPZjd+f1O8wpoUo=",
+            "mode_state.js": "fZhrL5zqOfeCn/1X/nCm2JGvtovaRlV/PTYfzmq93ts=",
+            "operations.js": "lXRR5C4484m9k/AOO00DgM7mp8Nzj4YVyAbQbWnxYv8=",
+            "scroll_events.js": "tb4pTzuMFB2FFgAJjxmViCbODvt05q62UincurnGnLM=",
+            "scrollbars.js": "d+Wf9Jh0qjXytAbzFCSSDy+WwFXvN7E2enU3irARQtE=",
+            "scrolling.js": "L7UNjUeEB2dMlCOyo3PKGjjF8B/A995wjPtuqMDWvHY=",
+            "selection.js": "ZjAxz7L1CBEK7e2e5TzQxdcbbJbWL2oJImY0HTgaWcI=",
+            "update_display.js": "tUCklK+1PbiGzDLQLKTrDfeeG6HGixGKSw5Xjci0eC8=",
+            "update_line.js": "zIngS/L3BGXpT8NaI0DU3usPo3c+l0hchIv14Yr0PbA=",
+            "update_lines.js": "ef7ubRkvtToBwHqROdW6qtQNoF7V63nkJYZDhf4/b3I=",
+            "view_tracking.js": "B384W2kPDHr5l2y3ttK2ChdfdidTp3swYKbbJoal7oE="
           },
           "edit": {
-            "closebrackets.js": "+5rFwVXNB9T8+LxZU9BtEnlmzDoLVSmf02ryLP9Uz2U=",
-            "closetag.js": "/2LbWiLMIJySnw4irgBBFQ4geM6kZej0YtBunJzN8Eo=",
-            "continuelist.js": "S7HQorUPulxbNjmuC8+jrBzQLggg0r9QyFzS5wkJsEg=",
-            "matchbrackets.js": "1ZBoXf1PnYzxJ7zY5+7ZAJbUh9xXYGUUXHn8r21LHWg=",
-            "matchtags.js": "aKA2BMUxAIY3kNKzmYhxUFMCiNL/s/qF3zIxvROsnm8=",
-            "trailingspace.js": "p9V6C891txuDw/3jGuNH2q/rRGh1ND4Q64Nz7ioIYiE="
+            "CodeMirror.js": "tmWxvvcjb8jYb+fiZ64//qNCs0tJKh2jI9eYrXtWkHE=",
+            "commands.js": "Vg9C/IdL5liCZdiqyKbqQqmxw/eew6u3kPaycCgPhEk=",
+            "deleteNearSelection.js": "2slxrVt2GJa4MOlfXiJA4nSPuDyQnvTF6k/R9grgMf0=",
+            "drop_events.js": "nY9piBsq5Up6ymV7OVtsmrQtBl5NCqy2MsJ2pDFyMRY=",
+            "fromTextArea.js": "BHryR5oS5Q5sOrXM5Rdv7dLBXt5vl7zZiEzPPi3CcT8=",
+            "global_events.js": "5KiLTvjqxSR1qzS5IO8gE4tlItMku3sOQgJIOqYSnzk=",
+            "key_events.js": "9vfj+5UhhHCRchbEcoRJ/ftP7vqR5aIXW1bIJf9xeN4=",
+            "legacy.js": "Zj4w35+x9JlAksldWkoqEn1n1ZiWtHlYB6yRJ3OnWaQ=",
+            "main.js": "oWX93dPBVy+9ySYGuXn2qXd6tX16J0qUJTOIsGXbb0w=",
+            "methods.js": "FqweSz7PUoD1msdlDFclppXAHQXztCsg7aJUNzsipiQ=",
+            "mouse_events.js": "02JmGXizL49frOxJ8Y6kB+9YNVqTwsGk3nFS05Wk6gM=",
+            "options.js": "pgKyBsGBKT0fIgJT7dyp6tg0ys7BRRdWBV4g5xVzPGQ=",
+            "utils.js": "BiIPnkJENEkrc+Cuplvruh/nT8MAL4s2ctHQ06RF8g0="
           },
-          "fold": {
-            "brace-fold.js": "/zTWJHS+hYSX9H0S1vHdAdG4diVKri1dYcEVFf66cFw=",
-            "comment-fold.js": "OqzED4mNVUKhDi4J5uEVt0Sl2AGdBwHaOU0V+fcDipM=",
-            "foldcode.js": "OACGugamoK8QlA6UXmMIOML5y7zlc74JBEfOKUsyfws=",
-            "foldgutter.js": "FOr7dqBJfuZIdp3ACdmg88poq2ZABUiQ9ChPgPSxGas=",
-            "indent-fold.js": "3Gr3lvn/5E3XJkszPSbQHCb4CMGVhGeyxnCicfNStGQ=",
-            "markdown-fold.js": "R5YhVWLmpmlc0BOsNTEespwY//JxR8SPKhZiPWZWxNQ=",
-            "xml-fold.js": "0NR53Omilqa/gGNsbd6g0IjppcgdSabwMu8jOTk6vFE="
+          "input": {
+            "ContentEditableInput.js": "k+apYN9JtEk4ODZRyZ8eMZieW/u60X9NmfVfHHoLfr4=",
+            "TextareaInput.js": "/KlbkSH5BZAg28DC16/17xhbbjg2TBJmnXaA+PJKTPE=",
+            "indent.js": "8oJgysjrqD3hmJFwnrhUXsqmz6PscW5heZLhTNARJAQ=",
+            "input.js": "jLjAcAr/nGvgUlRGZWr7z7jJRjYHqTUjuQ/9mo/0CRE=",
+            "keymap.js": "+X//3I4+eub8r/HgOLljJMoWTRhnl4Lk+LcMEuWtZh8=",
+            "keynames.js": "avB5VwUilpR71d4gETGOTfJbW5P7bDl9I1WHCqaDQ28=",
+            "movement.js": "e8mSj08WtfgRBNMjLUH+c2P69Wxskoqvu6pBvn9nb3Y="
           },
-          "hint": {
-            "anyword-hint.js": "AutkL+MHgyRlEOwrPMHtxaKhT0FK6hHMUsaKjDzBu1Y=",
-            "css-hint.js": "NzVWW04b4F1iRvW4u8D6TDHoU6Wv4+KY2gxY9rjM8p8=",
-            "html-hint.js": "PYAwKyXj0yz6SYaLuuta0db1qoyLIEdFEKF2pU3OlPw=",
-            "javascript-hint.js": "d+Ayd9lVG1SclyOPL+JNk4SdDZJ1H+aWeQaxC/tMj8I=",
-            "show-hint.js": "s+5S4H8vZk43NLcuQMEILKP4DGbwCQttAT1O5bJmRr4=",
-            "sql-hint.js": "cicUjxjHzgQ+s5nlYO7BjNZ0/bKYM0NU0TV96QOlvA4=",
-            "xml-hint.js": "UT+CWCoO1myeicIZc0iN1zW3Nj+S5k4T7g7jnum9VNg="
+          "line": {
+            "highlight.js": "C7F6iJSBgOcIzcO/+H5MfGOBBrDP6I81tFRvAMeodwg=",
+            "line_data.js": "7Urx16jqv47fm9pLz/g1aU7lIp5oR1qdgf/7bBlVi2w=",
+            "pos.js": "twi/u5zoCdXOLRSQ2AaTP62bRxrGPg9McqMa2lfgX5s=",
+            "saw_special_spans.js": "+xIgYOxQDdmaF5wAL7tqhwnroDC/j3aV2GgQm0cLMf8=",
+            "spans.js": "3ilJveLjSowmP4URkD4b7G0cIKpzMEy0ibeNmEi867w=",
+            "utils_line.js": "qLOf9XttQ9/O2nhjgNbazvexc4qB+2Az51c1AlAdS24="
           },
-          "merge": {
-            "merge.js": "gDhLnaBUl6uprydhGjyJVqeCSeVBNrXHUc8gewvkej4="
+          "measurement": {
+            "position_measurement.js": "iAyAiE8uEnFolo4QFbaUr7HAOKfo57/JzzInKbicsiU=",
+            "widgets.js": "CYdK0TqFb60Rs6/QhOWEEXQe4nNeYbTZX+/AYLYL/WU="
           },
-          "mode": {
-            "loadmode.js": "CR+I0kA8gpqBcrmz7x2xZseaba9NF8k8oeZ4cpW5Rq8=",
-            "multiplex.js": "KYUvd/gUm1o5CL3tlBTd765B+9t3xOOO4ZHyc/AbVoc=",
-            "multiplex_test.js": "uxm8B0mC+R6GLFeTlT2ZbDeCt/SzhXyPY+PgaTatyT0=",
-            "overlay.js": "8JjrfG53noQtUqtEAZUSL+kWANacvJ/WQd8yQP20Qow=",
-            "simple.js": "mEan6clyeMFs0QPEN+31PA3qYatMVyG2uWyiPYyiRdU="
+          "model": {
+            "Doc.js": "AvjSMxEZGeVo1QLCVEFMVGFTLtGhsvRJbdysCUDs1V4=",
+            "change_measurement.js": "NvoWnMJQvSc2YOiSuEPqedL3+kl3JG47StpUzSMA/g4=",
+            "changes.js": "ValvkalwI7DDf/1yZ0T9DN4YoYhiy+UtC+jFScD8SSY=",
+            "chunk.js": "GPVdprOcGxL7VAbHliqIiE4A0hIlZmInhHIMvmEvxnY=",
+            "document_data.js": "7qZILi8Mj3pkxHFLdD9F+eKFIohahWVr1KIGv8xnIhE=",
+            "history.js": "+Jj7QVu8aGPeVMZB94a0NIHZuIq94gf2UwilkBlMecc=",
+            "line_widget.js": "VEkGL+bQC7Q1e08uJx1wL9zh6uUB46OARnJmUYXaOio=",
+            "mark_text.js": "ZuLek15U2gXmI6nwYxfqoMhC9MA5QZ2aIwrvQnpY+is=",
+            "selection.js": "McJI2lJ610UPDz4JLzDiXl8W64N34ygFJYmJN+pHmfw=",
+            "selection_updates.js": "hWHN/RgqHchmIWBTx4WPPHsI5kKIazhQm2NoY8UwOPA="
           },
-          "lint": {
-            "coffeescript-lint.js": "sL09rH1LtoNZjHeN+eW7dC2a/sO1ModZ5CFimtSL9P4=",
-            "css-lint.js": "zXEaI30VB9+qHcosylx7TA6iK8bkh6VTLHIC2VYXGlk=",
-            "html-lint.js": "kcGw18FhR2eQvK8TRxI/h8BZIK4xxRhbzfHoqBf4yfA=",
-            "javascript-lint.js": "RpjtgukxuXgvm8jIqvA96sJtCnVXTQyHxQerq7YQJX8=",
-            "json-lint.js": "Typ8ORURbis3vh6qYqIexgCbx5EnhJxe38NEpBIw3KQ=",
-            "lint.js": "2Juixn3iQDBB1tHwXcjJ+X6d4ihPItrLbEXcPU+3Xjw=",
-            "yaml-lint.js": "Y//CTECEZ0UBxqRmrMe4mHb/SuVf4SbL/KrX1g4yGE0="
-          },
-          "runmode": {
-            "colorize.js": "ibfr0B6GmDhzwClBwrOgPBZwL0JWdXa5GXGZjAQGIOM=",
-            "runmode-standalone.js": "kj1Zn3UgiaGLEzhKszilVIh8UWPEUkiCwewHc+nUVqw=",
-            "runmode.js": "9vSZP29WhEENYxHVxMCSTSKFAsHMdIV+xZnwtXPz6s0=",
-            "runmode.node.js": "VPRVx6EcxNo9U3IXnENR/Y6I8rb5l2+BOftFjf09fPY="
-          },
-          "scroll": {
-            "annotatescrollbar.js": "TLYWw5JTU3B1LPnd0M945Dfm+2+M57FA2jP+M/cRROc=",
-            "scrollpastend.js": "HVp0lc8ZVfwc5BwSeSQ59TkJ90aeLo/z0ySNzQ7U+mc=",
-            "simplescrollbars.js": "2IQa9LX21duety4lKkY25Imuc9hwXlq16e7spRlVk8Y="
-          },
-          "search": {
-            "jump-to-line.js": "zojCfO/wScB9MpVN3rnGEc+4sfBKKMPJZUi8Z+xEcFo=",
-            "match-highlighter.js": "qlUHHHpxUsXuEmONNa2TeJlocxvzA3xpBltJdeJhiOA=",
-            "matchesonscrollbar.js": "kItvY3oTWMYUhFgscWDlS/ybN+XW+OegAruQNMCdQfs=",
-            "search.js": "0y222HtVkf1JwDnsHKRpUGBFJlBDSmIV1E3yhlDe9P8=",
-            "searchcursor.js": "MPHukmdD3PvbMl2ux11JpmSVlDyKc2kjLAV67GM4xrE="
-          },
-          "selection": {
-            "active-line.js": "kSDNmDSwK6vPJ7ixOOP1sUuEC6YeqXYLTNBDa+R1f34=",
-            "mark-selection.js": "lsnDzwwCMw1ZLu4cPHdpxzvalANqSzDZu9Aoq4aDEUs=",
-            "selection-pointer.js": "7bBfz6y6gqfuElfOtsjRcqYqwJsrsDUp8ra0mks7hYE="
-          },
-          "wrap": {
-            "hardwrap.js": "iJFY3ne5FRHO5waLeS+KB4oMzYuMi3AWgPWn/7BRq+o="
-          },
-          "tern": {
-            "tern.js": "WYnZsmsgXBhOgE42ta3e9rsL3wc8t1DgNQMufq/cdEE=",
-            "worker.js": "gCdGf/vKCtEzqYQXrOFGCEBCEDc/SgEv2o7GA8HZals="
+          "modes.js": "+va1dCW3uVoUZQ2l2mpIjN4BPiPBylfkIjFGzNNpIws=",
+          "util": {
+            "StringStream.js": "nxq1C7pK4QL6XGEdTvWwVtBjpjp/IM/vWe6mTpPD4E4=",
+            "bidi.js": "ovY5GFReoQpX8T4VTaBNZkyY9XCi+lNv6dFBcZfcAtI=",
+            "browser.js": "Fp4VfzJtV6kshD8EyYr0bGA8L2WjndNcB9+97lhFp0M=",
+            "dom.js": "HNPpCK2U0Ca/h0tap9F/iOyZ5iZAvTOyUj9zaFhGg4M=",
+            "event.js": "GxMRP6uHY8PJ4ihNG2vfH4SrNCSZmi6s/793Hqi3VRM=",
+            "feature_detection.js": "Surxl/N5s0UMjCl/I+RJ3zeVqZVL7EjPzd9LNhXV83E=",
+            "misc.js": "QAU+6v9Nv62detTeTnGGCoS60Lq7JJMDrfgAPgyXHCY=",
+            "operation_group.js": "qqnDS9EkCxZIl6QSolfS5pPSrTW+whnPiVlWHeZVnts="
           }
         }
       },
@@ -3714,18 +3488,6 @@ defineManifest({
       "file-saver": {
         "FileSaver.js": "Vslyw6IthH1JTcsP0HbaLarasJfXP0lcKG1kDpKG9UM=",
         "FileSaver.min.js": "NNFhBxixGvCnavCijeHz4i8uxAZdEmk+onYIg8GXDsI="
-      },
-      "json.sortify": {
-        "index.js": "T+kcbrstWPxoPsIktvVpGQvLPN//t+REFfF57J6huvk=",
-        "build": {
-          "build.js": "SR9RqfQxhtgi0Lqu79XBdhXIrJbLDZgAERDv0sNp3bA="
-        },
-        "dist": {
-          "JSON.sortify.js": "JFCaLoWwMciVcpfSeEiXDWPAVaEuk82fQ4tIG2m+lR0="
-        },
-        "lib": {
-          "index.js": "iFMCkDe7XDZDom9LXDbzJ2Q/CFfd2slrefJLbk7BvOo="
-        }
       },
       "html2canvas": {
         "Gruntfile.js": "Y5KByMMc5z2UmNK3LzgW/cKgvPtgM/VrJ2GWkn1VgqA=",
@@ -3752,13 +3514,156 @@ defineManifest({
       "hyperjson": {
         "hyperjson.js": "kNz34AxpN+CAnf4zK9ukuIWCDxQMHv6OjZubllEjZDw="
       },
+      "jquery": {
+        "dist": {
+          "jquery.js": "siFczlgw4jULnUICcdm9gjQPZkw/YPDqhQ9+nAOScE4=",
+          "jquery.min.js": "ImQvICV38LovIsvla2zykaCTdEh1Z801Y+DSop91wMU="
+        },
+        "src": {
+          "ajax": {
+            "jsonp.js": "APWRE6LTqg1xbWBs5Mh0NppjFMyFriS+L6Ikb6yzCn8=",
+            "load.js": "VJpBT1QgSwffhfA0flruc7KH5kbqPKncvvwhJlSSt3g=",
+            "parseJSON.js": "3REhgwynW/edARSAjxZ8P8/Pl67QcpYW2uo0QERo3oY=",
+            "parseXML.js": "1ZB4MAwBrbjjx4fW+hmPCwls9Rx5ycbKTzDbmY7T9f4=",
+            "script.js": "hp7PcCkzCb/B8KAfJPlTT9W60GVxgEifLj0zxtLkhvs=",
+            "var": {
+              "nonce.js": "hZuIvQN7IlqKqTkUIINTCDEhPlV72dBvaOTIQTg7NlE=",
+              "rquery.js": "q2KmIIqgzj8//Wu0g8a16Tywa8uB1rkV0fG6ADXY+/g="
+            },
+            "xhr.js": "4dsw7wtHNFerRxHle8S3Zs5JShinB/gidwpbP5tWBW0="
+          },
+          "ajax.js": "0CU3qTLM2ZUIssyWEH1nZAEcTcxfMIQ30Nk0sDm398o=",
+          "attributes": {
+            "attr.js": "1HL+frXDMOQGMe56RpZmr+f87V+pNRqKsTpnUNA3bzM=",
+            "classes.js": "wKmMp8hMp58IaSAMnqKgycwfC1H0TV/1eI1l3aUSOLw=",
+            "prop.js": "AWGj6sW2n8IM1WOJ94MvniPuL3qyrH+xOYqBLbuVBkQ=",
+            "support.js": "gWBZZP//qbysL83bVjsMYmMbrH5pXxrbztb8XBidg5k=",
+            "val.js": "xpFqtavOifzb7yjwm8kx3i+aX5BxjaVvFgqO5UlMp00="
+          },
+          "attributes.js": "sAo3V3Yl1EJuBo21OEYeKtIDScN1KDMvvQFCrk/wEcg=",
+          "callbacks.js": "OVrif34UdM2ki2qYUcn6IqrbXUTTUZvzih9xmW5xRcc=",
+          "core": {
+            "access.js": "zwu+Lhwx0/zrk9snRhC2CgiaTzYtJgRFsCR6x+Ypli4=",
+            "init.js": "CSUikbEkCYddUiWLoNghORfuFnjib4DFObCwzEopMj4=",
+            "parseHTML.js": "uv/iVjVFUf82O6TNkjT23/BVzbD0biz69upzNl8oj3g=",
+            "ready.js": "6TZtcmr3mzby1Hj1Jy4mjX2DfGNyWSbvH7p8O+EPaXU=",
+            "var": {
+              "rsingleTag.js": "m0PyMJl5KiZ37t+ds7pQrckbZsOsXxASjC2Jcd0pldc="
+            }
+          },
+          "core.js": "ZZVFKUmlF6+ZvjzquVoM2JdSgck20h2VRd1OeRdKO8U=",
+          "css": {
+            "addGetHookIf.js": "2LgP4sY4i+YkUAHKdNI3gTPBi93Xkjd6R8xDHRycW60=",
+            "curCSS.js": "J1cV+kgoqhHlic7muVkPiB97QLH7wSf8uOX4id2W+N8=",
+            "defaultDisplay.js": "LZesg0fbfJX00bzr3DfLgaQxr4Ztcaoz33VKERoAfHQ=",
+            "hiddenVisibleSelectors.js": "frkP3CyWOA+Vi38SuJdMm4tGq+pkW0p8k5Im/At0dM0=",
+            "support.js": "SyFXrcq4XgSoLI1ny3T0tWwxU+tr7Sb/8Rn4jdjfPl4=",
+            "swap.js": "px8iEunPyTkz5G5tw1sYK1G/8eb3psPHzcGMmxFObOs=",
+            "var": {
+              "cssExpand.js": "Fu92Ca3IySkBAvRBbuBdqypHTfdlqN2heskVYijELQA=",
+              "getStyles.js": "rpDTj5xFGEVDp1jdr6wkr69/2Jqq0L0L4xVRaAQZHmA=",
+              "isHidden.js": "xHX5iqLAib2+ze4wG1FFJRCEXRJMEJS8UDgUS492cRU=",
+              "rmargin.js": "+f7mHRfiuv+/eJvFGfyHoEb8lRasd7EZEKOavJV7aoc=",
+              "rnumnonpx.js": "j+g8lE4X4V2sRSXmISXnO5+ggVCUxp37c6r2DqBMjqk="
+            }
+          },
+          "css.js": "Vh7IDZpkY9KIp8E+qIIOLdZOHnBbWH86HDnw7bjqYSI=",
+          "data": {
+            "Data.js": "CrDVaUisbzBpqppGcepPUd7WyrZmKovxp1MtL/Ytun8=",
+            "accepts.js": "FSyuaXrzr+GvsZKBBQUMG5ZwMF8KVQ0uLeYvscdAv9w=",
+            "var": {
+              "data_priv.js": "bd2GLTO1aNMRn1RxIIY0ZjwC0hZUI7BQHbA85gHWNs4=",
+              "data_user.js": "bd2GLTO1aNMRn1RxIIY0ZjwC0hZUI7BQHbA85gHWNs4="
+            }
+          },
+          "data.js": "ifxHWAiuXSDSIBzPY8IHyjwRiI2TvINX2Ho5/moDMzE=",
+          "deferred.js": "3yeNZ3CkYwS53UeoGX3AgY0/tR4EVIft+RaW2VhhMBA=",
+          "deprecated.js": "PGlu4Y+uAnuiJLpxhLK5zBKURq6we7QAQqmN+g7ZwCs=",
+          "dimensions.js": "kyYRWBrcivtp5wKczgfWPcghz8p3OVFWnMMXsESTdJ4=",
+          "effects": {
+            "Tween.js": "5vEdX01zenXyl79ZnSfC+awTfsYb89vqcrGq6N6ALQ8=",
+            "animatedSelector.js": "eUXET+jmsmF7KVW01SXfmME/aTQUXT8ABubxSY30pis="
+          },
+          "effects.js": "B+cbE8lMj9IPj+Ws6CcdFAToAjiOzGOAJwYsOXEubDM=",
+          "event": {
+            "ajax.js": "P1uaMDwR+LccIlcbsBFO3guUUABB/z2j6f69otE5b30=",
+            "alias.js": "nPVpHQtUJMePdgdqofX9HvZtcSZkA1FXw/yUiSFerCQ=",
+            "support.js": "E0s1Un1D+bkV3VU6AHX6QAVesxZ2u51H2lsPuper/rA="
+          },
+          "event.js": "c0zxUJTkMpfaxNMo+ALNe9XGO2XYAZgG60+/30j7IdI=",
+          "exports": {
+            "amd.js": "B17cb2MrKwFW4Hw4y9JfPBdTv9JIM14/ORatDZV3uGI=",
+            "global.js": "jznSQEPyn9MyJ0J5R8SIrTG1Jpo+sfSnZTWXTo/HkWg="
+          },
+          "intro.js": "czYeapXHwHRWKdiqA+XkZy+CUSqMm85W8+dZw5fJ6Sg=",
+          "jquery.js": "77D0y1DmjMnsVCrNOEy/KlpRGmSbRm2y0SbtuS6lYmc=",
+          "manipulation": {
+            "_evalUrl.js": "fN1qet18LI9tYIiJrz7J1sVoOmqfvOEwuYB7W4d54UA=",
+            "support.js": "aoqb4o61Ey+/5rNv0LJKFHPL7KFJNMXrh4Yo8h0/XFE=",
+            "var": {
+              "rcheckableType.js": "mNmOoNOgOiZRbrFF5JTqLtiimHiiLo5sE7mZ8evzVx8="
+            }
+          },
+          "manipulation.js": "9Cm7lLUSKGNjNQCDmpadkNkDF98Y+e9YJ5H+LnFWU6w=",
+          "offset.js": "Cql7TIoEE1L/t9yz69NZUfnKc69614kgxcuOSr+0xig=",
+          "outro.js": "W3QdLAjm9RC36aJk83j5zgBJpQTg5+9dZ80+qBP4VHQ=",
+          "queue": {
+            "delay.js": "cYz2IzaVwWR5mWBw96hcvGIrl351UUGa9ckNCIIJbck="
+          },
+          "queue.js": "+DbZ77axQ12gR5y0klkhkKKUDMCeIwM4TWckvSO4CZc=",
+          "selector-native.js": "Fy/zKGyxS/tTeCIxTP3y6M6m/gDvrqFt3tF/PaCc4H0=",
+          "selector-sizzle.js": "uzVgJk0IEhMShdVnW3UVcyeOBWvA+GInxm2jfKs4OaU=",
+          "selector.js": "zDFXGUs9156AHymgV1tGvdFcy3QZOBnPiyNw1YjS9sE=",
+          "serialize.js": "P7PaByyxDftUYJMYvdd5s7sBykdu9BDKXGNCMGI1vAo=",
+          "sizzle": {
+            "dist": {
+              "sizzle.js": "XaqEPI3boot3iJRD7+Qoeki4rEmIZ+g+NdKLzg456G0=",
+              "sizzle.min.js": "qfU3m05pUKAVuoCZUtW/01I5ncdRABfaNLffiTZguiQ="
+            }
+          },
+          "traversing": {
+            "findFilter.js": "XwAvBoebAgHwmug2sCwrz6xdPAZHFVJVMZh6A/LVFA0=",
+            "var": {
+              "rneedsContext.js": "aptS/qxD4usAqp0xgkN4T8amRlInuZiFhTrtu9xu5ck="
+            }
+          },
+          "traversing.js": "Ng/p8taQcHwnmPxL7Ang6lNbY29tccGiksvkFPggz8U=",
+          "var": {
+            "arr.js": "eQfvrIB63g+DRJWPWb7EPac+kG2gi+aVn4DGkQsZqTw=",
+            "class2type.js": "+vTBi6cfSyoYK5C3stfyWqM/VeiNzwiEWQq3FWNlNJE=",
+            "concat.js": "cO46Y4GvWsnLzIYThnQiacL/s+HUzJlKYpp8QGIDcLw=",
+            "hasOwn.js": "DjeqO2n/i/tJBi9535P48KzeUz6d9Y1nTAiIBHPUxyM=",
+            "indexOf.js": "5qg0MAAp9fckL1Hrp8MjFIbR45Xj5N5490Ue9BL4MKk=",
+            "pnum.js": "LbNr9+7Al/oTYm7p3mqpOE2KG/Wdbz0ZLom6He12RVw=",
+            "push.js": "aHNSety9Ph3KjpzRuQic2QJLIZ6D+TxrapcbzZTpcVU=",
+            "rnotwhite.js": "o+pyN8I/2Ac7+RpzbxH5fW7Al5kmeEIHb1ec3mDKVJM=",
+            "slice.js": "CBN82GZUT8Z9MKSp2yolNTzn/LScdVMDFgU9pAD2BO4=",
+            "strundefined.js": "iQKQYFdcAN8dy7wFdC5An8IqLA1n/TDkLBtG85gbbMs=",
+            "support.js": "avT9/cLEXpSE9Fc2E1DoHAYhRz6oM5Q4oOppoxNe+Vg=",
+            "toString.js": "dHIywPd1w1LZ8q4gLPZlazVy1Q9zM44vbML9/qmG6mA="
+          },
+          "wrap.js": "lct8YQljVRc+QnzM7dMDIrGQ087DwXsrKY2JBgd/M3o="
+        }
+      },
+      "json.sortify": {
+        "build": {
+          "build.js": "SR9RqfQxhtgi0Lqu79XBdhXIrJbLDZgAERDv0sNp3bA="
+        },
+        "dist": {
+          "JSON.sortify.js": "JFCaLoWwMciVcpfSeEiXDWPAVaEuk82fQ4tIG2m+lR0="
+        },
+        "index.js": "T+kcbrstWPxoPsIktvVpGQvLPN//t+REFfF57J6huvk=",
+        "lib": {
+          "index.js": "iFMCkDe7XDZDom9LXDbzJ2Q/CFfd2slrefJLbk7BvOo="
+        }
+      },
       "less": {
         "browser.js": "OYZs+kgzMRFDps8Fzp6ipCYAvOq6g7H9Q8N0QhBfRkk=",
-        "index.js": "FBcNGtXiAdA2aiuOWAhnIc+z5HXu17NUnC5Q/cBNr6M=",
         "dist": {
           "less.js": "04ZLfybEeROw4sNhCwJYv5x55gmZUNJB11GeIbZvoa4=",
           "less.min.js": "8RW9js5y7WSmW63qKuE1sPS4LUV/wgfbl7W3OU5gyWw="
-        }
+        },
+        "index.js": "FBcNGtXiAdA2aiuOWAhnIc+z5HXu17NUnC5Q/cBNr6M="
       },
       "localforage": {
         "Gruntfile.js": "Omw601mS4B6CvVMN5Y4uAEspTwxyPZsUXVV0u1Dg9nw=",
@@ -3769,12 +3674,12 @@ defineManifest({
           "localforage.nopromises.min.js": "Sb7aQd0uoPCy73kXTLF5/D2n+bs7/js3/ySoQPil9Ak="
         },
         "src": {
-          "localforage.js": "ChCrJcusf5LE7K0hWMHkRJYJI/ToLAUCdj7SfjE2Psk=",
           "drivers": {
             "indexeddb.js": "eCS8cq3NlsQDeTVEo2MxTj8Zn+otT1BA5lIZVBJ1L7E=",
             "localstorage.js": "21mROddMAVfgnCZpMHEiY/vvBIaRA4QTiRA02vcagIg=",
             "websql.js": "Sf/1uUwuUk1hROp1Bn8CWIfuPt4Lyr2mFyKrNQ0R5+Y="
           },
+          "localforage.js": "ChCrJcusf5LE7K0hWMHkRJYJI/ToLAUCdj7SfjE2Psk=",
           "utils": {
             "createBlob.js": "FN03nweZZlVLk8aYL2pXtjNNOdUA0UWSqQol8Ff/saA=",
             "executeCallback.js": "OFveC8vre7CRahj5+hPgh7726MczIsbOqSGn0qn6r3Y=",
@@ -3792,21 +3697,21 @@ defineManifest({
           }
         }
       },
-      "nthen": {
-        "index.js": "o8GfJTcXW0zHIsusH7dymN2QfuEiUJuFoQx6gjZkV+U=",
-        "test": {
-          "nthen_test.js": "4rLf9UZY59UTctG4PqE8haBNKw/1k61H2RUXLsu9iwQ="
-        }
+      "marked": {
+        "Gulpfile.js": "PoOr5ew5EO0r4VFZUqQQJVc1E5qWCZOfEQZTkWStRqw=",
+        "index.js": "bacC1kJUkhL8ryq44iBaaiA2I2qdEczSJk5xUfoT0TE=",
+        "lib": {
+          "marked.js": "x425uGKPiyhQuub8JdKRiMy2i59+iop/9kBrqOpX7hs="
+        },
+        "marked.min.js": "c6mIBJmjwIEMzRFz4hJTWcWDvcGnqJUicbkA6bsQoYE="
       },
       "netflux-websocket": {
         "netflux-client.js": "P6rxW3d2Og1j+C/P5L1WukXbXkJeTWP8wQMv9A57f3A="
       },
-      "marked": {
-        "Gulpfile.js": "PoOr5ew5EO0r4VFZUqQQJVc1E5qWCZOfEQZTkWStRqw=",
-        "index.js": "bacC1kJUkhL8ryq44iBaaiA2I2qdEczSJk5xUfoT0TE=",
-        "marked.min.js": "c6mIBJmjwIEMzRFz4hJTWcWDvcGnqJUicbkA6bsQoYE=",
-        "lib": {
-          "marked.js": "x425uGKPiyhQuub8JdKRiMy2i59+iop/9kBrqOpX7hs="
+      "nthen": {
+        "index.js": "o8GfJTcXW0zHIsusH7dymN2QfuEiUJuFoQx6gjZkV+U=",
+        "test": {
+          "nthen_test.js": "4rLf9UZY59UTctG4PqE8haBNKw/1k61H2RUXLsu9iwQ="
         }
       },
       "rangy": {
@@ -3816,21 +3721,21 @@ defineManifest({
         "rangy-core.min.js": "ozMbhDg5FHcJDI9QN/q94YxdKJ+j0fN3RgYeX3VDEVY=",
         "rangy-highlighter.js": "50CPFge1PiATbFDBl6inS6DKMrNnXutx628CD+x2mvg=",
         "rangy-highlighter.min.js": "hCaN4Xw7MYzJ6UsKpXBWFXQCNJaEuZGs/1E6yp75c8s=",
-        "rangy-selectionsaverestore.min.js": "CDSOk86WVNa/nmkH7DO8e+GXikAAWnC/dXYCAbb0cHM=",
         "rangy-selectionsaverestore.js": "zjixxTuzSyMUgriRzCkeOmXyKYyCyiYP7p03Ez5ZFuA=",
+        "rangy-selectionsaverestore.min.js": "CDSOk86WVNa/nmkH7DO8e+GXikAAWnC/dXYCAbb0cHM=",
         "rangy-serializer.js": "reWLdKNeFlf9hVIiMnTzpD8V3/0GFqQiALU8J86Q3GQ=",
         "rangy-serializer.min.js": "474waEBDQLsFyb1jTxTqAcwwJ5lpetHEkpclVkL6X8Y=",
         "rangy-textrange.js": "WFvw8botwvu3z8vzR1loKI043PGWyszwFngsu4FRZQU=",
         "rangy-textrange.min.js": "joHNiVdg+uvrWo/EDeuV0kng6YwC1Ez3ec8gwdddnp0="
-      },
-      "requirejs": {
-        "require.js": "uvn41VNPQ8aVNA6aS1Zjc2FUPkKq7ZgA6SzFiHkVgxs="
       },
       "require-css": {
         "css-builder.js": "m5QslyJVwG/Xd8tCbWKCWGXbwhYSh+iZt1LfD/HN2tk=",
         "css.js": "8NhL2z+Ki6jKdcrAg/14ZMB+C7+IFjDXfUmiVXWBbyQ=",
         "css.min.js": "ehyoOWn9/9Hi9nk3Z7NMImsCqF6GD1YJwfDdFcP0g2M=",
         "normalize.js": "adPgbU8Yck3cW/dz6Tof1nuWUXbxdcfhNLa0c+ZotbI="
+      },
+      "requirejs": {
+        "require.js": "uvn41VNPQ8aVNA6aS1Zjc2FUPkKq7ZgA6SzFiHkVgxs="
       },
       "saferphore": {
         "index.js": "C6SvlP6jhoSX13W5OfLikQNMwK5VMQ4Wb94dXpENwH0=",
@@ -3840,11 +3745,12 @@ defineManifest({
         "scrypt-async.js": "mTdVcP7FCylpLa+44a2oXhqQrimVbqk5uh0nZRTY6sQ=",
         "scrypt-async.min.js": "DWDyL5xEzfz3i3TrOW2qS+q9nu2j+VMgmFQBeIhn5zw="
       },
-      "tweetnacl": {
-        "nacl-fast.js": "9WTFYEpTTr8qrUDX8PL9ox29OBossp0Ps1NNJWaHJxY=",
-        "nacl-fast.min.js": "kcvFQQilxR1viAWvO4PrBTfQylz8bJTlYTpKQ6XeGtw=",
-        "nacl.js": "Gz3/l6fRcmAw0AVBVuyb5wVNB4Jmpf0n+qpdVRXwQ0c=",
-        "nacl.min.js": "PNl0stEkPRa1HA8MoETN09M82mHBTyTkrcFbelykVBA="
+      "secure-fabric.js": {
+        "dist": {
+          "fabric.js": "0DvfSi8sJZgFy+tab52B0t9Kk9s9irBLAT+Ir6PPjbc=",
+          "fabric.min.js": "M5Qac/sCinCho/aRimnfJ9hoBjTKDv7mWltrPnXKI78=",
+          "fabric.require.js": "HroInZkvbCSMvXnRiGPSvSuk7HdRf5Kzm0br8iHja9Q="
+        }
       },
       "sortablejs": {
         "Gruntfile.js": "rxOi4yIvlVzWbYzsEtwUFBAjsIsel8cpywr3m83BGuQ=",
@@ -3855,144 +3761,165 @@ defineManifest({
           "app.js": "plGa7Keo54g4PlN3S5vE0VTtVDQN+bMQY1zhf1Q8BxM="
         }
       },
-      "jquery": {
-        "dist": {
-          "jquery.js": "siFczlgw4jULnUICcdm9gjQPZkw/YPDqhQ9+nAOScE4=",
-          "jquery.min.js": "ImQvICV38LovIsvla2zykaCTdEh1Z801Y+DSop91wMU="
-        },
-        "src": {
-          "ajax.js": "0CU3qTLM2ZUIssyWEH1nZAEcTcxfMIQ30Nk0sDm398o=",
-          "attributes.js": "sAo3V3Yl1EJuBo21OEYeKtIDScN1KDMvvQFCrk/wEcg=",
-          "callbacks.js": "OVrif34UdM2ki2qYUcn6IqrbXUTTUZvzih9xmW5xRcc=",
-          "core.js": "ZZVFKUmlF6+ZvjzquVoM2JdSgck20h2VRd1OeRdKO8U=",
-          "css.js": "Vh7IDZpkY9KIp8E+qIIOLdZOHnBbWH86HDnw7bjqYSI=",
-          "data.js": "ifxHWAiuXSDSIBzPY8IHyjwRiI2TvINX2Ho5/moDMzE=",
-          "deferred.js": "3yeNZ3CkYwS53UeoGX3AgY0/tR4EVIft+RaW2VhhMBA=",
-          "deprecated.js": "PGlu4Y+uAnuiJLpxhLK5zBKURq6we7QAQqmN+g7ZwCs=",
-          "dimensions.js": "kyYRWBrcivtp5wKczgfWPcghz8p3OVFWnMMXsESTdJ4=",
-          "effects.js": "B+cbE8lMj9IPj+Ws6CcdFAToAjiOzGOAJwYsOXEubDM=",
-          "event.js": "c0zxUJTkMpfaxNMo+ALNe9XGO2XYAZgG60+/30j7IdI=",
-          "intro.js": "czYeapXHwHRWKdiqA+XkZy+CUSqMm85W8+dZw5fJ6Sg=",
-          "jquery.js": "77D0y1DmjMnsVCrNOEy/KlpRGmSbRm2y0SbtuS6lYmc=",
-          "manipulation.js": "9Cm7lLUSKGNjNQCDmpadkNkDF98Y+e9YJ5H+LnFWU6w=",
-          "offset.js": "Cql7TIoEE1L/t9yz69NZUfnKc69614kgxcuOSr+0xig=",
-          "outro.js": "W3QdLAjm9RC36aJk83j5zgBJpQTg5+9dZ80+qBP4VHQ=",
-          "queue.js": "+DbZ77axQ12gR5y0klkhkKKUDMCeIwM4TWckvSO4CZc=",
-          "selector-native.js": "Fy/zKGyxS/tTeCIxTP3y6M6m/gDvrqFt3tF/PaCc4H0=",
-          "selector-sizzle.js": "uzVgJk0IEhMShdVnW3UVcyeOBWvA+GInxm2jfKs4OaU=",
-          "selector.js": "zDFXGUs9156AHymgV1tGvdFcy3QZOBnPiyNw1YjS9sE=",
-          "serialize.js": "P7PaByyxDftUYJMYvdd5s7sBykdu9BDKXGNCMGI1vAo=",
-          "traversing.js": "Ng/p8taQcHwnmPxL7Ang6lNbY29tccGiksvkFPggz8U=",
-          "wrap.js": "lct8YQljVRc+QnzM7dMDIrGQ087DwXsrKY2JBgd/M3o=",
-          "ajax": {
-            "jsonp.js": "APWRE6LTqg1xbWBs5Mh0NppjFMyFriS+L6Ikb6yzCn8=",
-            "load.js": "VJpBT1QgSwffhfA0flruc7KH5kbqPKncvvwhJlSSt3g=",
-            "parseJSON.js": "3REhgwynW/edARSAjxZ8P8/Pl67QcpYW2uo0QERo3oY=",
-            "parseXML.js": "1ZB4MAwBrbjjx4fW+hmPCwls9Rx5ycbKTzDbmY7T9f4=",
-            "script.js": "hp7PcCkzCb/B8KAfJPlTT9W60GVxgEifLj0zxtLkhvs=",
-            "xhr.js": "4dsw7wtHNFerRxHle8S3Zs5JShinB/gidwpbP5tWBW0=",
-            "var": {
-              "nonce.js": "hZuIvQN7IlqKqTkUIINTCDEhPlV72dBvaOTIQTg7NlE=",
-              "rquery.js": "q2KmIIqgzj8//Wu0g8a16Tywa8uB1rkV0fG6ADXY+/g="
-            }
-          },
-          "attributes": {
-            "attr.js": "1HL+frXDMOQGMe56RpZmr+f87V+pNRqKsTpnUNA3bzM=",
-            "classes.js": "wKmMp8hMp58IaSAMnqKgycwfC1H0TV/1eI1l3aUSOLw=",
-            "prop.js": "AWGj6sW2n8IM1WOJ94MvniPuL3qyrH+xOYqBLbuVBkQ=",
-            "support.js": "gWBZZP//qbysL83bVjsMYmMbrH5pXxrbztb8XBidg5k=",
-            "val.js": "xpFqtavOifzb7yjwm8kx3i+aX5BxjaVvFgqO5UlMp00="
-          },
-          "core": {
-            "access.js": "zwu+Lhwx0/zrk9snRhC2CgiaTzYtJgRFsCR6x+Ypli4=",
-            "init.js": "CSUikbEkCYddUiWLoNghORfuFnjib4DFObCwzEopMj4=",
-            "parseHTML.js": "uv/iVjVFUf82O6TNkjT23/BVzbD0biz69upzNl8oj3g=",
-            "ready.js": "6TZtcmr3mzby1Hj1Jy4mjX2DfGNyWSbvH7p8O+EPaXU=",
-            "var": {
-              "rsingleTag.js": "m0PyMJl5KiZ37t+ds7pQrckbZsOsXxASjC2Jcd0pldc="
-            }
-          },
-          "css": {
-            "addGetHookIf.js": "2LgP4sY4i+YkUAHKdNI3gTPBi93Xkjd6R8xDHRycW60=",
-            "curCSS.js": "J1cV+kgoqhHlic7muVkPiB97QLH7wSf8uOX4id2W+N8=",
-            "defaultDisplay.js": "LZesg0fbfJX00bzr3DfLgaQxr4Ztcaoz33VKERoAfHQ=",
-            "hiddenVisibleSelectors.js": "frkP3CyWOA+Vi38SuJdMm4tGq+pkW0p8k5Im/At0dM0=",
-            "support.js": "SyFXrcq4XgSoLI1ny3T0tWwxU+tr7Sb/8Rn4jdjfPl4=",
-            "swap.js": "px8iEunPyTkz5G5tw1sYK1G/8eb3psPHzcGMmxFObOs=",
-            "var": {
-              "cssExpand.js": "Fu92Ca3IySkBAvRBbuBdqypHTfdlqN2heskVYijELQA=",
-              "getStyles.js": "rpDTj5xFGEVDp1jdr6wkr69/2Jqq0L0L4xVRaAQZHmA=",
-              "isHidden.js": "xHX5iqLAib2+ze4wG1FFJRCEXRJMEJS8UDgUS492cRU=",
-              "rmargin.js": "+f7mHRfiuv+/eJvFGfyHoEb8lRasd7EZEKOavJV7aoc=",
-              "rnumnonpx.js": "j+g8lE4X4V2sRSXmISXnO5+ggVCUxp37c6r2DqBMjqk="
-            }
-          },
-          "data": {
-            "Data.js": "CrDVaUisbzBpqppGcepPUd7WyrZmKovxp1MtL/Ytun8=",
-            "accepts.js": "FSyuaXrzr+GvsZKBBQUMG5ZwMF8KVQ0uLeYvscdAv9w=",
-            "var": {
-              "data_priv.js": "bd2GLTO1aNMRn1RxIIY0ZjwC0hZUI7BQHbA85gHWNs4=",
-              "data_user.js": "bd2GLTO1aNMRn1RxIIY0ZjwC0hZUI7BQHbA85gHWNs4="
-            }
-          },
-          "effects": {
-            "Tween.js": "5vEdX01zenXyl79ZnSfC+awTfsYb89vqcrGq6N6ALQ8=",
-            "animatedSelector.js": "eUXET+jmsmF7KVW01SXfmME/aTQUXT8ABubxSY30pis="
-          },
-          "event": {
-            "ajax.js": "P1uaMDwR+LccIlcbsBFO3guUUABB/z2j6f69otE5b30=",
-            "alias.js": "nPVpHQtUJMePdgdqofX9HvZtcSZkA1FXw/yUiSFerCQ=",
-            "support.js": "E0s1Un1D+bkV3VU6AHX6QAVesxZ2u51H2lsPuper/rA="
-          },
-          "exports": {
-            "amd.js": "B17cb2MrKwFW4Hw4y9JfPBdTv9JIM14/ORatDZV3uGI=",
-            "global.js": "jznSQEPyn9MyJ0J5R8SIrTG1Jpo+sfSnZTWXTo/HkWg="
-          },
-          "queue": {
-            "delay.js": "cYz2IzaVwWR5mWBw96hcvGIrl351UUGa9ckNCIIJbck="
-          },
-          "manipulation": {
-            "_evalUrl.js": "fN1qet18LI9tYIiJrz7J1sVoOmqfvOEwuYB7W4d54UA=",
-            "support.js": "aoqb4o61Ey+/5rNv0LJKFHPL7KFJNMXrh4Yo8h0/XFE=",
-            "var": {
-              "rcheckableType.js": "mNmOoNOgOiZRbrFF5JTqLtiimHiiLo5sE7mZ8evzVx8="
-            }
-          },
-          "traversing": {
-            "findFilter.js": "XwAvBoebAgHwmug2sCwrz6xdPAZHFVJVMZh6A/LVFA0=",
-            "var": {
-              "rneedsContext.js": "aptS/qxD4usAqp0xgkN4T8amRlInuZiFhTrtu9xu5ck="
-            }
-          },
-          "var": {
-            "arr.js": "eQfvrIB63g+DRJWPWb7EPac+kG2gi+aVn4DGkQsZqTw=",
-            "class2type.js": "+vTBi6cfSyoYK5C3stfyWqM/VeiNzwiEWQq3FWNlNJE=",
-            "concat.js": "cO46Y4GvWsnLzIYThnQiacL/s+HUzJlKYpp8QGIDcLw=",
-            "hasOwn.js": "DjeqO2n/i/tJBi9535P48KzeUz6d9Y1nTAiIBHPUxyM=",
-            "indexOf.js": "5qg0MAAp9fckL1Hrp8MjFIbR45Xj5N5490Ue9BL4MKk=",
-            "pnum.js": "LbNr9+7Al/oTYm7p3mqpOE2KG/Wdbz0ZLom6He12RVw=",
-            "push.js": "aHNSety9Ph3KjpzRuQic2QJLIZ6D+TxrapcbzZTpcVU=",
-            "rnotwhite.js": "o+pyN8I/2Ac7+RpzbxH5fW7Al5kmeEIHb1ec3mDKVJM=",
-            "slice.js": "CBN82GZUT8Z9MKSp2yolNTzn/LScdVMDFgU9pAD2BO4=",
-            "strundefined.js": "iQKQYFdcAN8dy7wFdC5An8IqLA1n/TDkLBtG85gbbMs=",
-            "support.js": "avT9/cLEXpSE9Fc2E1DoHAYhRz6oM5Q4oOppoxNe+Vg=",
-            "toString.js": "dHIywPd1w1LZ8q4gLPZlazVy1Q9zM44vbML9/qmG6mA="
-          },
-          "sizzle": {
-            "dist": {
-              "sizzle.js": "XaqEPI3boot3iJRD7+Qoeki4rEmIZ+g+NdKLzg456G0=",
-              "sizzle.min.js": "qfU3m05pUKAVuoCZUtW/01I5ncdRABfaNLffiTZguiQ="
+      "tweetnacl": {
+        "nacl-fast.js": "9WTFYEpTTr8qrUDX8PL9ox29OBossp0Ps1NNJWaHJxY=",
+        "nacl-fast.min.js": "kcvFQQilxR1viAWvO4PrBTfQylz8bJTlYTpKQ6XeGtw=",
+        "nacl.js": "Gz3/l6fRcmAw0AVBVuyb5wVNB4Jmpf0n+qpdVRXwQ0c=",
+        "nacl.min.js": "PNl0stEkPRa1HA8MoETN09M82mHBTyTkrcFbelykVBA="
+      }
+    },
+    "code": {
+      "inner.js": "H+pElayDLolIbv3q/jsOIB5UWOjeG5XEDxHSTV7bgE4=",
+      "orgmode.js": "NQNUlnlLWjHIuXOdJxX75xvwmIOJ3rZaJQN1ygbgy10="
+    },
+    "common": {
+      "LessLoader.js": "4gw7t9RGCm/rsUSCyaMHjmFzV6vGWn2dy+JUL5LFT3I=",
+      "RequireLess.js": "saShGzxCjk/sH6B+3yNun6YyT2Cne8Wj8dBz9oUNv8U=",
+      "TypingTests.js": "9OmAY0XeB2av1M7mNZ6YyK1TNk2OZmJREYp4UjJ03aU=",
+      "application_config_internal.js": "977lvWLw22OgcpJYGgixlgj64eN917koSw8P/ZtkE48=",
+      "boot.js": "UglPyWFblBM7bFInkIwFBdOif9qGAmGsH5u/Me76864=",
+      "boot2.js": "U+c22j80qKCIPLBCaUHLrpSxkcVVeFXgZNU8AAQp2co=",
+      "clipboard.js": "+V7yoDu3EbsPnV2Xk6hPemvatqJTowbBLYJM7IkVvCc=",
+      "common-constants.js": "V8TxZLCr5GVqeJM6h1G7yfMho4pXjdBAChMQuELH+M8=",
+      "common-feedback.js": "UjeghAfJdmGLzXLxav0Ctnw4MhlMXv8QJcGgitB6IV8=",
+      "common-hash.js": "6HwNTsQV3ykDC9350ADLQ9sqyyJKEx4uDAU5h8QcTgw=",
+      "common-interface.js": "D6rjGzmdruwgN7F+udcxME4xwDEKoYjjRf0R8QAeXVQ=",
+      "common-language.js": "8Iq30/F7cX0YJRNahe9D3aXv6jy7/JJyjljTAEwFH1k=",
+      "common-messaging.js": "GW8weLcsPKe5g1ylLe0vrl+XXddxfWhPKm1KtRc5Rb4=",
+      "common-messenger.js": "cSCdJECxJ1CgiH72TSdMK7TldeAcZNPzSRW2xskM6uo=",
+      "common-notifier.js": "z0faHkLifuAnK4T+Y22bCpejRlT5ZFHj46wIkMJW+2E=",
+      "common-realtime.js": "wmiseagZ/nBrUKjZFUf1Q089OfM6qLWykd5l7drNQjg=",
+      "common-thumbnail.js": "Ol2y1ht3ufb/T2qKZpml++5ImFA4Y+LHKq6ZET559mg=",
+      "common-ui-elements.js": "U8GQJA+kVAFVtlaso/W7rOdBC9cKthNHtKrRlTBZt3c=",
+      "common-util.js": "ySc4Ux5txkoWJTJjRidO0KBFUeeHMOOzr5RsvXV80V4=",
+      "config.js": "ACBMX1O0S0R8Rs+TdtRER8fkMgH8rhC2DciXb5cf/XQ=",
+      "cryptget.js": "HW7cbLkKpJDB6m7brq1Kwey1VNGYC+GdyoQizJFP7LI=",
+      "cryptpad-common.js": "T7AXSBbmAUc4F/On52h/FeH5Ycoj+xWn0ogZA0Csy+w=",
+      "cursor.js": "GCuUBs0HZe+sxbEI0QSwOKQq8Q/oo0yqgwH7uWsLlwc=",
+      "curve-put.js": "44yvCIuttJSPC41uPhk93AKchlO8BOcgYk3OoWI2YN0=",
+      "curve.js": "vPtg2DFJuPz6NuzAsaR9Xm0dzVPNnrgLs5hIqnlM9NA=",
+      "diffMarked.js": "kYWeJeUhy3MzHupVGuV2NUZ6cFRJlOEo24kO2gWEEmU=",
+      "dom-ready.js": "TIbJ5mGuHvI6uNJkiUglVLAE7at1fQgPY/vp4JWWMRQ=",
+      "encode.js": "2i/pErnzPfl6sjcBq911vzK7/tVlzOOCxUiyz3CtFSM=",
+      "feedback-main.js": "mHW5NdvoJJf/ptzf8T2RQywb8qgwp8eFXszz/9JUf98=",
+      "flat-dom.js": "bTR3yt90YR4teyAokSK+MjDoOFg/CB4mL/oCGar/8oc=",
+      "hyperscript.js": "Nkii2uKv29efmdpsWRskr7TtSGx06tUdJbP+WLozKtE=",
+      "jquery-ui": {
+        "jquery-ui.min.js": "Vd6UNVCGkySHuHlHMC1yqeLnPHND4x1NQdIGg985aDs="
+      },
+      "loading.js": "pfuhxQJAz+FRxAsF8xNgA5mdc3sd1C7m/yOFgmBdYFg=",
+      "media-tag-nacl.min.js": "Z0iP8OMJnNKQE+Uqjsw2gcx5TRpTx57dsuLYBHC0Nyk=",
+      "media-tag.js": "XT1cpTkLBvTR8lRJxYwC+KBvb5pTz9F9hguVTm5Z3Fc=",
+      "mergeDrive.js": "9Yxp/mqjITjtZZhtw/jh7NT01Kla813DHMCzA6Ttar4=",
+      "metadata-manager.js": "Fqufz7R72q4YtALUyG5AG/bKN2GxCjtzOgw69e9t4Qw=",
+      "migrate-user-object.js": "YulKoaKqHjpbF8VwsEqikPCeoC7EUVdm+hC6HBQ145c=",
+      "modes.js": "9ZjUQRwZbpH5kZ/xPhKPdOVHwNF3gb+BxVH3p7M++VM=",
+      "noscriptfix.js": "X/ZB5PEoNd3FlWNKDvHBYPh4aWohNiUIFh+r6Q2kUNI=",
+      "notify.js": "ideyQ+P+ilfMCAOYsvqrRKLksa3d1t9q3xQgpKV/raA=",
+      "outer": {
+        "async-store.js": "JNkAcmZrcjXQPKr5op2RcQBwn7tkrm5ttbmwVeskp9I=",
+        "chainpad-netflux-worker.js": "aRIO3xCs6s4PG7DCqwLOT/6lPuJ/XdOBqxMzH2QhcNY=",
+        "local-store.js": "SFE30lGABz7af3Sx8kI5RDoK2SModEQaQKQ0upFI48o=",
+        "network-config.js": "rhi5XW8phtyfbk8ax+eKgAz6/Alvjgt+O/AomdO/wJs=",
+        "store-rpc.js": "NgnzRhJxDjH7bfwyU7xm9GHoBBWH9F6mlYhgv07DEWI=",
+        "upload.js": "deDriogptZadbKab6o57VJrUiQH6aY8h8zDvDmsj0CU=",
+        "userObject.js": "xqqnElhqfG9DgJM6nElsABEoB1UHRAw2M29bNTQuENw="
+      },
+      "pdfjs": {
+        "api": {
+          "draft": {
+            "scripts": {
+              "linenumber.js": "vMEFelUNCGXNj868DnUxt2Im0l1C69+oyrwR8jFMN4c=",
+              "prettify": {
+                "lang-css.js": "m2rEgwM7AlcnFOtNN+4ZkYXEEAjrKz9GoAqw685qIMU=",
+                "prettify.js": "4uV247xgfNF5/1EZRwEPZF00QaNTE67A29BsRDf4O3c="
+              }
             }
           }
+        },
+        "build": {
+          "pdf.js": "M52JPZFmry38RQGWaQWbz3i1+u4OHgFBkNSC4gf43Dk=",
+          "pdf.worker.js": "aiIBWfQuQIDWqweURE/FctR0Cs9Qo662rBCHPMMajjk="
+        },
+        "js": {
+          "bootstrap.min.js": "iY0FoX8s/FEg3c26R6iFw3jAtGbzDwcA5QJ1fiS0A6E=",
+          "jquery-2.1.0.min.js": "8oQ1OnzE2X9v4gpRVRMb1DWHoPHJilbur1LP9ykQ9H0="
+        },
+        "web": {
+          "viewer.js": "0aPqMluzi3vz5tS+MxTzc7t2we11iMKNEmQEg6limec="
         }
       },
-      "secure-fabric.js": {
-        "dist": {
-          "fabric.js": "0DvfSi8sJZgFy+tab52B0t9Kk9s9irBLAT+Ir6PPjbc=",
-          "fabric.min.js": "M5Qac/sCinCho/aRimnfJ9hoBjTKDv7mWltrPnXKI78=",
-          "fabric.require.js": "HroInZkvbCSMvXnRiGPSvSuk7HdRf5Kzm0br8iHja9Q="
-        }
+      "pinpad.js": "ya+HXcfu+lJLLhIEHX5FornKnhZd5GH8fcN3bwrzoWE=",
+      "requireconfig.js": "wCPWJHcRA4AF/NGR8eRM1HP34J8HyikBCPUcBRTIkFc=",
+      "rpc.js": "xtLYr1rfErQrt2o0UoatAlsI4Uy8/cLNsRMuWBHjbYk=",
+      "sboot.js": "zKt3KH6sKFs2vzvo0lYJHVJZDzRz6pljOoVY4hJsiRI=",
+      "sframe-app-framework.js": "Niit3/AL31DhzJZszOFolsbdBiTzOOjL9+ai+pCxewo=",
+      "sframe-app-outer.js": "gwZR1f9jmdI0Our8fotAVXd4pKKC/2U27eOmVK9IQOw=",
+      "sframe-boot.js": "3ogfkzUbhkNkxpwDfYYXS5KuwRuRnSE7idzqSSU395A=",
+      "sframe-boot2.js": "wrygcFz2V7C0+/mvTjB9v8AFg4xtzTB+NiorbCQBjCk=",
+      "sframe-chainpad-netflux-inner.js": "JjEcg0eInFptgb7b23brLq6riTdrjvs6o+Doi1hH9fg=",
+      "sframe-chainpad-netflux-outer.js": "IWYVJk8qQHM0HrC3nYs+pKswgNVVuwMNNXvKaZSdWmg=",
+      "sframe-channel.js": "jKAu7FcK/EyZy+S5jb8DC1T3gTMEo0pMqtlFZvTimaQ=",
+      "sframe-common-codemirror.js": "6C99Rp/v0IUFJikz0yBGCPRvqJUOrGOjdl7ZcdKS76w=",
+      "sframe-common-file.js": "8ulN86yelfmbrHgVGYBAqJfLNRPFN488V1BQE0SacDc=",
+      "sframe-common-history.js": "SJZTsJTR+prwgschIT+Pjqi32yn+/OUzdhE2ksi9mms=",
+      "sframe-common-outer.js": "JoRJNgCjDScvby4nVIj2N/2Lt5DfhBdiJoilg+ZpMNw=",
+      "sframe-common-title.js": "1coNcbAbCVrZ+RLIMZ0MMzzcEbVzx4XcnZJmhuQxwYI=",
+      "sframe-common.js": "ziULrim1w7Kc9GKWTKRsCSpZqSXQ59ySEb8NLsNUmMU=",
+      "sframe-messenger-inner.js": "sSTXnVcoWGP6hBcr7AJuZKNKITmFcM0gCatxE9dNens=",
+      "sframe-protocol.js": "iFMprfMy15JinzSRJUjpqm3CvSG+2cC9ir3ilYNmDIE=",
+      "sframe-sboot.js": "UlBPtJixJa5hY7c/kEpBhVA71G/yAeFDgkTwLwv/KsE=",
+      "test.js": "d4hw/7nv2CWZf6w2x0IKa0D7yrVOSXHhuJ+mQ0fsJ7Y=",
+      "text-cursor.js": "2cuibOkrE7s6u2A5hMfzrjXTJXgcnckEQ3S20i+KnS4=",
+      "themes.js": "PQJN9gLLOs65QXgxjwKpKDARsXLE6v0W0rHVocH+OCw=",
+      "tippy": {
+        "tippy.min.js": "OMV+lCXCmrLhNTmmyuO9FUzBlEXAALQpmIa6EQLOY3Y="
+      },
+      "toolbar3.js": "3HNRONcf0ZfEUE6juZ7kInQJvmN+Wx72HOqU53BehcY=",
+      "treesome.js": "x57Ug7H7FD2CDFE5BYB9YcFdID3Q+4wFH8xWpaqB/Dc=",
+      "userObject.js": "eezGdJmIHzKMxR5bo1olImnq5nU8+p7N2t1S+U81nr8=",
+      "visible.js": "4l/0CA1YKcVmA3Xg7Pa8ULTjdepUGzoGQjlRN0q1PY8=",
+      "wire.js": "dL2g92/5DMfPzVM8NOMiYbywIIBLmXL00wvFTo7yMdU="
+    },
+    "contacts": {
+      "inner.js": "T38ySYCpNUDTkWyvpaVrJg92yAr+XoWr+56QA3MdTng=",
+      "main.js": "yAsq12f/yAqf0/3jr4okDhRZHjejqTJ9qlzF0vsGchs=",
+      "messenger-ui.js": "1POCVi3RUkSx7uONlivkN3cqZXWoif0dSu9phUKhkmY="
+    },
+    "customize": {
+      "application_config.js": "ic85GOwINRE0WQc8dR4FpnTbIWsXCkWpSs/ED5rWEwA=",
+      "ckeditor-config.js": "Ypowv6YW2pjfsWPCaZf3XuxiFUUbv1b61hD+yjgaq5Y=",
+      "credential.js": "E/xwRxY1m5DBRHoq6TzracJ4H7sue2rBq1clBgvukYg=",
+      "delta-words.js": "PyVJqoZ6G1qSurMf4dSmKBFx0t/rII+pTzedXl6FCbA=",
+      "four-oh-four.js": "qPc8/IrfDDpP7NG16TAXT3nOWcBl606ZZ4oZGUWyGSI=",
+      "loading.js": "wvxuuHKdw7AvU+q1Kt4WDJCZ2N3LHvyGB0LCXilmOKY=",
+      "login.js": "oHI88PerEhnqbaWUdodkapeN89wunfU80zw0F1NfezI=",
+      "main.js": "aLprowHBsWNDyKs4UKM6H23h3GHjLCMjNTIPJY28zyg=",
+      "manifest.js": "4cJX3xp7WvynCK3my9d0vvehIyu7GwdeInOmyskViYQ=",
+      "messages.js": "LD+fuDq/d+3MOcPoE/jQGW2yveHvZdlU6Z7u5ecnr58=",
+      "pages.js": "nVxihrFxZND37sskQwv91MIA4daozrZrC9lyae2DlFU=",
+      "template.js": "Utai2Frdot+RcEMOXwHNO2KCJL/zCw/6QwZKZ7LSLrs=",
+      "translations": {
+        "messages.de.js": "9+NygTQeCor1w3a8tiwshsrFvh3KpZ8yE+jgt4SNwwQ=",
+        "messages.el.js": "Auaj7vdsH/1mSOf+lzsgrQeqcu5Qj0QnwA1SmXcOFtk=",
+        "messages.es.js": "UG3yldLcssquvfsH9yBjtL6GLSQBXpkcZsWg39mk1v8=",
+        "messages.fr.js": "ENfVrFD8yOZfXvGg3dFTm6JIPjWtmFC6ZMlPypZZOH4=",
+        "messages.js": "HOkDHgybnpqikpi9dXP4mRnwBnoG1FW2T8HUhqQySXQ=",
+        "messages.pl.js": "jnaP6Eo70o2QjMgSS2ZjDBzQYWv4E2YYeLRg1NvqRPU=",
+        "messages.pt-br.js": "xiUTUP2Y75AK39zrUWdEmK22mq9YgouQiBOc3ih73+Q=",
+        "messages.ro.js": "9j7A/vL7R9+SyCuNJ6btUTPCtrJoxn5ZwNQf8kozpYw=",
+        "messages.zh.js": "ww01EmGPIooUCoaMy++giBAFggCjv94CMva0GK7Rgm0="
       }
+    },
+    "debug": {
+      "colors.js": "W9EQ2XH4UkJYY5WMh5zURPgyaPCbemBtzSREziMbU28=",
+      "inner.js": "H4eLFA27MRKWprB5TJMJdY6tT0xQ4vbZmZCbeIr3MO0=",
+      "main.js": "bSs5e/SRIp4IBFEVXaVUgdQ9XK9n+kTjN7sGe9AVmko="
+    },
+    "drive": {
+      "inner.js": "Awi882kSSlwnEM5To2XTo7wRpk8AyV6JmmKjrF1kvIY=",
+      "main.js": "LtNaG7OlNLdTivfUPKhzcs5eao6MIJEjEz8vzPC5hKk=",
+      "tests.js": "vKSqjsJS8e93XpXb/4PeaA5ROkOvrZUrXY7g+OwvU2o="
     },
     "examples": {
       "json": {
@@ -4007,6 +3934,79 @@ defineManifest({
       "render": {
         "main.js": "MBrXoY3OG0Q1Z9hta7CSPkCzFCXmMIxSap80YcaZ+ME="
       }
+    },
+    "file": {
+      "file-crypto.js": "xyLbJh5jDuqnOTMD8SsZrTsKhfj+U2rmHTBHeA3WlaA=",
+      "inner.js": "xmF809fuQA6RUhD/U/ucKfXFyYm5mI1zRv1/9OZWMb0=",
+      "main.js": "M+286VTcTcGbPmHHiK/Voe/tTGnCAkr6PP2u6AD/NUE="
+    },
+    "filepicker": {
+      "inner.js": "DbkMOed+bJlkyDwvcYE/kROM4omrT/wKdWv5er7Xfh0=",
+      "main.js": "wE05p3lxpupnHG5fzQoqPhdKq4yfNa49gsYEGxpcQpg="
+    },
+    "invite": {
+      "main.js": "yNLo3EO1HV0GlMKJJaeb0UWi+tjWVPfdNqJIuwO7j3w="
+    },
+    "kanban": {
+      "inner.js": "nGZuEKIiLCM6BAiwcY19EsA4dq9vumtNzb9NUjB1wsM=",
+      "jkanban.js": "djMSs9/jNM50bpdUm3lfcUIzUTn8nk+NVNamIIE/u2g="
+    },
+    "login": {
+      "main.js": "OWfU02glU0Tqu347gcg5mxEd4Kgqc2s6kw/HU5/CwuA="
+    },
+    "logout": {
+      "main.js": "R62XSgj72DIb7F0CNNK8Q/NC2dJ5MpS2erAcabJ4bsc="
+    },
+    "mediatag": {
+      "main.js": "TNvJvJui4Y1cgrLodzmUugycL1eSfE992SVTJdkX4YQ=",
+      "media-tag.js": "+rntZvt6AC4tfTxYRS4cKUriOxAdPDjGhToPMK2rN70="
+    },
+    "pad": {
+      "inner.js": "fmuo9ty199cM+xAQkcVA7gQpDpAn6tgyAPXuI3EPN4Y=",
+      "links.js": "PeMbF9vRBf6g/3CMTyj7gjCMao2yooXzVj0m2gTzndo=",
+      "mediatag-plugin-dialog.js": "MmLsOmMiafbcLkgobaqV1sEBGhNPQvLya6RvYdE9zC4=",
+      "mediatag-plugin.js": "XcIepE2pWsB4HQwthADcXKpiamHrXsaycGZn1P4g3uc=",
+      "wysiwygarea-plugin.js": "AtP6xHVHoBZpa1sI/6jR4e8PVDH15+j4ht0dKcvxYus="
+    },
+    "poll": {
+      "inner.js": "hnPTIvpkA3O1P+UGiSIewzTiule/4keM/ubYZT9ypnw=",
+      "main.js": "qspnT4VgIYHoTTlFbRvuoJibwfn7JdNIPPS60G0yxMI=",
+      "render.js": "4mOIkRQRH8gT2tN3cqKsWyiyEyEPejLPtNvKVJuX2hY="
+    },
+    "profile": {
+      "inner.js": "Wr3fVDk2a/Ztw4tM6IEbLAGJ33xddDAHmSLaZ3XcCYw=",
+      "main.js": "X42NqY6eipBH3puJgEkcDqK+ddDEV83pkQ20VVPIvXg="
+    },
+    "register": {
+      "main.js": "TkDhRIu07w93V6U1yWEjVYlYyMaNNcI6j4hu+QoyL6M="
+    },
+    "settings": {
+      "inner.js": "o+10fwJPqa/XojRH6Qfm/p+g+RaTby5WS/RTOH+jntc=",
+      "main.js": "4T+in3lYWm/HMwAFJD/7Ls8K3GKVoO40wbRAioUmwCk="
+    },
+    "slide": {
+      "inner.js": "kotgVcmkTr+DfOVHGpuh5J4Zq1HWTYwyPT+KNANJaL0=",
+      "slide.js": "ZRxx6I5hIDThVHr6wqUysY4Nn8Z0YYf209IilovYjfo="
+    },
+    "todo": {
+      "inner.js": "XW3EmsOZHGL9w2xIPF7iZBHvRI3IYdLHnQeD6NZiuS4=",
+      "main.js": "zZN1Xj7SVrS24LDj+uQm1/DyMhxNpktLd43c2DoOzvk=",
+      "todo.js": "TQO9Z1QENMYE6qcX1cx2xHXqFit8GhFJ+UwwKllCGvY="
+    },
+    "user": {
+      "main.js": "eg9sGj23SPP4GYSTBmu6yVzV4hQ3OAV9tqBZ6APreSw="
+    },
+    "whiteboard": {
+      "colors.js": "W9EQ2XH4UkJYY5WMh5zURPgyaPCbemBtzSREziMbU28=",
+      "inner.js": "G1qoYafEYQp/LZT0SazgV+Yu4zxrMgpLlONCm6R4lV0=",
+      "main.js": "t4pWkUIbwP1jLcNPxkl2YxvyvBjvtjnZoQ+69azt0YA="
+    },
+    "worker": {
+      "inner.js": "EYAfsowm8FwpAIH+jvHOSq4oJY8cKVEd5aITL6laTkc=",
+      "main.js": "w1nL+SEtY6XHUKSkFwuCdLqCLirkeSVQRnDli3Pde60=",
+      "messages.js": "Ts3t8tLymTSzR9xSx1/ewkJ7z7ilsh2OwiBQwsTtmM8=",
+      "todo.js": "iqa+cinRf8+8K49jGjd+hRmbT/S7wzKWePlmvTPV8Kw=",
+      "worker.js": "47EmUnfRV1jeroOkWXJRS2MRbGW6Y24L84tvsKuZ0eI="
     }
   }
 });
