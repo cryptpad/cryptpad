@@ -79,7 +79,7 @@ const release = () => {
             elems.forEach((ke) => { obj = obj[ke] = obj[ke] || {}; });
             obj[jsf] = fileHashes[k];
         });
-        Fs.writeFile(MANIFEST_FILE, 'defineManifest(' + JSON.stringify(manifest) + ');', w((err) => {
+        Fs.writeFile(MANIFEST_FILE, 'defineManifest(' + JSON.stringify(manifest, null, '  ') + ');', w((err) => {
             if (err) { throw err; }
         }));
     }).nThen((w) => {
