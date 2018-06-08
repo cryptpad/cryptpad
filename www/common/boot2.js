@@ -55,7 +55,5 @@ define([
         }
     } catch (e) { console.error(e); failStore(); }
 
-    window.alert('hello world');
-
     require([document.querySelector('script[data-bootload]').getAttribute('data-bootload')]);
 });
