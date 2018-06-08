@@ -51,6 +51,8 @@
                     node.setAttribute('integrity', 'sha256-' + hash);
                 };
                 window.require.config(Config.requireConf);
+
+                // TODO: this is crap
                 window.define('/api/config', function () { return JSON.parse(ConfigS); });
                 window.require(['/common/boot2.js']);
             }
@@ -58,6 +60,7 @@
     };
     var two = function () {
         if (!(Nacl && ConfigS)) { return; }
+        window.CRYPTPAD_APICONF = ConfigS;
         Config = JSON.parse(ConfigS);
         var key = Nacl.util.decodeBase64(PUBLIC_KEY);
         var buf = Nacl.util.decodeBase64(Config.versionSig);
@@ -72,7 +75,8 @@
         }
         localStorage['CRYPTPAD_SBOOT_VERSION'] = data[0];
         window.defineManifest = three;
-        script("/customize/manifest.js?ver=" + encodeURIComponent(data[1]), data[1]);
+        var manifestHash = window.CRYPTPAD_MANIFEST_HASH = data[1];
+        script("/customize/manifest.js?ver=" + encodeURIComponent(manifestHash), manifestHash);
     };
     script(
         '/bower_components/tweetnacl/nacl-fast.min.js?ver=' + encodeURIComponent(NACL_HASH),

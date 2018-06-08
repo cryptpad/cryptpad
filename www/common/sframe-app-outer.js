@@ -1,7 +1,7 @@
 // Load #1, load as little as possible because we are in a race to get the loading screen up.
 define([
     '/bower_components/nthen/index.js',
-    '/api/config',
+    '/common/config.js',
     '/common/dom-ready.js',
     '/common/requireconfig.js',
     '/common/sframe-common-outer.js'
@@ -14,7 +14,8 @@ define([
         var req = {
             cfg: requireConfig,
             req: [ '/common/loading.js' ],
-            pfx: window.location.origin
+            pfx: window.location.origin,
+            apiConfS: JSON.stringify(ApiConfig)
         };
         window.rc = requireConfig;
         window.apiconf = ApiConfig;

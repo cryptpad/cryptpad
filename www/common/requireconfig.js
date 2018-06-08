@@ -1,5 +1,5 @@
 define([
-    '/api/config'
+    '/common/config.js'
 ], function (ApiConfig) {
     var out = {
         // fix up locations so that relative urls work.
