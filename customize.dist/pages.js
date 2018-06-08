@@ -585,13 +585,13 @@ define([
         var showingMore = false;
 
         var icons = [
-                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
-                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
-                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
-                [ 'poll', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
-                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'fa-calendar' ],
-                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
-                [ 'recent', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
+                [ 'pad', '/pad/', Msg.main_richTextPad, 'pad' ],
+                [ 'code', '/code/', Msg.main_codePad, 'code' ],
+                [ 'slide', '/slide/', Msg.main_slidePad, 'slide' ],
+                [ 'poll', '/poll/', Msg.main_pollPad, 'poll' ],
+                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'kanban' ],
+                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'whiteboard' ],
+                [ 'recent', '/drive/', Msg.main_localPads, 'drive' ]
             ].filter(function (x) {
                 return isAvailableType(x[1]);
             })
@@ -601,7 +601,7 @@ define([
                 return h('a', [
                     { href: x[1] },
                     h(s, [
-                        h('i.fa.' + x[3]),
+                        h('i.fa.' + AppConfig.applicationsIcon[x[3]]),
                         h('div.pad-button-text', [ h('h4', x[2]) ])
                     ])
                 ]);
