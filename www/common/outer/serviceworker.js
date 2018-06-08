@@ -27,9 +27,14 @@ var init = function (client, cb) {
             '/common/common-util.js',
             '/common/outer/worker-channel.js',
             '/common/outer/store-rpc.js'
-        ], function (Util, Channel, Rpc) {
+        ], function (Util, Channel, SRpc) {
             debug('SW Required ressources loaded');
             var msgEv = Util.mkEvent();
+
+            if (!self.Rpc) {
+                self.Rpc = SRpc();
+            }
+            var Rpc = self.Rpc;
 
             var postToClient = function (data) {
                 postMsg(client, data);
@@ -51,11 +56,17 @@ var init = function (client, cb) {
                             console.error(e);
                             console.log(data);
                         }
+                        if (q === "DISCONNECT") {
+                            console.log('Deleting existing store!');
+                            delete self.Rpc;
+                            delete self.store;
+                        }
                     });
                 });
                 chan.on('CONNECT', function (cfg, cb) {
                     debug('SW Connect callback');
                     if (self.store) {
+                        debug('Store already exists!');
                         if (cfg.driveEvents) {
                             Rpc._subscribeToDrive(clientId);
                         }

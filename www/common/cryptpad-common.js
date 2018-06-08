@@ -932,8 +932,11 @@ define([
                     document.location.reload();
                 } else if (o && !n) {
                     LocalStore.logout();
-                    postMessage("DISCONNECT");
                 }
+            });
+            LocalStore.onLogout(function () {
+                console.log('onLogout: disconnect');
+                postMessage("DISCONNECT");
             });
 
             if (PINNING_ENABLED && LocalStore.isLoggedIn()) {

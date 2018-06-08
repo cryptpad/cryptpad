@@ -15,8 +15,10 @@ require([
         '/common/common-util.js',
         '/common/outer/worker-channel.js',
         '/common/outer/store-rpc.js'
-    ], function (Util, Channel, Rpc) {
+    ], function (Util, Channel, SRpc) {
         var msgEv = Util.mkEvent();
+
+        var Rpc = SRpc();
 
         Channel.create(msgEv, postMessage, function (chan) {
             var clientId = '1';
