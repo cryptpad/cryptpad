@@ -125,6 +125,10 @@ var init = function (client, cb) {
             }, true);
 
             self.tabs[client.id].msgEv = msgEv;
+
+            self.tabs[client.id].close = function () {
+                Rpc._removeClient(client.id);
+            };
         });
     });
 };
@@ -139,6 +143,11 @@ self.addEventListener('message', function (e) {
         init(e.source, function () {
             postMsg(e.source, 'SW_READY');
         });
+    } else if (e.data === "CLOSE") {
+        if (tabs[cId] && tabs[cId].close) {
+            console.log('leave');
+            tabs[cId].close();
+        }
     } else if (self.tabs[cId] && self.tabs[cId].msgEv) {
         self.tabs[cId].msgEv.fire(e);
     }

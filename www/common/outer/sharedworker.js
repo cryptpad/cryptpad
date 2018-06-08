@@ -127,6 +127,10 @@ var init = function (client, cb) {
             }, true);
 
             client.msgEv = msgEv;
+
+            client.close = function () {
+                Rpc._removeClient(client.id);
+            };
         });
     });
 };
@@ -147,6 +151,11 @@ onconnect = function(e) {
             init(client, function () {
                 postMsg(client, 'SW_READY');
             });
+        } else if (e.data === "CLOSE") {
+            if (client && client.close) {
+                console.log('leave');
+                client.close();
+            }
         } else if (client && client.msgEv) {
             client.msgEv.fire(e);
         }

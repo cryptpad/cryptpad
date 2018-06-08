@@ -768,7 +768,7 @@ define([
             var msgEv = Util.mkEvent();
             var postMsg, worker;
             Nthen(function (waitFor2) {
-                if (SharedWorker) {
+                if (typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
                         console.error(e);
@@ -783,6 +783,10 @@ define([
                         worker.port.postMessage(data);
                     };
                     postMsg('INIT');
+
+                    window.addEventListener('beforeunload', function () {
+                        postMsg('CLOSE');
+                    });
                 } else if (false && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
@@ -830,6 +834,10 @@ define([
                         }).catch(function(error) {
                             /**/console.log('Registration failed with ' + error);
                         });
+
+                    window.addEventListener('beforeunload', function () {
+                        postMsg('CLOSE');
+                    });
                 } else if (Worker) {
                     worker = new Worker('/common/outer/webworker.js?' + urlArgs);
                     worker.onmessage = function (ev) {

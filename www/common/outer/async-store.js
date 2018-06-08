@@ -1143,6 +1143,14 @@ define([
     var driveEventClients = [];
     var messengerEventClients = [];
 
+    var dropChannel = function (chanId) {
+        if (!Store.channels[chanId]) { return; }
+
+        if (Store.channels[chanId].wc) {
+            Store.channels[chanId].wc.leave('');
+        }
+        delete Store.channels[chanId];
+    };
     Store._removeClient = function (clientId) {
         var driveIdx = driveEventClients.indexOf(clientId);
         if (driveIdx !== -1) {
@@ -1156,6 +1164,9 @@ define([
             var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
             if (chanIdx !== -1) {
                 Store.channels[chanId].clients.splice(chanIdx, 1);
+            }
+            if (Store.channels[chanId].clients.length === 0) {
+                dropChannel(chanId);
             }
         });
     };
