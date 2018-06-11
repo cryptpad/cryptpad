@@ -1,3 +1,30 @@
+# Coati release (v2.2.0)
+
+## Goals
+
+For this release we wanted to continue our efforts towards improving CryptPad usability. We've also added a new Kanban application which was in its final stage for quite some time.
+
+## What's new
+
+### Features
+
+* We've added a new kanban application!
+  * You can create boards, add items to those boards and move items from one board to another.
+  * It includes almost all the features seen in the other apps: templates, password protection, history, read-only, etc.
+  * Kanban can be shared and used collaboratively.
+  * This new app was prototyped by @ldubost, and based on [jkanban](https://github.com/riktar/jkanban) by @riktar
+* We've improved our tagging feature.
+  * When you want to add tags to a pad, you will see suggestions based on the tags you've already used
+  * There is a new *Tags* category in CryptDrive for logged in users. It shows all the tags you've used in your pads and their number of use.
+* In the Poll application, the line where your cursor is located will be highlighted so that you can see easily which option you're looking at.
+
+### Bug fixes
+
+* We've fixed two interface bugs in the Share menu which made it difficult to change the access rights for the link (edit or read-only) in some cases.
+* A bug introduced in the previous version prevented loading of the drive if it contained some content from an alpha version of CryptPad.
+* Some parts of our UI were using CSS values not supported by all browsers.
+* Some pads created more than one year ago were not loading properly.
+
 # Badger release (v2.1.0)
 
 ## Goals

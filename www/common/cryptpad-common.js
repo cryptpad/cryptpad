@@ -449,6 +449,26 @@ define([
         }).nThen(function () {
             Crypt.get(parsed.hash, function (err, val) {
                 if (err) { throw new Error(err); }
+                try {
+                    // Try to fix the title before importing the template
+                    var parsed = JSON.parse(val);
+                    var meta;
+                    if (Array.isArray(parsed) && typeof(parsed[3]) === "object") {
+                        meta = parsed[3].metadata; // pad
+                    } else if (parsed.info) {
+                        meta = parsed.info; // poll
+                    } else {
+                        meta = parsed.metadata;
+                    }
+                    if (typeof(meta) === "object") {
+                        meta.defaultTitle = meta.title || meta.defaultTitle;
+                        delete meta.users;
+                        delete meta.title;
+                    }
+                    val = JSON.stringify(parsed);
+                } catch (e) {
+                    console.log("Can't fix template title", e);
+                }
                 Crypt.put(parsed2.hash, val, cb, optsPut);
             }, optsGet);
         });

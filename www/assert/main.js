@@ -9,7 +9,8 @@ define([
     '/common/common-thumbnail.js',
     '/common/wire.js',
     '/common/flat-dom.js',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat) {
+    '/common/media-tag.js',
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
 
@@ -294,6 +295,26 @@ define([
             secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
             !secret.hashData.present);
     }, "test support for ugly tracking query paramaters in url");
+
+    assert(function (cb) {
+        try {
+            MediaTag(void 0).on('progress').on('decryption');
+            return void cb(true);
+        } catch (e) {
+            console.error(e);
+            return void cb(false);
+        }
+    }, 'check that MediaTag does the right thing when passed no value');
+
+    assert(function (cb) {
+        try {
+            MediaTag(document.createElement('div')).on('progress').on('decryption');
+            return void cb(true);
+        } catch (e) {
+            console.error(e);
+            return void cb(false);
+        }
+    }, 'check that MediaTag does the right thing when passed no value');
 
     assert(function (cb) {
         // TODO
