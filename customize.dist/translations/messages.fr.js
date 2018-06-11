@@ -39,6 +39,8 @@ define(function () {
                         'Appuyez sur <em>Échap</em> pour voir le pad ou rechargez la page pour pouvoir le modifier à nouveau.';
     out.errorCopy = ' Vous pouvez toujours copier son contenu ailleurs en appuyant sur <em>Échap</em>.<br> Dés que vous aurez quitté la page, il sera impossible de le récupérer.';
     out.errorRedirectToHome = 'Appuyez sur <em>Échap</em> pour retourner vers votre CryptDrive.';
+    out.newVersionError = "Une nouvelle version de CryptPad est disponible.<br>" +
+                          "<a href='#'>Rechargez la page</a> pour utiliser la nouvelle version, ou appuyez sur Échap pour accéder au contenu actuel en <b>mode hors-ligne</b>.";
 
     out.loading = "Chargement...";
     out.error = "Erreur";

@@ -40,6 +40,8 @@ define(function () {
                         'Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.';
     out.errorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
     out.errorRedirectToHome = 'Press <em>Esc</em> to be redirected to your CryptDrive.';
+    out.newVersionError = "A new version of CryptPad is available.<br>" +
+                          "<a href='#'>Reload</a> to use the new version, or press escape to access your content in <b>read-only mode</b>.";
 
     out.loading = "Loading...";
     out.error = "Error";

@@ -439,9 +439,11 @@ define([
             });
 
             ctx.sframeChan.on('EV_NEW_VERSION', function () {
-                // TODO display new verison stuff
-                // XXX
-                UI.errorLoadingScreen("New version detected", true, true);
+                var $err = $('<div>').append(Messages.newVersionError);
+                $err.find('a').click(function () {
+                    funcs.gotoURL();
+                });
+                UI.errorLoadingScreen($err, true, true);
             });
 
             ctx.metadataMgr.onReady(waitFor());

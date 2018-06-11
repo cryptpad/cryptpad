@@ -237,7 +237,6 @@ define([], function () {
         };
 
         network.on('disconnect', function (reason) {
-            console.log('disconnect');
             //if (isIntentionallyLeaving) { return; }
             if (reason === "network.disconnect() called") { return; }
             onDisconnect();
