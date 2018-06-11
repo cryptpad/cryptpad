@@ -373,10 +373,10 @@ define([
                 var question = h('p.cp-faq-questions-q#' + hash);
                 $(question).click(function () {
                     if ($(answer).is(':visible')) {
-                        $(question).toggleClass('active-faq');
+                        $(question).toggleClass('cp-active-faq');
                         return void $(answer).slideUp();
                     }
-                    $(question).toggleClass('active-faq');
+                    $(question).toggleClass('cp-active-faq');
                     $(answer).slideDown();
                 });
                 questions.push(h('div.cp-faq-questions-items', [
