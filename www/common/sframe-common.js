@@ -112,11 +112,9 @@ define([
         var origin = ctx.metadataMgr.getPrivateData().origin;
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
-    funcs.getMediatagFromHref = function (href) {
-        // XXX: Should only be used with the current href
+    funcs.getMediatagFromHref = function () {
         var data = ctx.metadataMgr.getPrivateData();
-        var parsed = Hash.parsePadUrl(href);
-        var secret = Hash.getSecrets('file', parsed.hash, data.password);
+        var secret = Hash.getSecrets('file', data.availableHashes.fileHash, data.password);
         if (secret.keys && secret.channel) {
             var key = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
             var hexFileName = secret.channel;
