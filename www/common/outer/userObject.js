@@ -426,7 +426,7 @@ define([
             migrateToNewFormat(cb);
         };
 
-        exp.fixFiles = function () {
+        exp.fixFiles = function (silent) {
             // Explore the tree and check that everything is correct:
             //  * 'root', 'trash', 'unsorted' and 'filesData' exist and are objects
             //  * ROOT: Folders are objects, files are href
@@ -435,6 +435,9 @@ define([
             //                - Dates (adate, cdate) can be parsed/formatted
             //                - All files in filesData should be either in 'root', 'trash' or 'unsorted'. If that's not the case, copy the fily to 'unsorted'
             //  * TEMPLATE: Contains only files (href), and does not contains files that are in ROOT
+
+            if (silent) { debug = function () {}; }
+
             debug("Cleaning file system...");
 
             var before = JSON.stringify(files);

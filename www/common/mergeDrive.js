@@ -109,7 +109,7 @@ define([
                     pinPads: function () {} // without pinPads /outer/userObject.js won't be loaded
                 });
                 var onMigrated = function () {
-                    oldFo.fixFiles();
+                    oldFo.fixFiles(true);
                     var newFo = proxyData.userObject;
                     var oldRecentPads = parsed.drive[newFo.FILES_DATA];
                     var newRecentPads = proxy.drive[newFo.FILES_DATA];
