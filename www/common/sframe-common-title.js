@@ -59,8 +59,11 @@ define([
             exp.defaultTitle = md.defaultTitle;
             exp.title = md.title;
         });
-        metadataMgr.onTitleChange(function (title) {
-            sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
+        metadataMgr.onTitleChange(function (title, defaultTitle) {
+            sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', {
+                title: title,
+                defaultTitle: defaultTitle
+            }, function (err) {
                 if (err === 'E_OVER_LIMIT') {
                     return void UI.alert(Messages.pinLimitNotPinned, null, true);
                 } else if (err) { return; }

@@ -64,7 +64,9 @@ define(['json.sortify'], function (Sortify) {
 
             if (metadataObj.title !== rememberedTitle) {
                 rememberedTitle = metadataObj.title;
-                titleChangeHandlers.forEach(function (f) { f(metadataObj.title); });
+                titleChangeHandlers.forEach(function (f) {
+                    f(metadataObj.title, metadataObj.defaultTitle);
+                });
             }
 
             changeHandlers.forEach(function (f) { f(); });
