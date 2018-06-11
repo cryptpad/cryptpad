@@ -211,7 +211,7 @@
                 if (e) { return setTimeout(function () { done(e); }); }
 
                 if (plaintext) {
-                    if (i * cypherChunkLength < u8.length) { // not done
+                    if ((i * cypherChunkLength + 2 + metadataLength) < u8.length) { // not done
                         chunks.push(plaintext);
                         return again();
                     }

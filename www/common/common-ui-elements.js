@@ -1065,7 +1065,9 @@ define([
             childList: true,
             characterData: false
         });
-        MediaTag($tag[0]);
+        MediaTag($tag[0]).on('error', function (data) {
+            console.error(data);
+        });
     };
 
     var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;
