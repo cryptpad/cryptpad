@@ -256,7 +256,7 @@ define([
         var k = getKey(parsed.type, channel);
         var whenNewThumb = function () {
             var secret = Hash.getSecrets('file', parsed.hash, password);
-            var hexFileName = channel;
+            var hexFileName = secret.channel;
             var src = Hash.getBlobPathFromHex(hexFileName);
             var key = secret.keys && secret.keys.cryptKey;
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
