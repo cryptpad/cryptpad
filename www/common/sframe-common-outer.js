@@ -312,7 +312,8 @@ define([
                 var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
                 document.title = title;
             };
-            sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
+            sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newData, cb) {
+                var newTitle = newData.title || newData.defaultTitle;
                 currentTitle = newTitle;
                 setDocumentTitle();
                 var data = {
