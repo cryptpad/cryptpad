@@ -267,6 +267,10 @@ define([
 
             Test.registerOuter(sframeChan);
 
+            Cryptpad.onNewVersionReconnect.reg(function () {
+                sframeChan.event("EV_NEW_VERSION");
+            });
+
             // Put in the following function the RPC queries that should also work in filepicker
             var addCommonRpc = function (sframeChan) {
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {

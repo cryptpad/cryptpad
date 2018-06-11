@@ -438,6 +438,12 @@ define([
                 UI.updateLoadingProgress(data, true);
             });
 
+            ctx.sframeChan.on('EV_NEW_VERSION', function () {
+                // TODO display new verison stuff
+                // XXX
+                UI.errorLoadingScreen("New version detected", true, true);
+            });
+
             ctx.metadataMgr.onReady(waitFor());
         }).nThen(function () {
             try {

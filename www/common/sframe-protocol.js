@@ -236,4 +236,7 @@ define({
 
     // Get all existing tags
     'Q_GET_ALL_TAGS': true,
+
+    // Reload on new version
+    'EV_NEW_VERSION': true,
 });

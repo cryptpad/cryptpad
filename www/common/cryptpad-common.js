@@ -525,6 +525,7 @@ define([
     // Network
     common.onNetworkDisconnect = Util.mkEvent();
     common.onNetworkReconnect = Util.mkEvent();
+    common.onNewVersionReconnect = Util.mkEvent();
 
     // Messaging
     var messaging = common.messaging = {};
@@ -622,9 +623,10 @@ define([
     };
 
     var CRYPTPAD_VERSION = 'cryptpad-version';
-    var updateLocalVersion = function () {
+    var currentVersion = localStorage[CRYPTPAD_VERSION];
+    var updateLocalVersion = function (newUrlArgs) {
         // Check for CryptPad updates
-        var urlArgs = Config.requireConf ? Config.requireConf.urlArgs : null;
+        var urlArgs = newUrlArgs || (Config.requireConf ? Config.requireConf.urlArgs : null);
         if (!urlArgs) { return; }
         var arr = /ver=([0-9.]+)(-[0-9]*)?/.exec(urlArgs);
         var ver = arr[1];
@@ -632,14 +634,20 @@ define([
         var verArr = ver.split('.');
         verArr[2] = 0;
         if (verArr.length !== 3) { return; }
-        var stored = localStorage[CRYPTPAD_VERSION] || '0.0.0';
+        var stored = currentVersion || '0.0.0';
         var storedArr = stored.split('.');
         storedArr[2] = 0;
         var shouldUpdate = parseInt(verArr[0]) > parseInt(storedArr[0]) ||
                            (parseInt(verArr[0]) === parseInt(storedArr[0]) &&
                             parseInt(verArr[1]) > parseInt(storedArr[1]));
         if (!shouldUpdate) { return; }
+        currentVersion = ver;
         localStorage[CRYPTPAD_VERSION] = ver;
+        if (newUrlArgs) {
+            // It's a reconnect
+            common.onNewVersionReconnect.fire();
+        }
+        return true;
     };
 
     var _onMetadataChanged = [];
@@ -696,6 +704,12 @@ define([
                 common.onNetworkDisconnect.fire(); break;
             }
             case 'NETWORK_RECONNECT': {
+                require(['/api/config?' + (+new Date())], function (NewConfig) {
+                    var update = updateLocalVersion(NewConfig.requireConf && NewConfig.requireConf.urlArgs);
+                    if (update) {
+                        postMessage('DISCONNECT');
+                    }
+                });
                 common.onNetworkReconnect.fire(data); break;
             }
             // Messenger
