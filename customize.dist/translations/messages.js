@@ -748,9 +748,8 @@ define(function () {
     out.features_f_history = "History";
     out.features_f_history_notes = "View and restore any version of your pads";
     out.features_f_todo = "Create a TODO-list";
-    out.features_f_drive = "Basic set of features CryptDrive";
-    out.features_f_drive_full = "Full set of features CryptDrive";
-    out.features_f_drive_notes = "Basic features for anonymous users";
+    out.features_f_drive = "Limited CryptDrive functionality";
+    out.features_f_drive_full = "Complete CryptDrive functionality";
     out.features_f_export = "Export/Import";
     out.features_f_export_notes = "For pads and CryptDrive";
     out.features_f_viewFiles = "View files";
@@ -772,6 +771,7 @@ define(function () {
     out.features_f_storage = "Storage";
     out.features_f_storage_anon = "Pads are deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
+    out.features_f_register = "Register for free";
 
     // faq.html
 

@@ -69,7 +69,7 @@ define([
                     footerCol(null, [
                         h('div.cp-bio-foot', [
                             h('p', Msg.main_footerText),
-                            //languageSelector()
+                            languageSelector()
                         ])
                     ], ''),
                     footerCol('footer_applications', [
@@ -342,7 +342,7 @@ define([
                                 h('div#cp-features-register', [
                                     h('a', {
                                         href: '/register/'
-                                    }, h('button.cp-features-register-button', 'Register for free'))
+                                    }, h('button.cp-features-register-button', Msg.features_f_register))
                                 ]),
                             ]),
                         ]), 

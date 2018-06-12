@@ -743,8 +743,8 @@ define(function () {
     out.features_f_history = "Historique";
     out.features_f_history_notes = "Voir et restaurer n'importe quelle version d'un pad";
     out.features_f_todo = "Créer une TODO-list";
-    out.features_f_drive = "CryptDrive";
-    out.features_f_drive_notes = "Fonctionnalités basiques pour les utilisateurs anonymes";
+    out.features_f_drive = "Fonctionnalités CryptDrive limitées";
+    out.features_f_drive_full = "Fonctionnalités CryptDrive limitées";
     out.features_f_export = "Export/Import";
     out.features_f_export_notes = "Pour les pads et CryptDrive";
     out.features_f_viewFiles = "Voir des fichiers";
@@ -755,7 +755,7 @@ define(function () {
     out.features_f_multiple_notes = "Moyen facile de voir vos pads depuis n'importe quel appareil";
     out.features_f_logoutEverywhere = "Se déconnecter partout";
     out.features_f_logoutEverywhere_notes = "Se déconnecter des autres appareils utilisés";
-    out.features_f_templates = "Modèles";
+    out.features_f_templates = "Utiliser les modèles";
     out.features_f_templates_notes = "Créer des modèles et créer des pads basés sur ces modèles";
     out.features_f_profile = "Créer un profil";
     out.features_f_profile_notes = "Page personnelle contenant un avatar et une description";
@@ -766,6 +766,7 @@ define(function () {
     out.features_f_storage = "Stockage";
     out.features_f_storage_anon = "Pads supprimés après 3 mois";
     out.features_f_storage_registered = "Gratuit: 50Mo<br>Premium: 5Go/20Go/50Go";
+    out.features_f_register = "S'inscrire gratuitement";
 
     // faq.html
 
