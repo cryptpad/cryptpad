@@ -81,7 +81,8 @@ define(function() {
         whiteboard: 'fa-paint-brush',
         todo: 'fa-tasks',
         contacts: 'fa-users',
-        kanban: 'fa-list-alt',
+        kanban: 'fa-columns',
+        drive: 'fa-hdd-o',
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.
