@@ -63,9 +63,7 @@ module.exports = {
         "img-src 'self' data: blob:" + domain,
 
         // for accounts.cryptpad.fr authentication and pad2 cross-domain iframe sandbox
-        "frame-ancestors *",
-
-        'require-sri-for script'
+        "frame-ancestors *"
     ].join('; '),
 
     // CKEditor requires significantly more lax content security policy in order to function.
