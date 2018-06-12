@@ -8,7 +8,7 @@
  *		mode, which handles the main editing area space.
  */
 
-define(['/api/config'], function (ApiConfig) {
+define(['/common/config.js'], function (ApiConfig) {
     var framedWysiwyg;
 	var iframe;
 

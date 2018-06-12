@@ -1,5 +1,5 @@
 define([
-    '/api/config',
+    '/common/config.js',
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-hash.js',

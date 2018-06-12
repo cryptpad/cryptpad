@@ -1,4 +1,4 @@
-define(['/api/config'], function (ApiConfig) {
+define(['/common/config.js'], function (ApiConfig) {
     var Module = {};
 
     var isSupported = Module.isSupported = function () {

@@ -1,4 +1,4 @@
-require(['/api/config'], function (ApiConfig) {
+require(['/common/config.js'], function (ApiConfig) {
     // see ckeditor_base.js getUrl()
     window.CKEDITOR_GETURL = function (resource) {
         if (resource.indexOf( '/' ) === 0) {
@@ -27,7 +27,7 @@ define([
     '/pad/links.js',
     '/bower_components/nthen/index.js',
     '/common/media-tag.js',
-    '/api/config',
+    '/common/config.js',
     '/common/common-hash.js',
     '/common/common-util.js',
     '/bower_components/chainpad/chainpad.dist.js',

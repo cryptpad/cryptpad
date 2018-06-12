@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/api/config',
+    '/common/config.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/common/cryptpad-common.js'

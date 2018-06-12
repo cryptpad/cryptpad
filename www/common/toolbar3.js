@@ -1,7 +1,7 @@
 define([
     'jquery',
     '/customize/application_config.js',
-    '/api/config',
+    '/common/config.js',
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-hash.js',

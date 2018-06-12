@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/api/config',
+    '/common/config.js',
     '/bower_components/chainpad-netflux/chainpad-netflux.js',
     '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/marked/marked.min.js',

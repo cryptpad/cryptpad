@@ -3,25 +3,36 @@ define([
     '/bower_components/nthen/index.js',
     '/common/config.js',
     '/common/dom-ready.js',
-    '/common/requireconfig.js',
-    '/common/sframe-common-outer.js'
-], function (nThen, ApiConfig, DomReady, RequireConfig, SFCommonO) {
-    var requireConfig = RequireConfig();
-
+    '/common/sframe-common-outer.js',
+    '/common/boot2.js#manifest'
+], function (nThen, ApiConfig, DomReady, SFCommonO, Manifest) {
+    var padType = window.location.pathname.replace(/\//g, '');
+    var hash = Manifest.files[padType]['inner.html'];
+    var url = ApiConfig.httpSafeOrigin + window.location.pathname +
+        'inner.html?ver=' + encodeURIComponent(hash);
     nThen(function (waitFor) {
         DomReady.onReady(waitFor());
+        // IE doesn't support integrity or fetch, so no security with IE
+        if (window.fetch) {
+            fetch(url, { integrity: 'sha256-' + hash }).then(waitFor()).catch(function (e) {
+                throw e;
+            });
+        }
     }).nThen(function (waitFor) {
         var req = {
-            cfg: requireConfig,
+            cfg: ApiConfig.requireConf,
             req: [ '/common/loading.js' ],
             pfx: window.location.origin,
-            apiConfS: JSON.stringify(ApiConfig)
+            apiConfS: JSON.stringify(ApiConfig),
+            requireHash: Manifest.files.bower_components.requirejs['require.js']
         };
-        window.rc = requireConfig;
+        window.rc = ApiConfig.requireConf;
         window.apiconf = ApiConfig;
-        document.getElementById('sbox-iframe').setAttribute('src',
-            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?' +
-                requireConfig.urlArgs + '#' + encodeURIComponent(JSON.stringify(req)));
+        var ifr = document.getElementById('sbox-iframe');
+        ifr.setAttribute('src',
+            ApiConfig.httpSafeOrigin + window.location.pathname + 'inner.html?ver=' +
+                encodeURIComponent(hash) + '#' + encodeURIComponent(JSON.stringify(req)));
+        ifr.setAttribute('integrity', hash);
 
         // This is a cheap trick to avoid loading sframe-channel in parallel with the
         // loading screen setup.

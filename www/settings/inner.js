@@ -10,7 +10,7 @@ define([
     '/customize/messages.js',
     '/common/hyperscript.js',
     '/customize/application_config.js',
-    '/api/config',
+    '/common/config.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',

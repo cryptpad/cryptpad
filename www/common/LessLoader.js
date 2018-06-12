@@ -4,7 +4,7 @@ const define = (x:any, y:any) => {};
 const require = define;
 */
 define([
-    '/api/config'
+    '/common/config.js'
 ], function (Config) { /*::});module.exports = (function() {
     const Config = (undefined:any);
     */

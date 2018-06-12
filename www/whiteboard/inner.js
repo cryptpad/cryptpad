@@ -7,7 +7,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
-    '/api/config',
+    '/common/config.js',
     '/common/common-realtime.js',
     '/customize/pages.js',
     '/customize/messages.js',

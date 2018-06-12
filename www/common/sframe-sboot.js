@@ -29,7 +29,6 @@ var afterLoaded = function (req) {
         node.setAttribute('src', newSrc);
         node.setAttribute('integrity', 'sha256-' + hash);
     };
-    require.config(req.cfg);
     var txid = Math.random().toString(16).replace('0.', '');
     var intr;
     var ready = function () {
@@ -38,10 +37,15 @@ var afterLoaded = function (req) {
             window.parent.postMessage(JSON.stringify({ q: 'READY', txid: txid }), '*');
         }, 1);
     };
-    require(['/customize/manifest.js'], function (m) {
-        manifest = m;
-        if (req.req) { require(req.req, ready); } else { ready(); }
-    });
+    var hasRequire = function () {
+        require.config(req.cfg);
+        window.defineManifest = function (m) {
+            manifest = m;
+            delete window.defineManifest;
+            if (req.req) { require(req.req, ready); } else { ready(); }
+        };
+        require(['/customize/manifest.js'], function () { });
+    };
     var onReply = function (msg) {
         var data = JSON.parse(msg.data);
         if (data.txid !== txid) { return; }
@@ -85,6 +89,14 @@ var afterLoaded = function (req) {
         require(['/common/sframe-boot2.js'], function () { });
     };
     window.addEventListener('message', onReply);
+    var scr = document.createElement('script');
+    scr.setAttribute('integrity', 'sha256-' + req.requireHash);
+    scr.src = '/bower_components/requirejs/require.js?ver=' + encodeURIComponent(req.requireHash);
+    scr.async = true;
+    scr.charset = 'utf-8';
+    scr.type = 'text/javascript';
+    scr.addEventListener('load', hasRequire, false);
+    document.getElementsByTagName('head')[0].appendChild(scr);
 };
 
 var load0 = function () {

@@ -1,11 +1,8 @@
 // This is stage 1, it can be changed but you must bump the version of the project.
 // Note: This must only be loaded from inside of a sandbox-iframe.
 define([
-    '/common/requireconfig.js',
     '/common/test.js'
-], function (RequireConfig, Test) {
-    require.config(RequireConfig());
-
+], function (Test) {
     // most of CryptPad breaks if you don't support isArray
     if (!Array.isArray) {
         Array.isArray = function(arg) { // CRYPTPAD_SHIM

@@ -1,8 +1,9 @@
 // This is stage 1, it can be changed but you must bump the version of the project.
 define([
-    '/common/requireconfig.js'
-], function (RequireConfig) {
-    require.config(RequireConfig());
+    '/common/config.js'
+], function (ApiConfig) {
+    // require.config wants to mutate this
+    require.config(JSON.parse(JSON.stringify(ApiConfig.requireConf)));
 
     // most of CryptPad breaks if you don't support isArray
     if (!Array.isArray) {

@@ -51,9 +51,7 @@
                     node.setAttribute('integrity', 'sha256-' + hash);
                 };
                 window.require.config(Config.requireConf);
-
-                // TODO: this is crap
-                window.define('/api/config', function () { return JSON.parse(ConfigS); });
+                window.define('/common/boot2.js#manifest', function () { return manifest; });
                 window.require(['/common/boot2.js']);
             }
         );

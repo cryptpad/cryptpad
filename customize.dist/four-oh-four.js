@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/api/config',
+    '/common/config.js',
     '/common/hyperscript.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',

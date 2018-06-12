@@ -1,6 +1,6 @@
 define([
     'jquery',
-    '/api/config',
+    '/common/config.js',
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-language.js',
