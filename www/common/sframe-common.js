@@ -443,6 +443,7 @@ define([
                 $err.find('a').click(function () {
                     funcs.gotoURL();
                 });
+                UI.findOKButton().click();
                 UI.errorLoadingScreen($err, true, true);
             });
 
