@@ -9,9 +9,11 @@ define([
     };
 
     var create = function (onMsg, postMsg, cb, isWorker) {
+        var chanLoaded;
+        var waitingData;
         if (!isWorker) {
-            var chanLoaded = false;
-            var waitingData = [];
+            chanLoaded = false;
+            waitingData = [];
             onMsg.reg(function (data) {
                 if (chanLoaded) { return; }
                 waitingData.push(data);
