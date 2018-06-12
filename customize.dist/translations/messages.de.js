@@ -780,7 +780,7 @@
 
     out.faq_link = "FAQ";
     out.faq_title = "Häufigste Fragen";
-    out.faq_whatis = "Was ist CryptPad?";
+    out.faq_whatis = "Was ist <span class='cp-brand-font'>CryptPad</span>?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Schlüsselkonzepte',

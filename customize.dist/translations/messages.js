@@ -680,6 +680,7 @@ define(function () {
     out.main_slidePad = 'Markdown Presentation';
     out.main_pollPad = 'Poll or Schedule';
     out.main_whiteboardPad = 'Whiteboard';
+    out.main_kanbanPad = 'Kanban';
     out.main_localPads = 'Local Pads';
     out.main_yourCryptDrive = 'Your CryptDrive';
     out.main_footerText = "With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.";
