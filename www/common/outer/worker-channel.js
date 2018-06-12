@@ -9,7 +9,17 @@ define([
     };
 
     var create = function (onMsg, postMsg, cb, isWorker) {
+        if (!isWorker) {
+            var chanLoaded = false;
+            var waitingData = [];
+            onMsg.reg(function (data) {
+                if (chanLoaded) { return; }
+                waitingData.push(data);
+            });
+        }
+
         var evReady = Util.mkEvent(true);
+
         var handlers = {};
         var queries = {};
 
@@ -123,6 +133,12 @@ define([
         });
         if (isWorker) {
             evReady.fire();
+        } else {
+            chanLoaded = true;
+            waitingData.forEach(function (d) {
+                onMsg.fire(d);
+            });
+            waitingData = [];
         }
         cb(chan);
     };

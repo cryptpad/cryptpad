@@ -7,13 +7,12 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
-    //'/common/outer/store-rpc.js',
     '/common/outer/worker-channel.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, /*AStore, */Channel,
+            Messaging, Constants, Feedback, LocalStore, Channel,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -867,8 +866,13 @@ define([
                         worker.postMessage(data);
                     };
                 } else {
-                    // TODO fallback no webworker?
-                    console.error('NO SW OR WW');
+                    require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
+                        NoWorker.onMessage(function (data) {
+                            msgEv.fire({data: data});
+                        });
+                        postMsg = function (d) { setTimeout(function () { NoWorker.query(d); }); };
+                        NoWorker.create();
+                    }));
                 }
             }).nThen(function () {
                 Channel.create(msgEv, postMsg, function (chan) {
