@@ -65,6 +65,7 @@ define([
         xhr.setRequestHeader('Range', 'bytes=0-1');
         xhr.responseType = 'arraybuffer';
 
+        xhr.onerror= function () { return CB('XHR_ERROR'); };
         xhr.onload = function () {
             if (/^4/.test('' + this.status)) { return CB('XHR_ERROR'); }
             var res = new Uint8Array(xhr.response);

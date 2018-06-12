@@ -708,9 +708,11 @@ define([
                     var update = updateLocalVersion(NewConfig.requireConf && NewConfig.requireConf.urlArgs);
                     if (update) {
                         postMessage('DISCONNECT');
+                        return;
                     }
+                    common.onNetworkReconnect.fire(data);
                 });
-                common.onNetworkReconnect.fire(data); break;
+                break;
             }
             // Messenger
             case 'CONTACTS_MESSAGE': {

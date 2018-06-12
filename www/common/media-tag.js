@@ -96,11 +96,17 @@
 
 
     // Download a blob from href
-    var download = function (src, cb) {
+    var download = function (src, _cb) {
+        var cb = function (e, res) {
+            _cb(e, res);
+            cb = function () {};
+        };
+
         var xhr = new XMLHttpRequest();
         xhr.open('GET', src, true);
         xhr.responseType = 'arraybuffer';
 
+        xhr.onerror = function () { return void cb("XHR_ERROR"); };
         xhr.onload = function () {
             // Error?
             if (/^4/.test('' + this.status)) { return void cb("XHR_ERROR " + this.status); }

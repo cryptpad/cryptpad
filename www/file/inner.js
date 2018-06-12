@@ -95,7 +95,9 @@ define([
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
                     if (e === 'XHR_ERROR') {
-                        return void UI.errorLoadingScreen(Messages.download_resourceNotAvailable);
+                        return void UI.errorLoadingScreen(Messages.download_resourceNotAvailable, false, function () {
+                            common.gotoURL('/file/');
+                        });
                     }
                     return void console.error(e);
                 }

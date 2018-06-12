@@ -618,7 +618,7 @@ define(function () {
     out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
     out.download_button = "Déchiffrer et télécharger";
     out.download_mt_button = "Télécharger";
-    out.download_resourceNotAvailable = "Le fichier demandé n'est pas disponible...";
+    out.download_resourceNotAvailable = "Le fichier demandé n'est pas disponible... Appuyez sur Échap pour continuer.";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";
