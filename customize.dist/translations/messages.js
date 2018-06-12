@@ -773,7 +773,7 @@ define(function () {
 
     out.faq_link = "FAQ";
     out.faq_title = "Frequently Asked Questions";
-    out.faq_whatis = "What is <span>CryptPad</span>?";
+    out.faq_whatis = "What is <span class='cp-brand-font'>CryptPad</span>?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Keywords',
