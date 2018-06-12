@@ -66,11 +66,11 @@ const validate = (cb) => {
 
 const updateHtml = (fileHashes, done) => {
     nThen((w) => {
-        forAllFiles(['./www'], (file) => {
+        forAllFiles(['./www', './customize.dist'], (file) => {
             sema.take((returnAfter) => {
                 Fs.readFile(file, 'utf8', w((err, ret) => {
                     if (err) { throw err; }
-                    ret = ret.replace(/<!--BOOTLOAD_OUTER:"([^"]+)"-->(.+?)<!--BOOTLOAD_END-->/, (all, x, y) => {
+                    const out = ret.replace(/<!--BOOTLOAD_OUTER:"([^"]+)"-->(.+?)<!--BOOTLOAD_END-->/, (all, x, y) => {
                         let main = x;
                         if (x.indexOf('/')) { main = file.replace(/\/[^/]*$/, '/' + x).replace(/\.\/www/, ''); }
                         main = main.replace(/\.\/www/, '');
@@ -80,9 +80,14 @@ const updateHtml = (fileHashes, done) => {
                             '" src="/common/sboot.js?ver=' + encodeURIComponent(hash) + '" integrity="sha256-' +
                             hash + '"></script><!--BOOTLOAD_END-->';
                     });
-                    Fs.writeFile(file, 'utf8', ret, returnAfter(w((err) => {
-                        if (err) { throw err; }
-                    })));
+                    if (out !== ret) {
+                        console.log("Updating " + file);
+                        Fs.writeFile(file, out, 'utf8', returnAfter(w((err) => {
+                            if (err) { throw err; }
+                        })));
+                    } else {
+                        returnAfter()();
+                    }
                 }));
             });
         }, w());
@@ -114,7 +119,7 @@ const release = () => {
         updateHtml(fileHashes, w());
     }).nThen((w) => {
         forAllFiles(['./www', './customize.dist'], (file) => {
-            if (/\.js$/.test(file)) { hashFile(file, fileHashes, w()); }
+            if (/\.html$/.test(file)) { hashFile(file, fileHashes, w()); }
         }, w());
     }).nThen((w) => {
         const manifest = { files: {} };
