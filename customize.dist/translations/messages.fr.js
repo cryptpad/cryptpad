@@ -771,7 +771,7 @@ define(function () {
 
     out.faq_link = "FAQ";
     out.faq_title = "Foire Aux Questions";
-    out.faq_whatis = "Qu'est-ce que CryptPad ?";
+    out.faq_whatis = "Qu'est-ce que <span class='cp-brand-font'>CryptPad</span> ?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Termes spéciaux',
