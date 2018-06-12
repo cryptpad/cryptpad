@@ -89,7 +89,7 @@ define([
     };
 
     /*  Used to accept friend requests within apps other than /contacts/ */
-    Msg.addDirectMessageHandler = function (cfg) {
+    Msg.addDirectMessageHandler = function (cfg, href) {
         var network = cfg.network;
         var proxy = cfg.proxy;
         if (!network) { return void console.error('Network not ready'); }
@@ -97,13 +97,12 @@ define([
             var msg;
             if (sender === network.historyKeeper) { return; }
             try {
-                var parsed = Hash.parsePadUrl(window.location.href);
+                var parsed = Hash.parsePadUrl(href);
+                var secret = Hash.getSecrets(parsed.type, parsed.hash);
                 if (!parsed.hashData) { return; }
-                var chan = Hash.hrefToHexChannelId(window.location.href);
+                var chan = secret.channel;
                 // Decrypt
-                var keyStr = parsed.hashData.key;
-                var cryptor = Crypto.createEditCryptor(keyStr);
-                var key = cryptor.cryptKey;
+                var key = secret.keys ? secret.keys.cryptKey : Hash.decodeBase64(secret.key);
                 var decryptMsg;
                 try {
                     decryptMsg = Crypto.decrypt(message, key);
@@ -197,15 +196,14 @@ define([
         var network = cfg.network;
         var netfluxId = data.netfluxId;
         var parsed = Hash.parsePadUrl(data.href);
+        var secret = Hash.getSecrets(parsed.type, parsed.hash);
         if (!parsed.hashData) { return; }
         // Message
-        var chan = Hash.hrefToHexChannelId(data.href);
+        var chan = secret.channel;
         var myData = createData(cfg.proxy);
         var msg = ["FRIEND_REQ", chan, myData];
         // Encryption
-        var keyStr = parsed.hashData.key;
-        var cryptor = Crypto.createEditCryptor(keyStr);
-        var key = cryptor.cryptKey;
+        var key = secret.keys ? secret.keys.cryptKey : Hash.decodeBase64(secret.key);
         var msgStr = Crypto.encrypt(JSON.stringify(msg), key);
         // Send encrypted message
         if (pendingRequests.indexOf(netfluxId) === -1) {

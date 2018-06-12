@@ -7,14 +7,13 @@ define([
     '/common/common-constants.js',
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
-    '/common/outer/store-rpc.js',
+    '/common/outer/worker-channel.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, AStore,
+            Messaging, Constants, Feedback, LocalStore, Channel,
             AppConfig, Nthen) {
-
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
     any particular pad type. This includes functions for committing metadata
@@ -22,10 +21,13 @@ define([
 
     Additionally, there is some basic functionality for import/export.
 */
-    var postMessage = function (cmd, data, cb) {
-        setTimeout(function () {
+    var urlArgs = Util.find(Config, ['requireConf', 'urlArgs']) || '';
+
+    var postMessage = function (/*cmd, data, cb*/) {
+        /*setTimeout(function () {
             AStore.query(cmd, data, cb);
-        });
+        });*/
+        console.error('NOT_READY');
     };
     var tryParsing = function (x) {
         try { return JSON.parse(x); }
@@ -531,6 +533,11 @@ define([
     var messaging = common.messaging = {};
     messaging.onFriendRequest = Util.mkEvent();
     messaging.onFriendComplete = Util.mkEvent();
+    messaging.addHandlers = function (href) {
+        postMessage("ADD_DIRECT_MESSAGE_HANDLERS", {
+            href: href
+        });
+    };
 
     // Messenger
     var messenger = common.messenger = {};
@@ -570,8 +577,8 @@ define([
 
     // Pad RPC
     var pad = common.padRpc = {};
-    pad.joinPad = function (data, cb) {
-        postMessage("JOIN_PAD", data, cb);
+    pad.joinPad = function (data) {
+        postMessage("JOIN_PAD", data);
     };
     pad.sendPadMsg = function (data, cb) {
         postMessage("SEND_PAD_MSG", data, cb);
@@ -581,6 +588,7 @@ define([
     pad.onJoinEvent = Util.mkEvent();
     pad.onLeaveEvent = Util.mkEvent();
     pad.onDisconnectEvent = Util.mkEvent();
+    pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
 
     // Loading events
@@ -669,108 +677,57 @@ define([
         window.location.href = '/login/';
     };
 
-    common.startAccountDeletion = function (cb) {
+    common.startAccountDeletion = function (data, cb) {
         // Logout other tabs
         LocalStore.logout(null, true);
         cb();
     };
 
-    var onMessage = function (cmd, data, cb) {
-        cb = cb || function () {};
-        switch (cmd) {
-            case 'REQUEST_LOGIN': {
-                requestLogin();
-                break;
-            }
-            case 'UPDATE_METADATA': {
-                common.changeMetadata();
-                break;
-            }
-            case 'UPDATE_TOKEN': {
-                var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
-                if (localToken !== data.token) { requestLogin(); }
-                break;
-            }
-            case 'Q_FRIEND_REQUEST': {
-                common.messaging.onFriendRequest.fire(data, cb);
-                break;
-            }
-            case 'EV_FRIEND_COMPLETE': {
-                common.messaging.onFriendComplete.fire(data);
-                break;
-            }
-            // Network
-            case 'NETWORK_DISCONNECT': {
-                common.onNetworkDisconnect.fire(); break;
-            }
-            case 'NETWORK_RECONNECT': {
-                require(['/api/config?' + (+new Date())], function (NewConfig) {
-                    var update = updateLocalVersion(NewConfig.requireConf && NewConfig.requireConf.urlArgs);
-                    if (update) {
-                        postMessage('DISCONNECT');
-                        return;
-                    }
-                    common.onNetworkReconnect.fire(data);
-                });
-                break;
-            }
-            // Messenger
-            case 'CONTACTS_MESSAGE': {
-                common.messenger.onMessageEvent.fire(data); break;
-            }
-            case 'CONTACTS_JOIN': {
-                common.messenger.onJoinEvent.fire(data); break;
-            }
-            case 'CONTACTS_LEAVE': {
-                common.messenger.onLeaveEvent.fire(data); break;
-            }
-            case 'CONTACTS_UPDATE': {
-                common.messenger.onUpdateEvent.fire(data); break;
-            }
-            case 'CONTACTS_FRIEND': {
-                common.messenger.onFriendEvent.fire(data); break;
-            }
-            case 'CONTACTS_UNFRIEND': {
-                common.messenger.onUnfriendEvent.fire(data); break;
-            }
-            // Pad
-            case 'PAD_READY': {
-                common.padRpc.onReadyEvent.fire(); break;
-            }
-            case 'PAD_MESSAGE': {
-                common.padRpc.onMessageEvent.fire(data); break;
-            }
-            case 'PAD_JOIN': {
-                common.padRpc.onJoinEvent.fire(data); break;
-            }
-            case 'PAD_LEAVE': {
-                common.padRpc.onLeaveEvent.fire(data); break;
-            }
-            case 'PAD_DISCONNECT': {
-                common.padRpc.onDisconnectEvent.fire(data); break;
-            }
-            case 'PAD_ERROR': {
-                common.padRpc.onErrorEvent.fire(data); break;
-            }
-            // Drive
-            case 'DRIVE_LOG': {
-                common.drive.onLog.fire(data); break;
-            }
-            case 'DRIVE_CHANGE': {
-                common.drive.onChange.fire(data); break;
-            }
-            case 'DRIVE_REMOVE': {
-                common.drive.onRemove.fire(data); break;
-            }
-            // Account deletion
-            case 'DELETE_ACCOUNT': {
-                common.startAccountDeletion(cb); break;
-            }
-            // Loading
-            case 'LOADING_DRIVE': {
-                common.loading.onDriveEvent.fire(data); break;
-            }
-        }
+    var queries = {
+        REQUEST_LOGIN: requestLogin,
+        UPDATE_METADATA: common.changeMetadata,
+        UPDATE_TOKEN: function (data) {
+            var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
+            if (localToken !== data.token) { requestLogin(); }
+        },
+        // Messaging
+        Q_FRIEND_REQUEST: common.messaging.onFriendRequest.fire,
+        EV_FIREND_COMPLETE: common.messaging.onFriendComplete.fire,
+        // Network
+        NETWORK_DISCONNECT: common.onNetworkDisconnect.fire,
+        NETWORK_RECONNECT: function (data) {
+            require(['/api/config?' + (+new Date())], function (NewConfig) {
+                var update = updateLocalVersion(NewConfig.requireConf && NewConfig.requireConf.urlArgs);
+                if (update) {
+                    postMessage('DISCONNECT');
+                    return;
+                }
+                common.onNetworkReconnect.fire(data);
+            });
+        },
+        // Messenger
+        CONTACTS_MESSAGE: common.messenger.onMessageEvent.fire,
+        CONTACTS_JOIN: common.messenger.onJoinEvent.fire,
+        CONTACTS_LEAVE: common.messenger.onLeaveEvent.fire,
+        CONTACTS_UPDATE: common.messenger.onUpdateEvent.fire,
+        CONTACTS_FRIEND: common.messenger.onFriendEvent.fire,
+        CONTACTS_UNFRIEND: common.messenger.onUnfriendEvent.fire,
+        // Pad
+        PAD_READY: common.padRpc.onReadyEvent.fire,
+        PAD_MESSAGE: common.padRpc.onMessageEvent.fire,
+        PAD_JOIN: common.padRpc.onJoinEvent.fire,
+        PAD_LEAVE: common.padRpc.onLeaveEvent.fire,
+        PAD_DISCONNECT: common.padRpc.onDisconnectEvent.fire,
+        PAD_CONNECT: common.padRpc.onConnectEvent.fire,
+        PAD_ERROR: common.padRpc.onErrorEvent.fire,
+        // Drive
+        DRIVE_LOG: common.drive.onLog.fire,
+        DRIVE_CHANGE: common.drive.onChange.fire,
+        DRIVE_REMOVE: common.drive.onRemove.fire,
+        // Account deletion
+        DELETE_ACCOUNT: common.startAccountDeletion,
+        // Loading
+        LOADING_DRIVE: common.loading.onDriveEvent.fire
     };
 
     common.ready = (function () {
@@ -828,43 +785,166 @@ define([
             }
         }).nThen(function (waitFor) {
             var cfg = {
-                query: onMessage, // TODO temporary, will be replaced by a webworker channel
+                init: true,
+                //query: onMessage, // TODO temporary, will be replaced by a webworker channel
                 userHash: LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
                 language: common.getLanguage(),
-                messenger: rdyCfg.messenger,
-                driveEvents: rdyCfg.driveEvents
+                messenger: rdyCfg.messenger, // Boolean
+                driveEvents: rdyCfg.driveEvents // Boolean
             };
             if (sessionStorage[Constants.newPadPathKey]) {
                 cfg.initialPath = sessionStorage[Constants.newPadPathKey];
                 delete sessionStorage[Constants.newPadPathKey];
             }
-            AStore.query("CONNECT", cfg, waitFor(function (data) {
-                if (data.error) { throw new Error(data.error); }
-                if (data.state === 'ALREADY_INIT') {
-                    data = data.returned;
+
+            var channelIsReady = waitFor();
+
+            var msgEv = Util.mkEvent();
+            var postMsg, worker;
+            Nthen(function (waitFor2) {
+                if (typeof(SharedWorker) !== "undefined") {
+                    worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
+                    worker.onerror = function (e) {
+                        console.error(e);
+                    };
+                    worker.port.onmessage = function (ev) {
+                        if (ev.data === "SW_READY") {
+                            return;
+                        }
+                        msgEv.fire(ev);
+                    };
+                    postMsg = function (data) {
+                        worker.port.postMessage(data);
+                    };
+                    postMsg('INIT');
+
+                    window.addEventListener('beforeunload', function () {
+                        postMsg('CLOSE');
+                    });
+                } else if (false && 'serviceWorker' in navigator) {
+                    var initializing = true;
+                    var stopWaiting = waitFor2(); // Call this function when we're ready
+
+                    postMsg = function (data) {
+                        if (worker) { return void worker.postMessage(data); }
+                    };
+
+                    navigator.serviceWorker.register('/common/outer/serviceworker.js?' + urlArgs, {scope: '/'})
+                        .then(function(reg) {
+                            // Add handler for receiving messages from the service worker
+                            navigator.serviceWorker.addEventListener('message', function (ev) {
+                                if (initializing && ev.data === "SW_READY") {
+                                    initializing = false;
+                                } else {
+                                    msgEv.fire(ev);
+                                }
+                            });
+
+                            // Initialize the worker
+                            // If it is active (probably running in another tab), just post INIT
+                            if (reg.active) {
+                                worker = reg.active;
+                                postMsg("INIT");
+                            }
+                            // If it was not active, wait for the "activated" state and post INIT
+                            reg.onupdatefound = function () {
+                                if (initializing) {
+                                    var w = reg.installing;
+                                    var onStateChange = function () {
+                                        if (w.state === "activated") {
+                                            worker = w;
+                                            postMsg("INIT");
+                                            w.removeEventListener("statechange", onStateChange);
+                                        }
+                                    };
+                                    w.addEventListener('statechange', onStateChange);
+                                    return;
+                                }
+                                // XXX
+                                // New version detected (from another tab): kill?
+                                console.error('New version detected: ABORT?');
+                            };
+                            return void stopWaiting();
+                        }).catch(function(error) {
+                            /**/console.log('Registration failed with ' + error);
+                        });
+
+                    window.addEventListener('beforeunload', function () {
+                        postMsg('CLOSE');
+                    });
+                } else if (Worker) {
+                    worker = new Worker('/common/outer/webworker.js?' + urlArgs);
+                    worker.onmessage = function (ev) {
+                        msgEv.fire(ev);
+                    };
+                    postMsg = function (data) {
+                        worker.postMessage(data);
+                    };
+                } else {
+                    require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
+                        NoWorker.onMessage(function (data) {
+                            msgEv.fire({data: data});
+                        });
+                        postMsg = function (d) { setTimeout(function () { NoWorker.query(d); }); };
+                        NoWorker.create();
+                    }));
                 }
+            }).nThen(function () {
+                Channel.create(msgEv, postMsg, function (chan) {
+                    console.log('Outer ready');
+                    Object.keys(queries).forEach(function (q) {
+                        chan.on(q, function (data, cb) {
+                            try {
+                                queries[q](data, cb);
+                            } catch (e) {
+                                console.error("Error in outer when executing query " + q);
+                                console.error(e);
+                                console.log(data);
+                            }
+                        });
+                    });
 
-                if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
+                    postMessage = function (cmd, data, cb) {
+                        cb = cb || function () {};
+                        chan.query(cmd, data, function (err, data) {
+                            if (err) { return void cb ({error: err}); }
+                            cb(data);
+                        });
+                    };
 
-                /*if (cfg.userHash && sessionStorage) {
-                    // copy User_hash into sessionStorage because cross-domain iframes
-                    // on safari replaces localStorage with sessionStorage or something
-                    sessionStorage.setItem(Constants.userHashKey, cfg.userHash);
-                }*/
+                    console.log('Posting CONNECT');
+                    postMessage('CONNECT', cfg, function (data) {
+                        if (data.error) { throw new Error(data.error); }
+                        if (data.state === 'ALREADY_INIT') {
+                            data = data.returned;
+                        }
 
-                if (cfg.userHash) {
-                    var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
-                    if (localToken === null) {
-                        // if that number hasn't been set to localStorage, do so.
-                        localStorage.setItem(Constants.tokenKey, data[Constants.tokenKey]);
-                    }
-                }
+                        if (data.anonHash && !cfg.userHash) { LocalStore.setFSHash(data.anonHash); }
 
-                initFeedback(data.feedback);
-                initialized = true;
-            }));
+                        /*if (cfg.userHash && sessionStorage) {
+                            // copy User_hash into sessionStorage because cross-domain iframes
+                            // on safari replaces localStorage with sessionStorage or something
+                            sessionStorage.setItem(Constants.userHashKey, cfg.userHash);
+                        }*/
+
+                        if (cfg.userHash) {
+                            var localToken = tryParsing(localStorage.getItem(Constants.tokenKey));
+                            if (localToken === null) {
+                                // if that number hasn't been set to localStorage, do so.
+                                localStorage.setItem(Constants.tokenKey, data[Constants.tokenKey]);
+                            }
+                        }
+
+                        initFeedback(data.feedback);
+                        initialized = true;
+                        channelIsReady();
+                    });
+
+                }, false);
+            });
+
         }).nThen(function (waitFor) {
             // Load the new pad when the hash has changed
             var oldHref  = document.location.href;
@@ -893,8 +973,11 @@ define([
                     document.location.reload();
                 } else if (o && !n) {
                     LocalStore.logout();
-                    postMessage("DISCONNECT");
                 }
+            });
+            LocalStore.onLogout(function () {
+                console.log('onLogout: disconnect');
+                postMessage("DISCONNECT");
             });
 
             if (PINNING_ENABLED && LocalStore.isLoggedIn()) {
