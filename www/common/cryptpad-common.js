@@ -234,6 +234,12 @@ define([
         });
     };
 
+    common.writeLoginBlock = function (data, cb) {
+        postMessage('WRITE_LOGIN_BLOCK', data, function (obj) {
+            cb(obj);
+        });
+    };
+
     // ANON RPC
 
     // SFRAME: talk to anon_rpc from the iframe

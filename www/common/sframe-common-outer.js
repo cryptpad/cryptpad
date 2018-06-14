@@ -643,6 +643,10 @@ define([
                 Cryptpad.changePadPassword(Cryptget, href, data.password, edPublic, cb);
             });
 
+            sframeChan.on('Q_WRITE_LOGIN_BLOCK', function (data, cb) {
+                Cryptpad.writeLoginBlock(data, cb);
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }

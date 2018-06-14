@@ -276,6 +276,15 @@ define([
             });
         };
 
+        Store.writeLoginBlock = function (clientId, data, cb) {
+            store.rpc.writeLoginBlock(data, function (e, res) {
+                cb({
+                    error: e,
+                    data: res
+                });
+            });
+        };
+
         Store.initRpc = function (clientId, data, cb) {
             if (store.rpc) { return void cb(account); }
             require(['/common/pinpad.js'], function (Pinpad) {

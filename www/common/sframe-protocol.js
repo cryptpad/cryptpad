@@ -74,6 +74,9 @@ define({
     // Get the user's pin limit, usage and plan
     'Q_PIN_GET_USAGE': true,
 
+    // Write/update the login block when the account password is changed
+    'Q_WRITE_LOGIN_BLOCK': true,
+
     // Check the pin limit to determine if we can store the pad in the drive or if we should.
     // display a warning
     'Q_GET_PIN_LIMIT_STATUS': true,
