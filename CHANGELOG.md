@@ -1,3 +1,31 @@
+# Donkey release (v2.3.0)
+
+## Goals
+
+For this release we wanted to deploy some new features related to our encrypted file functionality.
+
+## Update notes
+
+* new clientside dependencies. run `bower update`
+* new serverside APIs. Restart your server
+
+## What's new
+
+### Features
+
+* When uploading files to your CryptDrive or a pad, users will now be prompted to protect the file with a password (in addition to some random data)
+  * this adds an additional layer of security in case a third party gains access to the file's link, but not the password.
+* Users are also able to claim an encrypted file as their own, allowing them the option to delete it from the server at a later date.
+* We've refactored the Media-Tag library to be much smaller and easier to use.
+
+### Bug fixes
+
+* When setting a title for a pad which was created from a template, titles were not correctly inferred from the content of a document. This has been fixed.
+* We discovered that users who had installed _AdBlock Plus_ and configured it to **Block social media icons tracking** were unable to use the _share menu_ to construct alternative links to the same pad, but with different attributes. We have worked around the problem.
+* Admins who had configured their CryptPad instance to use custom icons for applications in the CryptDrive may have noticed that the same icons were not used on the home page. We've fixed this such that the same icons will be used everywhere
+* We have also updated the icon for the Kanban app to a more appropriate symbol
+* We found that the download button in the _file_ app was downloading the user's avatar, instead of the correct encrypted file embedded in the page. We've since fixed this
+
 # Coati release (v2.2.0)
 
 ## Goals

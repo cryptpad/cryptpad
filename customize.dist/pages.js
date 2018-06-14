@@ -181,10 +181,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/AaronMacSween.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-1.cp-profile-det',[
                         h('h3', "Aaron MacSween"),
                         h('hr'),
                         setHTML(h('div#bioAaron'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance. <br/> He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.<br/>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.<br/>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>'),
@@ -232,10 +232,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/Catalin.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-1.cp-profile-det',[
                         h('h3', "Catalin Scripcariu"),
                         h('hr'),
                         setHTML(h('div#bioCatalin'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.<br/>At the beginning of 2017 he joined the XWiki, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>'),
@@ -470,28 +470,28 @@ define([
                     h('div.col-12',
                         setHTML(h('h4.text-center'), Msg.main_about_p26)
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://twitter.com/cryptpad"}, 
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p22)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p23)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://riot.im/app/#/room/#cryptpad:matrix.org"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p24)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "mailto:research@xwiki.com"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p25)
