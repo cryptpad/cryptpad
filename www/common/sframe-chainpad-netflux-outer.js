@@ -112,8 +112,8 @@ define([], function () {
             }
         };
 
-        padRpc.onDisconnectEvent.reg(function () {
-            sframeChan.event('EV_RT_DISCONNECT');
+        padRpc.onDisconnectEvent.reg(function (permanent) {
+            sframeChan.event('EV_RT_DISCONNECT', permanent);
         });
 
         padRpc.onConnectEvent.reg(function (data) {

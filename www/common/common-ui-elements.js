@@ -136,12 +136,6 @@ define([
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
         }));
-        /* TODO
-        if (owned) {
-            var $deleteOwned = $('button').text(Messages.fc_delete_owned).click(function () {
-            });
-            $d.append($deleteOwned);
-        }*/
 
         var expire = Messages.creation_expireFalse;
         if (data.expire && typeof (data.expire) === "number") {
@@ -153,11 +147,12 @@ define([
             id: 'cp-app-prop-expire',
         }));
 
-        if (typeof data.password !== "undefined") {
+        var hasPassword = typeof data.password !== "undefined";
+        if (hasPassword) {
             $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
                 .appendTo($d);
             var password = UI.passwordInput({
-                id: 'cp-app-prop-expire',
+                id: 'cp-app-prop-password',
                 readonly: 'readonly'
             });
             var $pwInput = $(password).find('.cp-password-input');
@@ -165,6 +160,51 @@ define([
                 $pwInput[0].select();
             });
             $d.append(password);
+        }
+
+        var parsed = Hash.parsePadUrl(data.href);
+        if (owned && parsed.hashData.type === 'pad') {
+            var sframeChan = common.getSframeChannel();
+            var changePwTitle = Messages.properties_changePassword;
+            var changePwConfirm = Messages.properties_confirmChange;
+            if (!hasPassword) {
+                changePwTitle = Messages.properties_addPassword;
+                changePwConfirm = Messages.properties_confirmNew;
+            }
+            $('<label>', {'for': 'cp-app-prop-change-password'})
+                .text(changePwTitle).appendTo($d);
+            var newPassword = UI.passwordInput({
+                id: 'cp-app-prop-change-password',
+                style: 'flex: 1;'
+            });
+            var passwordOk = h('button', Messages.properties_changePasswordButton);
+            var changePass = h('span.cp-password-container', [
+                newPassword,
+                passwordOk
+            ]);
+            $(passwordOk).click(function () {
+                UI.confirm(changePwConfirm, function (yes) {
+                    if (!yes) { return; }
+                    sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                        href: data.href,
+                        password: $(newPassword).val()
+                    }, function (err, data) {
+                        if (err || data.error) {
+                            return void UI.alert(Messages.properties_passwordError);
+                        }
+                        UI.findOKButton().click();
+                        if (data.warning) {
+                            return void UI.alert(Messages.properties_passwordWarning, function () {
+                                common.gotoURL(hasPassword ? undefined : data.href);
+                            }, {force: true});
+                        }
+                        return void UI.alert(Messages.properties_passwordSuccess, function () {
+                            common.gotoURL(hasPassword ? undefined : data.href);
+                        }, {force: true});
+                    });
+                });
+            });
+            $d.append(changePass);
         }
 
         cb(void 0, $d);

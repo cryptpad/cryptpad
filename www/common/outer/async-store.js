@@ -1059,6 +1059,13 @@ define([
             };
             CpNfWorker.start(conf);
         };
+        Store.leavePad = function (clientId, data, cb) {
+            var channel = channels[data.channel];
+            if (!channel || !channel.wc) { return void cb ({error: 'EINVAL'}); }
+            channel.wc.leave();
+            delete channels[data.channel];
+            cb();
+        };
         Store.sendPadMsg = function (clientId, data, cb) {
             var msg = data.msg;
             var channel = channels[data.channel];

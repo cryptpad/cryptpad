@@ -140,6 +140,11 @@ define([
                             toolbar.initializing();
                             return;
                         }
+                        if (text) {
+                            // text is a boolean here. It means we won't try to reconnect
+                            toolbar.failed();
+                            return;
+                        }
                         toolbar.reconnecting();
                     });
                     break;
@@ -339,7 +344,7 @@ define([
         };
         var onConnectionChange = function (info) {
             if (state === STATE.DELETED) { return; }
-            stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED);
+            stateChange(info.state ? STATE.INITIALIZING : STATE.DISCONNECTED, info.permanent);
             /*if (info.state) {
                 UI.findOKButton().click();
             } else {

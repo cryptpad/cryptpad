@@ -143,12 +143,11 @@ define([
                 // or get it from the pad attributes
                 var needPassword = parsed.hashData && parsed.hashData.password;
                 if (needPassword) {
+                    // Check if we have a password, and check if it is correct (file exists).
+                    // It we don't have a correct password, display the password prompt.
+                    // Maybe the file has been deleted from the server or the password has been changed.
                     Cryptpad.getPadAttribute('password', waitFor(function (err, val) {
-                        if (val) {
-                            // We already know the password, use it!
-                            password = val;
-                            todo();
-                        } else {
+                        var askPassword = function (wrongPasswordStored) {
                             // Ask for the password and check if the pad exists
                             // If the pad doesn't exist, it means the password isn't correct
                             // or the pad has been deleted
@@ -162,7 +161,14 @@ define([
                                         cb(false);
                                     } else {
                                         todo();
-                                        correctPassword();
+                                        if (wrongPasswordStored) {
+                                            // Store the correct password
+                                            Cryptpad.setPadAttribute('password', password, function () {
+                                                correctPassword();
+                                            }, parsed.getUrl());
+                                        } else {
+                                            correctPassword();
+                                        }
                                         cb(true);
                                     }
                                 };
@@ -178,6 +184,19 @@ define([
                                 Cryptpad.isNewChannel(window.location.href, password, next);
                             });
                             sframeChan.event("EV_PAD_PASSWORD");
+                        };
+
+                        if (val) {
+                            password = val;
+                            Cryptpad.getFileSize(window.location.href, password, function (e, size) {
+                                if (size !== 0) {
+                                    return void todo();
+                                }
+                                // Wrong password or deleted file?
+                                askPassword(true);
+                            });
+                        } else {
+                            askPassword();
                         }
                     }), parsed.getUrl());
                     return;
@@ -617,6 +636,11 @@ define([
                         tags: tags
                     });
                 });
+            });
+
+            sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
+                var href = data.href || window.location.href;
+                Cryptpad.changePadPassword(Cryptget, href, data.password, edPublic, cb);
             });
 
             if (cfg.addRpc) {

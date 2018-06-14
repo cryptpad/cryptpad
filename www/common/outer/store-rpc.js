@@ -67,6 +67,7 @@ define([
             // Pad
             SEND_PAD_MSG: Store.sendPadMsg,
             JOIN_PAD: Store.joinPad,
+            LEAVE_PAD: Store.leavePad,
             GET_FULL_HISTORY: Store.getFullHistory,
             IS_NEW_CHANNEL: Store.isNewChannel,
             // Drive

@@ -5,6 +5,7 @@ define([
     '/common/common-hash.js',
     '/common/common-realtime.js',
     '/common/outer/network-config.js',
+    '/bower_components/chainpad/chainpad.dist.js',
 ], function (Crypto, CPNetflux, Util, Hash, Realtime, NetConfig) {
     var finish = function (S, err, doc) {
         if (S.done) { return; }
