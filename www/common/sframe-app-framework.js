@@ -176,9 +176,12 @@ define([
             }
         };
 
-        var contentUpdate = function (newContent) {
+        var oldContent;
+        var contentUpdate = function (newContent, waitFor) {
+            if (JSONSortify(newContent) === JSONSortify(oldContent)) { return; }
             try {
-                evContentUpdate.fire(newContent);
+                evContentUpdate.fire(newContent, waitFor);
+                setTimeout(function () { oldContent = newContent; });
             } catch (e) {
                 console.log(e.stack);
                 UI.errorLoadingScreen(e.message);
@@ -197,46 +200,48 @@ define([
             cpNfInner.metadataMgr.updateMetadata(meta);
             newContent = normalize(newContent);
 
-            contentUpdate(newContent);
+            nThen(function (waitFor) {
+                contentUpdate(newContent, waitFor);
+            }).nThen(function () {
+                if (!readOnly) {
+                    var newContent2NoMeta = normalize(contentGetter());
+                    var newContent2StrNoMeta = JSONSortify(newContent2NoMeta);
+                    var newContentStrNoMeta = JSONSortify(newContent);
 
-            if (!readOnly) {
-                var newContent2NoMeta = normalize(contentGetter());
-                var newContent2StrNoMeta = JSONSortify(newContent2NoMeta);
-                var newContentStrNoMeta = JSONSortify(newContent);
+                    if (newContent2StrNoMeta !== newContentStrNoMeta) {
+                        console.error("shjson2 !== shjson");
+                        onLocal();
 
-                if (newContent2StrNoMeta !== newContentStrNoMeta) {
-                    console.error("shjson2 !== shjson");
-                    onLocal();
+                        /*  pushing back over the wire is necessary, but it can
+                            result in a feedback loop, which we call a browser
+                            fight */
+                        // what changed?
+                        var ops = ChainPad.Diff.diff(newContentStrNoMeta, newContent2StrNoMeta);
+                        // log the changes
+                        console.log(newContentStrNoMeta);
+                        console.log(ops);
+                        var sop = JSON.stringify([ newContentStrNoMeta, ops ]);
 
-                    /*  pushing back over the wire is necessary, but it can
-                        result in a feedback loop, which we call a browser
-                        fight */
-                    // what changed?
-                    var ops = ChainPad.Diff.diff(newContentStrNoMeta, newContent2StrNoMeta);
-                    // log the changes
-                    console.log(newContentStrNoMeta);
-                    console.log(ops);
-                    var sop = JSON.stringify([ newContentStrNoMeta, ops ]);
-
-                    var fights = window.CryptPad_fights = window.CryptPad_fights || [];
-                    var index = fights.indexOf(sop);
-                    if (index === -1) {
-                        fights.push(sop);
-                        console.log("Found a new type of browser disagreement");
-                        console.log("You can inspect the list in your " +
-                            "console at `REALTIME_MODULE.fights`");
-                        console.log(fights);
-                    } else {
-                        console.log("Encountered a known browser disagreement: " +
-                            "available at `REALTIME_MODULE.fights[%s]`", index);
+                        var fights = window.CryptPad_fights = window.CryptPad_fights || [];
+                        var index = fights.indexOf(sop);
+                        if (index === -1) {
+                            fights.push(sop);
+                            console.log("Found a new type of browser disagreement");
+                            console.log("You can inspect the list in your " +
+                                "console at `REALTIME_MODULE.fights`");
+                            console.log(fights);
+                        } else {
+                            console.log("Encountered a known browser disagreement: " +
+                                "available at `REALTIME_MODULE.fights[%s]`", index);
+                        }
                     }
                 }
-            }
 
-            // Notify only when the content has changed, not when someone has joined/left
-            if (JSONSortify(newContent) !== JSONSortify(oldContent)) {
-                common.notify();
-            }
+                // Notify only when the content has changed, not when someone has joined/left
+                if (JSONSortify(newContent) !== JSONSortify(oldContent)) {
+                    common.notify();
+                }
+            });
         };
 
         var setHistoryMode = function (bool, update) {
@@ -289,58 +294,62 @@ define([
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
 
-            if (!newPad) {
-                var newContent = JSON.parse(newContentStr);
-                cpNfInner.metadataMgr.updateMetadata(extractMetadata(newContent));
-                newContent = normalize(newContent);
-                contentUpdate(newContent);
-            } else {
-                if (!cpNfInner.metadataMgr.getPrivateData().isNewFile) {
-                    // We're getting 'new pad' but there is an existing file
-                    // We don't know exactly why this can happen but under no circumstances
-                    // should we overwrite the content, so lets just try again.
-                    console.log("userDoc is '' but this is not a new pad.");
-                    console.log("Either this is an empty document which has not been touched");
-                    console.log("Or else something is terribly wrong, reloading.");
-                    Feedback.send("NON_EMPTY_NEWDOC");
-                    setTimeout(function () { common.gotoURL(); }, 1000);
-                    return;
+            // contentUpdate may be async so we need an nthen here
+            nThen(function (waitFor) {
+                if (!newPad) {
+                    var newContent = JSON.parse(newContentStr);
+                    cpNfInner.metadataMgr.updateMetadata(extractMetadata(newContent));
+                    newContent = normalize(newContent);
+                    contentUpdate(newContent, waitFor);
+                } else {
+                    if (!cpNfInner.metadataMgr.getPrivateData().isNewFile) {
+                        // We're getting 'new pad' but there is an existing file
+                        // We don't know exactly why this can happen but under no circumstances
+                        // should we overwrite the content, so lets just try again.
+                        console.log("userDoc is '' but this is not a new pad.");
+                        console.log("Either this is an empty document which has not been touched");
+                        console.log("Or else something is terribly wrong, reloading.");
+                        Feedback.send("NON_EMPTY_NEWDOC");
+                        setTimeout(function () { common.gotoURL(); }, 1000);
+                        return;
+                    }
+                    console.log('updating title');
+                    title.updateTitle(title.defaultTitle);
+                    evOnDefaultContentNeeded.fire();
                 }
-                console.log('updating title');
-                title.updateTitle(title.defaultTitle);
-                evOnDefaultContentNeeded.fire();
-            }
-            stateChange(STATE.READY);
-            firstConnection = false;
-            if (!readOnly) { onLocal(); }
-            evOnReady.fire(newPad);
+            }).nThen(function () {
+                stateChange(STATE.READY);
+                firstConnection = false;
+                if (!readOnly) { onLocal(); }
+                evOnReady.fire(newPad);
 
-            UI.removeLoadingScreen(emitResize);
+                UI.removeLoadingScreen(emitResize);
 
-            var privateDat = cpNfInner.metadataMgr.getPrivateData();
-            var hash = privateDat.availableHashes.editHash ||
-                       privateDat.availableHashes.viewHash;
-            var href = privateDat.pathname + '#' + hash;
-            if (AppConfig.textAnalyzer && textContentGetter) {
-                AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
-            }
-
-            if (options.thumbnail && privateDat.thumbnails) {
-                if (hash) {
-                    options.thumbnail.href = href;
-                    options.thumbnail.getContent = function () {
-                        if (!cpNfInner.chainpad) { return; }
-                        return cpNfInner.chainpad.getUserDoc();
-                    };
-                    Thumb.initPadThumbnails(common, options.thumbnail);
+                var privateDat = cpNfInner.metadataMgr.getPrivateData();
+                var hash = privateDat.availableHashes.editHash ||
+                           privateDat.availableHashes.viewHash;
+                var href = privateDat.pathname + '#' + hash;
+                if (AppConfig.textAnalyzer && textContentGetter) {
+                    AppConfig.textAnalyzer(textContentGetter, privateDat.channel);
                 }
-            }
 
-            var skipTemp = Util.find(privateDat, ['settings', 'general', 'creation', 'noTemplate']);
-            var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
-            if (newPad && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
-                common.openTemplatePicker();
-            }
+                if (options.thumbnail && privateDat.thumbnails) {
+                    if (hash) {
+                        options.thumbnail.href = href;
+                        options.thumbnail.getContent = function () {
+                            if (!cpNfInner.chainpad) { return; }
+                            return cpNfInner.chainpad.getUserDoc();
+                        };
+                        Thumb.initPadThumbnails(common, options.thumbnail);
+                    }
+                }
+
+                var skipTemp = Util.find(privateDat, ['settings', 'general', 'creation', 'noTemplate']);
+                var skipCreation = Util.find(privateDat, ['settings', 'general', 'creation', 'skip']);
+                if (newPad && (!AppConfig.displayCreationScreen || (!skipTemp && skipCreation))) {
+                    common.openTemplatePicker();
+                }
+            });
         };
         var onConnectionChange = function (info) {
             if (state === STATE.DELETED) { return; }
@@ -385,13 +394,19 @@ define([
                 common.createButton('import', true, options, function (c, f) {
                     if (async) {
                         fi(c, f, function (content) {
-                            contentUpdate(content);
-                            onLocal();
+                            nThen(function (waitFor) {
+                                contentUpdate(content, waitFor);
+                            }).nThen(function () {
+                                onLocal();
+                            });
                         });
                         return;
                     }
-                    contentUpdate(fi(c, f));
-                    onLocal();
+                    nThen(function (waitFor) {
+                        contentUpdate(fi(c, f), waitFor);
+                    }).nThen(function () {
+                        onLocal();
+                    });
                 })
             );
         };
