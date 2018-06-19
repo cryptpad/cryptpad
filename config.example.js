@@ -211,6 +211,11 @@ module.exports = {
     */
     taskPath: './tasks',
 
+    /*  if you would like users' authenticated blocks to be stored in
+        a custom location, change the path below:
+    */
+    blockPath: './block',
+
     /*
      *  By default, CryptPad also contacts our accounts server once a day to check for changes in
      *  the people who have accounts. This check-in will also send the version of your CryptPad
