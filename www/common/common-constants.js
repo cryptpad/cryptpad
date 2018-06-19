@@ -3,6 +3,7 @@ define(function () {
         // localStorage
         userHashKey: 'User_hash',
         userNameKey: 'User_name',
+        blockHashKey: 'Block_hash',
         fileHashKey: 'FS_hash',
         // sessionStorage
         newPadPathKey: "newPadPath",
