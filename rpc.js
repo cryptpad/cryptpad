@@ -1342,7 +1342,6 @@ var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
     try {
         u8_block = Nacl.util.decodeBase64(block);
     } catch (e) {
-        // TODO print to console
         return void cb('E_INVALID_BLOCK');
     }
 
@@ -1432,8 +1431,6 @@ var writeLoginBlock = function (Env, msg, cb) {
 
 */
 var removeLoginBlock = function (Env, msg, cb) {
-    console.log(msg); // XXX
-
     var publicKey = msg[0];
     var signature = msg[1];
     var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
@@ -1854,9 +1851,12 @@ RPC.create = function (
                     Respond(e);
                 });
             case 'WRITE_LOGIN_BLOCK':
-                return void writeLoginBlock(Env, msg, function (e) {
-                    // TODO handle response
-                    e = e;
+                return void writeLoginBlock(Env, msg[1], function (e) {
+                    if (e) {
+                        WARN(e, 'WRITE_LOGIN_BLOCK');
+                        return void Respond(e);
+                    }
+                    Respond(e);
                 });
             case 'REMOVE_LOGIN_BLOCK':
                 return void removeLoginBlock(Env, msg, function (e) {

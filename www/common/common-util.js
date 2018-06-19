@@ -83,6 +83,21 @@ define([], function () {
         }).join('');
     };
 
+    // given an array of Uint8Arrays, return a new Array with all their values
+    Util.uint8ArrayJoin = function (AA) {
+        var l = 0;
+        var i = 0;
+        for (; i < AA.length; i++) { l += AA[i].length; }
+        var C = new Uint8Array(l);
+
+        i = 0;
+        for (var offset = 0; i < AA.length; i++) {
+            C.set(AA[i], offset);
+            offset += AA[i].length;
+        }
+        return C;
+    };
+
     Util.deduplicateString = function (array) {
         var a = array.slice();
         for(var i=0; i<a.length; i++) {

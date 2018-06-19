@@ -105,7 +105,7 @@ define([
             return void cb('PASS_TOO_SHORT');
         }
 
-        Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
+        Cred.deriveFromPassphrase(uname, passwd, 192, function (bytes) {
             // results...
             var res = {
                 register: isRegister,

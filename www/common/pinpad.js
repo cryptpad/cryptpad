@@ -222,7 +222,19 @@ define([
             };
 
             exp.writeLoginBlock = function (data, cb) {
-                cb();
+                if (!data) { return void cb('NO_DATA'); }
+                if (!data.publicKey || !data.signature || !data.ciphertext) {
+                    console.log(data);
+                    return void cb("MISSING_PARAMETERS");
+                }
+
+                rpc.send('WRITE_LOGIN_BLOCK', [
+                    data.publicKey,
+                    data.signature,
+                    data.ciphertext
+                ], function (e) {
+                    cb(e);
+                });
             };
 
             cb(e, exp);
