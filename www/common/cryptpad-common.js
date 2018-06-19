@@ -234,6 +234,12 @@ define([
         });
     };
 
+    common.writeLoginBlock = function (data, cb) {
+        postMessage('WRITE_LOGIN_BLOCK', data, function (obj) {
+            cb(obj);
+        });
+    };
+
     // ANON RPC
 
     // SFRAME: talk to anon_rpc from the iframe
@@ -580,6 +586,9 @@ define([
     pad.joinPad = function (data) {
         postMessage("JOIN_PAD", data);
     };
+    pad.leavePad = function (data, cb) {
+        postMessage("LEAVE_PAD", data, cb);
+    };
     pad.sendPadMsg = function (data, cb) {
         postMessage("SEND_PAD_MSG", data, cb);
     };
@@ -590,6 +599,91 @@ define([
     pad.onDisconnectEvent = Util.mkEvent();
     pad.onConnectEvent = Util.mkEvent();
     pad.onErrorEvent = Util.mkEvent();
+
+    common.changePadPassword = function (Crypt, href, newPassword, edPublic, cb) {
+        if (!href) { return void cb({ error: 'EINVAL_HREF' }); }
+        var parsed = Hash.parsePadUrl(href);
+        if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
+
+        var warning = false;
+        var newHash;
+        var oldChannel;
+        if (parsed.hashData.password) {
+            newHash = parsed.hash;
+        } else {
+            newHash = Hash.createRandomHash(parsed.type, newPassword);
+        }
+        var newHref = '/' + parsed.type + '/#' + newHash;
+
+        var optsGet = {};
+        var optsPut = {
+            password: newPassword
+        };
+        Nthen(function (waitFor) {
+            if (parsed.hashData && parsed.hashData.password) {
+                common.getPadAttribute('password', waitFor(function (err, password) {
+                    optsGet.password = password;
+                }), href);
+            }
+            common.getPadAttribute('owners', waitFor(function (err, owners) {
+                if (!Array.isArray(owners) || owners.indexOf(edPublic) === -1) {
+                    // We're not an owner, we shouldn't be able to change the password!
+                    waitFor.abort();
+                    return void cb({ error: 'EPERM' });
+                }
+                optsPut.owners = owners;
+            }), href);
+            common.getPadAttribute('expire', waitFor(function (err, expire) {
+                optsPut.expire = (expire - (+new Date())) / 1000; // Lifetime in seconds
+            }), href);
+        }).nThen(function (waitFor) {
+            Crypt.get(parsed.hash, waitFor(function (err, val) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+                Crypt.put(newHash, val, waitFor(function (err) {
+                    if (err) {
+                        waitFor.abort();
+                        return void cb({ error: err });
+                    }
+                }), optsPut);
+            }), optsGet);
+        }).nThen(function (waitFor) {
+            var secret = Hash.getSecrets(parsed.type, parsed.hash, optsGet.password);
+            oldChannel = secret.channel;
+            pad.leavePad({
+                channel: oldChannel
+            }, waitFor());
+            pad.onDisconnectEvent.fire(true);
+        }).nThen(function (waitFor) {
+            common.removeOwnedChannel(oldChannel, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
+        }).nThen(function (waitFor) {
+            common.setPadAttribute('password', newPassword, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+            var secret = Hash.getSecrets(parsed.type, newHash, newPassword);
+            common.setPadAttribute('channel', secret.channel, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+
+            if (parsed.hashData.password) { return; } // same hash
+            common.setPadAttribute('href', newHref, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
+        }).nThen(function () {
+            cb({
+                warning: warning,
+                hash: newHash,
+                href: newHref
+            });
+        });
+    };
 
     // Loading events
     common.loading = {};
@@ -862,7 +956,6 @@ define([
                                     w.addEventListener('statechange', onStateChange);
                                     return;
                                 }
-                                // XXX
                                 // New version detected (from another tab): kill?
                                 console.error('New version detected: ABORT?');
                             };

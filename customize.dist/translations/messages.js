@@ -1155,12 +1155,22 @@ define(function () {
     out.creation_newPadModalDescriptionAdvanced = "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
-    // Password prompt on the loadind screen
+    // Password prompt on the loading screen
     out.password_info = "The pad you're trying to open is protected with a password. Enter the correct password to access its content.";
     out.password_error = "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.";
     out.password_placeholder = "Type the password here...";
     out.password_submit = "Submit";
     out.password_show = "Show";
+
+    // Change password in pad properties
+    out.properties_addPassword = "Add a password";
+    out.properties_changePassword = "Change the password";
+    out.properties_confirmNew = "Are you sure? Adding a password will change this pad's URL. Users without the password will lose access to this pad";
+    out.properties_confirmChange = "Are you sure? Users without the new password will lose access to this pad";
+    out.properties_passwordError = "An error occured while trying to change the password. Please try again.";
+    out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your acces rights.";
+    out.properties_passwordSuccess = "The password was successfully changed.<br>Press OK to reload and update your access rights.";
+    out.properties_changePasswordButton = "Submit";
 
     // New share modal
     out.share_linkCategory = "Share link";

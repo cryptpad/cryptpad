@@ -221,6 +221,10 @@ define([
                 });
             };
 
+            exp.writeLoginBlock = function (data, cb) {
+                cb();
+            };
+
             cb(e, exp);
         });
     };

@@ -23,6 +23,7 @@ define([
             UPLOAD_COMPLETE: Store.uploadComplete,
             UPLOAD_STATUS: Store.uploadStatus,
             UPLOAD_CANCEL: Store.uploadCancel,
+            WRITE_LOGIN_BLOCK: Store.writeLoginBlock,
             PIN_PADS: Store.pinPads,
             UNPIN_PADS: Store.unpinPads,
             GET_DELETED_PADS: Store.getDeletedPads,
@@ -67,6 +68,7 @@ define([
             // Pad
             SEND_PAD_MSG: Store.sendPadMsg,
             JOIN_PAD: Store.joinPad,
+            LEAVE_PAD: Store.leavePad,
             GET_FULL_HISTORY: Store.getFullHistory,
             IS_NEW_CHANNEL: Store.isNewChannel,
             // Drive

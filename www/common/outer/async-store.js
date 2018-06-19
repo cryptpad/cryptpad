@@ -276,6 +276,15 @@ define([
             });
         };
 
+        Store.writeLoginBlock = function (clientId, data, cb) {
+            store.rpc.writeLoginBlock(data, function (e, res) {
+                cb({
+                    error: e,
+                    data: res
+                });
+            });
+        };
+
         Store.initRpc = function (clientId, data, cb) {
             if (store.rpc) { return void cb(account); }
             require(['/common/pinpad.js'], function (Pinpad) {
@@ -1058,6 +1067,13 @@ define([
                 }
             };
             CpNfWorker.start(conf);
+        };
+        Store.leavePad = function (clientId, data, cb) {
+            var channel = channels[data.channel];
+            if (!channel || !channel.wc) { return void cb ({error: 'EINVAL'}); }
+            channel.wc.leave();
+            delete channels[data.channel];
+            cb();
         };
         Store.sendPadMsg = function (clientId, data, cb) {
             var msg = data.msg;

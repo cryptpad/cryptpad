@@ -48,6 +48,7 @@ define([
             'cp-settings-resettips',
             'cp-settings-thumbnails',
             'cp-settings-userfeedback',
+            'cp-settings-change-password',
             'cp-settings-delete'
         ],
         'creation': [
@@ -312,6 +313,7 @@ define([
     };
 
     create['delete'] = function () {
+        if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-delete cp-sidebarlayout-element'});
 
         $('<span>', {'class': 'label'}).text(Messages.settings_deleteTitle).appendTo($div);
@@ -364,6 +366,30 @@ define([
 
         $spinner.hide().appendTo($div);
         $ok.hide().appendTo($div);
+
+        return $div;
+    };
+
+    create['change-password'] = function () {
+        if (!common.isLoggedIn()) { return; }
+
+        var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text("TODO Change your password").appendTo($div); // XXX
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .append("TODO").appendTo($div); // XXX
+
+        // var publicKey = privateData.edPublic;
+
+        var updateBlock = function (data, cb) {
+            sframeChan.query('Q_WRITE_LOGIN_BLOCK', data, function (err, obj) {
+                if (err || obj.error) { return void cb ({error: err || obj.error}); }
+                cb (obj);
+            });
+        };
+
+        updateBlock = updateBlock; // jshint..
 
         return $div;
     };
