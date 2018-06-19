@@ -75,5 +75,16 @@ define([
         };
     };
 
+    Block.remove = function (keys) {
+        // sign the hash of the text 'DELETE_BLOCK'
+        var sig = Nacl.sign.detached(Nacl.hash(
+            Nacl.util.decodeUTF8('DELETE_BLOCK')), keys.sign.secretKey);
+
+        return {
+            publicKey: Nacl.util.encodeBase64(keys.sign.publicKey),
+            signature: Nacl.util.encodeBase64(sig),
+        };
+    };
+
     return Block;
 });

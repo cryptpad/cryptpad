@@ -240,6 +240,12 @@ define([
         });
     };
 
+    common.removeLoginBlock = function (data, cb) {
+        postMessage('REMOVE_LOGIN_BLOCK', data, function (obj) {
+            cb(obj);
+        });
+    };
+
     // ANON RPC
 
     // SFRAME: talk to anon_rpc from the iframe

@@ -1859,9 +1859,12 @@ RPC.create = function (
                     Respond(e);
                 });
             case 'REMOVE_LOGIN_BLOCK':
-                return void removeLoginBlock(Env, msg, function (e) {
-                    // TODO handle response
-                    e = e;
+                return void removeLoginBlock(Env, msg[1], function (e) {
+                    if (e) {
+                        WARN(e, 'REMOVE_LOGIN_BLOCK');
+                        return void Respond(e);
+                    }
+                    Respond(e);
                 });
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);

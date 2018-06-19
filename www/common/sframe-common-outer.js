@@ -647,6 +647,10 @@ define([
                 Cryptpad.writeLoginBlock(data, cb);
             });
 
+            sframeChan.on('Q_REMOVE_LOGIN_BLOCK', function (data, cb) {
+                Cryptpad.removeLoginBlock(data, cb);
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }

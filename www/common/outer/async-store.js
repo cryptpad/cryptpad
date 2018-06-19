@@ -13,7 +13,7 @@ define([
     '/common/outer/network-config.js',
     '/customize/application_config.js',
 
-    '/bower_components/chainpad-crypto/crypto.js?v=0.1.5',
+    '/bower_components/chainpad-crypto/crypto.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/nthen/index.js',
@@ -278,6 +278,15 @@ define([
 
         Store.writeLoginBlock = function (clientId, data, cb) {
             store.rpc.writeLoginBlock(data, function (e, res) {
+                cb({
+                    error: e,
+                    data: res
+                });
+            });
+        };
+
+        Store.removeLoginBlock = function (clientId, data, cb) {
+            store.rpc.removeLoginBlock(data, function (e, res) {
                 cb({
                     error: e,
                     data: res

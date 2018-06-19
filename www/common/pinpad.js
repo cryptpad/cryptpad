@@ -237,6 +237,21 @@ define([
                 });
             };
 
+            exp.removeLoginBlock = function (data, cb) {
+                if (!data) { return void cb('NO_DATA'); }
+                if (!data.publicKey || !data.signature) {
+                    console.log(data);
+                    return void cb("MISSING_PARAMETERS");
+                }
+
+                rpc.send('REMOVE_LOGIN_BLOCK', [
+                    data.publicKey, // publicKey
+                    data.signature, // signature
+                ], function (e) {
+                    cb(e);
+                });
+            };
+
             cb(e, exp);
         });
     };

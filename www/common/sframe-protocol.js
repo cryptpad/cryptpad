@@ -77,6 +77,9 @@ define({
     // Write/update the login block when the account password is changed
     'Q_WRITE_LOGIN_BLOCK': true,
 
+    // Remove login blocks
+    'Q_REMOVE_LOGIN_BLOCK': true,
+
     // Check the pin limit to determine if we can store the pad in the drive or if we should.
     // display a warning
     'Q_GET_PIN_LIMIT_STATUS': true,
