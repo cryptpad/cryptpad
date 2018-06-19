@@ -420,6 +420,24 @@ define([
                     }));
                 });
             });
+            sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
+                var crypto = Crypto.createEncryptor(secret.keys);
+                Cryptpad.getHistoryRange({
+                    channel: secret.channel,
+                    validateKey: secret.keys.validateKey,
+                    lastKnownHash: data.lastKnownHash
+                }, function (data) {
+                    cb({
+                        isFull: data.isFull,
+                        messages: data.messages.map(function (msg) {
+                            // The 3rd parameter "true" means we're going to skip signature validation.
+                            // We don't need it since the message is already validated serverside by hk
+                            return crypto.decrypt(msg, true, true);
+                        }),
+                        lastKnownHash: data.lastKnownHash
+                    });
+                });
+            });
 
             sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
                 var href;

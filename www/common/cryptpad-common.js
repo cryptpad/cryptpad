@@ -692,6 +692,9 @@ define([
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
     };
+    common.getHistoryRange = function (data, cb) {
+        postMessage("GET_HISTORY_RANGE", data, cb);
+    };
 
     common.getShareHashes = function (secret, cb) {
         var hashes;

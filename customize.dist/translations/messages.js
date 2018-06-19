@@ -234,12 +234,10 @@ define(function () {
 
     out.historyText = "History";
     out.historyButton = "Display the document history";
-    out.history_next = "Go to the next version";
-    out.history_prev = "Go to the previous version";
-    out.history_goTo = "Go to the selected version";
-    out.history_close = "Back";
+    out.history_next = "Newer version";
+    out.history_prev = "Older version";
+    out.history_loadMore = "Load more history";
     out.history_closeTitle = "Close the history";
-    out.history_restore = "Restore";
     out.history_restoreTitle = "Restore the selected version of the document";
     out.history_restorePrompt = "Are you sure you want to replace the current version of the document by the displayed one?";
     out.history_restoreDone = "Document restored";
