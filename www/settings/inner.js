@@ -11,6 +11,7 @@ define([
     '/common/hyperscript.js',
     '/customize/application_config.js',
     '/api/config',
+    '/common/outer/login-block.js', // XXX HACK
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -28,7 +29,8 @@ define([
     Messages,
     h,
     AppConfig,
-    ApiConfig
+    ApiConfig,
+    Block // XXX HACK
     )
 {
     var saveAs = window.saveAs;
@@ -389,7 +391,36 @@ define([
             });
         };
 
-        updateBlock = updateBlock; // jshint..
+        var removeBlock = function (data, cb) {
+            sframeChan.query('Q_REMOVE_LOGIN_BLOCK', data, function (err, obj) {
+                if (err || obj.error) { return void cb ({error: err || obj.error}); }
+                cb (obj);
+            });
+        };
+
+
+        // XXX
+        if (false) { // STUBBED, just for development purposes
+            console.error("TRYING TO WRITE A BLOCK");
+
+            var keys = Block.genkeys(Block.seed());
+            var data = Block.serialize(JSON.stringify({
+                a: 5,
+                b: 6,
+                User_hash: "XXX", /// TODO encode newly derived User_hash here
+            }), keys);
+
+            updateBlock(data, function (err, thing) {
+                console.log(err, thing);
+
+                console.log(Block.getBlockHash(keys));
+
+                return;
+                removeBlock(Block.remove(keys), function (err, obj) {
+                    console.log(err, obj);
+                });
+            });
+        }
 
         return $div;
     };

@@ -8,11 +8,12 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
+    '/common/outer/login-block.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, Channel,
+            Messaging, Constants, Feedback, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -883,7 +884,46 @@ define([
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }
+
         }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+
+            if (blockHash) {
+                console.log(blockHash);
+                var parsed = Hash.parseBlockHash(blockHash);
+
+                if (typeof(parsed) !== 'object') {
+                    console.error("Failed to parse blockHash");
+                    console.log(parsed);
+                    return;
+                } else {
+                    console.log(parsed);
+                }
+                Util.fetch(parsed.href, waitFor(function (err, arraybuffer) {
+                    if (err) { return void console.log(err); }
+
+                    // use the results to load your user hash and
+                    // put your userhash into localStorage
+                    try {
+                        var block_info = Block.decrypt(arraybuffer, parsed.keys);
+                        if (block_info[Constants.userHashKey]) { LocalStore.setUserHash(block_info[Constants.userHashKey]); }
+                    } catch (e) {
+                        console.error(e);
+                        return void console.error("failed to decrypt or decode block content");
+                    }
+                }));
+            } else {
+                // XXX debugging
+                console.error("NO BLOCK HASH");
+            }
+        }).nThen(function (waitFor) {
+            // XXX debugging
+            if (LocalStore.getUserHash()) {
+                console.log('User_hash detected');
+            } else {
+                console.log("User_hash not detected");
+            }
+
             var cfg = {
                 init: true,
                 //query: onMessage, // TODO temporary, will be replaced by a webworker channel

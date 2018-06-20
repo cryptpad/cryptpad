@@ -10,9 +10,12 @@ define([
     '/common/wire.js',
     '/common/flat-dom.js',
     '/common/media-tag.js',
+
+    '/bower_components/tweetnacl/nacl-fast.min.js',
 ], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
+    var Nacl = window.nacl;
 
     var assertions = 0;
     var failed = false;
@@ -295,6 +298,18 @@ define([
             secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
             !secret.hashData.present);
     }, "test support for ugly tracking query paramaters in url");
+
+    assert(function (cb) {
+        var href = 'https://cryptpad.fr/block/pe/pewpewpewpewpew';
+        var key = Nacl.randomBytes(32);
+
+        var hash = Hash.createBlockHash(href, key);
+
+        var parsed = Hash.parseBlockHash(hash);
+
+        cb(parsed && href === parsed.href &&
+            parsed.keys.symmetric.length === key.length);
+    }, 'parse a block hash');
 
     assert(function (cb) {
         try {

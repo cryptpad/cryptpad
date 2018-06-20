@@ -1380,8 +1380,7 @@ var createLoginBlockPath = function (Env, publicKey) {
 };
 
 var writeLoginBlock = function (Env, msg, cb) {
-    console.log(msg); // XXX
-
+    //console.log(msg);
     var publicKey = msg[0];
     var signature = msg[1];
     var block = msg[2];

@@ -137,17 +137,15 @@ define([], function () {
         else if (bytes >= oneMegabyte) { return 'MB'; }
     };
 
+    // given a path, asynchronously return an arraybuffer
     Util.fetch = function (src, cb) {
         var done = false;
-        var CB = function (err, res) {
-            if (done) { return; }
-            done = true;
-            cb(err, res);
-        };
+        var CB = Util.once(cb);
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", src, true);
         xhr.responseType = "arraybuffer";
+        xhr.onerror = function (err) { CB(err); };
         xhr.onload = function () {
             if (/^4/.test(''+this.status)) {
                 return CB('XHR_ERROR');
