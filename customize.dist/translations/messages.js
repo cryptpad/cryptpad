@@ -234,12 +234,10 @@ define(function () {
 
     out.historyText = "History";
     out.historyButton = "Display the document history";
-    out.history_next = "Go to the next version";
-    out.history_prev = "Go to the previous version";
-    out.history_goTo = "Go to the selected version";
-    out.history_close = "Back";
+    out.history_next = "Newer version";
+    out.history_prev = "Older version";
+    out.history_loadMore = "Load more history";
     out.history_closeTitle = "Close the history";
-    out.history_restore = "Restore";
     out.history_restoreTitle = "Restore the selected version of the document";
     out.history_restorePrompt = "Are you sure you want to replace the current version of the document by the displayed one?";
     out.history_restoreDone = "Document restored";
@@ -606,6 +604,15 @@ define(function () {
     out.settings_ownDriveHint = "Migrating your drive to the new version will give you access to new features..."; // XXX
     out.settings_ownDriveButton = "Migrate"; // XXX
     out.settings_ownDriveConfirm = "Are you sure?"; // XXX
+
+    out.settings_changePasswordTitle = "Change your password"; // XXX
+    out.settings_changePasswordHint = "Change your account's password without losing its data. You have to enter your existing password once, and the new password you want twice.<br>" +
+                                      "<b>We can't reset your password if you forget it so be very careful!</b>"; // XXX
+    out.settings_changePasswordButton = "Change password"; // XXX
+    out.settings_changePasswordCurrent = "Existing password"; // XXX
+    out.settings_changePasswordNew = "New password"; // XXX
+    out.settings_changePasswordNewConfirm = "Confirm new password"; // XXX
+    out.settings_changePasswordConfirm = "Are you sure?"; // XXX
 
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";

@@ -9,8 +9,10 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
+    '/common/outer/login-block.js', // XXX HACK
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -27,8 +29,10 @@ define([
     Hash,
     Messages,
     h,
+    Cred,
     AppConfig,
-    ApiConfig
+    ApiConfig,
+    Block // XXX HACK
     )
 {
     var saveAs = window.saveAs;
@@ -376,12 +380,31 @@ define([
 
         var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element'});
 
-        $('<span>', {'class': 'label'}).text("TODO Change your password").appendTo($div); // XXX
+        $('<span>', {'class': 'label'}).text(Messages.settings_changePasswordTitle).appendTo($div);
 
         $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .append("TODO").appendTo($div); // XXX
+            .append(Messages.settings_changePasswordHint).appendTo($div);
 
         // var publicKey = privateData.edPublic;
+
+        var form = h('div', [
+            UI.passwordInput({
+                id: 'cp-settings-change-password-current',
+                placeholder: Messages.settings_changePasswordCurrent
+            }, true),
+            h('br'),
+            UI.passwordInput({
+                id: 'cp-settings-change-password-new',
+                placeholder: Messages.settings_changePasswordNew
+            }, true),
+            UI.passwordInput({
+                id: 'cp-settings-change-password-new2',
+                placeholder: Messages.settings_changePasswordNewConfirm
+            }, true),
+            h('button.btn.btn-primary', Messages.settings_changePasswordButton)
+        ]);
+
+        $(form).appendTo($div);
 
         var updateBlock = function (data, cb) {
             sframeChan.query('Q_WRITE_LOGIN_BLOCK', data, function (err, obj) {
@@ -390,7 +413,83 @@ define([
             });
         };
 
-        updateBlock = updateBlock; // jshint..
+        var removeBlock = function (data, cb) {
+            sframeChan.query('Q_REMOVE_LOGIN_BLOCK', data, function (err, obj) {
+                if (err || obj.error) { return void cb ({error: err || obj.error}); }
+                cb (obj);
+            });
+        };
+
+
+        // XXX
+        if (false) { // STUBBED, just for development purposes
+            console.error("TRYING TO WRITE A BLOCK");
+
+            var keys = Block.genkeys(Block.seed());
+            var data = Block.serialize(JSON.stringify({
+                a: 5,
+                b: 6,
+                User_hash: "XXX", /// TODO encode newly derived User_hash here
+            }), keys);
+
+            updateBlock(data, function (err, thing) {
+                console.log(err, thing);
+
+                console.log(Block.getBlockHash(keys));
+
+                return;
+                removeBlock(Block.remove(keys), function (err, obj) {
+                    console.log(err, obj);
+                });
+            });
+        }
+
+        var todo = function () {
+            var oldPassword = $(form).find('#cp-settings-change-password-current').val();
+            var newPassword = $(form).find('#cp-settings-change-password-new').val();
+            var newPasswordConfirm = $(form).find('#cp-settings-change-password-new2').val();
+
+            /* basic validation */
+            if (!Cred.isLongEnoughPassword(newPassword)) {
+                var warning = Messages._getKey('register_passwordTooShort', [
+                    Cred.MINIMUM_PASSWORD_LENGTH
+                ]);
+                return void UI.alert(warning);
+            }
+
+            if (newPassword !== newPasswordConfirm) {
+                UI.alert(Messages.register_passwordsDontMatch);
+                return;
+            }
+
+            UI.confirm(Messages.settings_changePasswordConfirm,
+            function (yes) {
+                if (!yes) { return; }
+                // TODO
+                console.log(oldPassword, newPassword, newPasswordConfirm);
+            }, {
+                ok: Messages.register_writtenPassword,
+                cancel: Messages.register_cancel,
+                cancelClass: 'safe',
+                okClass: 'danger',
+                reverseOrder: true,
+                done: function ($dialog) {
+                    $dialog.find('> div').addClass('half');
+                },
+            }, true);
+        };
+
+        $(form).find('button').click(function () {
+            todo();
+        });
+        $(form).find('input').keydown(function (e) {
+            // Save on Enter
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                todo();
+            }
+        });
 
         return $div;
     };

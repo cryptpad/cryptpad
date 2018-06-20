@@ -474,6 +474,43 @@ Version 1
             '/' + curvePublic.replace(/\//g, '-') + '/';
     };
 
+    // XXX consider putting Block functions in /common/outer/login-block.js
+    Hash.createBlockHash = function (href, key) {
+        if (typeof(href) !== 'string') { return; }
+        if (!key instanceof Uint8Array) { return; }
+
+        // TODO verify inputs
+        try { return href + '#' + Nacl.util.encodeBase64(key); }
+        catch (e) { return; }
+    };
+
+    var decodeSafeB64 = function (b64) {
+        try {
+            return Nacl.util.decodeBase64(b64.replace(/\-/g, '/'));
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+    };
+
+    Hash.parseBlockHash = function (hash) {
+        if (typeof(hash) !== 'string') { return; }
+        var parts = hash.split('#');
+        if (parts.length !== 2) { return; }
+
+        try {
+            return {
+                href: parts[0],
+                keys: {
+                    symmetric: decodeSafeB64(parts[1]),
+                }
+            };
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+    };
+
     // Create untitled documents when no name is given
     var getLocaleDate = function () {
         if (window.Intl && window.Intl.DateTimeFormat) {

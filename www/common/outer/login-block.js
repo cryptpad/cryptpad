@@ -1,7 +1,8 @@
 define([
     '/common/common-util.js',
+    '/api/config',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function (Util) {
+], function (Util, ApiConfig) {
     var Nacl = window.nacl;
 
     var Block = {};
@@ -30,9 +31,11 @@ define([
         var symmetric = seed.subarray(Nacl.sign.seedLength,
             Nacl.sign.seedLength + Nacl.secretbox.keyLength);
 
+        console.log("symmetric key: ", Nacl.util.encodeBase64(symmetric));
+
         return {
             sign: Nacl.sign.keyPair.fromSeed(signSeed), // 32 bytes
-            symmetric: symmetric,
+            symmetric: symmetric, // 32 bytes ...
         };
     };
 
@@ -51,8 +54,15 @@ define([
     Block.decrypt = function (u8_content, keys) {
         // version is currently ignored since there is only one
         var nonce = u8_content.subarray(1, 1 + Nacl.secretbox.nonceLength);
-        var box = content.subarray(1 + Nacl.secretbox.nonceLength);
-        return Nacl.secretbox.open(box, nonce, keys.symmetric);
+        var box = u8_content.subarray(1 + Nacl.secretbox.nonceLength);
+
+        var plaintext = Nacl.secretbox.open(box, nonce, keys.symmetric);
+        try {
+            return JSON.parse(Nacl.util.encodeUTF8(plaintext));
+        } catch (e) {
+            console.error(e);
+            return;
+        }
     };
 
     // (Uint8Array block) => signature
@@ -84,6 +94,19 @@ define([
             publicKey: Nacl.util.encodeBase64(keys.sign.publicKey),
             signature: Nacl.util.encodeBase64(sig),
         };
+    };
+
+    // FIXME don't spread the functions below across this file and common-hash
+    // find a permanent home for these hacks
+    var urlSafeB64 = function (u8) {
+        return Nacl.util.encodeBase64(u8).replace(/\//g, '-');
+    };
+
+    Block.getBlockHash = function (keys) {
+        var publicKey = urlSafeB64(keys.sign.publicKey);
+        var relative = 'block/' + publicKey.slice(0, 2) + '/' +  publicKey; // XXX FIXME use configurable path from /api/config
+        var symmetric = urlSafeB64(keys.symmetric);
+        return ApiConfig.httpUnsafeOrigin + relative + '#' + symmetric;
     };
 
     return Block;

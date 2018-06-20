@@ -8,11 +8,12 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
+    '/common/outer/login-block.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, Channel,
+            Messaging, Constants, Feedback, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -474,7 +475,7 @@ define([
                     if (typeof(meta) === "object") {
                         meta.defaultTitle = meta.title || meta.defaultTitle;
                         delete meta.users;
-                        delete meta.title;
+                        meta.title = "";
                     }
                     val = JSON.stringify(parsed);
                 } catch (e) {
@@ -502,6 +503,13 @@ define([
 
         if (typeof (data.title) !== "string") { return cb('Missing title'); }
         if (data.title.trim() === "") { data.title = Hash.getDefaultName(parsed); }
+
+        if (common.initialPath) {
+            if (!data.path) {
+                data.path = common.initialPath;
+                delete common.initialPath;
+            }
+        }
 
         postMessage("SET_PAD_TITLE", data, function (obj) {
             if (obj && obj.error) {
@@ -764,6 +772,9 @@ define([
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
     };
+    common.getHistoryRange = function (data, cb) {
+        postMessage("GET_HISTORY_RANGE", data, cb);
+    };
 
     common.getShareHashes = function (secret, cb) {
         var hashes;
@@ -949,7 +960,46 @@ define([
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }
+
         }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+
+            if (blockHash) {
+                console.log(blockHash);
+                var parsed = Hash.parseBlockHash(blockHash);
+
+                if (typeof(parsed) !== 'object') {
+                    console.error("Failed to parse blockHash");
+                    console.log(parsed);
+                    return;
+                } else {
+                    console.log(parsed);
+                }
+                Util.fetch(parsed.href, waitFor(function (err, arraybuffer) {
+                    if (err) { return void console.log(err); }
+
+                    // use the results to load your user hash and
+                    // put your userhash into localStorage
+                    try {
+                        var block_info = Block.decrypt(arraybuffer, parsed.keys);
+                        if (block_info[Constants.userHashKey]) { LocalStore.setUserHash(block_info[Constants.userHashKey]); }
+                    } catch (e) {
+                        console.error(e);
+                        return void console.error("failed to decrypt or decode block content");
+                    }
+                }));
+            } else {
+                // XXX debugging
+                console.error("NO BLOCK HASH");
+            }
+        }).nThen(function (waitFor) {
+            // XXX debugging
+            if (LocalStore.getUserHash()) {
+                console.log('User_hash detected');
+            } else {
+                console.log("User_hash not detected");
+            }
+
             var cfg = {
                 init: true,
                 //query: onMessage, // TODO temporary, will be replaced by a webworker channel
@@ -961,7 +1011,7 @@ define([
                 driveEvents: rdyCfg.driveEvents // Boolean
             };
             if (sessionStorage[Constants.newPadPathKey]) {
-                cfg.initialPath = sessionStorage[Constants.newPadPathKey];
+                common.initialPath = sessionStorage[Constants.newPadPathKey];
                 delete sessionStorage[Constants.newPadPathKey];
             }
 
