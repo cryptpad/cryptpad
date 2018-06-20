@@ -475,7 +475,7 @@ define([
                     if (typeof(meta) === "object") {
                         meta.defaultTitle = meta.title || meta.defaultTitle;
                         delete meta.users;
-                        delete meta.title;
+                        meta.title = "";
                     }
                     val = JSON.stringify(parsed);
                 } catch (e) {
@@ -503,6 +503,13 @@ define([
 
         if (typeof (data.title) !== "string") { return cb('Missing title'); }
         if (data.title.trim() === "") { data.title = Hash.getDefaultName(parsed); }
+
+        if (common.initialPath) {
+            if (!data.path) {
+                data.path = common.initialPath;
+                delete common.initialPath;
+            }
+        }
 
         postMessage("SET_PAD_TITLE", data, function (obj) {
             if (obj && obj.error) {
@@ -698,6 +705,9 @@ define([
 
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
+    };
+    common.getHistoryRange = function (data, cb) {
+        postMessage("GET_HISTORY_RANGE", data, cb);
     };
 
     common.getShareHashes = function (secret, cb) {
@@ -935,7 +945,7 @@ define([
                 driveEvents: rdyCfg.driveEvents // Boolean
             };
             if (sessionStorage[Constants.newPadPathKey]) {
-                cfg.initialPath = sessionStorage[Constants.newPadPathKey];
+                common.initialPath = sessionStorage[Constants.newPadPathKey];
                 delete sessionStorage[Constants.newPadPathKey];
             }
 

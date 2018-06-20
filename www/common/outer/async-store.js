@@ -1110,10 +1110,13 @@ define([
                 }
             };
             var msgs = [];
+            var completed = false;
             var onMsg = function (msg) {
+                if (completed) { return; }
                 var parsed = parse(msg);
                 if (parsed[0] === 'FULL_HISTORY_END') {
                     cb(msgs);
+                    completed = true;
                     return;
                 }
                 if (parsed[0] !== 'FULL_HISTORY') { return; }
@@ -1130,6 +1133,63 @@ define([
             };
             network.on('message', onMsg);
             network.sendto(hkn, JSON.stringify(['GET_FULL_HISTORY', data.channel, data.validateKey]));
+        };
+
+        Store.getHistoryRange = function (clientId, data, cb) {
+            var network = store.network;
+            var hkn = network.historyKeeper;
+            var parse = function (msg) {
+                try {
+                    return JSON.parse(msg);
+                } catch (e) {
+                    return null;
+                }
+            };
+            var msgs = [];
+            var first = true;
+            var fullHistory = false;
+            var completed = false;
+            var lastKnownHash;
+            var txid = Util.uid();
+
+            var onMsg = function (msg) {
+                if (completed) { return; }
+                var parsed = parse(msg);
+                if (parsed[1] !== txid) { console.log('bad txid'); return; }
+                if (parsed[0] === 'HISTORY_RANGE_END') {
+                    cb({
+                        messages: msgs,
+                        isFull: fullHistory,
+                        lastKnownHash: lastKnownHash
+                    });
+                    completed = true;
+                    return;
+                }
+                if (parsed[0] !== 'HISTORY_RANGE') { return; }
+                if (parsed[2] && parsed[1].validateKey) { // Metadata
+                    return;
+                }
+                if (parsed[2][3] !== data.channel) { return; }
+                msg = parsed[2][4];
+                if (msg) {
+                    if (first) {
+                        // If the first message if not a checkpoint, it means it is the first
+                        // message of the pad, so we have the full history!
+                        if (!/^cp\|/.test(msg)) { fullHistory = true; }
+                        lastKnownHash = msg.slice(0,64);
+                        first = false;
+                    }
+                    msg = msg.replace(/cp\|(([A-Za-z0-9+\/=]+)\|)?/, '');
+                    msgs.push(msg);
+                }
+            };
+
+            network.on('message', onMsg);
+            network.sendto(hkn, JSON.stringify(['GET_HISTORY_RANGE', data.channel, {
+                from: data.lastKnownHash,
+                cpCount: 2,
+                txid: txid
+            }]));
         };
 
         // Drive

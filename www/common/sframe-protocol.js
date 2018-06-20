@@ -90,6 +90,7 @@ define({
     // Request the full history from the server when the users clicks on the history button.
     // Callback is called when the FULL_HISTORY_END message is received in the outside.
     'Q_GET_FULL_HISTORY': true,
+    'Q_GET_HISTORY_RANGE': true,
     // When a (full) history message is received from the server.
     'EV_RT_HIST_MESSAGE': true,
 
