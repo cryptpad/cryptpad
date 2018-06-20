@@ -600,6 +600,15 @@ define(function () {
     out.settings_templateSkip = "Skip the template selection modal";
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
+    out.settings_changePasswordTitle = "Change your password"; // XXX
+    out.settings_changePasswordHint = "Change your account's password without losing its data. You have to enter your existing password once, and the new password you want twice.<br>" +
+                                      "<b>We can't reset your password if you forget it so be very careful!</b>"; // XXX
+    out.settings_changePasswordButton = "Change password"; // XXX
+    out.settings_changePasswordCurrent = "Existing password"; // XXX
+    out.settings_changePasswordNew = "New password"; // XXX
+    out.settings_changePasswordNewConfirm = "Confirm new password"; // XXX
+    out.settings_changePasswordConfirm = "Are you sure?"; // XXX
+
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";
     out.upload_modal_filename = "File name (extension <em>{0}</em> added automatically)";
