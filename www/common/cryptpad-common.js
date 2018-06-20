@@ -691,6 +691,72 @@ define([
         });
     };
 
+    common.ownUserDrive = function (Crypt, edPublic, cb) {
+        var hash = LocalStore.getUserHash();
+        //var href = '/drive/#' + hash;
+        var secret = Hash.getSecrets('drive', hash);
+        var newHash, newHref, newSecret;
+        Nthen(function (waitFor) {
+            // Check if our drive is already owned
+            common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
+                if (err || obj.error) { return; }
+                if (obj.owners && Array.isArray(obj.owners) &&
+                    obj.owners.indexOf(edPublic) !== -1) {
+                    waitFor.abort();
+                    cb({
+                        error: 'ALREADY_OWNED'
+                    });
+                }
+            }));
+        }).nThen(function (waitFor) {
+            waitFor.abort(); // TODO remove this line
+            // Create a new user hash
+            // Get the current content, store it in the new user file
+            // and make sure the new user drive is owned
+            newHash = Hash.createRandomHash('drive');
+            newHref = '/drive/#' + newHash;
+            newSecret = Hash.getSecrets('drive', newHash);
+
+            var optsPut = {
+                owners: [edPublic]
+            };
+
+            Crypt.get(hash, waitFor(function (err, val) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+                Crypt.put(newHash, val, waitFor(function (err) {
+                    if (err) {
+                        waitFor.abort();
+                        return void cb({ error: err });
+                    }
+                }), optsPut);
+            }));
+        }).nThen(function (waitFor) {
+            // Migration success
+            // TODO: Replace user hash in login block
+        }).nThen(function (waitFor) {
+            // New drive hash is in login block, unpin the old one and pin the new one
+            common.unpinPads([secret.channel], waitFor());
+            common.pinPads([newSecret.channel], waitFor());
+        }).nThen(function (waitFor) {
+            // Login block updated
+            // TODO: logout everywhere
+                // * It should wipe localStorage.User_hash, ...
+                // * login will get the new value from loginBlock and store it in localStorage
+                // * SharedWorker will reconnect with the new value in other locations
+            // TODO: then DISCONNECT here
+            common.logoutFromAll(waitFor(function () {
+                postMessage("DISCONNECT");
+            }));
+        }).nThen(function () {
+            // We have the new drive, with the new login block
+            // TODO: maybe reload automatically?
+            cb({ state: true });
+        });
+    };
+
     // Loading events
     common.loading = {};
     common.loading.onDriveEvent = Util.mkEvent();

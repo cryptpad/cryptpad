@@ -602,6 +602,11 @@ define(function () {
     out.settings_templateSkip = "Skip the template selection modal";
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
+    out.settings_ownDriveTitle = "Drive migration"; // XXX
+    out.settings_ownDriveHint = "Migrating your drive to the new version will give you access to new features..."; // XXX
+    out.settings_ownDriveButton = "Migrate"; // XXX
+    out.settings_ownDriveConfirm = "Are you sure?"; // XXX
+
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";
     out.upload_modal_filename = "File name (extension <em>{0}</em> added automatically)";

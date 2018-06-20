@@ -237,6 +237,9 @@ define({
     // Change pad password
     'Q_PAD_PASSWORD_CHANGE': true,
 
+    // Migrate drive to owned drive
+    'Q_OWN_USER_DRIVE': true,
+
     // Loading events to display in the loading screen
     'EV_LOADING_INFO': true,
     // Critical error outside the iframe during loading screen
