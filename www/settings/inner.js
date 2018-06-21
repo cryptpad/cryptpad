@@ -53,6 +53,7 @@ define([
             'cp-settings-thumbnails',
             'cp-settings-userfeedback',
             'cp-settings-change-password',
+            'cp-settings-migrate',
             'cp-settings-delete'
         ],
         'creation': [
@@ -490,6 +491,49 @@ define([
                 todo();
             }
         });
+
+        return $div;
+    };
+
+    create['migrate'] = function () {
+        // TODO
+        // if (!loginBlock) { return; }
+        // if (alreadyMigrated) { return; }
+        if (!common.isLoggedIn()) { return; }
+
+        var $div = $('<div>', { 'class': 'cp-settings-migrate cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_ownDriveTitle).appendTo($div);
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .append(Messages.settings_ownDriveHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $button = $('<button>', {'id': 'cp-settings-delete', 'class': 'btn btn-primary'})
+            .text(Messages.settings_ownDriveButton).appendTo($div);
+
+        $button.click(function () {
+            $spinner.show();
+            UI.confirm(Messages.settings_ownDriveConfirm, function (yes) {
+                if (!yes) { return; }
+                sframeChan.query("Q_OWN_USER_DRIVE", null, function (err, data) {
+                    if (err || data.error) {
+                        console.error(err || data.error);
+                        // TODO
+                        $spinner.hide();
+                        return;
+                    }
+                    // TODO: drive is migrated, autoamtic redirect from outer?
+                    $ok.show();
+                    $spinner.hide();
+                });
+            });
+        });
+
+        $spinner.hide().appendTo($div);
+        $ok.hide().appendTo($div);
 
         return $div;
     };

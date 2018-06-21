@@ -600,6 +600,11 @@ define(function () {
     out.settings_templateSkip = "Skip the template selection modal";
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
+    out.settings_ownDriveTitle = "Drive migration"; // XXX
+    out.settings_ownDriveHint = "Migrating your drive to the new version will give you access to new features..."; // XXX
+    out.settings_ownDriveButton = "Migrate"; // XXX
+    out.settings_ownDriveConfirm = "Are you sure?"; // XXX
+
     out.settings_changePasswordTitle = "Change your password"; // XXX
     out.settings_changePasswordHint = "Change your account's password without losing its data. You have to enter your existing password once, and the new password you want twice.<br>" +
                                       "<b>We can't reset your password if you forget it so be very careful!</b>"; // XXX
