@@ -741,7 +741,7 @@ define([
                     }
                 }), optsPut);
             }));
-        }).nThen(function (waitFor) {
+        }).nThen(function (/* waitFor */) {
             // Migration success
             // TODO: Replace user hash in login block
         }).nThen(function (waitFor) {
