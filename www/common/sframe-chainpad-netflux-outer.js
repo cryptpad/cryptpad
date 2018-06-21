@@ -112,8 +112,12 @@ define([], function () {
             }
         };
 
-        padRpc.onDisconnectEvent.reg(function () {
-            sframeChan.event('EV_RT_DISCONNECT');
+        padRpc.onDisconnectEvent.reg(function (permanent) {
+            sframeChan.event('EV_RT_DISCONNECT', permanent);
+        });
+
+        padRpc.onConnectEvent.reg(function (data) {
+            onOpen(data);
         });
 
         padRpc.onErrorEvent.reg(function (err) {
@@ -128,8 +132,6 @@ define([], function () {
             owners: owners,
             password: password,
             expire: expire
-        }, function(data) {
-            onOpen(data);
         });
     };
 

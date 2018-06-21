@@ -9,6 +9,7 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
 
@@ -27,6 +28,7 @@ define([
     Hash,
     Messages,
     h,
+    Cred,
     AppConfig,
     ApiConfig
     )
@@ -48,6 +50,7 @@ define([
             'cp-settings-resettips',
             'cp-settings-thumbnails',
             'cp-settings-userfeedback',
+            'cp-settings-change-password',
             'cp-settings-delete'
         ],
         'creation': [
@@ -312,6 +315,7 @@ define([
     };
 
     create['delete'] = function () {
+        if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-delete cp-sidebarlayout-element'});
 
         $('<span>', {'class': 'label'}).text(Messages.settings_deleteTitle).appendTo($div);
@@ -364,6 +368,95 @@ define([
 
         $spinner.hide().appendTo($div);
         $ok.hide().appendTo($div);
+
+        return $div;
+    };
+
+    create['change-password'] = function () {
+        if (!common.isLoggedIn()) { return; }
+
+        var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_changePasswordTitle).appendTo($div);
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .append(Messages.settings_changePasswordHint).appendTo($div);
+
+        // var publicKey = privateData.edPublic;
+
+        var form = h('div', [
+            UI.passwordInput({
+                id: 'cp-settings-change-password-current',
+                placeholder: Messages.settings_changePasswordCurrent
+            }, true),
+            h('br'),
+            UI.passwordInput({
+                id: 'cp-settings-change-password-new',
+                placeholder: Messages.settings_changePasswordNew
+            }, true),
+            UI.passwordInput({
+                id: 'cp-settings-change-password-new2',
+                placeholder: Messages.settings_changePasswordNewConfirm
+            }, true),
+            h('button.btn.btn-primary', Messages.settings_changePasswordButton)
+        ]);
+
+        $(form).appendTo($div);
+
+        var updateBlock = function (data, cb) {
+            sframeChan.query('Q_WRITE_LOGIN_BLOCK', data, function (err, obj) {
+                if (err || obj.error) { return void cb ({error: err || obj.error}); }
+                cb (obj);
+            });
+        };
+        updateBlock = updateBlock; // jshint..
+
+        var todo = function () {
+            var oldPassword = $(form).find('#cp-settings-change-password-current').val();
+            var newPassword = $(form).find('#cp-settings-change-password-new').val();
+            var newPasswordConfirm = $(form).find('#cp-settings-change-password-new2').val();
+
+            /* basic validation */
+            if (!Cred.isLongEnoughPassword(newPassword)) {
+                var warning = Messages._getKey('register_passwordTooShort', [
+                    Cred.MINIMUM_PASSWORD_LENGTH
+                ]);
+                return void UI.alert(warning);
+            }
+
+            if (newPassword !== newPasswordConfirm) {
+                UI.alert(Messages.register_passwordsDontMatch);
+                return;
+            }
+
+            UI.confirm(Messages.settings_changePasswordConfirm,
+            function (yes) {
+                if (!yes) { return; }
+                // TODO
+                console.log(oldPassword, newPassword, newPasswordConfirm);
+            }, {
+                ok: Messages.register_writtenPassword,
+                cancel: Messages.register_cancel,
+                cancelClass: 'safe',
+                okClass: 'danger',
+                reverseOrder: true,
+                done: function ($dialog) {
+                    $dialog.find('> div').addClass('half');
+                },
+            }, true);
+        };
+
+        $(form).find('button').click(function () {
+            todo();
+        });
+        $(form).find('input').keydown(function (e) {
+            // Save on Enter
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                todo();
+            }
+        });
 
         return $div;
     };

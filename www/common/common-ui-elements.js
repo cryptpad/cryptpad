@@ -18,8 +18,10 @@ define([
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
-    if (MediaTag && MediaTag.PdfPlugin) {
-        MediaTag.PdfPlugin.viewer = '/common/pdfjs/web/viewer.html';
+    if (MediaTag) {
+        MediaTag.setDefaultConfig('pdf', {
+            viewer: '/common/pdfjs/web/viewer.html'
+        });
     }
 
     UIElements.updateTags = function (common, href) {
@@ -134,12 +136,6 @@ define([
         $d.append(UI.dialog.selectable(owners, {
             id: 'cp-app-prop-owners',
         }));
-        /* TODO
-        if (owned) {
-            var $deleteOwned = $('button').text(Messages.fc_delete_owned).click(function () {
-            });
-            $d.append($deleteOwned);
-        }*/
 
         var expire = Messages.creation_expireFalse;
         if (data.expire && typeof (data.expire) === "number") {
@@ -151,11 +147,12 @@ define([
             id: 'cp-app-prop-expire',
         }));
 
-        if (typeof data.password !== "undefined") {
+        var hasPassword = typeof data.password !== "undefined";
+        if (hasPassword) {
             $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
                 .appendTo($d);
             var password = UI.passwordInput({
-                id: 'cp-app-prop-expire',
+                id: 'cp-app-prop-password',
                 readonly: 'readonly'
             });
             var $pwInput = $(password).find('.cp-password-input');
@@ -163,6 +160,51 @@ define([
                 $pwInput[0].select();
             });
             $d.append(password);
+        }
+
+        var parsed = Hash.parsePadUrl(data.href);
+        if (owned && parsed.hashData.type === 'pad') {
+            var sframeChan = common.getSframeChannel();
+            var changePwTitle = Messages.properties_changePassword;
+            var changePwConfirm = Messages.properties_confirmChange;
+            if (!hasPassword) {
+                changePwTitle = Messages.properties_addPassword;
+                changePwConfirm = Messages.properties_confirmNew;
+            }
+            $('<label>', {'for': 'cp-app-prop-change-password'})
+                .text(changePwTitle).appendTo($d);
+            var newPassword = UI.passwordInput({
+                id: 'cp-app-prop-change-password',
+                style: 'flex: 1;'
+            });
+            var passwordOk = h('button', Messages.properties_changePasswordButton);
+            var changePass = h('span.cp-password-container', [
+                newPassword,
+                passwordOk
+            ]);
+            $(passwordOk).click(function () {
+                UI.confirm(changePwConfirm, function (yes) {
+                    if (!yes) { return; }
+                    sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                        href: data.href,
+                        password: $(newPassword).val()
+                    }, function (err, data) {
+                        if (err || data.error) {
+                            return void UI.alert(Messages.properties_passwordError);
+                        }
+                        UI.findOKButton().click();
+                        if (data.warning) {
+                            return void UI.alert(Messages.properties_passwordWarning, function () {
+                                common.gotoURL(hasPassword ? undefined : data.href);
+                            }, {force: true});
+                        }
+                        return void UI.alert(Messages.properties_passwordSuccess, function () {
+                            common.gotoURL(hasPassword ? undefined : data.href);
+                        }, {force: true});
+                    });
+                });
+            });
+            $d.append(changePass);
         }
 
         cb(void 0, $d);
@@ -626,7 +668,6 @@ define([
                                 }
                             }
                             sframeChan.query('Q_SAVE_AS_TEMPLATE', {
-                                title: title,
                                 toSave: toSave
                             }, function () {
                                 UI.alert(Messages.templateSaved);
@@ -1035,52 +1076,6 @@ define([
 
     // Avatars
 
-    // Enable mediatags
-    $(window.document).on('decryption', function (e) {
-        var decrypted = e.originalEvent;
-        if (decrypted.callback) {
-            var cb = decrypted.callback;
-            cb(function (mediaObject) {
-                var root = mediaObject.element;
-                if (!root) { return; }
-
-                if (mediaObject.type === 'image') {
-                    $(root).data('blob', decrypted.blob);
-                }
-
-                if (mediaObject.type !== 'download') { return; }
-
-                var metadata = decrypted.metadata;
-
-                var title = '';
-                var size = 0;
-                if (metadata && metadata.name) {
-                    title = metadata.name;
-                }
-
-                if (decrypted.blob) {
-                    size = decrypted.blob.size;
-                }
-
-                var sizeMb = Util.bytesToMegabytes(size);
-
-                var $btn = $(root).find('button');
-                $btn.addClass('btn btn-success')
-                    .attr('type', 'download')
-                    .html(function () {
-                        var text = Messages.download_mt_button + '<br>';
-                        if (title) {
-                            text += '<b>' + Util.fixHTML(title) + '</b><br>';
-                        }
-                        if (size) {
-                            text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
-                        }
-                        return text;
-                    });
-            });
-        }
-    });
-
     UIElements.displayMediatagImage = function (Common, $tag, cb) {
         if (!$tag.length || !$tag.is('media-tag')) { return void cb('NOT_MEDIATAG'); }
         var observer = new MutationObserver(function(mutations) {
@@ -1110,7 +1105,9 @@ define([
             childList: true,
             characterData: false
         });
-        MediaTag($tag[0]);
+        MediaTag($tag[0]).on('error', function (data) {
+            console.error(data);
+        });
     };
 
     var emoji_patt = /([\uD800-\uDBFF][\uDC00-\uDFFF])/;

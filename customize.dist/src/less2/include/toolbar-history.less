@@ -5,23 +5,47 @@
         display: none;
         text-align: center;
         width: 100%;
+        padding: 10px 0;
+        align-items: center;
+        justify-content: center;
         * {
             font: @colortheme_app-font;
         }
-        .cp-toolbar-history-next {
-            display: inline-block;
-            vertical-align: middle;
-            margin: 20px;
+        .cp-history-filler {
+            flex: 1;
         }
-        .cp-toolbar-history-previous {
-            display: inline-block;
-            vertical-align: middle;
-            margin: 20px;
+        .cp-toolbar-history-close,
+        .cp-toolbar-history-revert {
+            background: white;
+            color: black;
+            //margin-top: 5px;
+            &:hover {
+                background-color: #e6e6e6;
+            }
+        }
+        .cp-toolbar-history-loadmore {
+            height: 100%;
+            color: black;
+            width: 25px;
+            position: absolute;
+            left: 0;
+            padding: 0;
+        }
+        .cp-toolbar-history-version {
+            position: absolute;
+            height: 25px;
+            line-height: 25px;
+            width: 100%;
+            text-align: center;
         }
         .cp-toolbar-history-goto {
             display: inline-block;
             vertical-align: middle;
             text-align: center;
+            flex: 1;
+            flex-basis: 80%;
+            min-width: 0;
+            max-width: 600px;
             input { width: 75px; }
         }
         .cp-toolbar-history-goto-input {
@@ -29,19 +53,35 @@
             margin-left: 5px;
             vertical-align: middle;
         }
+        .cp-toolbar-history-bar {
+            width: 100%;
+            background: white;
+            height: 25px;
+            margin: auto;
+            position: relative;
+        }
+        .cp-toolbar-history-pos-container {
+            width: ~"calc(100% - 2px)";
+            height: 25px;
+            position: relative;
+        }
+        @pos-color: #55FF55;
+        .cp-toolbar-history-pos {
+            width: 2px;
+            height: 25px;
+            background: @pos-color;
+            &:after {
+                content: '';
+                border: 6px solid transparent;
+                border-top-color: @pos-color;
+                margin-left: -5px;
+            }
+        }
         button {
             color: inherit;
             background-color: rgba(0,0,0,0.2);
             &:hover {
                 background-color: rgba(0,0,0,0.4);
-            }
-        }
-        .cp-toolbar-history-close {
-            background: white;
-            color: black;
-            margin-top: 5px;
-            &:hover {
-                background-color: #e6e6e6;
             }
         }
         .fa-spinner {

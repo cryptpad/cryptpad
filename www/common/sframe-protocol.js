@@ -74,6 +74,9 @@ define({
     // Get the user's pin limit, usage and plan
     'Q_PIN_GET_USAGE': true,
 
+    // Write/update the login block when the account password is changed
+    'Q_WRITE_LOGIN_BLOCK': true,
+
     // Check the pin limit to determine if we can store the pad in the drive or if we should.
     // display a warning
     'Q_GET_PIN_LIMIT_STATUS': true,
@@ -84,6 +87,7 @@ define({
     // Request the full history from the server when the users clicks on the history button.
     // Callback is called when the FULL_HISTORY_END message is received in the outside.
     'Q_GET_FULL_HISTORY': true,
+    'Q_GET_HISTORY_RANGE': true,
     // When a (full) history message is received from the server.
     'EV_RT_HIST_MESSAGE': true,
 
@@ -196,7 +200,6 @@ define({
 
     // Anonymous users can empty their drive and remove FS_hash from localStorage
     'EV_BURN_ANON_DRIVE': true,
-
     // Inner drive needs to send command and receive updates from the async store
     'Q_DRIVE_USEROBJECT': true,
     'Q_DRIVE_GETOBJECT': true,
@@ -214,6 +217,8 @@ define({
     // Notifications about connection and disconnection from the network
     'EV_NETWORK_DISCONNECT': true,
     'EV_NETWORK_RECONNECT': true,
+    // Reload on new version
+    'EV_NEW_VERSION': true,
 
     // Pad creation screen: create a pad with the selected attributes (owned, expire)
     'Q_CREATE_PAD': true,
@@ -224,16 +229,18 @@ define({
     // The exact protocol is defined in common/test.js
     'EV_TESTDATA': true,
 
-    // Critical error outside the iframe during loading screen
-    'EV_LOADING_ERROR': true,
-
     // Ask for the pad password when a pad is protected
     'EV_PAD_PASSWORD': true,
     'Q_PAD_PASSWORD_VALUE': true,
+    // Change pad password
+    'Q_PAD_PASSWORD_CHANGE': true,
 
     // Loading events to display in the loading screen
     'EV_LOADING_INFO': true,
+    // Critical error outside the iframe during loading screen
+    'EV_LOADING_ERROR': true,
 
     // Get all existing tags
     'Q_GET_ALL_TAGS': true,
+
 });

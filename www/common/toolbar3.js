@@ -420,7 +420,7 @@ define([
         var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
-            'class': 'fa fa-share-alt cp-toolbar-share-button',
+            'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
         var modal = UIElements.createShareModal({
@@ -449,7 +449,7 @@ define([
         var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
-            'class': 'fa fa-share-alt cp-toolbar-share-button',
+            'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
         var modal = UIElements.createFileShareModal({

@@ -79,10 +79,12 @@ define([
             evInfiniteSpinner.fire();
         }, 2000);
 
-        sframeChan.on('EV_RT_DISCONNECT', function () {
+        sframeChan.on('EV_RT_DISCONNECT', function (isPermanent) {
             isReady = false;
             chainpad.abort();
-            onConnectionChange({ state: false });
+            // Permanent flag is here to choose if we wnat to display
+            // "reconnecting" or "disconnected" in the toolbar state
+            onConnectionChange({ state: false, permanent: isPermanent });
         });
         sframeChan.on('EV_RT_ERROR', function (err) {
             isReady = false;

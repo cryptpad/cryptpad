@@ -11,9 +11,7 @@ define([
         var u8 = file.blob; // This is not a blob but a uint8array
         var metadata = file.metadata;
 
-        var owned = file.isOwned;
-// XXX
-owned = true;
+        var owned = file.owned;
 
         // if it exists, path contains the new pad location in the drive
         var path = file.path;

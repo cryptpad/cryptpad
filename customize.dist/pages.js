@@ -69,7 +69,7 @@ define([
                     footerCol(null, [
                         h('div.cp-bio-foot', [
                             h('p', Msg.main_footerText),
-                            //languageSelector()
+                            languageSelector()
                         ])
                     ], ''),
                     footerCol('footer_applications', [
@@ -95,7 +95,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v2.2.0 (Coati)")
+            h('div.cp-version-footer', "CryptPad v2.3.0 (Donkey)")
         ]);
     };
 
@@ -181,10 +181,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/AaronMacSween.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-1.cp-profile-det',[
                         h('h3', "Aaron MacSween"),
                         h('hr'),
                         setHTML(h('div#bioAaron'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance. <br/> He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.<br/>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.<br/>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>'),
@@ -232,10 +232,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/Catalin.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-1.cp-profile-det',[
                         h('h3', "Catalin Scripcariu"),
                         h('hr'),
                         setHTML(h('div#bioCatalin'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.<br/>At the beginning of 2017 he joined the XWiki, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>'),
@@ -271,113 +271,83 @@ define([
     Pages['/features.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.features_title)),
-                h('table#cp-features-table', [
-                    h('thead', h('tr', [
-                        h('th', Msg.features_feature),
-                        h('th', Msg.features_anon),
-                        h('th', Msg.features_registered),
-                        h('th', Msg.features_notes)
-                    ])),
-                    h('tbody', [
-                        h('tr', [
-                            h('td', Msg.features_f_pad),
-                            h('td.yes', '✔'),// u2714, u2715
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_pad_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_history),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_history_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_export),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_export_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_todo),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_viewFiles),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_drive),
-                            h('td.part', '~'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_drive_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_uploadFiles),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_embedFiles),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_multiple),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_multiple_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_logoutEverywhere),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_logoutEverywhere_notes || '')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_templates),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_templates_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_profile),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_profile_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_tags),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_tags_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_contacts),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_contacts_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_storage),
-                            h('td.no', Msg.features_f_storage_anon),
-                            setHTML(h('td.yes.left'), Msg.features_f_storage_registered),
-                            h('td')
-                        ]),
-                    ])
+            h('div.container-fluid.cp_cont_features',[
+                h('div.container',[
+                    h('center', h('h1', Msg.features_title)),
                 ]),
-                h('div#cp-features-register', [
-                    h('a', {
-                        href: '/register/'
-                    }, h('button.cp-features-register-button', 'Register for free'))
-                ])
+            ]),
+            h('div.container',[
+                h('div.row.cp-container.cp-features-web.justify-content-sm-center',[
+                    h('div.col-12.col-sm-6.cp-anon-user',[
+                        h('div.card',[
+                            h('div.card-body',[
+                                h('h3.text-center',Msg.features_anon)
+                            ]),
+                            h('ul.list-group.list-group-flush', [
+                                h('li.list-group-item.text-center', Msg.features_f_pad , [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_pad_notes}, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_history, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_history_notes }, h('i.fa.fa-question') )
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_export, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_export_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_todo),
+                                h('li.list-group-item.text-center', Msg.features_f_viewFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_drive),
+                                h('li.list-group-item.text-center', Msg.features_f_storage_anon),
+                            ]),
+                        ]),  
+                    ]),
+                    h('div.col-12.col-sm-6.cp-regis-user',[
+                        h('div.card',[
+                            h('div.card-body',[
+                                h('h3.text-center',Msg.features_registered)
+                            ]),
+                            h('ul.list-group.list-group-flush', [
+                                h('li.list-group-item.text-center', Msg.features_f_pad, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_pad_notes}, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_history, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_history_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_export, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_export_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_todo),
+                                h('li.list-group-item.text-center', Msg.features_f_viewFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_drive_full),
+                                h('li.list-group-item.text-center', Msg.features_f_uploadFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_embedFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_multiple, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_multiple_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_logoutEverywhere),
+                                h('li.list-group-item.text-center', Msg.features_f_templates, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_templates_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_profile, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_profile_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_tags, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_tags_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_contacts, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_contacts_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', setHTML(h('div'), Msg.features_f_storage_registered)),
+                            ]),
+                            h('div.card-body',[
+                                h('div#cp-features-register', [
+                                    h('a', {
+                                        href: '/register/'
+                                    }, h('button.cp-features-register-button', Msg.features_f_register))
+                                ]),
+                            ]),
+                        ]), 
+                    ]),
+                ]),
             ]),
             infopageFooter()
         ]);
@@ -386,25 +356,35 @@ define([
     Pages['/privacy.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.policy_title)),
-                h('h2', Msg.policy_whatweknow),
+            h('.container-fluid.cp-privacy-top', [
+                h('div.container',[
+                    h('center', h('h1', Msg.policy_title)),
+                ]),
+            ]),
+            h('div.container.cp-container.cp-privacy',[
+                h('h3', Msg.policy_whatweknow),
+                h('hr'),
                 setHTML(h('p'), Msg.policy_whatweknow_p1),
 
-                h('h2', Msg.policy_howweuse),
+                h('h3', Msg.policy_howweuse),
+                h('hr'),
                 h('p', Msg.policy_howweuse_p1),
                 h('p', Msg.policy_howweuse_p2),
 
-                h('h2', Msg.policy_whatwetell),
+                h('h3', Msg.policy_whatwetell),
+                h('hr'),
                 h('p', Msg.policy_whatwetell_p1),
 
-                h('h2', Msg.policy_links),
+                h('h3', Msg.policy_links),
+                h('hr'),
                 h('p', Msg.policy_links_p1),
 
-                h('h2', Msg.policy_ads),
+                h('h3', Msg.policy_ads),
+                h('hr'),
                 h('p', Msg.policy_ads_p1),
 
-                h('h2', Msg.policy_choices),
+                h('h3', Msg.policy_choices),
+                h('hr'),
                 h('p', Msg.policy_choices_open),
                 setHTML(h('p'), Msg.policy_choices_vpn),
             ]),
@@ -425,8 +405,10 @@ define([
                 var question = h('p.cp-faq-questions-q#' + hash);
                 $(question).click(function () {
                     if ($(answer).is(':visible')) {
+                        $(question).toggleClass('cp-active-faq');
                         return void $(answer).slideUp();
                     }
+                    $(question).toggleClass('cp-active-faq');
                     $(answer).slideDown();
                 });
                 questions.push(h('div.cp-faq-questions-items', [
@@ -445,11 +427,15 @@ define([
         }
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.faq_title)),
-                h('p.cp-faq-header', h('a.nav-item.nav-link', {
+            h('div.container-fluid.cp-faq', [
+                h('div.container',[
+                    h('center', h('h1', Msg.faq_title)),
+                ]),
+            ]),
+            h('div.container.cp-faq-ques-det',[
+                h('div.cp-faq-header.text-center', h('a.nav-item.nav-link', {
                     href: '/what-is-cryptpad.html'
-                }, Msg.faq_whatis)),
+                }, setHTML(h('h4'),Msg.faq_whatis))),
                 h('div.cp-faq-container', categories)
             ]),
             infopageFooter()
@@ -484,28 +470,28 @@ define([
                     h('div.col-12',
                         setHTML(h('h4.text-center'), Msg.main_about_p26)
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://twitter.com/cryptpad"}, 
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p22)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p23)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://riot.im/app/#/room/#cryptpad:matrix.org"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p24)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "mailto:research@xwiki.com"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p25)
@@ -585,13 +571,13 @@ define([
         var showingMore = false;
 
         var icons = [
-                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
-                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
-                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
-                [ 'poll', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
-                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'fa-calendar' ],
-                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
-                [ 'recent', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
+                [ 'pad', '/pad/', Msg.main_richTextPad, 'pad' ],
+                [ 'code', '/code/', Msg.main_codePad, 'code' ],
+                [ 'slide', '/slide/', Msg.main_slidePad, 'slide' ],
+                [ 'poll', '/poll/', Msg.main_pollPad, 'poll' ],
+                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'kanban' ],
+                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'whiteboard' ],
+                [ 'recent', '/drive/', Msg.main_localPads, 'drive' ]
             ].filter(function (x) {
                 return isAvailableType(x[1]);
             })
@@ -601,7 +587,7 @@ define([
                 return h('a', [
                     { href: x[1] },
                     h(s, [
-                        h('i.fa.' + x[3]),
+                        h('i.fa.' + AppConfig.applicationsIcon[x[3]]),
                         h('div.pad-button-text', [ h('h4', x[2]) ])
                     ])
                 ]);

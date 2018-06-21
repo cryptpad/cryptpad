@@ -143,12 +143,11 @@ define([
                 // or get it from the pad attributes
                 var needPassword = parsed.hashData && parsed.hashData.password;
                 if (needPassword) {
+                    // Check if we have a password, and check if it is correct (file exists).
+                    // It we don't have a correct password, display the password prompt.
+                    // Maybe the file has been deleted from the server or the password has been changed.
                     Cryptpad.getPadAttribute('password', waitFor(function (err, val) {
-                        if (val) {
-                            // We already know the password, use it!
-                            password = val;
-                            todo();
-                        } else {
+                        var askPassword = function (wrongPasswordStored) {
                             // Ask for the password and check if the pad exists
                             // If the pad doesn't exist, it means the password isn't correct
                             // or the pad has been deleted
@@ -162,7 +161,14 @@ define([
                                         cb(false);
                                     } else {
                                         todo();
-                                        correctPassword();
+                                        if (wrongPasswordStored) {
+                                            // Store the correct password
+                                            Cryptpad.setPadAttribute('password', password, function () {
+                                                correctPassword();
+                                            }, parsed.getUrl());
+                                        } else {
+                                            correctPassword();
+                                        }
                                         cb(true);
                                     }
                                 };
@@ -178,6 +184,19 @@ define([
                                 Cryptpad.isNewChannel(window.location.href, password, next);
                             });
                             sframeChan.event("EV_PAD_PASSWORD");
+                        };
+
+                        if (val) {
+                            password = val;
+                            Cryptpad.getFileSize(window.location.href, password, function (e, size) {
+                                if (size !== 0) {
+                                    return void todo();
+                                }
+                                // Wrong password or deleted file?
+                                askPassword(true);
+                            });
+                        } else {
+                            askPassword();
                         }
                     }), parsed.getUrl());
                     return;
@@ -267,6 +286,10 @@ define([
 
             Test.registerOuter(sframeChan);
 
+            Cryptpad.onNewVersionReconnect.reg(function () {
+                sframeChan.event("EV_NEW_VERSION");
+            });
+
             // Put in the following function the RPC queries that should also work in filepicker
             var addCommonRpc = function (sframeChan) {
                 sframeChan.on('Q_ANON_RPC_MESSAGE', function (data, cb) {
@@ -312,7 +335,8 @@ define([
                 var title = currentTabTitle.replace(/\{title\}/g, currentTitle || 'CryptPad');
                 document.title = title;
             };
-            sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newTitle, cb) {
+            sframeChan.on('Q_SET_PAD_TITLE_IN_DRIVE', function (newData, cb) {
+                var newTitle = newData.title || newData.defaultTitle;
                 currentTitle = newTitle;
                 setDocumentTitle();
                 var data = {
@@ -394,6 +418,24 @@ define([
                         // We don't need it since the message is already validated serverside by hk
                         return crypto.decrypt(msg, true, true);
                     }));
+                });
+            });
+            sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
+                var crypto = Crypto.createEncryptor(secret.keys);
+                Cryptpad.getHistoryRange({
+                    channel: secret.channel,
+                    validateKey: secret.keys.validateKey,
+                    lastKnownHash: data.lastKnownHash
+                }, function (data) {
+                    cb({
+                        isFull: data.isFull,
+                        messages: data.messages.map(function (msg) {
+                            // The 3rd parameter "true" means we're going to skip signature validation.
+                            // We don't need it since the message is already validated serverside by hk
+                            return crypto.decrypt(msg, true, true);
+                        }),
+                        lastKnownHash: data.lastKnownHash
+                    });
                 });
             });
 
@@ -614,6 +656,15 @@ define([
                 });
             });
 
+            sframeChan.on('Q_PAD_PASSWORD_CHANGE', function (data, cb) {
+                var href = data.href || window.location.href;
+                Cryptpad.changePadPassword(Cryptget, href, data.password, edPublic, cb);
+            });
+
+            sframeChan.on('Q_WRITE_LOGIN_BLOCK', function (data, cb) {
+                Cryptpad.writeLoginBlock(data, cb);
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
@@ -699,6 +750,9 @@ define([
                     readOnly: readOnly,
                     crypto: Crypto.createEncryptor(secret.keys),
                     onConnect: function () {
+                        var href = parsed.getUrl();
+                        // Add friends requests handlers when we have the final href
+                        Cryptpad.messaging.addHandlers(href);
                         if (window.location.hash && window.location.hash !== '#') {
                             window.location = parsed.getUrl({
                                 present: parsed.hashData.present,

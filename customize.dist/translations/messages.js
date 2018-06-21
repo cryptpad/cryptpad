@@ -40,6 +40,8 @@ define(function () {
                         'Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.';
     out.errorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
     out.errorRedirectToHome = 'Press <em>Esc</em> to be redirected to your CryptDrive.';
+    out.newVersionError = "A new version of CryptPad is available.<br>" +
+                          "<a href='#'>Reload</a> to use the new version, or press escape to access your content in <b>offline mode</b>.";
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -232,12 +234,10 @@ define(function () {
 
     out.historyText = "History";
     out.historyButton = "Display the document history";
-    out.history_next = "Go to the next version";
-    out.history_prev = "Go to the previous version";
-    out.history_goTo = "Go to the selected version";
-    out.history_close = "Back";
+    out.history_next = "Newer version";
+    out.history_prev = "Older version";
+    out.history_loadMore = "Load more history";
     out.history_closeTitle = "Close the history";
-    out.history_restore = "Restore";
     out.history_restoreTitle = "Restore the selected version of the document";
     out.history_restorePrompt = "Are you sure you want to replace the current version of the document by the displayed one?";
     out.history_restoreDone = "Document restored";
@@ -600,6 +600,15 @@ define(function () {
     out.settings_templateSkip = "Skip the template selection modal";
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
+    out.settings_changePasswordTitle = "Change your password"; // XXX
+    out.settings_changePasswordHint = "Change your account's password without losing its data. You have to enter your existing password once, and the new password you want twice.<br>" +
+                                      "<b>We can't reset your password if you forget it so be very careful!</b>"; // XXX
+    out.settings_changePasswordButton = "Change password"; // XXX
+    out.settings_changePasswordCurrent = "Existing password"; // XXX
+    out.settings_changePasswordNew = "New password"; // XXX
+    out.settings_changePasswordNewConfirm = "Confirm new password"; // XXX
+    out.settings_changePasswordConfirm = "Are you sure?"; // XXX
+
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";
     out.upload_modal_filename = "File name (extension <em>{0}</em> added automatically)";
@@ -620,7 +629,7 @@ define(function () {
     out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
     out.download_mt_button = "Download";
-    out.download_resourceNotAvailable = "The requested resource was not available...";
+    out.download_resourceNotAvailable = "The requested resource was not available... Press Esc to continue.";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Describe your task...";
@@ -678,6 +687,7 @@ define(function () {
     out.main_slidePad = 'Markdown Presentation';
     out.main_pollPad = 'Poll or Schedule';
     out.main_whiteboardPad = 'Whiteboard';
+    out.main_kanbanPad = 'Kanban';
     out.main_localPads = 'Local Pads';
     out.main_yourCryptDrive = 'Your CryptDrive';
     out.main_footerText = "With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.";
@@ -746,8 +756,8 @@ define(function () {
     out.features_f_history = "History";
     out.features_f_history_notes = "View and restore any version of your pads";
     out.features_f_todo = "Create a TODO-list";
-    out.features_f_drive = "CryptDrive";
-    out.features_f_drive_notes = "Basic features for anonymous users";
+    out.features_f_drive = "Limited CryptDrive functionality";
+    out.features_f_drive_full = "Complete CryptDrive functionality";
     out.features_f_export = "Export/Import";
     out.features_f_export_notes = "For pads and CryptDrive";
     out.features_f_viewFiles = "View files";
@@ -767,14 +777,15 @@ define(function () {
     out.features_f_contacts = "Contacts application";
     out.features_f_contacts_notes = "Add contacts and chat with them in an encrypted session";
     out.features_f_storage = "Storage";
-    out.features_f_storage_anon = "Pads deleted after 3 months";
+    out.features_f_storage_anon = "Pads are deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
+    out.features_f_register = "Register for free";
 
     // faq.html
 
     out.faq_link = "FAQ";
     out.faq_title = "Frequently Asked Questions";
-    out.faq_whatis = "What is CryptPad?";
+    out.faq_whatis = "What is <span class='cp-brand-font'>CryptPad</span>?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Keywords',
@@ -1151,12 +1162,22 @@ define(function () {
     out.creation_newPadModalDescriptionAdvanced = "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
 
-    // Password prompt on the loadind screen
-    out.password_info = "The pad you're tyring to open is protected with a password. Enter the correct password to access its content.";
+    // Password prompt on the loading screen
+    out.password_info = "The pad you're trying to open is protected with a password. Enter the correct password to access its content.";
     out.password_error = "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.";
     out.password_placeholder = "Type the password here...";
     out.password_submit = "Submit";
     out.password_show = "Show";
+
+    // Change password in pad properties
+    out.properties_addPassword = "Add a password";
+    out.properties_changePassword = "Change the password";
+    out.properties_confirmNew = "Are you sure? Adding a password will change this pad's URL. Users without the password will lose access to this pad";
+    out.properties_confirmChange = "Are you sure? Users without the new password will lose access to this pad";
+    out.properties_passwordError = "An error occured while trying to change the password. Please try again.";
+    out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your acces rights.";
+    out.properties_passwordSuccess = "The password was successfully changed.<br>Press OK to reload and update your access rights.";
+    out.properties_changePasswordButton = "Submit";
 
     // New share modal
     out.share_linkCategory = "Share link";

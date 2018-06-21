@@ -144,13 +144,15 @@ define([
     };
 
     dialog.frame = function (content) {
-        return h('div.alertify', {
+        return $(h('div.alertify', {
             tabindex: 1,
         }, [
             h('div.dialog', [
                 h('div', content),
             ])
-        ]);
+        ])).click(function (e) {
+            e.stopPropagation();
+        })[0];
     };
 
     /**
@@ -624,6 +626,7 @@ define([
                     h('p.cp-loading-progress-drive'),
                     h('p.cp-loading-progress-pad')
                 ]);
+                $(progress).hide();
                 $loading.find('.cp-loading-container').append(progress);
             } else if (config.noProgress) {
                 $loading.find('.cp-loading-progress').remove();
@@ -645,6 +648,7 @@ define([
     UI.updateLoadingProgress = function (data, isDrive) {
         var $loading = $('#' + LOADING);
         if (!$loading.length || loading.error) { return; }
+        $loading.find('.cp-loading-progress').show();
         var $progress;
         if (isDrive) {
             // Drive state

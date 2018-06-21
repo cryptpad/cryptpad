@@ -896,13 +896,13 @@ var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
         Fs.unlink(blobPath, w(function (e) {
             if (e) {
                 w.abort();
-                return void cb(e);
+                return void cb(e.code);
             }
         }));
     }).nThen(function () {
         // Delete the proof of ownership
         Fs.unlink(ownPath, function (e) {
-            cb(e);
+            cb(e && e.code);
         });
     });
 };
@@ -1204,7 +1204,7 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
                 return void cb();
             } else {
                 // it failed in an unexpected way. log it
-                WARN(e, 'ownedUploadComplete');
+                WARN('ownedUploadComplete', e);
                 return void cb(e.code);
             }
         });
@@ -1221,13 +1221,13 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
         Mkdirp(filePath, w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
-                return void cb(e);
+                return void cb(e.code);
             }
         }));
         Mkdirp(ownPath, w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
-                return void cb(e);
+                return void cb(e.code);
             }
         }));
     }).nThen(function (w) {
@@ -1254,12 +1254,11 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
 
         // flow is dumb and I need to guard against this which will never happen
         /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
-        Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
+        Fs.rename(oldPath, finalPath, w(function (e) {
             if (e) {
                 // Remove the ownership file
-                // XXX not needed if we have a cleanup script?
                 Fs.unlink(finalOwnPath, function (e) {
-                    WARN(e, 'Removing ownership file ownedUploadComplete');
+                    WARN('E_UNLINK_OWN_FILE', e);
                 });
                 w.abort();
                 return void cb(e.code);
