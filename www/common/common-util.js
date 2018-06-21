@@ -139,7 +139,6 @@ define([], function () {
 
     // given a path, asynchronously return an arraybuffer
     Util.fetch = function (src, cb) {
-        var done = false;
         var CB = Util.once(cb);
 
         var xhr = new XMLHttpRequest();

@@ -897,7 +897,6 @@ define([
 
         }).nThen(function (waitFor) {
             var blockHash = LocalStore.getBlockHash();
-
             if (blockHash) {
                 console.log(blockHash);
                 var parsed = Hash.parseBlockHash(blockHash);
@@ -922,9 +921,6 @@ define([
                         return void console.error("failed to decrypt or decode block content");
                     }
                 }));
-            } else {
-                // XXX debugging
-                console.error("NO BLOCK HASH");
             }
         }).nThen(function (waitFor) {
             // XXX debugging

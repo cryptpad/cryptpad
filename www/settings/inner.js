@@ -411,13 +411,13 @@ define([
                 cb (obj);
             });
         };
-
+/*
         var removeBlock = function (data, cb) {
             sframeChan.query('Q_REMOVE_LOGIN_BLOCK', data, function (err, obj) {
                 if (err || obj.error) { return void cb ({error: err || obj.error}); }
                 cb (obj);
             });
-        };
+        };*/
 
 
         // XXX
@@ -437,9 +437,10 @@ define([
                 console.log(Block.getBlockHash(keys));
 
                 return;
+                /*
                 removeBlock(Block.remove(keys), function (err, obj) {
                     console.log(err, obj);
-                });
+                });*/
             });
         }
 

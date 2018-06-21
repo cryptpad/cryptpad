@@ -477,7 +477,7 @@ Version 1
     // XXX consider putting Block functions in /common/outer/login-block.js
     Hash.createBlockHash = function (href, key) {
         if (typeof(href) !== 'string') { return; }
-        if (!key instanceof Uint8Array) { return; }
+        if (!(key instanceof Uint8Array)) { return; }
 
         // TODO verify inputs
         try { return href + '#' + Nacl.util.encodeBase64(key); }

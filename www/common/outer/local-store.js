@@ -63,7 +63,7 @@ define([
     };
 
     LocalStore.setBlockHash = function (hash) {
-        LocalStorage[Constants.blockHashKey] = hash;
+        localStorage[Constants.blockHashKey] = hash;
     };
 
     LocalStore.getAccountName = function () {
