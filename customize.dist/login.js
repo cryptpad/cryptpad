@@ -268,7 +268,9 @@ define([
                                             proxy[Constants.displayNameKey] = uname;
                                         }
                                         LocalStore.eraseTempSessionValues();
-                                        proceed(result);
+                                        LocalStore.login(result.userHash, result.userName, function () {
+                                            setTimeout(function () { proceed(result); });
+                                        });
                                     });
                                 });
                                 break;
