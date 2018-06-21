@@ -77,7 +77,7 @@ define([
 
 
 
-
+    // XXX update this to take into account blockHash values
     LocalStore.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
