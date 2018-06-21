@@ -12,11 +12,12 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
+    '/bower_components/nthen/index.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages) {
+            Feedback, LocalStore, Messages, nThen) {
     var Exports = {
         Cred: Cred,
     };
@@ -105,18 +106,24 @@ define([
             return void cb('PASS_TOO_SHORT');
         }
 
-        Cred.deriveFromPassphrase(uname, passwd, 192, function (bytes) {
-            // results...
-            var res = {
-                register: isRegister,
-            };
+        // results...
+        var res = {
+            register: isRegister,
+        };
 
-            // run scrypt to derive the user's keys
-            var opt = res.opt = allocateBytes(bytes);
+        var RT;
 
+        nThen(function (waitFor) {
+            Cred.deriveFromPassphrase(uname, passwd, 192, waitFor(function (bytes) {
+                // run scrypt to derive the user's keys
+                res.opt = allocateBytes(bytes);
+            }));
+        }).nThen(function (waitFor) {
+            var opt = res.opt;
             // use the derived key to generate an object
-            loadUserObject(opt, function (err, rt) {
+            loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) { return void cb(err); }
+                RT = rt;
 
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
@@ -136,12 +143,14 @@ define([
                 // they tried to just log in but there's no such user
                 if (!isRegister && isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect(); // clean up after yourself
+                    waitFor.abort();
                     return void cb('NO_SUCH_USER', res);
                 }
 
                 // they tried to register, but those exact credentials exist
                 if (isRegister && !isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect();
+                    waitFor.abort();
                     return void cb('ALREADY_REGISTERED', res);
                 }
 
@@ -163,17 +172,17 @@ define([
                 if (shouldImport) {
                     sessionStorage.migrateAnonDrive = 1;
                 }
-
-                // We have to call whenRealtimeSyncs asynchronously here because in the current
-                // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
-                // asynchronously.
-                // The following setTimeout is here to make sure whenRealtimeSyncs is called after
-                // `contentUpdate` so that we have an update userDoc in chainpad.
-                setTimeout(function () {
-                    Realtime.whenRealtimeSyncs(rt.realtime, function () {
-                        LocalStore.login(res.userHash, res.userName, function () {
-                            setTimeout(function () { cb(void 0, res); });
-                        });
+            }));
+        }).nThen(function () {
+            // We have to call whenRealtimeSyncs asynchronously here because in the current
+            // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
+            // asynchronously.
+            // The following setTimeout is here to make sure whenRealtimeSyncs is called after
+            // `contentUpdate` so that we have an update userDoc in chainpad.
+            setTimeout(function () {
+                Realtime.whenRealtimeSyncs(RT.realtime, function () {
+                    LocalStore.login(res.userHash, res.userName, function () {
+                        setTimeout(function () { cb(void 0, res); });
                     });
                 });
             });
