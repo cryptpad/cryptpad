@@ -907,11 +907,28 @@ define([
 
             var msgEv = Util.mkEvent();
             var postMsg, worker;
+            var noWorker = false;
             Nthen(function (waitFor2) {
-                if (typeof(SharedWorker) !== "undefined") {
+                if (Worker) {
+                    var w = waitFor2();
+                    worker = new Worker('/common/outer/testworker.js?' + urlArgs);
+                    worker.onerror = function (errEv) {
+                        errEv.preventDefault();
+                        errEv.stopPropagation();
+                        noWorker = true;
+                        w();
+                    };
+                    worker.onmessage = function (ev) {
+                        if (ev.data === "OK") {
+                            w();
+                        }
+                    };
+                }
+            }).nThen(function (waitFor2) {
+                if (!noWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
-                        console.error(e);
+                        console.error(e.message);
                     };
                     worker.port.onmessage = function (ev) {
                         if (ev.data === "SW_READY") {
@@ -927,7 +944,7 @@ define([
                     window.addEventListener('beforeunload', function () {
                         postMsg('CLOSE');
                     });
-                } else if (false && 'serviceWorker' in navigator) {
+                } else if (false && !noWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
 
@@ -977,8 +994,11 @@ define([
                     window.addEventListener('beforeunload', function () {
                         postMsg('CLOSE');
                     });
-                } else if (Worker) {
+                } else if (!noWorker && Worker) {
                     worker = new Worker('/common/outer/webworker.js?' + urlArgs);
+                    worker.onerror = function (e) {
+                        console.error(e.message);
+                    };
                     worker.onmessage = function (ev) {
                         msgEv.fire(ev);
                     };
@@ -986,6 +1006,7 @@ define([
                         worker.postMessage(data);
                     };
                 } else {
+                    // Use the async store in the main thread if workers are not available
                     require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
                         NoWorker.onMessage(function (data) {
                             msgEv.fire({data: data});
