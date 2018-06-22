@@ -13,11 +13,12 @@ define([
     '/common/outer/local-store.js',
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
+    '/common/outer/login-block.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages, nThen) {
+            Feedback, LocalStore, Messages, nThen, Block) {
     var Exports = {
         Cred: Cred,
     };
@@ -42,11 +43,11 @@ define([
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
 
-        // TODO
         // 32 more bytes to seed an additional signing key
+        opt.blockSignSeed = dispense(32);
 
-        // TODO
         // 32 more bytes for a symmetric key for block encryption
+        opt.blockSymmetric = dispense(32);
 
         // derive a private key from the ed seed
         var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
@@ -124,6 +125,14 @@ define([
                 // run scrypt to derive the user's keys
                 res.opt = allocateBytes(bytes);
             }));
+
+
+            // TODO consider checking the block here
+        }).nThen(function (/* waitFor */) {
+            // check for blocks
+            Block = Block; // jshint
+
+
         }).nThen(function (waitFor) {
             var opt = res.opt;
             // use the derived key to generate an object
@@ -283,7 +292,9 @@ define([
                                             proxy[Constants.displayNameKey] = uname;
                                         }
                                         LocalStore.eraseTempSessionValues();
-                                        proceed(result);
+                                        LocalStore.login(result.userHash, result.userName, function () {
+                                            setTimeout(function () { proceed(result); });
+                                        });
                                     });
                                 });
                                 break;
