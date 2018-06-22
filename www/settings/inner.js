@@ -31,8 +31,7 @@ define([
     h,
     Cred,
     AppConfig,
-    ApiConfig,
-    Block // XXX HACK
+    ApiConfig
     )
 {
     var saveAs = window.saveAs;
