@@ -12,7 +12,6 @@ define([
     '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
-    '/common/outer/login-block.js', // XXX HACK
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
