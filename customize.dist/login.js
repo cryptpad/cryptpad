@@ -46,8 +46,11 @@ define([
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
 
-        // 32 more bytes to seed an additional signing key
+        // 64 more bytes to seed an additional signing key
         opt.blockSeed = dispense(64);
+
+        var blockKeys = opt.blockKeys = Block.genkeys(opt.blockSeed);
+        opt.blockHash = Block.getBlockHash(blockKeys);
 
         // derive a private key from the ed seed
         var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));

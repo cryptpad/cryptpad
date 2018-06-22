@@ -104,9 +104,49 @@ define([
 
     Block.getBlockHash = function (keys) {
         var publicKey = urlSafeB64(keys.sign.publicKey);
-        var relative = 'block/' + publicKey.slice(0, 2) + '/' +  publicKey; // XXX FIXME use configurable path from /api/config
+        // 'block/' here is hardcoded because it's hardcoded on the server
+        // if we want to make CryptPad work in server subfolders, we'll need
+        // to update this path derivation
+        var relative = 'block/' + publicKey.slice(0, 2) + '/' +  publicKey;
         var symmetric = urlSafeB64(keys.symmetric);
         return ApiConfig.httpUnsafeOrigin + relative + '#' + symmetric;
+    };
+
+/*
+    Block.createBlockHash = function (href, key) {
+        if (typeof(href) !== 'string') { return; }
+        if (!(key instanceof Uint8Array)) { return; }
+
+        try { return href + '#' + Nacl.util.encodeBase64(key); }
+        catch (e) { return; }
+    };
+*/
+
+    var decodeSafeB64 = function (b64) {
+        try {
+            return Nacl.util.decodeBase64(b64.replace(/\-/g, '/'));
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+    };
+
+    Block.parseBlockHash = function (hash) {
+        if (typeof(hash) !== 'string') { return; }
+        var parts = hash.split('#');
+        if (parts.length !== 2) { return; }
+
+        try {
+            return {
+                href: parts[0],
+                keys: {
+                    symmetric: decodeSafeB64(parts[1]),
+                }
+            };
+        } catch (e) {
+            console.error(e);
+            return;
+        }
     };
 
     return Block;

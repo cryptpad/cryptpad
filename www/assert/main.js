@@ -10,9 +10,10 @@ define([
     '/common/wire.js',
     '/common/flat-dom.js',
     '/common/media-tag.js',
+    '/common/outer/login-block.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag) {
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
     var Nacl = window.nacl;
@@ -300,15 +301,12 @@ define([
     }, "test support for ugly tracking query paramaters in url");
 
     assert(function (cb) {
-        var href = 'https://cryptpad.fr/block/pe/pewpewpewpewpew';
-        var key = Nacl.randomBytes(32);
+        var keys = Block.genkeys(Nacl.randomBytes(64));
+        var hash = Block.getBlockHash(keys);
+        var parsed = Block.parseBlockHash(hash);
 
-        var hash = Hash.createBlockHash(href, key);
-
-        var parsed = Hash.parseBlockHash(hash);
-
-        cb(parsed && href === parsed.href &&
-            parsed.keys.symmetric.length === key.length);
+        cb(parsed &&
+            parsed.keys.symmetric.length === keys.symmetric.length);
     }, 'parse a block hash');
 
     assert(function (cb) {

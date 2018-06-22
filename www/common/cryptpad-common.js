@@ -713,10 +713,9 @@ define([
         var newHash, newHref, newSecret, newBlockSeed;
         var oldIsOwned = false;
 
-        // XXX ansuz: check that the old password is correct
-        throw new Error("XXX");
-
         var blockHash = LocalStore.getBlockHash();
+        var oldBlockKeys;
+
         var Cred, Block, Login;
         Nthen(function (waitFor) {
             require([
@@ -727,6 +726,30 @@ define([
                 Cred = _Cred;
                 Block = _Block;
                 Login = _Login;
+            }));
+        }).nThen(function (waitFor) {
+            // confirm that the provided password is correct
+            Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes, waitFor(function (bytes) {
+                var allocated = Login.allocateBytes(bytes);
+                oldBlockKeys = allocated.blockKeys;
+                if (blockHash) {
+                    if (blockHash !== allocated.blockHash) {
+                        // incorrect password probably
+                        waitFor.abort();
+                        return void cb({
+                            error: 'INVALID_PASSWORD',
+                        });
+                    }
+                    // the user has already created a block, so you should compare against that
+                } else {
+                    // otherwise they're a legacy user, and we should check against the User_hash
+                    if (hash !== allocated.userHash) {
+                        waitFor.abort();
+                        return void cb({
+                            error: 'INVALID_PASSWORD',
+                        });
+                    }
+                }
             }));
         }).nThen(function (waitFor) {
             // Check if our drive is already owned
@@ -789,7 +812,7 @@ define([
         }).nThen(function (waitFor) {
             // Remove block hash
             if (blockHash) {
-                var removeData = Block.remove(keys);
+                var removeData = Block.remove(oldBlockKeys);
                 common.removeLoginBlock(removeData, waitFor(function (obj) {
                     if (obj && obj.error) { return void console.error(obj.error); }
                 }));
@@ -1051,13 +1074,6 @@ define([
                 }));
             }
         }).nThen(function (waitFor) {
-            // XXX debugging
-            if (LocalStore.getUserHash()) {
-                console.log('User_hash detected');
-            } else {
-                console.log("User_hash not detected");
-            }
-
             var cfg = {
                 init: true,
                 //query: onMessage, // TODO temporary, will be replaced by a webworker channel
