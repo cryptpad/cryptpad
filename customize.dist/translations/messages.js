@@ -613,6 +613,7 @@ define(function () {
     out.settings_changePasswordNew = "New password"; // XXX
     out.settings_changePasswordNewConfirm = "Confirm new password"; // XXX
     out.settings_changePasswordConfirm = "Are you sure?"; // XXX
+    out.settings_changePasswordError = "Error {0}"; // XXX
 
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";

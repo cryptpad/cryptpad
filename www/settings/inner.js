@@ -53,7 +53,7 @@ define([
             'cp-settings-thumbnails',
             'cp-settings-userfeedback',
             'cp-settings-change-password',
-            'cp-settings-migrate',
+            //'cp-settings-migrate',
             'cp-settings-delete'
         ],
         'creation': [
@@ -407,43 +407,11 @@ define([
         $(form).appendTo($div);
 
         var updateBlock = function (data, cb) {
-            sframeChan.query('Q_WRITE_LOGIN_BLOCK', data, function (err, obj) {
+            sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function (err, obj) {
                 if (err || obj.error) { return void cb ({error: err || obj.error}); }
                 cb (obj);
             });
         };
-/*
-        var removeBlock = function (data, cb) {
-            sframeChan.query('Q_REMOVE_LOGIN_BLOCK', data, function (err, obj) {
-                if (err || obj.error) { return void cb ({error: err || obj.error}); }
-                cb (obj);
-            });
-        };*/
-
-
-        // XXX
-        if (false) { // STUBBED, just for development purposes
-            console.error("TRYING TO WRITE A BLOCK");
-
-            var keys = Block.genkeys(Block.seed());
-            var data = Block.serialize(JSON.stringify({
-                a: 5,
-                b: 6,
-                User_hash: "XXX", /// TODO encode newly derived User_hash here
-            }), keys);
-
-            updateBlock(data, function (err, thing) {
-                console.log(err, thing);
-
-                console.log(Block.getBlockHash(keys));
-
-                return;
-                /*
-                removeBlock(Block.remove(keys), function (err, obj) {
-                    console.log(err, obj);
-                });*/
-            });
-        }
 
         var todo = function () {
             var oldPassword = $(form).find('#cp-settings-change-password-current').val();
@@ -466,8 +434,15 @@ define([
             UI.confirm(Messages.settings_changePasswordConfirm,
             function (yes) {
                 if (!yes) { return; }
-                // TODO
-                console.log(oldPassword, newPassword, newPasswordConfirm);
+                updateBlock({
+                    password: oldPassword,
+                    newPassword: newPassword
+                }, function (obj) {
+                    if (obj && obj.error) {
+                        // TODO
+                        UI.alert(Messages.settings_changePasswordError);
+                    }
+                });
             }, {
                 ok: Messages.register_writtenPassword,
                 cancel: Messages.register_cancel,
@@ -496,6 +471,7 @@ define([
     };
 
     create['migrate'] = function () {
+        return;
         // TODO
         // if (!loginBlock) { return; }
         // if (alreadyMigrated) { return; }

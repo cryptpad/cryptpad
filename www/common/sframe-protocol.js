@@ -239,7 +239,7 @@ define({
     'Q_PAD_PASSWORD_CHANGE': true,
 
     // Migrate drive to owned drive
-    'Q_OWN_USER_DRIVE': true,
+    'Q_CHANGE_USER_PASSWORD': true,
 
     // Loading events to display in the loading screen
     'EV_LOADING_INFO': true,

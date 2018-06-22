@@ -699,25 +699,43 @@ define([
         });
     };
 
-    common.ownUserDrive = function (Crypt, edPublic, cb) {
-        var hash = LocalStore.getUserHash();
-        //var href = '/drive/#' + hash;
+    common.changeUserPassword = function (Crypt, edPublic, data, cb) {
+        if (!edPublic) {
+            return void cb({
+                error: 'E_NOT_LOGGED_IN'
+            });
+        }
+        var accountName = LocalStore.getAccountName();
+        var hash = LocalStore.getUserHash(); // To load your old drive
+        var password = data.password; // To remove your old block
+        var newPassword = data.newPassword; // To create your new block
         var secret = Hash.getSecrets('drive', hash);
-        var newHash, newHref, newSecret;
+        var newHash, newHref, newSecret, newBlockSeed;
+        var oldIsOwned = false;
+
+        // XXX ansuz: check that the old password is correct
+        throw new Error("XXX");
+
+        var blockHash = LocalStore.getBlockHash();
+        var Cred, Block;
         Nthen(function (waitFor) {
+            require([
+                '/customize/credential.js',
+                '/common/outer/login-block.js'
+            ], waitFor(function (_Cred, _Block) {
+                Cred = _Cred;
+                Block = _Block;
+            }));
+        }).nThen(function (waitFor) {
             // Check if our drive is already owned
             common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
                 if (err || obj.error) { return; }
                 if (obj.owners && Array.isArray(obj.owners) &&
                     obj.owners.indexOf(edPublic) !== -1) {
-                    waitFor.abort();
-                    cb({
-                        error: 'ALREADY_OWNED'
-                    });
+                    oldIsOwned = true;
                 }
             }));
         }).nThen(function (waitFor) {
-            waitFor.abort(); // TODO remove this line
             // Create a new user hash
             // Get the current content, store it in the new user file
             // and make sure the new user drive is owned
@@ -742,26 +760,67 @@ define([
                 }), optsPut);
             }));
         }).nThen(function (waitFor) {
-            // Migration success
-            // TODO: Replace user hash in login block
+            // Drive content copied: get the new block location
+            Cred.deriveFromPassphrase(accountName, newPassword, 192, waitFor(function (bytes) {
+                newBlockSeed = null; // XXX
+            }));
+        }).nThen(function (waitFor) {
+            // Write the new login block
+            var keys = Block.genkeys(newBlockSeed);
+            var content = Block.serialize(JSON.stringify({
+                User_name: accountName,
+                User_hash: newHash
+            }), keys);
+            common.writeLoginBlock(content, waitFor(function (obj) {
+                var newBlockHash = Block.getBlockHash(keys);
+                LocalStore.setBlockHash(newBlockHash);
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
         }).nThen(function (waitFor) {
             // New drive hash is in login block, unpin the old one and pin the new one
             common.unpinPads([secret.channel], waitFor());
             common.pinPads([newSecret.channel], waitFor());
         }).nThen(function (waitFor) {
-            // Login block updated
-            // TODO: logout everywhere
-                // * It should wipe localStorage.User_hash, ...
-                // * login will get the new value from loginBlock and store it in localStorage
-                // * SharedWorker will reconnect with the new value in other locations
-            // TODO: then DISCONNECT here
-            common.logoutFromAll(waitFor(function () {
-                postMessage("DISCONNECT");
-            }));
+            // Remove block hash
+            if (blockHash) {
+                var removeData = Block.remove(keys);
+                common.removeLoginBlock(removeData, waitFor(function (obj) {
+                    if (obj && obj.error) { return void console.error(obj.error); }
+                }));
+            }
+        }).nThen(function (waitFor) {
+            if (oldIsOwned) {
+                common.removeOwnedChannel(secret.channel, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        // Deal with it as if it was not owned
+                        oldIsOwned = false;
+                        return;
+                    }
+                    common.logoutFromAll(waitFor(function () {
+                        postMessage("DISCONNECT");
+                    }));
+                }));
+            }
+        }).nThen(function (waitFor) {
+            if (!oldIsOwned) {
+                postMessage("SET", {
+                    key: [Constants.deprecatedKey],
+                    value: true
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                    }
+                    common.logoutFromAll(waitFor(function () {
+                        postMessage("DISCONNECT");
+                    }));
+                }));
+            }
         }).nThen(function () {
             // We have the new drive, with the new login block
-            // TODO: maybe reload automatically?
-            cb({ state: true });
+            window.location.reload();
         });
     };
 
