@@ -21,10 +21,13 @@ define([
             Feedback, LocalStore, Messages, nThen, Block) {
     var Exports = {
         Cred: Cred,
+        // this is depended on by non-customizable files
+        // be careful when modifying login.js
+        requiredBytes: 192,
     };
 
     var Nacl = window.nacl;
-    var allocateBytes = function (bytes) {
+    var allocateBytes = Exports.allocateBytes = function (bytes) {
         var dispense = Cred.dispenser(bytes);
 
         var opt = {};
@@ -44,10 +47,7 @@ define([
         var edSeed = opt.edSeed = dispense(32);
 
         // 32 more bytes to seed an additional signing key
-        opt.blockSignSeed = dispense(32);
-
-        // 32 more bytes for a symmetric key for block encryption
-        opt.blockSymmetric = dispense(32);
+        opt.blockSeed = dispense(64);
 
         // derive a private key from the ed seed
         var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
@@ -121,7 +121,7 @@ define([
         var RT;
 
         nThen(function (waitFor) {
-            Cred.deriveFromPassphrase(uname, passwd, 192, waitFor(function (bytes) {
+            Cred.deriveFromPassphrase(uname, passwd, Exports.requiredBytes, waitFor(function (bytes) {
                 // run scrypt to derive the user's keys
                 res.opt = allocateBytes(bytes);
             }));

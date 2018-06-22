@@ -717,14 +717,16 @@ define([
         throw new Error("XXX");
 
         var blockHash = LocalStore.getBlockHash();
-        var Cred, Block;
+        var Cred, Block, Login;
         Nthen(function (waitFor) {
             require([
                 '/customize/credential.js',
-                '/common/outer/login-block.js'
-            ], waitFor(function (_Cred, _Block) {
+                '/common/outer/login-block.js',
+                '/customize/login.js'
+            ], waitFor(function (_Cred, _Block, _Login) {
                 Cred = _Cred;
                 Block = _Block;
+                Login = _Login;
             }));
         }).nThen(function (waitFor) {
             // Check if our drive is already owned
@@ -761,8 +763,9 @@ define([
             }));
         }).nThen(function (waitFor) {
             // Drive content copied: get the new block location
-            Cred.deriveFromPassphrase(accountName, newPassword, 192, waitFor(function (bytes) {
-                newBlockSeed = null; // XXX
+            Cred.deriveFromPassphrase(accountName, newPassword, Login.requiredBytes, waitFor(function (bytes) {
+                var allocated = Login.allocateBytes(bytes);
+                newBlockSeed = allocated.blockSeed;
             }));
         }).nThen(function (waitFor) {
             // Write the new login block
