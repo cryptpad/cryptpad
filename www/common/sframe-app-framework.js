@@ -584,7 +584,9 @@ define([
                 onRemote: onRemote,
                 setHistory: setHistoryMode,
                 applyVal: function (val) {
-                    contentUpdate(JSON.parse(val) || ["BODY",{},[]]);
+                    contentUpdate(JSON.parse(val) || ["BODY",{},[]], function (h) {
+                        return h;
+                    });
                 },
                 $toolbar: $(toolbarContainer)
             };

@@ -79,7 +79,7 @@ define([
                 isComplete = data.isFull;
                 Array.prototype.unshift.apply(allMessages, data.messages); // Destructive concat
                 fillChainPad(realtime, allMessages);
-                cb (null, realtime);
+                cb (null, realtime, data.isFull);
             });
         };
 
@@ -142,7 +142,8 @@ define([
             loading = true;
             $loadMore.removeClass('fa fa-ellipsis-h')
                 .append($('<span>', {'class': 'fa fa-refresh fa-spin fa-3x fa-fw'}));
-            loadMoreHistory(config, common, function (err, newRt) {
+
+            loadMoreHistory(config, common, function (err, newRt, isFull) {
                 if (err === 'EFULL') {
                     $loadMore.off('click').hide();
                     get(c);
@@ -154,6 +155,10 @@ define([
                 update(newRt);
                 $loadMore.addClass('fa fa-ellipsis-h').html('');
                 get(c);
+                if (isFull) {
+                    $loadMore.off('click').hide();
+                    $version.show();
+                }
                 if (cb) { cb(); }
             });
         };
@@ -181,7 +186,7 @@ define([
                 $hist.find('.cp-toolbar-history-fast-next').css('visibility', 'hidden');
             }
             var $pos = $hist.find('.cp-toolbar-history-pos');
-            var p = 100 * (1 - (-c / (states.length-1)));
+            var p = 100 * (1 - (-c / (states.length-2)));
             $pos.css('margin-left', p+'%');
 
             // Display the version when the full history is loaded
@@ -317,13 +322,17 @@ define([
         };
 
         // Load all the history messages into a new chainpad object
-        loadMoreHistory(config, common, function (err, newRt) {
+        loadMoreHistory(config, common, function (err, newRt, isFull) {
             History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
             History.loading = false;
             if (err) { throw new Error(err); }
             update(newRt);
             c = states.length - 1;
             display();
+            if (isFull) {
+                $loadMore.off('click').hide();
+                $version.show();
+            }
         });
     };
 
