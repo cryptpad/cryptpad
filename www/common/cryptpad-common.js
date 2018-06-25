@@ -796,7 +796,7 @@ define([
         },
         // Messaging
         Q_FRIEND_REQUEST: common.messaging.onFriendRequest.fire,
-        EV_FIREND_COMPLETE: common.messaging.onFriendComplete.fire,
+        EV_FRIEND_COMPLETE: common.messaging.onFriendComplete.fire,
         // Network
         NETWORK_DISCONNECT: common.onNetworkDisconnect.fire,
         NETWORK_RECONNECT: function (data) {
