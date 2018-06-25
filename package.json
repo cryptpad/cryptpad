@@ -2,7 +2,11 @@
   "name": "cryptpad",
   "description": "realtime collaborative visual editor with zero knowlege server",
   "version": "2.4.0",
-  "license": "AGPL-3.0-or-later",
+  "license": "AGPL-3.0+",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/xwiki-labs/cryptpad.git"
+  },
   "dependencies": {
     "chainpad-server": "~2.1.0",
     "express": "~4.16.0",
