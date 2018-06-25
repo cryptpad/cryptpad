@@ -50,7 +50,7 @@ define([
             'cp-settings-resettips',
             'cp-settings-thumbnails',
             'cp-settings-userfeedback',
-            'cp-settings-change-password',
+            //'cp-settings-change-password',
             'cp-settings-delete'
         ],
         'creation': [
