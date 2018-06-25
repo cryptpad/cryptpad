@@ -890,7 +890,6 @@ define([
         }).nThen(function (waitFor) {
             var cfg = {
                 init: true,
-                //query: onMessage, // TODO temporary, will be replaced by a webworker channel
                 userHash: LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
