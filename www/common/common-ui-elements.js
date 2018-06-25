@@ -187,7 +187,7 @@ define([
                     if (!yes) { return; }
                     sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
                         href: data.href,
-                        password: $(newPassword).val()
+                        password: $(newPassword).find('input').val()
                     }, function (err, data) {
                         if (err || data.error) {
                             return void UI.alert(Messages.properties_passwordError);

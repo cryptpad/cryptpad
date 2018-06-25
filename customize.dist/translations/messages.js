@@ -1172,8 +1172,8 @@ define(function () {
     // Change password in pad properties
     out.properties_addPassword = "Add a password";
     out.properties_changePassword = "Change the password";
-    out.properties_confirmNew = "Are you sure? Adding a password will change this pad's URL. Users without the password will lose access to this pad";
-    out.properties_confirmChange = "Are you sure? Users without the new password will lose access to this pad";
+    out.properties_confirmNew = "Are you sure? Adding a password will change this pad's URL and remove its history. Users without the password will lose access to this pad";
+    out.properties_confirmChange = "Are you sure? Changing the password will remove its history. Users without the new password will lose access to this pad";
     out.properties_passwordError = "An error occured while trying to change the password. Please try again.";
     out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your acces rights.";
     out.properties_passwordSuccess = "The password was successfully changed.<br>Press OK to reload and update your access rights.";
