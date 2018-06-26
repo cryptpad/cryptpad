@@ -906,7 +906,11 @@ define([
 
             var msgEv = Util.mkEvent();
             var postMsg, worker;
-            var noWorker = false;
+            var noWorker = AppConfig.disableWorkers || false;
+            if (localStorage.CryptPad_noWorkers) {
+                noWorker = localStorage.CryptPad_noWorkers === '1';
+                console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
+            }
             Nthen(function (waitFor2) {
                 if (Worker) {
                     var w = waitFor2();

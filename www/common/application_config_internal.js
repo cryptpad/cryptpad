@@ -119,5 +119,12 @@ define(function() {
     // You can use config.afterLogin to import these values in the users' drive.
     //config.disableProfile = true;
 
+    // Disable the use of webworkers and sharedworkers in CryptPad.
+    // Workers allow us to run the websockets connection and open the user drive in a separate thread.
+    // SharedWorkers allow us to load only one websocket and one user drive for all the browser tabs,
+    // making it much faster to open new tabs.
+    // Warning: This is an experimental feature. It will be enabled by default once we're sure it's stable.
+    config.disableWorkers = true;
+
     return config;
 });
