@@ -7,9 +7,10 @@ For version 2.4.0 we chose to use our time to address difficulties that some use
 ## Update notes
 
 * We have released new clientside dependencies, so server administrators will need to run `bower update`
-* This release also depends on new serverside dependencies, so administraotrs will also need to run `npm update`
-* Since this release takes advantage of Webworker APIs, administrators will need to update their Content Security Headers to include worker-src (and child-src for safari).
-  * see cryptpad/docs/example.nginx.conf for more details
+* This release also depends on new serverside dependencies, so administrators will also need to run `npm update`
+* This release (optionally) takes advantage of Webworker APIs, so administrators may need to update their Content Security Headers to include worker-src (and child-src for safari)
+  * see cryptpad/docs/example.nginx.conf for more details regarding configuration for nginx as a reverse proxy
+  * to enable webworkers as an experimental feature, add `AppConfig.disableWorkers = false;` to your `cryptpad/customize/application-config.js`
 * Finally, administrators will need to restart their servers after updating, as clients will require new functionality
 
 ## What's new
@@ -19,8 +20,8 @@ For version 2.4.0 we chose to use our time to address difficulties that some use
 * CryptPad now takes advantage of some very modern browser APIs
   * Shared Workers allow common tasks for all CryptPad editors to be handled by a single background process which runs in the background. This results in better performance savings for anyone using multiple editors at once in different tabs
   * Webworkers are used in situations where shared workers are not supported, for most of the same tasks. They are not shared amongst different tabs, but can allow for a more responsive user experience since some heavy commands will be run in the background
-  * Not all browsers feature complete support for webworkers. For cases where they are not supported at all, or where cryptographic APIs are not supported within their context (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7607496/), we fall back to an asynchronous context in the same thread.
-* Pads with no password can now be updated to include a password, and pads with a password can have their passwords changed.
+  * Not all browsers feature complete support for webworkers. For cases where they are not supported at all, or where cryptographic APIs are not supported within their context (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7607496/), we fall back to an asynchronous context in the same thread
+* Pads with no password can now be updated to include a password, and pads with a password can have their passwords changed
   * right-click on the pad in question, and see its properties. The following dialog will present the option to change its password
   * changing a pad's password will remove its history
 * Accessing a pad's history used to require that clients fetch the entire history of the pad before they could view any of it. History retrieval is now done on an on-demand basis, approximately 100 versions of the pad at a time
