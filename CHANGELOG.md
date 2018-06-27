@@ -8,6 +8,8 @@ For version 2.4.0 we chose to use our time to address difficulties that some use
 
 * We have released new clientside dependencies, so server administrators will need to run `bower update`
 * This release also depends on new serverside dependencies, so administraotrs will also need to run `npm update`
+* Since this release takes advantage of Webworker APIs, administrators will need to update their Content Security Headers to include worker-src (and child-src for safari).
+  * see cryptpad/docs/example.nginx.conf for more details
 * Finally, administrators will need to restart their servers after updating, as clients will require new functionality
 
 ## What's new
