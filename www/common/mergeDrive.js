@@ -115,23 +115,24 @@ define([
                     var newRecentPads = proxy.drive[newFo.FILES_DATA];
                     var oldFiles = oldFo.getFiles([newFo.FILES_DATA]);
                     var newHrefs = Object.keys(newRecentPads).map(function (id) {
-                        return newRecentPads[id].href;
+                        return newRecentPads[id].href || newRecentPads[id].roHref;
                     });
                     oldFiles.forEach(function (id) {
-                        var href = oldRecentPads[id].href;
+                        var href = oldRecentPads[id].href || oldRecentPads[id].roHref;
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
                         if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href
-                        if (Hash.findStronger(href, oldRecentPads[id].channel, newRecentPads)) { return; }
+                        // If the current href is read-only, don't check, we won't have a stronger
+                        if (isRo && Hash.findStronger(href, oldRecentPads[id].channel, newRecentPads)) { return; }
                         // If we have a weaker version, replace the href by the new one
-                        // NOTE: if that weaker version is in the trash, the strong one will be put in unsorted
-                        var weaker = Hash.findWeaker(href, oldRecentPads[id].channel, newRecentPads);
-                        if (weaker) {
-                            // Update RECENTPADS
-                            weaker.href = href;
-                            // Update the file in the drive
-                            newFo.replace(weaker.href, href);
-                            return;
+                        // If the current href is an edit link, don't check, we won't have a weaker
+                        if (!isRo) {
+                            var weaker = Hash.findWeaker(href, oldRecentPads[id].channel, newRecentPads);
+                            if (weaker) {
+                                // Update RECENTPADS
+                                weaker.href = href;
+                                return;
+                            }
                         }
                         // Here it means we have a new href, so we should add it to the drive at its old location
                         var paths = oldFo.findFile(id);
