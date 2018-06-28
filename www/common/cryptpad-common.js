@@ -907,6 +907,7 @@ define([
             var msgEv = Util.mkEvent();
             var postMsg, worker;
             var noWorker = AppConfig.disableWorkers || false;
+            var noSharedWorker = false;
             if (localStorage.CryptPad_noWorkers) {
                 noWorker = localStorage.CryptPad_noWorkers === '1';
                 console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
@@ -927,8 +928,17 @@ define([
                         }
                     };
                 }
+                if (typeof(SharedWorker) !== "undefined") {
+                    try {
+                        new SharedWorker('');
+                    catch (e) {
+                        noSharedWorker = true;
+                        e = e;
+                        console.log('Disabling SharedWorker because of privacy settings.');
+                    }
+                }
             }).nThen(function (waitFor2) {
-                if (!noWorker && typeof(SharedWorker) !== "undefined") {
+                if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
                         console.error(e.message);
@@ -947,7 +957,7 @@ define([
                     window.addEventListener('beforeunload', function () {
                         postMsg('CLOSE');
                     });
-                } else if (false && !noWorker && 'serviceWorker' in navigator) {
+                } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
 
