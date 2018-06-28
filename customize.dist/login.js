@@ -47,7 +47,7 @@ define([
         var edSeed = opt.edSeed = dispense(32);
 
         // 64 more bytes to seed an additional signing key
-        opt.blockSeed = dispense(64);
+        opt.blockSeed = new Uint8Array(dispense(64));
 
         var blockKeys = opt.blockKeys = Block.genkeys(opt.blockSeed);
         opt.blockHash = Block.getBlockHash(blockKeys);

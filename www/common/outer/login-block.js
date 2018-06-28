@@ -23,6 +23,9 @@ define([
 
     // should be deterministic from a seed...
     Block.genkeys = function (seed) {
+        if (!(seed instanceof Uint8Array)) {
+            throw new Error('INVALID_SEED_FORMAT');
+        }
         if (!seed || typeof(seed.length) !== 'number' || seed.length < 64) {
             throw new Error('INVALID_SEED_LENGTH');
         }
