@@ -12,17 +12,22 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
+    '/bower_components/nthen/index.js',
+    '/common/outer/login-block.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages) {
+            Feedback, LocalStore, Messages, nThen, Block) {
     var Exports = {
         Cred: Cred,
+        // this is depended on by non-customizable files
+        // be careful when modifying login.js
+        requiredBytes: 192,
     };
 
     var Nacl = window.nacl;
-    var allocateBytes = function (bytes) {
+    var allocateBytes = Exports.allocateBytes = function (bytes) {
         var dispense = Cred.dispenser(bytes);
 
         var opt = {};
@@ -40,6 +45,12 @@ define([
 
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
+
+        // 64 more bytes to seed an additional signing key
+        opt.blockSeed = new Uint8Array(dispense(64));
+
+        var blockKeys = opt.blockKeys = Block.genkeys(opt.blockSeed);
+        opt.blockHash = Block.getBlockHash(blockKeys);
 
         // derive a private key from the ed seed
         var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
@@ -105,18 +116,32 @@ define([
             return void cb('PASS_TOO_SHORT');
         }
 
-        Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
-            // results...
-            var res = {
-                register: isRegister,
-            };
+        // results...
+        var res = {
+            register: isRegister,
+        };
 
-            // run scrypt to derive the user's keys
-            var opt = res.opt = allocateBytes(bytes);
+        var RT;
 
+        nThen(function (waitFor) {
+            Cred.deriveFromPassphrase(uname, passwd, Exports.requiredBytes, waitFor(function (bytes) {
+                // run scrypt to derive the user's keys
+                res.opt = allocateBytes(bytes);
+            }));
+
+
+            // TODO consider checking the block here
+        }).nThen(function (/* waitFor */) {
+            // check for blocks
+            Block = Block; // jshint
+
+
+        }).nThen(function (waitFor) {
+            var opt = res.opt;
             // use the derived key to generate an object
-            loadUserObject(opt, function (err, rt) {
+            loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) { return void cb(err); }
+                RT = rt;
 
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
@@ -136,12 +161,14 @@ define([
                 // they tried to just log in but there's no such user
                 if (!isRegister && isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect(); // clean up after yourself
+                    waitFor.abort();
                     return void cb('NO_SUCH_USER', res);
                 }
 
                 // they tried to register, but those exact credentials exist
                 if (isRegister && !isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect();
+                    waitFor.abort();
                     return void cb('ALREADY_REGISTERED', res);
                 }
 
@@ -163,17 +190,17 @@ define([
                 if (shouldImport) {
                     sessionStorage.migrateAnonDrive = 1;
                 }
-
-                // We have to call whenRealtimeSyncs asynchronously here because in the current
-                // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
-                // asynchronously.
-                // The following setTimeout is here to make sure whenRealtimeSyncs is called after
-                // `contentUpdate` so that we have an update userDoc in chainpad.
-                setTimeout(function () {
-                    Realtime.whenRealtimeSyncs(rt.realtime, function () {
-                        LocalStore.login(res.userHash, res.userName, function () {
-                            setTimeout(function () { cb(void 0, res); });
-                        });
+            }));
+        }).nThen(function () {
+            // We have to call whenRealtimeSyncs asynchronously here because in the current
+            // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
+            // asynchronously.
+            // The following setTimeout is here to make sure whenRealtimeSyncs is called after
+            // `contentUpdate` so that we have an update userDoc in chainpad.
+            setTimeout(function () {
+                Realtime.whenRealtimeSyncs(RT.realtime, function () {
+                    LocalStore.login(res.userHash, res.userName, function () {
+                        setTimeout(function () { cb(void 0, res); });
                     });
                 });
             });

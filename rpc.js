@@ -1297,6 +1297,160 @@ var upload_status = function (Env, publicKey, filesize, cb) {
     });
 };
 
+/*
+    We assume that the server is secured against MitM attacks
+    via HTTPS, and that malicious actors do not have code execution
+    capabilities. If they do, we have much more serious problems.
+
+    The capability to replay a block write or remove results in either
+    a denial of service for the user whose block was removed, or in the
+    case of a write, a rollback to an earlier password.
+
+    Since block modification is destructive, this can result in loss
+    of access to the user's drive.
+
+    So long as the detached signature is never observed by a malicious
+    party, and the server discards it after proof of knowledge, replays
+    are not possible. However, this precludes verification of the signature
+    at a later time.
+
+    Despite this, an integrity check is still possible by the original
+    author of the block, since we assume that the block will have been
+    encrypted with xsalsa20-poly1305 which is authenticated.
+*/
+var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
+    // convert the public key to a Uint8Array and validate it
+    if (typeof(publicKey) !== 'string') { return void cb('E_INVALID_KEY'); }
+
+    var u8_public_key;
+    try {
+        u8_public_key = Nacl.util.decodeBase64(publicKey);
+    } catch (e) {
+        return void cb('E_INVALID_KEY');
+    }
+
+    var u8_signature;
+    try {
+        u8_signature = Nacl.util.decodeBase64(signature);
+    } catch (e) {
+        console.error(e);
+        return void cb('E_INVALID_SIGNATURE');
+    }
+
+    // convert the block to a Uint8Array
+    var u8_block;
+    try {
+        u8_block = Nacl.util.decodeBase64(block);
+    } catch (e) {
+        return void cb('E_INVALID_BLOCK');
+    }
+
+    // take its hash
+    var hash = Nacl.hash(u8_block);
+
+    // validate the signature against the hash of the content
+    var verified = Nacl.sign.detached.verify(hash, u8_signature, u8_public_key);
+
+    // existing authentication ensures that users cannot replay old blocks
+
+    // call back with (err) if unsuccessful
+    if (!verified) { return void cb("E_COULD_NOT_VERIFY"); }
+
+    return void cb(null, u8_block);
+
+    // signature 64 bytes
+      // sign.detached(hash(decodeBase64_content(base64_content)), decodeBase64(publicKey))
+
+    // 1 byte version
+    // base64_content
+};
+
+var createLoginBlockPath = function (Env, publicKey) {
+    // prepare publicKey to be used as a file name
+    var safeKey = escapeKeyCharacters(publicKey);
+
+    // validate safeKey
+    if (typeof(safeKey) !== 'string') {
+        return;
+    }
+
+    // derive the full path
+    // /home/cryptpad/cryptpad/block/fg/fg32kefksjdgjkewrjksdfksjdfsdfskdjfsfd
+    return Path.join(Env.paths.block, safeKey.slice(0, 2), safeKey);
+};
+
+var writeLoginBlock = function (Env, msg, cb) {
+    //console.log(msg);
+    var publicKey = msg[0];
+    var signature = msg[1];
+    var block = msg[2];
+
+    validateLoginBlock(Env, publicKey, signature, block, function (e, verified_block) {
+        if (e) { return void cb(e); }
+
+        // derive the filepath
+        var path = createLoginBlockPath(Env, publicKey);
+
+        // make sure the path is valid
+        if (typeof(path) !== 'string') {
+            return void cb('E_INVALID_BLOCK_PATH');
+        }
+
+        var parsed = Path.parse(path);
+        if (!parsed || typeof(parsed.dir) !== 'string') {
+            return void cb("E_INVALID_BLOCK_PATH_2");
+        }
+
+        nThen(function (w) {
+            // make sure the path to the file exists
+            Mkdirp(parsed.dir, w(function (e) {
+                if (e) {
+                    w.abort();
+                    cb(e);
+                }
+            }));
+        }).nThen(function () {
+            // actually write the block
+            Fs.writeFile(path, new Buffer(verified_block), { encoding: "binary", }, function (err) {
+                if (err) { return void cb(err); }
+                cb();
+            });
+        });
+    });
+};
+
+/*
+    When users write a block, they upload the block, and provide
+    a signature proving that they deserve to be able to write to
+    the location determined by the public key.
+
+    When removing a block, there is nothing to upload, but we need
+    to sign something. Since the signature is considered sensitive
+    information, we can just sign some constant and use that as proof.
+
+*/
+var removeLoginBlock = function (Env, msg, cb) {
+    var publicKey = msg[0];
+    var signature = msg[1];
+    var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
+
+    validateLoginBlock(Env, publicKey, signature, block, function (e) {
+        if (e) { return void cb(e); }
+        // derive the filepath
+        var path = createLoginBlockPath(Env, publicKey);
+
+        // make sure the path is valid
+        if (typeof(path) !== 'string') {
+            return void cb('E_INVALID_BLOCK_PATH');
+        }
+
+        Fs.unlink(path, function (err) {
+            if (err) { return void cb(err); }
+            cb();
+        });
+    });
+};
+
 var isNewChannel = function (Env, channel, cb) {
     if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
     if (channel.length !== 32) { return void cb('INVALID_CHAN'); }
@@ -1353,6 +1507,8 @@ var isAuthenticatedCall = function (call) {
         'CLEAR_OWNED_CHANNEL',
         'REMOVE_OWNED_CHANNEL',
         'REMOVE_PINS',
+        'WRITE_LOGIN_BLOCK',
+        'REMOVE_LOGIN_BLOCK',
     ].indexOf(call) !== -1;
 };
 
@@ -1423,6 +1579,7 @@ RPC.create = function (
     var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
+    paths.block = keyOrDefaultString('blockPath', './block');
 
     var isUnauthenticateMessage = function (msg) {
         return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
@@ -1690,6 +1847,22 @@ RPC.create = function (
                 // UPLOAD_STATUS again
                 return void upload_cancel(Env, safeKey, msg[1], function (e) {
                     WARN(e, 'UPLOAD_CANCEL');
+                    Respond(e);
+                });
+            case 'WRITE_LOGIN_BLOCK':
+                return void writeLoginBlock(Env, msg[1], function (e) {
+                    if (e) {
+                        WARN(e, 'WRITE_LOGIN_BLOCK');
+                        return void Respond(e);
+                    }
+                    Respond(e);
+                });
+            case 'REMOVE_LOGIN_BLOCK':
+                return void removeLoginBlock(Env, msg[1], function (e) {
+                    if (e) {
+                        WARN(e, 'REMOVE_LOGIN_BLOCK');
+                        return void Respond(e);
+                    }
                     Respond(e);
                 });
             default:

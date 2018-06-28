@@ -126,6 +126,9 @@ app.use("/blob", Express.static(Path.join(__dirname, (config.blobPath || './blob
 app.use("/datastore", Express.static(Path.join(__dirname, (config.filePath || './datastore')), {
     maxAge: "0d"
 }));
+app.use("/block", Express.static(Path.join(__dirname, (config.blockPath || '/block')), {
+    maxAge: "0d",
+}));
 
 app.use("/customize", Express.static(__dirname + '/customize'));
 app.use("/customize", Express.static(__dirname + '/customize.dist'));
