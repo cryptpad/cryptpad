@@ -468,7 +468,7 @@ define([
     };
 
     create['migrate'] = function () {
-        return;
+        if (true) { return; } // XXX js hint
         // TODO
         // if (!loginBlock) { return; }
         // if (alreadyMigrated) { return; }
