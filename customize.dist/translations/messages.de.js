@@ -42,6 +42,7 @@
     out.chainpadError = 'Ein kritischer Fehler hat stattgefunden, bei den Updates deines Dokuments. Dieses Dokument ist schreibgeschützt, damit du sicher machen kannst, dass keine Inhalt verloren geht.<br>'+
                         'Druck auf <em>Esc</em>, um das Dokument schreibgeschützt zu lesen, oder lade es neu, um das Editierien wiederanzufangen.';
     out.errorCopy = ' Du kannst noch den Inhalt woanders kopieren, nachdem du <em>Esc</em> drucken.<br>Wenn du die Seite verlässt, verschwindet der Inhalt für immer!';
+    out.errorRedirectToHome = 'Drucke <em>Esc</em>, um zu deinem CryptDrive zu gehen.'; 
 
     out.loading = "Laden...";
     out.error = "Fehler";
