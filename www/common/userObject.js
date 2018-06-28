@@ -13,6 +13,7 @@ define([
     var UNSORTED = module.UNSORTED = "unsorted";
     var TRASH = module.TRASH = "trash";
     var TEMPLATE = module.TEMPLATE = "template";
+    var SHARED_FOLDERS = module.SHARED_FOLDERS = "sharedFolders";
 
     module.init = function (files, config) {
         var exp = {};

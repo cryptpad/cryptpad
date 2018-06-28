@@ -1183,6 +1183,61 @@ define([
             }]));
         };
 
+        // SHARED FOLDERS
+        var loadSharedFolder = function (id, data) {
+            var parsed = Hash.parsePadUrl(data.href);
+            var secret = Hash.getSecrets('folder', parsed.hash, data.password);
+            var listmapConfig = {
+                data: {},
+                websocketURL: NetConfig.getWebsocketURL(),
+                channel: secret.channel,
+                readOnly: false,
+                validateKey: secret.keys.validateKey || undefined,
+                crypto: Crypto.createEncryptor(secret.keys),
+                userName: 'sharedFolder',
+                logLevel: 1,
+                ChainPad: ChainPad,
+                classic: true,
+            };
+            var rt = Listmap.create(listmapConfig);
+            store.sharedFolders[id] = rt;
+            return rt;
+        };
+        Store.addSharedFolder = function (clientId, data, cb) {
+            var path = data.path;
+            var href = data.href;
+            var id;
+            nThen(function (waitFor) {
+                // TODO
+                var folderData = {};
+                // 1. add the shared folder to our list of shared folders
+                store.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
+                    if (err) {
+                        waitFor.abort();
+                        return void cb(err);
+                    }
+                    id = folderId;
+                }));
+            nThen(function (waitFor) {
+                // 2a. add the shared folder to the path in our drive
+                store.userObject.add(id, path);
+                onSync(waitFor());
+
+                // 2b. load the proxy
+                var rt = loadSharedFolder(folderId, data);
+                rt.on('ready', waitFor(function () {
+                    // TODO
+                    // "fixFiles"
+                }));
+            }).nThen(function () {
+                sendDriveEvent('DRIVE_CHANGE', {
+                    path: ['drive'].concat(path)
+                }, clientId);
+                cb();
+            });
+        };
+
+
         // Drive
         Store.userObjectCommand = function (clientId, cmdData, cb) {
             if (!cmdData || !cmdData.cmd) { return; }
@@ -1330,6 +1385,20 @@ define([
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
+
+        var loadSharedFolders = function (waitFor) {
+            // TODO
+            store.sharedFolders = {};
+            var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+            Object.keys(shared).forEach(function (id) {
+                var sf = shared[id];
+                var rt = loadSharedFolder(id, sf);
+                rt.on('ready', waitFor(function () {
+                    // TODO
+                    // "fixFiles"
+                }));
+            });
+        };
 
         var onReady = function (clientId, returned, cb) {
             var proxy = store.proxy;
