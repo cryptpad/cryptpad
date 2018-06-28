@@ -894,7 +894,7 @@ define([
         };
 
         Store.messenger = {
-            getFriendList: function (data, cb) {
+            getFriendList: function (clientId, data, cb) {
                 store.messenger.getFriendList(function (e, keys) {
                     cb({
                         error: e,
@@ -902,7 +902,7 @@ define([
                     });
                 });
             },
-            getMyInfo: function (data, cb) {
+            getMyInfo: function (clientId, data, cb) {
                 store.messenger.getMyInfo(function (e, info) {
                     cb({
                         error: e,
@@ -910,7 +910,7 @@ define([
                     });
                 });
             },
-            getFriendInfo: function (data, cb) {
+            getFriendInfo: function (clientId, data, cb) {
                 store.messenger.getFriendInfo(data, function (e, info) {
                     cb({
                         error: e,
@@ -918,7 +918,7 @@ define([
                     });
                 });
             },
-            removeFriend: function (data, cb) {
+            removeFriend: function (clientId, data, cb) {
                 store.messenger.removeFriend(data, function (e, info) {
                     cb({
                         error: e,
@@ -926,12 +926,12 @@ define([
                     });
                 });
             },
-            openFriendChannel: function (data, cb) {
+            openFriendChannel: function (clientId, data, cb) {
                 store.messenger.openFriendChannel(data, function (e) {
                     cb({ error: e, });
                 });
             },
-            getFriendStatus: function (data, cb) {
+            getFriendStatus: function (clientId, data, cb) {
                 store.messenger.getStatus(data, function (e, online) {
                     cb({
                         error: e,
@@ -939,7 +939,7 @@ define([
                     });
                 });
             },
-            getMoreHistory: function (data, cb) {
+            getMoreHistory: function (clientId, data, cb) {
                 store.messenger.getMoreHistory(data.curvePublic, data.sig, data.count, function (e, history) {
                     cb({
                         error: e,
@@ -947,14 +947,14 @@ define([
                     });
                 });
             },
-            sendMessage: function (data, cb) {
+            sendMessage: function (clientId, data, cb) {
                 store.messenger.sendMessage(data.curvePublic, data.content, function (e) {
                     cb({
                         error: e,
                     });
                 });
             },
-            setChannelHead: function (data, cb) {
+            setChannelHead: function (clientId, data, cb) {
                 store.messenger.setChannelHead(data.curvePublic, data.sig, function (e) {
                     cb({
                         error: e

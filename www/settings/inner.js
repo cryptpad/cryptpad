@@ -51,7 +51,6 @@ define([
             'cp-settings-thumbnails',
             'cp-settings-userfeedback',
             'cp-settings-change-password',
-            //'cp-settings-migrate',
             'cp-settings-delete'
         ],
         'creation': [

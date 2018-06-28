@@ -41,7 +41,6 @@ define([
             if (!attr || !attr.trim()) { return void cb("E_INVAL_ATTR"); }
             var data = exp.getFileData(id);
             data[attr] = clone(value);
-            console.log(data);
             cb(null);
         };
         exp.getPadAttribute = function (href, attr, cb) {

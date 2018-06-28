@@ -954,7 +954,7 @@ define([
         },
         // Messaging
         Q_FRIEND_REQUEST: common.messaging.onFriendRequest.fire,
-        EV_FIREND_COMPLETE: common.messaging.onFriendComplete.fire,
+        EV_FRIEND_COMPLETE: common.messaging.onFriendComplete.fire,
         // Network
         NETWORK_DISCONNECT: common.onNetworkDisconnect.fire,
         NETWORK_RECONNECT: function (data) {
@@ -1076,7 +1076,6 @@ define([
         }).nThen(function (waitFor) {
             var cfg = {
                 init: true,
-                //query: onMessage, // TODO temporary, will be replaced by a webworker channel
                 userHash: LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
@@ -1093,11 +1092,32 @@ define([
 
             var msgEv = Util.mkEvent();
             var postMsg, worker;
+            var noWorker = AppConfig.disableWorkers || false;
+            if (localStorage.CryptPad_noWorkers) {
+                noWorker = localStorage.CryptPad_noWorkers === '1';
+                console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
+            }
             Nthen(function (waitFor2) {
-                if (typeof(SharedWorker) !== "undefined") {
+                if (Worker) {
+                    var w = waitFor2();
+                    worker = new Worker('/common/outer/testworker.js?' + urlArgs);
+                    worker.onerror = function (errEv) {
+                        errEv.preventDefault();
+                        errEv.stopPropagation();
+                        noWorker = true;
+                        w();
+                    };
+                    worker.onmessage = function (ev) {
+                        if (ev.data === "OK") {
+                            w();
+                        }
+                    };
+                }
+            }).nThen(function (waitFor2) {
+                if (!noWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
-                        console.error(e);
+                        console.error(e.message);
                     };
                     worker.port.onmessage = function (ev) {
                         if (ev.data === "SW_READY") {
@@ -1113,7 +1133,7 @@ define([
                     window.addEventListener('beforeunload', function () {
                         postMsg('CLOSE');
                     });
-                } else if (false && 'serviceWorker' in navigator) {
+                } else if (false && !noWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
 
@@ -1163,8 +1183,11 @@ define([
                     window.addEventListener('beforeunload', function () {
                         postMsg('CLOSE');
                     });
-                } else if (Worker) {
+                } else if (!noWorker && Worker) {
                     worker = new Worker('/common/outer/webworker.js?' + urlArgs);
+                    worker.onerror = function (e) {
+                        console.error(e.message);
+                    };
                     worker.onmessage = function (ev) {
                         msgEv.fire(ev);
                     };
@@ -1172,6 +1195,7 @@ define([
                         worker.postMessage(data);
                     };
                 } else {
+                    // Use the async store in the main thread if workers are not available
                     require(['/common/outer/noworker.js'], waitFor2(function (NoWorker) {
                         NoWorker.onMessage(function (data) {
                             msgEv.fire({data: data});

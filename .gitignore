@@ -16,4 +16,5 @@ pins/
 blob/
 block/
 blobstage/
+block/
 privileged.conf
