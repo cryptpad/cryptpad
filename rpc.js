@@ -25,7 +25,7 @@ var SUPPRESS_RPC_ERRORS = false;
 
 var WARN = function (e, output) {
     if (!SUPPRESS_RPC_ERRORS && e && output) {
-        console.error(new Date().toISOString() + ' [' + e + ']', output);
+        console.error(new Date().toISOString() + ' [' + String(e) + ']', output);
         console.error(new Error(e).stack);
         console.error();
     }
@@ -1385,8 +1385,9 @@ var writeLoginBlock = function (Env, msg, cb) {
     var signature = msg[1];
     var block = msg[2];
 
-    validateLoginBlock(Env, publicKey, signature, block, function (e, verified_block) {
+    validateLoginBlock(Env, publicKey, signature, block, function (e, validatedBlock) {
         if (e) { return void cb(e); }
+        if (!(validatedBlock instanceof Uint8Array)) { return void cb('E_INVALID_BLOCK'); }
 
         // derive the filepath
         var path = createLoginBlockPath(Env, publicKey);
@@ -1411,7 +1412,11 @@ var writeLoginBlock = function (Env, msg, cb) {
             }));
         }).nThen(function () {
             // actually write the block
-            Fs.writeFile(path, new Buffer(verified_block), { encoding: "binary", }, function (err) {
+
+            // flow is dumb and I need to guard against this which will never happen
+            /*:: if (typeof(validatedBlock) === 'undefined') { throw new Error('should never happen'); } */
+            /*:: if (typeof(path) === 'undefined') { throw new Error('should never happen'); } */
+            Fs.writeFile(path, new Buffer(validatedBlock), { encoding: "binary", }, function (err) {
                 if (err) { return void cb(err); }
                 cb();
             });
@@ -1434,7 +1439,7 @@ var removeLoginBlock = function (Env, msg, cb) {
     var signature = msg[1];
     var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
 
-    validateLoginBlock(Env, publicKey, signature, block, function (e) {
+    validateLoginBlock(Env, publicKey, signature, block, function (e /*::, validatedBlock */) {
         if (e) { return void cb(e); }
         // derive the filepath
         var path = createLoginBlockPath(Env, publicKey);
@@ -1716,7 +1721,7 @@ RPC.create = function (
             var session = Sessions[safeKey];
             var token = session? session.tokens.slice(-1)[0]: '';
             var cookie = makeCookie(token).join('|');
-            respond(e, [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
+            respond(String(e), [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
         };
 
         if (typeof(msg) !== 'object' || !msg.length) {
