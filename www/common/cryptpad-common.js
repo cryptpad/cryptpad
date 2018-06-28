@@ -613,7 +613,7 @@ define([
         if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
 
         var warning = false;
-        var newHash;
+        var newHash, newRoHref;
         var oldChannel;
         if (parsed.hashData.password) {
             newHash = parsed.hash;
@@ -678,6 +678,11 @@ define([
             common.setPadAttribute('channel', secret.channel, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
+            var viewHash = Hash.getViewHashFromKeys(secret);
+            newRoHref = '/' + parsed.type + '/#' + viewHash;
+            common.setPadAttribute('roHref', newRoHref, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
 
             if (parsed.hashData.password) { return; } // same hash
             common.setPadAttribute('href', newHref, waitFor(function (err) {
@@ -687,7 +692,8 @@ define([
             cb({
                 warning: warning,
                 hash: newHash,
-                href: newHref
+                href: newHref,
+                roHref: newRoHref
             });
         });
     };

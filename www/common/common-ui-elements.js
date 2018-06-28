@@ -73,6 +73,8 @@ define([
                 data.password = val;
             }));
         }).nThen(function (waitFor) {
+            var base = common.getMetadataMgr().getPrivateData().origin;
+            /* XXX
             common.getPadAttribute('href', waitFor(function (err, val) {
                 var base = common.getMetadataMgr().getPrivateData().origin;
 
@@ -93,6 +95,12 @@ define([
                 if (!hrefsecret.keys) { return; }
                 var viewHash = Hash.getViewHashFromKeys(hrefsecret);
                 data.roHref = hBase + viewHash;
+            }));*/
+            common.getPadAttribute('href', waitFor(function (err, val) {
+                data.href = base + val;
+            }));
+            common.getPadAttribute('roHref', waitFor(function (err, val) {
+                data.roHref = base + val;
             }));
             common.getPadAttribute('channel', waitFor(function (err, val) {
                 data.channel = val;
@@ -162,7 +170,7 @@ define([
             $d.append(password);
         }
 
-        var parsed = Hash.parsePadUrl(data.href);
+        var parsed = Hash.parsePadUrl(data.href || data.roHref);
         if (owned && parsed.hashData.type === 'pad') {
             var sframeChan = common.getSframeChannel();
             var changePwTitle = Messages.properties_changePassword;
@@ -186,7 +194,7 @@ define([
                 UI.confirm(changePwConfirm, function (yes) {
                     if (!yes) { return; }
                     sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
-                        href: data.href,
+                        href: data.href || data.roHref,
                         password: $(newPassword).find('input').val()
                     }, function (err, data) {
                         if (err || data.error) {
@@ -195,11 +203,11 @@ define([
                         UI.findOKButton().click();
                         if (data.warning) {
                             return void UI.alert(Messages.properties_passwordWarning, function () {
-                                common.gotoURL(hasPassword ? undefined : data.href);
+                                common.gotoURL(hasPassword ? undefined : (data.href || data.roHref));
                             }, {force: true});
                         }
                         return void UI.alert(Messages.properties_passwordSuccess, function () {
-                            common.gotoURL(hasPassword ? undefined : data.href);
+                            common.gotoURL(hasPassword ? undefined : (data.href || data.roHref));
                         }, {force: true});
                     });
                 });

@@ -761,7 +761,7 @@ define([
     UI.getFileIcon = function (data) {
         var $icon = UI.getIcon();
         if (!data) { return $icon; }
-        var href = data.href;
+        var href = data.href || data.roHref;
         var type = data.type;
         if (!href && !type) { return $icon; }
 
