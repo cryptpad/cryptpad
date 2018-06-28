@@ -931,9 +931,8 @@ define([
                 if (typeof(SharedWorker) !== "undefined") {
                     try {
                         new SharedWorker('');
-                    catch (e) {
+                    } catch (e) {
                         noSharedWorker = true;
-                        e = e;
                         console.log('Disabling SharedWorker because of privacy settings.');
                     }
                 }
