@@ -2691,22 +2691,6 @@ define([
             return $div.html();
         };
 
-        /* XXX
-        var getReadOnlyUrl = APP.getRO = function (id) {
-            if (!filesOp.isFile(id)) { return; }
-            var data = filesOp.getFileData(id);
-            if (!data) { return; }
-            if (data.roHref) { return data.roHref; }
-            var parsed = Hash.parsePadUrl(data.href);
-            if (parsed.hashData.type !== "pad") { return; }
-            var i = data.href.indexOf('#') + 1;
-            var base = data.href.slice(0, i);
-            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
-            if (!hrefsecret.keys) { return; }
-            var viewHash = Hash.getViewHashFromKeys(hrefsecret);
-            return base + viewHash;
-        };*/
-
         // Disable middle click in the context menu to avoid opening /drive/inner.html# in new tabs
         $(window).click(function (e) {
             if (!e.target || !$(e.target).parents('.cp-dropdown-content').length) { return; }
@@ -2723,20 +2707,14 @@ define([
             //var ro = filesOp.isReadOnlyFile(el);
             var base = APP.origin;
             var data = JSON.parse(JSON.stringify(filesOp.getFileData(el)));
-            if (!data || !data.href) { return void cb('INVALID_FILE'); }
-            data.href = base + data.href;
-            data.roHref = base + data.roHref;
+            if (!data || !(data.href || data.roHref)) { return void cb('INVALID_FILE'); }
 
-            /* XXX
-            var roUrl;
-            if (ro) {
-                data.roHref = data.href;
-                delete data.href;
-            } else {
-                roUrl = getReadOnlyUrl(el);
-                if (roUrl) { data.roHref = base + roUrl; }
+            if (data.href) {
+                data.href = base + data.href;
             }
-            */
+            if (data.roHref) {
+                data.roHref = base + data.roHref;
+            }
 
             UIElements.getProperties(common, data, cb);
         };
@@ -2810,11 +2788,15 @@ define([
             else if ($(this).hasClass('cp-app-drive-context-openro')) {
                 paths.forEach(function (p) {
                     var el = filesOp.find(p.path);
-                    if (filesOp.isPathIn(p.path, [FILES_DATA])) { el = el.href; }
-                    if (!el || filesOp.isFolder(el)) { return; }
-                    // var roUrl = getReadOnlyUrl(el);
-                    openFile(el);
-                    //, roUrl); XXX
+                    var href;
+                    if (filesOp.isPathIn(p.path, [FILES_DATA])) {
+                        href = el.roHref;
+                    } else {
+                        if (!el || filesOp.isFolder(el)) { return; }
+                        var data = filesOp.getFileData(el);
+                        href = data.roHref;
+                    }
+                    openFile(null, href);
                 });
             }
             else if ($(this).hasClass('cp-app-drive-context-newfolder')) {

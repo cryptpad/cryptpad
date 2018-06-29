@@ -441,8 +441,10 @@ define([
             if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
             if (!data.roHref) {
                 var parsed = Hash.parsePadUrl(data.href);
-                var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
-                data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                if (parsed.hashData.type === "pad") {
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+                    data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                }
             }
             var pad = makePad(data.href, data.roHref, data.title);
             if (data.owners) { pad.owners = data.owners; }
@@ -742,7 +744,7 @@ define([
             // Edit > Edit (present) > View > View (present)
             for (var id in allPads) {
                 var pad = allPads[id];
-                if (!pad.href || !pad.roHref) { continue; }
+                if (!pad.href && !pad.roHref) { continue; }
 
                 var p2 = Hash.parsePadUrl(pad.href || pad.roHref);
                 var h2 = p2.hashData;
@@ -1364,7 +1366,7 @@ define([
             }).nThen(function (waitFor) {
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
-                        state: 2,
+                        state: (2 + (version / 10)),
                         progress: progress
                     });
                 });

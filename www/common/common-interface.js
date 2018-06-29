@@ -665,7 +665,7 @@ define([
                 // Update the current state
                 loading.driveState = data.state;
                 data.progress = data.progress || 100;
-                data.msg = Messages['loading_drive_'+data.state] || '';
+                data.msg = Messages['loading_drive_'+ Math.floor(data.state)] || '';
                 $progress.html(data.msg);
                 if (data.progress) {
                     $progress.append(h('div.cp-loading-progress-bar', [

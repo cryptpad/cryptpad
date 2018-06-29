@@ -133,11 +133,6 @@ define([
             if (!loggedIn && !config.testMode) {
                 allFilesPaths.forEach(function (path) {
                     var id = path[1];
-                    /* XXX
-                    var el = exp.find(path);
-                    if (!el) { return; }
-                    var id = exp.getIdFromHref(el.href);
-                    */
                     if (!id) { return; }
                     spliceFileData(id);
                 });
@@ -256,15 +251,6 @@ define([
         };
 
         // REPLACE
-        /* XXX
-        exp.replace = function (o, n) {
-            var idO = exp.getIdFromHref(o);
-            if (!idO || !exp.isFile(idO)) { return; }
-            var data = exp.getFileData(idO);
-            if (!data) { return; }
-            data.href = n;
-        };
-        */
         // If all the occurences of an href are in the trash, remove them and add the file in root.
         // This is use with setPadTitle when we open a stronger version of a deleted pad
         exp.restoreHref = function (href) {
@@ -576,17 +562,18 @@ define([
                     }
 
                     // If we have an edit link, check the view link
-                    if (el.href) {
-                        var fixRo = function () {
+                    if (el.href && parsed.hashData.type === "pad") {
+                        if (parsed.hashData.mode === "view") {
+                            el.roHref = el.href;
+                            delete el.href;
+                        } else if (!el.roHref) {
                             secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
-                            el.roHref = '/' + parsed.type + '/#' + Hash.getViewHasFromKeys(secret);
-                        };
-                        if (!el.roHref) {
-                            fixRo();
+                            el.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
                         } else {
                             var parsed2 = Hash.parsePadUrl(el.roHref);
                             if (!parsed2.hash || !parsed2.type) {
-                                fixRo();
+                                secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                                el.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
                             }
                         }
                     }

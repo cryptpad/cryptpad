@@ -119,6 +119,7 @@ define([
                     });
                     oldFiles.forEach(function (id) {
                         var href = oldRecentPads[id].href || oldRecentPads[id].roHref;
+                        var isRo = href === oldRecentPads[id].roHref;
                         // Do not migrate a pad if we already have it, it would create a duplicate in the drive
                         if (newHrefs.indexOf(href) !== -1) { return; }
                         // If we have a stronger version, do not add the current href

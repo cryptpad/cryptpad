@@ -79,13 +79,6 @@ define([
             if (!isFile(element)) { return false; }
             var data = exp.getFileData(element);
             return Boolean(data.roHref && !data.href);
-            /* XXX
-            var parsed = Hash.parsePadUrl(data.href);
-            if (!parsed) { return false; }
-            var pHash = parsed.hashData;
-            if (!pHash || pHash.type !== "pad") { return; }
-            return pHash && pHash.mode === 'view';
-            */
         };
 
         var isFolder = exp.isFolder = function (element) {
