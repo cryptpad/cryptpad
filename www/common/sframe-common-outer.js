@@ -215,8 +215,8 @@ define([
                 }));
             }
         }).nThen(function () {
+            var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!secret) {
-                var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
             }
             var readOnly = secret.keys && !secret.keys.editKeyStr;
@@ -226,7 +226,6 @@ define([
                 secret.keys = secret.key;
                 readOnly = false;
             }
-            var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
             var edPublic;
