@@ -215,6 +215,10 @@ define([
                 }));
             }
         }).nThen(function () {
+            if (!secret) {
+                var parsed = Utils.Hash.parsePadUrl(window.location.href);
+                secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
+            }
             var readOnly = secret.keys && !secret.keys.editKeyStr;
             var isNewHash = true;
             if (!secret.keys) {
