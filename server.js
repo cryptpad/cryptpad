@@ -165,7 +165,7 @@ app.get('/api/config', function(req, res){
     res.send('define(function(){\n' + [
         'var obj = ' + JSON.stringify({
             requireConf: {
-                waitSeconds: 60,
+                waitSeconds: 600,
                 urlArgs: 'ver=' + Package.version + (FRESH_KEY? '-' + FRESH_KEY: '') + (DEV_MODE? '-' + (+new Date()): ''),
             },
             removeDonateButton: (config.removeDonateButton === true),
