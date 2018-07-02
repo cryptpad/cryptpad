@@ -1721,7 +1721,7 @@ RPC.create = function (
             var session = Sessions[safeKey];
             var token = session? session.tokens.slice(-1)[0]: '';
             var cookie = makeCookie(token).join('|');
-            respond(String(e), [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
+            respond(e ? String(e): e, [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
         };
 
         if (typeof(msg) !== 'object' || !msg.length) {
