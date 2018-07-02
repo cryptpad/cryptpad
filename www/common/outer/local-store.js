@@ -58,6 +58,14 @@ define([
         localStorage[Constants.userHashKey] = sHash;
     };
 
+    LocalStore.getBlockHash = function () {
+        return localStorage[Constants.blockHashKey];
+    };
+
+    LocalStore.setBlockHash = function (hash) {
+        localStorage[Constants.blockHashKey] = hash;
+    };
+
     LocalStore.getAccountName = function () {
         return localStorage[Constants.userNameKey];
     };
@@ -69,7 +77,7 @@ define([
 
 
 
-
+    // XXX update this to take into account blockHash values
     LocalStore.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
@@ -96,6 +104,7 @@ define([
         [
             Constants.userNameKey,
             Constants.userHashKey,
+            Constants.blockHashKey,
             'loginToken',
             'plan',
         ].forEach(function (k) {

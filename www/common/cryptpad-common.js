@@ -8,11 +8,12 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
+    '/common/outer/login-block.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, Channel,
+            Messaging, Constants, Feedback, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -236,6 +237,12 @@ define([
 
     common.writeLoginBlock = function (data, cb) {
         postMessage('WRITE_LOGIN_BLOCK', data, function (obj) {
+            cb(obj);
+        });
+    };
+
+    common.removeLoginBlock = function (data, cb) {
+        postMessage('REMOVE_LOGIN_BLOCK', data, function (obj) {
             cb(obj);
         });
     };
@@ -692,6 +699,157 @@ define([
         });
     };
 
+    common.changeUserPassword = function (Crypt, edPublic, data, cb) {
+        if (!edPublic) {
+            return void cb({
+                error: 'E_NOT_LOGGED_IN'
+            });
+        }
+        var accountName = LocalStore.getAccountName();
+        var hash = LocalStore.getUserHash(); // To load your old drive
+        var password = data.password; // To remove your old block
+        var newPassword = data.newPassword; // To create your new block
+        var secret = Hash.getSecrets('drive', hash);
+        var newHash, newHref, newSecret, newBlockSeed;
+        var oldIsOwned = false;
+
+        var blockHash = LocalStore.getBlockHash();
+        var oldBlockKeys;
+
+        var Cred, Block, Login;
+        Nthen(function (waitFor) {
+            require([
+                '/customize/credential.js',
+                '/common/outer/login-block.js',
+                '/customize/login.js'
+            ], waitFor(function (_Cred, _Block, _Login) {
+                Cred = _Cred;
+                Block = _Block;
+                Login = _Login;
+            }));
+        }).nThen(function (waitFor) {
+            // confirm that the provided password is correct
+            Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes, waitFor(function (bytes) {
+                var allocated = Login.allocateBytes(bytes);
+                oldBlockKeys = allocated.blockKeys;
+                if (blockHash) {
+                    if (blockHash !== allocated.blockHash) {
+                        // incorrect password probably
+                        waitFor.abort();
+                        return void cb({
+                            error: 'INVALID_PASSWORD',
+                        });
+                    }
+                    // the user has already created a block, so you should compare against that
+                } else {
+                    // otherwise they're a legacy user, and we should check against the User_hash
+                    if (hash !== allocated.userHash) {
+                        waitFor.abort();
+                        return void cb({
+                            error: 'INVALID_PASSWORD',
+                        });
+                    }
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // Check if our drive is already owned
+            common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
+                if (err || obj.error) { return; }
+                if (obj.owners && Array.isArray(obj.owners) &&
+                    obj.owners.indexOf(edPublic) !== -1) {
+                    oldIsOwned = true;
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // Create a new user hash
+            // Get the current content, store it in the new user file
+            // and make sure the new user drive is owned
+            newHash = Hash.createRandomHash('drive');
+            newHref = '/drive/#' + newHash;
+            newSecret = Hash.getSecrets('drive', newHash);
+
+            var optsPut = {
+                owners: [edPublic]
+            };
+
+            Crypt.get(hash, waitFor(function (err, val) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+                Crypt.put(newHash, val, waitFor(function (err) {
+                    if (err) {
+                        waitFor.abort();
+                        return void cb({ error: err });
+                    }
+                }), optsPut);
+            }));
+        }).nThen(function (waitFor) {
+            // Drive content copied: get the new block location
+            Cred.deriveFromPassphrase(accountName, newPassword, Login.requiredBytes, waitFor(function (bytes) {
+                var allocated = Login.allocateBytes(bytes);
+                newBlockSeed = allocated.blockSeed;
+            }));
+        }).nThen(function (waitFor) {
+            // Write the new login block
+            var keys = Block.genkeys(newBlockSeed);
+            var content = Block.serialize(JSON.stringify({
+                User_name: accountName,
+                User_hash: newHash
+            }), keys);
+            common.writeLoginBlock(content, waitFor(function (obj) {
+                var newBlockHash = Block.getBlockHash(keys);
+                LocalStore.setBlockHash(newBlockHash);
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // New drive hash is in login block, unpin the old one and pin the new one
+            common.unpinPads([secret.channel], waitFor());
+            common.pinPads([newSecret.channel], waitFor());
+        }).nThen(function (waitFor) {
+            // Remove block hash
+            if (blockHash) {
+                var removeData = Block.remove(oldBlockKeys);
+                common.removeLoginBlock(removeData, waitFor(function (obj) {
+                    if (obj && obj.error) { return void console.error(obj.error); }
+                }));
+            }
+        }).nThen(function (waitFor) {
+            if (oldIsOwned) {
+                common.removeOwnedChannel(secret.channel, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        // Deal with it as if it was not owned
+                        oldIsOwned = false;
+                        return;
+                    }
+                    common.logoutFromAll(waitFor(function () {
+                        postMessage("DISCONNECT");
+                    }));
+                }));
+            }
+        }).nThen(function (waitFor) {
+            if (!oldIsOwned) {
+                postMessage("SET", {
+                    key: [Constants.deprecatedKey],
+                    value: true
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                    }
+                    common.logoutFromAll(waitFor(function () {
+                        postMessage("DISCONNECT");
+                    }));
+                }));
+            }
+        }).nThen(function () {
+            // We have the new drive, with the new login block
+            window.location.reload();
+        });
+    };
+
     // Loading events
     common.loading = {};
     common.loading.onDriveEvent = Util.mkEvent();
@@ -886,6 +1044,34 @@ define([
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
+            }
+
+        }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+            if (blockHash) {
+                console.log(blockHash);
+                var parsed = Hash.parseBlockHash(blockHash);
+
+                if (typeof(parsed) !== 'object') {
+                    console.error("Failed to parse blockHash");
+                    console.log(parsed);
+                    return;
+                } else {
+                    console.log(parsed);
+                }
+                Util.fetch(parsed.href, waitFor(function (err, arraybuffer) {
+                    if (err) { return void console.log(err); }
+
+                    // use the results to load your user hash and
+                    // put your userhash into localStorage
+                    try {
+                        var block_info = Block.decrypt(arraybuffer, parsed.keys);
+                        if (block_info[Constants.userHashKey]) { LocalStore.setUserHash(block_info[Constants.userHashKey]); }
+                    } catch (e) {
+                        console.error(e);
+                        return void console.error("failed to decrypt or decode block content");
+                    }
+                }));
             }
         }).nThen(function (waitFor) {
             var cfg = {
