@@ -105,14 +105,18 @@ define([
         return Nacl.util.encodeBase64(u8).replace(/\//g, '-');
     };
 
-    Block.getBlockHash = function (keys) {
+    Block.getBlockUrl = function (keys) {
         var publicKey = urlSafeB64(keys.sign.publicKey);
         // 'block/' here is hardcoded because it's hardcoded on the server
         // if we want to make CryptPad work in server subfolders, we'll need
         // to update this path derivation
-        var relative = 'block/' + publicKey.slice(0, 2) + '/' +  publicKey;
+        return ApiConfig.httpUnsafeOrigin  + 'block/' + publicKey.slice(0, 2) + '/' +  publicKey;
+    };
+
+    Block.getBlockHash = function (keys) {
+        var absolute = Block.getBlockUrl(keys);
         var symmetric = urlSafeB64(keys.symmetric);
-        return ApiConfig.httpUnsafeOrigin + relative + '#' + symmetric;
+        return absolute + '#' + symmetric;
     };
 
 /*
