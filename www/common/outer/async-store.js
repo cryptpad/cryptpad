@@ -426,10 +426,11 @@ define([
             cb(JSON.parse(JSON.stringify(metadata)));
         };
 
-        var makePad = function (href, title) {
+        var makePad = function (href, roHref, title) {
             var now = +new Date();
             return {
                 href: href,
+                roHref: roHref,
                 atime: now,
                 ctime: now,
                 title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
@@ -437,8 +438,15 @@ define([
         };
 
         Store.addPad = function (clientId, data, cb) {
-            if (!data.href) { return void cb({error:'NO_HREF'}); }
-            var pad = makePad(data.href, data.title);
+            if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
+            if (!data.roHref) {
+                var parsed = Hash.parsePadUrl(data.href);
+                if (parsed.hashData.type === "pad") {
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+                    data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                }
+            }
+            var pad = makePad(data.href, data.roHref, data.title);
             if (data.owners) { pad.owners = data.owners; }
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
@@ -736,9 +744,9 @@ define([
             // Edit > Edit (present) > View > View (present)
             for (var id in allPads) {
                 var pad = allPads[id];
-                if (!pad.href) { continue; }
+                if (!pad.href && !pad.roHref) { continue; }
 
-                var p2 = Hash.parsePadUrl(pad.href);
+                var p2 = Hash.parsePadUrl(pad.href || pad.roHref);
                 var h2 = p2.hashData;
 
                 // Different types, proceed to the next one
@@ -789,8 +797,14 @@ define([
 
             // Add the pad if it does not exist in our drive
             if (!contains) {
+                var roHref;
+                if (h.mode === "view") {
+                    roHref = href;
+                    href = undefined;
+                }
                 Store.addPad(clientId, {
                     href: href,
+                    roHref: roHref,
                     channel: channel,
                     title: title,
                     owners: owners,
@@ -827,7 +841,7 @@ define([
             };
             store.userObject.getFiles(where).forEach(function (id) {
                 var data = store.userObject.getFileData(id);
-                var parsed = Hash.parsePadUrl(data.href);
+                var parsed = Hash.parsePadUrl(data.href || data.roHref);
                 if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
                     hashes.indexOf(parsed.hash) === -1 &&
                     !isFiltered(parsed.type, data)) {
@@ -1421,7 +1435,7 @@ define([
             }).nThen(function (waitFor) {
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
-                        state: 2,
+                        state: (2 + (version / 10)),
                         progress: progress
                     });
                 });

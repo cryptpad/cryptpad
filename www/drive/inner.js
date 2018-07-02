@@ -666,10 +666,10 @@ define([
         var openFile = function (el, href) {
             if (!href) {
                 var data = filesOp.getFileData(el);
-                if (!data || !data.href) {
+                if (!data || (!data.href && !data.roHref)) {
                     return void logError("Missing data for the file", el, data);
                 }
-                href = data.href;
+                href = data.href || data.roHref;
             }
             window.open(APP.origin + href);
         };
@@ -1271,9 +1271,10 @@ define([
             if (!filesOp.isFile(element)) { return; }
 
             var data = filesOp.getFileData(element);
+            var href = data.href || data.roHref;
             if (!data) { return void logError("No data for the file", element); }
 
-            var hrefData = Hash.parsePadUrl(data.href);
+            var hrefData = Hash.parsePadUrl(href);
             if (hrefData.type) {
                 $span.addClass('cp-border-color-'+hrefData.type);
             }
@@ -1305,7 +1306,7 @@ define([
             $span.attr('title', name);
 
             var type = Messages.type[hrefData.type] || hrefData.type;
-            common.displayThumbnail(data.href, data.channel, data.password, $span, function ($thumb) {
+            common.displayThumbnail(href || data.roHref, data.channel, data.password, $span, function ($thumb) {
                 // Called only if the thumbnail exists
                 // Remove the .hide() added by displayThumnail() because it hides the icon in
                 // list mode too
@@ -1847,7 +1848,7 @@ define([
                 var data = filesOp.getFileData(id);
                 if (!data) { return ''; }
                 if (prop === 'type') {
-                    var hrefData = Hash.parsePadUrl(data.href);
+                    var hrefData = Hash.parsePadUrl(data.href || data.roHref);
                     return hrefData.type;
                 }
                 if (prop === 'atime' || prop === 'ctime') {
@@ -1882,7 +1883,7 @@ define([
                         };
                     }
                     if (prop === 'type') {
-                        var hrefData = Hash.parsePadUrl(e.href);
+                        var hrefData = Hash.parsePadUrl(e.href || e.roHref);
                         return hrefData.type;
                     }
                     if (prop === 'atime' || prop === 'ctime') {
@@ -2690,20 +2691,6 @@ define([
             return $div.html();
         };
 
-        var getReadOnlyUrl = APP.getRO = function (id) {
-            if (!filesOp.isFile(id)) { return; }
-            var data = filesOp.getFileData(id);
-            if (!data) { return; }
-            var parsed = Hash.parsePadUrl(data.href);
-            if (parsed.hashData.type !== "pad") { return; }
-            var i = data.href.indexOf('#') + 1;
-            var base = data.href.slice(0, i);
-            var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
-            if (!hrefsecret.keys) { return; }
-            var viewHash = Hash.getViewHashFromKeys(hrefsecret);
-            return base + viewHash;
-        };
-
         // Disable middle click in the context menu to avoid opening /drive/inner.html# in new tabs
         $(window).click(function (e) {
             if (!e.target || !$(e.target).parents('.cp-dropdown-content').length) { return; }
@@ -2717,19 +2704,16 @@ define([
             if (!filesOp.isFile(el)) {
                 return void cb('NOT_FILE');
             }
-            var ro = filesOp.isReadOnlyFile(el);
+            //var ro = filesOp.isReadOnlyFile(el);
             var base = APP.origin;
             var data = JSON.parse(JSON.stringify(filesOp.getFileData(el)));
-            if (!data || !data.href) { return void cb('INVALID_FILE'); }
-            data.href = base + data.href;
+            if (!data || !(data.href || data.roHref)) { return void cb('INVALID_FILE'); }
 
-            var roUrl;
-            if (ro) {
-                data.roHref = data.href;
-                delete data.href;
-            } else {
-                roUrl = getReadOnlyUrl(el);
-                if (roUrl) { data.roHref = base + roUrl; }
+            if (data.href) {
+                data.href = base + data.href;
+            }
+            if (data.roHref) {
+                data.roHref = base + data.roHref;
             }
 
             UIElements.getProperties(common, data, cb);
@@ -2804,10 +2788,15 @@ define([
             else if ($(this).hasClass('cp-app-drive-context-openro')) {
                 paths.forEach(function (p) {
                     var el = filesOp.find(p.path);
-                    if (filesOp.isPathIn(p.path, [FILES_DATA])) { el = el.href; }
-                    if (!el || filesOp.isFolder(el)) { return; }
-                    var roUrl = getReadOnlyUrl(el);
-                    openFile(null, roUrl);
+                    var href;
+                    if (filesOp.isPathIn(p.path, [FILES_DATA])) {
+                        href = el.roHref;
+                    } else {
+                        if (!el || filesOp.isFolder(el)) { return; }
+                        var data = filesOp.getFileData(el);
+                        href = data.roHref;
+                    }
+                    openFile(null, href);
                 });
             }
             else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
@@ -2847,7 +2836,7 @@ define([
                 el = filesOp.find(paths[0].path);
                 var data = filesOp.getFileData(el);
                 if (!data) { return void console.error("Expected to find a file"); }
-                var href = data.href;
+                var href = data.href || data.roHref;
                 common.updateTags(href);
             }
             else if ($(this).hasClass("cp-app-drive-context-empty")) {

@@ -79,11 +79,7 @@ define([
         exp.isReadOnlyFile = function (element) {
             if (!isFile(element)) { return false; }
             var data = exp.getFileData(element);
-            var parsed = Hash.parsePadUrl(data.href);
-            if (!parsed) { return false; }
-            var pHash = parsed.hashData;
-            if (!pHash || pHash.type !== "pad") { return; }
-            return pHash && pHash.mode === 'view';
+            return Boolean(data.roHref && !data.href);
         };
 
         var isFolder = exp.isFolder = function (element) {
@@ -140,7 +136,7 @@ define([
         var getTitle = exp.getTitle = function (file, type) {
             if (workgroup) { debug("No titles in workgroups"); return; }
             var data = getFileData(file);
-            if (!file || !data || !data.href) {
+            if (!file || !data || !(data.href || data.roHref)) {
                 error("getTitle called with a non-existing file id: ", file, data);
                 return;
             }
@@ -289,7 +285,8 @@ define([
         var getIdFromHref = exp.getIdFromHref = function (href) {
             var result;
             getFiles([FILES_DATA]).some(function (id) {
-                if (files[FILES_DATA][id].href === href) {
+                if (files[FILES_DATA][id].href === href ||
+                    files[FILES_DATA][id].roHref === href) {
                     result = id;
                     return true;
                 }

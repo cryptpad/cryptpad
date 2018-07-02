@@ -123,12 +123,58 @@ define([
                         }));
                     });
                 });
-                n.nThen(waitFor());
+                n.nThen(waitFor(function () {
+                    Feedback.send('Migrate-6', true);
+                    userObject.version = version = 6;
+                }));
             };
             if (version < 6) {
                 addChannelId();
-                Feedback.send('Migrate-6', true);
-                userObject.version = version = 6;
+            }
+        }).nThen(function (waitFor) {
+            var addRoHref = function () {
+                var data = userObject.drive.filesData;
+                var el, parsed;
+                var n = nThen(function () {});
+                var padsLength = Object.keys(data).length;
+                Object.keys(data).forEach(function (k, i) {
+                    n = n.nThen(function (w) {
+                        setTimeout(w(function () {
+                            el = data[k];
+                            if (!el.href || (el.roHref && false)) {
+                                // Already migrated
+                                return void progress(7, Math.round(100*i/padsLength));
+                            }
+                            parsed = Hash.parsePadUrl(el.href);
+                            if (parsed.hashData.type !== "pad") {
+                                // No read-only mode for files
+                                return void progress(7, Math.round(100*i/padsLength));
+                            }
+                            if (parsed.hashData.mode === "view") {
+                                // This is a read-only pad in our drive
+                                el.roHref = el.href;
+                                delete el.href;
+                                console.log('Move href to roHref in filesData ', el.roHref);
+                            } else {
+                                var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                                var hash = Hash.getViewHashFromKeys(secret);
+                                if (hash) {
+                                    // Version 0 won't have a view hash available
+                                    el.roHref = '/' + parsed.type + '/#' + hash;
+                                    console.log('Adding missing roHref in filesData ', el.href);
+                                }
+                            }
+                            progress(6, Math.round(100*i/padsLength));
+                        }));
+                    });
+                });
+                n.nThen(waitFor(function () {
+                    Feedback.send('Migrate-7', true);
+                    userObject.version = version = 7;
+                }));
+            };
+            if (version < 7) {
+                addRoHref();
             }
         /*}).nThen(function (waitFor) {
             // Test progress bar in the loading screen

@@ -1,3 +1,45 @@
+# Echidna release (v2.4.0)
+
+## Goals
+
+For version 2.4.0 we chose to use our time to address difficulties that some users had, and to release some features which have been in development for some time. With the recent release of the _password-protected-pads_ feature, some users desired to be able to change the passwords that they'd already set, or to add a password to a pad retroactively. Other users wanted to recover information that had accidentally been deleted from their pads, but found that the history feature was difficult to use on networks with poor connectivity. Others still found that loading pads in general was too slow.
+
+## Update notes
+
+* We have released new clientside dependencies, so server administrators will need to run `bower update`
+* This release also depends on new serverside dependencies, so administrators will also need to run `npm update`
+* This release (optionally) takes advantage of Webworker APIs, so administrators may need to update their Content Security Headers to include worker-src (and child-src for safari)
+  * see cryptpad/docs/example.nginx.conf for more details regarding configuration for nginx as a reverse proxy
+  * to enable webworkers as an experimental feature, add `AppConfig.disableWorkers = false;` to your `cryptpad/customize/application-config.js`
+* Finally, administrators will need to restart their servers after updating, as clients will require new functionality
+
+## What's new
+
+### Features
+
+* CryptPad now takes advantage of some very modern browser APIs
+  * Shared Workers allow common tasks for all CryptPad editors to be handled by a single background process which runs in the background. This results in better performance savings for anyone using multiple editors at once in different tabs
+  * Webworkers are used in situations where shared workers are not supported, for most of the same tasks. They are not shared amongst different tabs, but can allow for a more responsive user experience since some heavy commands will be run in the background
+  * Not all browsers feature complete support for webworkers. For cases where they are not supported at all, or where cryptographic APIs are not supported within their context (https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7607496/), we fall back to an asynchronous context in the same thread
+* Pads with no password can now be updated to include a password, and pads with a password can have their passwords changed
+  * right-click on the pad in question, and see its properties. The following dialog will present the option to change its password
+  * changing a pad's password will remove its history
+* Accessing a pad's history used to require that clients fetch the entire history of the pad before they could view any of it. History retrieval is now done on an on-demand basis, approximately 100 versions of the pad at a time
+  * this also features an updated UI with a slider
+* We've refactored our whiteboard application to be compatible with our internal framework. As a result, it will be easier to maintain and will have all the same features as the other editors built with the same framework
+* We've defined some new server-side features which will allow clients to change their user passwords in a coming release
+* We've updated our messaging server implementation
+  * the aspect of the server which stores and distributes history has been untangled from the aspect which tracks user lists and broadcasts messages
+  * the server will now store the time when each message was received, so as to be able to allow users to view the time of edits in a later release
+
+### Bug fixes
+
+* When a user tries to register, but enters credentials which have already been used for that CryptPad instance, we prompt them to log in as that user. We discovered that the login had stopped working at some point. This has been fixed
+* Server administrators may have seen warnings from npm when attempting to update. We have fixed invalid entries and added missing entries where appropriate such that there are no more warnings
+* Static info pages have been restyled to be more responsive, thanks to @CatalinScr
+* Support for friend requests in pads with version 0 hashes has been repaired
+* We noticed a regression in how default titles for pads were suggested, and have implemented the intended behaviour
+
 # Donkey release (v2.3.0)
 
 ## Goals

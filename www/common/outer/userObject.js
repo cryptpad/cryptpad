@@ -50,19 +50,6 @@ define([
             var data = exp.getFileData(id);
             cb(null, clone(data[attr]));
         };
-        var removePadAttribute = exp.removePadAttribute = function (f) {
-            if (typeof(f) !== 'string') {
-                console.error("Can't find pad attribute for an undefined pad");
-                return;
-            }
-            Object.keys(files).forEach(function (key) {
-                var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
-                if (hash && key.indexOf(hash) === 0) {
-                    exp.debug("Deleting pad attribute in the realtime object");
-                    delete files[key];
-                }
-            });
-        };
 
         exp.pushData = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
@@ -145,12 +132,9 @@ define([
 
             if (!loggedIn && !config.testMode) {
                 allFilesPaths.forEach(function (path) {
-                    var el = exp.find(path);
-                    if (!el) { return; }
-                    var id = exp.getIdFromHref(el.href);
+                    var id = path[1];
                     if (!id) { return; }
                     spliceFileData(id);
-                    removePadAttribute(el.href);
                 });
                 return;
             }
@@ -259,7 +243,6 @@ define([
             if (!id) { return; }
             if (!loggedIn && !config.testMode) {
                 // delete permanently
-                exp.removePadAttribute(href);
                 spliceFileData(id);
                 return;
             }
@@ -268,14 +251,7 @@ define([
         };
 
         // REPLACE
-        exp.replace = function (o, n) {
-            var idO = exp.getIdFromHref(o);
-            if (!idO || !exp.isFile(idO)) { return; }
-            var data = exp.getFileData(idO);
-            if (!data) { return; }
-            data.href = n;
-        };
-        // If all the occurences of an href are in the trash, remvoe them and add the file in root.
+        // If all the occurences of an href are in the trash, remove them and add the file in root.
         // This is use with setPadTitle when we open a stronger version of a deleted pad
         exp.restoreHref = function (href) {
             var idO = exp.getIdFromHref(href);
@@ -563,13 +539,15 @@ define([
                         continue;
                     }
                     // Clean missing href
-                    if (!el.href) {
+                    if (!el.href && !el.roHref) {
                         debug("Removing an element in filesData with a missing href.", el);
                         toClean.push(id);
                         continue;
                     }
 
-                    var parsed = Hash.parsePadUrl(el.href);
+                    var parsed = Hash.parsePadUrl(el.href || el.roHref);
+                    var secret;
+
                     // Clean invalid hash
                     if (!parsed.hash) {
                         debug("Removing an element in filesData with a invalid href.", el);
@@ -583,6 +561,23 @@ define([
                         continue;
                     }
 
+                    // If we have an edit link, check the view link
+                    if (el.href && parsed.hashData.type === "pad") {
+                        if (parsed.hashData.mode === "view") {
+                            el.roHref = el.href;
+                            delete el.href;
+                        } else if (!el.roHref) {
+                            secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                            el.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                        } else {
+                            var parsed2 = Hash.parsePadUrl(el.roHref);
+                            if (!parsed2.hash || !parsed2.type) {
+                                secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                                el.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                            }
+                        }
+                    }
+
                     // Fix href
                     if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
                     // Fix creation time
@@ -592,7 +587,9 @@ define([
                     // Fix channel
                     if (!el.channel) {
                         try {
-                            var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                            if (!secret) {
+                                secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                            }
                             el.channel = secret.channel;
                             console.log('Adding missing channel in filesData ', el.channel);
                         } catch (e) {

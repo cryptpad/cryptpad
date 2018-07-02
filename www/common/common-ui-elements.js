@@ -73,26 +73,14 @@ define([
                 data.password = val;
             }));
         }).nThen(function (waitFor) {
+            var base = common.getMetadataMgr().getPrivateData().origin;
             common.getPadAttribute('href', waitFor(function (err, val) {
-                var base = common.getMetadataMgr().getPrivateData().origin;
-
-                var parsed = Hash.parsePadUrl(val);
-                if (parsed.hashData.mode === "view") {
-                    data.roHref = base + val;
-                    return;
-                }
-
-                // We're not in a read-only pad
+                if (!val) { return; }
                 data.href = base + val;
-
-                // Get Read-only href
-                if (parsed.hashData.type !== "pad") { return; }
-                var i = data.href.indexOf('#') + 1;
-                var hBase = data.href.slice(0, i);
-                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
-                if (!hrefsecret.keys) { return; }
-                var viewHash = Hash.getViewHashFromKeys(hrefsecret);
-                data.roHref = hBase + viewHash;
+            }));
+            common.getPadAttribute('roHref', waitFor(function (err, val) {
+                if (!val) { return; }
+                data.roHref = base + val;
             }));
             common.getPadAttribute('channel', waitFor(function (err, val) {
                 data.channel = val;
@@ -162,7 +150,7 @@ define([
             $d.append(password);
         }
 
-        var parsed = Hash.parsePadUrl(data.href);
+        var parsed = Hash.parsePadUrl(data.href || data.roHref);
         if (owned && parsed.hashData.type === 'pad') {
             var sframeChan = common.getSframeChannel();
             var changePwTitle = Messages.properties_changePassword;
@@ -186,7 +174,7 @@ define([
                 UI.confirm(changePwConfirm, function (yes) {
                     if (!yes) { return; }
                     sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
-                        href: data.href,
+                        href: data.href || data.roHref,
                         password: $(newPassword).find('input').val()
                     }, function (err, data) {
                         if (err || data.error) {
@@ -195,11 +183,11 @@ define([
                         UI.findOKButton().click();
                         if (data.warning) {
                             return void UI.alert(Messages.properties_passwordWarning, function () {
-                                common.gotoURL(hasPassword ? undefined : data.href);
+                                common.gotoURL(hasPassword ? undefined : (data.href || data.roHref));
                             }, {force: true});
                         }
                         return void UI.alert(Messages.properties_passwordSuccess, function () {
-                            common.gotoURL(hasPassword ? undefined : data.href);
+                            common.gotoURL(hasPassword ? undefined : (data.href || data.roHref));
                         }, {force: true});
                     });
                 });
