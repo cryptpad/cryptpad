@@ -35,8 +35,56 @@ define([
     };
 
     /*
-        Paths
+        Tools
     */
+
+    var _getUserObjects = function (Env) {
+        var userObjects = [Env.user.userObject];
+        var foldersUO = Object.keys(Env.folders).map(function (k) {
+            return Env.folders[k].userObject;
+        });
+        Array.prototype.push.apply(userObjects, foldersUO);
+        return userObjects;
+    };
+
+    // Return files data objects associated to a channel for setPadTitle
+    // All occurences are returned, in drive or shared folders
+    var findChannel = function (Env, channel) {
+        var ret = [];
+        Env.user.userObject.findChannels([channel]).forEach(function (id) {
+            ret.push({
+                data: Env.user.userObject.getFileData(id),
+                userObject: Env.user.userObject
+            });
+        });
+        Object.keys(Env.folders).forEach(function (fId) {
+            Env.folders[fId].userObject.findChannels([channel]).forEach(function (id) {
+                ret.push({
+                    data: Env.folders[fId].userObject.getFileData(id),
+                    userObject: Env.folders[fId].userObject
+                });
+            });
+        });
+        return ret;
+    };
+    // Return files data objects associated to a given href for setPadAttribute...
+    var findHref = function (Env, href) {
+        var ret = [];
+        var id = Env.user.userObject.getIdFromHref(href);
+        ret.push({
+            data: Env.user.userObject.getFileData(id),
+            userObject: Env.user.userObject
+        });
+        Object.keys(Env.folders).forEach(function (fId) {
+            var id = Env.folders[fId].userObject.getIdFromHref(href);
+            ret.push({
+                fId: fId,
+                data: Env.folders[fId].userObject.getFileData(id),
+                userObject: Env.folders[fId].userObject
+            });
+        });
+        return ret;
+    };
 
     // Transform an absolute path into a path relative to the correct shared folder
     var _resolvePath = function (Env, path) {
@@ -123,7 +171,7 @@ define([
     };
 
     /*
-        RPC commands
+        Drive RPC
     */
 
     // Move files or folders in the drive
@@ -251,54 +299,151 @@ define([
         }
     };
 
-    // Return files data objects associated to a channel for setPadTitle
-    // All occurences are returned, in drive or shared folders
-    var findChannel = function (Env, channel) {
-        var ret = [];
-        Env.user.userObject.findChannels([channel]).forEach(function (id) {
-            ret.push({
-                data: Env.user.userObject.getFileData(id),
-                userObject: Env.user.userObject
-            });
+    // Set the value everywhere the given pad is stored (main and shared folders)
+    var setPadAttribute = function (Env, data, cb) {
+        cb = cb || function () {};
+        var datas = findHref(Env, data.href);
+        var nt = nThen;
+        datas.forEach(function (d) {
+            nt = nt(function (waitFor) {
+                d.userObject.setPadAttribute(data.href, data.attr, data.value, waitFor());
+            }).nThen;
         });
-        Object.keys(Env.folders).forEach(function (fId) {
-            Env.folders[fId].userObject.findChannels([channel]).forEach(function (id) {
-                ret.push({
-                    data: Env.folders[fId].userObject.getFileData(id),
-                    userObject: Env.folders[fId].userObject
+        nt(function () { cb(); });
+    };
+    // Get pad attribute must return only one value, even if the pad is stored in multiple places
+    // (main or shared folders)
+    // We're going to return the value with the most recent atime. The attributes may have been
+    // updated in a shared folder by another user, so the most recent one is more likely to be the
+    // correct one.
+    var getPadAttribute = function (Env, data, cb) {
+        cb = cb || function () {};
+        var datas = findHref(Env, data.href);
+        var nt = nThen;
+        var res = {};
+        datas.forEach(function (d) {
+            nt = nt(function (waitFor) {
+                var atime, value;
+                var w = waitFor();
+                nThen(function (waitFor2) {
+                    d.userObject.getPadAttribute(data.href, 'atime', waitFor2(function (err, v) {
+                        atime = v;
+                    }));
+                    d.userObject.getPadAttribute(data.href, data.attr, waitFor2(function (err, v) {
+                        value = v;
+                    }));
+                }).nThen(function () {
+                    if (!res.value || res.atime < atime) {
+                        res.atime = atime;
+                        res.value = value;
+                    }
+                    w();
                 });
-            });
+            }).nThen;
         });
-        return ret;
+        nt(function () { cb(null, res.value); });
     };
 
-    // Get the list of channels that should be pinned
-    var getPinList = function (Env, edPublic) {
+    var getTagsList = function (Env) {
+        var list = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            Array.prototype.push.apply(list, uo.getTagsList());
+        });
+        Util.deduplicateString(list);
+        return list;
+    };
+
+    var getSecureFilesList = function (Env, where) {
+        var userObjects = _getUserObjects(Env);
+        var list = [];
+        var channels = [];
+        userObjects.forEach(function (uo) {
+            var toPush = uo.getFiles(where).map(function (id) {
+                return {
+                    id: id,
+                    data: uo.getFileData(id)
+                };
+            }).filter(function (d) {
+                if (channels.indexOf(d.data.channel) === -1) {
+                    channels.push(d.data.channel);
+                    return true;
+                }
+            });
+            Array.prototype.push.apply(list, toPush);
+        });
+        return list;
+    };
+
+
+    /*
+        Store
+    */
+
+    // Get the list of channels filtered by a type (expirable channels, owned channels, pin list)
+    var getChannelsList = function (Env, edPublic, type) {
         if (!edPublic) { return; }
-        var toPin = [];
+        var result = [];
         var addChannel = function (userObject) {
+            if (type === 'expirable') {
+                return function (fileId) {
+                    var data = userObject.getFileData(fileId);
+                    // Don't push duplicates
+                    if (result.indexOf(data.channel) !== -1) { return; }
+                    // Return pads owned by someone else or expired by time
+                    if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
+                        (data.expire && data.expire < (+new Date()))) {
+                        result.push(data.channel);
+                    }
+                };
+            }
+            if (type === 'owned') {
+                return function (fileId) {
+                    var data = userObject.getFileData(fileId);
+                    // Don't push duplicates
+                    if (result.indexOf(data.channel) !== -1) { return; }
+                    // Return owned pads
+                    if (Array.isArray(data.owners) && data.owners.length &&
+                        data.owners.indexOf(edPublic) !== -1) {
+                        result.push(data.channel);
+                    }
+                };
+            }
             return function (fileId) {
                 var data = userObject.getFileData(fileId);
                 // Don't pin pads owned by someone else
                 if (Array.isArray(data.owners) && data.owners.length &&
                     data.owners.indexOf(edPublic) === -1) { return; }
                 // Don't push duplicates
-                if (toPin.indexOf(data.channel) === -1) {
-                    toPin.push(data.channel);
+                if (result.indexOf(data.channel) === -1) {
+                    result.push(data.channel);
                 }
             };
         };
 
         // Get the list of user objects
-        var userObjects = [Env.user.userObject];
-        var foldersUO = Object.keys(Env.folders).map(function (k) {
-            return Env.folders[k].userObject;
-        });
-        Array.prototype.push.apply(userObjects, foldersUO);
+        var userObjects = _getUserObjects(Env);
 
         userObjects.forEach(function (uo) {
             var files = uo.getFiles([UserObject.FILES_DATA]);
             files.forEach(addChannel(uo));
+        });
+
+        return result;
+    };
+
+    var addPad = function (Env, path, pad, cb) {
+        var uo = Env.user.userObject;
+        var p = ['root'];
+        if (path) {
+            var resolved = _resolvePath(Env, path);
+            uo = resolved.userObject;
+            p = resolved.path;
+        }
+        uo.pushData(pad, function (e, id) {
+            if (e) { return void cb(e); }
+            uo.add(id, p);
+            cb();
         });
     };
 
@@ -321,12 +466,20 @@ define([
         };
 
         return {
+            // Manager
             addProxy: callWithEnv(addProxy),
             removeProxy: callWithEnv(removeProxy),
+            // Drive
             command: callWithEnv(onCommand),
+            getPadAttribute: callWithEnv(getPadAttribute),
+            setPadAttribute: callWithEnv(setPadAttribute),
+            getTagsList: callWithEnv(getTagsList),
+            getSecureFilesList: callWithEnv(getSecureFilesList),
+            // Store
+            getChannelsList: callWithEnv(getChannelsList),
+            addPad: callWithEnv(addPad),
+            // Tools
             findChannel: callWithEnv(findChannel),
-            getPinList: callWithEnv(getPinList),
-            resolvePath: callWithEnv(_resolvePath),
             user: Env.user,
             folders: Env.folders
         };

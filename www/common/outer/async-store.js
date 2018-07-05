@@ -33,11 +33,16 @@ define([
 
         var store = window.CryptPad_AsyncStore = {};
 
-
         var onSync = function (cb) {
-            Realtime.whenRealtimeSyncs(store.realtime, cb);
+            nThen(function (waitFor) {
+                Realtime.whenRealtimeSyncs(store.realtime, waitFor());
+                if (store.sharedFolders) {
+                    for (var k in store.sharedFolders) {
+                        Realtime.whenRealtimeSync(store.sharedFolders[k].realtime, waitFor());
+                    }
+                }
+            }).nThen(function () { cb(); });
         };
-
 
         Store.get = function (clientId, key, cb) {
             cb(Util.find(store.proxy, key));
@@ -82,7 +87,7 @@ define([
             // This list is filtered so that it doesn't include pad owned by other users
             // It now includes channels from shared folders
             var edPublic = store.proxy.edPublic;
-            var list = store.manager.getPinList(edPublic);
+            var list = store.manager.getChannelsList(edPublic, 'pin');
 
             // Get the avatar
             var profile = store.proxy.profile;
@@ -105,19 +110,8 @@ define([
         };
 
         var getExpirableChannelList = function () {
-            var list = [];
-            store.userObject.getFiles([store.userObject.FILES_DATA]).forEach(function (id) {
-                var data = store.userObject.getFileData(id);
-                var edPublic = store.proxy.edPublic;
-
-                // Push channels owned by someone else or channel that should have expired
-                // because of the expiration time
-                if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
-                        (data.expire && data.expire < (+new Date()))) {
-                    list.push(data.channel);
-                }
-            });
-            return list;
+            var edPublic = store.proxy.edPublic;
+            return store.manager.getChannelsList(edPublic, 'expirable');
         };
 
         var getCanonicalChannelList = function (expirable) {
@@ -445,16 +439,8 @@ define([
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
             if (data.channel) { pad.channel = data.channel; }
-            var uo = store.userObject;
-            var path = ['root'];
-            if (data.path) {
-                var resolved = store.manager.resolvePath(path);
-                uo = resolved.userObject;
-                path = resolved.path;
-            }
-            uo.pushData(pad, function (e, id) {
+            store.manager.addPad(data.path, pad, function (e) {
                 if (e) { return void cb({error: "Error while adding a template:"+ e}); }
-                uo.add(id, path);
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
@@ -463,17 +449,8 @@ define([
         };
 
         var getOwnedPads = function () {
-            var list = [];
-            store.userObject.getFiles([store.userObject.FILES_DATA]).forEach(function (id) {
-                var data = store.userObject.getFileData(id);
-                var edPublic = store.proxy.edPublic;
-
-                // Push channels owned by someone else or channel that should have expired
-                // because of the expiration time
-                if (data.owners && data.owners.length === 1 && data.owners.indexOf(edPublic) !== -1) {
-                    list.push(data.channel);
-                }
-            });
+            var edPublic = store.proxy.edPublic;
+            var list = store.manager.getChannelsList(edPublic, 'owned');
             if (store.proxy.todo) {
                 // No password for todo
                 list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
@@ -595,33 +572,6 @@ define([
             });
         };
 
-        var getAttributeObject = function (attr) {
-            if (typeof attr === "string") {
-                console.error('DEPRECATED: use setAttribute with an array, not a string');
-                return {
-                    path: ['settings'],
-                    obj: store.proxy.settings,
-                    key: attr
-                };
-            }
-            if (!Array.isArray(attr)) { return void console.error("Attribute must be string or array"); }
-            if (attr.length === 0) { return void console.error("Attribute can't be empty"); }
-            var obj = store.proxy.settings;
-            attr.forEach(function (el, i) {
-                if (i === attr.length-1) { return; }
-                if (!obj[el]) {
-                    obj[el] = {};
-                }
-                else if (typeof obj[el] !== "object") { return void console.error("Wrong attribute"); }
-                obj = obj[el];
-            });
-            return {
-                path: ['settings'].concat(attr),
-                obj: obj,
-                key: attr[attr.length-1]
-            };
-        };
-
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
             store.proxy[Constants.displayNameKey] = value;
@@ -650,7 +600,7 @@ define([
          *   - value (String)
          */
         Store.setPadAttribute = function (clientId, data, cb) {
-            store.userObject.setPadAttribute(data.href, data.attr, data.value, function () {
+            store.manager.setPadAttribute(data, function () {
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
@@ -658,10 +608,37 @@ define([
             });
         };
         Store.getPadAttribute = function (clientId, data, cb) {
-            store.userObject.getPadAttribute(data.href, data.attr, function (err, val) {
+            store.manager.getPadAttribute(data, function (err, val) {
                 if (err) { return void cb({error: err}); }
                 cb(val);
             });
+        };
+
+        var getAttributeObject = function (attr) {
+            if (typeof attr === "string") {
+                console.error('DEPRECATED: use setAttribute with an array, not a string');
+                return {
+                    path: ['settings'],
+                    obj: store.proxy.settings,
+                    key: attr
+                };
+            }
+            if (!Array.isArray(attr)) { return void console.error("Attribute must be string or array"); }
+            if (attr.length === 0) { return void console.error("Attribute can't be empty"); }
+            var obj = store.proxy.settings;
+            attr.forEach(function (el, i) {
+                if (i === attr.length-1) { return; }
+                if (!obj[el]) {
+                    obj[el] = {};
+                }
+                else if (typeof obj[el] !== "object") { return void console.error("Wrong attribute"); }
+                obj = obj[el];
+            });
+            return {
+                path: ['settings'].concat(attr),
+                obj: obj,
+                key: attr[attr.length-1]
+            };
         };
         Store.setAttribute = function (clientId, data, cb) {
             try {
@@ -680,11 +657,12 @@ define([
 
         // Tags
         Store.listAllTags = function (clientId, data, cb) {
-            cb(store.userObject.getTagsList());
+            cb(store.manager.getTagsList());
         };
 
         // Templates
         Store.getTemplates = function (clientId, data, cb) {
+            // No templates in shared folders: we don't need the manager here
             var templateFiles = store.userObject.getFiles(['template']);
             var res = [];
             templateFiles.forEach(function (f) {
@@ -694,6 +672,7 @@ define([
             cb(res);
         };
         Store.incrementTemplateUse = function (clientId, href) {
+            // No templates in shared folders: we don't need the manager here
             store.userObject.getPadAttribute(href, 'used', function (err, data) {
                 // This is a not critical function, abort in case of error to make sure we won't
                 // create any issue with the user object or the async store
@@ -705,6 +684,7 @@ define([
 
         // Pads
         Store.moveToTrash = function (clientId, data, cb) {
+            // XXX move a pad from a shared folder to the trash?
             var href = Hash.getRelativeHref(data.href);
             store.userObject.forget(href);
             sendDriveEvent('DRIVE_CHANGE', {
@@ -785,7 +765,6 @@ define([
         // Filepicker app
         Store.getSecureFilesList = function (clientId, query, cb) {
             var list = {};
-            var hashes = [];
             var types = query.types;
             var where = query.where;
             var filter = query.filter || {};
@@ -800,19 +779,19 @@ define([
                 }
                 return filtered;
             };
-            store.userObject.getFiles(where).forEach(function (id) {
-                var data = store.userObject.getFileData(id);
+            store.manager.getSecureFilesList(where).forEach(function (obj) {
+                var data = obj.data;
+                var id = obj.id;
                 var parsed = Hash.parsePadUrl(data.href || data.roHref);
                 if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
-                    hashes.indexOf(parsed.hash) === -1 &&
                     !isFiltered(parsed.type, data)) {
-                    hashes.push(parsed.hash);
                     list[id] = data;
                 }
             });
             cb(list);
         };
         Store.getPadData = function (clientId, id, cb) {
+            // FIXME: this is only used for templates at the moment, so we don't need the manager
             cb(store.userObject.getFileData(id));
         };
 
@@ -1159,7 +1138,7 @@ define([
         };
 
         // SHARED FOLDERS
-        var loadSharedFolder = function (id, data) {
+        var loadSharedFolder = function (id, data, cb) {
             var parsed = Hash.parsePadUrl(data.href);
             var secret = Hash.getSecrets('folder', parsed.hash, data.password);
             var listmapConfig = {
@@ -1176,14 +1155,17 @@ define([
             };
             var rt = Listmap.create(listmapConfig);
             store.sharedFolders[id] = rt;
-            store.manager.addProxy(rt.proxy);
+            rt.proxy.on('ready', function (info) {
+                store.manager.addProxy(id, rt.proxy, info.leave);
+                cb(rt);
+            });
             return rt;
         };
         Store.addSharedFolder = function (clientId, data, cb) {
             var path = data.path;
             var id;
             nThen(function (waitFor) {
-                // TODO
+                // TODO XXX get the folder data (href, title, ...)
                 var folderData = {};
                 // 1. add the shared folder to our list of shared folders
                 store.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
@@ -1199,11 +1181,7 @@ define([
                 onSync(waitFor());
 
                 // 2b. load the proxy
-                var rt = loadSharedFolder(id, data);
-                rt.on('ready', waitFor(function () {
-                    // TODO
-                    // "fixFiles"
-                }));
+                loadSharedFolder(id, data, waitFor());
             }).nThen(function () {
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive'].concat(path)
@@ -1347,16 +1325,11 @@ define([
         //////////////////////////////////////////////////////////////////
 
         var loadSharedFolders = function (waitFor) {
-            // TODO
             store.sharedFolders = {};
             var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
             Object.keys(shared).forEach(function (id) {
                 var sf = shared[id];
-                var rt = loadSharedFolder(id, sf);
-                rt.on('ready', waitFor(function () {
-                    // TODO
-                    // "fixFiles"
-                }));
+                loadSharedFolder(id, sf, waitFor());
             });
         };
 
