@@ -31,6 +31,9 @@ define([
         exp.TEMPLATE = TEMPLATE;
         exp.SHARED_FOLDERS = SHARED_FOLDERS;
 
+        exp.sharedFolder = config.sharedFolder;
+        exp.id = config.id;
+
         // Logging
         var logging = function () {
             console.log.apply(console, arguments);

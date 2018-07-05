@@ -149,7 +149,7 @@ define([
             // Remove the shared folder from this list of files ID
             files.filter(function (f) { return !userObject.isSharedFolder(f); });
             // Deduplicate
-            Util.deduplicateString(files);
+            files = Util.deduplicateString(files);
 
             // Get the files data associated to these files
             var filesData = {};
@@ -350,7 +350,7 @@ define([
         userObjects.forEach(function (uo) {
             Array.prototype.push.apply(list, uo.getTagsList());
         });
-        Util.deduplicateString(list);
+        list = Util.deduplicateString(list);
         return list;
     };
 
@@ -391,8 +391,8 @@ define([
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return pads owned by someone else or expired by time
-                    if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
-                        (data.expire && data.expire < (+new Date()))) {
+                    if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1)
+                        || (data.expire && data.expire < (+new Date()))) {
                         result.push(data.channel);
                     }
                 };
@@ -485,7 +485,262 @@ define([
         };
     };
 
+    /*
+        Inner only
+    */
+
+    var renameInner = function (Env, path, newName, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "rename",
+            data: {
+                path: path,
+                newName: newName
+            }
+        }, cb);
+    };
+    var moveInner = function (Env, paths, newPath, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "move",
+            data: {
+                paths: paths,
+                newPath: newPath
+            }
+        }, cb);
+    };
+    var emptyTrashInner = function (Env, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "emptyTrash"
+        }, cb);
+    };
+    var addFolderInner = function (Env, path, name, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "addFolder",
+            data: {
+                path: path,
+                name: name
+            }
+        }, cb);
+    };
+    var deleteInner = function (Env, paths, cb, nocheck, isOwnPadRemoved, noUnpin) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "delete",
+            data: {
+                paths: paths,
+                nocheck: nocheck,
+                noUnpin: noUnpin,
+                isOwnPadRemoved: isOwnPadRemoved
+            }
+        }, cb);
+    };
+    var restoreInner = function (Env, path, cb) {
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "restore",
+            data: {
+                path: path
+            }
+        }, cb);
+    };
+
+    /* Tools */
+
+    var _getUserObjectFromId = function (Env, id) {
+        var userObjects = _getUserObjects(Env);
+        var userObject = Env.user.userObject;
+        userObjects.some(function (uo) {
+            if (Object.keys(uo.getFileData(id)).length) {
+                userObject = uo;
+                return true;
+            }
+        });
+        return userObject;
+    };
+
+    var _getUserObjectPath = function (Env, uo) {
+        var fId = uo.id;
+        if (!fId) { return; }
+        var fPath = Env.user.userObject.findFile(fId)[0];
+        return fPath;
+    };
+
+    var getFileData = function (Env, id) {
+        var userObjects = _getUserObjects(Env);
+        var data = {};
+        userObjects.some(function (uo) {
+            data = uo.getFileData(id);
+            if (Object.keys(data).length) { return true; }
+        });
+        return data;
+    };
+
+    var find = function (Env, path) {
+        var resolved = _resolvePath(Env, path);
+        return resolved.userObject.find(path);
+    };
+
+    var getTitle = function (Env, id, type) {
+        var uo = _getUserObjectFromId(Env, id);
+        return uo.getTitle(id, type);
+    };
+
+    var isReadOnlyFile = function (Env, id) {
+        var uo = _getUserObjectFromId(Env, id);
+        return uo.isReadOnlyFile(id);
+    };
+
+    var getFiles = function (Env, categories) {
+        var files = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            Array.prototype.push.apply(files, uo.getFiles(categories));
+        });
+        files = Util.deduplicateString(files);
+        return files;
+    };
+
+    var search = function (Env, value) {
+        var ret = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            var fPath = _getUserObjectPath(Env, uo);
+            var results = uo.search(value);
+            if (fPath) {
+                // This is a shared folder, we have to fix the paths in the search results
+                results = results.map(function (r) {
+                    r.paths.map(function (p) {
+                        Array.prototype.unshift.apply(p, fPath);
+                    });
+                });
+            }
+            // Push the results from this proxy
+            Array.prototype.push.apply(ret, results);
+        });
+        return ret;
+    };
+
+    var findFile = function (Env, id) {
+        var ret = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            var fPath = _getUserObjectPath(Env, uo);
+            var results = uo.findFile(id);
+            if (fPath) {
+                // This is a shared folder, we have to fix the paths in the results
+                results = results.map(function (p) {
+                    Array.prototype.unshift.apply(p, fPath);
+                });
+            }
+            // Push the results from this proxy
+            Array.prototype.push.apply(ret, results);
+        });
+        return ret;
+    };
+
+    var findChannels = function (Env, channels) {
+        var ret = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            var results = uo.findChannels(channels);
+            Array.prototype.push.apply(ret, results);
+        });
+        ret = Util.deduplicateString(ret);
+        return ret;
+    };
+
+    var getRecentPads = function (Env) {
+        return Env.user.userObject.getRecentPads();
+    };
+    var getOwnedPads = function (Env, edPublic) {
+        return Env.user.userObject.getOwnedPads(edPublic);
+    };
+
+    /* Generic: doesn't need access to a proxy */
+    var isFile = function (Env, el, allowStr) {
+        return Env.user.userObject.isFile(el, allowStr);
+    };
+    var isFolder = function (Env, el) {
+        return Env.user.userObject.isFolder(el);
+    };
+    var isFolderEmpty = function (Env, el) {
+        return Env.user.userObject.isFolderEmpty(el);
+    };
+    var isPathIn = function (Env, path, categories) {
+        return Env.user.userObject.isPathIn(path, categories);
+    };
+    var isSubpath = function (Env, path, parentPath) {
+        return Env.user.userObject.isSubpath(path, parentPath);
+    };
+    var isInTrashRoot = function (Env, path) {
+        return Env.user.userObject.isInTrashRoot(path);
+    };
+    var comparePath = function (Env, a, b) {
+        return Env.user.userObject.comparePath(a, b);
+    };
+    var hasSubfolder = function (Env, el, trashRoot) {
+        return Env.user.userObject.hasSubfolder(el, trashRoot);
+    };
+    var hasFile = function (Env, el, trashRoot) {
+        return Env.user.userObject.hasFile(el, trashRoot);
+    };
+
+    var createInner = function (proxy, sframeChan, uoConfig) {
+        var Env = {
+            cfg: uoConfig,
+            sframeChan: sframeChan,
+            user: {
+                proxy: proxy,
+                userObject: UserObject.init(proxy, uoConfig)
+            },
+            folders: {}
+        };
+
+        var callWithEnv = function (f) {
+            return function () {
+                [].unshift.call(arguments, Env);
+                return f.apply(null, arguments);
+            };
+        };
+
+        return {
+            // Manager
+            addProxy: callWithEnv(addProxy),
+            removeProxy: callWithEnv(removeProxy),
+            // Drive RPC commands
+            rename: callWithEnv(renameInner),
+            move: callWithEnv(moveInner),
+            emptyTrash: callWithEnv(emptyTrashInner),
+            addFolder: callWithEnv(addFolderInner),
+            delete: callWithEnv(deleteInner),
+            restore: callWithEnv(restoreInner),
+            // Tools
+            getFileData: callWithEnv(getFileData),
+            find: callWithEnv(find),
+            getTitle: callWithEnv(getTitle),
+            isReadOnlyFile: callWithEnv(isReadOnlyFile),
+            getFiles: callWithEnv(getFiles),
+            search: callWithEnv(search),
+            getRecentPads: callWithEnv(getRecentPads),
+            getOwnedPads: callWithEnv(getOwnedPads),
+            getTagsList: callWithEnv(getTagsList),
+            findFile: callWithEnv(findFile),
+            findChannels: callWithEnv(findChannels),
+            // Generic
+            isFile: callWithEnv(isFile),
+            isFolder: callWithEnv(isFolder),
+            isFolderEmpty: callWithEnv(isFolderEmpty),
+            isPathIn: callWithEnv(isPathIn),
+            isSubpath: callWithEnv(isSubpath),
+            isinTrashRoot: callWithEnv(isInTrashRoot),
+            comparePath: callWithEnv(comparePath),
+            hasSubfolder: callWithEnv(hasSubfolder),
+            hasFile: callWithEnv(hasFile),
+            // Data
+            user: Env.user,
+            folders: Env.folders
+        };
+    };
+
     return {
-        create: create
+        create: create,
+        createInner: createInner
     };
 });
