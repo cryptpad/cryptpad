@@ -29,6 +29,7 @@ define([
         exp.UNSORTED = UNSORTED;
         exp.TRASH = TRASH;
         exp.TEMPLATE = TEMPLATE;
+        exp.SHARED_FOLDERS = SHARED_FOLDERS;
 
         // Logging
         var logging = function () {
@@ -41,9 +42,6 @@ define([
             exp.fixFiles();
             console.error.apply(console, arguments);
         };
-
-        // TODO: workgroup
-        var workgroup = config.workgroup;
 
         if (pinPads) {
             // Extend "exp" with methods used only outside of the iframe (requires access to store)
@@ -88,6 +86,9 @@ define([
         exp.isFolderEmpty = function (element) {
             if (!isFolder(element)) { return false; }
             return Object.keys(element).length === 0;
+        };
+        exp.isSharedFolder = function (element) {
+            return Boolean(files[SHARED_FOLDERS][element]);
         };
 
         exp.hasSubfolder = function (element, trashRoot) {
@@ -134,7 +135,6 @@ define([
 
         // Data from filesData
         var getTitle = exp.getTitle = function (file, type) {
-            if (workgroup) { debug("No titles in workgroups"); return; }
             var data = getFileData(file);
             if (!file || !data || !(data.href || data.roHref)) {
                 error("getTitle called with a non-existing file id: ", file, data);
@@ -206,7 +206,8 @@ define([
 
         // GET FILES
 
-        var getFilesRecursively = function (root, arr) {
+        var getFilesRecursively = exp.getFilesRecursively = function (root, arr) {
+            arr = arr || [];
             for (var e in root) {
                 if (isFile(root[e])) {
                     if(arr.indexOf(root[e]) === -1) { arr.push(root[e]); }
@@ -214,6 +215,7 @@ define([
                     getFilesRecursively(root[e], arr);
                 }
             }
+            return arr;
         };
         var _getFiles = {};
         _getFiles['array'] = function (cat) {
@@ -552,18 +554,19 @@ define([
         // DELETE
         // Permanently delete multiple files at once using a list of paths
         // NOTE: We have to be careful when removing elements from arrays (trash root, unsorted or template)
-        exp.delete = function (paths, cb, nocheck, isOwnPadRemoved) {
+        exp.delete = function (paths, cb, nocheck, isOwnPadRemoved, noUnpin) {
             if (sframeChan) {
                 return void sframeChan.query("Q_DRIVE_USEROBJECT", {
                     cmd: "delete",
                     data: {
                         paths: paths,
                         nocheck: nocheck,
+                        noUnpin: noUnpin,
                         isOwnPadRemoved: isOwnPadRemoved
                     }
                 }, cb);
             }
-            exp.deleteMultiplePermanently(paths, nocheck, isOwnPadRemoved);
+            exp.deleteMultiplePermanently(paths, nocheck, isOwnPadRemoved, noUnpin);
             if (typeof cb === "function") { cb(); }
         };
         exp.emptyTrash = function (cb) {

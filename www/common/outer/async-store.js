@@ -1,6 +1,7 @@
 define([
     'json.sortify',
     '/common/userObject.js',
+    '/common/proxy-manager.js',
     '/common/migrate-user-object.js',
     '/common/common-hash.js',
     '/common/common-util.js',
@@ -18,7 +19,7 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
-], function (Sortify, UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
+], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
              CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
     var Store = {};
@@ -78,17 +79,10 @@ define([
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
-            // This list is filtered so that it doesn't include pad owned by other users (you should
-            // not pin these pads)
-            var files = store.userObject.getFiles([store.userObject.FILES_DATA]);
+            // This list is filtered so that it doesn't include pad owned by other users
+            // It now includes channels from shared folders
             var edPublic = store.proxy.edPublic;
-            var list = files.map(function (id) {
-                    var d = store.userObject.getFileData(id);
-                    if (d.owners && d.owners.length && edPublic &&
-                        d.owners.indexOf(edPublic) === -1) { return; }
-                    return d.channel;
-                })
-                .filter(function (x) { return x; });
+            var list = store.manager.getPinList(edPublic);
 
             // Get the avatar
             var profile = store.proxy.profile;
@@ -451,10 +445,16 @@ define([
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
             if (data.channel) { pad.channel = data.channel; }
-            store.userObject.pushData(pad, function (e, id) {
+            var uo = store.userObject;
+            var path = ['root'];
+            if (data.path) {
+                var resolved = store.manager.resolvePath(path);
+                uo = resolved.userObject;
+                path = resolved.path;
+            }
+            uo.pushData(pad, function (e, id) {
                 if (e) { return void cb({error: "Error while adding a template:"+ e}); }
-                var path = data.path || ['root'];
-                store.userObject.add(id, path);
+                uo.add(id, path);
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
@@ -733,67 +733,28 @@ define([
                 expire = +channelData.data.expire || undefined;
             }
 
-            var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
-            var isStronger;
-
-            // If we don't find the new channel in our existing pads, we'll have to add the pads
-            // to filesData
-            var contains;
-
-            // Update all pads that use the same channel but with a weaker hash
-            // Edit > Edit (present) > View > View (present)
-            for (var id in allPads) {
-                var pad = allPads[id];
-                if (!pad.href && !pad.roHref) { continue; }
-
-                var p2 = Hash.parsePadUrl(pad.href || pad.roHref);
-                var h2 = p2.hashData;
-
-                // Different types, proceed to the next one
-                // No hash data: corrupted pad?
-                if (p.type !== p2.type || !h2) { continue; }
-                // Different channel: continue
-                if (pad.channel !== channel) { continue; }
-
-                var shouldUpdate = p.hash.replace(/\/$/, '') === p2.hash.replace(/\/$/, '');
-
-                // If the hash is different but represents the same channel, check if weaker or stronger
-                if (!shouldUpdate && h.version !== 0) {
-                    // We had view & now we have edit, update
-                    if (h2.mode === 'view' && h.mode === 'edit') { shouldUpdate = true; }
-                    // Same mode and we had present URL, update
-                    else if (h.mode === h2.mode && h2.present) { shouldUpdate = true; }
-                    // If we're here it means we have a weaker URL:
-                    // update the date but keep the existing hash
-                    else {
-                        pad.atime = +new Date();
-                        contains = true;
-                        continue;
-                    }
+            var datas = store.manager.findChannel(channel);
+            var contains = datas.length !== 0;
+            datas.forEach(function (obj) {
+                var pad = obj.data;
+                pad.atime = +new Date();
+                pad.title = title;
+                if (owners || h.type !== "file") {
+                    // OWNED_FILES
+                    // Never remove owner for files
+                    pad.owners = owners;
                 }
+                pad.expire = expire;
+                if (h.mode === 'view') { return; }
 
-                if (shouldUpdate) {
-                    contains = true;
-                    pad.atime = +new Date();
-                    pad.title = title;
-                    if (owners || h.type !== "file") {
-                        // OWNED_FILES
-                        // Never remove owner for files
-                        pad.owners = owners;
-                    }
-                    pad.expire = expire;
-
-                    // If the href is different, it means we have a stronger one
-                    if (href !== pad.href) { isStronger = true; }
-                    pad.href = href;
+                // If we only have rohref, it means we have a stronger href
+                if (!pad.href) {
+                    // If we have a stronger url, remove the possible weaker from the trash.
+                    // If all of the weaker ones were in the trash, add the stronger to ROOT
+                    obj.userObject.restoreHref(href);
                 }
-            }
-
-            if (isStronger) {
-                // If we have a stronger url, remove the possible weaker from the trash.
-                // If all of the weaker ones were in the trash, add the stronger to ROOT
-                store.userObject.restoreHref(href);
-            }
+                pad.href = href;
+            });
 
             // Add the pad if it does not exist in our drive
             if (!contains) {
@@ -1215,11 +1176,11 @@ define([
             };
             var rt = Listmap.create(listmapConfig);
             store.sharedFolders[id] = rt;
+            store.manager.addProxy(rt.proxy);
             return rt;
         };
         Store.addSharedFolder = function (clientId, data, cb) {
             var path = data.path;
-            var href = data.href;
             var id;
             nThen(function (waitFor) {
                 // TODO
@@ -1232,13 +1193,13 @@ define([
                     }
                     id = folderId;
                 }));
-            nThen(function (waitFor) {
+            }).nThen(function (waitFor) {
                 // 2a. add the shared folder to the path in our drive
                 store.userObject.add(id, path);
                 onSync(waitFor());
 
                 // 2b. load the proxy
-                var rt = loadSharedFolder(folderId, data);
+                var rt = loadSharedFolder(id, data);
                 rt.on('ready', waitFor(function () {
                     // TODO
                     // "fixFiles"
@@ -1267,22 +1228,7 @@ define([
                 });
                 cb(data2);
             };
-            switch (cmdData.cmd) {
-                case 'move':
-                    store.userObject.move(data.paths, data.newPath, cb2); break;
-                case 'restore':
-                    store.userObject.restore(data.path, cb2); break;
-                case 'addFolder':
-                    store.userObject.addFolder(data.path, data.name, cb2); break;
-                case 'delete':
-                    store.userObject.delete(data.paths, cb2, data.nocheck, data.isOwnPadRemoved); break;
-                case 'emptyTrash':
-                    store.userObject.emptyTrash(cb2); break;
-                case 'rename':
-                    store.userObject.rename(data.path, data.newName, cb2); break;
-                default:
-                    cb();
-            }
+            store.manager.command(cmdData, cb2);
         };
 
         // Clients management
@@ -1416,7 +1362,7 @@ define([
 
         var onReady = function (clientId, returned, cb) {
             var proxy = store.proxy;
-            var userObject = store.userObject = UserObject.init(proxy.drive, {
+            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic, {
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
                 unpinPads: function (data, cb) { Store.unpinPads(null, data, cb); },
                 removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel(null, data, cb); },
@@ -1427,6 +1373,7 @@ define([
                     sendDriveEvent("DRIVE_LOG", msg);
                 }
             });
+            var userObject = store.userObject = manager.user.userObject;
             nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 2
@@ -1439,12 +1386,13 @@ define([
                         progress: progress
                     });
                 });
-            }).nThen(function () {
+            }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3
                 });
                 userObject.fixFiles();
-
+                loadSharedFolders(waitFor);
+            }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };

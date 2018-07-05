@@ -22,7 +22,7 @@ define([
             console.error("removeOwnedChannel was not provided");
         };
         var loggedIn = config.loggedIn;
-        var workgroup = config.workgroup;
+        var sharedFolder = config.sharedFolder;
         var edPublic = config.edPublic;
 
         var ROOT = exp.ROOT;
@@ -31,6 +31,7 @@ define([
         var UNSORTED = exp.UNSORTED;
         var TRASH = exp.TRASH;
         var TEMPLATE = exp.TEMPLATE;
+        var SHARED_FOLDERS = exp.SHARED_FOLDERS;
 
         var debug = exp.debug;
 
@@ -76,9 +77,8 @@ define([
         // Find files in FILES_DATA that are not anymore in the drive, and remove them from
         // FILES_DATA. If there are owned pads, remove them from server too, unless the flag tells
         // us they're already removed
-        exp.checkDeletedFiles = function (isOwnPadRemoved) {
-            // Nothing in FILES_DATA for workgroups
-            if (workgroup || (!loggedIn && !config.testMode)) { return; }
+        exp.checkDeletedFiles = function (isOwnPadRemoved, noUnpin) {
+            if (!loggedIn && !config.testMode) { return; }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
@@ -107,6 +107,7 @@ define([
                 }
             });
             if (!toClean.length) { return; }
+            if (noUnpin) { return; }
             unpinPads(toClean, function (response) {
                 if (response && response.error) { return console.error(response.error); }
                 // console.error(response);
@@ -124,7 +125,7 @@ define([
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
-        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved) {
+        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved, noUnpin) {
             var hrefPaths = paths.filter(function(x) { return exp.isPathIn(x, ['hrefArray']); });
             var rootPaths = paths.filter(function(x) { return exp.isPathIn(x, [ROOT]); });
             var trashPaths = paths.filter(function(x) { return exp.isPathIn(x, [TRASH]); });
@@ -176,11 +177,66 @@ define([
             deleteMultipleTrashRoot(trashRoot);
 
             // In some cases, we want to remove pads from a location without removing them from
-            // OLD_FILES_DATA (replaceHref)
-            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved); }
+            // FILES_DATA (replaceHref)
+            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved, noUnpin); }
         };
 
         // Move
+
+        // From another drive
+        exp.copyFromOtherDrive = function (path, element, data) {
+            // Copy files data
+            // We have to remove pads that are already in the current proxy to make sure
+            // we won't create duplicates
+
+            var toRemove = [];
+            Object.keys(data).forEach(function (id) {
+                // Find and maybe update existing pads with the same channel id
+                var d = data[id];
+                var found = false;
+                for (var i in files[FILES_DATA]) {
+                    if (files[FILES_DATA][i].channel === d.channel) {
+                        // Update href?
+                        if (!files[FILES_DATA][i].href) { files[FILES_DATA][i].href = d.href; }
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    toRemove.push(id);
+                    return;
+                }
+                files[FILES_DATA][id] = data[id];
+            });
+
+            // Remove existing pads from the "element" variable
+            if (exp.isFile(element) && toRemove.indexOf(element) !== -1) {
+                // XXX display error in the UI
+                return;
+            } else if (exp.isFolder(element)) {
+                var _removeExisting = function (root) {
+                    for (var k in root) {
+                        if (exp.isFile(root[k])) {
+                            if (toRemove.indexOf(root[k]) !== -1) {
+                                // XXX display message in UI
+                                delete root[k];
+                            }
+                        } else if (exp.isFolder(root[k])) {
+                            _removeExisting(root[k]);
+                        }
+                    }
+                };
+                _removeExisting(element);
+            }
+
+
+            // Copy file or folder
+            var newParent = exp.find(path);
+            var newName = exp.getAvailableName(newParent, Hash.createChannelId());
+            newParent[newName] = element;
+        };
+
+        // From the same drive
         var pushToTrash = function (name, element, path) {
             var trash = files[TRASH];
             if (typeof(trash[name]) === "undefined") { trash[name] = []; }
@@ -449,6 +505,7 @@ define([
                 }
             };
             var fixTrashRoot = function () {
+                if (sharedFolder) { return; }
                 if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
                 var tr = files[TRASH];
                 var toClean;
@@ -492,6 +549,7 @@ define([
                 }
             };
             var fixTemplate = function () {
+                if (sharedFolder) { return; }
                 if (!Array.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
                 files[TEMPLATE] = Util.deduplicateString(files[TEMPLATE].slice());
                 var us = files[TEMPLATE];
@@ -608,6 +666,10 @@ define([
                     spliceFileData(id);
                 });
             };
+            var fixSharedFolders = function () {
+                if (sharedFolder) { return; }
+                if (typeof(files[SHARED_FOLDERS]) !== "object") { debug("SHARED_FOLDER was not an object"); files[SHARED_FOLDERS] = {}; }
+            };
 
             var fixDrive = function () {
                 Object.keys(files).forEach(function (key) {
@@ -617,10 +679,9 @@ define([
 
             fixRoot();
             fixTrashRoot();
-            if (!workgroup) {
-                fixTemplate();
-                fixFilesData();
-            }
+            fixTemplate();
+            fixFilesData();
+            fixSharedFolders();
             fixDrive();
 
             if (JSON.stringify(files) !== before) {

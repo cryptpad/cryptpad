@@ -244,27 +244,27 @@ define([
                     'tabindex': '-1',
                     'data-icon': faTags,
                 }, Messages.fc_hashtag)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable.cp-app-drive-context-own', {
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.pad,
                     'data-type': 'pad'
                 }, Messages.button_newpad)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable.cp-app-drive-context-own', {
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.code,
                     'data-type': 'code'
                 }, Messages.button_newcode)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable.cp-app-drive-context-own', {
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.slide,
                     'data-type': 'slide'
                 }, Messages.button_newslide)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable.cp-app-drive-context-own', {
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.poll,
                     'data-type': 'poll'
                 }, Messages.button_newpoll)),
-                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable.cp-app-drive-context-own', {
+                h('li', h('a.cp-app-drive-context-newdoc.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': AppConfig.applicationsIcon.whiteboard,
                     'data-type': 'whiteboard'
@@ -311,13 +311,6 @@ define([
         var edPublic = priv.edPublic;
 
         APP.origin = priv.origin;
-        var isOwnDrive = function () {
-            return true; // TODO
-        };
-        var isWorkgroup = function () {
-            return files.workgroup === 1;
-        };
-        config.workgroup = isWorkgroup();
         config.loggedIn = APP.loggedIn;
         config.sframeChan = sframeChan;
 
@@ -357,11 +350,9 @@ define([
         }
 
         // FILE MANAGER
-        // _WORKGROUP_ and other people drive : display Documents as main page
-        var currentPath = APP.currentPath = isOwnDrive() ? getLastOpenedFolder() : [ROOT];
+        var currentPath = APP.currentPath = getLastOpenedFolder();
 
         // Categories dislayed in the menu
-        // _WORKGROUP_ : do not display unsorted
         var displayedCategories = [ROOT, TRASH, SEARCH, RECENT];
 
         // PCS enabled: display owned pads
@@ -371,7 +362,6 @@ define([
         // Tags used: display Tags category
         if (Object.keys(filesOp.getTagsList()).length) { displayedCategories.push(TAGS); }
 
-        if (isWorkgroup()) { displayedCategories = [ROOT, TRASH, SEARCH]; }
         var virtualCategories = [SEARCH, RECENT, OWNED, TAGS];
 
         if (!APP.loggedIn) {
@@ -856,7 +846,6 @@ define([
             show.forEach(function (className) {
                 var $el = $contextMenu.find('.cp-app-drive-context-' + className);
                 if (!APP.editable && $el.is('.cp-app-drive-context-editable')) { return; }
-                if (!isOwnDrive && $el.is('.cp-app-drive-context-own')) { return; }
                 if (filter($el, className)) { return; }
                 $el.parent('li').show();
                 filtered.push('.cp-app-drive-context-' + className);
@@ -1212,10 +1201,6 @@ define([
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
             }
-            if (importedElements && importedElements.length) {
-                // TODO workgroup
-                //filesOp.importElements(importedElements, newPath, refresh);
-            }
         };
 
         var addDragAndDropHandlers = function ($element, path, isFolder, droppable) {
@@ -1266,7 +1251,6 @@ define([
         addDragAndDropHandlers($content, null, true, true);
 
         // In list mode, display metadata from the filesData object
-        // _WORKGROUP_ : Do not display title, atime and ctime columns since we don't have files data
         var addFileData = function (element, $span) {
             if (!filesOp.isFile(element)) { return; }
 
@@ -1323,10 +1307,7 @@ define([
             var $cdate = $('<span>', {
                 'class': 'cp-app-drive-element-ctime cp-app-drive-element-list'
             }).text(getDate(data.ctime));
-            $span.append($type);
-            if (!isWorkgroup()) {
-                $span.append($adate).append($cdate);
-            }
+            $span.append($type).append($adate).append($cdate);
         };
 
         var addFolderData = function (element, key, $span) {
@@ -1804,7 +1785,6 @@ define([
                 $list.find('.' + classSorted).addClass('cp-app-drive-sort-active').prepend($icon);
             }
         };
-        // _WORKGROUP_ : do not display title, atime and ctime in workgroups since we don't have files data
         var getFileListHeader = function () {
             var $fihElement = $('<li>', {
                 'class': 'cp-app-drive-element-header cp-app-drive-element-list'
@@ -1827,9 +1807,7 @@ define([
             }).text(Messages.fm_creation).click(onSortByClick);
             // If displayTitle is false, it means the "name" is the title, so do not display the "name" header
             $fihElement.append($fhIcon).append($fhName).append($fhState).append($fhType);
-            if (!isWorkgroup()) {
-                $fihElement.append($fhAdate).append($fhCdate);
-            }
+            $fihElement.append($fhAdate).append($fhCdate);
             addFileSortIcon($fihElement);
             return $fihElement;
         };
@@ -2277,7 +2255,6 @@ define([
 
         // Display the selected directory into the content part (rightside)
         // NOTE: Elements in the trash are not using the same storage structure as the others
-        // _WORKGROUP_ : do not change the lastOpenedFolder value in localStorage
         var _displayDirectory = function (path, force) {
             APP.hideMenu();
             if (!APP.editable) { debug("Read-only mode"); }
@@ -2331,9 +2308,7 @@ define([
                 $tree.find('#cp-app-drive-tree-search-input')[0].selectionEnd = getSearchCursor();
             }
 
-            if (!isWorkgroup()) {
-                setLastOpenedFolder(path);
-            }
+            setLastOpenedFolder(path);
 
             var $toolbar = createToolbar(path);
             var $info = createInfoBox(path);
