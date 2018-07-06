@@ -37,7 +37,14 @@ define([
         var logError = config.logError || logging;
         var debug = exp.debug = config.debug || logging;
         var error = exp.error = function() {
-            exp.fixFiles();
+            if (sframeChan) {
+                return void sframeChan.query("Q_DRIVE_USEROBJECT", {
+                    cmd: "fixFiles",
+                    data: {}
+                }, function () {});
+            } else if (typeof (exp.fixFiles) === "function") {
+                exp.fixFiles();
+            }
             console.error.apply(console, arguments);
         };
 
