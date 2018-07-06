@@ -1050,7 +1050,7 @@ define([
             var blockHash = LocalStore.getBlockHash();
             if (blockHash) {
                 console.log(blockHash);
-                var parsed = Hash.parseBlockHash(blockHash);
+                var parsed = Block.parseBlockHash(blockHash);
 
                 if (typeof(parsed) !== 'object') {
                     console.error("Failed to parse blockHash");

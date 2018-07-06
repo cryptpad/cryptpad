@@ -34,8 +34,6 @@ define([
         var symmetric = seed.subarray(Nacl.sign.seedLength,
             Nacl.sign.seedLength + Nacl.secretbox.keyLength);
 
-        console.log("symmetric key: ", Nacl.util.encodeBase64(symmetric));
-
         return {
             sign: Nacl.sign.keyPair.fromSeed(signSeed), // 32 bytes
             symmetric: symmetric, // 32 bytes ...
