@@ -188,13 +188,13 @@ define([
 
                         if (val) {
                             password = val;
-                            Cryptpad.getFileSize(window.location.href, password, function (e, size) {
+                            Cryptpad.getFileSize(window.location.href, password, waitFor(function (e, size) {
                                 if (size !== 0) {
                                     return void todo();
                                 }
                                 // Wrong password or deleted file?
                                 askPassword(true);
-                            });
+                            }));
                         } else {
                             askPassword();
                         }
