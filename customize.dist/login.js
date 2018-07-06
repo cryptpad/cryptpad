@@ -14,11 +14,12 @@ define([
     '/customize/messages.js',
     '/bower_components/nthen/index.js',
     '/common/outer/login-block.js',
+    '/common/common-hash.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages, nThen, Block) {
+            Feedback, LocalStore, Messages, nThen, Block, Hash) {
     var Exports = {
         Cred: Cred,
         // this is depended on by non-customizable files
@@ -76,6 +77,24 @@ define([
         return opt;
     };
 
+
+    var loginOptionsFromBlock = function (blockInfo) { // userHash
+        var opt = {};
+
+        var secrets = Hash.getSecrets('drive', blockInfo.userHash);
+
+        console.log(opt, blockInfo);
+
+        opt.channelHex = secrets.channel;
+        opt.keys = secrets.keys;
+        opt.edPublic = blockInfo.edPublic; // XXX make sure everything that creates a block serializes the edPublic
+        // XXX maybe it's a good idea to include edPrivate too
+
+        console.log(opt);
+
+        return opt;
+    };
+
     var loadUserObject = function (opt, cb) {
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
@@ -103,6 +122,14 @@ define([
         return Object.keys(proxy).length === 0;
     };
 
+    var setMergeAnonDrive = function () {
+        sessionStorage.migrateAnonDrive = 1;
+    };
+
+    var setCreateReadme = function () {
+        sessionStorage.createReadme = 1;
+    };
+
     Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
         if (typeof(cb) !== 'function') { return; }
 
@@ -121,28 +148,99 @@ define([
             register: isRegister,
         };
 
-        var RT;
+        var RT, blockKeys, blockHash, Pinpad, rpc, userHash;
 
         nThen(function (waitFor) {
+            // derive a predefined number of bytes from the user's inputs,
+            // and allocate them in a deterministic fashion
+
+            console.log('allocating bytes from user input')
             Cred.deriveFromPassphrase(uname, passwd, Exports.requiredBytes, waitFor(function (bytes) {
-                // run scrypt to derive the user's keys
+                console.log("allocated first set of bytes");
                 res.opt = allocateBytes(bytes);
+                blockHash = res.opt.blockHash;
+                blockKeys = res.opt.blockKeys;
             }));
-
-
-            // TODO consider checking the block here
-        }).nThen(function (/* waitFor */) {
-            // check for blocks
-            Block = Block; // jshint
-
-
         }).nThen(function (waitFor) {
+            // the allocated bytes can be used either in a legacy fashion,
+            // or in such a way that a previously unused byte range determines
+            // the location of a layer of indirection which points users to
+            // an encrypted block, from which they can recover the location of
+            // the rest of their data
+
+            // determine where a block for your set of keys would be stored
+            var blockUrl = Block.getBlockUrl(res.opt.blockKeys);
+
+            // Check whether there is a block at that location
+            Util.fetch(blockUrl, waitFor(function (err, block) {
+                // if users try to log in or register, we must check
+                // whether there is a block.
+
+                // the block is only useful if it can be decrypted, though
+                if (err) {
+                    console.log("no block found");
+                    return;
+                }
+
+
+                console.log("found a block");
+                var decryptedBlock = Block.decrypt(block, blockKeys);
+                if (!decryptedBlock) {
+                    console.error("Found a login block but failed to decrypt");
+                    return;
+                }
+                res.blockInfo = decryptedBlock;
+                console.log("valid block", decryptedBlock);
+            }));
+        }).nThen(function (waitFor) {
+            // we assume that if there is a block, it was created in a valid manner
+            // so, just proceed to the next block which handles that stuff
+            if (res.blockInfo) { return; }
+
             var opt = res.opt;
-            // use the derived key to generate an object
+
+            console.log("preparing to load legacy user object");
+
+            // load the user's object using the legacy credentials
             loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) { return void cb(err); }
-                RT = rt;
 
+                console.log("legacy user object loaded");
+
+                if (isRegister) {
+                    if (isProxyEmpty(rt.proxy)) {
+                        console.log("proxy is empty");
+
+                        // If they are trying to register,
+                        // and the proxy is empty, then there is no 'legacy user' either
+                        // so we should just shut down this session and disconnect.
+                        rt.network.disconnect();
+                        return; // proceed to the next async block
+                    } else {
+                        // they're trying to register but legacy proxy is not empty
+                    }
+                }
+
+                // they tried to just log in but there's no such user
+                // and since we're here at all there is no modern-block
+                if (!isRegister && isProxyEmpty(rt.proxy)) {
+                    rt.network.disconnect(); // clean up after yourself
+                    waitFor.abort();
+                    return void cb('NO_SUCH_USER', res);
+                }
+
+                // they tried to register, but those exact credentials exist
+                if (isRegister && !isProxyEmpty(rt.proxy)) {
+                    rt.network.disconnect();
+                    waitFor.abort();
+                    Feedback.send('LOGIN', true);
+                    return void cb('ALREADY_REGISTERED', res);
+                }
+
+                // if you are here, then there is no block, the user is trying
+                // to log in. The proxy is **not** empty. All values assigned here
+                // should have been deterministically created using their credentials
+                // so setting them is just a precaution to keep things in good shape
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
                 res.network = rt.network;
@@ -155,10 +253,85 @@ define([
                 res.edPrivate = opt.edPrivate;
                 res.edPublic = opt.edPublic;
 
+                // export their encryption key
                 res.curvePrivate = opt.curvePrivate;
                 res.curvePublic = opt.curvePublic;
 
+                if (shouldImport) { setMergeAnonDrive(); }
+
+                // don't proceed past this async block.
+                waitFor.abort();
+
+                // We have to call whenRealtimeSyncs asynchronously here because in the current
+                // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
+                // asynchronously.
+                // The following setTimeout is here to make sure whenRealtimeSyncs is called after
+                // `contentUpdate` so that we have an update userDoc in chainpad.
+                setTimeout(function () {
+                    Realtime.whenRealtimeSyncs(RT.realtime, function () {
+                        // the following stages are there to initialize a new drive
+                        // if you are registering
+
+                        // XXX maybe this should be off in the UI function ?
+                        console.log("persisting login");
+                        LocalStore.login(res.userHash, res.userName, function () {
+                            setTimeout(function () { cb(void 0, res); });
+                        });
+                    });
+                });
+            }));
+        }).nThen(function (waitFor) { // MODERN REGISTRATION
+            // allocate some random bytes
+
+            var opt;
+            if (res.blockInfo && isRegister) {
+                // XXX they probably want to log in with their existing creds
+                // load the object specified in their block
+                // and confirm that the object is in good standing
+                console.log("the user is trying to register, but a block already exists here");
+                opt = loginOptionsFromBlock(res.blockInfo);
+            } else {
+                console.log("allocating random bytes for a new user object");
+                opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
+                userHash = opt.userHash;
+            }
+
+            console.log("loading new user object");
+
+            // according to the location derived from the credentials which you entered
+            loadUserObject(opt, waitFor(function (err, rt) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb('MODERN_REGISTRATION_INIT');
+                }
+
+                console.log("object loaded");
+                console.log(JSON.stringify(rt.proxy));
+
+                // XXX validate the rest of this logic
+
+                // export the realtime object you checked
+                RT = rt;
+
+                res.proxy = rt.proxy;
+                res.realtime = rt.realtime;
+                res.network = rt.network;
+
+                // they're registering...
+                res.userHash = opt.userHash;
+                res.userName = uname;
+
+                // export their signing key
+                res.edPrivate = opt.edPrivate || rt.edPrivate;
+                res.edPublic = opt.edPublic || rt.edPublic;
+
+                res.curvePrivate = opt.curvePrivate || rt.curvePrivate;
+                res.curvePublic = opt.curvePublic || rt.curvePublic;
+
                 // they tried to just log in but there's no such user
+                // XXX in fact you should get NO_SUCH_USER if the block does not exist
+                // and the proxy from above was empty
+                // tl;dr this shouldn't be here.
                 if (!isRegister && isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect(); // clean up after yourself
                     waitFor.abort();
@@ -166,44 +339,94 @@ define([
                 }
 
                 // they tried to register, but those exact credentials exist
+                // XXX we should not need to worry about randomly landing on an existing channel
+                // ALREADY_REGISTERED should depend on whether or not a block exists, at this point
+                // XXX also this block should be up higher
                 if (isRegister && !isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect();
                     waitFor.abort();
                     return void cb('ALREADY_REGISTERED', res);
                 }
 
-                if (isRegister) {
+                if (isRegister && isProxyEmpty(rt.proxy)) {
+                    console.log("handling registration in object");
+                console.log(JSON.stringify(rt.proxy));
                     var proxy = rt.proxy;
-                    proxy.edPublic = res.edPublic;
-                    proxy.edPrivate = res.edPrivate;
-                    proxy.curvePublic = res.curvePublic;
-                    proxy.curvePrivate = res.curvePrivate;
+                    proxy.edPublic = res.edPublic || proxy.edPublic;
+                    proxy.edPrivate = res.edPrivate || proxy.edPrivate;
+                    proxy.curvePublic = res.curvePublic || proxy.curvePublic;
+                    proxy.curvePrivate = res.curvePrivate || proxy.curvePrivate;
                     proxy.login_name = uname;
                     proxy[Constants.displayNameKey] = uname;
-                    sessionStorage.createReadme = 1;
+                    setCreateReadme();
                     if (!shouldImport) { proxy.version = 6; }
                     Feedback.send('REGISTRATION', true);
                 } else {
                     Feedback.send('LOGIN', true);
                 }
 
-                if (shouldImport) {
-                    sessionStorage.migrateAnonDrive = 1;
-                }
+                console.log(JSON.stringify(rt.proxy));
+                setTimeout(waitFor(function () {
+                    Realtime.whenRealtimeSyncs(RT.realtime, waitFor(function () {
+                        // the following stages are there to initialize a new drive
+                        // if you are registering
+                        //waitFor.abort();
+                        /*
+                        LocalStore.login(res.userHash, res.userName, waitFor(function () {
+                            setTimeout(function () { cb(void 0, res); });
+                        }));*/
+                    }));
+                }));
             }));
-        }).nThen(function () {
-            // We have to call whenRealtimeSyncs asynchronously here because in the current
-            // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
-            // asynchronously.
-            // The following setTimeout is here to make sure whenRealtimeSyncs is called after
-            // `contentUpdate` so that we have an update userDoc in chainpad.
-            setTimeout(function () {
-                Realtime.whenRealtimeSyncs(RT.realtime, function () {
-                    LocalStore.login(res.userHash, res.userName, function () {
-                        setTimeout(function () { cb(void 0, res); });
-                    });
+        }).nThen(function (waitFor) {
+            require(['/common/pinpad.js'], waitFor(function (_Pinpad) {
+                console.log("loaded rpc module");
+                Pinpad = _Pinpad;
+            }));
+        }).nThen(function (waitFor) {
+            // send an RPC to store the block which you created.
+            console.log("initializing rpc interface");
+            // XXX missing edPrivate signing key.
+
+            console.error(RT);
+            Pinpad.create(RT.network, RT.proxy, waitFor(function (e, _rpc) {
+                if (e) {
+                    waitFor.abort();
+                    console.error(e); // INVALID_KEYS
+                    return void cb('RPC_CREATION_ERROR');
+                }
+                rpc = _rpc;
+                console.log("rpc initialized");
+            }));
+        }).nThen(function (waitFor) {
+            console.log("creating request to publish a login block");
+
+            // Finally, create the login block for the object you just created.
+            var toPublish = {
+                userHash: userHash,
+                edPublic: res.edPublic,
+            };
+
+            console.log(toPublish);
+
+            var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
+
+            console.log("about to send block request:", blockRequest);
+
+            rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
+                if (e) { return void console.error(e); }
+
+                console.log("login block published");
+                console.log(e);
+
+                console.log("blockInfo should be available at:", blockHash);
+
+                LocalStore.setBlockHash(blockHash);
+
+                LocalStore.login(false, uname, function () {
+                    cb(void 0, res);
                 });
-            });
+            }));
         });
     };
     Exports.redirect = function () {
@@ -247,6 +470,10 @@ define([
                 Exports.loginOrRegister(uname, passwd, isRegister, shouldImport, function (err, result) {
                     var proxy;
                     if (result) { proxy = result.proxy; }
+
+                    console.log('finished registering.');
+                    console.log(err, result);
+                    //return;
 
                     if (err) {
                         switch (err) {

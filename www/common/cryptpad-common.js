@@ -1041,6 +1041,8 @@ define([
             provideFeedback();
         };
 
+        var userHash;
+
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
@@ -1066,7 +1068,8 @@ define([
                     // put your userhash into localStorage
                     try {
                         var block_info = Block.decrypt(arraybuffer, parsed.keys);
-                        if (block_info[Constants.userHashKey]) { LocalStore.setUserHash(block_info[Constants.userHashKey]); }
+                        //if (block_info[Constants.userHashKey]) { LocalStore.setUserHash(block_info[Constants.userHashKey]); }
+                        userHash = block_info[Constants.userHashKey];
                     } catch (e) {
                         console.error(e);
                         return void console.error("failed to decrypt or decode block content");
@@ -1076,7 +1079,7 @@ define([
         }).nThen(function (waitFor) {
             var cfg = {
                 init: true,
-                userHash: LocalStore.getUserHash(),
+                userHash: userHash || LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
                 localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
                 language: common.getLanguage(),
