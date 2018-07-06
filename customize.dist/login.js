@@ -268,7 +268,7 @@ define([
                 // The following setTimeout is here to make sure whenRealtimeSyncs is called after
                 // `contentUpdate` so that we have an update userDoc in chainpad.
                 setTimeout(function () {
-                    Realtime.whenRealtimeSyncs(RT.realtime, function () {
+                    Realtime.whenRealtimeSyncs(rt.realtime, function () {
                         // the following stages are there to initialize a new drive
                         // if you are registering
 
