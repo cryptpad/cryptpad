@@ -103,6 +103,14 @@ define([
     common.userObjectCommand = function (data, cb) {
         postMessage("DRIVE_USEROBJECT", data, cb);
     };
+    common.restoreDrive = function (data, cb) {
+        postMessage("SET", {
+            key:['drive'],
+            value: data
+        }, function (obj) {
+            cb(obj);
+        });
+    };
     common.drive = {};
     common.drive.onLog = Util.mkEvent();
     common.drive.onChange = Util.mkEvent();

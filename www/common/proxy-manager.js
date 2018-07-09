@@ -677,6 +677,15 @@ define([
         return Env.user.userObject.getOwnedPads(edPublic);
     };
 
+    var getSharedFolderData = function (Env, id) {
+        if (!Env.folders[id]) { return; }
+        var obj = Env.folders[id].proxy.metadata || {};
+        for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
+            obj[k] = Env.user.proxy[UserObject.SHARED_FOLDERS][id][k];
+        }
+        return obj;
+    };
+
     /* Generic: doesn't need access to a proxy */
     var isFile = function (Env, el, allowStr) {
         return Env.user.userObject.isFile(el, allowStr);
@@ -762,6 +771,7 @@ define([
             getTagsList: callWithEnv(getTagsList),
             findFile: callWithEnv(findFile),
             findChannels: callWithEnv(findChannels),
+            getSharedFolderData: callWithEnv(getSharedFolderData),
             // Generic
             isFile: callWithEnv(isFile),
             isFolder: callWithEnv(isFolder),

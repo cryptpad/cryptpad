@@ -52,6 +52,9 @@ define([
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
                 Cryptpad.userObjectCommand(data, cb);
             });
+            sframeChan.on('Q_DRIVE_RESTORE', function (data, cb) {
+                Cryptpad.restoreDrive(data, cb);
+            });
             sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
                 if (data && data.sharedFolder) {
                     Cryptpad.getSharedFolder(data.sharedFolder, function (obj) {

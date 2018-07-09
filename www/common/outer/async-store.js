@@ -1173,6 +1173,8 @@ define([
             var id;
             nThen(function (waitFor) {
                 // TODO XXX get the folder data (href, title, ...)
+                // XXX href should be stored in your drive's .sharedFolders
+                // and title should be stored in the sharef folder's metadata
                 var folderData = data.folderData || {};
                 // 1. add the shared folder to our list of shared folders
                 store.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {

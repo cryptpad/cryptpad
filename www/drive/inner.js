@@ -71,6 +71,7 @@ define([
     // Icons
     var faFolder = 'fa-folder';
     var faFolderOpen = 'fa-folder-open';
+    var faSharedFolder = 'fa-users';
     var faReadOnly = 'fa-eye';
     var faRename = 'fa-pencil';
     var faTrash = 'fa-trash';
@@ -88,6 +89,8 @@ define([
     var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " fa cp-app-drive-icon-folder"});
     //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
+    var $sharedFolderIcon = $('<span>', {"class": faSharedFolder + " fa cp-app-drive-icon-folder"});
+    var $sharedFolderOpenedIcon = $sharedFolderIcon.clone();
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -1336,6 +1339,12 @@ define([
         var addFolderData = function (element, key, $span) {
             if (!element || !manager.isFolder(element)) { return; }
             // The element with the class '.name' is underlined when the 'li' is hovered
+            if (manager.isSharedFolder(element)) {
+                var data = manager.getSharedFolderData(element);
+                key = data && data.title ? data.title : key;
+                element = manager.folders[element].proxy[manager.user.userObject.ROOT];
+            }
+
             var sf = manager.hasSubfolder(element);
             var files = manager.hasFile(element);
             var $name = $('<span>', {'class': 'cp-app-drive-element-name'}).text(key);
@@ -1372,13 +1381,18 @@ define([
             }
 
             var element = manager.find(newPath);
+            var isSharedFolder = manager.isSharedFolder(element);
+
             var $icon = !isFolder ? getFileIcon(element) : undefined;
             var ro = manager.isReadOnlyFile(element);
             // ro undefined means it's an old hash which doesn't support read-only
             var roClass = typeof(ro) === 'undefined' ?' cp-app-drive-element-noreadonly' :
                             ro ? ' cp-app-drive-element-readonly' : '';
             var liClass = 'cp-app-drive-element-file cp-app-drive-element' + roClass;
-            if (isFolder) {
+            if (isSharedFolder) {
+                liClass = 'cp-app-drive-element-folder cp-app-drive-element';
+                $icon = $sharedFolderIcon.clone();
+            } else if (isFolder) {
                 liClass = 'cp-app-drive-element-folder cp-app-drive-element';
                 $icon = manager.isFolderEmpty(root[key]) ? $folderEmptyIcon.clone() : $folderIcon.clone();
             }
@@ -1474,10 +1488,19 @@ define([
             var isVirtual = virtualCategories.indexOf(path[0]) !== -1;
             var el = isVirtual ? undefined : manager.find(path);
             path = path[0] === SEARCH ? path.slice(0,1) : path;
+
+            var skipNext = false; // When encountering a shared folder, skip a key in the path
             path.forEach(function (p, idx) {
+                if (skipNext) { return skipNext = false; }
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
 
                 var name = p;
+
+                var el = manager.find(path.slice(0, idx+1));
+                if (manager.isSharedFolder(el)) {
+                    name = manager.getSharedFolderData(el).title;
+                    skipNext = true;
+                }
 
                 var $span = $('<span>', {'class': 'cp-app-drive-path-element'});
                 if (idx < path.length - 1) {
@@ -1844,7 +1867,12 @@ define([
             if (keys.length < 2) { return keys; }
             var mult = asc ? 1 : -1;
             var getProp = function (el, prop) {
-                if (folder) { return el.toLowerCase(); }
+                if (folder && root[el] && manager.isSharedFolder(root[el])) {
+                    var title = manager.getSharedFolderData(root[el]).title || el;
+                    return title.toLowerCase();
+                } else if (folder) {
+                    return el.toLowerCase();
+                }
                 var id = useId ? el : root[el];
                 var data = manager.getFileData(id);
                 if (!data) { return ''; }
@@ -2541,12 +2569,28 @@ define([
                 if (!manager.isFolder(root[key])) { return; }
                 var newPath = path.slice();
                 newPath.push(key);
-                var isCurrentFolder = manager.comparePath(newPath, currentPath);
-                var isEmpty = manager.isFolderEmpty(root[key]);
-                var subfolder = manager.hasSubfolder(root[key]);
-                var $icon = isEmpty ?
-                    (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
-                    (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
+                var isSharedFolder = manager.isSharedFolder(root[key]);
+                var $icon, isCurrentFolder, subfolder;
+                if (isSharedFolder) {
+                    var fId = root[key];
+                    // Fix path
+                    newPath.push(manager.user.userObject.ROOT);
+                    isCurrentFolder = manager.comparePath(newPath, currentPath);
+                    // Subfolders?
+                    root = manager.folders[fId].proxy[manager.user.userObject.ROOT];
+                    subfolder = manager.hasSubfolder(root);
+                    // Fix name
+                    key = manager.getSharedFolderData(fId).title;
+                    // Fix icon
+                    $icon = $sharedFolderIcon;
+                } else {
+                    var isEmpty = manager.isFolderEmpty(root[key]);
+                    subfolder = manager.hasSubfolder(root[key]);
+                    isCurrentFolder = manager.comparePath(newPath, currentPath);
+                    $icon = isEmpty ?
+                        (isCurrentFolder ? $folderOpenedEmptyIcon : $folderEmptyIcon) :
+                        (isCurrentFolder ? $folderOpenedIcon : $folderIcon);
+                }
                 var $element = createTreeElement(key, $icon.clone(), newPath, true, true, subfolder, isCurrentFolder);
                 $element.appendTo($list);
                 $element.find('>.cp-app-drive-element-row').contextmenu(openContextMenu('tree'));
@@ -3113,6 +3157,7 @@ define([
             APP.histConfig = {
                 onLocal: function () {
                     proxy.drive = history.currentObj.drive;
+                    sframeChan.query("Q_DRIVE_RESTORE", history.currentObj.drive, function () {});
                 },
                 onRemote: function () {},
                 setHistory: setHistory,
