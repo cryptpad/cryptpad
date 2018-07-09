@@ -53,6 +53,12 @@ define([
                 Cryptpad.userObjectCommand(data, cb);
             });
             sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
+                if (data && data.sharedFolder) {
+                    Cryptpad.getSharedFolder(data.sharedFolder, function (obj) {
+                        cb(obj);
+                    });
+                    return;
+                }
                 Cryptpad.getUserObject(function (obj) {
                     cb(obj);
                 });

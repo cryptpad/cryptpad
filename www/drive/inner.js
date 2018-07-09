@@ -210,6 +210,23 @@ define([
         for (var k in objRef) { delete objRef[k]; }
         $.extend(true, objRef, objToCopy);
     };
+    var updateSharedFolders = function (sframeChan, drive, folders, cb) {
+        if (!drive || !drive.sharedFolders) {
+            return void cb();
+        }
+        nThen(function (waitFor) {
+            Object.keys(drive.sharedFolders).forEach(function (fId) {
+                sframeChan.query('Q_DRIVE_GETOBJECT', {
+                    sharedFolder: fId
+                }, waitFor(function (err, newObj) {
+                    folders[fId] = folders[fId] || {};
+                    copyObjectValue(folders[fId], newObj);
+                }));
+            });
+        }).nThen(function () {
+            cb();
+        });
+    };
     var updateObject = function (sframeChan, obj, cb) {
         sframeChan.query('Q_DRIVE_GETOBJECT', null, function (err, newObj) {
             copyObjectValue(obj, newObj);
@@ -314,15 +331,11 @@ define([
         config.loggedIn = APP.loggedIn;
         config.sframeChan = sframeChan;
 
-
         var manager = ProxyManager.createInner(files, sframeChan, config);
 
         Object.keys(folders).forEach(function (id) {
             var f = folders[id];
-            // f.data => metadata (href, title, password...)
-            // f.proxy => listmap
-            // f.id => id?
-            manager.addProxy(id, f.proxy);
+            manager.addProxy(id, f);
         });
 
         var $tree = APP.$tree = $("#cp-app-drive-tree");
@@ -1166,7 +1179,10 @@ define([
             var $target = $(target);
             var $el = findDataHolder($target);
             var newPath = $el.data('path');
-            if ((!newPath || manager.isFile(manager.find(newPath)))
+            var dropEl = newPath && manager.find(newPath);
+            if (newPath && manager.isSharedFolder(dropEl)) {
+                newPath.push(manager.user.userObject.ROOT);
+            } else if ((!newPath || manager.isFile(dropEl))
                     && $target.parents('#cp-app-drive-content')) {
                 newPath = currentPath;
             }
@@ -2293,6 +2309,11 @@ define([
             var isTags = path[0] === TAGS;
 
             var root = isVirtual ? undefined : manager.find(path);
+            if (manager.isSharedFolder(root)) {
+                path.push(manager.user.userObject.ROOT);
+                root = manager.find(path);
+                if (!root) { return; }
+            }
             if (!isVirtual && typeof(root) === "undefined") {
                 log(Messages.fm_unknownFolderError);
                 debug("Unable to locate the selected directory: ", path);
@@ -2434,7 +2455,9 @@ define([
             }
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
-                _displayDirectory(path, force);
+                updateSharedFolders(sframeChan, files, folders, function () {
+                    _displayDirectory(path, force);
+                });
             });
         };
 
@@ -3058,8 +3081,9 @@ define([
             };*/
 
             var sframeChan = common.getSframeChannel();
-            updateObject(sframeChan, proxy, waitFor());
-            // XXX Load shared folders
+            updateObject(sframeChan, proxy, waitFor(function () {
+                updateSharedFolders(sframeChan, proxy.drive, folders, waitFor());
+            }));
         }).nThen(function () {
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();

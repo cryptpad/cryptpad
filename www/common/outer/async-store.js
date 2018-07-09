@@ -38,7 +38,7 @@ define([
                 Realtime.whenRealtimeSyncs(store.realtime, waitFor());
                 if (store.sharedFolders) {
                     for (var k in store.sharedFolders) {
-                        Realtime.whenRealtimeSync(store.sharedFolders[k].realtime, waitFor());
+                        Realtime.whenRealtimeSyncs(store.sharedFolders[k].realtime, waitFor());
                     }
                 }
             }).nThen(function () { cb(); });
@@ -59,6 +59,13 @@ define([
             }
             broadcast([clientId], "UPDATE_METADATA");
             onSync(cb);
+        };
+
+        Store.getSharedFolder = function (clientId, id, cb) {
+            if (store.manager.folders[id]) {
+                return void cb(store.manager.folders[id].proxy);
+            }
+            cb({});
         };
 
         Store.hasSigningKeys = function () {
@@ -1166,7 +1173,7 @@ define([
             var id;
             nThen(function (waitFor) {
                 // TODO XXX get the folder data (href, title, ...)
-                var folderData = {};
+                var folderData = data.folderData || {};
                 // 1. add the shared folder to our list of shared folders
                 store.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
                     if (err) {
@@ -1177,6 +1184,7 @@ define([
                 }));
             }).nThen(function (waitFor) {
                 // 2a. add the shared folder to the path in our drive
+                console.log('adding');
                 store.userObject.add(id, path);
                 onSync(waitFor());
 
@@ -1187,6 +1195,23 @@ define([
                     path: ['drive'].concat(path)
                 }, clientId);
                 cb();
+            });
+        };
+        store.createSharedFolder = function () {
+            // XXX
+            var hash = Hash.createRandomHash('folder');
+            var href = '/folder/#' + hash;
+            var secret = Hash.getSecrets('folder', hash);
+            Store.addSharedFolder(null, {
+                path: ['root'],
+                folderData: {
+                    href: href,
+                    roHref: '/folder/#' + Hash.getViewHashFromKeys(secret),
+                    channel: secret.channel,
+                    title: "Test",
+                }
+            }, function () {
+                console.log('done');
             });
         };
 

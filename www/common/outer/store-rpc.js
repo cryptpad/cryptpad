@@ -52,6 +52,7 @@ define([
             GET_PAD_DATA: Store.getPadData,
             GET_STRONGER_HASH: Store.getStrongerHash,
             INCREMENT_TEMPLATE_USE: Store.incrementTemplateUse,
+            GET_SHARED_FOLDER: Store.getSharedFolder,
             // Messaging
             INVITE_FROM_USERLIST: Store.inviteFromUserlist,
             ADD_DIRECT_MESSAGE_HANDLERS: Store.addDirectMessageHandlers,

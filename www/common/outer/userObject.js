@@ -69,6 +69,23 @@ define([
             });
         };
 
+        exp.pushSharedFolder = function (data, cb) {
+            if (typeof cb !== "function") { cb = function () {}; }
+            var todo = function () {
+                var id = Util.createRandomInteger();
+                files[SHARED_FOLDERS][id] = data;
+                cb(null, id);
+            };
+            if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
+                return void cb("EAUTH");
+            }
+            if (!pinPads) { return void cb('EAUTH'); }
+            pinPads([data.channel], function (obj) {
+                if (obj && obj.error) { return void cb(obj.error); }
+                todo();
+            });
+        };
+
         // FILES DATA
         var spliceFileData = function (id) {
             delete files[FILES_DATA][id];
@@ -191,6 +208,7 @@ define([
 
             var toRemove = [];
             Object.keys(data).forEach(function (id) {
+                id = Number(id);
                 // Find and maybe update existing pads with the same channel id
                 var d = data[id];
                 var found = false;
@@ -332,9 +350,9 @@ define([
         };
 
         exp.add = function (id, path) {
-            // TODO WW
             if (!loggedIn && !config.testMode) { return; }
-            var data = files[FILES_DATA][id];
+            id = Number(id);
+            var data = files[FILES_DATA][id] || files[SHARED_FOLDERS][id];
             if (!data || typeof(data) !== "object") { return; }
             var newPath = path, parentEl;
             if (path && !Array.isArray(path)) {
@@ -438,7 +456,6 @@ define([
                         });
                         delete files[OLD_FILES_DATA];
                         delete files.migrate;
-                        console.log('done');
                         todo();
                     };
                     if (exp.rt) {
@@ -581,7 +598,7 @@ define([
                 });
             };
             var fixFilesData = function () {
-                if (typeof files[FILES_DATA] !== "object") { debug("OLD_FILES_DATA was not an object"); files[FILES_DATA] = {}; }
+                if (typeof files[FILES_DATA] !== "object") { debug("FILES_DATA was not an object"); files[FILES_DATA] = {}; }
                 var fd = files[FILES_DATA];
                 var rootFiles = exp.getFiles([ROOT, TRASH, 'hrefArray']);
                 var root = exp.find([ROOT]);
@@ -649,7 +666,8 @@ define([
                                 secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
                             }
                             el.channel = secret.channel;
-                            console.log('Adding missing channel in filesData ', el.channel);
+                            console.log(el);
+                            debug('Adding missing channel in filesData ', el.channel);
                         } catch (e) {
                             console.error(e);
                         }

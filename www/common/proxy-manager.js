@@ -7,17 +7,20 @@ define([
 
     var getConfig = function (Env) {
         var cfg = {};
-        for (var k in Env.cfg) { cfg[k] = Env[k]; }
+        for (var k in Env.cfg) { cfg[k] = Env.cfg[k]; }
         return cfg;
     };
 
     // Add a shared folder to the list
     var addProxy = function (Env, id, proxy, leave) {
-        var cfg = getConfig();
+        var cfg = getConfig(Env);
         cfg.sharedFolder = true;
         cfg.id = id;
-        var userObject = UserObject.init(proxy, Env.cfg);
-        userObject.fixFiles();
+        var userObject = UserObject.init(proxy, cfg);
+        if (userObject.fixFiles) {
+            // Only in outer
+            userObject.fixFiles();
+        }
         Env.folders[id] = {
             proxy: proxy,
             userObject: userObject,
@@ -98,7 +101,9 @@ define([
         }
         var current;
         var uo = Env.user.userObject;
-        for (var i=2; i<=path.length; i++) {
+        // We don't need to check the last element of the path because we only need to split it
+        // when the path contains an element inside the shared folder
+        for (var i=2; i<path.length; i++) {
             current = uo.find(path.slice(0,i));
             if (uo.isSharedFolder(current)) {
                 res = {
@@ -193,13 +198,21 @@ define([
                     // Copy the elements to the new location
                     var toCopy = _getCopyFromPaths(resolved.main, Env.user.userObject);
                     var newUserObject = newResolved.userObject;
-                    newUserObject.copyFromOtherDrive(newResolved.path, toCopy.el, toCopy.data);
+                    var ownedPads = [];
+                    toCopy.forEach(function (obj) {
+                        newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data);
+                        var _owned = Object.keys(obj.data).filter(function (id) {
+                            var owners = obj.data[id].owners;
+                            return Array.isArray(owners) && owners.indexOf(Env.edPublic) !== -1;
+                        });
+                        Array.prototype.push.apply(ownedPads, _owned);
+                    });
 
-                    // Filter owned pads so that we won't remove them from our drive
-                    var toRemove = resolved.main.slice();
-                    toRemove.filter(function (id) {
-                        var owners = Env.user.userObject.getFileData(id).owners;
-                        return !Array.isArray(owners) || owners.indexOf(Env.edPublic) === -1;
+                    var rootPath = resolved.main[0].slice();
+                    rootPath.pop();
+                    ownedPads = Util.deduplicateString(ownedPads);
+                    ownedPads.forEach(function (id) {
+                        Env.user.userObject.add(Number(id), rootPath);
                     });
 
                     // Remove the elements from the old location (without unpinning)
@@ -222,7 +235,9 @@ define([
 
                         // Copy the elements to the new location
                         var toCopy = _getCopyFromPaths(paths, uoFrom);
-                        uoTo.copyFromOtherDrive(newResolved.path, toCopy.el, toCopy.data);
+                        toCopy.forEach(function (obj) {
+                            uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data);
+                        });
 
                         // Remove the elements from the old location (without unpinning)
                         uoFrom.delete(paths, waitFor(), false, false, true);
@@ -409,16 +424,18 @@ define([
                     }
                 };
             }
-            return function (fileId) {
-                var data = userObject.getFileData(fileId);
-                // Don't pin pads owned by someone else
-                if (Array.isArray(data.owners) && data.owners.length &&
-                    data.owners.indexOf(edPublic) === -1) { return; }
-                // Don't push duplicates
-                if (result.indexOf(data.channel) === -1) {
-                    result.push(data.channel);
-                }
-            };
+            if (type === "pin") {
+                return function (fileId) {
+                    var data = userObject.getFileData(fileId);
+                    // Don't pin pads owned by someone else
+                    if (Array.isArray(data.owners) && data.owners.length &&
+                        data.owners.indexOf(edPublic) === -1) { return; }
+                    // Don't push duplicates
+                    if (result.indexOf(data.channel) === -1) {
+                        result.push(data.channel);
+                    }
+                };
+            }
         };
 
         // Get the list of user objects
@@ -428,6 +445,13 @@ define([
             var files = uo.getFiles([UserObject.FILES_DATA]);
             files.forEach(addChannel(uo));
         });
+
+        if (type === "pin") {
+            var sfChannels = Object.keys(Env.folders).map(function (fId) {
+                return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
+            });
+            Array.prototype.push.apply(result, sfChannels);
+        }
 
         return result;
     };
@@ -574,7 +598,7 @@ define([
 
     var find = function (Env, path) {
         var resolved = _resolvePath(Env, path);
-        return resolved.userObject.find(path);
+        return resolved.userObject.find(resolved.path);
     };
 
     var getTitle = function (Env, id, type) {
@@ -660,7 +684,14 @@ define([
     var isFolder = function (Env, el) {
         return Env.user.userObject.isFolder(el);
     };
+    var isSharedFolder = function (Env, el) {
+        return Env.user.userObject.isSharedFolder(el);
+    };
     var isFolderEmpty = function (Env, el) {
+        if (Env.folders[el]) {
+            var uo = Env.folders[el].userObject;
+            return uo.isFolderEmpty(uo.find[uo.ROOT]);
+        }
         return Env.user.userObject.isFolderEmpty(el);
     };
     var isPathIn = function (Env, path, categories) {
@@ -676,9 +707,17 @@ define([
         return Env.user.userObject.comparePath(a, b);
     };
     var hasSubfolder = function (Env, el, trashRoot) {
+        if (Env.folders[el]) {
+            var uo = Env.folders[el].userObject;
+            return uo.hasSubfolder(uo.find[uo.ROOT]);
+        }
         return Env.user.userObject.hasSubfolder(el, trashRoot);
     };
     var hasFile = function (Env, el, trashRoot) {
+        if (Env.folders[el]) {
+            var uo = Env.folders[el].userObject;
+            return uo.hasFile(uo.find[uo.ROOT]);
+        }
         return Env.user.userObject.hasFile(el, trashRoot);
     };
 
@@ -726,6 +765,7 @@ define([
             // Generic
             isFile: callWithEnv(isFile),
             isFolder: callWithEnv(isFolder),
+            isSharedFolder: callWithEnv(isSharedFolder),
             isFolderEmpty: callWithEnv(isFolderEmpty),
             isPathIn: callWithEnv(isPathIn),
             isSubpath: callWithEnv(isSubpath),
