@@ -1068,7 +1068,10 @@ define([
                     // put your userhash into localStorage
                     try {
                         var block_info = Block.decrypt(arraybuffer, parsed.keys);
-                        //if (block_info[Constants.userHashKey]) { LocalStore.setUserHash(block_info[Constants.userHashKey]); }
+                        if (!block_info) {
+                            console.error("Failed to decrypt !");
+                            return;
+                        }
                         userHash = block_info[Constants.userHashKey];
                     } catch (e) {
                         console.error(e);

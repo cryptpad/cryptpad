@@ -80,18 +80,10 @@ define([
 
     var loginOptionsFromBlock = function (blockInfo) { // userHash
         var opt = {};
-
-        var secrets = Hash.getSecrets('drive', blockInfo.userHash);
-
-        console.log(opt, blockInfo);
-
-        opt.channelHex = secrets.channel;
-        opt.keys = secrets.keys;
-        opt.edPublic = blockInfo.edPublic; // XXX make sure everything that creates a block serializes the edPublic
-        // XXX maybe it's a good idea to include edPrivate too
-
-        console.log(opt);
-
+        var parsed = Hash.getSecrets('pad', blockInfo.User_hash);
+        opt.channelHex = parsed.channel;
+        opt.keys = parsed.keys;
+        opt.edPublic = blockInfo.edPublic;
         return opt;
     };
 
@@ -153,10 +145,7 @@ define([
         nThen(function (waitFor) {
             // derive a predefined number of bytes from the user's inputs,
             // and allocate them in a deterministic fashion
-
-            console.log('allocating bytes from user input')
             Cred.deriveFromPassphrase(uname, passwd, Exports.requiredBytes, waitFor(function (bytes) {
-                console.log("allocated first set of bytes");
                 res.opt = allocateBytes(bytes);
                 blockHash = res.opt.blockHash;
                 blockKeys = res.opt.blockKeys;
@@ -182,15 +171,12 @@ define([
                     return;
                 }
 
-
-                console.log("found a block");
                 var decryptedBlock = Block.decrypt(block, blockKeys);
                 if (!decryptedBlock) {
                     console.error("Found a login block but failed to decrypt");
                     return;
                 }
                 res.blockInfo = decryptedBlock;
-                console.log("valid block", decryptedBlock);
             }));
         }).nThen(function (waitFor) {
             // we assume that if there is a block, it was created in a valid manner
@@ -199,26 +185,15 @@ define([
 
             var opt = res.opt;
 
-            console.log("preparing to load legacy user object");
-
             // load the user's object using the legacy credentials
             loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) { return void cb(err); }
-
-                console.log("legacy user object loaded");
-
-                if (isRegister) {
-                    if (isProxyEmpty(rt.proxy)) {
-                        console.log("proxy is empty");
-
-                        // If they are trying to register,
-                        // and the proxy is empty, then there is no 'legacy user' either
-                        // so we should just shut down this session and disconnect.
-                        rt.network.disconnect();
-                        return; // proceed to the next async block
-                    } else {
-                        // they're trying to register but legacy proxy is not empty
-                    }
+                if (isRegister && isProxyEmpty(rt.proxy)) {
+                    // If they are trying to register,
+                    // and the proxy is empty, then there is no 'legacy user' either
+                    // so we should just shut down this session and disconnect.
+                    rt.network.disconnect();
+                    return; // proceed to the next async block
                 }
 
                 // they tried to just log in but there's no such user
@@ -243,7 +218,6 @@ define([
                 // so setting them is just a precaution to keep things in good shape
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
-                res.network = rt.network;
 
                 // they're registering...
                 res.userHash = opt.userHash;
@@ -271,9 +245,6 @@ define([
                     Realtime.whenRealtimeSyncs(rt.realtime, function () {
                         // the following stages are there to initialize a new drive
                         // if you are registering
-
-                        // XXX maybe this should be off in the UI function ?
-                        console.log("persisting login");
                         LocalStore.login(res.userHash, res.userName, function () {
                             setTimeout(function () { cb(void 0, res); });
                         });
@@ -281,22 +252,14 @@ define([
                 });
             }));
         }).nThen(function (waitFor) { // MODERN REGISTRATION
-            // allocate some random bytes
-
             var opt;
-            if (res.blockInfo && isRegister) {
-                // XXX they probably want to log in with their existing creds
-                // load the object specified in their block
-                // and confirm that the object is in good standing
-                console.log("the user is trying to register, but a block already exists here");
+            if (res.blockInfo) {
                 opt = loginOptionsFromBlock(res.blockInfo);
             } else {
                 console.log("allocating random bytes for a new user object");
                 opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
                 userHash = opt.userHash;
             }
-
-            console.log("loading new user object");
 
             // according to the location derived from the credentials which you entered
             loadUserObject(opt, waitFor(function (err, rt) {
@@ -305,57 +268,56 @@ define([
                     return void cb('MODERN_REGISTRATION_INIT');
                 }
 
-                console.log("object loaded");
-                console.log(JSON.stringify(rt.proxy));
-
-                // XXX validate the rest of this logic
-
                 // export the realtime object you checked
                 RT = rt;
 
+                var proxy = rt.proxy;
+                if (isRegister && !isProxyEmpty(proxy) && (!proxy.edPublic || !proxy.edPrivate)) {
+                    console.error("INVALID KEYS");
+                    console.log(JSON.stringify(proxy));
+                    return;
+                }
+
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
-                res.network = rt.network;
 
                 // they're registering...
-                res.userHash = opt.userHash;
+                res.userHash = false;
                 res.userName = uname;
 
-                // export their signing key
-                res.edPrivate = opt.edPrivate || rt.edPrivate;
-                res.edPublic = opt.edPublic || rt.edPublic;
-
-                res.curvePrivate = opt.curvePrivate || rt.curvePrivate;
-                res.curvePublic = opt.curvePublic || rt.curvePublic;
-
-                // they tried to just log in but there's no such user
-                // XXX in fact you should get NO_SUCH_USER if the block does not exist
-                // and the proxy from above was empty
-                // tl;dr this shouldn't be here.
+                // somehow they have a block present, but nothing in the user object it specifies
+                // this shouldn't happen, but let's send feedback if it does
                 if (!isRegister && isProxyEmpty(rt.proxy)) {
+                    // this really shouldn't happen, but let's handle it anyway
+                    Feedback.send('EMPTY_LOGIN_WITH_BLOCK');
+
                     rt.network.disconnect(); // clean up after yourself
                     waitFor.abort();
                     return void cb('NO_SUCH_USER', res);
                 }
 
                 // they tried to register, but those exact credentials exist
-                // XXX we should not need to worry about randomly landing on an existing channel
-                // ALREADY_REGISTERED should depend on whether or not a block exists, at this point
-                // XXX also this block should be up higher
                 if (isRegister && !isProxyEmpty(rt.proxy)) {
                     rt.network.disconnect();
                     waitFor.abort();
+                    res.blockHash = blockHash;
+                    res.userHash = false;
                     return void cb('ALREADY_REGISTERED', res);
                 }
 
+                if (!isRegister && !isProxyEmpty(rt.proxy)) {
+                    LocalStore.setBlockHash(blockHash);
+                    waitFor.abort();
+                    return void LocalStore.login(false, uname, function () {
+                        cb(void 0, res);
+                    });
+                }
+
                 if (isRegister && isProxyEmpty(rt.proxy)) {
-                    console.log("handling registration in object");
-                console.log(JSON.stringify(rt.proxy));
-                    var proxy = rt.proxy;
-                    proxy.edPublic = res.edPublic || proxy.edPublic;
-                    proxy.edPrivate = res.edPrivate || proxy.edPrivate;
-                    proxy.curvePublic = res.curvePublic || proxy.curvePublic;
-                    proxy.curvePrivate = res.curvePrivate || proxy.curvePrivate;
+                    proxy.edPublic = opt.edPublic;
+                    proxy.edPrivate = opt.edPrivate;
+                    proxy.curvePublic = opt.curvePublic;
+                    proxy.curvePrivate = opt.curvePrivate;
                     proxy.login_name = uname;
                     proxy[Constants.displayNameKey] = uname;
                     setCreateReadme();
@@ -365,17 +327,8 @@ define([
                     Feedback.send('LOGIN', true);
                 }
 
-                console.log(JSON.stringify(rt.proxy));
                 setTimeout(waitFor(function () {
-                    Realtime.whenRealtimeSyncs(RT.realtime, waitFor(function () {
-                        // the following stages are there to initialize a new drive
-                        // if you are registering
-                        //waitFor.abort();
-                        /*
-                        LocalStore.login(res.userHash, res.userName, waitFor(function () {
-                            setTimeout(function () { cb(void 0, res); });
-                        }));*/
-                    }));
+                    Realtime.whenRealtimeSyncs(rt.realtime, waitFor());
                 }));
             }));
         }).nThen(function (waitFor) {
@@ -386,9 +339,7 @@ define([
         }).nThen(function (waitFor) {
             // send an RPC to store the block which you created.
             console.log("initializing rpc interface");
-            // XXX missing edPrivate signing key.
 
-            console.error(RT);
             Pinpad.create(RT.network, RT.proxy, waitFor(function (e, _rpc) {
                 if (e) {
                     waitFor.abort();
@@ -402,27 +353,19 @@ define([
             console.log("creating request to publish a login block");
 
             // Finally, create the login block for the object you just created.
-            var toPublish = {
-                userHash: userHash,
-                edPublic: res.edPublic,
-            };
+            var toPublish = {};
 
-            console.log(toPublish);
+            toPublish[Constants.userHashKey] = userHash;
+            toPublish.edPublic = RT.proxy.edPublic;
+            toPublish.edPrivate = RT.proxy.edPrivate;
 
             var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
-
-            console.log("about to send block request:", blockRequest);
 
             rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
                 if (e) { return void console.error(e); }
 
-                console.log("login block published");
-                console.log(e);
-
-                console.log("blockInfo should be available at:", blockHash);
-
+                console.log("blockInfo available at:", blockHash);
                 LocalStore.setBlockHash(blockHash);
-
                 LocalStore.login(false, uname, function () {
                     cb(void 0, res);
                 });
@@ -471,10 +414,6 @@ define([
                     var proxy;
                     if (result) { proxy = result.proxy; }
 
-                    console.log('finished registering.');
-                    console.log(err, result);
-                    //return;
-
                     if (err) {
                         switch (err) {
                             case 'NO_SUCH_USER':
@@ -509,7 +448,6 @@ define([
                                 });
                                 break;
                             case 'ALREADY_REGISTERED':
-                                // logMeIn should reset registering = false
                                 UI.removeLoadingScreen(function () {
                                     UI.confirm(Messages.register_alreadyRegistered, function (yes) {
                                         if (!yes) {
@@ -522,6 +460,12 @@ define([
                                             proxy[Constants.displayNameKey] = uname;
                                         }
                                         LocalStore.eraseTempSessionValues();
+
+
+                                        if (result.blockHash) {
+                                            LocalStore.setBlockHash(result.blockHash);
+                                        }
+
                                         LocalStore.login(result.userHash, result.userName, function () {
                                             setTimeout(function () { proceed(result); });
                                         });
