@@ -57,11 +57,6 @@ define([
         var test;
 
         $register.click(function () {
-            if (registering) {
-                console.log("registration is already in progress");
-                return;
-            }
-
             var uname = $uname.val();
             var passwd = $passwd.val();
             var confirmPassword = $confirm.val();
