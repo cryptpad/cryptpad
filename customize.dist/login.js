@@ -302,12 +302,19 @@ define([
                     waitFor.abort();
                     res.blockHash = blockHash;
                     res.userHash = false;
+                    if (shouldImport) {
+                        setMergeAnonDrive();
+                    }
+
                     return void cb('ALREADY_REGISTERED', res);
                 }
 
                 if (!isRegister && !isProxyEmpty(rt.proxy)) {
                     LocalStore.setBlockHash(blockHash);
                     waitFor.abort();
+                    if (shouldImport) {
+                        setMergeAnonDrive();
+                    }
                     return void LocalStore.login(false, uname, function () {
                         cb(void 0, res);
                     });
@@ -321,7 +328,12 @@ define([
                     proxy.login_name = uname;
                     proxy[Constants.displayNameKey] = uname;
                     setCreateReadme();
-                    if (!shouldImport) { proxy.version = 6; }
+                    if (shouldImport) {
+                        setMergeAnonDrive();
+                    } else {
+                        proxy.version = 6;
+                    }
+
                     Feedback.send('REGISTRATION', true);
                 } else {
                     Feedback.send('LOGIN', true);
