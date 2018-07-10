@@ -724,6 +724,7 @@ define([
 
         var Cred, Block, Login;
         Nthen(function (waitFor) {
+            console.log("loading necessary modules");
             require([
                 '/customize/credential.js',
                 '/common/outer/login-block.js',
@@ -735,11 +736,13 @@ define([
             }));
         }).nThen(function (waitFor) {
             // confirm that the provided password is correct
+            console.log("checking whether the password you entered was correct");
             Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes, waitFor(function (bytes) {
                 var allocated = Login.allocateBytes(bytes);
                 oldBlockKeys = allocated.blockKeys;
                 if (blockHash) {
                     if (blockHash !== allocated.blockHash) {
+                        console.log("password did not yield the correct blockHash ?");
                         // incorrect password probably
                         waitFor.abort();
                         return void cb({
@@ -750,6 +753,7 @@ define([
                 } else {
                     // otherwise they're a legacy user, and we should check against the User_hash
                     if (hash !== allocated.userHash) {
+                        console.log("password did not yield the correct userHash");
                         waitFor.abort();
                         return void cb({
                             error: 'INVALID_PASSWORD',
@@ -759,6 +763,7 @@ define([
             }));
         }).nThen(function (waitFor) {
             // Check if our drive is already owned
+            console.log("checking if old drive is owned");
             common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
                 if (err || obj.error) { return; }
                 if (obj.owners && Array.isArray(obj.owners) &&
@@ -778,21 +783,38 @@ define([
                 owners: [edPublic]
             };
 
+            console.log("copying contents of old drive to new location");
             Crypt.get(hash, waitFor(function (err, val) {
                 if (err) {
                     waitFor.abort();
                     return void cb({ error: err });
                 }
 
+                console.log(val);
+                console.log("%s => %s", hash, newHash);
                 Crypt.put(newHash, val, waitFor(function (err) {
                     if (err) {
                         waitFor.abort();
+                        console.error(err);
                         return void cb({ error: err });
                     }
+
+
+                    console.error('checking content at newHash: %s', newHash);
+
+                    Crypt.get(newHash, function (err, val) {
+                        if (err) {
+                            waitFor.abort();
+                            console.log(err);
+                            return void cb({ error: err });
+                        }
+                        console.error(val);
+                    });
                 }), optsPut);
             }));
         }).nThen(function (waitFor) {
             // Drive content copied: get the new block location
+            console.log("deriving new credentials from passphrase");
             Cred.deriveFromPassphrase(accountName, newPassword, Login.requiredBytes, waitFor(function (bytes) {
                 var allocated = Login.allocateBytes(bytes);
                 newBlockSeed = allocated.blockSeed;
@@ -800,14 +822,19 @@ define([
         }).nThen(function (waitFor) {
             // Write the new login block
             var keys = Block.genkeys(newBlockSeed);
-            var content = Block.serialize(JSON.stringify({
+
+            var temp = {
                 User_name: accountName,
                 User_hash: newHash,
                 edPublic: edPublic,
                 // edPrivate XXX
-            }), keys);
+            };
 
+            var content = Block.serialize(JSON.stringify(temp), keys);
+
+            console.log("writing new login block");
             common.writeLoginBlock(content, waitFor(function (obj) {
+                console.log("new login block written");
                 var newBlockHash = Block.getBlockHash(keys);
                 LocalStore.setBlockHash(newBlockHash);
                 if (obj && obj.error) {
@@ -817,11 +844,13 @@ define([
             }));
         }).nThen(function (waitFor) {
             // New drive hash is in login block, unpin the old one and pin the new one
+            console.log("unpinning old drive and pinning new one");
             common.unpinPads([secret.channel], waitFor());
             common.pinPads([newSecret.channel], waitFor());
         }).nThen(function (waitFor) {
             // Remove block hash
             if (blockHash) {
+                console.log('removing old login block');
                 var removeData = Block.remove(oldBlockKeys);
                 common.removeLoginBlock(removeData, waitFor(function (obj) {
                     if (obj && obj.error) { return void console.error(obj.error); }
@@ -829,6 +858,7 @@ define([
             }
         }).nThen(function (waitFor) {
             if (oldIsOwned) {
+                console.log('removing old drive');
                 common.removeOwnedChannel(secret.channel, waitFor(function (obj) {
                     if (obj && obj.error) {
                         // Deal with it as if it was not owned
@@ -842,6 +872,7 @@ define([
             }
         }).nThen(function (waitFor) {
             if (!oldIsOwned) {
+                console.error('deprecating old drive.');
                 postMessage("SET", {
                     key: [Constants.deprecatedKey],
                     value: true
@@ -855,6 +886,8 @@ define([
                 }));
             }
         }).nThen(function () {
+            console.error('done ?');
+            return;
             // We have the new drive, with the new login block
             window.location.reload();
         });

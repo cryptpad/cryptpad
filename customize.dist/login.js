@@ -72,6 +72,7 @@ define([
 
         opt.channel64 = Util.hexToBase64(channelHex);
 
+        // XXX why don't we generate a v2 ?
         opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/') + '/';
 
         return opt;
@@ -90,6 +91,7 @@ define([
     };
 
     var loadUserObject = function (opt, cb) {
+        console.log(opt);
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
             channel: opt.channelHex,
@@ -101,6 +103,8 @@ define([
             ChainPad: ChainPad,
             owners: [opt.edPublic]
         };
+
+        console.log(config);
 
         var rt = opt.rt = Listmap.create(config);
         rt.proxy
@@ -178,6 +182,8 @@ define([
                     console.error("Found a login block but failed to decrypt");
                     return;
                 }
+
+                console.error(decryptedBlock);
                 res.blockInfo = decryptedBlock;
             }));
         }).nThen(function (waitFor) {
@@ -253,11 +259,12 @@ define([
                     });
                 });
             }));
-        }).nThen(function (waitFor) { // MODERN REGISTRATION
+        }).nThen(function (waitFor) { // MODERN REGISTRATION / LOGIN
             var opt;
             if (res.blockInfo) {
                 opt = loginOptionsFromBlock(res.blockInfo);
                 userHash = res.blockInfo.User_hash;
+                console.error(opt, userHash);
             } else {
                 console.log("allocating random bytes for a new user object");
                 opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
@@ -270,6 +277,8 @@ define([
                     waitFor.abort();
                     return void cb('MODERN_REGISTRATION_INIT');
                 }
+
+                console.error(JSON.stringify(rt.proxy));
 
                 // export the realtime object you checked
                 RT = rt;
