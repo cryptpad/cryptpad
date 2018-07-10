@@ -106,7 +106,7 @@ define([
                 var proxy = proxyData.proxy;
                 var oldFo = FO.init(parsed.drive, {
                     loggedIn: proxyData.loggedIn,
-                    pinPads: function () {} // without pinPads /outer/userObject.js won't be loaded
+                    outer: true
                 });
                 var onMigrated = function () {
                     oldFo.fixFiles(true);
@@ -141,6 +141,7 @@ define([
                         // Add the file data in our array and use the id to add the file
                         var data = oldFo.getFileData(id);
                         if (data) {
+                            // XXX
                             newFo.pushData(data, function (err, id) {
                                 if (err) { return void console.error("Cannot import file:", data, err); }
                                 createFromPath(proxy, oldFo, paths[0], id);
