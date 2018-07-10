@@ -826,13 +826,13 @@ define([
             var out = false;
             var xId = $(x).attr('aria-describedby');
             if (xId) {
-                if (xId.indexOf('tippy-tooltip-') === 0) {
+                if (xId.indexOf('tippy-') === 0) {
                     return true;
                 }
             }
             $(x).find('[aria-describedby]').each(function (i, el) {
                 var id = el.getAttribute('aria-describedby');
-                if (id.indexOf('tippy-tooltip-') !== 0) { return; }
+                if (id.indexOf('tippy-') !== 0) { return; }
                 out = true;
             });
             return out;
