@@ -196,6 +196,16 @@ define([
             // load the user's object using the legacy credentials
             loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) { return void cb(err); }
+
+                // if a proxy is marked as deprecated, it is because someone had a non-owned drive
+                // but changed their password, and couldn't delete their old data.
+                // if they are here, they have entered their old credentials, so we should not
+                // allow them to proceed. In time, their old drive should get deleted, since
+                // it will should be pinned by anyone's drive.
+                if (rt.proxy[Constants.deprecatedKey]) {
+                    return void cb('NO_SUCH_USER', res);
+                }
+
                 if (isRegister && isProxyEmpty(rt.proxy)) {
                     // If they are trying to register,
                     // and the proxy is empty, then there is no 'legacy user' either
