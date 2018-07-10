@@ -222,17 +222,21 @@ define([
             }));
         }
 
-        $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
-            id: 'cp-app-prop-ctime',
-        }));
+        if (data.ctime) {
+            $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+                id: 'cp-app-prop-ctime',
+            }));
+        }
 
-        $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
-            id: 'cp-app-prop-atime',
-        }));
+        if (data.atime) {
+            $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
+                id: 'cp-app-prop-atime',
+            }));
+        }
 
         if (common.isLoggedIn() && AppConfig.enablePinning) {
             // check the size of this file...

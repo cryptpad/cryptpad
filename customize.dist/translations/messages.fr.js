@@ -454,6 +454,7 @@ define(function () {
     out.fc_delete_owned = "Supprimer du serveur";
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer de votre CryptDrive";
+    out.fc_remove_sharedfolder = "Supprimer";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
     out.fc_hashtag = "Mots-clés";

@@ -259,7 +259,17 @@ define([
         data = data || {};
         var resolved = _resolvePath(Env, data.path);
         if (!resolved || !resolved.userObject) { return void cb({error: 'E_NOTFOUND'}); }
-        resolved.userObject.addFolder(resolved.path, data.name, cb);
+        resolved.userObject.addFolder(resolved.path, data.name, function (obj) {
+            // The result is the relative path of the new folder. We have to make it absolute.
+            if (obj.newPath && resolved.id) {
+                var fPath = _getUserObjectPath(Env, resolved.userObject);
+                if (fPath) {
+                    // This is a shared folder, we have to fix the paths in the search results
+                    Array.prototype.unshift.apply(obj.newPath, fPath);
+                }
+            }
+            cb(obj);
+        });
     };
     // Delete permanently some pads or folders
     var _delete = function (Env, data, cb) {
@@ -290,6 +300,13 @@ define([
         data = data || {};
         var resolved = _resolvePath(Env, data.path);
         if (!resolved || !resolved.userObject) { return void cb({error: 'E_NOTFOUND'}); }
+        if (!resolved.id) {
+            var el = Env.user.userObject.find(resolved.path);
+            if (Env.user.userObject.isSharedFolder(el) && Env.folders[el]) {
+                Env.folders[el].proxy.metadata.title = data.newName;
+                return void cb();
+            }
+        }
         resolved.userObject.rename(resolved.path, data.newName, cb);
     };
     var onCommand = function (Env, cmdData, cb) {
@@ -298,7 +315,6 @@ define([
         switch (cmd) {
             case 'move':
                 _move(Env, data, cb); break;
-                //store.userObject.move(data.paths, data.newPath, cb2); break;
             case 'restore':
                 _restore(Env, data, cb); break;
             case 'addFolder':
@@ -580,7 +596,7 @@ define([
     };
 
     var _getUserObjectPath = function (Env, uo) {
-        var fId = uo.id;
+        var fId = Number(uo.id);
         if (!fId) { return; }
         var fPath = Env.user.userObject.findFile(fId)[0];
         return fPath;
@@ -686,6 +702,11 @@ define([
         return obj;
     };
 
+    var isInSharedFolder = function (Env, path) {
+        var resolved = _resolvePath(Env, path);
+        return typeof resolved.id === "number";
+    };
+
     /* Generic: doesn't need access to a proxy */
     var isFile = function (Env, el, allowStr) {
         return Env.user.userObject.isFile(el, allowStr);
@@ -772,6 +793,7 @@ define([
             findFile: callWithEnv(findFile),
             findChannels: callWithEnv(findChannels),
             getSharedFolderData: callWithEnv(getSharedFolderData),
+            isInSharedFolder: callWithEnv(isInSharedFolder),
             // Generic
             isFile: callWithEnv(isFile),
             isFolder: callWithEnv(isFolder),

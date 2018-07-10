@@ -71,6 +71,14 @@ define([
 
         exp.pushSharedFolder = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
+            // Check we already have this shared folder in our drive
+            if (Object.keys(files[SHARED_FOLDERS]).some(function (k) {
+                return files[SHARED_FOLDERS][k].channel === data.channel;
+            })) {
+                return void cb ('EEXISTS');
+            }
+
+            // Add the folder
             var todo = function () {
                 var id = Util.createRandomInteger();
                 files[SHARED_FOLDERS][id] = data;
@@ -695,11 +703,11 @@ define([
                 });
             };
 
+            fixSharedFolders();
             fixRoot();
             fixTrashRoot();
             fixTemplate();
             fixFilesData();
-            fixSharedFolders();
             fixDrive();
 
             if (JSON.stringify(files) !== before) {

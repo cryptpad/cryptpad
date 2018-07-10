@@ -1147,7 +1147,7 @@ define([
         // SHARED FOLDERS
         var loadSharedFolder = function (id, data, cb) {
             var parsed = Hash.parsePadUrl(data.href);
-            var secret = Hash.getSecrets('folder', parsed.hash, data.password);
+            var secret = Hash.getSecrets('drive', parsed.hash, data.password);
             var listmapConfig = {
                 data: {},
                 websocketURL: NetConfig.getWebsocketURL(),
@@ -1191,7 +1191,12 @@ define([
                 onSync(waitFor());
 
                 // 2b. load the proxy
-                loadSharedFolder(id, data, waitFor());
+                rt = loadSharedFolder(id, data.folderData, waitFor(function () {
+                    if (data.metadata) { // Creating a new shared folder
+                        rt.proxy.metadata = data.metadata;
+                        onSync(waitFor());
+                    }
+                }));
             }).nThen(function () {
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive'].concat(path)
@@ -1201,16 +1206,19 @@ define([
         };
         store.createSharedFolder = function () {
             // XXX
-            var hash = Hash.createRandomHash('folder');
-            var href = '/folder/#' + hash;
-            var secret = Hash.getSecrets('folder', hash);
+            var hash = Hash.createRandomHash('drive');
+            var href = '/drive/#' + hash;
+            var secret = Hash.getSecrets('drive', hash);
             Store.addSharedFolder(null, {
                 path: ['root'],
                 folderData: {
                     href: href,
-                    roHref: '/folder/#' + Hash.getViewHashFromKeys(secret),
+                    roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
                     channel: secret.channel,
-                    title: "Test",
+                    ctime: +new Date()
+                },
+                metadata: {
+                    title: "Test"
                 }
             }, function () {
                 console.log('done');

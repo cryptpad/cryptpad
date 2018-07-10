@@ -111,6 +111,17 @@ define([
             cb(obj);
         });
     };
+    common.addSharedFolder = function (secret, cb) {
+        postMessage("ADD_SHARED_FOLDER", {
+            path: ['root'],
+            folderData: {
+                href: '/drive/#' + Hash.getEditHashFromKeys(secret),
+                roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
+                channel: secret.channel,
+                ctime: +new Date()
+            }
+        }, cb);
+    };
     common.drive = {};
     common.drive.onLog = Util.mkEvent();
     common.drive.onChange = Util.mkEvent();
