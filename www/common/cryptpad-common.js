@@ -780,7 +780,8 @@ define([
             newSecret = Hash.getSecrets('drive', newHash);
 
             var optsPut = {
-                owners: [edPublic]
+                owners: [edPublic],
+                initialState: '{}',
             };
 
             console.log("copying contents of old drive to new location");
