@@ -887,8 +887,6 @@ define([
                 }));
             }
         }).nThen(function () {
-            console.error('done ?');
-            return;
             // We have the new drive, with the new login block
             window.location.reload();
         });
