@@ -706,7 +706,13 @@ define([
             });
         }
         var accountName = LocalStore.getAccountName();
-        var hash = LocalStore.getUserHash(); // To load your old drive
+        var hash = LocalStore.getUserHash();
+        if (!hash) {
+            return void cb({
+                error: 'E_NOT_LOGGED_IN'
+            });
+        }
+
         var password = data.password; // To remove your old block
         var newPassword = data.newPassword; // To create your new block
         var secret = Hash.getSecrets('drive', hash);
@@ -777,6 +783,7 @@ define([
                     waitFor.abort();
                     return void cb({ error: err });
                 }
+
                 Crypt.put(newHash, val, waitFor(function (err) {
                     if (err) {
                         waitFor.abort();
@@ -795,8 +802,11 @@ define([
             var keys = Block.genkeys(newBlockSeed);
             var content = Block.serialize(JSON.stringify({
                 User_name: accountName,
-                User_hash: newHash
+                User_hash: newHash,
+                edPublic: edPublic,
+                // edPrivate XXX
             }), keys);
+
             common.writeLoginBlock(content, waitFor(function (obj) {
                 var newBlockHash = Block.getBlockHash(keys);
                 LocalStore.setBlockHash(newBlockHash);
@@ -1073,6 +1083,9 @@ define([
                             return;
                         }
                         userHash = block_info[Constants.userHashKey];
+                        if (!userHash || userHash !== LocalStore.getUserHash()) {
+                            return void requestLogin();
+                        }
                     } catch (e) {
                         console.error(e);
                         return void console.error("failed to decrypt or decode block content");
@@ -1084,7 +1097,7 @@ define([
                 init: true,
                 userHash: userHash || LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
-                localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
+                localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move tihs to LocalStore ?
                 language: common.getLanguage(),
                 messenger: rdyCfg.messenger, // Boolean
                 driveEvents: rdyCfg.driveEvents // Boolean

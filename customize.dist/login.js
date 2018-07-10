@@ -72,18 +72,20 @@ define([
 
         opt.channel64 = Util.hexToBase64(channelHex);
 
-        opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
+        opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/') + '/';
 
         return opt;
     };
 
 
-    var loginOptionsFromBlock = function (blockInfo) { // userHash
+    var loginOptionsFromBlock = function (blockInfo) {
         var opt = {};
         var parsed = Hash.getSecrets('pad', blockInfo.User_hash);
         opt.channelHex = parsed.channel;
         opt.keys = parsed.keys;
         opt.edPublic = blockInfo.edPublic;
+        opt.edPrivate = blockInfo.edPrivate;
+        opt.User_name = blockInfo.User_name;
         return opt;
     };
 
@@ -255,6 +257,7 @@ define([
             var opt;
             if (res.blockInfo) {
                 opt = loginOptionsFromBlock(res.blockInfo);
+                userHash = res.blockInfo.User_hash;
             } else {
                 console.log("allocating random bytes for a new user object");
                 opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
@@ -282,7 +285,7 @@ define([
                 res.realtime = rt.realtime;
 
                 // they're registering...
-                res.userHash = false;
+                res.userHash = userHash;
                 res.userName = uname;
 
                 // somehow they have a block present, but nothing in the user object it specifies
@@ -301,7 +304,6 @@ define([
                     rt.network.disconnect();
                     waitFor.abort();
                     res.blockHash = blockHash;
-                    res.userHash = false;
                     if (shouldImport) {
                         setMergeAnonDrive();
                     }
@@ -315,7 +317,7 @@ define([
                     if (shouldImport) {
                         setMergeAnonDrive();
                     }
-                    return void LocalStore.login(false, uname, function () {
+                    return void LocalStore.login(userHash, uname, function () {
                         cb(void 0, res);
                     });
                 }
@@ -367,6 +369,7 @@ define([
             // Finally, create the login block for the object you just created.
             var toPublish = {};
 
+            toPublish[Constants.userNameKey] = uname;
             toPublish[Constants.userHashKey] = userHash;
             toPublish.edPublic = RT.proxy.edPublic;
             toPublish.edPrivate = RT.proxy.edPrivate;
@@ -378,7 +381,7 @@ define([
 
                 console.log("blockInfo available at:", blockHash);
                 LocalStore.setBlockHash(blockHash);
-                LocalStore.login(false, uname, function () {
+                LocalStore.login(userHash, uname, function () {
                     cb(void 0, res);
                 });
             }));

@@ -75,18 +75,11 @@ define([
             typeof getUserHash() === "string";
     };
 
-
-
-
-    // XXX update this to take into account blockHash values
     LocalStore.login = function (hash, name, cb) {
-        if (hash !== false && !hash) { throw new Error('expected a user hash'); }
+        if (!hash) { throw new Error('expected a user hash'); }
         if (!name) { throw new Error('expected a user name'); }
-
-        if (hash) {
-            hash = Hash.serializeHash(hash);
-            localStorage.setItem(Constants.userHashKey, hash);
-        }
+        hash = Hash.serializeHash(hash);
+        localStorage.setItem(Constants.userHashKey, hash);
         localStorage.setItem(Constants.userNameKey, name);
         if (cb) { cb(); }
     };
