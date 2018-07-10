@@ -447,7 +447,7 @@ define([
             if (data.password) { pad.password = data.password; }
             if (data.channel) { pad.channel = data.channel; }
             store.manager.addPad(data.path, pad, function (e) {
-                if (e) { return void cb({error: "Error while adding a template:"+ e}); }
+                if (e) { return void cb({error: "Error while adding the pad:"+ e}); }
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
@@ -1170,12 +1170,11 @@ define([
         };
         Store.addSharedFolder = function (clientId, data, cb) {
             var path = data.path;
+            var folderData = data.folderData || {};
             var id;
             nThen(function (waitFor) {
-                // TODO XXX get the folder data (href, title, ...)
-                // XXX href should be stored in your drive's .sharedFolders
-                // and title should be stored in the sharef folder's metadata
-                var folderData = data.folderData || {};
+                Store.pinPads(clientId, [folderData.channel], waitFor());
+            }).nThen(function (waitFor) {
                 // 1. add the shared folder to our list of shared folders
                 store.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
                     if (err) {
@@ -1370,9 +1369,16 @@ define([
 
         var onReady = function (clientId, returned, cb) {
             var proxy = store.proxy;
-            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic, {
-                pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-                unpinPads: function (data, cb) { Store.unpinPads(null, data, cb); },
+            var unpin = function (data, cb) {
+                if (!store.loggedIn) { return void cb(); }
+                Store.unpinPads(null, data, cb);
+            };
+            var pin = function (data, cb) {
+                if (!store.loggedIn) { return void cb(); }
+                Store.pinPads(null, data, cb);
+            };
+            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic, pin, unpin, {
+                outer: true,
                 removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel(null, data, cb); },
                 edPublic: store.proxy.edPublic,
                 loggedIn: store.loggedIn,

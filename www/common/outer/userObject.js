@@ -14,10 +14,6 @@ define([
     };
 
     module.init = function (config, exp, files) {
-        var unpinPads = config.unpinPads || function () {
-            console.error("unpinPads was not provided");
-        };
-        var pinPads = config.pinPads;
         var removeOwnedChannel = config.removeOwnedChannel || function () {
             console.error("removeOwnedChannel was not provided");
         };
@@ -54,24 +50,15 @@ define([
 
         exp.pushData = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
-            var todo = function () {
-                var id = Util.createRandomInteger();
-                files[FILES_DATA][id] = data;
-                cb(null, id);
-            };
-            if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
-                return void todo();
-            }
-            if (!pinPads) { return; }
-            pinPads([data.channel], function (obj) {
-                if (obj && obj.error) { return void cb(obj.error); }
-                todo();
-            });
+            var id = Util.createRandomInteger();
+            files[FILES_DATA][id] = data;
+            cb(null, id);
         };
 
         exp.pushSharedFolder = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
-            // Check we already have this shared folder in our drive
+
+            // Check if we already have this shared folder in our drive
             if (Object.keys(files[SHARED_FOLDERS]).some(function (k) {
                 return files[SHARED_FOLDERS][k].channel === data.channel;
             })) {
@@ -79,19 +66,12 @@ define([
             }
 
             // Add the folder
-            var todo = function () {
-                var id = Util.createRandomInteger();
-                files[SHARED_FOLDERS][id] = data;
-                cb(null, id);
-            };
             if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
                 return void cb("EAUTH");
             }
-            if (!pinPads) { return void cb('EAUTH'); }
-            pinPads([data.channel], function (obj) {
-                if (obj && obj.error) { return void cb(obj.error); }
-                todo();
-            });
+            var id = Util.createRandomInteger();
+            files[SHARED_FOLDERS][id] = data;
+            cb(null, id);
         };
 
         // FILES DATA
@@ -102,7 +82,7 @@ define([
         // Find files in FILES_DATA that are not anymore in the drive, and remove them from
         // FILES_DATA. If there are owned pads, remove them from server too, unless the flag tells
         // us they're already removed
-        exp.checkDeletedFiles = function (isOwnPadRemoved, noUnpin) {
+        exp.checkDeletedFiles = function (isOwnPadRemoved, cb) {
             if (!loggedIn && !config.testMode) { return; }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
@@ -132,7 +112,7 @@ define([
                 }
             });
             if (!toClean.length) { return; }
-            if (noUnpin) { return; }
+            cb(null, toClean);
             unpinPads(toClean, function (response) {
                 if (response && response.error) { return console.error(response.error); }
                 // console.error(response);
@@ -150,7 +130,7 @@ define([
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
-        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved, noUnpin) {
+        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved, cb) {
             var hrefPaths = paths.filter(function(x) { return exp.isPathIn(x, ['hrefArray']); });
             var rootPaths = paths.filter(function(x) { return exp.isPathIn(x, [ROOT]); });
             var trashPaths = paths.filter(function(x) { return exp.isPathIn(x, [TRASH]); });
@@ -162,7 +142,7 @@ define([
                     if (!id) { return; }
                     spliceFileData(id);
                 });
-                return;
+                return void cb();
             }
 
             var ids = [];
@@ -203,7 +183,8 @@ define([
 
             // In some cases, we want to remove pads from a location without removing them from
             // FILES_DATA (replaceHref)
-            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved, noUnpin); }
+            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved, cb); }
+            else { cb(); }
         };
 
         // Move

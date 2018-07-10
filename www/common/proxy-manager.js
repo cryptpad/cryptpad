@@ -216,7 +216,7 @@ define([
                     });
 
                     // Remove the elements from the old location (without unpinning)
-                    Env.user.userObject.delete(resolved.main, waitFor(), false, false, true);
+                    Env.user.userObject.delete(resolved.main, waitFor());
                 }
             }
             var folderIds = Object.keys(resolved.folders);
@@ -240,7 +240,7 @@ define([
                         });
 
                         // Remove the elements from the old location (without unpinning)
-                        uoFrom.delete(paths, waitFor(), false, false, true);
+                        uoFrom.delete(paths, waitFor());
                     }
                 });
             }
@@ -280,12 +280,20 @@ define([
         }
         nThen(function (waitFor)  {
             if (resolved.main.length) {
-                Env.user.userObject.delete(resolved.main, waitFor(), data.nocheck,
-                                           data.isOwnPadRemoved);
+                Env.user.userObject.delete(resolved.main, waitFor(function (err, toUnpin) {
+                    if (!Env.unpinPads) { return; }
+                    Env.unpinPads(toUnpin, waitFor(function (response) {
+                        if (response && response.error) { return console.error(response.error); }
+                    }));
+                }), data.nocheck, data.isOwnPadRemoved);
             }
             Object.keys(resolved.folders).forEach(function (id) {
-                Env.folders[id].userObject.delete(resolved.folders[id], waitFor(), data.nocheck,
-                                                  data.isOwnPadRemoved);
+                Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, toUnpin) {
+                    if (!Env.unpinPads) { return; }
+                    Env.unpinPads(toUnpin, waitFor(function (response) {
+                        if (response && response.error) { return console.error(response.error); }
+                    }));
+                }), data.nocheck, data.isOwnPadRemoved);
             });
         }).nThen(function () {
             cb();
@@ -480,15 +488,26 @@ define([
             uo = resolved.userObject;
             p = resolved.path;
         }
-        uo.pushData(pad, function (e, id) {
-            if (e) { return void cb(e); }
-            uo.add(id, p);
-            cb();
+        var todo = function () {
+            console.log('here');
+            uo.pushData(pad, function (e, id) {
+                if (e) { return void cb(e); }
+                console.log(id, p);
+                uo.add(id, p);
+                cb();
+            });
+        };
+        if (!Env.pinPads) { return void todo(); }
+        Env.pinPads([pad.channel], function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            todo();
         });
     };
 
-    var create = function (proxy, edPublic, uoConfig) {
+    var create = function (proxy, edPublic, pinPads, unpinPads, uoConfig) {
         var Env = {
+            pinPads: pinPads,
+            unpinPads: unpinPads,
             cfg: uoConfig,
             edPublic: edPublic,
             user: {
@@ -675,7 +694,10 @@ define([
         return ret;
     };
 
-    var findChannels = function (Env, channels) {
+    var findChannels = function (Env, channels, onlyMain) {
+        if (onlyMain) {
+            return Env.user.userObject.findChannels(channels);
+        }
         var ret = [];
         var userObjects = _getUserObjects(Env);
         userObjects.forEach(function (uo) {
