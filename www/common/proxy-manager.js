@@ -50,6 +50,25 @@ define([
         return userObjects;
     };
 
+    var _getUserObjectFromId = function (Env, id) {
+        var userObjects = _getUserObjects(Env);
+        var userObject = Env.user.userObject;
+        userObjects.some(function (uo) {
+            if (Object.keys(uo.getFileData(id)).length) {
+                userObject = uo;
+                return true;
+            }
+        });
+        return userObject;
+    };
+
+    var _getUserObjectPath = function (Env, uo) {
+        var fId = Number(uo.id);
+        if (!fId) { return; }
+        var fPath = Env.user.userObject.findFile(fId)[0];
+        return fPath;
+    };
+
     // Return files data objects associated to a channel for setPadTitle
     // All occurences are returned, in drive or shared folders
     var findChannel = function (Env, channel) {
@@ -87,6 +106,31 @@ define([
             });
         });
         return ret;
+    };
+
+    // Returns file IDs corresponding to the provided channels
+    var _findChannels = function (Env, channels, onlyMain) {
+        if (onlyMain) {
+            return Env.user.userObject.findChannels(channels);
+        }
+        var ret = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            var results = uo.findChannels(channels);
+            Array.prototype.push.apply(ret, results);
+        });
+        ret = Util.deduplicateString(ret);
+        return ret;
+    };
+
+    var _getFileData = function (Env, id) {
+        var userObjects = _getUserObjects(Env);
+        var data = {};
+        userObjects.some(function (uo) {
+            data = uo.getFileData(id);
+            if (Object.keys(data).length) { return true; }
+        });
+        return data;
     };
 
     // Transform an absolute path into a path relative to the correct shared folder
@@ -278,23 +322,41 @@ define([
         if (!resolved.main.length && !Object.keys(resolved.folders).length) {
             return void cb({error: 'E_NOTFOUND'});
         }
+
+        var toUnpin = [];
         nThen(function (waitFor)  {
             if (resolved.main.length) {
-                Env.user.userObject.delete(resolved.main, waitFor(function (err, toUnpin) {
+                Env.user.userObject.delete(resolved.main, waitFor(function (err, _toUnpin) {
                     if (!Env.unpinPads) { return; }
-                    Env.unpinPads(toUnpin, waitFor(function (response) {
-                        if (response && response.error) { return console.error(response.error); }
-                    }));
+                    Array.prototype.push.apply(toUnpin, _toUnpin);
                 }), data.nocheck, data.isOwnPadRemoved);
             }
             Object.keys(resolved.folders).forEach(function (id) {
-                Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, toUnpin) {
+                Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, _toUnpin) {
                     if (!Env.unpinPads) { return; }
-                    Env.unpinPads(toUnpin, waitFor(function (response) {
-                        if (response && response.error) { return console.error(response.error); }
-                    }));
+                    Array.prototype.push.apply(toUnpin, _toUnpin);
                 }), data.nocheck, data.isOwnPadRemoved);
             });
+        }).nThen(function (waitFor) {
+            if (!Env.unpinPads) { return; }
+
+            // Deleted channels
+            toUnpin = Util.deduplicateString(toUnpin);
+            // Deleted channels that are still in another proxy
+            var toKeep = _findChannels(Env, toUnpin).map(function (id) {
+                return _getFileData(Env, id).channel;
+            });
+            // Compute the unpin list and unpin
+            var unpinList = [];
+            toUnpin.forEach(function (chan) {
+                if (toKeep.indexOf(chan) === -1) {
+                    unpinList.push(chan);
+                }
+            });
+
+            Env.unpinPads(unpinList, waitFor(function (response) {
+                if (response && response.error) { return console.error(response.error); }
+            }));
         }).nThen(function () {
             cb();
         });
@@ -602,34 +664,8 @@ define([
 
     /* Tools */
 
-    var _getUserObjectFromId = function (Env, id) {
-        var userObjects = _getUserObjects(Env);
-        var userObject = Env.user.userObject;
-        userObjects.some(function (uo) {
-            if (Object.keys(uo.getFileData(id)).length) {
-                userObject = uo;
-                return true;
-            }
-        });
-        return userObject;
-    };
-
-    var _getUserObjectPath = function (Env, uo) {
-        var fId = Number(uo.id);
-        if (!fId) { return; }
-        var fPath = Env.user.userObject.findFile(fId)[0];
-        return fPath;
-    };
-
-    var getFileData = function (Env, id) {
-        var userObjects = _getUserObjects(Env);
-        var data = {};
-        userObjects.some(function (uo) {
-            data = uo.getFileData(id);
-            if (Object.keys(data).length) { return true; }
-        });
-        return data;
-    };
+    var findChannels = _findChannels;
+    var getFileData = _getFileData;
 
     var find = function (Env, path) {
         var resolved = _resolvePath(Env, path);
@@ -691,20 +727,6 @@ define([
             // Push the results from this proxy
             Array.prototype.push.apply(ret, results);
         });
-        return ret;
-    };
-
-    var findChannels = function (Env, channels, onlyMain) {
-        if (onlyMain) {
-            return Env.user.userObject.findChannels(channels);
-        }
-        var ret = [];
-        var userObjects = _getUserObjects(Env);
-        userObjects.forEach(function (uo) {
-            var results = uo.findChannels(channels);
-            Array.prototype.push.apply(ret, results);
-        });
-        ret = Util.deduplicateString(ret);
         return ret;
     };
 
