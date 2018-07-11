@@ -327,7 +327,7 @@ define([
         if (framework.isReadOnly()) {
             $container.addClass('cp-app-readonly');
         } else {
-            framework.setFileImporter({}, function (content, file) {
+            framework.setFileImporter({}, function (content /*, file */) {
                 var parsed;
                 try { parsed = JSON.parse(content); }
                 catch (e) { return void console.error(e); }
