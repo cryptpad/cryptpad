@@ -17,7 +17,6 @@ define([
 
     module.init = function (files, config) {
         var exp = {};
-        var pinPads = config.pinPads;
         var sframeChan = config.sframeChan;
 
         var FILES_DATA = module.FILES_DATA = exp.FILES_DATA = Constants.storageKey;

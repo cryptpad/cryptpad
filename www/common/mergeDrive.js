@@ -33,7 +33,6 @@ define([
                 var onMigrated = function () {
                     oldFo.fixFiles(true);
                     var manager = proxyData.manager;
-                    var oldRecentPads = parsed.drive[oldFo.FILES_DATA];
                     var oldFiles = oldFo.getFiles([oldFo.FILES_DATA]);
                     oldFiles.forEach(function (id) {
                         var data = oldFo.getFileData(id);

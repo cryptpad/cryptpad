@@ -92,7 +92,7 @@ define([
                     var fd = exp.getFileData(id);
                     var channelId = fd.channel;
                     // If trying to remove an owned pad, remove it from server also
-                    if (!isOwnPadRemoved &&
+                    if (!isOwnPadRemoved && !sharedFolder &&
                             fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
                         removeOwnedChannel(channelId, function (obj) {
                             if (obj && obj.error) {
@@ -113,10 +113,6 @@ define([
             });
             if (!toClean.length) { return; }
             cb(null, toClean);
-            unpinPads(toClean, function (response) {
-                if (response && response.error) { return console.error(response.error); }
-                // console.error(response);
-            });
         };
         var deleteHrefs = function (ids) {
             ids.forEach(function (obj) {

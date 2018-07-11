@@ -90,7 +90,7 @@ define([
     //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
     var $sharedFolderIcon = $('<span>', {"class": faSharedFolder + " fa cp-app-drive-icon-folder"});
-    var $sharedFolderOpenedIcon = $sharedFolderIcon.clone();
+    //var $sharedFolderOpenedIcon = $sharedFolderIcon.clone();
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -1518,14 +1518,14 @@ define([
 
             var skipNext = false; // When encountering a shared folder, skip a key in the path
             path.forEach(function (p, idx) {
-                if (skipNext) { return skipNext = false; }
+                if (skipNext) { skipNext = false; return; }
                 if (isTrash && [2,3].indexOf(idx) !== -1) { return; }
 
                 var name = p;
 
-                var el = manager.find(path.slice(0, idx+1));
-                if (manager.isSharedFolder(el)) {
-                    name = manager.getSharedFolderData(el).title;
+                var currentEl = manager.find(path.slice(0, idx+1));
+                if (manager.isSharedFolder(currentEl)) {
+                    name = manager.getSharedFolderData(currentEl).title;
                     skipNext = true;
                 }
 

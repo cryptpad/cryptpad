@@ -42,7 +42,7 @@ define([
             if (hash) {
                 // Add a shared folder!
                 // XXX password?
-                Cryptpad.addSharedFolder(secret, function (obj) {
+                Cryptpad.addSharedFolder(secret, function () {
                     window.location.hash = "";
                     cb(null, secret);
                 });

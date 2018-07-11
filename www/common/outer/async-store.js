@@ -1185,12 +1185,11 @@ define([
                 }));
             }).nThen(function (waitFor) {
                 // 2a. add the shared folder to the path in our drive
-                console.log('adding');
                 store.userObject.add(id, path);
                 onSync(waitFor());
 
                 // 2b. load the proxy
-                rt = loadSharedFolder(id, data.folderData, waitFor(function () {
+                loadSharedFolder(id, data.folderData, waitFor(function (rt) {
                     if (data.metadata) { // Creating a new shared folder
                         rt.proxy.metadata = data.metadata;
                         onSync(waitFor());
