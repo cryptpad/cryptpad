@@ -843,8 +843,8 @@ define([
         el.style.setProperty('background', 'var(--color)');
         document.body.appendChild(el);
         var styles = getComputedStyle(el);
-        document.body.removeChild(el);
         var doesSupport = (styles.backgroundColor === color);
+        document.body.removeChild(el);
         return doesSupport;
     };
 
