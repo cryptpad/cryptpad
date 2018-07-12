@@ -884,7 +884,7 @@ define([
             if (typeof(Worker) === "undefined") {
                 Feedback.send('NO_WEBWORKER');
             }
-            if (typeof(ServiceWorker) === "undefined") {
+            if (!('serviceWorker' in navigator)) {
                 Feedback.send('NO_SERVICEWORKER');
             }
             if (!common.hasCSSVariables()) {
