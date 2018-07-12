@@ -834,6 +834,20 @@ define([
         LOADING_DRIVE: common.loading.onDriveEvent.fire
     };
 
+    common.hasCSSVariables = function () {
+        if (window.CSS && window.CSS.supports && window.CSS.supports('--a', 0)) { return true; }
+        // Safari lol y u always b returnin false ?
+        var color = 'rgb(255, 198, 0)';
+        var el = document.createElement('span');
+        el.style.setProperty('--color', color);
+        el.style.setProperty('background', 'var(--color)');
+        document.body.appendChild(el);
+        var styles = getComputedStyle(el);
+        document.body.removeChild(el);
+        var doesSupport = (styles.backgroundColor === color);
+        return doesSupport;
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
@@ -872,6 +886,9 @@ define([
             }
             if (typeof(ServiceWorker) === "undefined") {
                 Feedback.send('NO_SERVICEWORKER');
+            }
+            if (!common.hasCSSVariables()) {
+                Feedback.send('NO_CSS_VARIABLES');
             }
 
             Feedback.reportScreenDimensions();
