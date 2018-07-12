@@ -1,4 +1,4 @@
-@import (once) './include/font.less';
+@import (reference) './include/font.less';
 .font_neuropolitical();
 .font_open-sans();
 
@@ -13,12 +13,12 @@ body.cp-page-terms { @import "./pages/page-terms.less"; }
 
 // Set the HTML style for the apps which shouldn't have a body scrollbar
 html.cp-app-noscroll {
-    @import "./include/app-noscroll.less";
+    @import (reference) "./include/app-noscroll.less";
     .app-noscroll_main();
 }
 // Set the HTML style for printing slides
 html.cp-app-print {
-    @import "./include/app-print.less";
+    @import (reference) "./include/app-print.less";
     .app-print_main();
 }
 
