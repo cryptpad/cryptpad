@@ -1148,6 +1148,7 @@ define([
         var loadSharedFolder = function (id, data, cb) {
             var parsed = Hash.parsePadUrl(data.href);
             var secret = Hash.getSecrets('drive', parsed.hash, data.password);
+            var owners = data.owners;
             var listmapConfig = {
                 data: {},
                 websocketURL: NetConfig.getWebsocketURL(),
@@ -1159,85 +1160,39 @@ define([
                 logLevel: 1,
                 ChainPad: ChainPad,
                 classic: true,
+                owners: owners
             };
             var rt = Listmap.create(listmapConfig);
             store.sharedFolders[id] = rt;
             rt.proxy.on('ready', function (info) {
                 store.manager.addProxy(id, rt.proxy, info.leave);
-                cb(rt);
+                cb(rt, info.metadata);
             });
             return rt;
         };
         Store.addSharedFolder = function (clientId, data, cb) {
-            var path = data.path;
-            var folderData = data.folderData || {};
-            var id;
-            nThen(function (waitFor) {
-                Store.pinPads(clientId, [folderData.channel], waitFor());
-            }).nThen(function (waitFor) {
-                // 1. add the shared folder to our list of shared folders
-                store.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
-                    if (err) {
-                        waitFor.abort();
-                        return void cb(err);
-                    }
-                    id = folderId;
-                }));
-            }).nThen(function (waitFor) {
-                // 2a. add the shared folder to the path in our drive
-                store.userObject.add(id, path);
-                onSync(waitFor());
-
-                // 2b. load the proxy
-                loadSharedFolder(id, data.folderData, waitFor(function (rt) {
-                    if (data.metadata) { // Creating a new shared folder
-                        rt.proxy.metadata = data.metadata;
-                        onSync(waitFor());
-                    }
-                }));
-            }).nThen(function () {
-                sendDriveEvent('DRIVE_CHANGE', {
-                    path: ['drive'].concat(path)
-                }, clientId);
-                cb();
-            });
+            Store.userObjectCommand(clientId, {
+                cmd: 'addSharedFolder',
+                data: data
+            }, cb);
         };
-        store.createSharedFolder = function () {
-            // XXX
-            var hash = Hash.createRandomHash('drive');
-            var href = '/drive/#' + hash;
-            var secret = Hash.getSecrets('drive', hash);
-            Store.addSharedFolder(null, {
-                path: ['root'],
-                folderData: {
-                    href: href,
-                    roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
-                    channel: secret.channel,
-                    ctime: +new Date()
-                },
-                metadata: {
-                    title: "Test"
-                }
-            }, function () {
-                console.log('done');
-            });
-        };
-
 
         // Drive
         Store.userObjectCommand = function (clientId, cmdData, cb) {
             if (!cmdData || !cmdData.cmd) { return; }
-            var data = cmdData.data;
+            //var data = cmdData.data;
             var cb2 = function (data2) {
-                var paths = data.paths || [data.path] || [];
-                paths = paths.concat(data.newPath || []);
-                paths.forEach(function (p) {
+                //var paths = data.paths || [data.path] || [];
+                //paths = paths.concat(data.newPath ? [data.newPath] : []);
+                //paths.forEach(function (p) {
                     sendDriveEvent('DRIVE_CHANGE', {
-                        //path: ['drive', UserObject.FILES_DATA]
-                        path: ['drive'].concat(p)
+                        path: ['drive', UserObject.FILES_DATA]
+                        //path: ['drive'].concat(p)
                     }, clientId);
+                //});
+                onSync(function () {
+                    cb(data2);
                 });
-                cb(data2);
             };
             store.manager.command(cmdData, cb2);
         };
@@ -1376,9 +1331,10 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic, pin, unpin, {
+            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic,
+                                            pin, unpin, loadSharedFolder, {
                 outer: true,
-                removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel(null, data, cb); },
+                removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel('', data, cb); },
                 edPublic: store.proxy.edPublic,
                 loggedIn: store.loggedIn,
                 log: function (msg) {

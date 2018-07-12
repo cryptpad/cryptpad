@@ -1,8 +1,9 @@
 define([
     '/common/userObject.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/bower_components/nthen/index.js',
-], function (UserObject, Util, nThen) {
+], function (UserObject, Util, Hash, nThen) {
 
 
     var getConfig = function (Env) {
@@ -315,6 +316,65 @@ define([
             cb(obj);
         });
     };
+    // Add a folder/subfolder
+    var _addSharedFolder = function (Env, data, cb) {
+        console.log(data);
+        data = data || {};
+        var resolved = _resolvePath(Env, data.path);
+        if (!resolved || !resolved.userObject) { return void cb({error: 'E_NOTFOUND'}); }
+        if (resolved.id) { return void cb({error: 'EINVAL'}); }
+        if (!Env.pinPads) { return void cb({error: 'EAUTH'}); }
+
+        var folderData = data.folderData || {};
+
+        var id;
+        nThen(function () {
+            // Check if it is an imported folder or a folder creation
+            if (data.folderData) { return; }
+
+            // Folder creation
+            var hash = Hash.createRandomHash('drive');
+            var href = '/drive/#' + hash;
+            var secret = Hash.getSecrets('drive', hash);
+            folderData = {
+                href: href,
+                roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
+                channel: secret.channel,
+                ctime: +new Date()
+            };
+            if (data.password) { folderData.password = data.password; }
+            if (data.owned) { folderData.owners = [Env.edPublic]; }
+        }).nThen(function (waitFor) {
+            Env.pinPads([folderData.channel], waitFor());
+        }).nThen(function (waitFor) {
+            // 1. add the shared folder to our list of shared folders
+            Env.user.userObject.pushSharedFolder(folderData, waitFor(function (err, folderId) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb(err);
+                }
+                id = folderId;
+            }));
+        }).nThen(function (waitFor) {
+            // 2a. add the shared folder to the path in our drive
+            Env.user.userObject.add(id, resolved.path);
+
+            // 2b. load the proxy
+            Env.loadSharedFolder(id, folderData, waitFor(function (rt, metadata) {
+                if (data.name && !rt.proxy.metadata) { // Creating a new shared folder
+                    rt.proxy.metadata = {title: data.name};
+                }
+                // If we're importing a folder, check its serverside metadata
+                if (data.folderData && metadata) {
+                    var fData = Env.user.proxy[UserObject.SHARED_FOLDERS][id];
+                    if (metadata.owners) { fData.owners = metadata.owners; }
+                    if (metadata.expire) { fData.expire = +metadata.expire; }
+                }
+            }));
+        }).nThen(function () {
+            cb(id);
+        });
+    };
     // Delete permanently some pads or folders
     var _delete = function (Env, data, cb) {
         data = data || {};
@@ -327,13 +387,13 @@ define([
         nThen(function (waitFor)  {
             if (resolved.main.length) {
                 Env.user.userObject.delete(resolved.main, waitFor(function (err, _toUnpin) {
-                    if (!Env.unpinPads) { return; }
+                    if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
                 }), data.nocheck, data.isOwnPadRemoved);
             }
             Object.keys(resolved.folders).forEach(function (id) {
                 Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, _toUnpin) {
-                    if (!Env.unpinPads) { return; }
+                    if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
                 }), data.nocheck, data.isOwnPadRemoved);
             });
@@ -389,6 +449,8 @@ define([
                 _restore(Env, data, cb); break;
             case 'addFolder':
                 _addFolder(Env, data, cb); break;
+            case 'addSharedFolder':
+                _addSharedFolder(Env, data, cb); break;
             case 'delete':
                 _delete(Env, data, cb); break;
             case 'emptyTrash':
@@ -483,7 +545,7 @@ define([
 
     // Get the list of channels filtered by a type (expirable channels, owned channels, pin list)
     var getChannelsList = function (Env, edPublic, type) {
-        if (!edPublic) { return; }
+        //if (!edPublic) { return; }
         var result = [];
         var addChannel = function (userObject) {
             if (type === 'expirable') {
@@ -492,7 +554,7 @@ define([
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return pads owned by someone else or expired by time
-                    if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1)
+                    if ((data.owners && data.owners.length && (!edPublic || data.owners.indexOf(edPublic) === -1))
                         || (data.expire && data.expire < (+new Date()))) {
                         result.push(data.channel);
                     }
@@ -524,6 +586,9 @@ define([
             }
         };
 
+        if (type === 'owned' && !edPublic) { return result; }
+        if (type === 'pin' && !edPublic) { return result; }
+
         // Get the list of user objects
         var userObjects = _getUserObjects(Env);
 
@@ -532,6 +597,17 @@ define([
             files.forEach(addChannel(uo));
         });
 
+        // NOTE: expirable shared folder should be added here if we ever decide to enable them
+        if (type === "owned") {
+            var sfOwned = Object.keys(Env.user.proxy[UserObject.SHARED_FOLDERS]).filter(function (fId) {
+                var owners = Env.user.proxy[UserObject.SHARED_FOLDERS][fId].owners;
+                if (Array.isArray(owners) && owners.length &&
+                    owners.indexOf(edPublic) !== -1) { return true; }
+            }).map(function (fId) {
+                return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
+            });
+            Array.prototype.push.apply(result, sfOwned);
+        }
         if (type === "pin") {
             var sfChannels = Object.keys(Env.folders).map(function (fId) {
                 return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
@@ -566,10 +642,11 @@ define([
         });
     };
 
-    var create = function (proxy, edPublic, pinPads, unpinPads, uoConfig) {
+    var create = function (proxy, edPublic, pinPads, unpinPads, loadSf, uoConfig) {
         var Env = {
             pinPads: pinPads,
             unpinPads: unpinPads,
+            loadSharedFolder: loadSf,
             cfg: uoConfig,
             edPublic: edPublic,
             user: {
@@ -639,6 +716,18 @@ define([
             data: {
                 path: path,
                 name: name
+            }
+        }, cb);
+    };
+    var addSharedFolderInner = function (Env, path, data, cb) {
+        console.log(data);
+        return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
+            cmd: "addSharedFolder",
+            data: {
+                path: path,
+                name: data.name,
+                owned: data.owned,
+                password: data.password
             }
         }, cb);
     };
@@ -822,6 +911,7 @@ define([
             move: callWithEnv(moveInner),
             emptyTrash: callWithEnv(emptyTrashInner),
             addFolder: callWithEnv(addFolderInner),
+            addSharedFolder: callWithEnv(addSharedFolderInner),
             delete: callWithEnv(deleteInner),
             restore: callWithEnv(restoreInner),
             // Tools

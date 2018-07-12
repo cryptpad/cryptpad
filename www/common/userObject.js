@@ -213,7 +213,7 @@ define([
         var getFilesRecursively = exp.getFilesRecursively = function (root, arr) {
             arr = arr || [];
             for (var e in root) {
-                if (isFile(root[e])) {
+                if (isFile(root[e]) || isSharedFolder(root[e])) {
                     if(arr.indexOf(root[e]) === -1) { arr.push(root[e]); }
                 } else {
                     getFilesRecursively(root[e], arr);
@@ -275,10 +275,15 @@ define([
             if (!files[FILES_DATA]) { return ret; }
             return Object.keys(files[FILES_DATA]).map(Number);
         };
+        _getFiles[SHARED_FOLDERS] = function () {
+            var ret = [];
+            if (!files[SHARED_FOLDERS]) { return ret; }
+            return Object.keys(files[SHARED_FOLDERS]).map(Number);
+        };
         var getFiles = exp.getFiles = function (categories) {
             var ret = [];
             if (!categories || !categories.length) {
-                categories = [ROOT, 'hrefArray', TRASH, OLD_FILES_DATA, FILES_DATA];
+                categories = [ROOT, 'hrefArray', TRASH, OLD_FILES_DATA, FILES_DATA, SHARED_FOLDERS];
             }
             categories.forEach(function (c) {
                 if (typeof _getFiles[c] === "function") {

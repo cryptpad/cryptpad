@@ -213,10 +213,11 @@ define([
         for (var k in objRef) { delete objRef[k]; }
         $.extend(true, objRef, objToCopy);
     };
-    var updateSharedFolders = function (sframeChan, drive, folders, cb) {
+    var updateSharedFolders = function (sframeChan, manager, drive, folders, cb) {
         if (!drive || !drive.sharedFolders) {
             return void cb();
         }
+        var oldIds = Object.keys(folders);
         nThen(function (waitFor) {
             Object.keys(drive.sharedFolders).forEach(function (fId) {
                 sframeChan.query('Q_DRIVE_GETOBJECT', {
@@ -224,6 +225,9 @@ define([
                 }, waitFor(function (err, newObj) {
                     folders[fId] = folders[fId] || {};
                     copyObjectValue(folders[fId], newObj);
+                    if (manager && oldIds.indexOf(fId) === -1) {
+                        manager.addProxy(fId, folders[fId]);
+                    }
                 }));
             });
         }).nThen(function () {
@@ -260,6 +264,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faFolder,
                 }, Messages.fc_newfolder)),
+                h('li', h('a.cp-app-drive-context-newsharedfolder.dropdown-item.cp-app-drive-context-editable', {
+                    'tabindex': '-1',
+                    'data-icon': faSharedFolder,
+                }, 'New SF')), // XXX
                 h('li', h('a.cp-app-drive-context-hashtag.dropdown-item.cp-app-drive-context-editable', {
                     'tabindex': '-1',
                     'data-icon': faTags,
@@ -786,6 +794,7 @@ define([
             if (type === "content") {
                 filter = function ($el, className) {
                     if (className === 'newfolder') { return; }
+                    if (className === 'newsharedfolder') { return; }
                     return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
                 };
             } else {
@@ -869,7 +878,7 @@ define([
 
             switch(type) {
                 case 'content':
-                    show = ['newfolder', 'newdoc'];
+                    show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
                     show = ['open', 'openro', 'rename', 'delete', 'deleteowned', 'removesf',
@@ -1648,6 +1657,52 @@ define([
             $container.append($button);
         };
 
+        // Get the upload options
+        var addSharedFolderModal = function (cb) {
+            var createHelper = function (href, text) {
+                var q = h('a.fa.fa-question-circle', {
+                    style: 'text-decoration: none !important;',
+                    title: text,
+                    href: APP.origin + href,
+                    target: "_blank",
+                    'data-tippy-placement': "right"
+                });
+                return q;
+            };
+
+            // Ask for name, password and owner
+            // XXX
+            var content = h('div', [
+                h('h4', "NEW SF TITLE"),
+                h('label', {for: 'cp-app-drive-sf-name'}, 'SF NAME'),
+                h('input#cp-app-drive-sf-name', {type: 'text', placeholder: "NEW FOLDER NAME"}),
+                //h('label', {for: 'cp-app-drive-sf-password'}, 'SF PASSWORD'),
+                //UI.passwordInput({id: 'cp-app-drive-sf-password'}),
+                h('span', {
+                    style: 'display:flex;align-items:center;justify-content:space-between'
+                }, [
+                    UI.createCheckbox('cp-app-drive-sf-owned', "OWNED?", true),
+                    createHelper('/faq.html#keywords-owned', Messages.creation_owned1) // TODO
+                ]),
+            ]);
+
+            UI.confirm(content, function (yes) {
+                if (!yes) { return void cb(); }
+
+                // Get the values
+                var newName = $(content).find('#cp-app-drive-sf-name').val();
+                //var password = $(content).find('#cp-app-drive-sf-password').val() || undefined;
+                var password;
+                var owned = $(content).find('#cp-app-drive-sf-owned').is(':checked');
+
+                cb({
+                    name: newName,
+                    password: password,
+                    owned: owned
+                });
+            });
+        };
+
         var getNewPadTypes = function () {
             var arr = [];
             AppConfig.availablePadTypes.forEach(function (type) {
@@ -1679,6 +1734,12 @@ define([
                 $block.find('a.cp-app-drive-new-folder, li.cp-app-drive-new-folder')
                     .click(function () {
                     manager.addFolder(currentPath, null, onCreated);
+                });
+                $block.find('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder')
+                    .click(function () {
+                    addSharedFolderModal(function (obj) {
+                        manager.addSharedFolder(currentPath, obj, refresh);
+                    });
                 });
                 $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload')
                     .click(function () {
@@ -1718,6 +1779,11 @@ define([
                     tag: 'a',
                     attributes: {'class': 'cp-app-drive-new-folder'},
                     content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
+                });
+                options.push({
+                    tag: 'a',
+                    attributes: {'class': 'cp-app-drive-new-shared-folder'},
+                    content: $('<div>').append($folderIcon.clone()).html() + "NEW SF" // XXX
                 });
                 options.push({tag: 'hr'});
                 options.push({
@@ -1967,6 +2033,13 @@ define([
                 }).prepend($folderIcon.clone()).appendTo($container);
                 $element1.append($('<span>', { 'class': 'cp-app-drive-new-name' })
                     .text(Messages.fm_folder));
+                // Shared Folder
+                var $element3 = $('<li>', {
+                    'class': 'cp-app-drive-new-shared-folder cp-app-drive-element-row ' +
+                             'cp-app-drive-element-grid'
+                }).prepend($folderIcon.clone()).appendTo($container);
+                $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
+                    .text("SF")); // XXX
                 // File
                 var $element2 = $('<li>', {
                     'class': 'cp-app-drive-new-upload cp-app-drive-element-row ' +
@@ -2510,7 +2583,7 @@ define([
             }
             updateObject(sframeChan, proxy, function () {
                 copyObjectValue(files, proxy.drive);
-                updateSharedFolders(sframeChan, files, folders, function () {
+                updateSharedFolders(sframeChan, manager, files, folders, function () {
                     _displayDirectory(path, force);
                 });
             });
@@ -2590,7 +2663,14 @@ define([
 
             // Display root content
             var $list = $('<ul>').appendTo($container);
-            var keys = Object.keys(root).sort();
+            var keys = Object.keys(root).sort(function (a, b) {
+                var newA = manager.isSharedFolder(root[a]) ?
+                            manager.getSharedFolderData(root[a]).title : a;
+                var newB = manager.isSharedFolder(root[b]) ?
+                            manager.getSharedFolderData(root[b]).title : b;
+                return newA < newB ? -1 :
+                        (newA === newB ? 0 : 1);
+            });
             keys.forEach(function (key) {
                 // Do not display files in the menu
                 if (!manager.isFolder(root[key])) { return; }
@@ -2604,8 +2684,8 @@ define([
                     newPath.push(manager.user.userObject.ROOT);
                     isCurrentFolder = manager.comparePath(newPath, currentPath);
                     // Subfolders?
-                    root = manager.folders[fId].proxy[manager.user.userObject.ROOT];
-                    subfolder = manager.hasSubfolder(root);
+                    var newRoot = manager.folders[fId].proxy[manager.user.userObject.ROOT];
+                    subfolder = manager.hasSubfolder(newRoot);
                     // Fix name
                     key = manager.getSharedFolderData(fId).title;
                     // Fix icon
@@ -2893,6 +2973,12 @@ define([
                 };
                 manager.addFolder(paths[0].path, null, onFolderCreated);
             }
+            else if ($(this).hasClass('cp-app-drive-context-newsharedfolder')) {
+                if (paths.length !== 1) { return; }
+                addSharedFolderModal(function (obj) {
+                    manager.addSharedFolder(paths[0].path, obj, refresh);
+                });
+            }
             else if ($(this).hasClass("cp-app-drive-context-newdoc")) {
                 var ntype = $(this).data('type') || 'pad';
                 var path2 = manager.isPathIn(currentPath, [TRASH]) ? '' : currentPath;
@@ -3165,7 +3251,7 @@ define([
 
             var sframeChan = common.getSframeChannel();
             updateObject(sframeChan, proxy, waitFor(function () {
-                updateSharedFolders(sframeChan, proxy.drive, folders, waitFor());
+                updateSharedFolders(sframeChan, null, proxy.drive, folders, waitFor());
             }));
         }).nThen(function () {
             var sframeChan = common.getSframeChannel();

@@ -83,13 +83,14 @@ define([
         // FILES_DATA. If there are owned pads, remove them from server too, unless the flag tells
         // us they're already removed
         exp.checkDeletedFiles = function (isOwnPadRemoved, cb) {
-            if (!loggedIn && !config.testMode) { return; }
+            if (!loggedIn && !config.testMode) { return void cb(); }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
-            exp.getFiles([FILES_DATA]).forEach(function (id) {
+            exp.getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
+                // XXX
                 if (filesList.indexOf(id) === -1) {
-                    var fd = exp.getFileData(id);
+                    var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
                     // If trying to remove an owned pad, remove it from server also
                     if (!isOwnPadRemoved && !sharedFolder &&
@@ -108,10 +109,14 @@ define([
                         });
                     }
                     if (channelId) { toClean.push(channelId); }
-                    spliceFileData(id);
+                    if (exp.isSharedFolder(id)) {
+                        delete files[SHARED_FOLDERS][id];
+                    } else {
+                        spliceFileData(id);
+                    }
                 }
             });
-            if (!toClean.length) { return; }
+            if (!toClean.length) { return void cb(); }
             cb(null, toClean);
         };
         var deleteHrefs = function (ids) {
@@ -672,6 +677,17 @@ define([
             var fixSharedFolders = function () {
                 if (sharedFolder) { return; }
                 if (typeof(files[SHARED_FOLDERS]) !== "object") { debug("SHARED_FOLDER was not an object"); files[SHARED_FOLDERS] = {}; }
+                var sf = files[SHARED_FOLDERS];
+                var rootFiles = exp.getFiles([ROOT]);
+                var root = exp.find([ROOT]);
+                for (var id in sf) {
+                    id = Number(id);
+                    if (rootFiles.indexOf(id) === -1) {
+                        console.log('missing' + id);
+                        var newName = Hash.createChannelId();
+                        root[newName] = id;
+                    }
+                }
             };
 
             var fixDrive = function () {
