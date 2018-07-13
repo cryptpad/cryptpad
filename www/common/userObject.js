@@ -237,6 +237,7 @@ define([
         });
         _getFiles['hrefArray'] = function () {
             var ret = [];
+            if (sharedFolder) { return ret; }
             getHrefArray().forEach(function (c) {
                 ret = ret.concat(_getFiles[c]());
             });

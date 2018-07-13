@@ -28,6 +28,7 @@ define([
         var postMessage = function () {};
         var broadcast = function () {};
         var sendDriveEvent = function () {};
+        var registerProxyEvents = function () {};
 
         var storeHash;
 
@@ -1168,6 +1169,9 @@ define([
                 store.manager.addProxy(id, rt.proxy, info.leave);
                 cb(rt, info.metadata);
             });
+            if (store.driveEvents) {
+                registerProxyEvents(rt.proxy, id);
+            }
             return rt;
         };
         Store.addSharedFolder = function (clientId, data, cb) {
@@ -1231,32 +1235,41 @@ define([
 
         // Special events
 
-        var driveEventInit = false;
         sendDriveEvent = function (q, data, sender) {
             driveEventClients.forEach(function (cId) {
                 if (cId === sender) { return; }
                 postMessage(cId, q, data);
             });
         };
+        registerProxyEvents = function (proxy, fId) {
+            proxy.on('change', [], function (o, n, p) {
+                sendDriveEvent('DRIVE_CHANGE', {
+                    id: fId,
+                    old: o,
+                    new: n,
+                    path: p
+                });
+            });
+            proxy.on('remove', [], function (o, p) {
+                sendDriveEvent('DRIVE_REMOVE', {
+                    id: fId,
+                    old: o,
+                    path: p
+                });
+            });
+        };
+
         Store._subscribeToDrive = function (clientId) {
             if (driveEventClients.indexOf(clientId) === -1) {
                 driveEventClients.push(clientId);
             }
-            if (!driveEventInit) {
-                store.proxy.on('change', [], function (o, n, p) {
-                    sendDriveEvent('DRIVE_CHANGE', {
-                        old: o,
-                        new: n,
-                        path: p
-                    });
+            if (!store.driveEvents) {
+                store.driveEvents = true;
+                registerProxyEvents(store.proxy);
+                Object.keys(store.manager.folders).forEach(function (fId) {
+                    var proxy = store.manager.folders[fId].proxy;
+                    registerProxyEvents(proxy, fId);
                 });
-                store.proxy.on('remove', [], function (o, p) {
-                    sendDriveEvent(clientId, 'DRIVE_REMOVE', {
-                        old: o,
-                        path: p
-                    });
-                });
-                driveEventInit = true;
             }
         };
 
@@ -1313,7 +1326,6 @@ define([
         //////////////////////////////////////////////////////////////////
 
         var loadSharedFolders = function (waitFor) {
-            var w = waitFor();
             store.sharedFolders = {};
             var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
             // Check if any of our shared folder is expired or deleted by its owner.
@@ -1345,14 +1357,12 @@ define([
                         delete shared[fId];
                     });
                 }));
-            }).nThen(function () {
+            }).nThen(function (waitFor) {
                 Object.keys(shared).forEach(function (id) {
                     var sf = shared[id];
-                    loadSharedFolder(id, sf, function () {
-                        w();
-                    });
+                    loadSharedFolder(id, sf, waitFor());
                 });
-            });
+            }).nThen(waitFor());
         };
 
         var onReady = function (clientId, returned, cb) {

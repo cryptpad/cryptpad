@@ -681,9 +681,11 @@ define([
         };
     };
 
-    /*
-        Inner only
-    */
+    /* =============================================================================
+     * =============================================================================
+     *                                  Inner only
+     * =============================================================================
+     * ============================================================================= */
 
     var renameInner = function (Env, path, newName, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
@@ -752,6 +754,7 @@ define([
 
     var findChannels = _findChannels;
     var getFileData = _getFileData;
+    var getUserObjectPath = _getUserObjectPath;
 
     var find = function (Env, path) {
         var resolved = _resolvePath(Env, path);
@@ -925,6 +928,7 @@ define([
             findChannels: callWithEnv(findChannels),
             getSharedFolderData: callWithEnv(getSharedFolderData),
             isInSharedFolder: callWithEnv(isInSharedFolder),
+            getUserObjectPath: callWithEnv(getUserObjectPath),
             // Generic
             isFile: callWithEnv(isFile),
             isFolder: callWithEnv(isFolder),

@@ -3134,32 +3134,60 @@ define([
 
         sframeChan.on('EV_DRIVE_CHANGE', function (data) {
             if (history.isHistoryMode) { return; }
-            var path = data.path;
+
+            var path = data.path.slice();
+            var originalPath = data.path.slice();
+
+            // Fix the path if this is about a shared folder
+            if (data.id && manager.folders[data.id]) {
+                var uoPath = manager.getUserObjectPath(manager.folders[data.id].userObject);
+                if (uoPath) {
+                    Array.prototype.unshift.apply(path, uoPath);
+                    path.unshift('drive');
+                }
+            }
+
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
+            if (originalPath[0] === 'drive') { originalPath = originalPath.slice(1); }
+
             var cPath = currentPath.slice();
-            if ((manager.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
+            if (originalPath.length && originalPath[0] === FILES_DATA) {
+                onRefresh.refresh();
+            } else if ((manager.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
                     (path.length >= cPath.length && manager.isSubpath(path, cPath))) {
                 // Reload after a few ms to make sure all the change events have been received
                 onRefresh.refresh();
-            } else if (path.length && path[0] === FILES_DATA) {
-                onRefresh.refresh();
+            } else {
+                APP.resetTree();
             }
-            APP.resetTree();
             return false;
         });
         sframeChan.on('EV_DRIVE_REMOVE', function (data) {
             if (history.isHistoryMode) { return; }
-            var path = data.path;
+
+            var path = data.path.slice();
+
+            // Fix the path if this is about a shared folder
+            if (data.id && manager.folders[data.id]) {
+                var uoPath = manager.getUserObjectPath(manager.folders[data.id].userObject);
+                if (uoPath) {
+                    Array.prototype.unshift.apply(path, uoPath);
+                    path.unshift('drive');
+                }
+            }
+
             if (path[0] !== 'drive') { return false; }
             path = path.slice(1);
+
             var cPath = currentPath.slice();
             if ((manager.isPathIn(cPath, ['hrefArray', TRASH]) && cPath[0] === path[0]) ||
                     (path.length >= cPath.length && manager.isSubpath(path, cPath))) {
                 // Reload after a few to make sure all the change events have been received
                 onRefresh.refresh();
+            } else {
+                APP.resetTree();
             }
-            APP.resetTree();
             return false;
         });
 
@@ -3192,7 +3220,6 @@ define([
                 var title = manager.getTitle(id);
                 titles.push(title);
                 var paths = manager.findFile(id);
-                console.log(title, id, paths);
                 manager.delete(paths, refresh);
             });
             if (!titles.length) { return; }
