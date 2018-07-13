@@ -523,7 +523,8 @@ define([
 
         if (common.initialPath) {
             if (!data.path) {
-                data.path = common.initialPath;
+                data.path = Array.isArray(common.initialPath) ? common.initialPath
+                                : decodeURIComponent(common.initialPath).split(',');
                 delete common.initialPath;
             }
         }

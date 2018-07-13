@@ -319,7 +319,6 @@ define([
     };
     // Add a folder/subfolder
     var _addSharedFolder = function (Env, data, cb) {
-        console.log(data);
         data = data || {};
         var resolved = _resolvePath(Env, data.path);
         if (!resolved || !resolved.userObject) { return void cb({error: 'E_NOTFOUND'}); }
@@ -628,10 +627,8 @@ define([
             p = resolved.path;
         }
         var todo = function () {
-            console.log('here');
             uo.pushData(pad, function (e, id) {
                 if (e) { return void cb(e); }
-                console.log(id, p);
                 uo.add(id, p);
                 cb();
             });
@@ -721,7 +718,6 @@ define([
         }, cb);
     };
     var addSharedFolderInner = function (Env, path, data, cb) {
-        console.log(data);
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "addSharedFolder",
             data: {
