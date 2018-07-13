@@ -366,7 +366,7 @@ define([
 
         Store.getDeletedPads = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var list = getCanonicalChannelList(true);
+            var list = (data && data.list) || getCanonicalChannelList(true);
             if (!Array.isArray(list)) {
                 return void cb({error: 'INVALID_FILE_LIST'});
             }
@@ -1313,11 +1313,45 @@ define([
         //////////////////////////////////////////////////////////////////
 
         var loadSharedFolders = function (waitFor) {
+            var w = waitFor();
             store.sharedFolders = {};
             var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
-            Object.keys(shared).forEach(function (id) {
-                var sf = shared[id];
-                loadSharedFolder(id, sf, waitFor());
+            // Check if any of our shared folder is expired or deleted by its owner.
+            // If we don't check now, Listmap will create an empty proxy if it no longer exists on
+            // the server.
+            nThen(function (waitFor) {
+                var edPublic = store.proxy.edPublic;
+                var checkExpired = Object.keys(shared).filter(function (fId) {
+                    var d = shared[fId];
+                    return (Array.isArray(d.owners) && d.owners.length &&
+                            (!edPublic || d.owners.indexOf(edPublic) === -1))
+                            || (d.expire && d.expire < (+new Date()));
+                }).map(function (fId) {
+                    return shared[fId].channel;
+                });
+                Store.getDeletedPads(null, {list: checkExpired}, waitFor(function (chans) {
+                    if (chans && chans.error) { return void console.error(chans.error); }
+                    if (!Array.isArray(chans) || !chans.length) { return; }
+                    var toDelete = [];
+                    Object.keys(shared).forEach(function (fId) {
+                        if (chans.indexOf(shared[fId].channel) !== -1
+                            && toDelete.indexOf(fId) === -1) {
+                            toDelete.push(fId);
+                        }
+                    });
+                    toDelete.forEach(function (fId) {
+                        var paths = store.userObject.findFile(Number(fId));
+                        store.userObject.delete(paths, waitFor(), true);
+                        delete shared[fId];
+                    });
+                }));
+            }).nThen(function () {
+                Object.keys(shared).forEach(function (id) {
+                    var sf = shared[id];
+                    loadSharedFolder(id, sf, function () {
+                        w();
+                    });
+                });
             });
         };
 
@@ -1355,6 +1389,7 @@ define([
                         progress: progress
                     });
                 });
+                Store.initAnonRpc(null, null, waitFor());
             }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3

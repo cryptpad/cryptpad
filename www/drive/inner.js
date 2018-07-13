@@ -3192,6 +3192,7 @@ define([
                 var title = manager.getTitle(id);
                 titles.push(title);
                 var paths = manager.findFile(id);
+                console.log(title, id, paths);
                 manager.delete(paths, refresh);
             });
             if (!titles.length) { return; }

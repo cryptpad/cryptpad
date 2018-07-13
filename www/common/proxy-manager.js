@@ -2,8 +2,9 @@ define([
     '/common/userObject.js',
     '/common/common-util.js',
     '/common/common-hash.js',
+    '/customize/messages.js',
     '/bower_components/nthen/index.js',
-], function (UserObject, Util, Hash, nThen) {
+], function (UserObject, Util, Hash, Messages, nThen) {
 
 
     var getConfig = function (Env) {
@@ -361,8 +362,8 @@ define([
 
             // 2b. load the proxy
             Env.loadSharedFolder(id, folderData, waitFor(function (rt, metadata) {
-                if (data.name && !rt.proxy.metadata) { // Creating a new shared folder
-                    rt.proxy.metadata = {title: data.name};
+                if (!rt.proxy.metadata) { // Creating a new shared folder
+                    rt.proxy.metadata = {title: data.name || Messages.fm_newFolder}; // XXX
                 }
                 // If we're importing a folder, check its serverside metadata
                 if (data.folderData && metadata) {
