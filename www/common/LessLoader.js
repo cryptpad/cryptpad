@@ -134,10 +134,15 @@ define([
     };
 
     module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
+        var btime = +new Date();
+        var done = function () {
+            console.log("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
+            cb();
+        };
         cacheGet(url, function (css) {
             if (css) {
                 inject(css, url);
-                return void cb();
+                return void done();
             }
             console.log('CACHE MISS ' + url);
             ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
@@ -145,7 +150,7 @@ define([
                 var output = fixAllURLs(css, url);
                 cachePut(url, output);
                 inject(output, url);
-                cb();
+                done();
             });
         });
     };
