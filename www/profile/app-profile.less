@@ -1,15 +1,15 @@
 @import (reference) '../../customize/src/less2/include/framework.less';
 @import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 
-.framework_min_main(
-    @bg-color: @colortheme_profile-bg,
-    @warn-color: @colortheme_profile-warn,
-    @color: @colortheme_profile-color
-);
-.sidebar-layout_main();
-
-// body
 &.cp-app-profile {
+
+    .framework_min_main(
+        @bg-color: @colortheme_profile-bg,
+        @warn-color: @colortheme_profile-warn,
+        @color: @colortheme_profile-color
+    );
+    .sidebar-layout_main();
+
     display: flex;
     flex-flow: column;
     #cp-app-profile-header {

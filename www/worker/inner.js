@@ -9,7 +9,7 @@ define([
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'less!/worker/app-worker.less',
 ], function (
     $,
     Toolbar,

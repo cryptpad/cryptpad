@@ -2,8 +2,11 @@
 @import (reference) './modal.less';
 
 .fileupload_main () {
+    --LessLoader_require: LessLoader_currentFile();
+    .modal_main();
+}
+& {
     /* Upload status table */
-    modal_main();
     #cp-fileupload {
         .modal_base();
         position: absolute;
@@ -55,4 +58,3 @@
         }
     }
 }
-

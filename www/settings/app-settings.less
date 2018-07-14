@@ -3,17 +3,16 @@
 @import (reference) "../../customize/src/less2/include/creation.less";
 @import (reference) '../../customize/src/less2/include/framework.less';
 
-.framework_min_main(
-    @bg-color: @colortheme_settings-bg,
-    @warn-color: @colortheme_settings-warn,
-    @color: @colortheme_settings-color
-);
-.sidebar-layout_main();
-.limit-bar_main();
-.creation_main();
-
-// body
 &.cp-app-settings {
+    .framework_min_main(
+        @bg-color: @colortheme_settings-bg,
+        @warn-color: @colortheme_settings-warn,
+        @color: @colortheme_settings-color
+    );
+    .sidebar-layout_main();
+    .limit-bar_main();
+    .creation_main();
+
     display: flex;
     flex-flow: column;
     font: @colortheme_app-font;

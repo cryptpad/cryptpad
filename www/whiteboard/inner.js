@@ -15,6 +15,7 @@ define([
     '/bower_components/chainpad/chainpad.dist.js',
 
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
+    'less!/whiteboard/app-whiteboard.less'
 ], function (
     $,
     Sortify,

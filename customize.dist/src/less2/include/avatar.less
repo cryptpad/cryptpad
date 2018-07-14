@@ -1,40 +1,45 @@
 @import (reference) "./tools.less";
+.avatar_main(@width) {
+    --LessLoader_require: LessLoader_currentFile();
 
-.avatar_main (@width) {
+    --avatar-width: @width;
+    --avatar-font-size: @width / 1.2;
+}
+& {
     &.cp-avatar {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    .cp-avatar-default, media-tag {
-        display: inline-flex;
-        width: @width;
-        height: @width;
-        justify-content: center;
-        align-items: center;
-        border-radius: 4px;
         overflow: hidden;
-        box-sizing: content-box;
-    }
-    .cp-avatar-default {
-        .tools_unselectable();
-        background: white;
-        color: black;
-        font-size: @width/1.2;
-    }
-    media-tag {
-        min-height: @width;
-        min-width: @width;
-        max-height: @width;
-        max-width: @width;
-        img {
-            min-width: 100%;
-            min-height: 100%;
-            max-width: none;
-            max-height: none; // To override 'media-tag img' in slide.less
+        text-overflow: ellipsis;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        .cp-avatar-default, media-tag {
+            display: inline-flex;
+            width: var(--avatar-width);
+            height: var(--avatar-width);
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            overflow: hidden;
+            box-sizing: content-box;
         }
-    }
+        .cp-avatar-default {
+            .tools_unselectable();
+            background: white;
+            color: black;
+            font-size: var(--avatar-font-size);
+        }
+        media-tag {
+            min-height: var(--avatar-width);
+            min-width: var(--avatar-width);
+            max-height: var(--avatar-width);
+            max-width: var(--avatar-width);
+            img {
+                min-width: 100%;
+                min-height: 100%;
+                max-width: none;
+                max-height: none; // To override 'media-tag img' in slide.less
+            }
+        }
     }
 }
 

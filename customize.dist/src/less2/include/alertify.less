@@ -2,7 +2,10 @@
 @import (reference) "./browser.less";
 @import (reference) "./variables.less";
 
-.alertify_main () {
+.alertify_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
     @max-z-index: 2147483647;
     @alertify-fore: @colortheme_modal-fg;
     @alertify-base: @colortheme_modal-bg;

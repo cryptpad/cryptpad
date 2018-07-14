@@ -1,14 +1,14 @@
 @import (reference) '../../customize/src/less2/include/tools.less';
 @import (reference) "../../customize/src/less2/include/framework.less";
 
-.framework_main(
-    @bg-color: @colortheme_whiteboard-bg,
-    @warn-color: @colortheme_whiteboard-warn,
-    @color: @colortheme_whiteboard-color
-);
-
-// body
 &.cp-app-whiteboard {
+
+    .framework_main(
+        @bg-color: @colortheme_whiteboard-bg,
+        @warn-color: @colortheme_whiteboard-warn,
+        @color: @colortheme_whiteboard-color
+    );
+
     display: flex;
     flex-flow: column;
     height: 100%;

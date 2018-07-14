@@ -1,6 +1,9 @@
 @import (reference) "./colortheme-all.less";
 
 .history_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
     .cp-toolbar-history {
         display: none;
         text-align: center;

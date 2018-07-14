@@ -1,9 +1,17 @@
 @import (reference) "./colortheme-all.less";
 
 .help_main (@color, @bg-color) {
+    --LessLoader_require: LessLoader_currentFile();
+
+    --help-bg-color-l15: lighten(@bg-color, 15%);
+    --help-bg-color-spin: spin(@bg-color, 180);
+    --help-bg-color-spin-d10: darken(spin(@bg-color, 180), 10%);
+    --help-bg-color-spin-l10: lighten(spin(@bg-color, 180), 10%);
+}
+& {
     .cp-help-container {
         position: relative;
-        background-color: lighten(@bg-color, 15%);
+        background-color: var(--help-bg-color-l15);
         &.cp-help-hidden {
             display: none;
         }
@@ -14,14 +22,13 @@
             right: 5px;
         }
         .cp-help-text {
-            color: contrast(lighten(@bg-color, 15%), #fff, #000); //@color;
+            color: contrast(var(--help-bg-color-l15), #fff, #000); //@color;
             margin: 0;
             padding: 15px;
             a {
                 //color: darken(@colortheme_link-color, 30%);
-                @spin: spin(lighten(@bg-color, 15%), 180);
-                color: contrast(lighten(@bg-color, 15%), lighten(@spin, 10%), darken(@spin, 10%));
-                //color: darken(spin(lighten(@bg-color, 15%), 180), 10%);
+                color: contrast(var(--help-bg-color-l15), var(--help-bg-color-spin-l10), var(--help-bg-color-spin-d10));
+                //color: darken(spin(var(--help-bg-color-l15), 180), 10%);
             }
             h1 {
                 font-size: 20px;

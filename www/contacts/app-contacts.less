@@ -1,14 +1,14 @@
 @import (reference) '../../customize/src/less2/include/avatar.less';
 @import (reference) '../../customize/src/less2/include/framework.less';
 
-.framework_min_main(
-    @bg-color: @colortheme_friends-bg,
-    @warn-color: @colortheme_friends-warn,
-    @color: @colortheme_friends-color
-);
-
 // body
 &.cp-app-contacts {
+    .framework_min_main(
+        @bg-color: @colortheme_friends-bg,
+        @warn-color: @colortheme_friends-warn,
+        @color: @colortheme_friends-color
+    );
+
     @keyframes example {
         0% {
             background: rgba(0,0,0,0.1);

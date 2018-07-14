@@ -1,6 +1,9 @@
 @import (reference) "./tools.less";
 
 .tokenfield_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
     .ui-autocomplete {
         z-index: 100001; // alertify + 1
     }

@@ -1,5 +1,6 @@
-@import (once) "../include/infopages.less";
+@import (reference) "../include/infopages.less";
 @import (reference) "../include/colortheme-all.less";
 
-.infopages_main();
-.infopages_topbar();
+&.cp-page-terms {
+    .infopages_main();
+}

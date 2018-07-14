@@ -1,86 +1,88 @@
-@import (once) "../include/infopages.less";
+@import (reference) "../include/infopages.less";
 @import (reference) "../include/colortheme-all.less";
 
-.infopages_main();
-.infopages_topbar();
-#cp-main {
-    background-color: #fff;
-}
-.cp_cont_features {
-    padding-top: 3em;
-    padding-bottom: 3em;
-    background-image: url('/customize/images/cover-features.jpg');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    h1 {
-        font-weight: 700;
+&.cp-page-features {
+    .infopages_main();
+
+    #cp-main {
+        background-color: #fff;
+    }
+    .cp_cont_features {
+        padding-top: 3em;
+        padding-bottom: 3em;
+        background-image: url('/customize/images/cover-features.jpg');
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        h1 {
+            font-weight: 700;
+            color: #fff;
+        }
+    }
+    #cp-features-register {
+        text-align: center;
+        padding: 20px;
+    }
+    .cp-features-register-button {
+        font-size: 20px;
         color: #fff;
+        background: @cryptpad_color_blue;
+        border: 2px solid @cryptpad_color_blue;
+        border-radius: 0;
+        &:hover {
+            transform: scale(1.05);
+            cursor: pointer;
+        }
+        padding: 0.5em 1em;
     }
-}
-#cp-features-register {
-    text-align: center;
-    padding: 20px;
-}
-.cp-features-register-button {
-    font-size: 20px;
-    color: #fff;
-    background: @cryptpad_color_blue;
-    border: 2px solid @cryptpad_color_blue;
-    border-radius: 0;
-    &:hover {
-        transform: scale(1.05);
-        cursor: pointer;
-    }
-    padding: 0.5em 1em;
-}
-.cp-features-web {
-    .card {
-        box-shadow: 0 5px 15px rgba(69, 145, 196, 0.3);
-        border: none;
-    }
-    h3 {
-        color: #fff;
-    }
-    .list-group {
-        li {
-            &:before {
-                content: "\f00c";
-                font-family: "FontAwesome";
-                font-size: 14px;
-                color: @cryptpad_color_blue;
-                padding-right: 10px;
+    .cp-features-web {
+        .card {
+            box-shadow: 0 5px 15px rgba(69, 145, 196, 0.3);
+            border: none;
+        }
+        h3 {
+            color: #fff;
+        }
+        .list-group {
+            li {
+                &:before {
+                    content: "\f00c";
+                    font-family: "FontAwesome";
+                    font-size: 14px;
+                    color: @cryptpad_color_blue;
+                    padding-right: 10px;
+                }
+            }
+            div {
+                display: inline;
             }
         }
-        div {
-            display: inline;
+        a.voted {
+            opacity: 0.6;
+            margin-left: 15px;
+            &:hover {
+                opacity: 1;
+            }
+        }
+        .list-group-item {
+            border-color: rgba(69, 145, 196, 0.125);
         }
     }
-    a.voted {
-        opacity: 0.6;
-        margin-left: 15px;
-        &:hover {
-            opacity: 1;
+    .cp-anon-user {
+        .card-body {
+            background-color: @cryptpad_color_blue;
         }
     }
-    .list-group-item {
-        border-color: rgba(69, 145, 196, 0.125);
-    }
-}
-.cp-anon-user {
-    .card-body {
-        background-color: @cryptpad_color_blue;
-    }
-}
-.cp-regis-user {
-    @media (max-width:575px) {
-        margin-top: 3em;
-    }
-    .card-body {
-        &:first-of-type {
-            background: #4591C4;
-            background: -webkit-linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
-            background: linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
+    .cp-regis-user {
+        @media (max-width:575px) {
+            margin-top: 3em;
+        }
+        .card-body {
+            &:first-of-type {
+                background: #4591C4;
+                background: -webkit-linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
+                background: linear-gradient(to right, #FF7C4F, #4592C4); // lesshint duplicateProperty: false
+            }
         }
     }
 }

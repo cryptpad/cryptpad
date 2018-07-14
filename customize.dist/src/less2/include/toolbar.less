@@ -8,7 +8,6 @@
 @import (reference) "./tools.less";
 @import (reference) "./icons.less";
 @import (reference) "./modal.less";
-@import (reference) "./markdown-toolbar.less";
 @import (reference) "./help.less";
 
 .toolbar_main (
@@ -17,7 +16,37 @@
     @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
     @barWidth: 600px // width of the toolbar
 ) {
+    --LessLoader_require: LessLoader_currentFile();
 
+    --toolbar-color: @color;
+    --toolbar-color-l20: lighten(@color, 20%);
+    --toolbar-color-d20: darken(@color, 20%);
+    --toolbar-color-d15: darken(@color, 15%);
+
+    --toolbar-bg-color: @bg-color;
+    --toolbar-bg-color-l8: lighten(@bg-color, 8%);
+    --toolbar-bg-color-l20: lighten(@bg-color, 20%);
+    --toolbar-bg-color-d5: darken(@bg-color, 5%);
+    --toolbar-bg-color-d10: darken(@bg-color, 10%);
+    --toolbar-bg-color-d15: darken(@bg-color, 15%);
+
+    --toolbar-warn-color: @warn-color;
+
+    @media screen and (max-width: @barWidth) {
+        .cp-toolbar-rightside {
+            flex-wrap: wrap;
+            height: auto;
+            width: 100%;
+        }
+    }
+
+    .help_main(@color, @bg-color);
+    .dropdown_main();
+    .history_main();
+    .iconColors_main();
+    .modal_main();
+};
+& {
     @toolbar_line-height: 32px;
     @toolbar_top-height: 64px;
     @toolbar_button-font: @colortheme_app-font;
@@ -26,13 +55,24 @@
     // this is a workaround
     .fa-shhare-alt:before { content: "\f1e0"; }
 
-    .dropdown_main();
     .ckeditor_fix();
-    .history_main();
-    .iconColors_main();
-    .markdownToolbar_main(@color, @bg-color);
-    .help_main(@color, @bg-color);
-    .modal_main();
+
+    .cp-markdown-toolbar {
+        height: @toolbar_line-height;
+        background-color: var(--toolbar-bg-color-l20);
+        display: none;
+        button {
+            height: @toolbar_line-height !important;
+            outline: 0;
+            color: var(--toolbar-color);
+            .toolbar_button;
+            font: normal normal normal 14px/1 FontAwesome;
+            &:hover {
+                background-color: var(--toolbar-bg-color-l8);
+            }
+            &.cp-markdown-help { float: right; }
+        }
+    }
 
     .cp-toolbar-container {
         display: flex;
@@ -66,7 +106,7 @@
     }
 
     .cp-toolbar-userlist-drawer {
-        background-color: @bg-color;
+        background-color: var(--toolbar-bg-color);
         font: @colortheme_app-font-size @colortheme_font;
         min-width: 175px;
         width: 175px;
@@ -254,31 +294,31 @@
     }
 
     .cp-toolbar-userlist-drawer {
-        background-color: @bg-color;
-        color: @color;
+        background-color: var(--toolbar-bg-color);
+        color: var(--toolbar-color);
         .cp-toolbar-userlist-drawer-close {
-            color: @color;
+            color: var(--toolbar-color);
         }
         h2 {
-            background-color: darken(@bg-color, 10%);
-            color: @color;
+            background-color: var(--toolbar-bg-color-d10);
+            color: var(--toolbar-color);
         }
         .cp-toolbar-userlist-name-input {
-            background-color: darken(@bg-color, 10%);
-            color: @color;
+            background-color: var(--toolbar-bg-color-d10);
+            color: var(--toolbar-color);
         }
         .cp-toolbar-userlist-name-edit {
-            color: contrast(@color,
-                            lighten(@color, 20%),
-                            darken(@color, 20%));
+            color: contrast(var(--toolbar-color),
+                            var(--toolbar-color-l20),
+                            var(--toolbar-color-d20));
             background: transparent;
             &:hover {
-                color: @color;
+                color: var(--toolbar-color);
             }
         }
         .cp-toolbar-userlist-friend {
             &:hover {
-                color: darken(@color, 15%);
+                color: var(--toolbar-color-d15);
             }
         }
     }
@@ -298,8 +338,8 @@
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
-        background-color: @bg-color;
-        color: @color;
+        background-color: var(--toolbar-bg-color);
+        color: var(--toolbar-color);
 
         .fa {
             font: normal normal normal 14px/1 FontAwesome;
@@ -517,42 +557,42 @@
 
         .cp-toolbar-spinner {
             font-size: @colortheme_app-font-size;
-            color: @color;
+            color: var(--toolbar-color);
         }
         .cp-toolbar-limit {
-            text-shadow: -1px 0 @color, 0 1px @color, 1px 0 @color, 0 -1px @color;
-            color: @warn-color;
+            text-shadow: -1px 0 var(--toolbar-color), 0 1px var(--toolbar-color), 1px 0 var(--toolbar-color), 0 -1px var(--toolbar-color);
+            color: var(--toolbar-warn-color);
         }
         .cp-toolbar-leftside, .cp-toolbar-rightside {
-            background-color: lighten(@bg-color, 8%);
+            background-color: var(--toolbar-bg-color-l8);
             button:hover, button.cp-toolbar-button-active {
-                background-color: @bg-color;
+                background-color: var(--toolbar-bg-color);
             }
         }
         .cp-toolbar-title-hoverable:hover {
             .cp-toolbar-title-editable, .cp-toolbar-title-edit {
                 cursor: text;
-                border: 1px solid darken(@bg-color, 15%);
-                background: darken(@bg-color, 10%);
+                border: 1px solid var(--toolbar-bg-color-d15);
+                background: var(--toolbar-bg-color-d10);
                 transition: all 0.15s;
-                color: @color;
+                color: var(--toolbar-color);
             }
             .cp-toolbar-title-editable {
                 cursor: text;
             }
         }
         .cp-toolbar-title-save {
-            border: 1px solid darken(@bg-color, 15%);
-            background: darken(@bg-color, 10%);
-            color: @color;
+            border: 1px solid var(--toolbar-bg-color-d15);
+            background: var(--toolbar-bg-color-d10);
+            color: var(--toolbar-color);
             &:hover {
-                background: darken(@bg-color, 5%);
+                background: var(--toolbar-bg-color-d5);
             }
         }
         input {
-            border: 1px solid darken(@bg-color, 15%);
-            background: darken(@bg-color, 10%);
-            color: @color;
+            border: 1px solid var(--toolbar-bg-color-d15);
+            background: var(--toolbar-bg-color-d10);
+            color: var(--toolbar-color);
         }
         .cp-dropdown-content.cp-dropdown-left a {
             color: black;
@@ -578,7 +618,7 @@
             padding: 0;
             margin: 0 5px;
             font-size: @colortheme_app-font-size;
-            color: @warn-color;
+            color: var(--toolbar-warn-color);
             .cp-pnp-msg {
                 padding-left: 5px;
                 font-family: @colortheme_font;
@@ -587,7 +627,7 @@
                     font-size: @colortheme_app-font-size;
                     font-family: @colortheme_font;
                     font-weight: bold;
-                    color: @warn-color;
+                    color: var(--toolbar-warn-color);
                     &:hover {
                         text-decoration: underline;
                     }
@@ -881,7 +921,7 @@
         display: flex;
         min-height: @toolbar_line-height;
         overflow: hidden;
-        @media screen and (max-width: @barWidth) { // 450px
+        @media screen and (max-width: var(--toolbar-barWidth)) { // 450px
             flex-wrap: wrap;
             height: auto;
             width: 100%;
@@ -1004,6 +1044,4 @@
             }
         }
     }
-
-}
-
+};

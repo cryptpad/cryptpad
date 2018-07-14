@@ -1,6 +1,9 @@
 @import (reference) './colortheme-all.less';
 
 .tippy_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
     .tippy-tooltip.cryptpad-theme {
         /* Your styling here. Example: */
         background-color: white;
