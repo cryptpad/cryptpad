@@ -152,10 +152,17 @@ define([
     };
 
     module.exports.load = function (url /*:string*/, cb /*:()=>void*/, stack /*:?Array*/) {
+        var btime = stack ? null : +new Date();
         stack = stack || [];
         if (stack.indexOf(url) > -1) { return void cb(); }
         var timeout = setTimeout(function () { console.log('failed', url); }, 10000);
-        var done = function () { clearTimeout(timeout); cb(); };
+        var done = function () {
+            clearTimeout(timeout);
+            if (btime) {
+                console.log("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
+            }
+            cb();
+        };
         stack.push(url);
         cacheGet(url, function (css) {
             if (css) { return void loadSubmodulesAndInject(css, url, done, stack); }
