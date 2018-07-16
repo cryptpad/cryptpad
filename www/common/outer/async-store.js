@@ -691,8 +691,18 @@ define([
         };
 
         // Pads
+        Store.isOnlyInSharedFolder = function (clientId, channel, cb) {
+            var res = store.manager.findChannel(channel);
+
+            // A pad is only in a shared worker if:
+            // 1. this pad is in at least one proxy
+            // 2. no proxy containing this pad is the main drive
+            return cb (res.length && !res.some(function (obj) {
+                // Main drive doesn't have an fId (folder ID)
+                return !obj.fId;
+            }));
+        };
         Store.moveToTrash = function (clientId, data, cb) {
-            // XXX move a pad from a shared folder to the trash?
             var href = Hash.getRelativeHref(data.href);
             store.userObject.forget(href);
             sendDriveEvent('DRIVE_CHANGE', {

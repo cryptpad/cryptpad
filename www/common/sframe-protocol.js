@@ -111,6 +111,10 @@ define({
     'Q_GET_PAD_ATTRIBUTE': true,
     'Q_SET_PAD_ATTRIBUTE': true,
 
+    // Check if a pad is only in a shared folder or (also) in the main drive.
+    // This allows us to change the behavior of some buttons (trash icon...)
+    'Q_IS_ONLY_IN_SHARED_FOLDER': true,
+
     // Open/close the File picker (sent from the iframe to the outside)
     'EV_FILE_PICKER_OPEN': true,
     'EV_FILE_PICKER_CLOSE': true,

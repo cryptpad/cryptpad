@@ -84,6 +84,7 @@ define([
         Object.keys(Env.folders).forEach(function (fId) {
             Env.folders[fId].userObject.findChannels([channel]).forEach(function (id) {
                 ret.push({
+                    fId: fId,
                     data: Env.folders[fId].userObject.getFileData(id),
                     userObject: Env.folders[fId].userObject
                 });
@@ -95,12 +96,15 @@ define([
     var findHref = function (Env, href) {
         var ret = [];
         var id = Env.user.userObject.getIdFromHref(href);
-        ret.push({
-            data: Env.user.userObject.getFileData(id),
-            userObject: Env.user.userObject
-        });
+        if (id) {
+            ret.push({
+                data: Env.user.userObject.getFileData(id),
+                userObject: Env.user.userObject
+            });
+        }
         Object.keys(Env.folders).forEach(function (fId) {
             var id = Env.folders[fId].userObject.getIdFromHref(href);
+            if (!id) { return; }
             ret.push({
                 fId: fId,
                 data: Env.folders[fId].userObject.getFileData(id),
@@ -717,6 +721,7 @@ define([
             addPad: callWithEnv(addPad),
             // Tools
             findChannel: callWithEnv(findChannel),
+            findHref: callWithEnv(findHref),
             user: Env.user,
             folders: Env.folders
         };

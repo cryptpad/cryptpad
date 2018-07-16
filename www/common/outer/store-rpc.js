@@ -41,6 +41,7 @@ define([
             MOVE_TO_TRASH: Store.moveToTrash,
             RESET_DRIVE: Store.resetDrive,
             GET_METADATA: Store.getMetadata,
+            IS_ONLY_IN_SHARED_FOLDER: Store.isOnlyInSharedFolder,
             SET_DISPLAY_NAME: Store.setDisplayName,
             SET_PAD_ATTRIBUTE: Store.setPadAttribute,
             GET_PAD_ATTRIBUTE: Store.getPadAttribute,

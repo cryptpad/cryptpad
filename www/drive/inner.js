@@ -854,7 +854,6 @@ define([
                         hide.push('properties');
                     }
                     // If we're not in the trash nor in a shared folder, hide "remove"
-                    var el = manager.find(path);
                     if (!manager.isInSharedFolder(path)
                             && !$element.is('.cp-app-drive-element-sharedf')) {
                         hide.push('removesf');

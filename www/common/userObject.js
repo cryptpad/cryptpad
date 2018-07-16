@@ -308,7 +308,6 @@ define([
                     result = id;
                     return true;
                 }
-                return;
             });
             return result;
         };

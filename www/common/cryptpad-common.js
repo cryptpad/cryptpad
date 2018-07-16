@@ -311,6 +311,13 @@ define([
         });
     };
 
+    common.isOnlyInSharedFolder = function (data, cb) {
+        postMessage("IS_ONLY_IN_SHARED_FOLDER", data, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
     common.setDisplayName = function (value, cb) {
         postMessage("SET_DISPLAY_NAME", value, cb);
     };

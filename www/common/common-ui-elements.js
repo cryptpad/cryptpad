@@ -679,17 +679,27 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function() {
-                    var msg = common.isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
-                    UI.confirm(msg, function (yes) {
-                        if (!yes) { return; }
-                        sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
-                            if (err) { return void callback(err); }
-                            var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                            var msg = common.fixLinks($('<div>').html(cMsg));
-                            UI.alert(msg);
-                            callback();
+                    sframeChan.query('Q_IS_ONLY_IN_SHARED_FOLDER', null, function (err, res) {
+                        if (err || res.error) { return void console.log(err || res.error); }
+                        var msg = Messages.forgetPrompt;
+                        if (res) {
+                            UI.alert("WIP: This pad is only in a shared folder. You can't move it to the trash. You can use your CryptDrive if you want to delete it from the folder."); // XXX
                             return;
+                        } else if (!common.isLoggedIn()) {
+                            msg = Messages.fm_removePermanentlyDialog;
+                        }
+                        UI.confirm(msg, function (yes) {
+                            if (!yes) { return; }
+                            sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                                if (err) { return void callback(err); }
+                                var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                var msg = common.fixLinks($('<div>').html(cMsg));
+                                UI.alert(msg);
+                                callback();
+                                return;
+                            });
                         });
+
                     });
                 });
                 break;
