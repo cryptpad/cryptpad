@@ -7,6 +7,8 @@ var Nacl = require("tweetnacl");
 /* globals process */
 
 var Fs = require("fs");
+Fs.move = require('fs-extra').move;
+Fs.moveSync = require('fs-extra').moveSync;
 var Path = require("path");
 var Https = require("https");
 const Package = require('./package.json');
@@ -1054,7 +1056,7 @@ var upload_complete = function (Env, publicKey, id, cb) {
         }
 
         // lol wut handle ur errors
-        Fs.rename(oldPath, newPath, function (e) {
+        Fs.move(oldPath, newPath, function (e) {
             if (e) {
                 WARN('rename', e);
                 return void cb('RENAME_ERR');
@@ -1146,7 +1148,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
 
         // flow is dumb and I need to guard against this which will never happen
         // / *:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } * /
-        Fs.rename(oldPath, finalPath, w(function (e) {
+        Fs.move(oldPath, finalPath, w(function (e) {
             if (e) {
                 w.abort();
                 return void cb(e.code);
@@ -1254,7 +1256,7 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
 
         // flow is dumb and I need to guard against this which will never happen
         /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
-        Fs.rename(oldPath, finalPath, w(function (e) {
+        Fs.move(oldPath, finalPath, w(function (e) {
             if (e) {
                 // Remove the ownership file
                 Fs.unlink(finalOwnPath, function (e) {
