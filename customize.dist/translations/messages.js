@@ -605,15 +605,15 @@ define(function () {
     out.settings_ownDriveButton = "Migrate"; // XXX
     out.settings_ownDriveConfirm = "Are you sure?"; // XXX
 
-    out.settings_changePasswordTitle = "Change your password"; // XXX
-    out.settings_changePasswordHint = "Change your account's password without losing its data. You have to enter your existing password once, and the new password you want twice.<br>" +
-                                      "<b>We can't reset your password if you forget it so be very careful!</b>"; // XXX
-    out.settings_changePasswordButton = "Change password"; // XXX
-    out.settings_changePasswordCurrent = "Existing password"; // XXX
-    out.settings_changePasswordNew = "New password"; // XXX
-    out.settings_changePasswordNewConfirm = "Confirm new password"; // XXX
-    out.settings_changePasswordConfirm = "Are you sure?"; // XXX
-    out.settings_changePasswordError = "Error {0}"; // XXX
+    out.settings_changePasswordTitle = "Change your password";
+    out.settings_changePasswordHint = "Change your account's password. Enter your current password, and confirm the new password by typing it twice.<br>" +
+                                      "<b>We can't reset your password if you forget it, so be very careful!</b>";
+    out.settings_changePasswordButton = "Change password";
+    out.settings_changePasswordCurrent = "Current password";
+    out.settings_changePasswordNew = "New password";
+    out.settings_changePasswordNewConfirm = "Confirm new password";
+    out.settings_changePasswordConfirm = "Are you sure?";
+    out.settings_changePasswordError = "Error {0}";
 
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";
@@ -857,7 +857,7 @@ define(function () {
             "We use our <em>feedback</em> functionality to inform the server that someone with your IP has registered an account." +
             " We use this to measure how many people register for CryptPad accounts, and to see what regions they are in so that we can guess which languages may need better support.<br><br>" +
 
-            "Registered users inform the server which pads are in their CryptDrive, which reveals more about their usage, but allows the server operators to detect and remove abandoned pads."
+            "Registered users inform the server which pads are in their CryptDrive so that such pads are not considered abandoned, and are removed from the server due to inactivity."
         },
         other: {
             q: "What can other collaborators learn about me?",
