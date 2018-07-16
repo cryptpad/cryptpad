@@ -1034,6 +1034,20 @@ define([
         LOADING_DRIVE: common.loading.onDriveEvent.fire
     };
 
+    common.hasCSSVariables = function () {
+        if (window.CSS && window.CSS.supports && window.CSS.supports('--a', 0)) { return true; }
+        // Safari lol y u always b returnin false ?
+        var color = 'rgb(255, 198, 0)';
+        var el = document.createElement('span');
+        el.style.setProperty('--color', color);
+        el.style.setProperty('background', 'var(--color)');
+        document.body.appendChild(el);
+        var styles = getComputedStyle(el);
+        var doesSupport = (styles.backgroundColor === color);
+        document.body.removeChild(el);
+        return doesSupport;
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
@@ -1070,8 +1084,11 @@ define([
             if (typeof(Worker) === "undefined") {
                 Feedback.send('NO_WEBWORKER');
             }
-            if (typeof(ServiceWorker) === "undefined") {
+            if (!('serviceWorker' in navigator)) {
                 Feedback.send('NO_SERVICEWORKER');
+            }
+            if (!common.hasCSSVariables()) {
+                Feedback.send('NO_CSS_VARIABLES');
             }
 
             Feedback.reportScreenDimensions();
@@ -1144,6 +1161,7 @@ define([
             var msgEv = Util.mkEvent();
             var postMsg, worker;
             var noWorker = AppConfig.disableWorkers || false;
+            var noSharedWorker = false;
             if (localStorage.CryptPad_noWorkers) {
                 noWorker = localStorage.CryptPad_noWorkers === '1';
                 console.error('WebWorker/SharedWorker state forced to ' + !noWorker);
@@ -1164,8 +1182,16 @@ define([
                         }
                     };
                 }
+                if (typeof(SharedWorker) !== "undefined") {
+                    try {
+                        new SharedWorker('');
+                    } catch (e) {
+                        noSharedWorker = true;
+                        console.log('Disabling SharedWorker because of privacy settings.');
+                    }
+                }
             }).nThen(function (waitFor2) {
-                if (!noWorker && typeof(SharedWorker) !== "undefined") {
+                if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
                         console.error(e.message);
@@ -1184,7 +1210,7 @@ define([
                     window.addEventListener('beforeunload', function () {
                         postMsg('CLOSE');
                     });
-                } else if (false && !noWorker && 'serviceWorker' in navigator) {
+                } else if (false && !noWorker && !noSharedWorker && 'serviceWorker' in navigator) {
                     var initializing = true;
                     var stopWaiting = waitFor2(); // Call this function when we're ready
 
