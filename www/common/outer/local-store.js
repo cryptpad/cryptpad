@@ -58,7 +58,7 @@ define([
         localStorage[Constants.userHashKey] = sHash;
     };
 
-    var getBlockHash = LocalStore.getBlockHash = function () {
+    LocalStore.getBlockHash = function () {
         return localStorage[Constants.blockHashKey];
     };
 
@@ -71,8 +71,7 @@ define([
     };
 
     LocalStore.isLoggedIn = function () {
-        return typeof getBlockHash() === 'string' ||
-            typeof getUserHash() === "string";
+        return typeof getUserHash() === "string";
     };
 
     LocalStore.login = function (hash, name, cb) {
