@@ -109,6 +109,24 @@ define([
         });
         return ret;
     };
+    // Return paths linked to a file ID
+    var findFile = function (Env, id) {
+        var ret = [];
+        var userObjects = _getUserObjects(Env);
+        userObjects.forEach(function (uo) {
+            var fPath = _getUserObjectPath(Env, uo);
+            var results = uo.findFile(id);
+            if (fPath) {
+                // This is a shared folder, we have to fix the paths in the results
+                results.map(function (p) {
+                    Array.prototype.unshift.apply(p, fPath);
+                });
+            }
+            // Push the results from this proxy
+            Array.prototype.push.apply(ret, results);
+        });
+        return ret;
+    };
 
     // Returns file IDs corresponding to the provided channels
     var _findChannels = function (Env, channels, onlyMain) {
@@ -384,13 +402,36 @@ define([
         }
 
         var toUnpin = [];
+        var ownedRemoved;
         nThen(function (waitFor)  {
+            // Delete paths from the main drive and get the list of pads to unpin
+            // We also get the list of owned pads that were removed
             if (resolved.main.length) {
-                Env.user.userObject.delete(resolved.main, waitFor(function (err, _toUnpin) {
+                Env.user.userObject.delete(resolved.main, waitFor(function (err, _toUnpin, _ownedRemoved) {
                     if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
+                    ownedRemoved = _ownedRemoved;
                 }), data.nocheck, data.isOwnPadRemoved);
             }
+        }).nThen(function (waitFor) {
+            // Check if removed owned pads are duplicated is some shared folders
+            // If that's the case, we have to remove them from the shared folders too
+            // We can do that by adding their paths to the list of pads to remove from shared folders
+            if (ownedRemoved) {
+                var ids = _findChannels(Env, ownedRemoved);
+                ids.forEach(function (id) {
+                    var paths = findFile(Env, id);
+                    var _resolved = _resolvePaths(Env, paths);
+                    Object.keys(_resolved.folders).forEach(function (fId) {
+                        if (resolved.folders[fId]) {
+                            Array.prototype.push.apply(resolved.folders[fId], _resolved.folders[fId]);
+                        } else {
+                            resolved.folders[fId] = _resolved.folders[fId];
+                        }
+                    });
+                });
+            }
+            // Delete paths from the shared folders
             Object.keys(resolved.folders).forEach(function (id) {
                 Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, _toUnpin) {
                     if (!Env.unpinPads || !_toUnpin) { return; }
@@ -793,24 +834,6 @@ define([
                     r.paths.map(function (p) {
                         Array.prototype.unshift.apply(p, fPath);
                     });
-                });
-            }
-            // Push the results from this proxy
-            Array.prototype.push.apply(ret, results);
-        });
-        return ret;
-    };
-
-    var findFile = function (Env, id) {
-        var ret = [];
-        var userObjects = _getUserObjects(Env);
-        userObjects.forEach(function (uo) {
-            var fPath = _getUserObjectPath(Env, uo);
-            var results = uo.findFile(id);
-            if (fPath) {
-                // This is a shared folder, we have to fix the paths in the results
-                results = results.map(function (p) {
-                    Array.prototype.unshift.apply(p, fPath);
                 });
             }
             // Push the results from this proxy

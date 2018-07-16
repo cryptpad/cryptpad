@@ -87,14 +87,15 @@ define([
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
+            var ownedRemoved = [];
             exp.getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
-                // XXX
                 if (filesList.indexOf(id) === -1) {
                     var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
                     // If trying to remove an owned pad, remove it from server also
                     if (!isOwnPadRemoved && !sharedFolder &&
                             fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
+                        if (channelId) { ownedRemoved.push(channelId); }
                         removeOwnedChannel(channelId, function (obj) {
                             if (obj && obj.error) {
                                 // If the error is that the file is already removed, nothing to
@@ -117,7 +118,7 @@ define([
                 }
             });
             if (!toClean.length) { return void cb(); }
-            cb(null, toClean);
+            cb(null, toClean, ownedRemoved);
         };
         var deleteHrefs = function (ids) {
             ids.forEach(function (obj) {
