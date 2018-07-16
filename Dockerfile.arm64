@@ -13,13 +13,13 @@ RUN apt install -y git \
    && npm install -g bower \
    && bower install --allow-root
 
-EXPOSE 3000
+EXPOSE 3000 3001
 
 VOLUME /cryptpad/datastore
 VOLUME /cryptpad/customize
 
 ENV USE_SSL=false
-ENV STORAGE='./storage/file'
+ENV STORAGE=\'./storage/file\'
 ENV LOG_TO_STDOUT=true
 
 CMD ["/sbin/tini", "--", "/cryptpad/container-start.sh"]
