@@ -804,7 +804,7 @@ define(function () {
         },
         abandoned: {
             q: "Qu'est-ce qu'un pad abandonné?",
-            a: "Un <em>pad abandonné</em> est un pad qui n'est stocké dans le CryptDrive d'aucun utilisateur enregistré et qui n'a pas été modifié depuis 6 mois. Les documents abandonnées sont automatiquement supprimés du serveur.";
+            a: "Un <em>pad abandonné</em> est un pad qui n'est stocké dans le CryptDrive d'aucun utilisateur enregistré et qui n'a pas été modifié depuis 6 mois. Les documents abandonnées sont automatiquement supprimés du serveur."
         },
     };
     out.faq.privacy = {
