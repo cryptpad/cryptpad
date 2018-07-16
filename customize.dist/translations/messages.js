@@ -50,7 +50,7 @@ define(function () {
     out.deleted = "Pad deleted from your CryptDrive";
     out.deletedFromServer = "Pad deleted from the server";
 
-    out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
+    out.realtime_unrecoverableError = "An unrecoverable error has occured. Click OK to reload.";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
@@ -726,7 +726,7 @@ define(function () {
     out.whatis_drive_p2 = 'With intuitive drag-and-drop, you can move pads around in your drive and the link to these pads will stay the same so your collaborators will never lose access.';
     out.whatis_drive_p3 = 'You can also upload files in your CryptDrive and share them with colleagues. Uploaded files can be organized just like collaborative pads.';
     out.whatis_business = 'CryptPad for Business';
-    out.whatis_business_p1 = 'CryptPad\'s Zero Knowledge encryption is excellent for multiplying the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using employee access credentials, CryptPad removes the hacker jackpot which exists in traditional IT servers. Read the <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a> to learn more about how it can help your business.';
+    out.whatis_business_p1 = "CryptPad\'s Zero Knowledge encryption multiplies the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using user access credentials, CryptPad is less valuable as a target when compared to traditional cloud services. Read the <a href='https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf'>CryptPad Whitepaper</a> to learn more about how it can help your business.";
     out.whatis_business_p2 = 'CryptPad is deployable on premises and the <a href="https://cryptpad.fr/about.html">CryptPad developers</a> at XWiki SAS are able to offer commercial support, customization and development. Reach out to <a href="mailto:sales@cryptpad.fr">sales@cryptpad.fr</a> for more information.';
 
     // privacy.html
@@ -823,6 +823,10 @@ define(function () {
             " Any existing pad can be turned into a template by moving it into the <em>Templates</em> section in your CryptDrive." +
             " You can also create a copy of a pad to be used as a template by clicking the template button (<span class='fa fa-bookmark'></span>) in the editor's toolbar."
         },
+        abandoned: {
+            q: "What is an abandoned Pad?",
+            a: "An <em>abandoned pad</em> is a pad that is not pinned in any registered user's CryptDrive and that hasn't been changed for six months. Abandoned documents will be automatically removed from the server."
+        },
     };
     out.faq.privacy = {
         title: 'Privacy',
@@ -853,8 +857,7 @@ define(function () {
             "We use our <em>feedback</em> functionality to inform the server that someone with your IP has registered an account." +
             " We use this to measure how many people register for CryptPad accounts, and to see what regions they are in so that we can guess which languages may need better support.<br><br>" +
 
-            "When you register, you generate a public key which is used to tell the server that the pads in your CryptDrive should not be deleted even if they are not actively being used." +
-            " This information does reveal more about how you are using CryptPad, but the system allows us to remove pads from the server once nobody cares enough to keep them."
+            "Registered users inform the server which pads are in their CryptDrive, which reveals more about their usage, but allows the server operators to detect and remove abandoned pads."
         },
         other: {
             q: "What can other collaborators learn about me?",
