@@ -1153,7 +1153,10 @@ define([
 
         var getElementName = function (path) {
             var file = manager.find(path);
-            if (!file || !manager.isFile(file)) { return '???'; }
+            if (!file) { return; }
+            if (manager.isSharedFolder(file)) {
+                return manager.getSharedFolderData(file).title;
+            }
             return manager.getTitle(file);
         };
         // manager.moveElements is able to move several paths to a new location, including
@@ -1169,6 +1172,22 @@ define([
             }
             andThenMove();
         };
+        // Delete paths from the drive and/or shared folders (without moving them to the trash)
+        var deletePaths = function (paths, pathsList) {
+            pathsList = pathsList || [];
+            if (paths) {
+                paths.forEach(function (p) { pathsList.push(p.path); });
+            }
+            var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
+            if (pathsList.length === 1) {
+                msg = Messages.fm_removePermanentlyDialog;
+            }
+            UI.confirm(msg, function(res) {
+                $(window).focus();
+                if (!res) { return; }
+                manager.delete(pathsList, refresh);
+            });
+        };
         // Drag & drop:
         // The data transferred is a stringified JSON containing the path of the dragged element
         var onDrag = function (ev, path) {
@@ -1180,7 +1199,7 @@ define([
                     var ePath = $(elmt).data('path');
                     if (ePath) {
                         var val = manager.find(ePath);
-                        if (!val) { return; } // Error? A ".selected" element in not in the object
+                        if (!val) { return; } // Error? A ".selected" element is not in the object
                         paths.push({
                             path: ePath,
                             value: {
@@ -1194,7 +1213,7 @@ define([
                 removeSelected();
                 $element.addClass('cp-app-drive-element-selected');
                 var val = manager.find(path);
-                if (!val) { return; } // The element in not in the object
+                if (!val) { return; } // The element is not in the object
                 paths = [{
                     path: path,
                     value: {
@@ -1240,21 +1259,22 @@ define([
 
             var oldPaths = JSON.parse(data).path;
             if (!oldPaths) { return; }
-            // Dropped elements can be moved from the same file manager or imported from another one.
             // A moved element should be removed from its previous location
             var movedPaths = [];
-            var importedElements = [];
+            var sharedF = false;
             oldPaths.forEach(function (p) {
-                var el = manager.find(p.path);
-                if (el && (stringify(el) === stringify(p.value.el) || !p.value || !p.value.el)) {
-                    movedPaths.push(p.path);
-                } else {
-                    importedElements.push(p.value);
+                movedPaths.push(p.path);
+                if (!sharedF && manager.isInSharedFolder(p.path)) {
+                    sharedF = true;
                 }
             });
 
             var newPath = findDropPath(ev.target);
             if (!newPath) { return; }
+            if (sharedF && manager.isPathIn(newPath, [TRASH])) {
+                deletePaths(null, movedPaths);
+                return;
+            }
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
             }
@@ -2888,21 +2908,6 @@ define([
             $contextMenu.find('.cp-app-drive-context-delete').text(Messages.fc_remove)
                 .attr('data-icon', 'fa-eraser');
         }
-        var deletePaths = function (paths, pathsList) {
-            pathsList = pathsList || [];
-            if (paths) {
-                paths.forEach(function (p) { pathsList.push(p.path); });
-            }
-            var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
-            if (pathsList.length === 1) {
-                msg = Messages.fm_removePermanentlyDialog;
-            }
-            UI.confirm(msg, function(res) {
-                $(window).focus();
-                if (!res) { return; }
-                manager.delete(pathsList, refresh);
-            });
-        };
         var deleteOwnedPaths = function (paths, pathsList) {
             pathsList = pathsList || [];
             if (paths) {
@@ -3096,7 +3101,9 @@ define([
                 if (!paths.length) { return; }
                 // If we are in the trash or anon pad or if we are holding the "shift" key,
                 // delete permanently
-                if (!APP.loggedIn || isTrash || e.shiftKey) {
+                // Or if we are in a shared folder
+                if (!APP.loggedIn || isTrash || manager.isInSharedFolder(currentPath)
+                        || e.shiftKey) {
                     deletePaths(null, paths);
                     return;
                 }
