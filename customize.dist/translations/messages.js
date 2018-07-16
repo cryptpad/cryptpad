@@ -824,7 +824,7 @@ define(function () {
             " You can also create a copy of a pad to be used as a template by clicking the template button (<span class='fa fa-bookmark'></span>) in the editor's toolbar."
         },
         abandoned: {
-            q: "What is an abandoned Pad?",
+            q: "What is an abandoned pad?",
             a: "An <em>abandoned pad</em> is a pad that is not pinned in any registered user's CryptDrive and that hasn't been changed for six months. Abandoned documents will be automatically removed from the server."
         },
     };

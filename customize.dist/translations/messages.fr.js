@@ -49,7 +49,7 @@ define(function () {
     out.deleted = "Pad supprimé de votre CryptDrive";
     out.deletedFromServer = "Pad supprimé du serveur";
 
-    out.realtime_unrecoverableError = "Le moteur temps-réel a rencontré une erreur critique. Cliquez sur OK pour recharger la page.";
+    out.realtime_unrecoverableError = "Une erreur critique est survenue. Cliquez sur OK pour recharger la page.";
 
     out.disconnected = 'Déconnecté';
     out.synchronizing = 'Synchronisation';
@@ -707,7 +707,7 @@ define(function () {
     out.whatis_drive_p2 = "Avec le glisser-déposer intuitif, vous pouvez déplacer vos pads dans votre drive tout en conservant les liens vers ces pads pour que vos collaborateurs n'en perdent pas l'accès";
     out.whatis_drive_p3 = "Vous pouvez également importer des fichiers dans votre CryptDrive et les partager avec des collègues. Les fichiers importés peuvent être rangés de la même manière que vos pads collaboratifs.";
     out.whatis_business = 'CryptPad for Business';
-    out.whatis_business_p1 = "Le chiffrement Zero Knowledge de CryptPad excelle pour multiplier l'efficacité des protocoles de sécurité existants en recréant les contrôles d'accès organisationnels de manière cryptographique. Puisque les données sensibles ne peuvent être déchiffrées qu'en utilisant les identifiants d'un employé, CryptPad empêche d'éventuels hackers ayant réussi à s'introduire dans le serveur d'avoir accès en clair à ces données. Découvrez-en plus sur la manière dont CryptPad peut aider votre entreprise en lisant le <a href=\"https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf\">CryptPad Whitepaper</a>.";
+    out.whatis_business_p1 = "Le chiffrement Zero Knowledge de CryptPad excelle pour accroître l'efficacité des protocoles de sécurité existants en les recréant de manière cryptographique. Puisque les données sensibles ne peuvent être déchiffrées qu'en utilisant les identifiants d'un utilisateur, CryptPad empêche d'éventuels hackers ayant réussi à s'introduire dans le serveur d'avoir accès en clair à ces données. Découvrez-en plus sur la manière dont CryptPad peut aider votre entreprise en lisant le <a href=\"https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf\">CryptPad Whitepaper</a>.";
     out.whatis_business_p2 = "CryptPad est déployable sur site et les <a href=\"https://cryptpad.fr/about.html\">développeurs CryptPad</a> chez XWiki SAS peuvent effectuer du développement, des personnalisations et du support commercial. Contactez-nous à <a href=\"mailto:sales@cryptpad.fr\">sales@cryptpad.fr</a> pour plus d'informations.";
 
     // privacy.html
@@ -802,6 +802,10 @@ define(function () {
                "Les pads existant dans votre CryptDrive peuvent être transformés en tant que modèle en les déplaçant dans la catégorie <em>Modèles</em> du CryptDrive.<br>" +
                "Il est également possible de créer une copie d'un pad en tant que modèle en cliquant sur le bouton <span class=\"fa fa-bookmark\"></span> (<em>Sauver en tant que modèle</em>) dans la barre d'outils des éditeurs."
         },
+        abandoned: {
+            q: "Qu'est-ce qu'un pad abandonné?",
+            a: "Un <em>pad abandonné</em> est un pad qui n'est stocké dans le CryptDrive d'aucun utilisateur enregistré et qui n'a pas été modifié depuis 6 mois. Les documents abandonnées sont automatiquement supprimés du serveur.";
+        },
     };
     out.faq.privacy = {
         title: 'Confidentialité',
@@ -824,7 +828,7 @@ define(function () {
                "Les formulaires d'inscription et de connexion génèrent à la place un ensemble de clés uniques, créées à partir de vos identifiants, et le serveur ne connaît donc que votre signature cryptographique.<br>" +
                "Nous utilisons cette information principalement pour mesurer combien de données vous avez stocké sur nos serveurs, afin de pouvoir limiter chaque utilisateur à son quota.<br><br>" +
                "Nous utilisons également notre fonctionnalité de <em>retour d'expérience</em> pour indiquer au serveur que quelqu'un avec votre adresse IP a créé un compte utilisateur, bien que nous ne sachions pas lequel. Cela nous permet de mesurer le nombre d'inscriptions sur CryptPad mais aussi de voir dans quelles régions du monde se trouvent les utilisateurs, afin de déterminer les langues dans lesquelles traduire CryptPad.<br><br>" +
-               "Enfin, les clés générées à l'inscription permettent d'indiquer au serveur que les pads dans votre CryptDrive ne doivent pas être supprimés, même s'ils sont inactifs. Ce système a l'inconvénient de nous fournir davantage d'informations sur la façon dont vous utilisez CryptPad, mais il est nécessaire pour que nous puissions supprimer du serveur les pads inactifs dont personne n'a besoin."
+               "Enfin, les utilisateurs enregistrés indiquent au serveur quels pads sont dans leur CryptDrive, afin que ces pads ne soient pas considérés comme abandonnés et ne soient donc pas supprimés pour inactivité."
         },
         other: {
             q: "Que peuvent apprendre les autres collaborateurs à mon sujet ?",
