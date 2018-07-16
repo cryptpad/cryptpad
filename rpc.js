@@ -1357,12 +1357,6 @@ var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
     if (!verified) { return void cb("E_COULD_NOT_VERIFY"); }
 
     return void cb(null, u8_block);
-
-    // signature 64 bytes
-      // sign.detached(hash(decodeBase64_content(base64_content)), decodeBase64(publicKey))
-
-    // 1 byte version
-    // base64_content
 };
 
 var createLoginBlockPath = function (Env, publicKey) {

@@ -1146,7 +1146,7 @@ define([
                 init: true,
                 userHash: userHash || LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
-                localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move tihs to LocalStore ?
+                localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
                 messenger: rdyCfg.messenger, // Boolean
                 driveEvents: rdyCfg.driveEvents // Boolean

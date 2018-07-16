@@ -97,8 +97,6 @@ define([
         };
     };
 
-    // FIXME don't spread the functions below across this file and common-hash
-    // find a permanent home for these hacks
     var urlSafeB64 = function (u8) {
         return Nacl.util.encodeBase64(u8).replace(/\//g, '-');
     };
@@ -116,16 +114,6 @@ define([
         var symmetric = urlSafeB64(keys.symmetric);
         return absolute + '#' + symmetric;
     };
-
-/*
-    Block.createBlockHash = function (href, key) {
-        if (typeof(href) !== 'string') { return; }
-        if (!(key instanceof Uint8Array)) { return; }
-
-        try { return href + '#' + Nacl.util.encodeBase64(key); }
-        catch (e) { return; }
-    };
-*/
 
     var decodeSafeB64 = function (b64) {
         try {
