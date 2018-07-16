@@ -836,6 +836,8 @@ define([
                         containsFolder = true;
                         hide.push('openro');
                         hide.push('hashtag');
+                        hide.push('delete');
+                        //hide.push('deleteowned');
                     } else { // it's a folder
                         if (containsFolder) {
                             // More than 1 folder selected: cannot create a new subfolder
@@ -852,11 +854,21 @@ define([
                         hide.push('properties');
                     }
                     // If we're not in the trash nor in a shared folder, hide "remove"
-                    if (!manager.isInSharedFolder(path)) {
+                    var el = manager.find(path);
+                    if (!manager.isInSharedFolder(path)
+                            && !$element.is('.cp-app-drive-element-sharedf')) {
                         hide.push('removesf');
                     } else if (type === "tree") {
                         hide.push('delete');
-                        hide.push('deleteowned');
+                        // Don't hide the deleteowned link if the element is a shared folder and
+                        // it is owned
+                        if (manager.isInSharedFolder(path) ||
+                                !$element.is('.cp-app-drive-element-owned')) {
+                            hide.push('deleteowned');
+                        } else {
+                            // This is a shared folder and it is owned
+                            hide.push('removesf');
+                        }
                     }
                 });
                 if (paths.length > 1) {
