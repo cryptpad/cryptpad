@@ -72,7 +72,9 @@ define([
 
         opt.channel64 = Util.hexToBase64(channelHex);
 
-        // XXX why don't we generate a v2 ?
+        // we still generate a v1 hash because this function needs to deterministically
+        // derive the same values as it always has. New accounts will generate their own
+        // userHash values
         opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/') + '/';
 
         return opt;
@@ -278,7 +280,8 @@ define([
             } else {
                 console.log("allocating random bytes for a new user object");
                 opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
-                userHash = opt.userHash;
+                // create a random v2 hash, since we don't need backwards compatibility
+                userHash = '/drive/#' + Hash.createRandomHash('drive');
             }
 
             // according to the location derived from the credentials which you entered
