@@ -48,9 +48,7 @@ define([
         var edSeed = opt.edSeed = dispense(32);
 
         // 64 more bytes to seed an additional signing key
-        opt.blockSeed = new Uint8Array(dispense(64));
-
-        var blockKeys = opt.blockKeys = Block.genkeys(opt.blockSeed);
+        var blockKeys = opt.blockKeys = Block.genkeys(new Uint8Array(dispense(64)));
         opt.blockHash = Block.getBlockHash(blockKeys);
 
         // derive a private key from the ed seed
@@ -87,13 +85,11 @@ define([
         opt.channelHex = parsed.channel;
         opt.keys = parsed.keys;
         opt.edPublic = blockInfo.edPublic;
-        opt.edPrivate = blockInfo.edPrivate;
         opt.User_name = blockInfo.User_name;
         return opt;
     };
 
     var loadUserObject = function (opt, cb) {
-        console.log(opt);
         var config = {
             websocketURL: NetConfig.getWebsocketURL(),
             channel: opt.channelHex,
@@ -105,8 +101,6 @@ define([
             ChainPad: ChainPad,
             owners: [opt.edPublic]
         };
-
-        console.log(config);
 
         var rt = opt.rt = Listmap.create(config);
         rt.proxy
@@ -281,7 +275,8 @@ define([
                 console.log("allocating random bytes for a new user object");
                 opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
                 // create a random v2 hash, since we don't need backwards compatibility
-                userHash = '/drive/#' + Hash.createRandomHash('drive');
+                //userHash = opt.userHash = Hash.createRandomHash('drive'); // TODO
+                userHash = opt.userHash;
             }
 
             // according to the location derived from the credentials which you entered
@@ -394,7 +389,6 @@ define([
             toPublish[Constants.userNameKey] = uname;
             toPublish[Constants.userHashKey] = userHash;
             toPublish.edPublic = RT.proxy.edPublic;
-            toPublish.edPrivate = RT.proxy.edPrivate;
 
             var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
 

@@ -716,7 +716,7 @@ define([
         var password = data.password; // To remove your old block
         var newPassword = data.newPassword; // To create your new block
         var secret = Hash.getSecrets('drive', hash);
-        var newHash, newHref, newSecret, newBlockSeed;
+        var newHash, newHref, newSecret, blockKeys;
         var oldIsOwned = false;
 
         var blockHash = LocalStore.getBlockHash();
@@ -724,7 +724,6 @@ define([
 
         var Cred, Block, Login;
         Nthen(function (waitFor) {
-            console.log("loading necessary modules");
             require([
                 '/customize/credential.js',
                 '/common/outer/login-block.js',
@@ -736,13 +735,12 @@ define([
             }));
         }).nThen(function (waitFor) {
             // confirm that the provided password is correct
-            console.log("checking whether the password you entered was correct");
             Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes, waitFor(function (bytes) {
                 var allocated = Login.allocateBytes(bytes);
                 oldBlockKeys = allocated.blockKeys;
                 if (blockHash) {
                     if (blockHash !== allocated.blockHash) {
-                        console.log("password did not yield the correct blockHash ?");
+                        console.log("provided password did not yield the correct blockHash");
                         // incorrect password probably
                         waitFor.abort();
                         return void cb({
@@ -753,7 +751,7 @@ define([
                 } else {
                     // otherwise they're a legacy user, and we should check against the User_hash
                     if (hash !== allocated.userHash) {
-                        console.log("password did not yield the correct userHash");
+                        console.log("provided password did not yield the correct userHash");
                         waitFor.abort();
                         return void cb({
                             error: 'INVALID_PASSWORD',
@@ -791,26 +789,12 @@ define([
                     return void cb({ error: err });
                 }
 
-                console.log(val);
-                console.log("%s => %s", hash, newHash);
                 Crypt.put(newHash, val, waitFor(function (err) {
                     if (err) {
                         waitFor.abort();
                         console.error(err);
                         return void cb({ error: err });
                     }
-
-
-                    console.error('checking content at newHash: %s', newHash);
-
-                    Crypt.get(newHash, function (err, val) {
-                        if (err) {
-                            waitFor.abort();
-                            console.log(err);
-                            return void cb({ error: err });
-                        }
-                        console.error(val);
-                    });
                 }), optsPut);
             }));
         }).nThen(function (waitFor) {
@@ -818,30 +802,27 @@ define([
             console.log("deriving new credentials from passphrase");
             Cred.deriveFromPassphrase(accountName, newPassword, Login.requiredBytes, waitFor(function (bytes) {
                 var allocated = Login.allocateBytes(bytes);
-                newBlockSeed = allocated.blockSeed;
+                blockKeys = allocated.blockKeys;
             }));
         }).nThen(function (waitFor) {
             // Write the new login block
-            var keys = Block.genkeys(newBlockSeed);
-
             var temp = {
                 User_name: accountName,
                 User_hash: newHash,
                 edPublic: edPublic,
-                // edPrivate XXX
             };
 
-            var content = Block.serialize(JSON.stringify(temp), keys);
+            var content = Block.serialize(JSON.stringify(temp), blockKeys);
 
             console.log("writing new login block");
             common.writeLoginBlock(content, waitFor(function (obj) {
-                console.log("new login block written");
-                var newBlockHash = Block.getBlockHash(keys);
-                LocalStore.setBlockHash(newBlockHash);
                 if (obj && obj.error) {
                     waitFor.abort();
                     return void cb(obj);
                 }
+                console.log("new login block written");
+                var newBlockHash = Block.getBlockHash(blockKeys);
+                LocalStore.setBlockHash(newBlockHash);
             }));
         }).nThen(function (waitFor) {
             // New drive hash is in login block, unpin the old one and pin the new one
