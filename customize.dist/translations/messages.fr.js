@@ -1125,6 +1125,7 @@ define(function () {
     out.properties_changePassword = "Modifier le mot de passe";
     out.properties_confirmNew = "Êtes-vous sûr ? Ajouter un mot de passe changera l'URL de ce pad et supprimera son historique. Les utilisateurs ne connaissant pas le nouveau mot de passe perdront l'accès au pad.";
     out.properties_confirmChange = "Êtes-vous sûr ? Changer le mot de passe supprimera l'historique de ce pad. Les utilisateurs ne connaissant pas le nouveau mot de passe perdront l'accès au pad.";
+    out.properties_passwordSame = "Le nouveau mot de passe doit être différent de celui existant.";
     out.properties_passwordError = "Une erreur est survenue lors de la modification du mot de passe. Veuillez réessayer.";
     out.properties_passwordWarning = "Le mot de passe a été modifié avec succès mais nous n'avons pas réussi à mettre à jour votre CryptDrive avec les nouvelles informations. Vous devrez peut-être supprimer manuellement l'ancienne version de ce pad.<br>Appuyez sur OK pour recharger le pad et mettre à jour vos droits d'accès.";
     out.properties_passwordSuccess = "Le mot de passe a été modifié avec succès.<br>Appuyez sur OK pour mettre à jour vos droits d'accès.";
