@@ -333,15 +333,6 @@ define([
             framework.localChange();
         };
 
-        // Export to drive as PNG
-        framework._.sfCommon.createButton('savetodrive', true, {}).click(function () {
-            var defaultName = framework._.title.getTitle();
-            UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
-                if (name === null || !name.trim()) { return; }
-                APP.upload(name);
-            });
-        }).appendTo($rightside);
-
         // Embed image
         var onUpload = function (e) {
             var file = e.target.files[0];
@@ -389,6 +380,15 @@ define([
                     }
                 };
                 framework._.sfCommon.openFilePicker(pickerCfg);
+            }).appendTo($rightside);
+
+            // Export to drive as PNG
+            framework._.sfCommon.createButton('savetodrive', true, {}).click(function () {
+                var defaultName = framework._.title.getTitle();
+                UI.prompt(Messages.exportPrompt, defaultName + '.png', function (name) {
+                    if (name === null || !name.trim()) { return; }
+                    APP.upload(name);
+                });
             }).appendTo($rightside);
         }
 
