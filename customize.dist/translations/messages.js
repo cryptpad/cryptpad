@@ -387,6 +387,7 @@ define(function () {
     out.fm_newFolder = "New folder";
     out.fm_newFile = "New pad";
     out.fm_folder = "Folder";
+    out.fm_sharedFolder = "Shared folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
@@ -447,6 +448,7 @@ define(function () {
     out.fm_tags_used = "Number of uses";
     // File - Context menu
     out.fc_newfolder = "New folder";
+    out.fc_newsharedfolder = "New shared folder";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
@@ -460,7 +462,7 @@ define(function () {
     out.fc_hashtag = "Tags";
     out.fc_sizeInKilobytes = "Size in Kilobytes";
     // fileObject.js (logs)
-    out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
+    out.fo_moveUnsortedError = "You can't move a folder to the list of templates";
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
     out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
     out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
@@ -1199,6 +1201,15 @@ define(function () {
     out.loading_drive_1 = "Loading data";
     out.loading_drive_2 = "Updating data format";
     out.loading_drive_3 = "Verifying data integrity";
+
+    // Shared folders
+    // XXX
+    out.sharedFolders_forget = "This pad is only stored in a shared folder, you can't move it to the trash. You can use your CryptDrive if you want to delete it from the folder.";
+    out.sharedFolders_duplicate = "Some of the pads you were trying to move were already stored.";
+    out.sharedFolders_create = "Create a shared folder";
+    out.sharedFolders_create_name = "Folder name";
+    out.sharedFolders_create_owned = "Owned folder";
+    out.sharedFolders_create_password = "Folder password";
 
     return out;
 });

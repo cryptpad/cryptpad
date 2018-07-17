@@ -252,7 +252,7 @@ define([
         var resolved = _resolvePaths(Env, data.paths);
         var newResolved = _resolvePath(Env, data.newPath);
 
-        if (!newResolved.userObject.isFolder(newResolved.path)) { return void cb(); } // XXX
+        if (!newResolved.userObject.isFolder(newResolved.path)) { return void cb(); }
 
         nThen(function (waitFor) {
             if (resolved.main.length) {
@@ -384,7 +384,7 @@ define([
             // 2b. load the proxy
             Env.loadSharedFolder(id, folderData, waitFor(function (rt, metadata) {
                 if (!rt.proxy.metadata) { // Creating a new shared folder
-                    rt.proxy.metadata = {title: data.name || Messages.fm_newFolder}; // XXX
+                    rt.proxy.metadata = { title: data.name || Messages.fm_newFolder };
                 }
                 // If we're importing a folder, check its serverside metadata
                 if (data.folderData && metadata) {

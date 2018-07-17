@@ -683,7 +683,7 @@ define([
                         if (err || res.error) { return void console.log(err || res.error); }
                         var msg = Messages.forgetPrompt;
                         if (res) {
-                            UI.alert("WIP: This pad is only in a shared folder. You can't move it to the trash. You can use your CryptDrive if you want to delete it from the folder."); // XXX
+                            UI.alert(Messages.sharedFolders_forget);
                             return;
                         } else if (!common.isLoggedIn()) {
                             msg = Messages.fm_removePermanentlyDialog;

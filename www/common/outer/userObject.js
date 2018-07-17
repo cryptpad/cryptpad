@@ -220,14 +220,14 @@ define([
 
             // Remove existing pads from the "element" variable
             if (exp.isFile(element) && toRemove.indexOf(element) !== -1) {
-                // XXX display error in the UI
+                exp.log(Messages.sharedFolders_duplicate);
                 return;
             } else if (exp.isFolder(element)) {
                 var _removeExisting = function (root) {
                     for (var k in root) {
                         if (exp.isFile(root[k])) {
                             if (toRemove.indexOf(root[k]) !== -1) {
-                                // XXX display message in UI
+                                exp.log(Messages.sharedFolders_duplicate);
                                 delete root[k];
                             }
                         } else if (exp.isFolder(root[k])) {

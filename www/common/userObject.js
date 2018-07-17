@@ -37,7 +37,7 @@ define([
         var logging = function () {
             console.log.apply(console, arguments);
         };
-        var log = config.log || logging;
+        var log = exp.log = config.log || logging;
         var logError = config.logError || logging;
         var debug = exp.debug = config.debug || logging;
 
@@ -143,7 +143,7 @@ define([
         // Data from filesData
         var getTitle = exp.getTitle = function (file, type) {
             if (isSharedFolder(file)) {
-                return '??'; // XXX
+                return '??';
             }
             var data = getFileData(file);
             if (!file || !data || !(data.href || data.roHref)) {
