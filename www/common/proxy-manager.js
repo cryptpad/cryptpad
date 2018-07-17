@@ -122,7 +122,7 @@ define([
             var results = uo.findFile(id);
             if (fPath) {
                 // This is a shared folder, we have to fix the paths in the results
-                results.map(function (p) {
+                results.forEach(function (p) {
                     Array.prototype.unshift.apply(p, fPath);
                 });
             }
@@ -833,10 +833,11 @@ define([
         userObjects.forEach(function (uo) {
             var fPath = _getUserObjectPath(Env, uo);
             var results = uo.search(value);
+            if (!results.length) { return; }
             if (fPath) {
                 // This is a shared folder, we have to fix the paths in the search results
-                results = results.map(function (r) {
-                    r.paths.map(function (p) {
+                results.forEach(function (r) {
+                    r.paths.forEach(function (p) {
                         Array.prototype.unshift.apply(p, fPath);
                     });
                 });
@@ -964,7 +965,7 @@ define([
             isFolderEmpty: callWithEnv(isFolderEmpty),
             isPathIn: callWithEnv(isPathIn),
             isSubpath: callWithEnv(isSubpath),
-            isinTrashRoot: callWithEnv(isInTrashRoot),
+            isInTrashRoot: callWithEnv(isInTrashRoot),
             comparePath: callWithEnv(comparePath),
             hasSubfolder: callWithEnv(hasSubfolder),
             hasFile: callWithEnv(hasFile),
