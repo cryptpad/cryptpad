@@ -235,7 +235,6 @@ define(function () {
     out.history_next = "Version plus récente";
     out.history_prev = "Version plus ancienne";
     out.history_loadMore = "Charger davantage d'historique";
-    out.history_close = "Retour";
     out.history_closeTitle = "Fermer l'historique";
     out.history_restoreTitle = "Restaurer la version du document sélectionnée";
     out.history_restorePrompt = "Êtes-vous sûr de vouloir remplacer la version actuelle du document par la version affichée ?";
@@ -596,6 +595,16 @@ define(function () {
 
     out.settings_templateSkip = "Passer la fenêtre de choix d'un modèle";
     out.settings_templateSkipHint = "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.";
+
+    out.settings_changePasswordTitle = "Changer de mot de passe";
+    out.settings_changePasswordHint = "Pour modifier le mot de passe de votre compte utilisateur, entrez votre mot de passe actuel et confirmez le nouveau mot de passe en la tapant deux fois.<br>" +
+                    "<b>Nous ne pouvons pas réinitialiser votre mot de passe si vous le perdez, donc soyez très prudent !</b>";
+    out.settings_changePasswordButton = "Changer le mot de passe";
+    out.settings_changePasswordCurrent = "Mot de passe actuel";
+    out.settings_changePasswordNew = "Nouveau mot de passe";
+    out.settings_changePasswordNewConfirm = "Confirmer le nouveau mot de passe";
+    out.settings_changePasswordConfirm = "Êtes-vous sûr de vouloir changer votre mot de passe ? Vous devrez vous reconnecter sur tous vos appareils.";
+    out.settings_changePasswordError = "Une erreur est survenue. Si vous n'êtes plus en mesure de vous connecter à votre compte utilisateur ou de changer votre mot de passe, veuillez contacter l'administrateur de votre CryptPad.";
 
     out.upload_title = "Hébergement de fichiers";
     out.upload_modal_title = "Options d'importation du fichier";
