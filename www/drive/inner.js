@@ -792,9 +792,13 @@ define([
             var filter;
 
             if (type === "content") {
+                // Return true in filter to hide
                 filter = function ($el, className) {
                     if (className === 'newfolder') { return; }
-                    if (className === 'newsharedfolder') { return; }
+                    if (className === 'newsharedfolder') {
+                        // Hide the new shared folder menu if we're already in a shared folder
+                        return manager.isInSharedFolder(currentPath);
+                    }
                     return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
                 };
             } else {
@@ -1766,12 +1770,14 @@ define([
                     .click(function () {
                     manager.addFolder(currentPath, null, onCreated);
                 });
-                $block.find('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder')
-                    .click(function () {
-                    addSharedFolderModal(function (obj) {
-                        manager.addSharedFolder(currentPath, obj, refresh);
+                if (!manager.isInSharedFolder(currentPath)) {
+                    $block.find('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder')
+                        .click(function () {
+                        addSharedFolderModal(function (obj) {
+                            manager.addSharedFolder(currentPath, obj, refresh);
+                        });
                     });
-                });
+                }
                 $block.find('a.cp-app-drive-new-upload, li.cp-app-drive-new-upload')
                     .click(function () {
                     var $input = $('<input>', {
@@ -1811,11 +1817,13 @@ define([
                     attributes: {'class': 'cp-app-drive-new-folder'},
                     content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
                 });
-                options.push({
-                    tag: 'a',
-                    attributes: {'class': 'cp-app-drive-new-shared-folder'},
-                    content: $('<div>').append($folderIcon.clone()).html() + "NEW SF" // XXX
-                });
+                if (!manager.isInSharedFolder(currentPath)) {
+                    options.push({
+                        tag: 'a',
+                        attributes: {'class': 'cp-app-drive-new-shared-folder'},
+                        content: $('<div>').append($folderIcon.clone()).html() + "NEW SF" // XXX
+                    });
+                }
                 options.push({tag: 'hr'});
                 options.push({
                     tag: 'a',
@@ -2065,12 +2073,14 @@ define([
                 $element1.append($('<span>', { 'class': 'cp-app-drive-new-name' })
                     .text(Messages.fm_folder));
                 // Shared Folder
-                var $element3 = $('<li>', {
-                    'class': 'cp-app-drive-new-shared-folder cp-app-drive-element-row ' +
-                             'cp-app-drive-element-grid'
-                }).prepend($folderIcon.clone()).appendTo($container);
-                $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
-                    .text("SF")); // XXX
+                if (!manager.isInSharedFolder(currentPath)) {
+                    var $element3 = $('<li>', {
+                        'class': 'cp-app-drive-new-shared-folder cp-app-drive-element-row ' +
+                                 'cp-app-drive-element-grid'
+                    }).prepend($folderIcon.clone()).appendTo($container);
+                    $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
+                        .text("SF")); // XXX
+                }
                 // File
                 var $element2 = $('<li>', {
                     'class': 'cp-app-drive-new-upload cp-app-drive-element-row ' +
