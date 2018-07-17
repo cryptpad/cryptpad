@@ -622,10 +622,17 @@ define([
         var warning = false;
         var newHash;
         var oldChannel;
-        if (parsed.hashData.password) {
-            newHash = parsed.hash;
+        var newSecret;
+
+        if (parsed.hashData.version >= 2) {
+            newSecret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
+            if (!(newSecret.keys && newSecret.keys.editKeyStr)) {
+                return void cb({error: 'EAUTH'});
+            }
+            newHash = Hash.getEditHashFromKeys(newSecret);
         } else {
             newHash = Hash.createRandomHash(parsed.type, newPassword);
+            newSecret = Hash.getSecrets(parsed.type, newHash, newPassword);
         }
         var newHref = '/' + parsed.type + '/#' + newHash;
 
@@ -677,16 +684,17 @@ define([
                     return void cb(obj);
                 }
             }));
+            common.unpinPads([oldChannel], waitFor());
+            common.pinPads([newSecret.channel], waitFor());
         }).nThen(function (waitFor) {
             common.setPadAttribute('password', newPassword, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
-            var secret = Hash.getSecrets(parsed.type, newHash, newPassword);
-            common.setPadAttribute('channel', secret.channel, waitFor(function (err) {
+            common.setPadAttribute('channel', newSecret.channel, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
 
-            if (parsed.hashData.password) { return; } // same hash
+            if (parsed.hashData.password && newPassword) { return; } // same hash
             common.setPadAttribute('href', newHref, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
