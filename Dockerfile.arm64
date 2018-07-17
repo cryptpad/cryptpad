@@ -1,0 +1,25 @@
+FROM arm64v8/node:6
+
+COPY . /cryptpad
+WORKDIR /cryptpad
+
+RUN npm config set unsafe-perm true
+
+ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-arm64 /sbin/tini
+RUN chmod a+x /sbin/tini
+
+RUN apt install -y git \
+   && npm install --production \
+   && npm install -g bower \
+   && bower install --allow-root
+
+EXPOSE 3000 3001
+
+VOLUME /cryptpad/datastore
+VOLUME /cryptpad/customize
+
+ENV USE_SSL=false
+ENV STORAGE=\'./storage/file\'
+ENV LOG_TO_STDOUT=true
+
+CMD ["/sbin/tini", "--", "/cryptpad/container-start.sh"]
