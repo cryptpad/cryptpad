@@ -106,9 +106,8 @@ define([
         // 'block/' here is hardcoded because it's hardcoded on the server
         // if we want to make CryptPad work in server subfolders, we'll need
         // to update this path derivation
-        return (typeof(ApiConfig.httpUnsafeOrigin) !== 'undefined'?
-            ApiConfig.httpUnsafeOrigin: window.location.origin + '/')
-            + 'block/' + publicKey.slice(0, 2) + '/' +  publicKey;
+        return (ApiConfig.fileHost || window.location.origin)
+            + '/block/' + publicKey.slice(0, 2) + '/' +  publicKey;
     };
 
     Block.getBlockHash = function (keys) {
