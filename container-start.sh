@@ -24,5 +24,5 @@ sedeasy() {
 [ -n "$LOG_TO_STDOUT" ] && echo "Logging to stdout: $LOG_TO_STDOUT" \
   && sedeasy "logToStdout: [^,]*," "logToStdout: ${LOG_TO_STDOUT}," customize/config.js
 
-
+export FRESH=1
 exec node ./server.js
