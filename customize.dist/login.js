@@ -68,12 +68,12 @@ define([
         // should never happen
         if (channelHex.length !== 32) { throw new Error('invalid channel id'); }
 
-        opt.channel64 = Util.hexToBase64(channelHex);
+        var channel64 = Util.hexToBase64(channelHex);
 
         // we still generate a v1 hash because this function needs to deterministically
         // derive the same values as it always has. New accounts will generate their own
         // userHash values
-        opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/') + '/';
+        opt.userHash = '/1/edit/' + [channel64, opt.keys.editKeyStr].join('/') + '/';
 
         return opt;
     };
@@ -275,8 +275,10 @@ define([
                 console.log("allocating random bytes for a new user object");
                 opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
                 // create a random v2 hash, since we don't need backwards compatibility
-                //userHash = opt.userHash = Hash.createRandomHash('drive'); // TODO
-                userHash = opt.userHash;
+                userHash = opt.userHash = Hash.createRandomHash('drive');
+                var secret = Hash.getSecrets('drive', userHash);
+                opt.keys = secret.keys;
+                opt.channelHex = secret.channel;
             }
 
             // according to the location derived from the credentials which you entered
