@@ -612,8 +612,8 @@ define(function () {
     out.settings_changePasswordCurrent = "Current password";
     out.settings_changePasswordNew = "New password";
     out.settings_changePasswordNewConfirm = "Confirm new password";
-    out.settings_changePasswordConfirm = "Are you sure?";
-    out.settings_changePasswordError = "Error {0}";
+    out.settings_changePasswordConfirm = "Are you sure you want to change your password? You will need to log back in on all your devices.";
+    out.settings_changePasswordError = "An unexpected error occurred. If you are unable to login or change your password, contact your CryptPad administrators.";
 
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";
