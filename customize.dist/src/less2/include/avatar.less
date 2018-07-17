@@ -1,11 +1,18 @@
 @import (reference) "./tools.less";
+.avatar_vars(
+    @width: 30px
+) {
+    @avatar-width: @width;
+    @avatar-font-size: @width / 1.2;
+}
 .avatar_main(@width) {
     --LessLoader_require: LessLoader_currentFile();
-
-    --avatar-width: @width;
-    --avatar-font-size: @width / 1.2;
+    .avatar_vars(@width);
+    --avatar-width: @avatar-width;
+    --avatar-font-size: @avatar-font-size;
 }
 & {
+    .avatar_vars();
     &.cp-avatar {
         overflow: hidden;
         text-overflow: ellipsis;

@@ -3,18 +3,25 @@
 @import (reference) "./tools.less";
 @import (reference) './icon-colors.less';
 
+.creation_vars(
+    @color: @colortheme_default-color,
+    @bg-color: @colortheme_default-bg
+) {
+    @creation-color: @color;
+    @creation-bg-color: @bg-color;
+};
+
 .creation_main(
-    @color: @colortheme_default-color, // Color of the text for the toolbar
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
+    @color,
+    @bg-color
 ) {
     --LessLoader_require: LessLoader_currentFile();
-
+    .creation_vars(@color, @bg-color);
     --creation-color: @color;
     --creation-bg-color: @bg-color;
-    // --creation-warn-color: @warn-color; // unused
 }
 & {
+    .creation_vars();
     @colortheme_creation-modal-bg: #fff;
     @colortheme_creation-modal: #666;
     @colortheme_creation-modal-title: @colortheme_loading-bg;
@@ -267,9 +274,12 @@
                     border: 1px solid transparent;
 
                     &.cp-creation-template-selected {
+                        color: @creation-color !important;
                         color: var(--creation-color) !important;
+                        background-color: @creation-bg-color !important;
                         background-color: var(--creation-bg-color) !important;
                         .fa {
+                            color: @creation-color;
                             color: var(--creation-color);
                         }
                     }
@@ -301,6 +311,7 @@
                         max-width: 100%;
                     }
                     .fa {
+                        color: @creation-bg-color;
                         color: var(--creation-bg-color);
                         cursor: pointer;
                         width: 100px;
