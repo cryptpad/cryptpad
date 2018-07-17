@@ -1158,18 +1158,23 @@ define([
             Nthen(function (waitFor2) {
                 if (Worker) {
                     var w = waitFor2();
-                    worker = new Worker('/common/outer/testworker.js?' + urlArgs);
-                    worker.onerror = function (errEv) {
-                        errEv.preventDefault();
-                        errEv.stopPropagation();
+                    try {
+                        worker = new Worker('/common/outer/testworker.js?' + urlArgs);
+                        worker.onerror = function (errEv) {
+                            errEv.preventDefault();
+                            errEv.stopPropagation();
+                            noWorker = true;
+                            w();
+                        };
+                        worker.onmessage = function (ev) {
+                            if (ev.data === "OK") {
+                                w();
+                            }
+                        };
+                    } catch (e) {
                         noWorker = true;
                         w();
-                    };
-                    worker.onmessage = function (ev) {
-                        if (ev.data === "OK") {
-                            w();
-                        }
-                    };
+                    }
                 }
                 if (typeof(SharedWorker) !== "undefined") {
                     try {
