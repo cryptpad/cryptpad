@@ -517,6 +517,35 @@ define([
         }
         return tabs;
     };
+    UIElements.createSFShareModal = function (config) {
+        var origin = config.origin;
+        var pathname = config.pathname;
+        var hashes = config.hashes;
+
+        if (!hashes.editHash) { throw new Error("You must provide a valid hash"); }
+        var url = origin + pathname + '#' + hashes.editHash;
+
+        // Share link tab
+        var link = h('div.cp-share-modal', [
+            h('label', Messages.sharedFolders_share),
+            h('br'),
+            UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
+        ]);
+        var linkButtons = [{
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.share_linkCopy,
+            onClick: function () {
+                var success = Clipboard.copy(url);
+                if (success) { UI.log(Messages.shareSuccess); }
+            },
+            keys: [13]
+        }];
+        return UI.dialog.customModal(link, {buttons: linkButtons});
+    };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();

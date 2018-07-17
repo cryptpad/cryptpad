@@ -1864,6 +1864,27 @@ define([
             $container.append($block);
         };
 
+        var createShareButton = function (id, $container) {
+            var $shareBlock = $('<button>', {
+                'class': 'fa fa-shhare-alt cp-toolbar-share-button',
+                title: Messages.shareButton
+            });
+            var data = manager.getSharedFolderData(id);
+            var parsed = Hash.parsePadUrl(data.href);
+            if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
+            var modal = UIElements.createSFShareModal({
+                origin: APP.origin,
+                pathname: "/drive/",
+                hashes: {
+                    editHash: parsed.hash
+                }
+            });
+            $shareBlock.click(function () {
+                UI.openCustomModal(modal);
+            });
+            $container.append($shareBlock);
+        };
+
         var hideNewButton = function () {
             $('.cp-dropdown-content').hide();
         };
@@ -2527,6 +2548,10 @@ define([
 
             // NewButton can be undefined if we're in read only mode
             createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+            var sfId = manager.isInSharedFolder(currentPath);
+            if (sfId) {
+                createShareButton(sfId, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+            }
 
             createTitle($toolbar.find('.cp-app-drive-path'), path);
 

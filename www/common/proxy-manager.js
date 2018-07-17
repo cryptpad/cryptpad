@@ -866,7 +866,7 @@ define([
 
     var isInSharedFolder = function (Env, path) {
         var resolved = _resolvePath(Env, path);
-        return typeof resolved.id === "number";
+        return typeof resolved.id === "number" ? resolved.id : false;
     };
 
     /* Generic: doesn't need access to a proxy */

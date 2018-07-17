@@ -1210,6 +1210,7 @@ define(function () {
     out.sharedFolders_create_name = "Folder name";
     out.sharedFolders_create_owned = "Owned folder";
     out.sharedFolders_create_password = "Folder password";
+    out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
 
     return out;
 });
