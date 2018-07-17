@@ -107,7 +107,7 @@ define([
         // if we want to make CryptPad work in server subfolders, we'll need
         // to update this path derivation
         return (typeof(ApiConfig.httpUnsafeOrigin) !== 'undefined'?
-            ApiConfig.httpUnsafeOrigin: window.location.origin)
+            ApiConfig.httpUnsafeOrigin: window.location.origin + '/')
             + 'block/' + publicKey.slice(0, 2) + '/' +  publicKey;
     };
 
