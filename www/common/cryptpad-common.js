@@ -725,7 +725,7 @@ define([
             common.setPadAttribute('channel', newSecret.channel, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
-            var viewHash = Hash.getViewHashFromKeys(secret);
+            var viewHash = Hash.getViewHashFromKeys(newSecret);
             newRoHref = '/' + parsed.type + '/#' + viewHash;
             common.setPadAttribute('roHref', newRoHref, waitFor(function (err) {
                 if (err) { warning = true; }
