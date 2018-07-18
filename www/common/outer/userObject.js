@@ -563,6 +563,7 @@ define([
                         continue;
                     }
                     // Clean missing href
+                    var parsed;
                     if (el.href) {
                         if (!el.href) {
                             debug("Removing an element in filesData with a missing href.", el);
@@ -570,7 +571,7 @@ define([
                             continue;
                         }
 
-                        var parsed = Hash.parsePadUrl(el.href);
+                        parsed = Hash.parsePadUrl(el.href);
                         // Clean invalid hash
                         if (!parsed.hash) {
                             debug("Removing an element in filesData with a invalid href.", el);
