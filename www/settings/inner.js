@@ -431,10 +431,16 @@ define([
             UI.confirm(Messages.settings_changePasswordConfirm,
             function (yes) {
                 if (!yes) { return; }
+
+                UI.addLoadingScreen({
+                    hideTips: true,
+                    loadingText: Messages.settings_changePasswordPending,
+                });
                 updateBlock({
                     password: oldPassword,
                     newPassword: newPassword
                 }, function (obj) {
+                    UI.removeLoadingScreen();
                     if (obj && obj.error) {
                         // TODO
                         UI.alert(Messages.settings_changePasswordError);
