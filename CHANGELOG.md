@@ -1,3 +1,34 @@
+# Fossa release (v2.5.0)
+
+## Goals
+
+This release took longer than usual - three weeks instead of two - due to our plans involving a complete redesign of how login and registration function.
+Any time we rework a critical system within CryptPad we're very cautious about deploying it, however, this update should bring considerable value for users.
+From now on, users will be able to change their passwords without losing access to their old data, however, this is very different from _password recovery_.
+While we will still be unable to help you if you have forgotten your password, this update will address our inability up until this point to change your password in the event that it has been compromised in some way.
+
+## Update notes
+
+* v2.5.0 uses newly released features in a clientside dependency ([chainpad-netflux](https://github.com/xwiki-labs/chainpad-netflux/releases/tag/0.7.2)). Run `bower update` to make sure you have the latest version.
+* Update your server config to serve /block/ with maxAge 0d, if you are using a reverse proxy, or docker. `cryptpad/docs/example.nginx.conf` has been updated to include an example.
+* Restart your server after updating.
+* We have added a new feedback key, `NO_CSS_VARIABLES`, in order to diagnose how many of our clients support the CSS3 functionality.
+
+### Features
+
+* v2.5.0 introduces support for what we have called _modern users_.
+  * New registrations will use the new APIs that we've built to facillitate the ability to change your account password.
+  * _Legacy registrations_ will continue to function as they always have.
+  * Changing your password (via the settings page) will migrate old user accounts to the new system.
+  * We'll publish a blog post in the coming weeks to explain in depth how this functionality is implemented.
+* The _kanban_ application now features support for export and import of your project data.
+* This release features minor improvements to the _Deutsch_ translation
+
+### Bug fixes
+
+* We noticed that if you entered credentials for registration, and cancelled the displayed prompt informing you that such a user was already registered, the registration interface would not unlock for further interaction. This has been fixed.
+* We found that on very slow connections, or when users opened pads in Firefox without focusing the tab, requirejs would fail to load dependencies before timing out. We've increased the timeout period by a factor of ten to address such cases.
+
 # Echidna release (v2.4.0)
 
 ## Goals
