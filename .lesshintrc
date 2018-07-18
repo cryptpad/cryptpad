@@ -40,7 +40,7 @@
     "depthLevel": {
         "depth": 1 // TODO(cjd) This is obviously not triggering, even with 1
     },
-    "duplicateProperty": { "enabled": true },
+    "duplicateProperty": { "enabled": false },
     "emptyRule": { "enabled": true },
     "hexValidation": { "enabled": true }, // disallow actual garbage color hex codes (e.g. #ab)
     "propertyUnits": {
