@@ -116,6 +116,8 @@
                 line-height: 28px;
                 label {
                     flex: 1;
+                    // Force wrap when the other element in the line is 100% (IE bug):
+                    min-width: 1px;
                 }
                 input[type="checkbox"] {
                     &+ label {
@@ -141,8 +143,11 @@
                 //margin-top: 10px;
                 &.active {
                     transition: max-height 0.5s ease-in-out;
-                    max-width: unset;
+                    max-width: none;
                     max-height: 100px;
+                }
+                input, select {
+                    vertical-align: middle;
                 }
             }
 
@@ -150,6 +155,7 @@
                 font-size: 14px;
                 border: 1px solid @colortheme_form-border;
                 height: 26px;
+                line-height: 26px;
                 background-color: @colortheme_form-bg;
                 color: @colortheme_form-color;
             }
@@ -167,7 +173,7 @@
                 }
                 &.active {
                     label {
-                        flex: unset;
+                        flex: none;
                     }
                     .cp-creation-slider {
                         flex: 1;
@@ -184,7 +190,7 @@
                             padding: 0 5px;
                         }
                         label {
-                            flex: unset;
+                            flex: none;
                         }
                     }
                 }
@@ -287,6 +293,7 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+                        min-height: 20px;
                         height: 20px;
                         line-height: 20px;
                         margin-top: 5px;
@@ -340,7 +347,7 @@
                                 flex: 1;
                             }
                             .cp-creation-slider {
-                                flex: unset;
+                                flex: none;
                                 order: 10;
                                 width: 100%;
                             }
