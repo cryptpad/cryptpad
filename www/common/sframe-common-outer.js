@@ -266,7 +266,7 @@ define([
                         isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen,
                         password: password,
-                        channel: secret.channel
+                        channel: secret.channel,
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
@@ -484,6 +484,12 @@ define([
                 cb();
             });
 
+            sframeChan.on('Q_IS_ONLY_IN_SHARED_FOLDER', function (data, cb) {
+                Cryptpad.isOnlyInSharedFolder(secret.channel, function (err, t) {
+                    if (err) { return void cb({error: err}); }
+                    cb(t);
+                });
+            });
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {

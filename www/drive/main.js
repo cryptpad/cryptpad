@@ -37,10 +37,19 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         var getSecrets = function (Cryptpad, Utils, cb) {
-            var hash = window.location.hash.slice(1) || Utils.LocalStore.getUserHash() ||
-                        Utils.LocalStore.getFSHash();
+            var hash = window.location.hash.slice(1);
+            var secret = Utils.Hash.getSecrets('drive', hash);
+            if (hash) {
+                // Add a shared folder!
+                // XXX password?
+                Cryptpad.addSharedFolder(secret, function () {
+                    window.location.hash = "";
+                    cb(null, secret);
+                });
+                return;
+            }
             // No password for drive
-            cb(null, Utils.Hash.getSecrets('drive', hash));
+            cb(null, secret);
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_BURN_ANON_DRIVE', function () {
@@ -52,7 +61,16 @@ define([
             sframeChan.on('Q_DRIVE_USEROBJECT', function (data, cb) {
                 Cryptpad.userObjectCommand(data, cb);
             });
+            sframeChan.on('Q_DRIVE_RESTORE', function (data, cb) {
+                Cryptpad.restoreDrive(data, cb);
+            });
             sframeChan.on('Q_DRIVE_GETOBJECT', function (data, cb) {
+                if (data && data.sharedFolder) {
+                    Cryptpad.getSharedFolder(data.sharedFolder, function (obj) {
+                        cb(obj);
+                    });
+                    return;
+                }
                 Cryptpad.getUserObject(function (obj) {
                     cb(obj);
                 });
@@ -82,6 +100,7 @@ define([
         SFCommonO.start({
             getSecrets: getSecrets,
             noHash: true,
+            noRealtime: true,
             driveEvents: true,
             addRpc: addRpc
         });

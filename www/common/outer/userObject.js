@@ -14,15 +14,11 @@ define([
     };
 
     module.init = function (config, exp, files) {
-        var unpinPads = config.unpinPads || function () {
-            console.error("unpinPads was not provided");
-        };
-        var pinPads = config.pinPads;
         var removeOwnedChannel = config.removeOwnedChannel || function () {
             console.error("removeOwnedChannel was not provided");
         };
         var loggedIn = config.loggedIn;
-        var workgroup = config.workgroup;
+        var sharedFolder = config.sharedFolder;
         var edPublic = config.edPublic;
 
         var ROOT = exp.ROOT;
@@ -31,6 +27,7 @@ define([
         var UNSORTED = exp.UNSORTED;
         var TRASH = exp.TRASH;
         var TEMPLATE = exp.TEMPLATE;
+        var SHARED_FOLDERS = exp.SHARED_FOLDERS;
 
         var debug = exp.debug;
 
@@ -50,35 +47,31 @@ define([
             var data = exp.getFileData(id);
             cb(null, clone(data[attr]));
         };
-        var removePadAttribute = exp.removePadAttribute = function (f) {
-            if (typeof(f) !== 'string') {
-                console.error("Can't find pad attribute for an undefined pad");
-                return;
-            }
-            Object.keys(files).forEach(function (key) {
-                var hash = f.indexOf('#') !== -1 ? f.slice(f.indexOf('#') + 1) : null;
-                if (hash && key.indexOf(hash) === 0) {
-                    exp.debug("Deleting pad attribute in the realtime object");
-                    delete files[key];
-                }
-            });
-        };
 
         exp.pushData = function (data, cb) {
             if (typeof cb !== "function") { cb = function () {}; }
-            var todo = function () {
-                var id = Util.createRandomInteger();
-                files[FILES_DATA][id] = data;
-                cb(null, id);
-            };
-            if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
-                return void todo();
+            var id = Util.createRandomInteger();
+            files[FILES_DATA][id] = data;
+            cb(null, id);
+        };
+
+        exp.pushSharedFolder = function (data, cb) {
+            if (typeof cb !== "function") { cb = function () {}; }
+
+            // Check if we already have this shared folder in our drive
+            if (Object.keys(files[SHARED_FOLDERS]).some(function (k) {
+                return files[SHARED_FOLDERS][k].channel === data.channel;
+            })) {
+                return void cb ('EEXISTS');
             }
-            if (!pinPads) { return; }
-            pinPads([data.channel], function (obj) {
-                if (obj && obj.error) { return void cb(obj.error); }
-                todo();
-            });
+
+            // Add the folder
+            if (!loggedIn || !AppConfig.enablePinning || config.testMode) {
+                return void cb("EAUTH");
+            }
+            var id = Util.createRandomInteger();
+            files[SHARED_FOLDERS][id] = data;
+            cb(null, id);
         };
 
         // FILES DATA
@@ -89,19 +82,20 @@ define([
         // Find files in FILES_DATA that are not anymore in the drive, and remove them from
         // FILES_DATA. If there are owned pads, remove them from server too, unless the flag tells
         // us they're already removed
-        exp.checkDeletedFiles = function (isOwnPadRemoved) {
-            // Nothing in FILES_DATA for workgroups
-            if (workgroup || (!loggedIn && !config.testMode)) { return; }
+        exp.checkDeletedFiles = function (isOwnPadRemoved, cb) {
+            if (!loggedIn && !config.testMode) { return void cb(); }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
             var toClean = [];
-            exp.getFiles([FILES_DATA]).forEach(function (id) {
+            var ownedRemoved = [];
+            exp.getFiles([FILES_DATA, SHARED_FOLDERS]).forEach(function (id) {
                 if (filesList.indexOf(id) === -1) {
-                    var fd = exp.getFileData(id);
+                    var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
                     // If trying to remove an owned pad, remove it from server also
-                    if (!isOwnPadRemoved &&
+                    if (!isOwnPadRemoved && !sharedFolder &&
                             fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
+                        if (channelId) { ownedRemoved.push(channelId); }
                         removeOwnedChannel(channelId, function (obj) {
                             if (obj && obj.error) {
                                 // If the error is that the file is already removed, nothing to
@@ -116,14 +110,15 @@ define([
                         });
                     }
                     if (channelId) { toClean.push(channelId); }
-                    spliceFileData(id);
+                    if (exp.isSharedFolder(id)) {
+                        delete files[SHARED_FOLDERS][id];
+                    } else {
+                        spliceFileData(id);
+                    }
                 }
             });
-            if (!toClean.length) { return; }
-            unpinPads(toClean, function (response) {
-                if (response && response.error) { return console.error(response.error); }
-                // console.error(response);
-            });
+            if (!toClean.length) { return void cb(); }
+            cb(null, toClean, ownedRemoved);
         };
         var deleteHrefs = function (ids) {
             ids.forEach(function (obj) {
@@ -137,7 +132,7 @@ define([
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
-        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved) {
+        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved, cb) {
             var hrefPaths = paths.filter(function(x) { return exp.isPathIn(x, ['hrefArray']); });
             var rootPaths = paths.filter(function(x) { return exp.isPathIn(x, [ROOT]); });
             var trashPaths = paths.filter(function(x) { return exp.isPathIn(x, [TRASH]); });
@@ -145,14 +140,11 @@ define([
 
             if (!loggedIn && !config.testMode) {
                 allFilesPaths.forEach(function (path) {
-                    var el = exp.find(path);
-                    if (!el) { return; }
-                    var id = exp.getIdFromHref(el.href);
+                    var id = path[1];
                     if (!id) { return; }
                     spliceFileData(id);
-                    removePadAttribute(el.href);
                 });
-                return;
+                return void cb();
             }
 
             var ids = [];
@@ -192,11 +184,68 @@ define([
             deleteMultipleTrashRoot(trashRoot);
 
             // In some cases, we want to remove pads from a location without removing them from
-            // OLD_FILES_DATA (replaceHref)
-            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved); }
+            // FILES_DATA (replaceHref)
+            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved, cb); }
+            else { cb(); }
         };
 
         // Move
+
+        // From another drive
+        exp.copyFromOtherDrive = function (path, element, data) {
+            // Copy files data
+            // We have to remove pads that are already in the current proxy to make sure
+            // we won't create duplicates
+
+            var toRemove = [];
+            Object.keys(data).forEach(function (id) {
+                id = Number(id);
+                // Find and maybe update existing pads with the same channel id
+                var d = data[id];
+                var found = false;
+                for (var i in files[FILES_DATA]) {
+                    if (files[FILES_DATA][i].channel === d.channel) {
+                        // Update href?
+                        if (!files[FILES_DATA][i].href) { files[FILES_DATA][i].href = d.href; }
+                        found = true;
+                        break;
+                    }
+                }
+                if (found) {
+                    toRemove.push(id);
+                    return;
+                }
+                files[FILES_DATA][id] = data[id];
+            });
+
+            // Remove existing pads from the "element" variable
+            if (exp.isFile(element) && toRemove.indexOf(element) !== -1) {
+                exp.log(Messages.sharedFolders_duplicate);
+                return;
+            } else if (exp.isFolder(element)) {
+                var _removeExisting = function (root) {
+                    for (var k in root) {
+                        if (exp.isFile(root[k])) {
+                            if (toRemove.indexOf(root[k]) !== -1) {
+                                exp.log(Messages.sharedFolders_duplicate);
+                                delete root[k];
+                            }
+                        } else if (exp.isFolder(root[k])) {
+                            _removeExisting(root[k]);
+                        }
+                    }
+                };
+                _removeExisting(element);
+            }
+
+
+            // Copy file or folder
+            var newParent = exp.find(path);
+            var newName = exp.getAvailableName(newParent, Hash.createChannelId());
+            newParent[newName] = element;
+        };
+
+        // From the same drive
         var pushToTrash = function (name, element, path) {
             var trash = files[TRASH];
             if (typeof(trash[name]) === "undefined") { trash[name] = []; }
@@ -259,7 +308,6 @@ define([
             if (!id) { return; }
             if (!loggedIn && !config.testMode) {
                 // delete permanently
-                exp.removePadAttribute(href);
                 spliceFileData(id);
                 return;
             }
@@ -268,14 +316,7 @@ define([
         };
 
         // REPLACE
-        exp.replace = function (o, n) {
-            var idO = exp.getIdFromHref(o);
-            if (!idO || !exp.isFile(idO)) { return; }
-            var data = exp.getFileData(idO);
-            if (!data) { return; }
-            data.href = n;
-        };
-        // If all the occurences of an href are in the trash, remvoe them and add the file in root.
+        // If all the occurences of an href are in the trash, remove them and add the file in root.
         // This is use with setPadTitle when we open a stronger version of a deleted pad
         exp.restoreHref = function (href) {
             var idO = exp.getIdFromHref(href);
@@ -300,9 +341,9 @@ define([
         };
 
         exp.add = function (id, path) {
-            // TODO WW
             if (!loggedIn && !config.testMode) { return; }
-            var data = files[FILES_DATA][id];
+            id = Number(id);
+            var data = files[FILES_DATA][id] || files[SHARED_FOLDERS][id];
             if (!data || typeof(data) !== "object") { return; }
             var newPath = path, parentEl;
             if (path && !Array.isArray(path)) {
@@ -406,7 +447,6 @@ define([
                         });
                         delete files[OLD_FILES_DATA];
                         delete files.migrate;
-                        console.log('done');
                         todo();
                     };
                     if (exp.rt) {
@@ -473,6 +513,7 @@ define([
                 }
             };
             var fixTrashRoot = function () {
+                if (sharedFolder) { return; }
                 if (typeof(files[TRASH]) !== "object") { debug("TRASH was not an object"); files[TRASH] = {}; }
                 var tr = files[TRASH];
                 var toClean;
@@ -516,6 +557,7 @@ define([
                 }
             };
             var fixTemplate = function () {
+                if (sharedFolder) { return; }
                 if (!Array.isArray(files[TEMPLATE])) { debug("TEMPLATE was not an array"); files[TEMPLATE] = []; }
                 files[TEMPLATE] = Util.deduplicateString(files[TEMPLATE].slice());
                 var us = files[TEMPLATE];
@@ -547,7 +589,7 @@ define([
                 });
             };
             var fixFilesData = function () {
-                if (typeof files[FILES_DATA] !== "object") { debug("OLD_FILES_DATA was not an object"); files[FILES_DATA] = {}; }
+                if (typeof files[FILES_DATA] !== "object") { debug("FILES_DATA was not an object"); files[FILES_DATA] = {}; }
                 var fd = files[FILES_DATA];
                 var rootFiles = exp.getFiles([ROOT, TRASH, 'hrefArray']);
                 var root = exp.find([ROOT]);
@@ -563,13 +605,15 @@ define([
                         continue;
                     }
                     // Clean missing href
-                    if (!el.href) {
+                    if (!el.href && !el.roHref) {
                         debug("Removing an element in filesData with a missing href.", el);
                         toClean.push(id);
                         continue;
                     }
 
-                    var parsed = Hash.parsePadUrl(el.href);
+                    var parsed = Hash.parsePadUrl(el.href || el.roHref);
+                    var secret;
+
                     // Clean invalid hash
                     if (!parsed.hash) {
                         debug("Removing an element in filesData with a invalid href.", el);
@@ -583,6 +627,23 @@ define([
                         continue;
                     }
 
+                    // If we have an edit link, check the view link
+                    if (el.href && parsed.hashData.type === "pad") {
+                        if (parsed.hashData.mode === "view") {
+                            el.roHref = el.href;
+                            delete el.href;
+                        } else if (!el.roHref) {
+                            secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                            el.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                        } else {
+                            var parsed2 = Hash.parsePadUrl(el.roHref);
+                            if (!parsed2.hash || !parsed2.type) {
+                                secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                                el.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                            }
+                        }
+                    }
+
                     // Fix href
                     if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
                     // Fix creation time
@@ -592,9 +653,12 @@ define([
                     // Fix channel
                     if (!el.channel) {
                         try {
-                            var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                            if (!secret) {
+                                secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
+                            }
                             el.channel = secret.channel;
-                            console.log('Adding missing channel in filesData ', el.channel);
+                            console.log(el);
+                            debug('Adding missing channel in filesData ', el.channel);
                         } catch (e) {
                             console.error(e);
                         }
@@ -611,6 +675,21 @@ define([
                     spliceFileData(id);
                 });
             };
+            var fixSharedFolders = function () {
+                if (sharedFolder) { return; }
+                if (typeof(files[SHARED_FOLDERS]) !== "object") { debug("SHARED_FOLDER was not an object"); files[SHARED_FOLDERS] = {}; }
+                var sf = files[SHARED_FOLDERS];
+                var rootFiles = exp.getFiles([ROOT]);
+                var root = exp.find([ROOT]);
+                for (var id in sf) {
+                    id = Number(id);
+                    if (rootFiles.indexOf(id) === -1) {
+                        console.log('missing' + id);
+                        var newName = Hash.createChannelId();
+                        root[newName] = id;
+                    }
+                }
+            };
 
             var fixDrive = function () {
                 Object.keys(files).forEach(function (key) {
@@ -618,12 +697,11 @@ define([
                 });
             };
 
+            fixSharedFolders();
             fixRoot();
             fixTrashRoot();
-            if (!workgroup) {
-                fixTemplate();
-                fixFilesData();
-            }
+            fixTemplate();
+            fixFilesData();
             fixDrive();
 
             if (JSON.stringify(files) !== before) {

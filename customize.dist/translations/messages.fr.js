@@ -386,6 +386,7 @@ define(function () {
     out.fm_newFolder = "Nouveau dossier";
     out.fm_newFile = "Nouveau pad";
     out.fm_folder = "Dossier";
+    out.fm_sharedFolder = "Dossier partagé";
     out.fm_folderName = "Nom du dossier";
     out.fm_numberOfFolders = "# de dossiers";
     out.fm_numberOfFiles = "# de fichiers";
@@ -446,6 +447,7 @@ define(function () {
     out.fm_tags_used = "Nombre d'utilisations";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
+    out.fc_newsharedfolder = "Nouveau dossier partagé";
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";
     out.fc_open_ro = "Ouvrir (lecture seule)";
@@ -453,12 +455,13 @@ define(function () {
     out.fc_delete_owned = "Supprimer du serveur";
     out.fc_restore = "Restaurer";
     out.fc_remove = "Supprimer de votre CryptDrive";
+    out.fc_remove_sharedfolder = "Supprimer";
     out.fc_empty = "Vider la corbeille";
     out.fc_prop = "Propriétés";
     out.fc_hashtag = "Mots-clés";
     out.fc_sizeInKilobytes = "Taille en kilo-octets";
     // fileObject.js (logs)
-    out.fo_moveUnsortedError = "La liste des éléments non triés ne peut pas contenir de dossiers.";
+    out.fo_moveUnsortedError = "La liste des modèles ne peut pas contenir de dossiers.";
     out.fo_existingNameError = "Ce nom est déjà utilisé dans ce répertoire. Veuillez en choisir un autre.";
     out.fo_moveFolderToChildError = "Vous ne pouvez pas déplacer un dossier dans un de ses descendants";
     out.fo_unableToRestore = "Impossible de restaurer ce fichier à son emplacement d'origine. Vous pouvez essayer de le déplacer à un nouvel emplacement.";

@@ -665,7 +665,7 @@ define([
                 // Update the current state
                 loading.driveState = data.state;
                 data.progress = data.progress || 100;
-                data.msg = Messages['loading_drive_'+data.state] || '';
+                data.msg = Messages['loading_drive_'+ Math.floor(data.state)] || '';
                 $progress.html(data.msg);
                 if (data.progress) {
                     $progress.append(h('div.cp-loading-progress-bar', [
@@ -761,7 +761,7 @@ define([
     UI.getFileIcon = function (data) {
         var $icon = UI.getIcon();
         if (!data) { return $icon; }
-        var href = data.href;
+        var href = data.href || data.roHref;
         var type = data.type;
         if (!href && !type) { return $icon; }
 
@@ -826,13 +826,13 @@ define([
             var out = false;
             var xId = $(x).attr('aria-describedby');
             if (xId) {
-                if (xId.indexOf('tippy-tooltip-') === 0) {
+                if (xId.indexOf('tippy-') === 0) {
                     return true;
                 }
             }
             $(x).find('[aria-describedby]').each(function (i, el) {
                 var id = el.getAttribute('aria-describedby');
-                if (id.indexOf('tippy-tooltip-') !== 0) { return; }
+                if (id.indexOf('tippy-') !== 0) { return; }
                 out = true;
             });
             return out;

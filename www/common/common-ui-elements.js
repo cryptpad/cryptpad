@@ -73,26 +73,14 @@ define([
                 data.password = val;
             }));
         }).nThen(function (waitFor) {
+            var base = common.getMetadataMgr().getPrivateData().origin;
             common.getPadAttribute('href', waitFor(function (err, val) {
-                var base = common.getMetadataMgr().getPrivateData().origin;
-
-                var parsed = Hash.parsePadUrl(val);
-                if (parsed.hashData.mode === "view") {
-                    data.roHref = base + val;
-                    return;
-                }
-
-                // We're not in a read-only pad
+                if (!val) { return; }
                 data.href = base + val;
-
-                // Get Read-only href
-                if (parsed.hashData.type !== "pad") { return; }
-                var i = data.href.indexOf('#') + 1;
-                var hBase = data.href.slice(0, i);
-                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
-                if (!hrefsecret.keys) { return; }
-                var viewHash = Hash.getViewHashFromKeys(hrefsecret);
-                data.roHref = hBase + viewHash;
+            }));
+            common.getPadAttribute('roHref', waitFor(function (err, val) {
+                if (!val) { return; }
+                data.roHref = base + val;
             }));
             common.getPadAttribute('channel', waitFor(function (err, val) {
                 data.channel = val;
@@ -162,7 +150,7 @@ define([
             $d.append(password);
         }
 
-        var parsed = Hash.parsePadUrl(data.href);
+        var parsed = Hash.parsePadUrl(data.href || data.roHref);
         if (owned && parsed.hashData.type === 'pad') {
             var sframeChan = common.getSframeChannel();
             var changePwTitle = Messages.properties_changePassword;
@@ -191,7 +179,7 @@ define([
                 UI.confirm(changePwConfirm, function (yes) {
                     if (!yes) { return; }
                     sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
-                        href: data.href,
+                        href: data.href || data.roHref,
                         password: newPass
                     }, function (err, data) {
                         if (err || data.error) {
@@ -203,11 +191,11 @@ define([
                         // If we had a password and we removed it, we have to remove the /p/
                         if (data.warning) {
                             return void UI.alert(Messages.properties_passwordWarning, function () {
-                                common.gotoURL(hasPassword && newPass ? undefined : data.href);
+                                common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
                             }, {force: true});
                         }
                         return void UI.alert(Messages.properties_passwordSuccess, function () {
-                            common.gotoURL(hasPassword && newPass ? undefined : data.href);
+                            common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
                         }, {force: true});
                     });
                 });
@@ -242,17 +230,21 @@ define([
             }));
         }
 
-        $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
-            id: 'cp-app-prop-ctime',
-        }));
+        if (data.ctime) {
+            $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+                id: 'cp-app-prop-ctime',
+            }));
+        }
 
-        $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
-            id: 'cp-app-prop-atime',
-        }));
+        if (data.atime) {
+            $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
+                id: 'cp-app-prop-atime',
+            }));
+        }
 
         if (common.isLoggedIn() && AppConfig.enablePinning) {
             // check the size of this file...
@@ -533,6 +525,35 @@ define([
         }
         return tabs;
     };
+    UIElements.createSFShareModal = function (config) {
+        var origin = config.origin;
+        var pathname = config.pathname;
+        var hashes = config.hashes;
+
+        if (!hashes.editHash) { throw new Error("You must provide a valid hash"); }
+        var url = origin + pathname + '#' + hashes.editHash;
+
+        // Share link tab
+        var link = h('div.cp-share-modal', [
+            h('label', Messages.sharedFolders_share),
+            h('br'),
+            UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
+        ]);
+        var linkButtons = [{
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.share_linkCopy,
+            onClick: function () {
+                var success = Clipboard.copy(url);
+                if (success) { UI.log(Messages.shareSuccess); }
+            },
+            keys: [13]
+        }];
+        return UI.dialog.customModal(link, {buttons: linkButtons});
+    };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
         var AppConfig = common.getAppConfig();
@@ -695,17 +716,27 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function() {
-                    var msg = common.isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
-                    UI.confirm(msg, function (yes) {
-                        if (!yes) { return; }
-                        sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
-                            if (err) { return void callback(err); }
-                            var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                            var msg = common.fixLinks($('<div>').html(cMsg));
-                            UI.alert(msg);
-                            callback();
+                    sframeChan.query('Q_IS_ONLY_IN_SHARED_FOLDER', null, function (err, res) {
+                        if (err || res.error) { return void console.log(err || res.error); }
+                        var msg = Messages.forgetPrompt;
+                        if (res) {
+                            UI.alert(Messages.sharedFolders_forget);
                             return;
+                        } else if (!common.isLoggedIn()) {
+                            msg = Messages.fm_removePermanentlyDialog;
+                        }
+                        UI.confirm(msg, function (yes) {
+                            if (!yes) { return; }
+                            sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                                if (err) { return void callback(err); }
+                                var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                var msg = common.fixLinks($('<div>').html(cMsg));
+                                UI.alert(msg);
+                                callback();
+                                return;
+                            });
                         });
+
                     });
                 });
                 break;

@@ -84,6 +84,11 @@ define([
             cb(obj);
         });
     };
+    common.getSharedFolder = function (id, cb) {
+        postMessage("GET_SHARED_FOLDER", id, function (obj) {
+            cb(obj);
+        });
+    };
     // Settings and ready
     common.mergeAnonDrive = function (cb) {
         var data = {
@@ -98,6 +103,25 @@ define([
     // Drive
     common.userObjectCommand = function (data, cb) {
         postMessage("DRIVE_USEROBJECT", data, cb);
+    };
+    common.restoreDrive = function (data, cb) {
+        postMessage("SET", {
+            key:['drive'],
+            value: data
+        }, function (obj) {
+            cb(obj);
+        });
+    };
+    common.addSharedFolder = function (secret, cb) {
+        postMessage("ADD_SHARED_FOLDER", {
+            path: ['root'],
+            folderData: {
+                href: '/drive/#' + Hash.getEditHashFromKeys(secret),
+                roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
+                channel: secret.channel,
+                ctime: +new Date()
+            }
+        }, cb);
     };
     common.drive = {};
     common.drive.onLog = Util.mkEvent();
@@ -289,6 +313,13 @@ define([
 
     common.getMetadata = function (cb) {
         postMessage("GET_METADATA", null, function (obj) {
+            if (obj && obj.error) { return void cb(obj.error); }
+            cb(null, obj);
+        });
+    };
+
+    common.isOnlyInSharedFolder = function (data, cb) {
+        postMessage("IS_ONLY_IN_SHARED_FOLDER", data, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
             cb(null, obj);
         });
@@ -506,7 +537,8 @@ define([
 
         if (common.initialPath) {
             if (!data.path) {
-                data.path = common.initialPath;
+                data.path = Array.isArray(common.initialPath) ? common.initialPath
+                                : decodeURIComponent(common.initialPath).split(',');
                 delete common.initialPath;
             }
         }
@@ -620,7 +652,7 @@ define([
         if (!parsed.hash) { return void cb({ error: 'EINVAL_HREF' }); }
 
         var warning = false;
-        var newHash;
+        var newHash, newRoHref;
         var oldChannel;
         var newSecret;
 
@@ -693,6 +725,11 @@ define([
             common.setPadAttribute('channel', newSecret.channel, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
+            var viewHash = Hash.getViewHashFromKeys(secret);
+            newRoHref = '/' + parsed.type + '/#' + viewHash;
+            common.setPadAttribute('roHref', newRoHref, waitFor(function (err) {
+                if (err) { warning = true; }
+            }), href);
 
             if (parsed.hashData.password && newPassword) { return; } // same hash
             common.setPadAttribute('href', newHref, waitFor(function (err) {
@@ -702,7 +739,8 @@ define([
             cb({
                 warning: warning,
                 hash: newHash,
-                href: newHref
+                href: newHref,
+                roHref: newRoHref
             });
         });
     };
