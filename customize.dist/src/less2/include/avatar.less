@@ -21,8 +21,13 @@
         align-items: center;
         .cp-avatar-default, media-tag {
             display: inline-flex;
+
+            width: @avatar-width;
             width: var(--avatar-width);
+
+            height: @avatar-height;
             height: var(--avatar-width);
+
             justify-content: center;
             align-items: center;
             border-radius: 4px;
@@ -33,12 +38,20 @@
             .tools_unselectable();
             background: white;
             color: black;
+            font-size: @avatar-font-size;
             font-size: var(--avatar-font-size);
         }
         media-tag {
+            min-height: @avatar-width;
             min-height: var(--avatar-width);
+
+            min-width: @avatar-width;
             min-width: var(--avatar-width);
+
+            max-height: @avatar-width;
             max-height: var(--avatar-width);
+
+            max-width: @avatar-width;
             max-width: var(--avatar-width);
             img {
                 min-width: 100%;
