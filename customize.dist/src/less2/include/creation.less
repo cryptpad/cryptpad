@@ -12,8 +12,8 @@
 };
 
 .creation_main(
-    @color,
-    @bg-color
+    @color: @colortheme_default-color,
+    @bg-color: @colortheme_default-bg
 ) {
     --LessLoader_require: LessLoader_currentFile();
     .creation_vars(@color, @bg-color);

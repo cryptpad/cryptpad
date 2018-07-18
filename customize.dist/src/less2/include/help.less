@@ -8,7 +8,10 @@
     @help-text-color: contrast(@help-bg-color-l15, #fff, #000); //@color;
     @help-link-color: contrast(@help-bg-color-l15, lighten(spin(@bg-color, 180), 10%), darken(spin(@bg-color, 180), 10%));
 }
-.help_main (@color, @bg-color) {
+.help_main (
+    @color: @colortheme_default-color,
+    @bg-color: @colortheme_default-bg
+) {
     --LessLoader_require: LessLoader_currentFile();
     .help_vars(@color, @bg-color);
     --help-bg-color-l15: @help-bg-color-l15;

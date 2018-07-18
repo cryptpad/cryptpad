@@ -33,9 +33,9 @@
 };
 
 .toolbar_main (
-    @color, // Color of the text for the toolbar
-    @bg-color, // color of the toolbar background
-    @warn-color, // color of the warning text in the toolbar
+    @color: @colortheme_default-color, // Color of the text for the toolbar
+    @bg-color: @colortheme_default-bg, // color of the toolbar background
+    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
     @barWidth: 600px // width of the toolbar
 ) {
     --LessLoader_require: LessLoader_currentFile();
