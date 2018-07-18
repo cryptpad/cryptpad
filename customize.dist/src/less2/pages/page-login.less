@@ -1,69 +1,70 @@
-@import (once) "../include/infopages.less";
-@import (once) "../include/colortheme-all.less";
-@import (once) "../include/alertify.less";
-@import (once) "../include/checkmark.less";
+@import (reference) "../include/infopages.less";
+@import (reference) "../include/colortheme-all.less";
+@import (reference) "../include/alertify.less";
+@import (reference) "../include/checkmark.less";
 
-.infopages_main();
-.infopages_topbar();
-.alertify_main();
-.checkmark_main(20px);
+&.cp-page-login {
+    .infopages_main();
+    .alertify_main();
+    .checkmark_main(20px);
 
-.form-group {
-    .extra {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
-}
-.cp-container {
-    #data {
-        background: #4591C4;
-        padding-top: 3em;
-        padding-bottom: 7em;
-        padding-left: 30px;
-        padding-right: 30px;
-        p {
-            color: #fff;
-        }
-        h2 {
-            font-weight: 700;
-            color: @cryptpad_header_col;
+    .form-group {
+        .extra {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
         }
     }
-    #userForm {
-        padding-top: 3em;
-        padding-bottom: 2em;
-        .form-control {
-            border-radius: 0;
-            color: @cryptpad_text_col;
+    .cp-container {
+        #data {
+            background: #4591C4;
+            padding-top: 3em;
+            padding-bottom: 7em;
+            padding-left: 30px;
+            padding-right: 30px;
+            p {
+                color: #fff;
+            }
+            h2 {
+                font-weight: 700;
+                color: @cryptpad_header_col;
+            }
+        }
+        #userForm {
+            padding-top: 3em;
+            padding-bottom: 2em;
+            .form-control {
+                border-radius: 0;
+                color: @cryptpad_text_col;
+                margin-top: 1em;
+                &:focus {
+                    border-color: @cryptpad_color_blue;
+                }
+            }
+            .checkbox-container {
+                color: @cryptpad_text_col;
+            }
+        }
+        .align-items-center {
+            box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
+            background: #fff;
+        }
+        .extra {
             margin-top: 1em;
-            &:focus {
-                border-color: @cryptpad_color_blue;
-            }
-        }
-        .checkbox-container {
-            color: @cryptpad_text_col;
-        }
-    }
-    .align-items-center {
-        box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
-        background: #fff;
-    }
-    .extra {
-        margin-top: 1em;
-        .login {
-            background: @cryptpad_color_blue;
-            color: #fff;
-            padding: 10px;
-            border-radius: 0;
-            &:hover {
-                transform: scale(1.05);
+            .login {
+                background: @cryptpad_color_blue;
+                color: #fff;
+                padding: 10px;
+                border-radius: 0;
+                &:hover {
+                    transform: scale(1.05);
+                }
             }
         }
     }
-}
-.cp-container {
-    padding-top: 3em;
-    min-height: 66vh;
+    .cp-container {
+        padding-top: 3em;
+        min-height: 66vh;
+    }
 }

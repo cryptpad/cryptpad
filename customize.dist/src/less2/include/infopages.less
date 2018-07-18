@@ -1,10 +1,25 @@
-@import (once) "./colortheme-all.less";
+@import (reference) "./colortheme-all.less";
+@import (reference) "./font.less";
 
-@infopages_infobar-height: 64px;
-@infopages_padding: 32px;
+.infopages_link () {
+    text-decoration: none;
+    color: #0275D8;
+    cursor: pointer;
+    display: inline-flex;
+    &:hover {
+        transform: scale(1.05);
+    }
+}
 
-// Basic setup for info pages, this should be used at the global level
 .infopages_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+body {
+    .font_main();
+    @infopages_infobar-height: 64px;
+    @infopages_padding: 32px;
+
+    // Basic setup for info pages, this should be used at the global level
     background-color: @colortheme_info-background;
     a {
         color: @cryptpad_color_blue;
@@ -100,20 +115,8 @@
             border-top: 2px solid #fff;
         }
     }
-};
 
-.infopages_link () {
-    text-decoration: none;
-    color: #0275D8;
-    cursor: pointer;
-    display: inline-flex;
-    &:hover {
-        transform: scale(1.05);
-    }
-}
-
-// Apply this to the top bar div
-.infopages_topbar () {
+    // Apply this to the top bar div
     .cp-topbar {
         background: #fff;
         z-index: 10000; //Z infopage toolbar
@@ -149,71 +152,71 @@
             margin-right: 0.5em;
         }
     }
-}
 
-// navigation top bar
-.navbar {
-    background: #fff;
-    .navbar-brand {
-        display: block;
-        background-image: url(/customize/CryptPad_logo_color.svg);
-        background-repeat: no-repeat;
-        background-size: contain;
-        height: 50px;
-        width: 250px;
-        @media (max-width: 326px) {
-            width: 180px;
+    // navigation top bar
+    .navbar {
+        background: #fff;
+        .navbar-brand {
+            display: block;
+            background-image: url(/customize/CryptPad_logo_color.svg);
+            background-repeat: no-repeat;
+            background-size: contain;
+            height: 50px;
+            width: 250px;
+            @media (max-width: 326px) {
+                width: 180px;
+            }
+            margin-right: 0;
         }
-        margin-right: 0;
-    }
-    a {
-        border: 2px solid transparent;
-        white-space: nowrap;
-    }
-    .nav-link {
-        padding: 0.5em 0.7em;
-        &:hover {
-            color: @cryptpad_color_light_blue;
+        a {
+            border: 2px solid transparent;
+            white-space: nowrap;
+        }
+        .nav-link {
+            padding: 0.5em 0.7em;
+            &:hover {
+                color: @cryptpad_color_light_blue;
+            }
+        }
+        .cp-register-btn {
+            border: 2px solid #4591C4;
+            display: inline-block;
+        }
+        button:focus {
+            outline: none;
+        }
+        .navbar-toggler {
+            margin-top: 10px;
+            color: #4591C4;
         }
     }
-    .cp-register-btn {
-        border: 2px solid #4591C4;
-        display: inline-block;
-    }
-    button:focus {
-        outline: none;
-    }
-    .navbar-toggler {
-        margin-top: 10px;
-        color: #4591C4;
-    }
-}
-@media (max-width: 1000px) {
-    #menuCollapse {
-        text-align: right;
-/*        @media (min-width: 576px) {
-            top: 100%;
-            background: rgba(255,255,255,0.8);
-            position: absolute;
-            right: 0px;
-            padding: 0 20px;
-            z-index: 1;
+    @media (max-width: 1000px) {
+        #menuCollapse {
+            text-align: right;
+    /*        @media (min-width: 576px) {
+                top: 100%;
+                background: rgba(255,255,255,0.8);
+                position: absolute;
+                right: 0px;
+                padding: 0 20px;
+                z-index: 1;
+            }
+    */
         }
-*/
+        .navbar-nav a {
+            text-align: right !important;
+        }
+        .cp-register-btn {
+            margin-right: 13px;
+            text-align: center;
+        }
     }
-    .navbar-nav a {
-        text-align: right !important;
-    }
-    .cp-register-btn {
-        margin-right: 13px;
-        text-align: center;
-    }
-}
 
-//footer general styles
+    //footer general styles
 
-.footer-title {
-    font-weight: bold;
-    font-size: 1.2em;
-    color: #1E1F1F;
+    .footer-title {
+        font-weight: bold;
+        font-size: 1.2em;
+        color: #1E1F1F;
+    }
 }

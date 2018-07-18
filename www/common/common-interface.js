@@ -1,3 +1,12 @@
+if (!document.querySelector("#alertifyCSS")) {
+    // Prevent alertify from injecting CSS, we create our own in alertify.less.
+    // see: https://github.com/alertifyjs/alertify.js/blob/v1.0.11/src/js/alertify.js#L414
+    var head = document.getElementsByTagName("head")[0];
+    var css = document.createElement("span");
+    css.id = "alertifyCSS";
+    css.setAttribute('data-but-why', 'see: common-interface.js');
+    head.insertBefore(css, head.firstChild);
+}
 define([
     'jquery',
     '/customize/messages.js',

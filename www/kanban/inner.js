@@ -11,6 +11,8 @@ define([
     '/customize/messages.js',
     '/kanban/jkanban.js',
     'css!/kanban/jkanban.css',
+
+    'less!/kanban/app-kanban.less'
 ], function (
     $,
     Sortify,

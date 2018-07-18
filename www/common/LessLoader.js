@@ -4,9 +4,11 @@ const define = (x:any, y:any) => {};
 const require = define;
 */
 define([
-    '/api/config'
-], function (Config) { /*::});module.exports = (function() {
+    '/api/config',
+    '/bower_components/nthen/index.js'
+], function (Config, nThen) { /*::});module.exports = (function() {
     const Config = (undefined:any);
+    const nThen = require('/bower_components/nthen/index.js');
     */
 
     var module = { exports: {} };
@@ -100,6 +102,10 @@ define([
             require(['/bower_components/less/dist/less.min.js'], function (Less) {
                 if (lessEngine) { return void cb(lessEngine); }
                 lessEngine = Less;
+                Less.functions.functionRegistry.add('LessLoader_currentFile', function () {
+                    return new Less.tree.UnicodeDescriptor('"' +
+                        fixURL(this.currentFileInfo.filename) + '"');
+                });
                 var doXHR = lessEngine.FileManager.prototype.doXHR;
                 lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
                     url = fixURL(url);
@@ -133,24 +139,39 @@ define([
         });
     };
 
-    module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
-        var btime = +new Date();
+    var loadSubmodulesAndInject = function (css, url, cb, stack) {
+        inject(css, url);
+        var nt = nThen;
+        nt = nt(function (w) {
+            css.replace(/\-\-LessLoader_require\:\s*"([^"]*)"\s*;/g, function (all, u) {
+                u = u.replace(/\?.*$/, '');
+                module.exports.load(u, w(), stack);
+            });
+        }).nThen;
+        nt(function () { cb(); });
+    };
+
+    module.exports.load = function (url /*:string*/, cb /*:()=>void*/, stack /*:?Array*/) {
+        var btime = stack ? null : +new Date();
+        stack = stack || [];
+        if (stack.indexOf(url) > -1) { return void cb(); }
+        var timeout = setTimeout(function () { console.log('failed', url); }, 10000);
         var done = function () {
-            console.log("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
+            clearTimeout(timeout);
+            if (btime) {
+                console.log("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
+            }
             cb();
         };
+        stack.push(url);
         cacheGet(url, function (css) {
-            if (css) {
-                inject(css, url);
-                return void done();
-            }
+            if (css) { return void loadSubmodulesAndInject(css, url, done, stack); }
             console.log('CACHE MISS ' + url);
             ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
                 if (!css) { return void console.error(err); }
                 var output = fixAllURLs(css, url);
                 cachePut(url, output);
-                inject(output, url);
-                done();
+                loadSubmodulesAndInject(output, url, done, stack);
             });
         });
     };

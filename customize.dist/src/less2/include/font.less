@@ -1,9 +1,11 @@
-.font_neuropolitical () {
-    @font-face {
-        font-family: Neuropolitical;
-        src: url("/customize/fonts/neuropolitical.ttf");
-    }
+.font_main () {
+    --LessLoader_require: LessLoader_currentFile();
 }
-.font_open-sans () {
-    @import (once) '/customize/fonts/open-sans.less';
+
+// Fonts need to go on the global scope
+@font-face {
+    font-family: Neuropolitical;
+    src: url("/customize/fonts/neuropolitical.ttf");
 }
+
+@import (once) '/customize/fonts/open-sans.less';

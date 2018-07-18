@@ -1,6 +1,9 @@
-@import (once) "./colortheme-all.less";
+@import (reference) "./colortheme-all.less";
 
 .limit-bar_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
     .cp-limit-container {
         @colortheme_green: #5cb85c;
         display: inline-flex;

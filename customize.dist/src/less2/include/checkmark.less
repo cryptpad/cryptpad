@@ -1,11 +1,28 @@
-@import (once) "./colortheme-all.less";
+@import (reference) "./colortheme-all.less";
 
-.checkmark_main(@size) {
+.checkmark_vars(
+    @size: 20px
+) {
+    @checkmark-size: @size;
+    @checkmark-width: round(@size / 8);
+    @checkmark-dim1: round(@size / 3);
+    @checkmark-dim2: round(2 * @size / 3);
+    @checkmark-top: round(@size / 12) - 1;
+    @checkmark-radio-size: @checkmark-dim1 * 3;
+}
 
-    @width: round(@size / 8);
-    @dim1: round(@size / 3);
-    @dim2: round(2 * @size / 3);
-    @top: round(@size / 12) - 1;
+.checkmark_main(@size: 20px) {
+    --LessLoader_require: LessLoader_currentFile();
+    .checkmark_vars(@size);
+    --checkmark-size: @checkmark-size;
+    --checkmark-width: @checkmark-width;
+    --checkmark-dim1: @checkmark-dim1;
+    --checkmark-dim2: @checkmark-dim2;
+    --checkmark-top: @checkmark-top;
+    --checkmark-radio-size: @checkmark-radio-size;
+}
+& {
+    .checkmark_vars();
     // <label.cp-checkmark><input><span.cp-checkmark-mark></span>Text</label>
     .cp-checkmark {
         margin: 0;
@@ -58,8 +75,10 @@
         .cp-checkmark-mark {
             margin-right: 10px;
             position: relative;
-            height: @size;
-            width: @size;
+            height: @checkmark-size;
+            height: var(--checkmark-size);
+            width: @checkmark-size;
+            width: var(--checkmark-size);
             background-color: @colortheme_checkmark-back0;
             display: flex;
             justify-content: center;
@@ -68,12 +87,16 @@
             &:after {
                 content: "";
                 display: none;
-                margin-top: @top;
-                width: @dim1;
-                height: @dim2;
+                margin-top: @checkmark-top;
+                margin-top: var(--checkmark-top);
+                width: @checkmark-dim1;
+                width: var(--checkmark-dim1);
+                height: @checkmark-dim2;
+                height: var(--checkmark-dim2);
                 transform: rotate(45deg);
                 border: solid @colortheme_checkmark-col1;
-                border-width: 0 @width @width 0;
+                border-width: 0 @checkmark-width @checkmark-width 0;
+                border-width: 0 var(--checkmark-width) var(--checkmark-width) 0;
                 position: absolute;
             }
             &:focus {
@@ -129,12 +152,14 @@
             }
         }
 
-        @radio-size: @dim1 * 3;
+        
         .cp-radio-mark {
             margin-right: 10px;
             position: relative;
-            height: @radio-size;
-            width: @radio-size;
+            height: @checkmark-radio-size;
+            height: var(--checkmark-radio-size);
+            width: @checkmark-radio-size;
+            width: var(--checkmark-radio-size);
             background-color: @colortheme_checkmark-back0;
             border-radius: 50%;
             display: flex;
@@ -147,12 +172,14 @@
                 content: "";
                 border-radius: 50%;
                 background: white;
-                width: @dim1;
-                height: @dim1;
+                width: @checkmark-dim1;
+                width: var(--checkmark-dim1);
+                height: @checkmark-dim1;
+                height: var(--checkmark-dim1);
 
                 //transform: rotate(45deg);
                 //border: solid @colortheme_checkmark-col1;
-                //border-width: 0 @width @width 0;
+                //border-width: 0 var(--checkmark-width) var(--checkmark-width) 0;
             }
             &:focus {
                 //border-color: #FF007C !important;

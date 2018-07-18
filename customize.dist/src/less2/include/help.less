@@ -1,9 +1,30 @@
-@import (once) "./colortheme-all.less";
+@import (reference) "./colortheme-all.less";
 
-.help_main (@color, @bg-color) {
+.help_vars (
+    @color: @colortheme_default-color,
+    @bg-color: @colortheme_default-bg
+) {
+    @help-bg-color-l15: lighten(@bg-color, 15%);
+    @help-text-color: contrast(@help-bg-color-l15, #fff, #000); //@color;
+    @help-link-color: contrast(@help-bg-color-l15, lighten(spin(@bg-color, 180), 10%), darken(spin(@bg-color, 180), 10%));
+}
+.help_main (
+    @color: @colortheme_default-color,
+    @bg-color: @colortheme_default-bg
+) {
+    --LessLoader_require: LessLoader_currentFile();
+    .help_vars(@color, @bg-color);
+    --help-bg-color-l15: @help-bg-color-l15;
+    --help-text-color: @help-text-color;
+    --help-link-color: @help-link-color;
+};
+& {
+    .help_vars();
     .cp-help-container {
+
         position: relative;
-        background-color: lighten(@bg-color, 15%);
+        background-color: @help-bg-color-l15;
+        background-color: var(--help-bg-color-l15);
         &.cp-help-hidden {
             display: none;
         }
@@ -14,14 +35,13 @@
             right: 5px;
         }
         .cp-help-text {
-            color: contrast(lighten(@bg-color, 15%), #fff, #000); //@color;
+            color: @help-text-color;
+            color: var(--help-text-color);
             margin: 0;
             padding: 15px;
             a {
-                //color: darken(@colortheme_link-color, 30%);
-                @spin: spin(lighten(@bg-color, 15%), 180);
-                color: contrast(lighten(@bg-color, 15%), lighten(@spin, 10%), darken(@spin, 10%));
-                //color: darken(spin(lighten(@bg-color, 15%), 180), 10%);
+                color: @help-link-color;
+                color: var(--help-link-color);
             }
             h1 {
                 font-size: 20px;
