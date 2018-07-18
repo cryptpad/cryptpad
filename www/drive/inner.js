@@ -1367,6 +1367,10 @@ define([
             }
 
             var element = filesOp.find(newPath);
+            if (!isFolder) {
+                var data = filesOp.getFileData(element);
+                if (!data.href) { return; }
+            }
             var $icon = !isFolder ? getFileIcon(element) : undefined;
             var ro = filesOp.isReadOnlyFile(element);
             // ro undefined means it's an old hash which doesn't support read-only
@@ -2424,6 +2428,7 @@ define([
                 sortedFiles.forEach(function (key) {
                     if (filesOp.isFolder(root[key])) { return; }
                     var $element = createElement(path, key, root, false);
+                    if (!$element) { return; }
                     $element.appendTo($list);
                 });
 

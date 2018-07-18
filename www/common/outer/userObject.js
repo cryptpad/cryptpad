@@ -563,34 +563,40 @@ define([
                         continue;
                     }
                     // Clean missing href
-                    if (!el.href) {
+                    if (el.href) {
+                        if (!el.href) {
+                            debug("Removing an element in filesData with a missing href.", el);
+                            toClean.push(id);
+                            continue;
+                        }
+
+                        var parsed = Hash.parsePadUrl(el.href);
+                        // Clean invalid hash
+                        if (!parsed.hash) {
+                            debug("Removing an element in filesData with a invalid href.", el);
+                            toClean.push(id);
+                            continue;
+                        }
+                        // Clean invalid type
+                        if (!parsed.type) {
+                            debug("Removing an element in filesData with a invalid type.", el);
+                            toClean.push(id);
+                            continue;
+                        }
+                    } else if (!el.roHref) {
                         debug("Removing an element in filesData with a missing href.", el);
                         toClean.push(id);
                         continue;
                     }
 
-                    var parsed = Hash.parsePadUrl(el.href);
-                    // Clean invalid hash
-                    if (!parsed.hash) {
-                        debug("Removing an element in filesData with a invalid href.", el);
-                        toClean.push(id);
-                        continue;
-                    }
-                    // Clean invalid type
-                    if (!parsed.type) {
-                        debug("Removing an element in filesData with a invalid type.", el);
-                        toClean.push(id);
-                        continue;
-                    }
-
                     // Fix href
-                    if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
+                    if (el.href && /^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
                     // Fix creation time
                     if (!el.ctime) { el.ctime = el.atime; }
                     // Fix title
                     if (!el.title) { el.title = Hash.getDefaultName(parsed); }
                     // Fix channel
-                    if (!el.channel) {
+                    if (el.href && !el.channel) {
                         try {
                             var secret = Hash.getSecrets(parsed.type, parsed.hash, el.password);
                             el.channel = secret.channel;
