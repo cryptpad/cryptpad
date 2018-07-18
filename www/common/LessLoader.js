@@ -8,7 +8,7 @@ define([
     '/bower_components/nthen/index.js'
 ], function (Config, nThen) { /*::});module.exports = (function() {
     const Config = (undefined:any);
-    const nThen = require('/bower_components/nthen/index.js');
+    const nThen = (undefined:any);
     */
 
     var module = { exports: {} };
@@ -141,17 +141,16 @@ define([
 
     var loadSubmodulesAndInject = function (css, url, cb, stack) {
         inject(css, url);
-        var nt = nThen;
-        nt = nt(function (w) {
+        nThen(function (w) {
             css.replace(/\-\-LessLoader_require\:\s*"([^"]*)"\s*;/g, function (all, u) {
                 u = u.replace(/\?.*$/, '');
                 module.exports.load(u, w(), stack);
+                return '';
             });
-        }).nThen;
-        nt(function () { cb(); });
+        }).nThen(function () { cb(); });
     };
 
-    module.exports.load = function (url /*:string*/, cb /*:()=>void*/, stack /*:?Array*/) {
+    module.exports.load = function (url /*:string*/, cb /*:()=>void*/, stack /*:?Array<string>*/) {
         var btime = stack ? null : +new Date();
         stack = stack || [];
         if (stack.indexOf(url) > -1) { return void cb(); }
