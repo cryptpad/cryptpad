@@ -2622,6 +2622,7 @@ define([
                 sortedFiles.forEach(function (key) {
                     if (manager.isFolder(root[key])) { return; }
                     var $element = createElement(path, key, root, false);
+                    if (!$element) { return; }
                     $element.appendTo($list);
                 });
 

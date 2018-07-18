@@ -645,7 +645,7 @@ define([
                     }
 
                     // Fix href
-                    if (/^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
+                    if (el.href && /^https*:\/\//.test(el.href)) { el.href = Hash.getRelativeHref(el.href); }
                     // Fix creation time
                     if (!el.ctime) { el.ctime = el.atime; }
                     // Fix title
