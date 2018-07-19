@@ -110,6 +110,8 @@ define([
             value: data
         }, function (obj) {
             cb(obj);
+        }, {
+            timeout: 5 * 60 * 1000
         });
     };
     common.addSharedFolder = function (secret, cb) {
@@ -1328,12 +1330,12 @@ define([
                         });
                     });
 
-                    postMessage = function (cmd, data, cb) {
+                    postMessage = function (cmd, data, cb, opts) {
                         cb = cb || function () {};
                         chan.query(cmd, data, function (err, data) {
                             if (err) { return void cb ({error: err}); }
                             cb(data);
-                        });
+                        }, opts);
                     };
 
                     console.log('Posting CONNECT');

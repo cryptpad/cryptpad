@@ -3374,8 +3374,13 @@ define([
             /* add a history button */
             APP.histConfig = {
                 onLocal: function () {
+                    UI.addLoadingScreen({ loadingText: "Please be careful" }); // XXX
                     proxy.drive = history.currentObj.drive;
-                    sframeChan.query("Q_DRIVE_RESTORE", history.currentObj.drive, function () {});
+                    sframeChan.query("Q_DRIVE_RESTORE", history.currentObj.drive, function () {
+                        UI.removeLoadingScreen();
+                    }, {
+                        timeout: 5 * 60 * 1000
+                    });
                 },
                 onRemote: function () {},
                 setHistory: setHistory,
