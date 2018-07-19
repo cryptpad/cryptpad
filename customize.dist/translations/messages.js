@@ -387,7 +387,7 @@ define(function () {
     out.fm_newFolder = "New folder";
     out.fm_newFile = "New pad";
     out.fm_folder = "Folder";
-    out.fm_sharedFolder = "Shared folder";
+    out.fm_sharedFolder = "Shared Drive";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
@@ -448,7 +448,7 @@ define(function () {
     out.fm_tags_used = "Number of uses";
     // File - Context menu
     out.fc_newfolder = "New folder";
-    out.fc_newsharedfolder = "New shared folder";
+    out.fc_newsharedfolder = "New shared Drive";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
@@ -1213,14 +1213,13 @@ define(function () {
     out.loading_drive_3 = "Verifying data integrity";
 
     // Shared folders
-    // XXX
-    out.sharedFolders_forget = "This pad is only stored in a shared folder, you can't move it to the trash. You can use your CryptDrive if you want to delete it from the folder.";
-    out.sharedFolders_duplicate = "Some of the pads you were trying to move were already stored.";
-    out.sharedFolders_create = "Create a shared folder";
-    out.sharedFolders_create_name = "Folder name";
-    out.sharedFolders_create_owned = "Owned folder";
-    out.sharedFolders_create_password = "Folder password";
-    out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
+    out.sharedFolders_forget = "This pad is only stored in a shared Drive, you can't move it to the trash. You can use your CryptDrive if you want to delete it.";
+    out.sharedFolders_duplicate = "Some of the pads you were trying to move were already stored in the destination Drive.";
+    out.sharedFolders_create = "Create a shared Drive";
+    out.sharedFolders_create_name = "Drive name";
+    out.sharedFolders_create_owned = "Owned Drive";
+    out.sharedFolders_create_password = "Drive password";
+    out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared Drive. Once they open this URL, the shared Drive will be added to the root directory of their CryptDrive.";
 
     return out;
 });
