@@ -475,7 +475,9 @@
                         }
                         .cp-app-drive-search-path {
                             font-style: italic;
-                            direction: rtl;
+                            display: flex;
+                            flex-flow: row-reverse;
+                            justify-content: right;
                             .cp-app-drive-path-element {
                                 display: inline-block;
                                 margin-right: 5px;
@@ -839,7 +841,9 @@
             width: auto;
             overflow: hidden;
             white-space: nowrap;
-            direction: rtl;
+            display: flex;
+            flex-flow: row-reverse;
+            justify-content: right;
             max-width: 100%;
             text-align: left;
             .cp-app-drive-path-element {
@@ -866,3 +870,4 @@
         }
     }
 }
+
