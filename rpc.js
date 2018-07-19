@@ -7,15 +7,14 @@ var Nacl = require("tweetnacl");
 /* globals process */
 
 var Fs = require("fs");
-Fs.move = require('fs-extra').move;
-Fs.moveSync = require('fs-extra').moveSync;
+
+var Fse = require("fs-extra");
 var Path = require("path");
 var Https = require("https");
 const Package = require('./package.json');
 const Pinned = require('./pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
-const Mkdirp = require("mkdirp");
 
 var RPC = module.exports;
 
@@ -1056,7 +1055,7 @@ var upload_complete = function (Env, publicKey, id, cb) {
         }
 
         // lol wut handle ur errors
-        Fs.move(oldPath, newPath, function (e) {
+        Fse.move(oldPath, newPath, function (e) {
             if (e) {
                 WARN('rename', e);
                 return void cb('RENAME_ERR');
@@ -1220,13 +1219,13 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
     var finalOwnPath;
     nThen(function (w) {
         // make the requisite directory structure using Mkdirp
-        Mkdirp(filePath, w(function (e /*, path */) {
+        Fse.mkdirp(filePath, w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e.code);
             }
         }));
-        Mkdirp(ownPath, w(function (e /*, path */) {
+        Fse.mkdirp(ownPath, w(function (e /*, path */) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e.code);
@@ -1256,7 +1255,7 @@ var owned_upload_complete = function (Env, safeKey, id, cb) {
 
         // flow is dumb and I need to guard against this which will never happen
         /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
-        Fs.move(oldPath, finalPath, w(function (e) {
+        Fse.move(oldPath, finalPath, w(function (e) {
             if (e) {
                 // Remove the ownership file
                 Fs.unlink(finalOwnPath, function (e) {
