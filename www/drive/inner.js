@@ -1821,7 +1821,7 @@ define([
                     options.push({
                         tag: 'a',
                         attributes: {'class': 'cp-app-drive-new-shared-folder'},
-                        content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_sharedFolder
+                        content: $('<div>').append($sharedFolderIcon.clone()).html() + Messages.fm_sharedFolder
                     });
                 }
                 options.push({tag: 'hr'});
@@ -2098,7 +2098,7 @@ define([
                     var $element3 = $('<li>', {
                         'class': 'cp-app-drive-new-shared-folder cp-app-drive-element-row ' +
                                  'cp-app-drive-element-grid'
-                    }).prepend($folderIcon.clone()).appendTo($container);
+                    }).prepend($sharedFolderIcon.clone()).appendTo($container);
                     $element3.append($('<span>', { 'class': 'cp-app-drive-new-name' })
                         .text(Messages.fm_sharedFolder));
                 }
