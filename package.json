@@ -10,7 +10,7 @@
   "dependencies": {
     "chainpad-server": "~2.1.0",
     "express": "~4.16.0",
-    "mkdirp": "^0.5.1",
+    "fs-extra": "^7.0.0",
     "nthen": "~0.1.0",
     "pull-stream": "^3.6.1",
     "replify": "^1.2.0",
