@@ -1399,7 +1399,7 @@ var writeLoginBlock = function (Env, msg, cb) {
 
         nThen(function (w) {
             // make sure the path to the file exists
-            Mkdirp(parsed.dir, w(function (e) {
+            Fse.mkdirp(parsed.dir, w(function (e) {
                 if (e) {
                     w.abort();
                     cb(e);
