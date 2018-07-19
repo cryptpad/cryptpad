@@ -608,6 +608,7 @@ define(function () {
     out.settings_changePasswordNewConfirm = "Confirmer le nouveau mot de passe";
     out.settings_changePasswordConfirm = "Êtes-vous sûr de vouloir changer votre mot de passe ? Vous devrez vous reconnecter sur tous vos appareils.";
     out.settings_changePasswordError = "Une erreur est survenue. Si vous n'êtes plus en mesure de vous connecter à votre compte utilisateur ou de changer votre mot de passe, veuillez contacter l'administrateur de votre CryptPad.";
+    out.settings_changePasswordPending = "Votre mot de passe est en train d'être modifié. Veuillez ne pas fermer ou recharger cette page avant que le traitement soit terminé.";
 
     out.upload_title = "Hébergement de fichiers";
     out.upload_modal_title = "Options d'importation du fichier";
