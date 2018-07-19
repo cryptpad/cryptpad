@@ -421,10 +421,19 @@ define([
                 });
             });
             sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
-                var crypto = Crypto.createEncryptor(secret.keys);
+                var nSecret = secret;
+                if (cfg.isDrive) {
+                    var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                    if (hash) {
+                        nSecret = Utils.Hash.getSecrets('drive', hash);
+                    }
+                }
+                var channel = nSecret.channel;
+                var validate = nSecret.keys.validateKey;
+                var crypto = Crypto.createEncryptor(nSecret.keys);
                 Cryptpad.getHistoryRange({
-                    channel: secret.channel,
-                    validateKey: secret.keys.validateKey,
+                    channel: channel,
+                    validateKey: validate,
                     lastKnownHash: data.lastKnownHash
                 }, function (data) {
                     cb({

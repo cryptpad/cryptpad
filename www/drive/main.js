@@ -102,7 +102,8 @@ define([
             noHash: true,
             noRealtime: true,
             driveEvents: true,
-            addRpc: addRpc
+            addRpc: addRpc,
+            isDrive: true,
         });
     });
 });
