@@ -32,7 +32,6 @@ define([
         });
         return select;
     };
-    languageSelector = languageSelector; // jshint
 
     var footerCol = function (title, L, literal) {
         return h('div.col-6.col-sm-3', [
@@ -633,6 +632,7 @@ define([
                     ])
                 ]),
             ]),
+            infopageFooter(),
         ];
     };
 
