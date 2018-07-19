@@ -71,7 +71,7 @@ define([
     // Icons
     var faFolder = 'fa-folder';
     var faFolderOpen = 'fa-folder-open';
-    var faSharedFolder = 'fa-users';
+    var faSharedFolder = 'fa-hdd-o';
     var faReadOnly = 'fa-eye';
     var faRename = 'fa-pencil';
     var faTrash = 'fa-trash';
@@ -1719,6 +1719,12 @@ define([
                     createHelper('/faq.html#keywords-owned', Messages.creation_owned1) // TODO
                 ]),
             ]);
+
+            $(content).find('#cp-app-drive-sf-name').keydown(function (e) {
+                if (e.which === 13) {
+                    UI.findOKButton().click();
+                }
+            });
 
             UI.confirm(content, function (yes) {
                 if (!yes) { return void cb(); }
