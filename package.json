@@ -12,6 +12,7 @@
     "express": "~4.16.0",
     "mkdirp": "^0.5.1",
     "nthen": "~0.1.0",
+    "opencollective": "^1.0.3",
     "pull-stream": "^3.6.1",
     "replify": "^1.2.0",
     "saferphore": "0.0.1",
@@ -37,6 +38,12 @@
     "lint:less": "./node_modules/lesshint/bin/lesshint -c ./.lesshintrc ./customize.dist/src/less2/",
     "flow": "./node_modules/.bin/flow",
     "test": "node TestSelenium.js",
-    "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../what-is-cryptpad.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;"
+    "template": "cd customize.dist/src && for page in ../index.html ../privacy.html ../terms.html ../about.html ../contact.html ../what-is-cryptpad.html ../features.html ../../www/login/index.html ../../www/register/index.html ../../www/user/index.html;do echo $page; cp template.html $page; done;",
+    "postinstall": "opencollective postinstall"
+  },
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/cryptpad",
+    "logo": "https://opencollective.com/cryptpad/logo.txt"
   }
 }
