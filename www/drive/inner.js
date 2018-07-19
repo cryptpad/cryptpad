@@ -3374,7 +3374,7 @@ define([
             /* add a history button */
             APP.histConfig = {
                 onLocal: function () {
-                    UI.addLoadingScreen({ loadingText: "Please be careful" }); // XXX
+                    UI.addLoadingScreen({ loadingText: Messages.fm_restoreDrive });
                     proxy.drive = history.currentObj.drive;
                     sframeChan.query("Q_DRIVE_RESTORE", history.currentObj.drive, function () {
                         UI.removeLoadingScreen();

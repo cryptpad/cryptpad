@@ -445,6 +445,7 @@ define(function () {
     out.fm_deletedPads = "Ces pads n'existent plus sur le serveur, ils ont été supprimés de votre CryptDrive: {0}";
     out.fm_tags_name = "Mot-clé";
     out.fm_tags_used = "Nombre d'utilisations";
+    out.fm_restoreDrive = "Restauration de votre CryptDrive à une version antérieure. Pour de meilleurs résultats, veuillez éviter de modifier votre CryptDrive avant que cette restauration ne soit terminée.";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
     out.fc_newsharedfolder = "Nouveau Drive partagé";
