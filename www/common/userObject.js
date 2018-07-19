@@ -595,14 +595,14 @@ define([
             //if (typeof cb === "function") { cb(); }
         };
         exp.emptyTrash = function (cb) {
+            cb = cb || function () {};
             if (sframeChan) {
                 return void sframeChan.query("Q_DRIVE_USEROBJECT", {
                     cmd: "emptyTrash"
                 }, cb);
             }
             files[TRASH] = {};
-            exp.checkDeletedFiles();
-            if(cb) { cb(); }
+            exp.checkDeletedFiles(false, cb);
         };
 
         // RENAME

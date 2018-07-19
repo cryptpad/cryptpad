@@ -753,7 +753,8 @@ define([
     };
     var emptyTrashInner = function (Env, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
-            cmd: "emptyTrash"
+            cmd: "emptyTrash",
+            data: null
         }, cb);
     };
     var addFolderInner = function (Env, path, name, cb) {
