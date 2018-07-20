@@ -126,5 +126,11 @@ define(function() {
     // Warning: This is an experimental feature. It will be enabled by default once we're sure it's stable.
     config.disableWorkers = true;
 
+    // Shared folder are in a beta-test state. They are likely to disappear from a user's drive
+    // spontaneously, resulting in the deletion of the entire folder's content.
+    // We highly recommend to keep them disabled until they are stable enough to be enabled
+    // by default by the CryptPad developers.
+    config.disableSharedFolders = true;
+
     return config;
 });

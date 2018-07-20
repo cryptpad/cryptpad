@@ -267,6 +267,7 @@ define([
                         forceCreationScreen: forceCreationScreen,
                         password: password,
                         channel: secret.channel,
+                        enableSF: localStorage.CryptPad_SF === "1" // TODO to remove when enabled by default
                     };
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 

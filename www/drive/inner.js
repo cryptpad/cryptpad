@@ -42,7 +42,7 @@ define([
     var APP = window.APP = {
         editable: false,
         mobile: function () { return $('body').width() <= 600; }, // Menu and content area are not inline-block anymore for mobiles
-        isMac: navigator.platform === "MacIntel"
+        isMac: navigator.platform === "MacIntel",
     };
 
     var stringify = function (obj) {
@@ -797,7 +797,7 @@ define([
                     if (className === 'newfolder') { return; }
                     if (className === 'newsharedfolder') {
                         // Hide the new shared folder menu if we're already in a shared folder
-                        return manager.isInSharedFolder(currentPath);
+                        return manager.isInSharedFolder(currentPath) || APP.disableSF;
                     }
                     return AppConfig.availablePadTypes.indexOf($el.attr('data-type')) === -1;
                 };
@@ -1775,7 +1775,7 @@ define([
                     .click(function () {
                     manager.addFolder(currentPath, null, onCreated);
                 });
-                if (!manager.isInSharedFolder(currentPath)) {
+                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
                     $block.find('a.cp-app-drive-new-shared-folder, li.cp-app-drive-new-shared-folder')
                         .click(function () {
                         addSharedFolderModal(function (obj) {
@@ -1823,7 +1823,7 @@ define([
                     attributes: {'class': 'cp-app-drive-new-folder'},
                     content: $('<div>').append($folderIcon.clone()).html() + Messages.fm_folder
                 });
-                if (!manager.isInSharedFolder(currentPath)) {
+                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
                     options.push({
                         tag: 'a',
                         attributes: {'class': 'cp-app-drive-new-shared-folder'},
@@ -2100,7 +2100,7 @@ define([
                 $element1.append($('<span>', { 'class': 'cp-app-drive-new-name' })
                     .text(Messages.fm_folder));
                 // Shared Folder
-                if (!manager.isInSharedFolder(currentPath)) {
+                if (!APP.disableSF && !manager.isInSharedFolder(currentPath)) {
                     var $element3 = $('<li>', {
                         'class': 'cp-app-drive-new-shared-folder cp-app-drive-element-row ' +
                                  'cp-app-drive-element-grid'
@@ -3353,6 +3353,9 @@ define([
         }).nThen(function () {
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();
+
+            APP.disableSF =  !metadataMgr.getPrivateData().enableSF && AppConfig.disableSharedFolders;
+
             var configTb = {
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit'],
                 pageTitle: Messages.type.drive,
