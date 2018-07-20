@@ -83,7 +83,7 @@ define([
 
         var isSharedFolder = exp.isSharedFolder = function (element) {
             if (sharedFolder) { return false; } // No recursive shared folders
-            return Boolean(files[SHARED_FOLDERS][element]);
+            return Boolean(files[SHARED_FOLDERS] && files[SHARED_FOLDERS][element]);
         };
         var isFile = exp.isFile = function (element, allowStr) {
             if (isSharedFolder(element)) { return false; }

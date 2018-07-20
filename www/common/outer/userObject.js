@@ -697,12 +697,12 @@ define([
                 });
             };
 
-            fixSharedFolders();
             fixRoot();
             fixTrashRoot();
             fixTemplate();
             fixFilesData();
             fixDrive();
+            fixSharedFolders();
 
             if (JSON.stringify(files) !== before) {
                 debug("Your file system was corrupted. It has been cleaned so that the pads you visit can be stored safely");
