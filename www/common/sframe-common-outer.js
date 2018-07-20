@@ -432,7 +432,6 @@ define([
                 var validate = nSecret.keys.validateKey;
                 var crypto = Crypto.createEncryptor(nSecret.keys);
                 Cryptpad.getHistoryRange({
-                    drive: cfg.isDrive,
                     channel: channel,
                     validateKey: validate,
                     lastKnownHash: data.lastKnownHash

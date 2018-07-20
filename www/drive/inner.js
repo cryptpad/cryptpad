@@ -1567,8 +1567,8 @@ define([
 
                 var name = p;
 
-                var currentEl = manager.find(path.slice(0, idx+1));
-                if (manager.isSharedFolder(currentEl)) {
+                var currentEl = isVirtual ? undefined : manager.find(path.slice(0, idx+1));
+                if (currentEl && manager.isSharedFolder(currentEl)) {
                     name = manager.getSharedFolderData(currentEl).title;
                     skipNext = true;
                 }
@@ -2162,6 +2162,7 @@ define([
             $toolbar.html('');
             $('<div>', {'class': 'cp-app-drive-toolbar-leftside'}).appendTo($toolbar);
             $('<div>', {'class': 'cp-app-drive-path cp-unselectable'}).appendTo($toolbar);
+            $('<div>', {'class': 'cp-app-drive-toolbar-filler'}).appendTo($toolbar);
             var $rightside = $('<div>', {'class': 'cp-app-drive-toolbar-rightside'})
                 .appendTo($toolbar);
             var $hist = common.createButton('history', true, {histConfig: APP.histConfig});

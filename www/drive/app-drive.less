@@ -833,7 +833,6 @@
         }
 
         .cp-app-drive-path {
-            flex: 1;
             width: 100%;
             height: @variables_bar-height;
             line-height: @variables_bar-height;
@@ -843,7 +842,6 @@
             white-space: nowrap;
             display: flex;
             flex-flow: row-reverse;
-            justify-content: right;
             max-width: 100%;
             text-align: left;
             .cp-app-drive-path-element {
@@ -867,6 +865,10 @@
                     }
                 }
             }
+        }
+
+        .cp-app-drive-toolbar-filler {
+            flex: 1;
         }
     }
 }

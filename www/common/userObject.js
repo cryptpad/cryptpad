@@ -260,7 +260,7 @@ define([
             var root = files[TRASH];
             var ret = [];
             var addFiles = function (el) {
-                if (isFile(el.element)) {
+                if (isFile(el.element) || isSharedFolder(el.element)) {
                     if(ret.indexOf(el.element) === -1) { ret.push(el.element); }
                 } else {
                     getFilesRecursively(el.element, ret);
