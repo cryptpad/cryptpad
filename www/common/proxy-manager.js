@@ -42,6 +42,13 @@ define([
     /*
         Tools
     */
+    var _ownedByMe = function (Env, owners) {
+        return Array.isArray(owners) && owners.indexOf(Env.edPublic) !== -1;
+    };
+    var _ownedByOther = function (Env, owners) {
+        return Array.isArray(owners) && owners.length &&
+                (!Env.edPublic || owners.indexOf(Env.edPublic) === -1);
+    };
 
     var _getUserObjects = function (Env) {
         var userObjects = [Env.user.userObject];
@@ -206,21 +213,36 @@ define([
     };
 
     // Get a copy of the elements located in the given paths, with their files data
-    var _getCopyFromPaths = function (paths, userObject) {
+    // Note: This function is only called to move files from a proxy to another
+    var _getCopyFromPaths = function (Env, paths, userObject) {
         var data = [];
-        paths.forEach(function (path) {
+        var toNotRemove = [];
+        paths.forEach(function (path, idx) {
             var el = userObject.find(path);
             var files = [];
+            var key = path[path.length - 1];
 
             // Get the files ID from the current path (file or folder)
             if (userObject.isFile(el)) {
                 files.push(el);
+            } else if (userObject.isSharedFolder(el)) {
+                files.push(el);
+                var obj = Env.folders[el].proxy.metadata || {};
+                if (obj) { key = obj.title; }
             } else {
                 userObject.getFilesRecursively(el, files);
             }
 
-            // Remove the shared folder from this list of files ID
-            files.filter(function (f) { return !userObject.isSharedFolder(f); });
+            // If the element is a folder and it contains a shared folder, abort!
+            // We don't want nested shared folders!
+            if (files.some(function (f) { return userObject.isSharedFolder(f); })) {
+                if (Env.cfg && Env.cfg.log) {
+                    Env.cfg.log(Messages._getKey('fm_moveNestedSF', [key]));
+                }
+                toNotRemove.unshift(idx);
+                return;
+            }
+
             // Deduplicate
             files = Util.deduplicateString(files);
 
@@ -237,9 +259,16 @@ define([
 
             data.push({
                 el: el,
-                data: filesData
+                data: filesData,
+                key: key
             });
         });
+
+        // Remove from the "paths" array the elements that we don't want to move
+        toNotRemove.forEach(function (idx) {
+            paths.splice(idx, 1);
+        });
+
         return data;
     };
 
@@ -264,27 +293,29 @@ define([
                     // Move from the main drive to a shared folder
 
                     // Copy the elements to the new location
-                    var toCopy = _getCopyFromPaths(resolved.main, Env.user.userObject);
+                    var toCopy = _getCopyFromPaths(Env, resolved.main, Env.user.userObject);
                     var newUserObject = newResolved.userObject;
                     var ownedPads = [];
                     toCopy.forEach(function (obj) {
-                        newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data);
+                        newUserObject.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
                         var _owned = Object.keys(obj.data).filter(function (id) {
                             var owners = obj.data[id].owners;
-                            return Array.isArray(owners) && owners.indexOf(Env.edPublic) !== -1;
+                            return _ownedByMe(Env, owners);
                         });
                         Array.prototype.push.apply(ownedPads, _owned);
                     });
 
-                    var rootPath = resolved.main[0].slice();
-                    rootPath.pop();
-                    ownedPads = Util.deduplicateString(ownedPads);
-                    ownedPads.forEach(function (id) {
-                        Env.user.userObject.add(Number(id), rootPath);
-                    });
+                    if (resolved.main.length) {
+                        var rootPath = resolved.main[0].slice();
+                        rootPath.pop();
+                        ownedPads = Util.deduplicateString(ownedPads);
+                        ownedPads.forEach(function (id) {
+                            Env.user.userObject.add(Number(id), rootPath);
+                        });
 
-                    // Remove the elements from the old location (without unpinning)
-                    Env.user.userObject.delete(resolved.main, waitFor());
+                        // Remove the elements from the old location (without unpinning)
+                        Env.user.userObject.delete(resolved.main, waitFor());
+                    }
                 }
             }
             var folderIds = Object.keys(resolved.folders);
@@ -302,9 +333,9 @@ define([
                         var uoTo = newResolved.userObject;
 
                         // Copy the elements to the new location
-                        var toCopy = _getCopyFromPaths(paths, uoFrom);
+                        var toCopy = _getCopyFromPaths(Env, paths, uoFrom);
                         toCopy.forEach(function (obj) {
-                            uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data);
+                            uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
                         });
 
                         // Remove the elements from the old location (without unpinning)
@@ -415,7 +446,7 @@ define([
                     if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
                     ownedRemoved = _ownedRemoved;
-                }), data.nocheck, data.isOwnPadRemoved);
+                }));
             }
         }).nThen(function (waitFor) {
             // Check if removed owned pads are duplicated is some shared folders
@@ -440,7 +471,7 @@ define([
                 Env.folders[id].userObject.delete(resolved.folders[id], waitFor(function (err, _toUnpin) {
                     if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
-                }), data.nocheck, data.isOwnPadRemoved);
+                }));
             });
         }).nThen(function (waitFor) {
             if (!Env.unpinPads) { return; }
@@ -589,8 +620,7 @@ define([
     */
 
     // Get the list of channels filtered by a type (expirable channels, owned channels, pin list)
-    var getChannelsList = function (Env, edPublic, type) {
-        //if (!edPublic) { return; }
+    var getChannelsList = function (Env, type) {
         var result = [];
         var addChannel = function (userObject) {
             if (type === 'expirable') {
@@ -599,8 +629,7 @@ define([
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return pads owned by someone else or expired by time
-                    if ((data.owners && data.owners.length && (!edPublic || data.owners.indexOf(edPublic) === -1))
-                        || (data.expire && data.expire < (+new Date()))) {
+                    if (_ownedByOther(Env, data.owners) || (data.expire && data.expire < (+new Date()))) {
                         result.push(data.channel);
                     }
                 };
@@ -611,8 +640,7 @@ define([
                     // Don't push duplicates
                     if (result.indexOf(data.channel) !== -1) { return; }
                     // Return owned pads
-                    if (Array.isArray(data.owners) && data.owners.length &&
-                        data.owners.indexOf(edPublic) !== -1) {
+                    if (_ownedByMe(Env, data.owners)) {
                         result.push(data.channel);
                     }
                 };
@@ -621,8 +649,7 @@ define([
                 return function (fileId) {
                     var data = userObject.getFileData(fileId);
                     // Don't pin pads owned by someone else
-                    if (Array.isArray(data.owners) && data.owners.length &&
-                        data.owners.indexOf(edPublic) === -1) { return; }
+                    if (_ownedByOther(Env, data.owners)) { return; }
                     // Don't push duplicates
                     if (result.indexOf(data.channel) === -1) {
                         result.push(data.channel);
@@ -631,8 +658,8 @@ define([
             }
         };
 
-        if (type === 'owned' && !edPublic) { return result; }
-        if (type === 'pin' && !edPublic) { return result; }
+        if (type === 'owned' && !Env.edPublic) { return result; }
+        if (type === 'pin' && !Env.edPublic) { return result; }
 
         // Get the list of user objects
         var userObjects = _getUserObjects(Env);
@@ -646,8 +673,7 @@ define([
         if (type === "owned") {
             var sfOwned = Object.keys(Env.user.proxy[UserObject.SHARED_FOLDERS]).filter(function (fId) {
                 var owners = Env.user.proxy[UserObject.SHARED_FOLDERS][fId].owners;
-                if (Array.isArray(owners) && owners.length &&
-                    owners.indexOf(edPublic) !== -1) { return true; }
+                if (_ownedByMe(Env, owners)) { return true; }
             }).map(function (fId) {
                 return Env.user.proxy[UserObject.SHARED_FOLDERS][fId].channel;
             });
@@ -672,10 +698,22 @@ define([
             p = resolved.path;
         }
         var todo = function () {
-            uo.pushData(pad, function (e, id) {
-                if (e) { return void cb(e); }
-                uo.add(id, p);
-                cb();
+            var error;
+            nThen(function (waitFor) {
+                uo.pushData(pad, waitFor(function (e, id) {
+                    if (e) { error = e; return; }
+                    uo.add(id, p);
+                }));
+                if (uo.id && _ownedByMe(Env, pad.owners)) {
+                    // Creating an owned pad in a shared folder:
+                    // We must add a copy in the user's personnal drive
+                    Env.user.userObject.pushData(pad, waitFor(function (e, id) {
+                        if (e) { error = e; return; }
+                        Env.user.userObject.add(id, ['root']);
+                    }));
+                }
+            }).nThen(function () {
+                cb(error);
             });
         };
         if (!Env.pinPads) { return void todo(); }
@@ -777,14 +815,11 @@ define([
             }
         }, cb);
     };
-    var deleteInner = function (Env, paths, cb, nocheck, isOwnPadRemoved, noUnpin) {
+    var deleteInner = function (Env, paths, cb) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "delete",
             data: {
                 paths: paths,
-                nocheck: nocheck,
-                noUnpin: noUnpin,
-                isOwnPadRemoved: isOwnPadRemoved
             }
         }, cb);
     };
@@ -857,7 +892,7 @@ define([
     };
 
     var getSharedFolderData = function (Env, id) {
-        if (!Env.folders[id]) { return; }
+        if (!Env.folders[id]) { return {}; }
         var obj = Env.folders[id].proxy.metadata || {};
         for (var k in Env.user.proxy[UserObject.SHARED_FOLDERS][id] || {}) {
             obj[k] = Env.user.proxy[UserObject.SHARED_FOLDERS][id][k];

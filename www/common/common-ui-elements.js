@@ -125,82 +125,86 @@ define([
             id: 'cp-app-prop-owners',
         }));
 
-        var expire = Messages.creation_expireFalse;
-        if (data.expire && typeof (data.expire) === "number") {
-            expire = new Date(data.expire).toLocaleString();
-        }
-        $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(expire, {
-            id: 'cp-app-prop-expire',
-        }));
-
-        var hasPassword = data.password;
-        if (hasPassword) {
-            $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                .appendTo($d);
-            var password = UI.passwordInput({
-                id: 'cp-app-prop-password',
-                readonly: 'readonly'
-            });
-            var $pwInput = $(password).find('.cp-password-input');
-            $pwInput.val(data.password).click(function () {
-                $pwInput[0].select();
-            });
-            $d.append(password);
-        }
-
-        var parsed = Hash.parsePadUrl(data.href || data.roHref);
-        if (owned && parsed.hashData.type === 'pad') {
-            var sframeChan = common.getSframeChannel();
-            var changePwTitle = Messages.properties_changePassword;
-            var changePwConfirm = Messages.properties_confirmChange;
-            if (!hasPassword) {
-                changePwTitle = Messages.properties_addPassword;
-                changePwConfirm = Messages.properties_confirmNew;
+        if (!data.noExpiration) {
+            var expire = Messages.creation_expireFalse;
+            if (data.expire && typeof (data.expire) === "number") {
+                expire = new Date(data.expire).toLocaleString();
             }
-            $('<label>', {'for': 'cp-app-prop-change-password'})
-                .text(changePwTitle).appendTo($d);
-            var newPassword = UI.passwordInput({
-                id: 'cp-app-prop-change-password',
-                style: 'flex: 1;'
-            });
-            var passwordOk = h('button', Messages.properties_changePasswordButton);
-            var changePass = h('span.cp-password-container', [
-                newPassword,
-                passwordOk
-            ]);
-            $(passwordOk).click(function () {
-                var newPass = $(newPassword).find('input').val();
-                if (data.password === newPass ||
-                    (!data.password && !newPass)) {
-                    return void UI.alert(Messages.properties_passwordSame);
+            $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(expire, {
+                id: 'cp-app-prop-expire',
+            }));
+        }
+
+        if (!data.noPassword) {
+            var hasPassword = data.password;
+            if (hasPassword) {
+                $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                    .appendTo($d);
+                var password = UI.passwordInput({
+                    id: 'cp-app-prop-password',
+                    readonly: 'readonly'
+                });
+                var $pwInput = $(password).find('.cp-password-input');
+                $pwInput.val(data.password).click(function () {
+                    $pwInput[0].select();
+                });
+                $d.append(password);
+            }
+
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            if (owned && parsed.hashData.type === 'pad') {
+                var sframeChan = common.getSframeChannel();
+                var changePwTitle = Messages.properties_changePassword;
+                var changePwConfirm = Messages.properties_confirmChange;
+                if (!hasPassword) {
+                    changePwTitle = Messages.properties_addPassword;
+                    changePwConfirm = Messages.properties_confirmNew;
                 }
-                UI.confirm(changePwConfirm, function (yes) {
-                    if (!yes) { return; }
-                    sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
-                        href: data.href || data.roHref,
-                        password: newPass
-                    }, function (err, data) {
-                        if (err || data.error) {
-                            return void UI.alert(Messages.properties_passwordError);
-                        }
-                        UI.findOKButton().click();
-                        // If we didn't have a password, we have to add the /p/
-                        // If we had a password and we changed it to a new one, we just have to reload
-                        // If we had a password and we removed it, we have to remove the /p/
-                        if (data.warning) {
-                            return void UI.alert(Messages.properties_passwordWarning, function () {
+                $('<label>', {'for': 'cp-app-prop-change-password'})
+                    .text(changePwTitle).appendTo($d);
+                var newPassword = UI.passwordInput({
+                    id: 'cp-app-prop-change-password',
+                    style: 'flex: 1;'
+                });
+                var passwordOk = h('button', Messages.properties_changePasswordButton);
+                var changePass = h('span.cp-password-container', [
+                    newPassword,
+                    passwordOk
+                ]);
+                $(passwordOk).click(function () {
+                    var newPass = $(newPassword).find('input').val();
+                    if (data.password === newPass ||
+                        (!data.password && !newPass)) {
+                        return void UI.alert(Messages.properties_passwordSame);
+                    }
+                    UI.confirm(changePwConfirm, function (yes) {
+                        if (!yes) { return; }
+                        sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                            href: data.href || data.roHref,
+                            password: newPass
+                        }, function (err, data) {
+                            if (err || data.error) {
+                                return void UI.alert(Messages.properties_passwordError);
+                            }
+                            UI.findOKButton().click();
+                            // If we didn't have a password, we have to add the /p/
+                            // If we had a password and we changed it to a new one, we just have to reload
+                            // If we had a password and we removed it, we have to remove the /p/
+                            if (data.warning) {
+                                return void UI.alert(Messages.properties_passwordWarning, function () {
+                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                }, {force: true});
+                            }
+                            return void UI.alert(Messages.properties_passwordSuccess, function () {
                                 common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
-                            }, {force: true});
-                        }
-                        return void UI.alert(Messages.properties_passwordSuccess, function () {
-                            common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
-                        }, {force: true});
+                            }, {force: true});
+                        });
                     });
                 });
-            });
-            $d.append(changePass);
+                $d.append(changePass);
+            }
         }
 
         cb(void 0, $d);

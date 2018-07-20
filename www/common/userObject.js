@@ -579,19 +579,18 @@ define([
         // DELETE
         // Permanently delete multiple files at once using a list of paths
         // NOTE: We have to be careful when removing elements from arrays (trash root, unsorted or template)
-        exp.delete = function (paths, cb, nocheck, isOwnPadRemoved) {
+        exp.delete = function (paths, cb, nocheck) {
             if (sframeChan) {
                 return void sframeChan.query("Q_DRIVE_USEROBJECT", {
                     cmd: "delete",
                     data: {
                         paths: paths,
                         nocheck: nocheck,
-                        isOwnPadRemoved: isOwnPadRemoved
                     }
                 }, cb);
             }
             cb = cb || function () {};
-            exp.deleteMultiplePermanently(paths, nocheck, isOwnPadRemoved, cb);
+            exp.deleteMultiplePermanently(paths, nocheck, cb);
             //if (typeof cb === "function") { cb(); }
         };
         exp.emptyTrash = function (cb) {
@@ -602,7 +601,7 @@ define([
                 }, cb);
             }
             files[TRASH] = {};
-            exp.checkDeletedFiles(false, cb);
+            exp.checkDeletedFiles(cb);
         };
 
         // RENAME

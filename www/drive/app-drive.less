@@ -782,6 +782,7 @@
         }
         .cp-app-drive-toolbar-rightside {
             float: right;
+            flex-shrink: 0;
             & > * {
                 float: right;
             }
@@ -842,6 +843,8 @@
             white-space: nowrap;
             display: flex;
             flex-flow: row-reverse;
+            flex-shrink: 1;
+            min-width: 50px;
             max-width: 100%;
             text-align: left;
             .cp-app-drive-path-element {

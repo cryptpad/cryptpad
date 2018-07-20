@@ -80,9 +80,8 @@ define([
         };
 
         // Find files in FILES_DATA that are not anymore in the drive, and remove them from
-        // FILES_DATA. If there are owned pads, remove them from server too, unless the flag tells
-        // us they're already removed
-        exp.checkDeletedFiles = function (isOwnPadRemoved, cb) {
+        // FILES_DATA. If there are owned pads, remove them from server too.
+        exp.checkDeletedFiles = function (cb) {
             if (!loggedIn && !config.testMode) { return void cb(); }
 
             var filesList = exp.getFiles([ROOT, 'hrefArray', TRASH]);
@@ -93,8 +92,8 @@ define([
                     var fd = exp.isSharedFolder(id) ? files[SHARED_FOLDERS][id] : exp.getFileData(id);
                     var channelId = fd.channel;
                     // If trying to remove an owned pad, remove it from server also
-                    if (!isOwnPadRemoved && !sharedFolder &&
-                            fd.owners && fd.owners.indexOf(edPublic) !== -1 && channelId) {
+                    if (!sharedFolder && fd.owners && fd.owners.indexOf(edPublic) !== -1
+                        && channelId) {
                         if (channelId) { ownedRemoved.push(channelId); }
                         removeOwnedChannel(channelId, function (obj) {
                             if (obj && obj.error) {
@@ -132,7 +131,7 @@ define([
                 files[TRASH][obj.name].splice(idx, 1);
             });
         };
-        exp.deleteMultiplePermanently = function (paths, nocheck, isOwnPadRemoved, cb) {
+        exp.deleteMultiplePermanently = function (paths, nocheck, cb) {
             var hrefPaths = paths.filter(function(x) { return exp.isPathIn(x, ['hrefArray']); });
             var rootPaths = paths.filter(function(x) { return exp.isPathIn(x, [ROOT]); });
             var trashPaths = paths.filter(function(x) { return exp.isPathIn(x, [TRASH]); });
@@ -185,14 +184,14 @@ define([
 
             // In some cases, we want to remove pads from a location without removing them from
             // FILES_DATA (replaceHref)
-            if (!nocheck) { exp.checkDeletedFiles(isOwnPadRemoved, cb); }
+            if (!nocheck) { exp.checkDeletedFiles(cb); }
             else { cb(); }
         };
 
         // Move
 
         // From another drive
-        exp.copyFromOtherDrive = function (path, element, data) {
+        exp.copyFromOtherDrive = function (path, element, data, key) {
             // Copy files data
             // We have to remove pads that are already in the current proxy to make sure
             // we won't create duplicates
@@ -241,7 +240,8 @@ define([
 
             // Copy file or folder
             var newParent = exp.find(path);
-            var newName = exp.getAvailableName(newParent, Hash.createChannelId());
+            var tempName = exp.isFile(element) ? Hash.createChannelId() : key;
+            var newName = exp.getAvailableName(newParent, tempName);
             newParent[newName] = element;
         };
 

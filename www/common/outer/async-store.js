@@ -94,8 +94,7 @@ define([
             // Get the list of pads' channel ID in your drive
             // This list is filtered so that it doesn't include pad owned by other users
             // It now includes channels from shared folders
-            var edPublic = store.proxy.edPublic;
-            var list = store.manager.getChannelsList(edPublic, 'pin');
+            var list = store.manager.getChannelsList('pin');
 
             // Get the avatar
             var profile = store.proxy.profile;
@@ -118,8 +117,7 @@ define([
         };
 
         var getExpirableChannelList = function () {
-            var edPublic = store.proxy.edPublic;
-            return store.manager.getChannelsList(edPublic, 'expirable');
+            return store.manager.getChannelsList('expirable');
         };
 
         var getCanonicalChannelList = function (expirable) {
@@ -466,8 +464,7 @@ define([
         };
 
         var getOwnedPads = function () {
-            var edPublic = store.proxy.edPublic;
-            var list = store.manager.getChannelsList(edPublic, 'owned');
+            var list = store.manager.getChannelsList('owned');
             if (store.proxy.todo) {
                 // No password for todo
                 list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));

@@ -446,7 +446,8 @@ define(function () {
     out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
     out.fm_tags_name = "Tag name";
     out.fm_tags_used = "Number of uses";
-    out.fm_restoreDrive = "Resetting your drive to an earlier state. For best results, avoid making changes to your drive until this process is complete."
+    out.fm_restoreDrive = "Resetting your drive to an earlier state. For best results, avoid making changes to your drive until this process is complete.";
+    out.fm_moveNestedSF = "Nested shared drive are not allowed. The folder {0} was not moved."; // XXX
     // File - Context menu
     out.fc_newfolder = "New folder";
     out.fc_newsharedfolder = "New shared Drive";

@@ -2750,12 +2750,13 @@ define([
                 if (!manager.isFolder(root[key])) { return; }
                 var newPath = path.slice();
                 newPath.push(key);
+                var nextPath = newPath.slice();
                 var isSharedFolder = manager.isSharedFolder(root[key]);
                 var $icon, isCurrentFolder, subfolder;
                 if (isSharedFolder) {
                     var fId = root[key];
                     // Fix path
-                    newPath.push(manager.user.userObject.ROOT);
+                    nextPath.push(manager.user.userObject.ROOT);
                     isCurrentFolder = manager.comparePath(newPath, currentPath);
                     // Subfolders?
                     var newRoot = manager.folders[fId].proxy[manager.user.userObject.ROOT];
@@ -2779,7 +2780,7 @@ define([
                     $element.find('>.cp-app-drive-element-row')
                         .addClass('cp-app-drive-element-sharedf');
                 }
-                createTree($element, newPath);
+                createTree($element, nextPath);
             });
         };
 
@@ -2957,6 +2958,8 @@ define([
 
             if (manager.isSharedFolder(el)) {
                 delete data.roHref;
+                data.noPassword = true;
+                data.noExpiration = true;
             }
 
             UIElements.getProperties(common, data, cb);
