@@ -247,7 +247,7 @@ define([
 
                 // insert a newline if they're holding either
                 var val = this.value;
-                var start = this.selectionState;
+                var start = this.selectionStart;
                 var end = this.selectionEnd;
 
                 if (![start,end].some(function (x) {
