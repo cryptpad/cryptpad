@@ -13,6 +13,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
+    'css!/customize/fonts/cptools/style.css'
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
              Messages, AppConfig, NThen) {
     var UIElements = {};
@@ -2045,12 +2046,14 @@ define([
             allData.unshift({
                 name: Messages.creation_newTemplate,
                 id: -1,
-                icon: h('span.fa.fa-bookmark')
+                //icon: h('span.fa.fa-bookmark')
+                icon: h('span.cptools.cptools-new-template')
             });
             allData.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
-                icon: h('span.fa.fa-file')
+                //icon: h('span.fa.fa-file')
+                icon: UI.getFileIcon({type: type})
             });
             var redraw = function (index) {
                 if (index < 0) { i = 0; }
@@ -2066,7 +2069,7 @@ define([
                     }).appendTo($container);
                     $span.data('id', obj.id);
                     if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
-                    $span.append(obj.icon || UI.getFileIcon({type: type}));
+                    $span.append(obj.icon || h('span.cptools.cptools-template'));
                     $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
                         .appendTo($span);
                     $span.click(function () {

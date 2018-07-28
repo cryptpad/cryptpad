@@ -279,24 +279,18 @@
                     color: black;
                     border: 1px solid transparent;
 
-                    &.cp-creation-template-selected {
+                    &.cp-creation-template-selected, &:hover {
                         color: @creation-color !important;
                         color: var(--creation-color) !important;
                         background-color: @creation-bg-color !important;
                         background-color: var(--creation-bg-color) !important;
-                        .fa {
+                        .fa, .cptools {
                             color: @creation-color;
                             color: var(--creation-color);
                         }
                     }
 
                     transition: all 0.1s;
-
-                    &:hover {
-                        //color: @colortheme_modal-fg;
-                        background-color: @colortheme_form-border;
-                        box-shadow: none;
-                    }
 
                     align-items: center;
 
@@ -317,7 +311,7 @@
                         margin-top: 5px;
                         max-width: 100%;
                     }
-                    .fa {
+                    .fa, .cptools {
                         color: @creation-bg-color;
                         color: var(--creation-bg-color);
                         cursor: pointer;
