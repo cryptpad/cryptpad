@@ -731,6 +731,9 @@ define([
             if (channelData && channelData.wc && channel === channelData.wc.id) {
                 owners = channelData.data.owners || undefined;
             }
+            if (data.owners) {
+                owners = data.owners;
+            }
 
             var expire;
             if (channelData && channelData.wc && channel === channelData.wc.id) {
