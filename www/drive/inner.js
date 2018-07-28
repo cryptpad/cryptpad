@@ -71,7 +71,8 @@ define([
     // Icons
     var faFolder = 'fa-folder';
     var faFolderOpen = 'fa-folder-open';
-    var faSharedFolder = 'fa-hdd-o';
+    var faSharedFolder = 'fa-folder-o';
+    var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faRename = 'fa-pencil';
     var faTrash = 'fa-trash';
@@ -111,6 +112,7 @@ define([
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
     var $ownedIcon = $('<span>', {"class": "fa fa-id-card-o"});
+    var $sharedIcon = $('<span>', {"class": "fa " + faShared});
     var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
 
@@ -1415,6 +1417,9 @@ define([
                 element = manager.folders[element].proxy[manager.user.userObject.ROOT];
                 $span.addClass('cp-app-drive-element-sharedf');
                 _addOwnership($span, $state, data);
+
+                var $shared = $sharedIcon.clone().appendTo($state);
+                $shared.attr('title', 'Can be shared'); // XXX
             }
 
             var sf = manager.hasSubfolder(element);
