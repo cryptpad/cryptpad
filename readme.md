@@ -82,4 +82,4 @@ any later version. If you wish to use this technology in a proprietary product, 
 sales@xwiki.com.
 
 [ChainPad]: https://github.com/xwiki-contrib/chainpad
-[active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attacks
+[active attack]: https://en.wikipedia.org/wiki/Attack_(computing)#Types_of_attack
