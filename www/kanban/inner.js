@@ -10,6 +10,7 @@ define([
     '/common/modes.js',
     '/customize/messages.js',
     '/kanban/jkanban.js',
+    '/kanban/jscolor.js',
     'css!/kanban/jkanban.css',
 ], function (
     $,
@@ -105,7 +106,7 @@ define([
 
         var kanban = new window.jKanban({
             element: '#cp-app-kanban-content',
-            gutter: '15px',
+            gutter: '5px',
             widthBoard: '300px',
             buttonContent: '❌',
             colors: COLORS,
@@ -209,22 +210,26 @@ define([
                 verbose("in color click");
                 var board = $(el.parentNode).attr("data-id");
                 var boardJSON = kanban.getBoardJSON(board);
+                var onchange = function (colorL) {
+                    var elL = el;
+                    var boardL = $(elL.parentNode).attr("data-id");
+                    var boardJSONL = kanban.getBoardJSON(boardL);
+                    var currentColor = boardJSONL.color;
+                    verbose("Current color " + currentColor);
+                    if (currentColor !== colorL.toString()) {
+                        $(elL).removeClass("kanban-header-" + currentColor);
+                        boardJSONL.color = colorL.toString();
+                        kanban.onChange();
+                    }
+                };
+                var jscolorL;
+                el._jscLinkedInstance = undefined;
+                jscolorL = new jscolor(el,{onFineChange: onchange, valueElement:undefined});
+                jscolorL.show();
                 var currentColor = boardJSON.color;
-                verbose("Current color " + currentColor);
-                var index = kanban.options.colors.findIndex(function (element) {
-                    return (element === currentColor);
-                }) + 1;
-                verbose("Next index " + index);
-                if (index >= kanban.options.colors.length) { index = 0; }
-                var nextColor = kanban.options.colors[index];
-                verbose("Next color " + nextColor);
-                boardJSON.color = nextColor;
-                $(el).removeClass("kanban-header-" + currentColor);
-                $(el).addClass("kanban-header-" + nextColor);
-                kanban.onChange();
+                jscolorL.fromString(currentColor);
             },
-            buttonClick: function (el, boardId, e) {
-                e.stopPropagation();
+            buttonClick: function (el, boardId) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {
                     if (!yes) { return; }

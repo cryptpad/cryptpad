@@ -52,6 +52,7 @@
                     widthBoard: '250px',
                     responsive: '700',
                     colors: ["yellow", "green", "blue", "red", "orange"],
+                    responsivePercentage: false,
                     boards: [],
                     dragBoards: true,
                     addItemButton: false,
@@ -85,12 +86,12 @@
                         //Init Drag Board
                         self.drakeBoard = self.dragula([self.container], {
                                 moves: function (el, source, handle, sibling) {
-                                    if (self.options.readOnly) { return false; }
+                                    if (self.options.readOnly) { return false; }
                                     if (!self.options.dragBoards) return false;
                                     return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
                                 },
                                 accepts: function (el, target, source, sibling) {
-                                    if (self.options.readOnly) { return false; }
+                                    if (self.options.readOnly) { return false; }
                                     return target.classList.contains('kanban-container');
                                 },
                                 revertOnSpill: true,
@@ -112,7 +113,7 @@
                                 el.classList.remove('is-moving');
                                 self.options.dropBoard(el, target, source, sibling);
                                 if (typeof (el.dropfn) === 'function')
-                                    el.dropfn(el, target, source, sibling);
+                                    el.dropfn(el, target, source, sibling);                                   el.dropfn(el, target, source, sibling);
 
                                 // TODO: update board object board order
                                 console.log("Drop " + $(el).attr("data-id") + " just before " + (sibling ? $(sibling).attr("data-id") : " end "));
@@ -145,14 +146,17 @@
                         //Init Drag Item
                         self.drake = self.dragula(self.boardContainer, {
                                 moves: function (el, source, handle, sibling) {
-                                    if (self.options.readOnly) { return false; }
+                                    if (self.options.readOnly) { return false; }
                                     return handle.classList.contains('kanban-item');
                                 },
                                 accepts: function (el, target, source, sibling) {
-                                    if (self.options.readOnly) { return false; }
+                                    if (self.options.readOnly) { return false; }
                                     return true;
                                 },
                                 revertOnSpill: true
+                            })
+                            .on('cancel', function(el, container, source) {
+                                self.enableAllBoards();
                             })
                             .on('drag', function (el, source) {
                                 // we need to calculate the position before starting to drag
@@ -184,7 +188,9 @@
                                 var boardId = source.parentNode.dataset.id;
                                 self.options.dragcancelEl(el, boardId);
                             })
-                            .on('drop', function (el, target, source, sibling) {
+                            .on('drop', function(el, target, source, sibling) {
+                                self.enableAllBoards();
+
                                 console.log("In drop");
 
                                 // TODO: update board object board order
@@ -229,7 +235,7 @@
                                 // if (board1==board2 && pos2<pos1)
                                 //   pos2 = pos2;
 
-                                // moving element to target array   
+                                // moving element to target array
                                 board1.item.splice(pos1, 1);
                                 board2.item.splice(pos2 - 1, 0, item);
 
@@ -240,9 +246,18 @@
                     }
                 };
 
+                this.enableAllBoards = function() {
+                    var allB = document.querySelectorAll('.kanban-board');
+                    if (allB.length > 0 && allB !== undefined) {
+                        for (var i = 0; i < allB.length; i++) {
+                            allB[i].classList.remove('disabled-board');
+                        }
+                    }
+                };
+
                 this.addElement = function (boardID, element) {
 
-                    // add Element to JSON        
+                    // add Element to JSON
                     var boardJSON = __findBoardJSON(boardID);
                     boardJSON.item.push({
                         title: element.title
@@ -272,8 +287,19 @@
                     return self;
                 };
 
-                this.addBoards = function (boards) {
-                    var boardWidth = self.options.widthBoard;
+
+                this.addBoards = function(boards) {
+                    if (self.options.responsivePercentage) {
+                        self.container.style.width = '100%';
+                        self.options.gutter = '1%';
+                        if (window.innerWidth > self.options.responsive) {
+                            var boardWidth = (100 - boards.length * 2) / boards.length;
+                        } else {
+                            var boardWidth = 100 - (boards.length * 2);
+                        }
+                    } else {
+                        var boardWidth = self.options.widthBoard;
+                    }
                     var addButton = self.options.addItemButton;
                     var buttonContent = self.options.buttonContent;
 
@@ -285,12 +311,24 @@
                         if (self.options.boards !== boards)
                             self.options.boards.push(board);
 
+                        /*if (!self.options.responsivePercentage) {
+                            //add width to container
+                            if (self.container.style.width === '') {
+                                self.container.style.width = parseInt(boardWidth) + (parseInt(self.options.gutter) * 2) + 'px';
+                            } else {
+                                self.container.style.width = parseInt(self.container.style.width) + parseInt(boardWidth) + (parseInt(self.options.gutter) * 2) + 'px';
+                            }
+                        }*/
                         //create node
                         var boardNode = document.createElement('div');
                         boardNode.dataset.id = board.id;
                         boardNode.classList.add('kanban-board');
                         //set style
-                        boardNode.style.width = boardWidth;
+                        if (self.options.responsivePercentage) {
+                            boardNode.style.width = boardWidth + '%';
+                        } else {
+                            boardNode.style.width = boardWidth;
+                        }
                         boardNode.style.marginLeft = self.options.gutter;
                         boardNode.style.marginRight = self.options.gutter;
                         // header board
@@ -303,6 +341,10 @@
                             headerBoard.classList.add(value);
                         });
                         if (board.color !== '' && board.color !== undefined) {
+                            headerBoard._jscLinkedInstance = undefined;
+                            jscolorL = new jscolor(headerBoard,{valueElement:undefined});
+                            jscolorL.fromString(board.color);
+                            headerBoard._jscLinkedInstance = undefined;
                             headerBoard.classList.add("kanban-header-" + board.color);
                         }
                         titleBoard = document.createElement('div');
