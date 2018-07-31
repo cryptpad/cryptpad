@@ -137,7 +137,7 @@ define([
                     // Remove the input
                     $(el).text(name);
                     // Save the value for the correct board
-                    var board = $(el.parentNode.parentNode).attr("data-id");
+                    var board = $(el.parentNode.parentNode.parentNode).attr("data-id");
                     var pos = kanban.findElementPosition(el);
                     kanban.getBoardJSON(board).item[pos].title = name;
                     kanban.onChange();

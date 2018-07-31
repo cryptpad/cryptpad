@@ -31,7 +31,7 @@
          * @author: Riccardo Tartaglia
          */
 
-        //Require dragula
+            //Require dragula
         var dragula = require('dragula');
 
         (function () {
@@ -85,18 +85,18 @@
 
                         //Init Drag Board
                         self.drakeBoard = self.dragula([self.container], {
-                                moves: function (el, source, handle, sibling) {
-                                    if (self.options.readOnly) { return false; }
-                                    if (!self.options.dragBoards) return false;
-                                    return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
-                                },
-                                accepts: function (el, target, source, sibling) {
-                                    if (self.options.readOnly) { return false; }
-                                    return target.classList.contains('kanban-container');
-                                },
-                                revertOnSpill: true,
-                                direction: 'horizontal',
-                            })
+                            moves: function (el, source, handle, sibling) {
+                                if (self.options.readOnly) { return false; }
+                                if (!self.options.dragBoards) return false;
+                                return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
+                            },
+                            accepts: function (el, target, source, sibling) {
+                                if (self.options.readOnly) { return false; }
+                                return target.classList.contains('kanban-container');
+                            },
+                            revertOnSpill: true,
+                            direction: 'horizontal',
+                        })
                             .on('drag', function (el, source) {
                                 el.classList.add('is-moving');
                                 self.options.dragBoard(el, source);
@@ -145,16 +145,16 @@
 
                         //Init Drag Item
                         self.drake = self.dragula(self.boardContainer, {
-                                moves: function (el, source, handle, sibling) {
-                                    if (self.options.readOnly) { return false; }
-                                    return handle.classList.contains('kanban-item');
-                                },
-                                accepts: function (el, target, source, sibling) {
-                                    if (self.options.readOnly) { return false; }
-                                    return true;
-                                },
-                                revertOnSpill: true
-                            })
+                            moves: function (el, source, handle, sibling) {
+                                if (self.options.readOnly) { return false; }
+                                return handle.classList.contains('kanban-item');
+                            },
+                            accepts: function (el, target, source, sibling) {
+                                if (self.options.readOnly) { return false; }
+                                return true;
+                            },
+                            revertOnSpill: true
+                        })
                             .on('cancel', function(el, container, source) {
                                 self.enableAllBoards();
                             })
@@ -374,14 +374,38 @@
                             var nodeItem = document.createElement('div');
                             nodeItem.classList.add('kanban-item');
                             nodeItem.dataset.eid = itemKanban.id;
-                            nodeItem.innerHTML = itemKanban.title;
+                            var nodeItemText = document.createElement('div');
+                            nodeItemText.classList.add('kanban-item-text');
+                            nodeItemText.dataset.eid = itemKanban.id;
+                            nodeItemText.innerHTML = itemKanban.title;
+                            nodeItem.appendChild(nodeItemText);
                             //add function
-                            nodeItem.clickfn = itemKanban.click;
-                            nodeItem.dragfn = itemKanban.drag;
-                            nodeItem.dragendfn = itemKanban.dragend;
-                            nodeItem.dropfn = itemKanban.drop;
+                            nodeItemText.clickfn = itemKanban.click;
+                            nodeItemText.dragfn = itemKanban.drag;
+                            nodeItemText.dragendfn = itemKanban.dragend;
+                            nodeItemText.dropfn = itemKanban.drop;
                             //add click handler of item
-                            __onclickHandler(nodeItem);
+                            __onclickHandler(nodeItemText);
+
+                            var onchange = function (colorL) {
+                                var currentColor = itemKanban.color;
+                                if (currentColor !== colorL.toString()) {
+                                    itemKanban.color = colorL.toString();
+                                    self.onChange();
+                                }
+                            };
+
+                            var jscolorL;
+                            nodeItem._jscLinkedInstance = undefined;
+                            jscolorL = new jscolor(nodeItem,{onFineChange: onchange, valueElement:undefined});
+                            var currentColor = itemKanban.color;
+                            // If not defined dont have it undefined
+                            if (currentColor == undefined) {
+                                currentColor = ''
+                            }
+                            console.log(currentColor);
+                            jscolorL.fromString(currentColor);
+
                             contentBoard.appendChild(nodeItem);
                         }
                         //footer board
@@ -575,7 +599,7 @@
         }());
 
 
-}, {
+    }, {
         "dragula": 9
     }],
     2: [function (require, module, exports) {
@@ -583,7 +607,7 @@
             return Array.prototype.slice.call(a, n);
         }
 
-}, {}],
+    }, {}],
     3: [function (require, module, exports) {
         'use strict';
 
@@ -598,7 +622,7 @@
             });
         };
 
-}, {
+    }, {
         "ticky": 10
     }],
     4: [function (require, module, exports) {
@@ -669,7 +693,7 @@
             return thing;
         };
 
-}, {
+    }, {
         "./debounce": 3,
         "atoa": 2
     }],
@@ -786,7 +810,7 @@
             }
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}, {
+    }, {
         "./eventmap": 6,
         "custom-event": 7
     }],
@@ -807,7 +831,7 @@
             module.exports = eventmap;
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}, {}],
+    }, {}],
     7: [function (require, module, exports) {
         (function (global) {
 
@@ -837,33 +861,33 @@
 
                 // IE >= 9
                 'function' === typeof document.createEvent ? function CustomEvent(type, params) {
-                    var e = document.createEvent('CustomEvent');
-                    if (params) {
-                        e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
-                    } else {
-                        e.initCustomEvent(type, false, false, void 0);
-                    }
-                    return e;
-                } :
+                        var e = document.createEvent('CustomEvent');
+                        if (params) {
+                            e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
+                        } else {
+                            e.initCustomEvent(type, false, false, void 0);
+                        }
+                        return e;
+                    } :
 
-                // IE <= 8
-                function CustomEvent(type, params) {
-                    var e = document.createEventObject();
-                    e.type = type;
-                    if (params) {
-                        e.bubbles = Boolean(params.bubbles);
-                        e.cancelable = Boolean(params.cancelable);
-                        e.detail = params.detail;
-                    } else {
-                        e.bubbles = false;
-                        e.cancelable = false;
-                        e.detail = void 0;
+                    // IE <= 8
+                    function CustomEvent(type, params) {
+                        var e = document.createEventObject();
+                        e.type = type;
+                        if (params) {
+                            e.bubbles = Boolean(params.bubbles);
+                            e.cancelable = Boolean(params.cancelable);
+                            e.detail = params.detail;
+                        } else {
+                            e.bubbles = false;
+                            e.cancelable = false;
+                            e.detail = void 0;
+                        }
+                        return e;
                     }
-                    return e;
-                }
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}, {}],
+    }, {}],
     8: [function (require, module, exports) {
         'use strict';
 
@@ -899,7 +923,7 @@
             rm: rmClass
         };
 
-}, {}],
+    }, {}],
     9: [function (require, module, exports) {
         (function (global) {
             'use strict';
@@ -1586,7 +1610,7 @@
             module.exports = dragula;
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-}, {
+    }, {
         "./classes": 8,
         "contra/emitter": 4,
         "crossvent": 5
@@ -1605,5 +1629,5 @@
         }
 
         module.exports = tick;
-}, {}]
+    }, {}]
 }, {}, [1]);
