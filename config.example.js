@@ -276,7 +276,7 @@ module.exports = {
      */
     blobStagingPath: './blobstage',
 
-    /*  CryptPad's file storage adaptor closes unused files after a configurale
+    /*  CryptPad's file storage adaptor closes unused files after a configurable
      *  number of milliseconds (default 30000 (30 seconds))
      */
     channelExpirationMs: 30000,
