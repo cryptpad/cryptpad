@@ -1,9 +1,14 @@
-FROM node:6-alpine
+FROM arm64v8/node:6
 
 COPY . /cryptpad
 WORKDIR /cryptpad
 
-RUN apk add --no-cache git tini \
+RUN npm config set unsafe-perm true
+
+ADD https://github.com/krallin/tini/releases/download/v0.18.0/tini-static-arm64 /sbin/tini
+RUN chmod a+x /sbin/tini
+
+RUN apt install -y git \
    && npm install --production \
    && npm install -g bower \
    && bower install --allow-root

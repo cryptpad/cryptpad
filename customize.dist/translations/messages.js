@@ -50,7 +50,7 @@ define(function () {
     out.deleted = "Pad deleted from your CryptDrive";
     out.deletedFromServer = "Pad deleted from the server";
 
-    out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
+    out.realtime_unrecoverableError = "An unrecoverable error has occured. Click OK to reload.";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
@@ -600,14 +600,21 @@ define(function () {
     out.settings_templateSkip = "Skip the template selection modal";
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
-    out.settings_changePasswordTitle = "Change your password"; // XXX
-    out.settings_changePasswordHint = "Change your account's password without losing its data. You have to enter your existing password once, and the new password you want twice.<br>" +
-                                      "<b>We can't reset your password if you forget it so be very careful!</b>"; // XXX
-    out.settings_changePasswordButton = "Change password"; // XXX
-    out.settings_changePasswordCurrent = "Existing password"; // XXX
-    out.settings_changePasswordNew = "New password"; // XXX
-    out.settings_changePasswordNewConfirm = "Confirm new password"; // XXX
-    out.settings_changePasswordConfirm = "Are you sure?"; // XXX
+    out.settings_ownDriveTitle = "Drive migration"; // XXX
+    out.settings_ownDriveHint = "Migrating your drive to the new version will give you access to new features..."; // XXX
+    out.settings_ownDriveButton = "Migrate"; // XXX
+    out.settings_ownDriveConfirm = "Are you sure?"; // XXX
+
+    out.settings_changePasswordTitle = "Change your password";
+    out.settings_changePasswordHint = "Change your account's password. Enter your current password, and confirm the new password by typing it twice.<br>" +
+                                      "<b>We can't reset your password if you forget it, so be very careful!</b>";
+    out.settings_changePasswordButton = "Change password";
+    out.settings_changePasswordCurrent = "Current password";
+    out.settings_changePasswordNew = "New password";
+    out.settings_changePasswordNewConfirm = "Confirm new password";
+    out.settings_changePasswordConfirm = "Are you sure you want to change your password? You will need to log back in on all your devices.";
+    out.settings_changePasswordError = "An unexpected error occurred. If you are unable to login or change your password, contact your CryptPad administrators.";
+    out.settings_changePasswordPending = "Your password is being updated. Please do not close or reload this page until the process has completed.";
 
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";
@@ -720,7 +727,7 @@ define(function () {
     out.whatis_drive_p2 = 'With intuitive drag-and-drop, you can move pads around in your drive and the link to these pads will stay the same so your collaborators will never lose access.';
     out.whatis_drive_p3 = 'You can also upload files in your CryptDrive and share them with colleagues. Uploaded files can be organized just like collaborative pads.';
     out.whatis_business = 'CryptPad for Business';
-    out.whatis_business_p1 = 'CryptPad\'s Zero Knowledge encryption is excellent for multiplying the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using employee access credentials, CryptPad removes the hacker jackpot which exists in traditional IT servers. Read the <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a> to learn more about how it can help your business.';
+    out.whatis_business_p1 = "CryptPad\'s Zero Knowledge encryption multiplies the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using user access credentials, CryptPad is less valuable as a target when compared to traditional cloud services. Read the <a href='https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf'>CryptPad Whitepaper</a> to learn more about how it can help your business.";
     out.whatis_business_p2 = 'CryptPad is deployable on premises and the <a href="https://cryptpad.fr/about.html">CryptPad developers</a> at XWiki SAS are able to offer commercial support, customization and development. Reach out to <a href="mailto:sales@cryptpad.fr">sales@cryptpad.fr</a> for more information.';
 
     // privacy.html
@@ -817,6 +824,10 @@ define(function () {
             " Any existing pad can be turned into a template by moving it into the <em>Templates</em> section in your CryptDrive." +
             " You can also create a copy of a pad to be used as a template by clicking the template button (<span class='fa fa-bookmark'></span>) in the editor's toolbar."
         },
+        abandoned: {
+            q: "What is an abandoned pad?",
+            a: "An <em>abandoned pad</em> is a pad that is not pinned in any registered user's CryptDrive and that hasn't been changed for six months. Abandoned documents will be automatically removed from the server."
+        },
     };
     out.faq.privacy = {
         title: 'Privacy',
@@ -847,8 +858,7 @@ define(function () {
             "We use our <em>feedback</em> functionality to inform the server that someone with your IP has registered an account." +
             " We use this to measure how many people register for CryptPad accounts, and to see what regions they are in so that we can guess which languages may need better support.<br><br>" +
 
-            "When you register, you generate a public key which is used to tell the server that the pads in your CryptDrive should not be deleted even if they are not actively being used." +
-            " This information does reveal more about how you are using CryptPad, but the system allows us to remove pads from the server once nobody cares enough to keep them."
+            "Registered users inform the server which pads are in their CryptDrive so that such pads are not considered abandoned, and are removed from the server due to inactivity."
         },
         other: {
             q: "What can other collaborators learn about me?",
@@ -1174,6 +1184,7 @@ define(function () {
     out.properties_changePassword = "Change the password";
     out.properties_confirmNew = "Are you sure? Adding a password will change this pad's URL and remove its history. Users without the password will lose access to this pad";
     out.properties_confirmChange = "Are you sure? Changing the password will remove its history. Users without the new password will lose access to this pad";
+    out.properties_passwordSame = "New passwords must differ from the current one.";
     out.properties_passwordError = "An error occured while trying to change the password. Please try again.";
     out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your acces rights.";
     out.properties_passwordSuccess = "The password was successfully changed.<br>Press OK to reload and update your access rights.";

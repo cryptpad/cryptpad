@@ -8,11 +8,12 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/common/outer/worker-channel.js',
+    '/common/outer/login-block.js',
 
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
 ], function (Config, Messages, Util, Hash,
-            Messaging, Constants, Feedback, LocalStore, Channel,
+            Messaging, Constants, Feedback, LocalStore, Channel, Block,
             AppConfig, Nthen) {
 
 /*  This file exposes functionality which is specific to Cryptpad, but not to
@@ -236,6 +237,12 @@ define([
 
     common.writeLoginBlock = function (data, cb) {
         postMessage('WRITE_LOGIN_BLOCK', data, function (obj) {
+            cb(obj);
+        });
+    };
+
+    common.removeLoginBlock = function (data, cb) {
+        postMessage('REMOVE_LOGIN_BLOCK', data, function (obj) {
             cb(obj);
         });
     };
@@ -615,10 +622,17 @@ define([
         var warning = false;
         var newHash;
         var oldChannel;
-        if (parsed.hashData.password) {
-            newHash = parsed.hash;
+        var newSecret;
+
+        if (parsed.hashData.version >= 2) {
+            newSecret = Hash.getSecrets(parsed.type, parsed.hash, newPassword);
+            if (!(newSecret.keys && newSecret.keys.editKeyStr)) {
+                return void cb({error: 'EAUTH'});
+            }
+            newHash = Hash.getEditHashFromKeys(newSecret);
         } else {
             newHash = Hash.createRandomHash(parsed.type, newPassword);
+            newSecret = Hash.getSecrets(parsed.type, newHash, newPassword);
         }
         var newHref = '/' + parsed.type + '/#' + newHash;
 
@@ -670,16 +684,17 @@ define([
                     return void cb(obj);
                 }
             }));
+            common.unpinPads([oldChannel], waitFor());
+            common.pinPads([newSecret.channel], waitFor());
         }).nThen(function (waitFor) {
             common.setPadAttribute('password', newPassword, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
-            var secret = Hash.getSecrets(parsed.type, newHash, newPassword);
-            common.setPadAttribute('channel', secret.channel, waitFor(function (err) {
+            common.setPadAttribute('channel', newSecret.channel, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
 
-            if (parsed.hashData.password) { return; } // same hash
+            if (parsed.hashData.password && newPassword) { return; } // same hash
             common.setPadAttribute('href', newHref, waitFor(function (err) {
                 if (err) { warning = true; }
             }), href);
@@ -689,6 +704,180 @@ define([
                 hash: newHash,
                 href: newHref
             });
+        });
+    };
+
+    common.changeUserPassword = function (Crypt, edPublic, data, cb) {
+        if (!edPublic) {
+            return void cb({
+                error: 'E_NOT_LOGGED_IN'
+            });
+        }
+        var accountName = LocalStore.getAccountName();
+        var hash = LocalStore.getUserHash();
+        if (!hash) {
+            return void cb({
+                error: 'E_NOT_LOGGED_IN'
+            });
+        }
+
+        var password = data.password; // To remove your old block
+        var newPassword = data.newPassword; // To create your new block
+        var secret = Hash.getSecrets('drive', hash);
+        var newHash, newHref, newSecret, blockKeys;
+        var oldIsOwned = false;
+
+        var blockHash = LocalStore.getBlockHash();
+        var oldBlockKeys;
+
+        var Cred, Block, Login;
+        Nthen(function (waitFor) {
+            require([
+                '/customize/credential.js',
+                '/common/outer/login-block.js',
+                '/customize/login.js'
+            ], waitFor(function (_Cred, _Block, _Login) {
+                Cred = _Cred;
+                Block = _Block;
+                Login = _Login;
+            }));
+        }).nThen(function (waitFor) {
+            // confirm that the provided password is correct
+            Cred.deriveFromPassphrase(accountName, password, Login.requiredBytes, waitFor(function (bytes) {
+                var allocated = Login.allocateBytes(bytes);
+                oldBlockKeys = allocated.blockKeys;
+                if (blockHash) {
+                    if (blockHash !== allocated.blockHash) {
+                        console.log("provided password did not yield the correct blockHash");
+                        // incorrect password probably
+                        waitFor.abort();
+                        return void cb({
+                            error: 'INVALID_PASSWORD',
+                        });
+                    }
+                    // the user has already created a block, so you should compare against that
+                } else {
+                    // otherwise they're a legacy user, and we should check against the User_hash
+                    if (hash !== allocated.userHash) {
+                        console.log("provided password did not yield the correct userHash");
+                        waitFor.abort();
+                        return void cb({
+                            error: 'INVALID_PASSWORD',
+                        });
+                    }
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // Check if our drive is already owned
+            console.log("checking if old drive is owned");
+            common.anonRpcMsg('GET_METADATA', secret.channel, waitFor(function (err, obj) {
+                if (err || obj.error) { return; }
+                if (obj.owners && Array.isArray(obj.owners) &&
+                    obj.owners.indexOf(edPublic) !== -1) {
+                    oldIsOwned = true;
+                }
+            }));
+        }).nThen(function (waitFor) {
+            // Create a new user hash
+            // Get the current content, store it in the new user file
+            // and make sure the new user drive is owned
+            newHash = Hash.createRandomHash('drive');
+            newHref = '/drive/#' + newHash;
+            newSecret = Hash.getSecrets('drive', newHash);
+
+            var optsPut = {
+                owners: [edPublic],
+                initialState: '{}',
+            };
+
+            console.log("copying contents of old drive to new location");
+            Crypt.get(hash, waitFor(function (err, val) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb({ error: err });
+                }
+
+                Crypt.put(newHash, val, waitFor(function (err) {
+                    if (err) {
+                        waitFor.abort();
+                        console.error(err);
+                        return void cb({ error: err });
+                    }
+                }), optsPut);
+            }));
+        }).nThen(function (waitFor) {
+            // Drive content copied: get the new block location
+            console.log("deriving new credentials from passphrase");
+            Cred.deriveFromPassphrase(accountName, newPassword, Login.requiredBytes, waitFor(function (bytes) {
+                var allocated = Login.allocateBytes(bytes);
+                blockKeys = allocated.blockKeys;
+            }));
+        }).nThen(function (waitFor) {
+            // Write the new login block
+            var temp = {
+                User_name: accountName,
+                User_hash: newHash,
+                edPublic: edPublic,
+            };
+
+            var content = Block.serialize(JSON.stringify(temp), blockKeys);
+
+            console.log("writing new login block");
+            common.writeLoginBlock(content, waitFor(function (obj) {
+                if (obj && obj.error) {
+                    waitFor.abort();
+                    return void cb(obj);
+                }
+                console.log("new login block written");
+                var newBlockHash = Block.getBlockHash(blockKeys);
+                LocalStore.setBlockHash(newBlockHash);
+            }));
+        }).nThen(function (waitFor) {
+            // New drive hash is in login block, unpin the old one and pin the new one
+            console.log("unpinning old drive and pinning new one");
+            common.unpinPads([secret.channel], waitFor());
+            common.pinPads([newSecret.channel], waitFor());
+        }).nThen(function (waitFor) {
+            // Remove block hash
+            if (blockHash) {
+                console.log('removing old login block');
+                var removeData = Block.remove(oldBlockKeys);
+                common.removeLoginBlock(removeData, waitFor(function (obj) {
+                    if (obj && obj.error) { return void console.error(obj.error); }
+                }));
+            }
+        }).nThen(function (waitFor) {
+            if (oldIsOwned) {
+                console.log('removing old drive');
+                common.removeOwnedChannel(secret.channel, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        // Deal with it as if it was not owned
+                        oldIsOwned = false;
+                        return;
+                    }
+                    common.logoutFromAll(waitFor(function () {
+                        postMessage("DISCONNECT");
+                    }));
+                }));
+            }
+        }).nThen(function (waitFor) {
+            if (!oldIsOwned) {
+                console.error('deprecating old drive.');
+                postMessage("SET", {
+                    key: [Constants.deprecatedKey],
+                    value: true
+                }, waitFor(function (obj) {
+                    if (obj && obj.error) {
+                        console.error(obj.error);
+                    }
+                    common.logoutFromAll(waitFor(function () {
+                        postMessage("DISCONNECT");
+                    }));
+                }));
+            }
+        }).nThen(function () {
+            // We have the new drive, with the new login block
+            window.location.reload();
         });
     };
 
@@ -834,6 +1023,20 @@ define([
         LOADING_DRIVE: common.loading.onDriveEvent.fire
     };
 
+    common.hasCSSVariables = function () {
+        if (window.CSS && window.CSS.supports && window.CSS.supports('--a', 0)) { return true; }
+        // Safari lol y u always b returnin false ?
+        var color = 'rgb(255, 198, 0)';
+        var el = document.createElement('span');
+        el.style.setProperty('--color', color);
+        el.style.setProperty('background', 'var(--color)');
+        document.body.appendChild(el);
+        var styles = getComputedStyle(el);
+        var doesSupport = (styles.backgroundColor === color);
+        document.body.removeChild(el);
+        return doesSupport;
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
@@ -870,8 +1073,11 @@ define([
             if (typeof(Worker) === "undefined") {
                 Feedback.send('NO_WEBWORKER');
             }
-            if (typeof(ServiceWorker) === "undefined") {
+            if (!('serviceWorker' in navigator)) {
                 Feedback.send('NO_SERVICEWORKER');
+            }
+            if (!common.hasCSSVariables()) {
+                Feedback.send('NO_CSS_VARIABLES');
             }
 
             Feedback.reportScreenDimensions();
@@ -883,16 +1089,53 @@ define([
             provideFeedback();
         };
 
+        var userHash;
+
         Nthen(function (waitFor) {
             if (AppConfig.beforeLogin) {
                 AppConfig.beforeLogin(LocalStore.isLoggedIn(), waitFor());
             }
+
+        }).nThen(function (waitFor) {
+            var blockHash = LocalStore.getBlockHash();
+            if (blockHash) {
+                console.log(blockHash);
+                var parsed = Block.parseBlockHash(blockHash);
+
+                if (typeof(parsed) !== 'object') {
+                    console.error("Failed to parse blockHash");
+                    console.log(parsed);
+                    return;
+                } else {
+                    console.log(parsed);
+                }
+                Util.fetch(parsed.href, waitFor(function (err, arraybuffer) {
+                    if (err) { return void console.log(err); }
+
+                    // use the results to load your user hash and
+                    // put your userhash into localStorage
+                    try {
+                        var block_info = Block.decrypt(arraybuffer, parsed.keys);
+                        if (!block_info) {
+                            console.error("Failed to decrypt !");
+                            return;
+                        }
+                        userHash = block_info[Constants.userHashKey];
+                        if (!userHash || userHash !== LocalStore.getUserHash()) {
+                            return void requestLogin();
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        return void console.error("failed to decrypt or decode block content");
+                    }
+                }));
+            }
         }).nThen(function (waitFor) {
             var cfg = {
                 init: true,
-                userHash: LocalStore.getUserHash(),
+                userHash: userHash || LocalStore.getUserHash(),
                 anonHash: LocalStore.getFSHash(),
-                localToken: tryParsing(localStorage.getItem(Constants.tokenKey)),
+                localToken: tryParsing(localStorage.getItem(Constants.tokenKey)), // TODO move this to LocalStore ?
                 language: common.getLanguage(),
                 messenger: rdyCfg.messenger, // Boolean
                 driveEvents: rdyCfg.driveEvents // Boolean
@@ -915,18 +1158,23 @@ define([
             Nthen(function (waitFor2) {
                 if (Worker) {
                     var w = waitFor2();
-                    worker = new Worker('/common/outer/testworker.js?' + urlArgs);
-                    worker.onerror = function (errEv) {
-                        errEv.preventDefault();
-                        errEv.stopPropagation();
+                    try {
+                        worker = new Worker('/common/outer/testworker.js?' + urlArgs);
+                        worker.onerror = function (errEv) {
+                            errEv.preventDefault();
+                            errEv.stopPropagation();
+                            noWorker = true;
+                            w();
+                        };
+                        worker.onmessage = function (ev) {
+                            if (ev.data === "OK") {
+                                w();
+                            }
+                        };
+                    } catch (e) {
                         noWorker = true;
                         w();
-                    };
-                    worker.onmessage = function (ev) {
-                        if (ev.data === "OK") {
-                            w();
-                        }
-                    };
+                    }
                 }
                 if (typeof(SharedWorker) !== "undefined") {
                     try {

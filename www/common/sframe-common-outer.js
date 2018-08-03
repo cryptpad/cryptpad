@@ -661,8 +661,16 @@ define([
                 Cryptpad.changePadPassword(Cryptget, href, data.password, edPublic, cb);
             });
 
+            sframeChan.on('Q_CHANGE_USER_PASSWORD', function (data, cb) {
+                Cryptpad.changeUserPassword(Cryptget, edPublic, data, cb);
+            });
+
             sframeChan.on('Q_WRITE_LOGIN_BLOCK', function (data, cb) {
                 Cryptpad.writeLoginBlock(data, cb);
+            });
+
+            sframeChan.on('Q_REMOVE_LOGIN_BLOCK', function (data, cb) {
+                Cryptpad.removeLoginBlock(data, cb);
             });
 
             if (cfg.addRpc) {

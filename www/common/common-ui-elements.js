@@ -147,7 +147,7 @@ define([
             id: 'cp-app-prop-expire',
         }));
 
-        var hasPassword = typeof data.password !== "undefined";
+        var hasPassword = data.password;
         if (hasPassword) {
             $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
                 .appendTo($d);
@@ -183,23 +183,31 @@ define([
                 passwordOk
             ]);
             $(passwordOk).click(function () {
+                var newPass = $(newPassword).find('input').val();
+                if (data.password === newPass ||
+                    (!data.password && !newPass)) {
+                    return void UI.alert(Messages.properties_passwordSame);
+                }
                 UI.confirm(changePwConfirm, function (yes) {
                     if (!yes) { return; }
                     sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
                         href: data.href,
-                        password: $(newPassword).find('input').val()
+                        password: newPass
                     }, function (err, data) {
                         if (err || data.error) {
                             return void UI.alert(Messages.properties_passwordError);
                         }
                         UI.findOKButton().click();
+                        // If we didn't have a password, we have to add the /p/
+                        // If we had a password and we changed it to a new one, we just have to reload
+                        // If we had a password and we removed it, we have to remove the /p/
                         if (data.warning) {
                             return void UI.alert(Messages.properties_passwordWarning, function () {
-                                common.gotoURL(hasPassword ? undefined : data.href);
+                                common.gotoURL(hasPassword && newPass ? undefined : data.href);
                             }, {force: true});
                         }
                         return void UI.alert(Messages.properties_passwordSuccess, function () {
-                            common.gotoURL(hasPassword ? undefined : data.href);
+                            common.gotoURL(hasPassword && newPass ? undefined : data.href);
                         }, {force: true});
                     });
                 });

@@ -10,9 +10,13 @@ define([
     '/common/wire.js',
     '/common/flat-dom.js',
     '/common/media-tag.js',
-], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag) {
+    '/common/outer/login-block.js',
+
+    '/bower_components/tweetnacl/nacl-fast.min.js',
+], function ($, Hyperjson, Sortify, Drive, Test, Hash, Util, Thumb, Wire, Flat, MediaTag, Block) {
     window.Hyperjson = Hyperjson;
     window.Sortify = Sortify;
+    var Nacl = window.nacl;
 
     var assertions = 0;
     var failed = false;
@@ -295,6 +299,15 @@ define([
             secret.hashData.key === "usn4+9CqVja8Q7RZOGTfRgqI" &&
             !secret.hashData.present);
     }, "test support for ugly tracking query paramaters in url");
+
+    assert(function (cb) {
+        var keys = Block.genkeys(Nacl.randomBytes(64));
+        var hash = Block.getBlockHash(keys);
+        var parsed = Block.parseBlockHash(hash);
+
+        cb(parsed &&
+            parsed.keys.symmetric.length === keys.symmetric.length);
+    }, 'parse a block hash');
 
     assert(function (cb) {
         try {

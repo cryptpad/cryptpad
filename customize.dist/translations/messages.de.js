@@ -39,15 +39,13 @@ define(function () {
     out.padNotPinned = 'Dieses Dokument wird nach 3 Monaten ohne Zugang auslaufen, {0}logge Dich ein{1} or {2}registriere Dich{3}, um das Auslaufen zu verhindern.';
     out.anonymousStoreDisabled = "Der Webmaster dieses CryptPad Server hat die anonyme Verwendung deaktiviert. Du muss Dich einloggen, um CryptDrive zu verwenden.";
     out.expiredError = 'Dieses Dokument ist abgelaufen und ist nicht mehr verfügbar.';
-    out.deletedError = 'Dieses Dokument wurde von seinem Besitzer gelöscht und ist nicht mehr verfügbar.';
-    out.inactiveError = 'Dieses Dokument ist wegen Inaktivität gelöscht worden. Drücke auf die Esc-Taste, um ein neues Dokument zu erstellen.';
-    out.chainpadError = 'Ein kritischer Fehler ist beim Aktualisieren Deines Dokuments aufgetreten. Dieses Dokument ist schreibgeschützt, damit Du sicherstellen kannst, dass kein Inhalt verloren geht.<br>'+
-                        'Drücke auf <em>Esc</em>, um das Dokument schreibgeschützt zu lesen, oder lade es neu, um das Editierien wieder aufzunehmen.';
-    out.errorCopy = ' Du kannst noch den Inhalt woanders hin kopieren, nachdem Du <em>Esc</em> gedrückt hast.<br>Wenn Du die Seite verlässt, verschwindet der Inhalt für immer!';
-    out.errorRedirectToHome = 'Drückee <em>Esc</em> um zu Deinem CryptDrive zurückzukehren.';
-    out.newVersionError = "Eine neue Version von CryptPad ist verfügbar.<br>" +    
-                          "<a href='#'>Lade die Seite neu</a> um die neue version zu benutzen, oder drücke Esc um im <b>Offline-Modus</b> weiterzuarbeiten.";
-    
+    out.deletedError = 'Dieses Dokument wurde von seinem Besitzer gelöscht und nicht mehr verfügbar.';
+    out.inactiveError = 'Dieses Dokument ist wegen Inaktivität gelöscht worden. Drucke auf die Esc-Taste, um ein neues Dokument zu gestalten.';
+    out.chainpadError = 'Ein kritischer Fehler hat stattgefunden, bei den Updates deines Dokuments. Dieses Dokument ist schreibgeschützt, damit du sicher machen kannst, dass keine Inhalt verloren geht.<br>'+
+                        'Druck auf <em>Esc</em>, um das Dokument schreibgeschützt zu lesen, oder lade es neu, um das Editierien wiederanzufangen.';
+    out.errorCopy = ' Du kannst noch den Inhalt woanders kopieren, nachdem du <em>Esc</em> drucken.<br>Wenn du die Seite verlässt, verschwindet der Inhalt für immer!';
+    out.errorRedirectToHome = 'Drucke <em>Esc</em>, um zu deinem CryptDrive zu gehen.'; 
+
     out.loading = "Laden...";
     out.error = "Fehler";
     out.saved = "Gespeichert";
