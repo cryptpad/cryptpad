@@ -36,7 +36,7 @@ define([
     var increment = function (N) {
         var l = N.length;
         while (l-- > 1) {
-        /*  jshint probably suspects this is unsafe because we lack types
+        /*  our linter suspects this is unsafe because we lack types
             but as long as this is only used on nonces, it should be safe  */
             if (N[l] !== 255) { return void N[l]++; } // jshint ignore:line
             if (l === 0) { throw new Error('E_NONCE_TOO_LARGE'); }
