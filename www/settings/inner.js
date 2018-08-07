@@ -428,6 +428,10 @@ define([
                 return;
             }
 
+            if (oldPassword === newPassword) {
+                return void UI.alert(Messages.settings_changePasswordNewPasswordSameAsOld);
+            }
+
             UI.confirm(Messages.settings_changePasswordConfirm,
             function (yes) {
                 if (!yes) { return; }
