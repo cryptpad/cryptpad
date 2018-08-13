@@ -165,8 +165,10 @@ define([
     var getHTML = function (inner) {
         return ('<!DOCTYPE html>\n' + '<html>\n' +
                 '  <head><meta charset="utf-8"></head>\n  <body>' +
-            inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/,
-                function(match,realElt){ return unescape(realElt); }) +
+            inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/g,
+                function(match,realElt){
+                    //console.log("returning realElt \"" + unescape(realElt)+ "\".");
+                    return unescape(realElt); }) +
             '  </body>\n</html>'
         );
     };
@@ -764,37 +766,65 @@ define([
                 // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
                 console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');
 
-                // TODO: cleanup fixme, too much ---, and removed tests
-                // TODO: any other unwanted changes (sframe-app?)?
-                // TODO: upgrade to latest of master, create branch
-                // TODO: any way to make sure that content contains anchors? Seems to need selenium-driven clicks and inputs
                 function tryAndTestExport() {
-                    //  window.setContent("This goes before the anchor");
-                    var anchors = CKEDITOR.plugins["link"].getEditorAnchors(editor);
-                    if(!anchors || anchors.length===0) {
-                        test.fail("No anchors found. Please adjust document");
-                    } else {
-                        console.log(anchors.length + " anchors found.");
-                        var exported = getHTML(inner);
-                        console.log("Obtained exported: " + exported);
-                        var allFound = true;
-                        for(var i=0; i<anchors.length; i++) {
-                            var anchor = anchors[i];
-                            console.log("Anchor " + anchor.name);
-                            var expected = "<a id=\"" + anchor.id + "\" name=\"" + anchor.name + "\" ";
-                            var found = exported.indexOf(expected)>=0;
-                            console.log("Found " + expected + " " + found + ".");
-                            allFound = allFound && found;
+                    console.log("Starting tryAndTestExport.");
+                    editor.on( 'dialogShow', function( evt ) {
+                        console.log("Anchor dialog detected.");
+                        var dialog = evt.data;
+                        $(dialog.parts.contents.$).find("input").val('xx-' + Math.round(Math.random()*1000));
+                        dialog.click(CKEDITOR.dialog.okButton(editor).id);
+                    } );
+                    var existingText = editor.getData();
+                    editor.insertText("A bit of text");
+                    console.log("Launching anchor command.");
+                    editor.execCommand(editor.ui.get('Anchor').command);
+                    console.log("Anchor command launched.");
+
+                    var waitH = window.setInterval(function() {
+                        console.log("Waited 2s for the dialog to appear");
+                        var anchors = CKEDITOR.plugins["link"].getEditorAnchors(editor);
+                        if(!anchors || anchors.length===0) {
+                            test.fail("No anchors found. Please adjust document");
+                        } else {
+                            console.log(anchors.length + " anchors found.");
+                            var exported = getHTML(inner);
+                            console.log("Obtained exported: " + exported);
+                            var allFound = true;
+                            for(var i=0; i<anchors.length; i++) {
+                                var anchor = anchors[i];
+                                console.log("Anchor " + anchor.name);
+                                var expected = "<a id=\"" + anchor.id + "\" name=\"" + anchor.name + "\" ";
+                                var found = exported.indexOf(expected)>=0;
+                                console.log("Found " + expected + " " + found + ".");
+                                allFound = allFound && found;
+                            }
+
+                            console.log("Cleaning up.");
+                            if(allFound) {
+                                // clean-up
+                                editor.execCommand('undo');
+                                editor.execCommand('undo');
+                                var nint = window.setInterval(function(){
+                                    console.log("Waiting for undo to yield same result.")
+                                    if(existingText === editor.getData()) {
+                                        window.clearInterval(nint);
+                                        test.pass();
+                                    }
+                                }, 500);
+                                }  else
+                            {
+                                test.fail("Not all expected a elements found for document at " + window.top.location + ".");
+                            }
                         }
-                        console.log("Finished anchor test.");
-                        if(allFound) {test.pass();}
-                        else
-                        {test.fail("Not all expected a elements found.");}
-                    }
+                        window.clearInterval(waitH);
+                    },2000);
+
+
                 }
                 var intervalHandle = window.setInterval(function() {
                     if(editor.status==="ready") {
                         window.clearInterval(intervalHandle);
+                        console.log("Editor is ready.");
                         tryAndTestExport();
                     } else {
                         console.log("Waiting for editor to be ready.");
