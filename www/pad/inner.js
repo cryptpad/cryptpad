@@ -168,7 +168,7 @@ define([
             inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/g,
                 function(match,realElt){
                     //console.log("returning realElt \"" + unescape(realElt)+ "\".");
-                    return unescape(realElt); }) +
+                    return decodeURIComponent(realElt); }) +
             '  </body>\n</html>'
         );
     };
@@ -772,7 +772,7 @@ define([
                         console.log("Anchor dialog detected.");
                         var dialog = evt.data;
                         $(dialog.parts.contents.$).find("input").val('xx-' + Math.round(Math.random()*1000));
-                        dialog.click(CKEDITOR.dialog.okButton(editor).id);
+                        dialog.click(window.CKEDITOR.dialog.okButton(editor).id);
                     } );
                     var existingText = editor.getData();
                     editor.insertText("A bit of text");
@@ -782,12 +782,12 @@ define([
 
                     var waitH = window.setInterval(function() {
                         console.log("Waited 2s for the dialog to appear");
-                        var anchors = CKEDITOR.plugins["link"].getEditorAnchors(editor);
+                        var anchors = window.CKEDITOR.plugins["link"].getEditorAnchors(editor);
                         if(!anchors || anchors.length===0) {
                             test.fail("No anchors found. Please adjust document");
                         } else {
                             console.log(anchors.length + " anchors found.");
-                            var exported = getHTML(inner);
+                            var exported = getHTML(window.inner);
                             console.log("Obtained exported: " + exported);
                             var allFound = true;
                             for(var i=0; i<anchors.length; i++) {
@@ -805,7 +805,7 @@ define([
                                 editor.execCommand('undo');
                                 editor.execCommand('undo');
                                 var nint = window.setInterval(function(){
-                                    console.log("Waiting for undo to yield same result.")
+                                    console.log("Waiting for undo to yield same result.");
                                     if(existingText === editor.getData()) {
                                         window.clearInterval(nint);
                                         test.pass();
