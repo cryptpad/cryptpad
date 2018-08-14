@@ -35,7 +35,7 @@ As such, it is possible for a collaborator on the pad to include some silly/ugly
 in a CryptPad such as an image which reveals your IP address when your browser automatically
 loads it or a script which plays Rick Astleys's greatest hits. It is possible for anyone
 who does not have the key to be able to change anything in the pad or add anything, even the
-server, however the clients will notice this because the content hashes in ChainPad will fail to
+server, however the clients will notice this because the content hashes in CryptPad will fail to
 validate.
 
 The server does have a certain power, it can send you evil javascript which does the wrong
