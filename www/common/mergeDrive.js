@@ -70,7 +70,12 @@ define([
                         Realtime.whenRealtimeSyncs(proxyData.realtime, cb);
                     }
                 };
-                oldFo.migrate(onMigrated);
+                if (oldFo && typeof(oldFo.migrate) === 'function') {
+                    oldFo.migrate(onMigrated);
+                } else {
+                    console.log('oldFo.migrate is not a function');
+                    onMigrated();
+                }
                 return;
             }
             if (typeof(cb) === "function") { cb(); }
