@@ -32,6 +32,7 @@ define([
     '/common/common-util.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/customize/application_config.js',
+    '/common/test.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
@@ -52,7 +53,9 @@ define([
     Hash,
     Util,
     ChainPad,
-    AppConfig)
+    AppConfig,
+    Test
+)
 {
     var DiffDom = window.diffDOM;
 
@@ -160,7 +163,14 @@ define([
     ];
 
     var getHTML = function (inner) {
-        return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
+        return ('<!DOCTYPE html>\n' + '<html>\n' +
+                '  <head><meta charset="utf-8"></head>\n  <body>' +
+            inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/g,
+                function(match,realElt){
+                    //console.log("returning realElt \"" + unescape(realElt)+ "\".");
+                    return decodeURIComponent(realElt); }) +
+            '  </body>\n</html>'
+        );
     };
 
     var CKEDITOR_CHECK_INTERVAL = 100;
@@ -753,6 +763,79 @@ define([
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
+            function launchAnchorTest(test) {
+                // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
+                console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');
+
+                function tryAndTestExport() {
+                    console.log("Starting tryAndTestExport.");
+                    editor.on( 'dialogShow', function( evt ) {
+                        console.log("Anchor dialog detected.");
+                        var dialog = evt.data;
+                        $(dialog.parts.contents.$).find("input").val('xx-' + Math.round(Math.random()*1000));
+                        dialog.click(window.CKEDITOR.dialog.okButton(editor).id);
+                    } );
+                    var existingText = editor.getData();
+                    editor.insertText("A bit of text");
+                    console.log("Launching anchor command.");
+                    editor.execCommand(editor.ui.get('Anchor').command);
+                    console.log("Anchor command launched.");
+
+                    var waitH = window.setInterval(function() {
+                        console.log("Waited 2s for the dialog to appear");
+                        var anchors = window.CKEDITOR.plugins["link"].getEditorAnchors(editor);
+                        if(!anchors || anchors.length===0) {
+                            test.fail("No anchors found. Please adjust document");
+                        } else {
+                            console.log(anchors.length + " anchors found.");
+                            var exported = getHTML(window.inner);
+                            console.log("Obtained exported: " + exported);
+                            var allFound = true;
+                            for(var i=0; i<anchors.length; i++) {
+                                var anchor = anchors[i];
+                                console.log("Anchor " + anchor.name);
+                                var expected = "<a id=\"" + anchor.id + "\" name=\"" + anchor.name + "\" ";
+                                var found = exported.indexOf(expected)>=0;
+                                console.log("Found " + expected + " " + found + ".");
+                                allFound = allFound && found;
+                            }
+
+                            console.log("Cleaning up.");
+                            if(allFound) {
+                                // clean-up
+                                editor.execCommand('undo');
+                                editor.execCommand('undo');
+                                var nint = window.setInterval(function(){
+                                    console.log("Waiting for undo to yield same result.");
+                                    if(existingText === editor.getData()) {
+                                        window.clearInterval(nint);
+                                        test.pass();
+                                    }
+                                }, 500);
+                                }  else
+                            {
+                                test.fail("Not all expected a elements found for document at " + window.top.location + ".");
+                            }
+                        }
+                        window.clearInterval(waitH);
+                    },2000);
+
+
+                }
+                var intervalHandle = window.setInterval(function() {
+                    if(editor.status==="ready") {
+                        window.clearInterval(intervalHandle);
+                        console.log("Editor is ready.");
+                        tryAndTestExport();
+                    } else {
+                        console.log("Waiting for editor to be ready.");
+                    }
+                }, 100);
+            }
+            Test(function(test) {
+
+                launchAnchorTest(test);
+            });
             andThen2(editor, Ckeditor, framework);
         });
     };
