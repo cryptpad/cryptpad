@@ -2069,7 +2069,9 @@ define([
                     }).appendTo($container);
                     $span.data('id', obj.id);
                     if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
-                    $span.append(obj.icon || h('span.cptools.cptools-template'));
+                    if (!obj.thumbnail) {
+                        $span.append(obj.icon || h('span.cptools.cptools-template'));
+                    }
                     $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
                         .appendTo($span);
                     $span.click(function () {
