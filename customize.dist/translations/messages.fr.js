@@ -386,7 +386,7 @@ define(function () {
     out.fm_newFolder = "Nouveau dossier";
     out.fm_newFile = "Nouveau pad";
     out.fm_folder = "Dossier";
-    out.fm_sharedFolder = "Drive partagé";
+    out.fm_sharedFolder = "Dossier partagé";
     out.fm_folderName = "Nom du dossier";
     out.fm_numberOfFolders = "# de dossiers";
     out.fm_numberOfFiles = "# de fichiers";
@@ -436,6 +436,7 @@ define(function () {
     out.fm_viewListButton = "Liste";
     out.fm_viewGridButton = "Grille";
     out.fm_renamedPad = "Vous avez renommé ce pad dans votre Drive. Son titre est:<br><b>{0}</b>";
+    out.fm_canBeShared = "Ce dossier peut être partagé";
     out.fm_prop_tagsList = "Mots-clés";
     out.fm_burnThisDriveButton = "Effacer toutes les informations stockées par CryptPad dans votre navigateur";
     out.fm_burnThisDrive = "Êtes-vous sûr de vouloir supprimmer tout ce qui est stocké par CryptPad dans votre navigateur ?<br>" +
@@ -446,10 +447,10 @@ define(function () {
     out.fm_tags_name = "Mot-clé";
     out.fm_tags_used = "Nombre d'utilisations";
     out.fm_restoreDrive = "Restauration de votre CryptDrive à une version antérieure. Pour de meilleurs résultats, veuillez éviter de modifier votre CryptDrive avant que cette restauration ne soit terminée.";
-    out.fm_moveNestedSF = "Les Drive partagés ne peuvent pas contenir d'autres Drive partagés. Le dossier {0} n'a pas été déplacé.";
+    out.fm_moveNestedSF = "Vous ne pouvez pas placer un dossier partagé dans un autre. Le dossier {0} n'a pas été déplacé.";
     // File - Context menu
     out.fc_newfolder = "Nouveau dossier";
-    out.fc_newsharedfolder = "Nouveau Drive partagé";
+    out.fc_newsharedfolder = "Nouveau dossier partagé";
     out.fc_rename = "Renommer";
     out.fc_open = "Ouvrir";
     out.fc_open_ro = "Ouvrir (lecture seule)";
@@ -1168,13 +1169,13 @@ define(function () {
     out.loading_drive_3 = "Vérification de l'intégrité des données";
 
     // Shared folders
-    out.sharedFolders_forget = "Ce pad est stocké uniquement dans un Drive partagé. Vous ne pouvez pas le déplacer dans votre corbeille. Si vous souhaitez le supprimer, vous pouvez utiliser l'application CryptDrive.";
-    out.sharedFolders_duplicate = "Certains pads que vous essayez de déplacer sont déjà présents dans le Drive de destination.";
-    out.sharedFolders_create = "Créer un Drive partagé";
-    out.sharedFolders_create_name = "Nom du Drive";
-    out.sharedFolders_create_owned = "Être propriétaire du Drive";
-    out.sharedFolders_create_password = "Mot de passe du Drive";
-    out.sharedFolders_share = "Partager cette URL avec d'autres utilisateurs enregistrés leur donne accès au Drive partagé. Une fois l'URL ouverte, le Drive partagé sera ajouté au répertoire racine de leur CryptDrive.";
+    out.sharedFolders_forget = "Ce pad est stocké uniquement dans un dossier partagé. Vous ne pouvez pas le déplacer dans votre corbeille. Si vous souhaitez le supprimer, vous pouvez utiliser l'application CryptDrive.";
+    out.sharedFolders_duplicate = "Certains pads que vous essayez de déplacer sont déjà partagés dans le dossier de destination.";
+    out.sharedFolders_create = "Créer un dossier partagé";
+    out.sharedFolders_create_name = "Nom du dossier";
+    out.sharedFolders_create_owned = "Être propriétaire du dossier";
+    out.sharedFolders_create_password = "Mot de passe du dossier";
+    out.sharedFolders_share = "Partager cette URL avec d'autres utilisateurs enregistrés leur donne accès au dossier partagé. Une fois l'URL ouverte, le dossier partagé sera ajouté au répertoire racine de leur CryptDrive.";
 
     return out;
 });

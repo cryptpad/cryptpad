@@ -387,7 +387,7 @@ define(function () {
     out.fm_newFolder = "New folder";
     out.fm_newFile = "New pad";
     out.fm_folder = "Folder";
-    out.fm_sharedFolder = "Shared Drive";
+    out.fm_sharedFolder = "Shared folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
@@ -437,6 +437,7 @@ define(function () {
     out.fm_viewListButton = "List view";
     out.fm_viewGridButton = "Grid view";
     out.fm_renamedPad = "You've set a custom name for this pad. Its shared title is:<br><b>{0}</b>";
+    out.fm_canBeShared = "This folder can be shared";
     out.fm_prop_tagsList = "Tags";
     out.fm_burnThisDriveButton = "Erase all information stored by CryptPad in your browser";
     out.fm_burnThisDrive = "Are you sure you want to remove everything stored by CryptPad in your browser?<br>" +
@@ -447,10 +448,10 @@ define(function () {
     out.fm_tags_name = "Tag name";
     out.fm_tags_used = "Number of uses";
     out.fm_restoreDrive = "Resetting your drive to an earlier state. For best results, avoid making changes to your drive until this process is complete.";
-    out.fm_moveNestedSF = "Nested shared drive are not allowed. The folder {0} was not moved."; // XXX
+    out.fm_moveNestedSF = "You can't place one shared folder within another. The folder {0} was not moved.";
     // File - Context menu
     out.fc_newfolder = "New folder";
-    out.fc_newsharedfolder = "New shared Drive";
+    out.fc_newsharedfolder = "New shared folder";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
@@ -1217,13 +1218,13 @@ define(function () {
     out.loading_drive_3 = "Verifying data integrity";
 
     // Shared folders
-    out.sharedFolders_forget = "This pad is only stored in a shared Drive, you can't move it to the trash. You can use your CryptDrive if you want to delete it.";
-    out.sharedFolders_duplicate = "Some of the pads you were trying to move were already stored in the destination Drive.";
-    out.sharedFolders_create = "Create a shared Drive";
-    out.sharedFolders_create_name = "Drive name";
-    out.sharedFolders_create_owned = "Owned Drive";
-    out.sharedFolders_create_password = "Drive password";
-    out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared Drive. Once they open this URL, the shared Drive will be added to the root directory of their CryptDrive.";
+    out.sharedFolders_forget = "This pad is only stored in a shared folder, you can't move it to the trash. You can use your CryptDrive if you want to delete it.";
+    out.sharedFolders_duplicate = "Some of the pads you were trying to move were already shared in the destination folder.";
+    out.sharedFolders_create = "Create a shared folder";
+    out.sharedFolders_create_name = "Folder name";
+    out.sharedFolders_create_owned = "Owned folder";
+    out.sharedFolders_create_password = "Folder password";
+    out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
 
     return out;
 });

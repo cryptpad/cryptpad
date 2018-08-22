@@ -1419,7 +1419,7 @@ define([
                 _addOwnership($span, $state, data);
 
                 var $shared = $sharedIcon.clone().appendTo($state);
-                $shared.attr('title', 'Can be shared'); // XXX
+                $shared.attr('title', Messages.fm_canBeShared);
             }
 
             var sf = manager.hasSubfolder(element);
