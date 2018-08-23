@@ -460,6 +460,7 @@ define([
         var pathname = config.pathname;
         var hashes = config.hashes;
         var common = config.common;
+        var fileData = config.fileData;
 
         if (!hashes.fileHash) { throw new Error("You must provide a file hash"); }
         var url = origin + pathname + '#' + hashes.fileHash;
@@ -495,7 +496,7 @@ define([
             UI.dialog.selectable(common.getMediatagScript()),
             h('p', Messages.fileEmbedTag),
             h('br'),
-            UI.dialog.selectable(common.getMediatagFromHref(url)),
+            UI.dialog.selectable(common.getMediatagFromHref(fileData)),
         ]);
         var embedButtons = [{
             name: Messages.cancel,
@@ -505,7 +506,7 @@ define([
             className: 'primary',
             name: Messages.share_mediatagCopy,
             onClick: function () {
-                var v = common.getMediatagFromHref(url);
+                var v = common.getMediatagFromHref(fileData);
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }
             },

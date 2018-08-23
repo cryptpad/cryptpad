@@ -258,6 +258,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                h('li', h('a.cp-app-drive-context-share.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': 'fa-shhare-alt',
+                }, Messages.shareButton)),
                 h('li', h('a.cp-app-drive-context-openparent.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': faShowParent,
@@ -859,6 +863,7 @@ define([
                         containsFolder = true;
                         hide.push('openro');
                         hide.push('properties');
+                        hide.push('share');
                         hide.push('hashtag');
                     }
                     // If we're in the trash, hide restore and properties for non-root elements
@@ -905,11 +910,11 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'rename', 'delete', 'deleteowned', 'removesf',
+                    show = ['open', 'openro', 'share', 'rename', 'delete', 'deleteowned', 'removesf',
                             'newfolder', 'properties', 'hashtag'];
                     break;
                 case 'default':
-                    show = ['open', 'openro', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
+                    show = ['open', 'openro', 'share', 'openparent', 'delete', 'deleteowned', 'properties', 'hashtag'];
                     break;
                 case 'trashtree': {
                     show = ['empty'];
@@ -3041,6 +3046,46 @@ define([
                     }
                     openFile(null, href);
                 });
+            }
+            else if ($(this).hasClass('cp-app-drive-context-share')) {
+                if (paths.length !== 1) { return; }
+                el = manager.find(paths[0].path);
+                var data, parsed, modal;
+                if (manager.isSharedFolder(el)) {
+                    data = manager.getSharedFolderData(el);
+                    parsed = Hash.parsePadUrl(data.href);
+                    modal = UIElements.createSFShareModal({
+                        origin: APP.origin,
+                        pathname: "/drive/",
+                        hashes: {
+                            editHash: parsed.hash
+                        }
+                    });
+                } else {
+                    data = manager.getFileData(el);
+                    parsed = Hash.parsePadUrl(data.href);
+                    var roParsed = Hash.parsePadUrl(data.roHref);
+                    var type = parsed.type || roParsed.type;
+                    console.log(parsed);
+                    var padData = {
+                        origin: APP.origin,
+                        pathname: "/" + type + "/",
+                        hashes: {
+                            editHash: parsed.hash,
+                            viewHash: roParsed.hash,
+                            fileHash: parsed.hash
+                        },
+                        fileData: {
+                            hash: parsed.hash,
+                            password: data.password
+                        },
+                        common: common
+                    };
+                    modal = type === 'file' ? UIElements.createFileShareModal(padData)
+                                            : UIElements.createShareModal(padData);
+                    modal = UI.dialog.tabs(modal);
+                }
+                UI.openCustomModal(modal);
             }
             else if ($(this).hasClass('cp-app-drive-context-newfolder')) {
                 if (paths.length !== 1) { return; }
