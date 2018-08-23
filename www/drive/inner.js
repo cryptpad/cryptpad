@@ -3005,7 +3005,7 @@ define([
             var pathsList = [];
             var type = $contextMenu.attr('data-menu-type');
 
-            var el;
+            var el, data;
             if (paths.length === 0) {
                 log(Messages.fm_forbidden);
                 debug("Context menu on a forbidden or unexisting element. ", paths);
@@ -3050,7 +3050,7 @@ define([
             else if ($(this).hasClass('cp-app-drive-context-share')) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
-                var data, parsed, modal;
+                var parsed, modal;
                 if (manager.isSharedFolder(el)) {
                     data = manager.getSharedFolderData(el);
                     parsed = Hash.parsePadUrl(data.href);
@@ -3065,11 +3065,10 @@ define([
                     data = manager.getFileData(el);
                     parsed = Hash.parsePadUrl(data.href);
                     var roParsed = Hash.parsePadUrl(data.roHref);
-                    var type = parsed.type || roParsed.type;
-                    console.log(parsed);
+                    var padType = parsed.type || roParsed.type;
                     var padData = {
                         origin: APP.origin,
-                        pathname: "/" + type + "/",
+                        pathname: "/" + padType + "/",
                         hashes: {
                             editHash: parsed.hash,
                             viewHash: roParsed.hash,
@@ -3081,7 +3080,7 @@ define([
                         },
                         common: common
                     };
-                    modal = type === 'file' ? UIElements.createFileShareModal(padData)
+                    modal = padType === 'file' ? UIElements.createFileShareModal(padData)
                                             : UIElements.createShareModal(padData);
                     modal = UI.dialog.tabs(modal);
                 }
@@ -3133,7 +3132,7 @@ define([
             else if ($(this).hasClass("cp-app-drive-context-hashtag")) {
                 if (paths.length !== 1) { return; }
                 el = manager.find(paths[0].path);
-                var data = manager.getFileData(el);
+                data = manager.getFileData(el);
                 if (!data) { return void console.error("Expected to find a file"); }
                 var href = data.href || data.roHref;
                 common.updateTags(href);
