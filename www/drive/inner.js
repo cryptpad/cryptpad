@@ -388,6 +388,13 @@ define([
 
         // FILE MANAGER
         var currentPath = APP.currentPath = getLastOpenedFolder();
+        if (APP.newSharedFolder) {
+            var newSFPaths = manager.findFile(APP.newSharedFolder);
+            if (newSFPaths.length) {
+                currentPath = newSFPaths[0];
+            }
+        }
+
 
         // Categories dislayed in the menu
         var displayedCategories = [ROOT, TRASH, SEARCH, RECENT];
@@ -3362,8 +3369,12 @@ define([
         }).nThen(function () {
             var sframeChan = common.getSframeChannel();
             var metadataMgr = common.getMetadataMgr();
+            var privateData = metadataMgr.getPrivateData();
 
-            APP.disableSF =  !metadataMgr.getPrivateData().enableSF && AppConfig.disableSharedFolders;
+            if (privateData.newSharedFolder) {
+                APP.newSharedFolder = privateData.newSharedFolder;
+            }
+            APP.disableSF = !privateData.enableSF && AppConfig.disableSharedFolders;
 
             var configTb = {
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit'],

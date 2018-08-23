@@ -269,6 +269,9 @@ define([
                         channel: secret.channel,
                         enableSF: localStorage.CryptPad_SF === "1" // TODO to remove when enabled by default
                     };
+                    if (window.CryptPad_newSharedFolder) {
+                        additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
+                    }
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {

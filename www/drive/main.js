@@ -42,8 +42,14 @@ define([
             if (hash) {
                 // Add a shared folder!
                 // XXX password?
-                Cryptpad.addSharedFolder(secret, function () {
+                Cryptpad.addSharedFolder(secret, function (id) {
+                    window.CryptPad_newSharedFolder = id;
+                    // Update the hash in the address bar
+                    var ohc = window.onhashchange;
+                    window.onhashchange = function () {};
                     window.location.hash = "";
+                    window.onhashchange = ohc;
+                    ohc({reset:true});
                     cb(null, secret);
                 });
                 return;
