@@ -11,7 +11,7 @@
                 return ret;
             };
 
-            var chkImg = function () {
+            /*var chkImg = function () {
                 // don't execute code if the editor is readOnly
                 if (editor.readOnly) {
                     return;
@@ -27,7 +27,7 @@
                 editor.document.on('drop', chkImg);
                 // For IE
                 editor.document.getBody().on('drop', chkImg);
-            });
+            });*/
 
             editor.on('paste', function(e) {
                 var html = e.data.dataValue;
