@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config ) {
     // document itself and causes problems when it's sent across the wire and reflected back
     config.removePlugins= 'resize,elementspath';
     config.resize_enabled= false; //bottom-bar
-    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print';
+    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64';
     config.toolbarGroups= [
         // {"name":"clipboard","groups":["clipboard","undo"]},
         //{"name":"editing","groups":["find","selection"]},
