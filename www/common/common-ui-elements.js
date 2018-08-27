@@ -2308,5 +2308,39 @@ define([
         $(password).find('.cp-password-input').focus();
     };
 
+    var storePopupState = false;
+    UIElements.displayStorePadPopup = function (common) {
+        if (storePopupState) { return; }
+        storePopupState = true;
+
+        var text = Messages.manual_notstored;
+        var footer = Messages.manual_settings;
+
+        var hide = h('button.cp-corner-cancel', Messages.manual_hide);
+        var store = h('button.cp-corner-primary', Messages.manual_store);
+        var actions = h('div', [
+            store,
+            hide,
+        ]);
+
+        console.log(text, footer);
+        var modal = UI.cornerPopup(text, actions, footer);
+
+        $(hide).click(function () {
+            modal.delete();
+        });
+        $(store).click(function () {
+            modal.delete();
+            common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
+                if (err || (obj && obj.error)) {
+                    console.error(err || obj.error);
+                    return void UI.warn("Error"); // XXX
+                }
+                UI.log("Saved"); // XXX
+            });
+        });
+
+    };
+
     return UIElements;
 });

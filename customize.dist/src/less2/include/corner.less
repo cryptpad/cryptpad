@@ -1,0 +1,75 @@
+@import (reference) "./colortheme-all.less";
+
+.corner_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
+    @corner-button-ok: #2c9b00;
+    @corner-button-cancel: #990000;
+
+    @keyframes appear {
+        0% {
+            transform: scale(0.1);
+        }
+        100% {
+            transform: scale(1.0);
+        }
+    }
+
+    .cp-corner-container {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        width: 300px;
+        height: 200px;
+        border-top-left-radius: 200px;
+        padding: 15px;
+        text-align: right;
+        background-color: @colortheme_logo-1;
+        color: @colortheme_base;
+        z-index: 999;
+        scale: 0.1;
+        transform-origin: bottom right;
+        animation: appear 0.8s ease-in-out;
+
+        .cp-corner-filler {
+            float: left;
+            clear: left;
+            height: 21px;
+        }
+        .cp-corner-text {
+            
+        }
+        .cp-corner-actions {
+            min-height: 30px;
+            margin: 15px auto;
+            display: inline-block;
+        }
+        .cp-corner-footer {
+            font-style: italic;
+            font-size: 0.8em;
+        }
+
+        button {
+            color: white;
+            border: 0px;
+            padding: 5px;
+            color: @colortheme_base;
+            &.cp-corner-primary {
+                background-color: @corner-button-ok;
+                font-weight: bold;
+                &:hover {
+                    background-color: lighten(@corner-button-ok, 10%);
+                }
+            }
+            &.cp-corner-cancel {
+                background-color: @corner-button-cancel;
+                margin-left: 10px;
+                &:hover {
+                    background-color: lighten(@corner-button-cancel, 10%);
+                }
+            }
+        }
+    }
+}
+

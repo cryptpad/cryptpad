@@ -547,7 +547,7 @@ define([
 
         postMessage("SET_PAD_TITLE", data, function (obj) {
             if (obj && obj.error) {
-                console.log("unable to set pad title");
+                if (obj.error !== "EAUTH") { console.log("unable to set pad title"); }
                 return void cb(obj.error);
             }
             cb();
@@ -925,6 +925,10 @@ define([
     common.loading = {};
     common.loading.onDriveEvent = Util.mkEvent();
 
+    // (Auto)store pads
+    common.autoStore = {};
+    common.autoStore.onStoreRequest = Util.mkEvent();
+
     common.getFullHistory = function (data, cb) {
         postMessage("GET_FULL_HISTORY", data, cb);
     };
@@ -1060,7 +1064,9 @@ define([
         // Account deletion
         DELETE_ACCOUNT: common.startAccountDeletion,
         // Loading
-        LOADING_DRIVE: common.loading.onDriveEvent.fire
+        LOADING_DRIVE: common.loading.onDriveEvent.fire,
+        // AutoStore
+        AUTOSTORE_DISPLAY_POPUP: common.autoStore.onStoreRequest.fire,
     };
 
     common.hasCSSVariables = function () {

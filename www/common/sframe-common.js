@@ -452,6 +452,10 @@ define([
                 UI.errorLoadingScreen($err, true, true);
             });
 
+            ctx.sframeChan.on('EV_AUTOSTORE_DISPLAY_POPUP', function () {
+                UIElements.displayStorePadPopup(funcs);
+            });
+
             ctx.metadataMgr.onReady(waitFor());
         }).nThen(function () {
             try {

@@ -358,6 +358,22 @@ define([
                 setDocumentTitle();
             });
 
+            Cryptpad.autoStore.onStoreRequest.reg(function (data) {
+                sframeChan.event("EV_AUTOSTORE_DISPLAY_POPUP", data);
+            });
+            sframeChan.on('Q_AUTOSTORE_STORE', function (obj, cb) {
+                var data = {
+                    password: password,
+                    title: currentTitle,
+                    channel: secret.channel,
+                    path: initialPathInDrive, // Where to store the pad if we don't have it in our drive
+                    forceSave: true
+                };
+                Cryptpad.setPadTitle(data, function (err) {
+                    cb(err);
+                });
+            });
+
 
             sframeChan.on('Q_SETTINGS_SET_DISPLAY_NAME', function (newName, cb) {
                 Cryptpad.setDisplayName(newName, function (err) {
@@ -399,6 +415,7 @@ define([
                 Cryptpad.saveAsTemplate(Cryptget.put, data, cb);
             });
 
+            // Messaging
             sframeChan.on('Q_SEND_FRIEND_REQUEST', function (netfluxId, cb) {
                 Cryptpad.inviteFromUserlist(netfluxId, cb);
             });
@@ -411,6 +428,7 @@ define([
                 sframeChan.event('EV_FRIEND_REQUEST', data);
             });
 
+            // History
             sframeChan.on('Q_GET_FULL_HISTORY', function (data, cb) {
                 var crypto = Crypto.createEncryptor(secret.keys);
                 Cryptpad.getFullHistory({
@@ -452,6 +470,7 @@ define([
                 });
             });
 
+            // Store
             sframeChan.on('Q_GET_PAD_ATTRIBUTE', function (data, cb) {
                 var href;
                 if (readOnly && hashes.editHash) {

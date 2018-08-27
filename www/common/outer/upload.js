@@ -93,7 +93,8 @@ define([
                         path: path,
                         password: password,
                         channel: id,
-                        owners: metadata.owners
+                        owners: metadata.owners,
+                        // XXX FORCESAVE ??
                     };
                     common.setPadTitle(data, function (err) {
                         if (err) { return void console.error(err); }

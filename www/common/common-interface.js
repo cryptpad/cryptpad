@@ -879,5 +879,37 @@ define([
 
     UI.createRadio = Pages.createRadio;
 
+    UI.cornerPopup = function (text, actions, footer) {
+        // XXX create "minimize" icon
+        var popup = h('div.cp-corner-container', [
+            h('div.cp-corner-filler', { style: "width:130px;" }),
+            h('div.cp-corner-filler', { style: "width:90px;" }),
+            h('div.cp-corner-filler', { style: "width:60px;" }),
+            h('div.cp-corner-filler', { style: "width:40px;" }),
+            h('div.cp-corner-filler', { style: "width:20px;" }),
+            h('div.cp-corner-text', text),
+            h('div.cp-corner-actions', actions),
+            h('div.cp-corner-footer', footer)
+        ]);
+
+        var hide = function () {
+            $(popup).hide();
+        };
+        var show = function () {
+            $(popup).show();
+        };
+        var deletePopup = function () {
+            $(popup).remove();
+        };
+
+        $('body').append(popup);
+
+        return {
+            hide: hide,
+            show: show,
+            delete: deletePopup
+        };
+    };
+
     return UI;
 });

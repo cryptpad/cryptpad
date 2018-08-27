@@ -1226,5 +1226,11 @@ define(function () {
     out.sharedFolders_create_password = "Folder password";
     out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
 
+    // Manual pad storage popup
+    out.manual_notstored = "This pad is not stored in your drive. Do you want to store it now?"; // XXX
+    out.manual_settings = "You can enable automatic pad storage in your Settings page!"; // XXX
+    out.manual_store = "Store";
+    out.manual_hide = "Don't store";
+
     return out;
 });
