@@ -740,6 +740,7 @@ define([
                     '.cke_body_width body > *:first-child { margin-top: 0; }';
                 Ckeditor.addCss(newCss);
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
+                Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
                 });
