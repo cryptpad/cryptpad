@@ -370,7 +370,7 @@ define([
             cb(obj);
         });
     };
-    // Add a folder/subfolder
+    // Add a shared folder
     var _addSharedFolder = function (Env, data, cb) {
         data = data || {};
         var resolved = _resolvePath(Env, data.path);

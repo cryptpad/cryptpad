@@ -65,6 +65,13 @@ define([
         Store.getSharedFolder = function (clientId, id, cb) {
             if (store.manager.folders[id]) {
                 return void cb(store.manager.folders[id].proxy);
+            } else {
+                var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+                if (shared[id]) {
+                    return void Store.loadSharedFolder(id, shared[id], function () {
+                        cb(store.manager.folders[id].proxy);
+                    });
+                }
             }
             cb({});
         };
@@ -1165,7 +1172,7 @@ define([
         };
 
         // SHARED FOLDERS
-        var loadSharedFolder = function (id, data, cb) {
+        var loadSharedFolder = Store.loadSharedFolder = function (id, data, cb) {
             var parsed = Hash.parsePadUrl(data.href);
             var secret = Hash.getSecrets('drive', parsed.hash, data.password);
             var owners = data.owners;
