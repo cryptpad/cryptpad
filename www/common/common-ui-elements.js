@@ -722,27 +722,32 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function() {
-                    sframeChan.query('Q_IS_ONLY_IN_SHARED_FOLDER', null, function (err, res) {
-                        if (err || res.error) { return void console.log(err || res.error); }
-                        var msg = Messages.forgetPrompt;
-                        if (res) {
-                            UI.alert(Messages.sharedFolders_forget);
-                            return;
-                        } else if (!common.isLoggedIn()) {
-                            msg = Messages.fm_removePermanentlyDialog;
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
                         }
-                        UI.confirm(msg, function (yes) {
-                            if (!yes) { return; }
-                            sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
-                                if (err) { return void callback(err); }
-                                var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                                var msg = common.fixLinks($('<div>').html(cMsg));
-                                UI.alert(msg);
-                                callback();
+                        sframeChan.query('Q_IS_ONLY_IN_SHARED_FOLDER', null, function (err, res) {
+                            if (err || res.error) { return void console.log(err || res.error); }
+                            var msg = Messages.forgetPrompt;
+                            if (res) {
+                                UI.alert(Messages.sharedFolders_forget);
                                 return;
+                            } else if (!common.isLoggedIn()) {
+                                msg = Messages.fm_removePermanentlyDialog;
+                            }
+                            UI.confirm(msg, function (yes) {
+                                if (!yes) { return; }
+                                sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                                    if (err) { return void callback(err); }
+                                    var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                    var msg = common.fixLinks($('<div>').html(cMsg));
+                                    UI.alert(msg);
+                                    callback();
+                                    return;
+                                });
                             });
-                        });
 
+                        });
                     });
                 });
                 break;
@@ -807,7 +812,14 @@ define([
                     title: Messages.tags_title,
                 })
                 .click(common.prepareFeedback(type))
-                .click(function () { UIElements.updateTags(common, null); });
+                .click(function () {
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
+                        }
+                        UIElements.updateTags(common, null);
+                    });
+                });
                 break;
             case 'toggle':
                 button = $('<button>', {
@@ -844,11 +856,16 @@ define([
                 .text(Messages.propertiesButton))
                 .click(common.prepareFeedback(type))
                 .click(function () {
-                    getPropertiesData(common, function (e, data) {
-                        if (e) { return void console.error(e); }
-                        UIElements.getProperties(common, data, function (e, $prop) {
+                    common.isPadStored(function (err, data) {
+                        if (!data) {
+                            return void UI.alert(Messages.autostore_notAvailable);
+                        }
+                        getPropertiesData(common, function (e, data) {
                             if (e) { return void console.error(e); }
-                            UI.alert($prop[0], undefined, true);
+                            UIElements.getProperties(common, data, function (e, $prop) {
+                                if (e) { return void console.error(e); }
+                                UI.alert($prop[0], undefined, true);
+                            });
                         });
                     });
                 });

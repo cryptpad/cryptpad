@@ -766,7 +766,8 @@ define([
             // Add the pad if it does not exist in our drive
             if (!contains) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
-                if (autoStore !== 1 && !data.forceSave && !data.path) {
+                var ownedByMe = Array.isArray(owners) && owners.indexOf(store.proxy.edPublic) !== -1;
+                if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
                     // send event to inner to display the corner popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         autoStore: autoStore

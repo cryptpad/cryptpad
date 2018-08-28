@@ -1242,6 +1242,7 @@ define(function () {
     out.autostore_error = "Unexpected error: we were unable to store this pad, please try again.";
     out.autostore_saved = "The pad was successfully stored in your CryptDrive!";
     out.autostore_forceSave = "Store the file in CryptDrive"; // File upload modal
+    out.autostore_notAvailable = "You must store this pad in your CryptDrive before being able to use this feature."; // Properties/tags/move to trash
 
     return out;
 });

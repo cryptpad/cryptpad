@@ -373,6 +373,11 @@ define([
                     cb(err);
                 });
             });
+            sframeChan.on('Q_IS_PAD_STORED', function (data, cb) {
+                Cryptpad.getPadAttribute('title', function (err, data) {
+                    cb (!err && typeof (data) === "string");
+                });
+            });
 
 
             sframeChan.on('Q_SETTINGS_SET_DISPLAY_NAME', function (newName, cb) {
