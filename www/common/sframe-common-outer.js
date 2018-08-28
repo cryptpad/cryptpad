@@ -749,6 +749,24 @@ define([
                 });
             }
 
+            // Chrome 68 on Mac contains a bug resulting in the page turning white after a few seconds
+            try {
+                if (navigator.platform.toUpperCase().indexOf('MAC') >= 0 &&
+                    !localStorage.CryptPad_chrome68) {
+                    var isChrome = !!window.chrome && !!window.chrome.webstore;
+                    var getChromeVersion = function () {
+                        var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+                        return raw ? parseInt(raw[2], 10) : false;
+                    };
+                    if (isChrome && getChromeVersion() === 68) {
+                        sframeChan.whenReg('EV_CHROME_68', function () {
+                            sframeChan.event("EV_CHROME_68");
+                            localStorage.CryptPad_chrome68 = "1";
+                        });
+                    }
+                }
+            } catch (e) {}
+
 
 
             // Join the netflux channel

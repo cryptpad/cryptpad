@@ -251,6 +251,9 @@ define({
     // Critical error outside the iframe during loading screen
     'EV_LOADING_ERROR': true,
 
+    // Chrome 68 bug...
+    'EV_CHROME_68': true,
+
     // Get all existing tags
     'Q_GET_ALL_TAGS': true,
 

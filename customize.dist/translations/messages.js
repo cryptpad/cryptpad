@@ -1226,5 +1226,6 @@ define(function () {
     out.sharedFolders_create_password = "Folder password";
     out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
 
+    out.chrome68 = "It seems that you're using the browser Chrome or Chromium version 68. It contains a bug resulting in the page turning completely white after a few seconds or the page being unresponsive to clicks. To fix this issue, you can switch to another tab and come back, or try to scroll in the page. This bug should be fixed in the next version of your browser.";
     return out;
 });

@@ -484,6 +484,10 @@ define([
                 });
             });
 
+            ctx.sframeChan.on('EV_CHROME_68', function () {
+                UI.alert(Messages.chrome68);
+            });
+
             ctx.sframeChan.ready();
             cb(funcs);
         });
