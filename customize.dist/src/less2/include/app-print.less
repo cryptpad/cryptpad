@@ -1,46 +1,52 @@
-.app-print_main () {
-    // Current scope is <html>
-    @media print {
-        height: auto;
-        max-height: none;
-        overflow: visible;
-        display: block;
-        @page {
-            margin: 0;
-            size: landscape;
-        }
-        // Slide app
-        body.cp-app-slide {
+.app-print_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .cp-app-print {
+        // Current scope is <html>
+        @media print {
+            height: auto;
+            max-height: none;
+            overflow: visible;
             display: block;
-            .CodeMirror, #cme_toolbox {
-                display: none;
+            @page {
+                margin: 0;
+                size: landscape;
             }
-            * {
-                visibility: hidden;
-                height: auto;
-                max-height: none;
-            }
-            .cp-app-slide-viewer #cp-app-slide-print {
+            // Slide app
+            body.cp-app-slide {
                 display: block;
-                visibility: visible;
-                * {
-                    visibility: visible;
+                .CodeMirror, #cme_toolbox {
+                    display: none;
                 }
-            }
-            .cp-app-slide-viewer #cp-app-slide-modal {
-                display: none !important;
-            }
-            .cp-app-slide-viewer {
-                flex: 1 !important;
-                overflow: visible !important;
-            }
-            .cp-toolbar-userlist-drawer {
-                display: none !important;
-            }
-            #cp-app-slide-editor {
-                height: auto;
-                display: block;
+                * {
+                    visibility: hidden;
+                    height: auto;
+                    max-height: none;
+                }
+                .cp-app-slide-viewer #cp-app-slide-print {
+                    display: block;
+                    visibility: visible;
+                    * {
+                        visibility: visible;
+                    }
+                }
+                .cp-app-slide-viewer #cp-app-slide-modal {
+                    display: none !important;
+                }
+                .cp-app-slide-viewer {
+                    flex: 1 !important;
+                    overflow: visible !important;
+                }
+                .cp-toolbar-userlist-drawer {
+                    display: none !important;
+                }
+                #cp-app-slide-editor {
+                    height: auto;
+                    display: block;
+                }
             }
         }
     }
 }
+

@@ -387,6 +387,7 @@ define(function () {
     out.fm_newFolder = "New folder";
     out.fm_newFile = "New pad";
     out.fm_folder = "Folder";
+    out.fm_sharedFolder = "Shared folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
@@ -436,6 +437,7 @@ define(function () {
     out.fm_viewListButton = "List view";
     out.fm_viewGridButton = "Grid view";
     out.fm_renamedPad = "You've set a custom name for this pad. Its shared title is:<br><b>{0}</b>";
+    out.fm_canBeShared = "This folder can be shared";
     out.fm_prop_tagsList = "Tags";
     out.fm_burnThisDriveButton = "Erase all information stored by CryptPad in your browser";
     out.fm_burnThisDrive = "Are you sure you want to remove everything stored by CryptPad in your browser?<br>" +
@@ -445,8 +447,11 @@ define(function () {
     out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
     out.fm_tags_name = "Tag name";
     out.fm_tags_used = "Number of uses";
+    out.fm_restoreDrive = "Resetting your drive to an earlier state. For best results, avoid making changes to your drive until this process is complete.";
+    out.fm_moveNestedSF = "You can't place one shared folder within another. The folder {0} was not moved.";
     // File - Context menu
     out.fc_newfolder = "New folder";
+    out.fc_newsharedfolder = "New shared folder";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
@@ -454,12 +459,13 @@ define(function () {
     out.fc_delete_owned = "Delete from the server";
     out.fc_restore = "Restore";
     out.fc_remove = "Remove from your CryptDrive";
+    out.fc_remove_sharedfolder = "Remove";
     out.fc_empty = "Empty the trash";
     out.fc_prop = "Properties";
     out.fc_hashtag = "Tags";
     out.fc_sizeInKilobytes = "Size in Kilobytes";
     // fileObject.js (logs)
-    out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
+    out.fo_moveUnsortedError = "You can't move a folder to the list of templates";
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
     out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
     out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
@@ -615,6 +621,7 @@ define(function () {
     out.settings_changePasswordConfirm = "Are you sure you want to change your password? You will need to log back in on all your devices.";
     out.settings_changePasswordError = "An unexpected error occurred. If you are unable to login or change your password, contact your CryptPad administrators.";
     out.settings_changePasswordPending = "Your password is being updated. Please do not close or reload this page until the process has completed.";
+    out.settings_changePasswordNewPasswordSameAsOld = "Your new password must be different than your current password.";
 
     out.upload_title = "File upload";
     out.upload_modal_title = "File upload options";
@@ -1209,6 +1216,15 @@ define(function () {
     out.loading_drive_1 = "Loading data";
     out.loading_drive_2 = "Updating data format";
     out.loading_drive_3 = "Verifying data integrity";
+
+    // Shared folders
+    out.sharedFolders_forget = "This pad is only stored in a shared folder, you can't move it to the trash. You can use your CryptDrive if you want to delete it.";
+    out.sharedFolders_duplicate = "Some of the pads you were trying to move were already shared in the destination folder.";
+    out.sharedFolders_create = "Create a shared folder";
+    out.sharedFolders_create_name = "Folder name";
+    out.sharedFolders_create_owned = "Owned folder";
+    out.sharedFolders_create_password = "Folder password";
+    out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
 
     return out;
 });

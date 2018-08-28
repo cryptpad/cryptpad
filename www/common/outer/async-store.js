@@ -1,6 +1,7 @@
 define([
     'json.sortify',
     '/common/userObject.js',
+    '/common/proxy-manager.js',
     '/common/migrate-user-object.js',
     '/common/common-hash.js',
     '/common/common-util.js',
@@ -18,7 +19,7 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
-], function (Sortify, UserObject, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
+], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
              CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
     var Store = {};
@@ -27,16 +28,22 @@ define([
         var postMessage = function () {};
         var broadcast = function () {};
         var sendDriveEvent = function () {};
+        var registerProxyEvents = function () {};
 
         var storeHash;
 
         var store = window.CryptPad_AsyncStore = {};
 
-
         var onSync = function (cb) {
-            Realtime.whenRealtimeSyncs(store.realtime, cb);
+            nThen(function (waitFor) {
+                Realtime.whenRealtimeSyncs(store.realtime, waitFor());
+                if (store.sharedFolders) {
+                    for (var k in store.sharedFolders) {
+                        Realtime.whenRealtimeSyncs(store.sharedFolders[k].realtime, waitFor());
+                    }
+                }
+            }).nThen(function () { cb(); });
         };
-
 
         Store.get = function (clientId, key, cb) {
             cb(Util.find(store.proxy, key));
@@ -53,6 +60,13 @@ define([
             }
             broadcast([clientId], "UPDATE_METADATA");
             onSync(cb);
+        };
+
+        Store.getSharedFolder = function (clientId, id, cb) {
+            if (store.manager.folders[id]) {
+                return void cb(store.manager.folders[id].proxy);
+            }
+            cb({});
         };
 
         Store.hasSigningKeys = function () {
@@ -78,17 +92,9 @@ define([
             if (!userChannel) { return null; }
 
             // Get the list of pads' channel ID in your drive
-            // This list is filtered so that it doesn't include pad owned by other users (you should
-            // not pin these pads)
-            var files = store.userObject.getFiles([store.userObject.FILES_DATA]);
-            var edPublic = store.proxy.edPublic;
-            var list = files.map(function (id) {
-                    var d = store.userObject.getFileData(id);
-                    if (d.owners && d.owners.length && edPublic &&
-                        d.owners.indexOf(edPublic) === -1) { return; }
-                    return d.channel;
-                })
-                .filter(function (x) { return x; });
+            // This list is filtered so that it doesn't include pad owned by other users
+            // It now includes channels from shared folders
+            var list = store.manager.getChannelsList('pin');
 
             // Get the avatar
             var profile = store.proxy.profile;
@@ -111,19 +117,7 @@ define([
         };
 
         var getExpirableChannelList = function () {
-            var list = [];
-            store.userObject.getFiles([store.userObject.FILES_DATA]).forEach(function (id) {
-                var data = store.userObject.getFileData(id);
-                var edPublic = store.proxy.edPublic;
-
-                // Push channels owned by someone else or channel that should have expired
-                // because of the expiration time
-                if ((data.owners && data.owners.length && data.owners.indexOf(edPublic) === -1) ||
-                        (data.expire && data.expire < (+new Date()))) {
-                    list.push(data.channel);
-                }
-            });
-            return list;
+            return store.manager.getChannelsList('expirable');
         };
 
         var getCanonicalChannelList = function (expirable) {
@@ -380,7 +374,7 @@ define([
 
         Store.getDeletedPads = function (clientId, data, cb) {
             if (!store.anon_rpc) { return void cb({error: 'ANON_RPC_NOT_READY'}); }
-            var list = getCanonicalChannelList(true);
+            var list = (data && data.list) || getCanonicalChannelList(true);
             if (!Array.isArray(list)) {
                 return void cb({error: 'INVALID_FILE_LIST'});
             }
@@ -435,10 +429,11 @@ define([
             cb(JSON.parse(JSON.stringify(metadata)));
         };
 
-        var makePad = function (href, title) {
+        var makePad = function (href, roHref, title) {
             var now = +new Date();
             return {
                 href: href,
+                roHref: roHref,
                 atime: now,
                 ctime: now,
                 title: title || Hash.getDefaultName(Hash.parsePadUrl(href)),
@@ -446,16 +441,21 @@ define([
         };
 
         Store.addPad = function (clientId, data, cb) {
-            if (!data.href) { return void cb({error:'NO_HREF'}); }
-            var pad = makePad(data.href, data.title);
+            if (!data.href && !data.roHref) { return void cb({error:'NO_HREF'}); }
+            if (!data.roHref) {
+                var parsed = Hash.parsePadUrl(data.href);
+                if (parsed.hashData.type === "pad") {
+                    var secret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
+                    data.roHref = '/' + parsed.type + '/#' + Hash.getViewHashFromKeys(secret);
+                }
+            }
+            var pad = makePad(data.href, data.roHref, data.title);
             if (data.owners) { pad.owners = data.owners; }
             if (data.expire) { pad.expire = data.expire; }
             if (data.password) { pad.password = data.password; }
             if (data.channel) { pad.channel = data.channel; }
-            store.userObject.pushData(pad, function (e, id) {
-                if (e) { return void cb({error: "Error while adding a template:"+ e}); }
-                var path = data.path || ['root'];
-                store.userObject.add(id, path);
+            store.manager.addPad(data.path, pad, function (e) {
+                if (e) { return void cb({error: "Error while adding the pad:"+ e}); }
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
@@ -464,17 +464,7 @@ define([
         };
 
         var getOwnedPads = function () {
-            var list = [];
-            store.userObject.getFiles([store.userObject.FILES_DATA]).forEach(function (id) {
-                var data = store.userObject.getFileData(id);
-                var edPublic = store.proxy.edPublic;
-
-                // Push channels owned by someone else or channel that should have expired
-                // because of the expiration time
-                if (data.owners && data.owners.length === 1 && data.owners.indexOf(edPublic) !== -1) {
-                    list.push(data.channel);
-                }
-            });
+            var list = store.manager.getChannelsList('owned');
             if (store.proxy.todo) {
                 // No password for todo
                 list.push(Hash.hrefToHexChannelId('/todo/#' + store.proxy.todo, null));
@@ -596,33 +586,6 @@ define([
             });
         };
 
-        var getAttributeObject = function (attr) {
-            if (typeof attr === "string") {
-                console.error('DEPRECATED: use setAttribute with an array, not a string');
-                return {
-                    path: ['settings'],
-                    obj: store.proxy.settings,
-                    key: attr
-                };
-            }
-            if (!Array.isArray(attr)) { return void console.error("Attribute must be string or array"); }
-            if (attr.length === 0) { return void console.error("Attribute can't be empty"); }
-            var obj = store.proxy.settings;
-            attr.forEach(function (el, i) {
-                if (i === attr.length-1) { return; }
-                if (!obj[el]) {
-                    obj[el] = {};
-                }
-                else if (typeof obj[el] !== "object") { return void console.error("Wrong attribute"); }
-                obj = obj[el];
-            });
-            return {
-                path: ['settings'].concat(attr),
-                obj: obj,
-                key: attr[attr.length-1]
-            };
-        };
-
         // Set the display name (username) in the proxy
         Store.setDisplayName = function (clientId, value, cb) {
             store.proxy[Constants.displayNameKey] = value;
@@ -651,7 +614,7 @@ define([
          *   - value (String)
          */
         Store.setPadAttribute = function (clientId, data, cb) {
-            store.userObject.setPadAttribute(data.href, data.attr, data.value, function () {
+            store.manager.setPadAttribute(data, function () {
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
@@ -659,10 +622,37 @@ define([
             });
         };
         Store.getPadAttribute = function (clientId, data, cb) {
-            store.userObject.getPadAttribute(data.href, data.attr, function (err, val) {
+            store.manager.getPadAttribute(data, function (err, val) {
                 if (err) { return void cb({error: err}); }
                 cb(val);
             });
+        };
+
+        var getAttributeObject = function (attr) {
+            if (typeof attr === "string") {
+                console.error('DEPRECATED: use setAttribute with an array, not a string');
+                return {
+                    path: ['settings'],
+                    obj: store.proxy.settings,
+                    key: attr
+                };
+            }
+            if (!Array.isArray(attr)) { return void console.error("Attribute must be string or array"); }
+            if (attr.length === 0) { return void console.error("Attribute can't be empty"); }
+            var obj = store.proxy.settings;
+            attr.forEach(function (el, i) {
+                if (i === attr.length-1) { return; }
+                if (!obj[el]) {
+                    obj[el] = {};
+                }
+                else if (typeof obj[el] !== "object") { return void console.error("Wrong attribute"); }
+                obj = obj[el];
+            });
+            return {
+                path: ['settings'].concat(attr),
+                obj: obj,
+                key: attr[attr.length-1]
+            };
         };
         Store.setAttribute = function (clientId, data, cb) {
             try {
@@ -681,11 +671,12 @@ define([
 
         // Tags
         Store.listAllTags = function (clientId, data, cb) {
-            cb(store.userObject.getTagsList());
+            cb(store.manager.getTagsList());
         };
 
         // Templates
         Store.getTemplates = function (clientId, data, cb) {
+            // No templates in shared folders: we don't need the manager here
             var templateFiles = store.userObject.getFiles(['template']);
             var res = [];
             templateFiles.forEach(function (f) {
@@ -695,6 +686,7 @@ define([
             cb(res);
         };
         Store.incrementTemplateUse = function (clientId, href) {
+            // No templates in shared folders: we don't need the manager here
             store.userObject.getPadAttribute(href, 'used', function (err, data) {
                 // This is a not critical function, abort in case of error to make sure we won't
                 // create any issue with the user object or the async store
@@ -705,6 +697,17 @@ define([
         };
 
         // Pads
+        Store.isOnlyInSharedFolder = function (clientId, channel, cb) {
+            var res = store.manager.findChannel(channel);
+
+            // A pad is only in a shared worker if:
+            // 1. this pad is in at least one proxy
+            // 2. no proxy containing this pad is the main drive
+            return cb (res.length && !res.some(function (obj) {
+                // Main drive doesn't have an fId (folder ID)
+                return !obj.fId;
+            }));
+        };
         Store.moveToTrash = function (clientId, data, cb) {
             var href = Hash.getRelativeHref(data.href);
             store.userObject.forget(href);
@@ -728,78 +731,48 @@ define([
             if (channelData && channelData.wc && channel === channelData.wc.id) {
                 owners = channelData.data.owners || undefined;
             }
+            if (data.owners) {
+                owners = data.owners;
+            }
 
             var expire;
             if (channelData && channelData.wc && channel === channelData.wc.id) {
                 expire = +channelData.data.expire || undefined;
             }
 
-            var allPads = Util.find(store.proxy, ['drive', 'filesData']) || {};
-            var isStronger;
-
-            // If we don't find the new channel in our existing pads, we'll have to add the pads
-            // to filesData
-            var contains;
-
-            // Update all pads that use the same channel but with a weaker hash
-            // Edit > Edit (present) > View > View (present)
-            for (var id in allPads) {
-                var pad = allPads[id];
-                if (!pad.href) { continue; }
-
-                var p2 = Hash.parsePadUrl(pad.href);
-                var h2 = p2.hashData;
-
-                // Different types, proceed to the next one
-                // No hash data: corrupted pad?
-                if (p.type !== p2.type || !h2) { continue; }
-                // Different channel: continue
-                if (pad.channel !== channel) { continue; }
-
-                var shouldUpdate = p.hash.replace(/\/$/, '') === p2.hash.replace(/\/$/, '');
-
-                // If the hash is different but represents the same channel, check if weaker or stronger
-                if (!shouldUpdate && h.version !== 0) {
-                    // We had view & now we have edit, update
-                    if (h2.mode === 'view' && h.mode === 'edit') { shouldUpdate = true; }
-                    // Same mode and we had present URL, update
-                    else if (h.mode === h2.mode && h2.present) { shouldUpdate = true; }
-                    // If we're here it means we have a weaker URL:
-                    // update the date but keep the existing hash
-                    else {
-                        pad.atime = +new Date();
-                        contains = true;
-                        continue;
-                    }
+            var datas = store.manager.findChannel(channel);
+            var contains = datas.length !== 0;
+            datas.forEach(function (obj) {
+                var pad = obj.data;
+                pad.atime = +new Date();
+                pad.title = title;
+                if (owners || h.type !== "file") {
+                    // OWNED_FILES
+                    // Never remove owner for files
+                    pad.owners = owners;
                 }
+                pad.expire = expire;
+                if (h.mode === 'view') { return; }
 
-                if (shouldUpdate) {
-                    contains = true;
-                    pad.atime = +new Date();
-                    pad.title = title;
-                    if (owners || h.type !== "file") {
-                        // OWNED_FILES
-                        // Never remove owner for files
-                        pad.owners = owners;
-                    }
-                    pad.expire = expire;
-
-                    // If the href is different, it means we have a stronger one
-                    if (href !== pad.href) { isStronger = true; }
-                    pad.href = href;
+                // If we only have rohref, it means we have a stronger href
+                if (!pad.href) {
+                    // If we have a stronger url, remove the possible weaker from the trash.
+                    // If all of the weaker ones were in the trash, add the stronger to ROOT
+                    obj.userObject.restoreHref(href);
                 }
-            }
-
-            if (isStronger) {
-                // If we have a stronger url, remove the possible weaker from the trash.
-                // If all of the weaker ones were in the trash, add the stronger to ROOT
-                store.userObject.restoreHref(href);
-            }
+                pad.href = href;
+            });
 
             // Add the pad if it does not exist in our drive
             if (!contains) {
+                var roHref;
+                if (h.mode === "view") {
+                    roHref = href;
+                    href = undefined;
+                }
                 Store.addPad(clientId, {
                     href: href,
+                    roHref: roHref,
                     channel: channel,
                     title: title,
                     owners: owners,
@@ -819,7 +792,6 @@ define([
         // Filepicker app
         Store.getSecureFilesList = function (clientId, query, cb) {
             var list = {};
-            var hashes = [];
             var types = query.types;
             var where = query.where;
             var filter = query.filter || {};
@@ -834,19 +806,19 @@ define([
                 }
                 return filtered;
             };
-            store.userObject.getFiles(where).forEach(function (id) {
-                var data = store.userObject.getFileData(id);
-                var parsed = Hash.parsePadUrl(data.href);
+            store.manager.getSecureFilesList(where).forEach(function (obj) {
+                var data = obj.data;
+                var id = obj.id;
+                var parsed = Hash.parsePadUrl(data.href || data.roHref);
                 if ((!types || types.length === 0 || types.indexOf(parsed.type) !== -1) &&
-                    hashes.indexOf(parsed.hash) === -1 &&
                     !isFiltered(parsed.type, data)) {
-                    hashes.push(parsed.hash);
                     list[id] = data;
                 }
             });
             cb(list);
         };
         Store.getPadData = function (clientId, id, cb) {
+            // FIXME: this is only used for templates at the moment, so we don't need the manager
             cb(store.userObject.getFileData(id));
         };
 
@@ -1192,37 +1164,60 @@ define([
             }]));
         };
 
+        // SHARED FOLDERS
+        var loadSharedFolder = function (id, data, cb) {
+            var parsed = Hash.parsePadUrl(data.href);
+            var secret = Hash.getSecrets('drive', parsed.hash, data.password);
+            var owners = data.owners;
+            var listmapConfig = {
+                data: {},
+                websocketURL: NetConfig.getWebsocketURL(),
+                channel: secret.channel,
+                readOnly: false,
+                validateKey: secret.keys.validateKey || undefined,
+                crypto: Crypto.createEncryptor(secret.keys),
+                userName: 'sharedFolder',
+                logLevel: 1,
+                ChainPad: ChainPad,
+                classic: true,
+                owners: owners
+            };
+            var rt = Listmap.create(listmapConfig);
+            store.sharedFolders[id] = rt;
+            rt.proxy.on('ready', function (info) {
+                store.manager.addProxy(id, rt.proxy, info.leave);
+                cb(rt, info.metadata);
+            });
+            if (store.driveEvents) {
+                registerProxyEvents(rt.proxy, id);
+            }
+            return rt;
+        };
+        Store.addSharedFolder = function (clientId, data, cb) {
+            Store.userObjectCommand(clientId, {
+                cmd: 'addSharedFolder',
+                data: data
+            }, cb);
+        };
+
         // Drive
         Store.userObjectCommand = function (clientId, cmdData, cb) {
             if (!cmdData || !cmdData.cmd) { return; }
-            var data = cmdData.data;
+            //var data = cmdData.data;
             var cb2 = function (data2) {
-                var paths = data.paths || [data.path] || [];
-                paths = paths.concat(data.newPath || []);
-                paths.forEach(function (p) {
+                //var paths = data.paths || [data.path] || [];
+                //paths = paths.concat(data.newPath ? [data.newPath] : []);
+                //paths.forEach(function (p) {
                     sendDriveEvent('DRIVE_CHANGE', {
-                        //path: ['drive', UserObject.FILES_DATA]
-                        path: ['drive'].concat(p)
+                        path: ['drive', UserObject.FILES_DATA]
+                        //path: ['drive'].concat(p)
                     }, clientId);
+                //});
+                onSync(function () {
+                    cb(data2);
                 });
-                cb(data2);
             };
-            switch (cmdData.cmd) {
-                case 'move':
-                    store.userObject.move(data.paths, data.newPath, cb2); break;
-                case 'restore':
-                    store.userObject.restore(data.path, cb2); break;
-                case 'addFolder':
-                    store.userObject.addFolder(data.path, data.name, cb2); break;
-                case 'delete':
-                    store.userObject.delete(data.paths, cb2, data.nocheck, data.isOwnPadRemoved); break;
-                case 'emptyTrash':
-                    store.userObject.emptyTrash(cb2); break;
-                case 'rename':
-                    store.userObject.rename(data.path, data.newName, cb2); break;
-                default:
-                    cb();
-            }
+            store.manager.command(cmdData, cb2);
         };
 
         // Clients management
@@ -1259,32 +1254,41 @@ define([
 
         // Special events
 
-        var driveEventInit = false;
         sendDriveEvent = function (q, data, sender) {
             driveEventClients.forEach(function (cId) {
                 if (cId === sender) { return; }
                 postMessage(cId, q, data);
             });
         };
+        registerProxyEvents = function (proxy, fId) {
+            proxy.on('change', [], function (o, n, p) {
+                sendDriveEvent('DRIVE_CHANGE', {
+                    id: fId,
+                    old: o,
+                    new: n,
+                    path: p
+                });
+            });
+            proxy.on('remove', [], function (o, p) {
+                sendDriveEvent('DRIVE_REMOVE', {
+                    id: fId,
+                    old: o,
+                    path: p
+                });
+            });
+        };
+
         Store._subscribeToDrive = function (clientId) {
             if (driveEventClients.indexOf(clientId) === -1) {
                 driveEventClients.push(clientId);
             }
-            if (!driveEventInit) {
-                store.proxy.on('change', [], function (o, n, p) {
-                    sendDriveEvent('DRIVE_CHANGE', {
-                        old: o,
-                        new: n,
-                        path: p
-                    });
+            if (!store.driveEvents) {
+                store.driveEvents = true;
+                registerProxyEvents(store.proxy);
+                Object.keys(store.manager.folders).forEach(function (fId) {
+                    var proxy = store.manager.folders[fId].proxy;
+                    registerProxyEvents(proxy, fId);
                 });
-                store.proxy.on('remove', [], function (o, p) {
-                    sendDriveEvent(clientId, 'DRIVE_REMOVE', {
-                        old: o,
-                        path: p
-                    });
-                });
-                driveEventInit = true;
             }
         };
 
@@ -1340,12 +1344,60 @@ define([
         /////////////////////// Init /////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        var loadSharedFolders = function (waitFor) {
+            store.sharedFolders = {};
+            var shared = Util.find(store.proxy, ['drive', UserObject.SHARED_FOLDERS]) || {};
+            // Check if any of our shared folder is expired or deleted by its owner.
+            // If we don't check now, Listmap will create an empty proxy if it no longer exists on
+            // the server.
+            nThen(function (waitFor) {
+                var edPublic = store.proxy.edPublic;
+                var checkExpired = Object.keys(shared).filter(function (fId) {
+                    var d = shared[fId];
+                    return (Array.isArray(d.owners) && d.owners.length &&
+                            (!edPublic || d.owners.indexOf(edPublic) === -1))
+                            || (d.expire && d.expire < (+new Date()));
+                }).map(function (fId) {
+                    return shared[fId].channel;
+                });
+                Store.getDeletedPads(null, {list: checkExpired}, waitFor(function (chans) {
+                    if (chans && chans.error) { return void console.error(chans.error); }
+                    if (!Array.isArray(chans) || !chans.length) { return; }
+                    var toDelete = [];
+                    Object.keys(shared).forEach(function (fId) {
+                        if (chans.indexOf(shared[fId].channel) !== -1
+                            && toDelete.indexOf(fId) === -1) {
+                            toDelete.push(fId);
+                        }
+                    });
+                    toDelete.forEach(function (fId) {
+                        var paths = store.userObject.findFile(Number(fId));
+                        store.userObject.delete(paths, waitFor(), true);
+                        delete shared[fId];
+                    });
+                }));
+            }).nThen(function (waitFor) {
+                Object.keys(shared).forEach(function (id) {
+                    var sf = shared[id];
+                    loadSharedFolder(id, sf, waitFor());
+                });
+            }).nThen(waitFor());
+        };
+
         var onReady = function (clientId, returned, cb) {
             var proxy = store.proxy;
-            var userObject = store.userObject = UserObject.init(proxy.drive, {
-                pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
-                unpinPads: function (data, cb) { Store.unpinPads(null, data, cb); },
-                removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel(null, data, cb); },
+            var unpin = function (data, cb) {
+                if (!store.loggedIn) { return void cb(); }
+                Store.unpinPads(null, data, cb);
+            };
+            var pin = function (data, cb) {
+                if (!store.loggedIn) { return void cb(); }
+                Store.pinPads(null, data, cb);
+            };
+            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic,
+                                            pin, unpin, loadSharedFolder, {
+                outer: true,
+                removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel('', data, cb); },
                 edPublic: store.proxy.edPublic,
                 loggedIn: store.loggedIn,
                 log: function (msg) {
@@ -1353,6 +1405,7 @@ define([
                     sendDriveEvent("DRIVE_LOG", msg);
                 }
             });
+            var userObject = store.userObject = manager.user.userObject;
             nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 2
@@ -1361,16 +1414,18 @@ define([
             }).nThen(function (waitFor) {
                 Migrate(proxy, waitFor(), function (version, progress) {
                     postMessage(clientId, 'LOADING_DRIVE', {
-                        state: 2,
+                        state: (2 + (version / 10)),
                         progress: progress
                     });
                 });
-            }).nThen(function () {
+                Store.initAnonRpc(null, null, waitFor());
+            }).nThen(function (waitFor) {
                 postMessage(clientId, 'LOADING_DRIVE', {
                     state: 3
                 });
                 userObject.fixFiles();
-
+                loadSharedFolders(waitFor);
+            }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
                 };

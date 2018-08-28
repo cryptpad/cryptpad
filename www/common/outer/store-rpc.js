@@ -42,6 +42,7 @@ define([
             MOVE_TO_TRASH: Store.moveToTrash,
             RESET_DRIVE: Store.resetDrive,
             GET_METADATA: Store.getMetadata,
+            IS_ONLY_IN_SHARED_FOLDER: Store.isOnlyInSharedFolder,
             SET_DISPLAY_NAME: Store.setDisplayName,
             SET_PAD_ATTRIBUTE: Store.setPadAttribute,
             GET_PAD_ATTRIBUTE: Store.getPadAttribute,
@@ -53,6 +54,8 @@ define([
             GET_PAD_DATA: Store.getPadData,
             GET_STRONGER_HASH: Store.getStrongerHash,
             INCREMENT_TEMPLATE_USE: Store.incrementTemplateUse,
+            GET_SHARED_FOLDER: Store.getSharedFolder,
+            ADD_SHARED_FOLDER: Store.addSharedFolder,
             // Messaging
             INVITE_FROM_USERLIST: Store.inviteFromUserlist,
             ADD_DIRECT_MESSAGE_HANDLERS: Store.addDirectMessageHandlers,

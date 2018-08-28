@@ -266,8 +266,12 @@ define([
                         isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen,
                         password: password,
-                        channel: secret.channel
+                        channel: secret.channel,
+                        enableSF: localStorage.CryptPad_SF === "1" // TODO to remove when enabled by default
                     };
+                    if (window.CryptPad_newSharedFolder) {
+                        additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
+                    }
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
@@ -421,10 +425,19 @@ define([
                 });
             });
             sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
-                var crypto = Crypto.createEncryptor(secret.keys);
+                var nSecret = secret;
+                if (cfg.isDrive) {
+                    var hash = Utils.LocalStore.getUserHash() || Utils.LocalStore.getFSHash();
+                    if (hash) {
+                        nSecret = Utils.Hash.getSecrets('drive', hash);
+                    }
+                }
+                var channel = nSecret.channel;
+                var validate = nSecret.keys.validateKey;
+                var crypto = Crypto.createEncryptor(nSecret.keys);
                 Cryptpad.getHistoryRange({
-                    channel: secret.channel,
-                    validateKey: secret.keys.validateKey,
+                    channel: channel,
+                    validateKey: validate,
                     lastKnownHash: data.lastKnownHash
                 }, function (data) {
                     cb({
@@ -484,6 +497,12 @@ define([
                 cb();
             });
 
+            sframeChan.on('Q_IS_ONLY_IN_SHARED_FOLDER', function (data, cb) {
+                Cryptpad.isOnlyInSharedFolder(secret.channel, function (err, t) {
+                    if (err) { return void cb({error: err}); }
+                    cb(t);
+                });
+            });
 
             // Present mode URL
             sframeChan.on('Q_PRESENT_URL_GET_VALUE', function (data, cb) {

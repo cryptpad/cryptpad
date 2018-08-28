@@ -1,5 +1,8 @@
-@import (once) "./colortheme-all.less";
+@import (reference) "./colortheme-all.less";
 .iconColors_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
     // Classes used in common-interface.js
     .cp-icon-color-pad { color: @colortheme_pad-bg; }
     .cp-icon-color-code { color: @colortheme_code-bg; }

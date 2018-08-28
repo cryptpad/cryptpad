@@ -114,6 +114,10 @@ define({
     'Q_GET_PAD_ATTRIBUTE': true,
     'Q_SET_PAD_ATTRIBUTE': true,
 
+    // Check if a pad is only in a shared folder or (also) in the main drive.
+    // This allows us to change the behavior of some buttons (trash icon...)
+    'Q_IS_ONLY_IN_SHARED_FOLDER': true,
+
     // Open/close the File picker (sent from the iframe to the outside)
     'EV_FILE_PICKER_OPEN': true,
     'EV_FILE_PICKER_CLOSE': true,
@@ -206,6 +210,7 @@ define({
     // Inner drive needs to send command and receive updates from the async store
     'Q_DRIVE_USEROBJECT': true,
     'Q_DRIVE_GETOBJECT': true,
+    'Q_DRIVE_RESTORE': true,
     // Get the pads deleted from the server by other users to remove them from the drive
     'Q_DRIVE_GETDELETED': true,
     // Store's userObject need to send log messages to inner to display them in the UI

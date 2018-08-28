@@ -1,12 +1,27 @@
-@import (once) "./colortheme-all.less";
-@import (once) "./tools.less";
-@import (once) './icon-colors.less';
+@import (reference) "./browser.less";
+@import (reference) "./colortheme-all.less";
+@import (reference) "./tools.less";
+@import (reference) './icon-colors.less';
+
+.creation_vars(
+    @color: @colortheme_default-color,
+    @bg-color: @colortheme_default-bg
+) {
+    @creation-color: @color;
+    @creation-bg-color: @bg-color;
+};
 
 .creation_main(
-    @color: @colortheme_default-color, // Color of the text for the toolbar
-    @bg-color: @colortheme_default-bg, // color of the toolbar background
-    @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
+    @color: @colortheme_default-color,
+    @bg-color: @colortheme_default-bg
 ) {
+    --LessLoader_require: LessLoader_currentFile();
+    .creation_vars(@color, @bg-color);
+    --creation-color: @color;
+    --creation-bg-color: @bg-color;
+}
+& {
+    .creation_vars();
     @colortheme_creation-modal-bg: #fff;
     @colortheme_creation-modal: #666;
     @colortheme_creation-modal-title: @colortheme_loading-bg;
@@ -116,6 +131,8 @@
                 line-height: 28px;
                 label {
                     flex: 1;
+                    // Force wrap when the other element in the line is 100% (IE bug):
+                    min-width: 1px;
                 }
                 input[type="checkbox"] {
                     &+ label {
@@ -141,8 +158,11 @@
                 //margin-top: 10px;
                 &.active {
                     transition: max-height 0.5s ease-in-out;
-                    max-width: unset;
+                    max-width: none;
                     max-height: 100px;
+                }
+                input, select {
+                    vertical-align: middle;
                 }
             }
 
@@ -150,6 +170,7 @@
                 font-size: 14px;
                 border: 1px solid @colortheme_form-border;
                 height: 26px;
+                line-height: 26px;
                 background-color: @colortheme_form-bg;
                 color: @colortheme_form-color;
             }
@@ -167,7 +188,7 @@
                 }
                 &.active {
                     label {
-                        flex: unset;
+                        flex: none;
                     }
                     .cp-creation-slider {
                         flex: 1;
@@ -184,7 +205,7 @@
                             padding: 0 5px;
                         }
                         label {
-                            flex: unset;
+                            flex: none;
                         }
                     }
                 }
@@ -258,21 +279,18 @@
                     color: black;
                     border: 1px solid transparent;
 
-                    &.cp-creation-template-selected {
-                        color: @color !important;
-                        background-color: @bg-color !important;
-                        .fa {
-                            color: @color;
+                    &.cp-creation-template-selected, &:hover {
+                        color: @creation-color !important;
+                        color: var(--creation-color) !important;
+                        background-color: @creation-bg-color !important;
+                        background-color: var(--creation-bg-color) !important;
+                        .fa, .cptools {
+                            color: @creation-color;
+                            color: var(--creation-color);
                         }
                     }
 
                     transition: all 0.1s;
-
-                    &:hover {
-                        //color: @colortheme_modal-fg;
-                        background-color: @colortheme_form-border;
-                        box-shadow: none;
-                    }
 
                     align-items: center;
 
@@ -287,13 +305,15 @@
                         overflow: hidden;
                         text-overflow: ellipsis;
                         white-space: nowrap;
+                        min-height: 20px;
                         height: 20px;
                         line-height: 20px;
                         margin-top: 5px;
                         max-width: 100%;
                     }
-                    .fa {
-                        color: @bg-color;
+                    .fa, .cptools {
+                        color: @creation-bg-color;
+                        color: var(--creation-bg-color);
                         cursor: pointer;
                         width: 100px;
                         height: 100px;
@@ -340,7 +360,7 @@
                                 flex: 1;
                             }
                             .cp-creation-slider {
-                                flex: unset;
+                                flex: none;
                                 order: 10;
                                 width: 100%;
                             }

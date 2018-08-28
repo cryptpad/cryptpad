@@ -398,10 +398,16 @@ Version 1
     Hash.findWeaker = function (href, channel, recents) {
         var parsed = parsePadUrl(href);
         if (!parsed.hash) { return false; }
+        // We can't have a weaker hash if we're already in view mode
+        if (parsed.hashData && parsed.hashData.mode === 'view') { return; }
         var weaker;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];
-            var p = parsePadUrl(pad.href);
+            if (pad.href || !pad.roHref) {
+                // This pad has an edit link, so it can't be weaker
+                return;
+            }
+            var p = parsePadUrl(pad.roHref);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger
             if (channel !== pad.channel) { return; } // Not the same channel
@@ -430,6 +436,10 @@ Version 1
         var stronger;
         Object.keys(recents).some(function (id) {
             var pad = recents[id];
+            if (!pad.href) {
+                // This pad doesn't have an edit link, so it can't be stronger
+                return;
+            }
             var p = parsePadUrl(pad.href);
             if (p.type !== parsed.type) { return; } // Not the same type
             if (p.hash === parsed.hash) { return; } // Same hash, not stronger

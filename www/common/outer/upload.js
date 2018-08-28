@@ -92,7 +92,8 @@ define([
                         href: href,
                         path: path,
                         password: password,
-                        channel: id
+                        channel: id,
+                        owners: metadata.owners
                     };
                     common.setPadTitle(data, function (err) {
                         if (err) { return void console.error(err); }

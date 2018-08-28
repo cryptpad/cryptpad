@@ -1,0 +1,31 @@
+@font-face {
+  font-family: 'cptools';
+  src:
+    url('fonts/cptools.ttf?dysqmo') format('truetype'),
+    url('fonts/cptools.woff?dysqmo') format('woff'),
+    url('fonts/cptools.svg?dysqmo#cptools') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.cptools {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'cptools' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cptools-template:before {
+  content: "\e900";
+}
+.cptools-new-template:before {
+  content: "\e901";
+}
