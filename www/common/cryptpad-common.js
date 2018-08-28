@@ -1016,7 +1016,17 @@ define([
         cb();
     };
 
+    /*var onPing = function (data, cb) {
+        cb();
+    };
+
+    var onTimeout = function () {
+        //alert("Timeout");
+    };*/
+
     var queries = {
+        /*PING: onPing,
+        TIMEOUT: onTimeout,*/
         REQUEST_LOGIN: requestLogin,
         UPDATE_METADATA: common.changeMetadata,
         UPDATE_TOKEN: function (data) {

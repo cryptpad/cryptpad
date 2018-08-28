@@ -1558,6 +1558,43 @@ define([
             rt.proxy.on('reconnect', function (info) {
                 broadcast([], 'NETWORK_RECONNECT', {myId: info.myId});
             });
+
+            /*
+            // Ping clients regularly to make sure one tab was not closed without sending a removeClient()
+            // command. This allow us to avoid phantom viewers in pads.
+            var PING_INTERVAL = 30000;
+            var MAX_PING = 1000;
+            var MAX_FAILED_PING = 5;
+
+            setInterval(function () {
+                var clients = [];
+                Object.keys(Store.channels).forEach(function (chanId) {
+                    var c = Store.channels[chanId].clients;
+                    Array.prototype.push.apply(clients, c);
+                });
+                clients = Util.deduplicateString(clients);
+                clients.forEach(function (cId) {
+                    var nb = 0;
+                    var ping = function () {
+                        nb++;
+                        if (nb >= MAX_FAILED_PING) {
+                            Store._removeClient(cId);
+                            postMessage(cId, 'TIMEOUT');
+                            console.error('TIMEOUT 5 errors');
+                            return;
+                        }
+                        var to = setTimeout(ping, MAX_PING);
+                        console.log('ping');
+                        postMessage(cId, 'PING', null, function () {
+                            console.log('pong');
+                            clearTimeout(to);
+                        });
+                    };
+                    ping();
+                });
+            }, PING_INTERVAL);
+            */
+
         };
 
         /**
