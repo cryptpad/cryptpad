@@ -565,6 +565,14 @@ define(function () {
     out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
     out.settings_importDone = "Import completed";
 
+    out.settings_autostoreTitle = "Pad storage in CryptDrive";
+    out.settings_autostoreHint = "<b>Automatic</b> pad storage results in all the pads you visit being stored in your CryptDrive.<br>" +
+                                 "<b>Manual (always ask)</b> results in the pads not being stored but a reminder will appear to ask you if you want to store them in CryptDrive.<br>" +
+                                 "<b>Manual (never ask)</b> results in the pads not being stored and option to store them will be available but in a hidden way.";
+    out.settings_autostoreYes = "Automatic";
+    out.settings_autostoreNo = "Manual (never ask)";
+    out.settings_autostoreMaybe = "Manual (always ask)";
+
     out.settings_userFeedbackTitle = "Feedback";
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
@@ -1227,10 +1235,13 @@ define(function () {
     out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
 
     // Manual pad storage popup
-    out.manual_notstored = "This pad is not stored in your drive. Do you want to store it now?"; // XXX
-    out.manual_settings = "You can enable automatic pad storage in your Settings page!"; // XXX
-    out.manual_store = "Store";
-    out.manual_hide = "Don't store";
+    out.autostore_notstored = "This pad is not in your CryptDrive. Do you want to store it now?"; // XXX
+    out.autostore_settings = "You can enable automatic pad storage in your <a href=\"/settings/\">Settings</a> page!"; // XXX
+    out.autostore_store = "Store";
+    out.autostore_hide = "Don't store";
+    out.autostore_error = "Unexpected error: we were unable to store this pad, please try again.";
+    out.autostore_saved = "The pad was successfully stored in your CryptDrive!";
+    out.autostore_forceSave = "Store the file in CryptDrive"; // File upload modal
 
     return out;
 });

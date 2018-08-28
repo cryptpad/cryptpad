@@ -452,8 +452,8 @@ define([
                 UI.errorLoadingScreen($err, true, true);
             });
 
-            ctx.sframeChan.on('EV_AUTOSTORE_DISPLAY_POPUP', function () {
-                UIElements.displayStorePadPopup(funcs);
+            ctx.sframeChan.on('EV_AUTOSTORE_DISPLAY_POPUP', function (data) {
+                UIElements.displayStorePadPopup(funcs, data);
             });
 
             ctx.metadataMgr.onReady(waitFor());

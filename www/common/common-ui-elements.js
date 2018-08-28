@@ -2309,22 +2309,27 @@ define([
     };
 
     var storePopupState = false;
-    UIElements.displayStorePadPopup = function (common) {
+    UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
 
-        var text = Messages.manual_notstored;
-        var footer = Messages.manual_settings;
+        var text = Messages.autostore_notstored;
+        var footer = Messages.autostore_settings;
 
-        var hide = h('button.cp-corner-cancel', Messages.manual_hide);
-        var store = h('button.cp-corner-primary', Messages.manual_store);
+        var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
+        var store = h('button.cp-corner-primary', Messages.autostore_store);
         var actions = h('div', [
             store,
             hide,
         ]);
 
-        console.log(text, footer);
-        var modal = UI.cornerPopup(text, actions, footer);
+        var initialHide = data && data.autoStore && data.autoStore === -1;
+        var modal = UI.cornerPopup(text, actions, footer, initialHide);
+
+        $(modal.popup).find('.cp-corner-footer a').click(function (e) {
+            e.preventDefault();
+            common.openURL('/settings/');
+        });
 
         $(hide).click(function () {
             modal.delete();
@@ -2334,9 +2339,9 @@ define([
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
                 if (err || (obj && obj.error)) {
                     console.error(err || obj.error);
-                    return void UI.warn("Error"); // XXX
+                    return void UI.warn(Messages.autostore_error);
                 }
-                UI.log("Saved"); // XXX
+                UI.log(Messages.autostore_saved);
             });
         });
 

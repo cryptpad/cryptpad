@@ -17,6 +17,7 @@ define([
         var path = file.path;
 
         var password = file.password;
+        var forceSave = file.forceSave;
         var hash, secret, key, id, href;
 
         var getNewHash = function () {
@@ -94,7 +95,7 @@ define([
                         password: password,
                         channel: id,
                         owners: metadata.owners,
-                        // XXX FORCESAVE ??
+                        forceSave: forceSave
                     };
                     common.setPadTitle(data, function (err) {
                         if (err) { return void console.error(err); }

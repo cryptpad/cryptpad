@@ -767,12 +767,11 @@ define([
             if (!contains) {
                 var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
                 if (autoStore !== 1 && !data.forceSave && !data.path) {
-                    // XXX
                     // send event to inner to display the corner popup
                     postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
                         autoStore: autoStore
                     });
-                    return void cb({error: "EAUTH"});
+                    return void cb();
                 } else {
                     var roHref;
                     if (h.mode === "view") {

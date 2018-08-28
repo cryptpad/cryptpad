@@ -6,6 +6,7 @@
 & {
     @corner-button-ok: #2c9b00;
     @corner-button-cancel: #990000;
+    @corner-link: #ffff7a;
 
     @keyframes appear {
         0% {
@@ -13,6 +14,14 @@
         }
         100% {
             transform: scale(1.0);
+        }
+    }
+    @keyframes minimize {
+        0% {
+            transform: scale(1.0);
+        }
+        100% {
+            transform: scale(0.1);
         }
     }
 
@@ -28,18 +37,51 @@
         background-color: @colortheme_logo-1;
         color: @colortheme_base;
         z-index: 999;
-        scale: 0.1;
         transform-origin: bottom right;
         animation: appear 0.8s ease-in-out;
+        box-shadow: 0 0 10px 0 @colortheme_logo-1;
+        //transform: scale(0.1);
+        //transform: scale(1);
 
         .cp-corner-filler {
             float: left;
             clear: left;
             height: 21px;
         }
-        .cp-corner-text {
-            
+        .cp-corner-minimize, .cp-corner-maximize {
+            position: absolute;
+            height: 15px;
+            width: 20px;
+            top: 0;
+            right: 0;
+            font-size: 12px;
+            text-align: left;
+            cursor: pointer;
+            line-height: 15px;
+            display: none;
+            &:hover {
+                color: darken(@colortheme_base, 15%);
+            }
         }
+        .cp-corner-minimize {
+            display: inline;
+        }
+        &.cp-minimized {
+            transition: transform 0.8s ease-in-out;
+            transform: scale(0.1);
+            animation: none;
+            .cp-corner-text, .cp-corner-actions, .cp-corner-footer {
+                display: none;
+            }
+            .cp-corner-maximize {
+                display: inline;
+                font-size: 130px;
+                width: 180px;
+                height: 200px;
+                line-height: 200px;
+            }
+        }
+
         .cp-corner-actions {
             min-height: 30px;
             margin: 15px auto;
@@ -48,6 +90,12 @@
         .cp-corner-footer {
             font-style: italic;
             font-size: 0.8em;
+            a {
+                color: @corner-link;
+                &:hover {
+                    color: darken(@corner-link, 20%);
+                }
+            }
         }
 
         button {
