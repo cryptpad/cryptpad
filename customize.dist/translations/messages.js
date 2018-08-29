@@ -248,6 +248,9 @@ define(function () {
     out.pad_mediatagTitle = "Media-Tag settings";
     out.pad_mediatagWidth = "Width (px)";
     out.pad_mediatagHeight = "Height (px)";
+    out.pad_mediatagRatio = "Keep ratio";
+    out.pad_mediatagBorder = "Border width (px)";
+    out.pad_mediatagPreview = "Preview";
 
     // Kanban
     out.kanban_newBoard = "New board";
@@ -655,6 +658,7 @@ define(function () {
     // pad
     out.pad_showToolbar = "Show toolbar";
     out.pad_hideToolbar = "Hide toolbar";
+    out.pad_base64 = "This pad contains images stored in an inefficient way. These images will increase significantly the size of the pad in your CryptDrive, and they will make it slower to load.     Do you want to migrate these images to a better format (they will be stored separately in your drive)?"; // XXX
 
     // markdown toolbar
     out.mdToolbar_button = "Show or hide the Markdown toolbar";

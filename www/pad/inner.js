@@ -30,6 +30,7 @@ define([
     '/api/config',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/common-interface.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/customize/application_config.js',
     '/common/test.js',
@@ -52,6 +53,7 @@ define([
     ApiConfig,
     Hash,
     Util,
+    UI,
     ChainPad,
     AppConfig,
     Test
@@ -569,7 +571,11 @@ define([
                     var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
                     // MEDIATAG
                     var element = window.CKEDITOR.dom.element.createFromHtml(mt);
-                    editor.insertElement(element);
+                    if (ev && ev.insertElement) {
+                        ev.insertElement(element);
+                    } else {
+                        editor.insertElement(element);
+                    }
                     editor.widgets.initOn( element, 'mediatag' );
                 }
             };
@@ -581,6 +587,28 @@ define([
                     $iframe.find('html').addClass('cke_body_width');
                 }
             });
+
+            var b64images = $(inner).find('img[src^="data:image"]:not(.cke_reset)');
+            if (b64images.length) {
+                UI.confirm(Messages.pad_base64, function (yes) {
+                    if (!yes) { return; }
+                    b64images.each(function (i, el) {
+                        var src = $(el).attr('src');
+                        var blob = Util.dataURIToBlob(src);
+                        var ext = '.' + (blob.type.split('/')[1] || 'png');
+                        var name = framework._.title.getTitle()+'_image' || 'Pad_image';
+                        blob.name = name + ext;
+                        var ev = {
+                            insertElement: function (newEl) {
+                                var element = new window.CKEDITOR.dom.element(el);
+                                newEl.replace(element);
+                                setTimeout(framework.localChange);
+                            }
+                        };
+                        window.APP.FM.handleFile(blob, ev);
+                    });
+                });
+            }
             /*setTimeout(function () {
                 $('iframe.cke_wysiwyg_frame').focus();
                 editor.focus();
@@ -749,7 +777,10 @@ define([
                 editor.plugins.mediatag.translations = {
                     title: Messages.pad_mediatagTitle,
                     width: Messages.pad_mediatagWidth,
-                    height: Messages.pad_mediatagHeight
+                    height: Messages.pad_mediatagHeight,
+                    ratio: Messages.pad_mediatagRatio,
+                    border: Messages.pad_mediatagBorder,
+                    preview: Messages.pad_mediatagPreview,
                 };
                 Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             }).nThen(function () {

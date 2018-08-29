@@ -9,6 +9,9 @@
             CKEDITOR.addCss(
             'media-tag{' +
                 'display:inline-block;' +
+                'border-style: solid;' +
+                'border-color: black;' +
+                'border-width: 0;' +
             '}' +
             'media-tag.selected{' +
                 'border: 1px solid black;' +
@@ -41,5 +44,17 @@
             });
         },
     } );
+
+
+    CKEDITOR.on('dialogDefinition', function (ev) {
+        var dialog = ev.data.definition;
+        if (ev.data.name === 'image') {
+            dialog.removeContents('Link');
+            dialog.removeContents('advanced');
+            //var info = dialog.getContents('info');
+            //info.remove('cmbAlign');
+        }
+    });
+
 } )();
 
