@@ -222,6 +222,7 @@ define(function () {
     out.notifyRenamed = "{0} is now known as {1}";
     out.notifyLeft = "{0} has left the collaborative session";
 
+    out.ok = 'OK';
     out.okButton = 'OK (enter)';
 
     out.cancel = "Cancel";

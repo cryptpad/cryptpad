@@ -879,7 +879,9 @@ define([
 
     UI.createRadio = Pages.createRadio;
 
-    UI.cornerPopup = function (text, actions, footer, startHidden) {
+    UI.cornerPopup = function (text, actions, footer, opts) {
+        opts = opts || {};
+
         var minimize = h('div.cp-corner-minimize.fa.fa-window-minimize');
         var maximize = h('div.cp-corner-maximize.fa.fa-window-maximize');
         var popup = h('div.cp-corner-container', [
@@ -902,8 +904,11 @@ define([
             $(popup).removeClass('cp-minimized');
         });
 
-        if (startHidden) {
+        if (opts.hidden) {
             $(popup).addClass('cp-minimized');
+        }
+        if (opts.big) {
+            $(popup).addClass('cp-corner-big');
         }
 
         var hide = function () {

@@ -2335,13 +2335,10 @@ define([
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
         var store = h('button.cp-corner-primary', Messages.autostore_store);
-        var actions = h('div', [
-            store,
-            hide,
-        ]);
+        var actions = h('div', [store, hide]);
 
         var initialHide = data && data.autoStore && data.autoStore === -1;
-        var modal = UI.cornerPopup(text, actions, footer, initialHide);
+        var modal = UI.cornerPopup(text, actions, footer, {hidden: initialHide});
 
         $(modal.popup).find('.cp-corner-footer a').click(function (e) {
             e.preventDefault();

@@ -31,6 +31,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/customize/application_config.js',
     '/common/test.js',
@@ -54,6 +55,7 @@ define([
     Hash,
     Util,
     UI,
+    h,
     ChainPad,
     AppConfig,
     Test
@@ -588,27 +590,37 @@ define([
                 }
             });
 
-            var b64images = $(inner).find('img[src^="data:image"]:not(.cke_reset)');
-            if (b64images.length) {
-                UI.confirm(Messages.pad_base64, function (yes) {
-                    if (!yes) { return; }
-                    b64images.each(function (i, el) {
-                        var src = $(el).attr('src');
-                        var blob = Util.dataURIToBlob(src);
-                        var ext = '.' + (blob.type.split('/')[1] || 'png');
-                        var name = framework._.title.getTitle()+'_image' || 'Pad_image';
-                        blob.name = name + ext;
-                        var ev = {
-                            insertElement: function (newEl) {
-                                var element = new window.CKEDITOR.dom.element(el);
-                                newEl.replace(element);
-                                setTimeout(framework.localChange);
-                            }
-                        };
-                        window.APP.FM.handleFile(blob, ev);
+            framework._.sfCommon.isPadStored(function (err, val) {
+                if (!val) { return; }
+                var b64images = $(inner).find('img[src^="data:image"]:not(.cke_reset)');
+                if (b64images.length && framework._.sfCommon.isLoggedIn()) {
+                    var no = h('button.cp-corner-cancel', Messages.cancel);
+                    var yes = h('button.cp-corner-primary', Messages.ok);
+                    var actions = h('div', [yes, no]);
+                    var modal = UI.cornerPopup(Messages.pad_base64, actions, '', {big: true});
+                    $(no).click(function () {
+                        modal.delete();
                     });
-                });
-            }
+                    $(yes).click(function () {
+                        modal.delete();
+                        b64images.each(function (i, el) {
+                            var src = $(el).attr('src');
+                            var blob = Util.dataURIToBlob(src);
+                            var ext = '.' + (blob.type.split('/')[1] || 'png');
+                            var name = (framework._.title.getTitle() || 'Pad')+'_image';
+                            blob.name = name + ext;
+                            var ev = {
+                                insertElement: function (newEl) {
+                                    var element = new window.CKEDITOR.dom.element(el);
+                                    newEl.replace(element);
+                                    setTimeout(framework.localChange);
+                                }
+                            };
+                            window.APP.FM.handleFile(blob, ev);
+                        });
+                    });
+                }
+            });
             /*setTimeout(function () {
                 $('iframe.cke_wysiwyg_frame').focus();
                 editor.focus();
