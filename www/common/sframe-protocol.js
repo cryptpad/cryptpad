@@ -257,4 +257,8 @@ define({
     // Get all existing tags
     'Q_GET_ALL_TAGS': true,
 
+    // Store pads in the drive
+    'EV_AUTOSTORE_DISPLAY_POPUP': true,
+    'Q_AUTOSTORE_STORE': true,
+    'Q_IS_PAD_STORED': true,
 });

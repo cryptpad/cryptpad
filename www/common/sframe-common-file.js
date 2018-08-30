@@ -233,6 +233,13 @@ define([
                 return q;
             };
 
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var autoStore = Util.find(privateData, ['settings', 'general', 'autostore']) || 0;
+            var manualStore = autoStore === 1 ? undefined :
+                UI.createCheckbox('cp-upload-store', Messages.autostore_forceSave, true, {
+                    input: { disabled: true }
+                });
+
             // Ask for name, password and owner
             var content = h('div', [
                 h('h4', Messages.upload_modal_title),
@@ -247,7 +254,17 @@ define([
                     UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, true),
                     createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
                 ]),
+                manualStore
             ]);
+
+            $(content).find('#cp-upload-owned').on('change', function () {
+                var val = $(content).find('#cp-upload-owned').is(':checked');
+                if (val) {
+                    $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
+                } else {
+                    $(content).find('#cp-upload-store').prop('disabled', false);
+                }
+            });
 
             UI.confirm(content, function (yes) {
                 if (!yes) { return void cb(); }
@@ -256,6 +273,7 @@ define([
                 var newName = $(content).find('#cp-upload-name').val();
                 var password = $(content).find('#cp-upload-password').val() || undefined;
                 var owned = $(content).find('#cp-upload-owned').is(':checked');
+                var forceSave = owned || $(content).find('#cp-upload-store').is(':checked');
 
                 // Add extension to the name if needed
                 if (!newName || !newName.trim()) { newName = file.name; }
@@ -266,7 +284,8 @@ define([
                 cb({
                     name: newName,
                     password: password,
-                    owned: owned
+                    owned: owned,
+                    forceSave: forceSave
                 });
             });
         };
@@ -284,6 +303,7 @@ define([
             var name = file.name;
             var password;
             var owned = true;
+            var forceSave;
             var finish = function (abort) {
                 if (!abort) {
                     var metadata = {
@@ -296,6 +316,7 @@ define([
                         metadata: metadata,
                         password: password,
                         owned: owned,
+                        forceSave: forceSave,
                         dropEvent: e
                     });
                 }
@@ -316,6 +337,7 @@ define([
                     name = obj.name;
                     password = obj.password;
                     owned = obj.owned;
+                    forceSave = obj.forceSave;
                     finish();
                 });
             };

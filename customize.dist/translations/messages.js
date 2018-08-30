@@ -568,6 +568,14 @@ define(function () {
     out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
     out.settings_importDone = "Import completed";
 
+    out.settings_autostoreTitle = "Pad storage in CryptDrive";
+    out.settings_autostoreHint = "<b>Automatic</b> pad storage results in all the pads you visit being stored in your CryptDrive.<br>" +
+                                 "<b>Manual (always ask)</b> results in the pads not being stored but a reminder will appear to ask you if you want to store them in CryptDrive.<br>" +
+                                 "<b>Manual (never ask)</b> results in the pads not being stored and option to store them will be available but in a hidden way.";
+    out.settings_autostoreYes = "Automatic";
+    out.settings_autostoreNo = "Manual (never ask)";
+    out.settings_autostoreMaybe = "Manual (always ask)";
+
     out.settings_userFeedbackTitle = "Feedback";
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
@@ -1231,5 +1239,16 @@ define(function () {
     out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
 
     out.chrome68 = "It seems that you're using the browser Chrome or Chromium version 68. It contains a bug resulting in the page turning completely white after a few seconds or the page being unresponsive to clicks. To fix this issue, you can switch to another tab and come back, or try to scroll in the page. This bug should be fixed in the next version of your browser.";
+
+    // Manual pad storage popup
+    out.autostore_notstored = "This pad is not in your CryptDrive. Do you want to store it now?"; // XXX
+    out.autostore_settings = "You can enable automatic pad storage in your <a href=\"/settings/\">Settings</a> page!"; // XXX
+    out.autostore_store = "Store";
+    out.autostore_hide = "Don't store";
+    out.autostore_error = "Unexpected error: we were unable to store this pad, please try again.";
+    out.autostore_saved = "The pad was successfully stored in your CryptDrive!";
+    out.autostore_forceSave = "Store the file in CryptDrive"; // File upload modal
+    out.autostore_notAvailable = "You must store this pad in your CryptDrive before being able to use this feature."; // Properties/tags/move to trash
+
     return out;
 });

@@ -47,8 +47,7 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-logout-everywhere',
-            'cp-settings-resettips',
-            'cp-settings-thumbnails',
+            'cp-settings-autostore',
             'cp-settings-userfeedback',
             'cp-settings-change-password',
             'cp-settings-delete'
@@ -60,6 +59,8 @@ define([
             'cp-settings-creation-template'
         ],
         'drive': [
+            'cp-settings-resettips',
+            'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
             'cp-settings-drive-reset'
@@ -208,71 +209,56 @@ define([
         return $div;
     };
 
-    create['resettips'] = function () {
-        var $div = $('<div>', {'class': 'cp-settings-resettips cp-sidebarlayout-element'});
-        $('<label>').text(Messages.settings_resetTips).appendTo($div);
+    create['autostore'] = function () {
+        var $div = $('<div>', { 'class': 'cp-settings-autostore cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_autostoreTitle).appendTo($div);
+
         $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_resetTipsButton).appendTo($div);
-        var $button = $('<button>', {'id': 'cp-settings-resettips', 'class': 'btn btn-primary'})
-            .text(Messages.settings_resetTipsAction).appendTo($div);
-
-        var localStore = window.cryptpadStore;
-        $button.click(function () {
-            Object.keys(localStore).forEach(function (k) {
-                if(k.slice(0, 9) === "hide-info") {
-                    localStore.put(k, undefined);
-                }
-            });
-            UI.alert(Messages.settings_resetTipsDone);
-        });
-
-        return $div;
-    };
-
-    create['thumbnails'] = function () {
-        var $div = $('<div>', {'class': 'cp-settings-thumbnails cp-sidebarlayout-element'});
-        $('<label>').text(Messages.settings_thumbnails).appendTo($div);
-
-        // Disable
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_disableThumbnailsDescription).appendTo($div);
+            .append(Messages.settings_autostoreHint).appendTo($div);
 
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
-        var $cbox = $(UI.createCheckbox('disableThumbnails',
-                                   Messages.settings_disableThumbnailsAction,
-                                   false, { label: {class: 'noTitle'} }));
-        var $checkbox = $cbox.find('input').on('change', function () {
+        var opt1 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-no',
+                                Messages.settings_autostoreNo, false, {
+                                    input: { value: -1 },
+                                    label: { class: 'noTitle' }
+                                });
+        var opt2 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-maybe',
+                                Messages.settings_autostoreMaybe, true, {
+                                    input: { value: 0 },
+                                    label: { class: 'noTitle' }
+                                });
+        var opt3 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-yes',
+                                Messages.settings_autostoreYes, false, {
+                                    input: { value: 1 },
+                                    label: { class: 'noTitle' }
+                                });
+        var $div2 = $(h('div.cp-settings-autostore-radio', [
+            opt1,
+            opt2,
+            opt3
+        ])).appendTo($div);
+
+        $div.find('input[type="radio"]').on('change', function () {
             $spinner.show();
             $ok.hide();
-            var val = $checkbox.is(':checked') || false;
-            common.setAttribute(['general', 'disableThumbnails'], val, function () {
+            var val = $('input:radio[name="cp-settings-autostore"]:checked').val();
+            val = Number(val) || 0;
+            common.setAttribute(['general', 'autostore'], val, function () {
                 $spinner.hide();
                 $ok.show();
             });
         });
 
-        $cbox.appendTo($div);
+        $ok.hide().appendTo($div2);
+        $spinner.hide().appendTo($div2);
 
-        $ok.hide().appendTo($cbox);
-        $spinner.hide().appendTo($cbox);
-
-        common.getAttribute(['general', 'disableThumbnails'], function (e, val) {
-            $checkbox[0].checked = typeof(val) === "undefined" || val;
-        });
-
-        // Reset
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_resetThumbnailsDescription).appendTo($div);
-        var $button = $('<button>', {'id': 'resetThumbnails', 'class': 'btn btn-primary'})
-            .text(Messages.settings_resetThumbnailsAction).appendTo($div);
-
-        $button.click(function () {
-            sframeChan.query("Q_THUMBNAIL_CLEAR", null, function (err) {
-                if (err) { return void console.error("Cannot clear localForage"); }
-                UI.alert(Messages.settings_resetThumbnailsDone);
-            });
+        common.getAttribute(['general', 'autostore'], function (err, val) {
+            if (val === 1) { return void $('#cp-settings-autostore-yes').prop('checked', true); }
+            if (val === -1) { return void $('#cp-settings-autostore-no').prop('checked', true); }
+            $('#cp-settings-autostore-maybe').prop('checked', true);
         });
 
         return $div;
@@ -759,6 +745,76 @@ define([
 
     // Drive settings
 
+    create['resettips'] = function () {
+        var $div = $('<div>', {'class': 'cp-settings-resettips cp-sidebarlayout-element'});
+        $('<label>').text(Messages.settings_resetTips).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_resetTipsButton).appendTo($div);
+        var $button = $('<button>', {'id': 'cp-settings-resettips', 'class': 'btn btn-primary'})
+            .text(Messages.settings_resetTipsAction).appendTo($div);
+
+        var localStore = window.cryptpadStore;
+        $button.click(function () {
+            Object.keys(localStore).forEach(function (k) {
+                if(k.slice(0, 9) === "hide-info") {
+                    localStore.put(k, undefined);
+                }
+            });
+            UI.alert(Messages.settings_resetTipsDone);
+        });
+
+        return $div;
+    };
+
+    create['thumbnails'] = function () {
+        var $div = $('<div>', {'class': 'cp-settings-thumbnails cp-sidebarlayout-element'});
+        $('<label>').text(Messages.settings_thumbnails).appendTo($div);
+
+        // Disable
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_disableThumbnailsDescription).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $cbox = $(UI.createCheckbox('disableThumbnails',
+                                   Messages.settings_disableThumbnailsAction,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked') || false;
+            common.setAttribute(['general', 'disableThumbnails'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['general', 'disableThumbnails'], function (e, val) {
+            $checkbox[0].checked = typeof(val) === "undefined" || val;
+        });
+
+        // Reset
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_resetThumbnailsDescription).appendTo($div);
+        var $button = $('<button>', {'id': 'resetThumbnails', 'class': 'btn btn-primary'})
+            .text(Messages.settings_resetThumbnailsAction).appendTo($div);
+
+        $button.click(function () {
+            sframeChan.query("Q_THUMBNAIL_CLEAR", null, function (err) {
+                if (err) { return void console.error("Cannot clear localForage"); }
+                UI.alert(Messages.settings_resetThumbnailsDone);
+            });
+        });
+
+        return $div;
+    };
+
     create['drive-backup'] = function () {
         var $div = $('<div>', {'class': 'cp-settings-drive-backup cp-sidebarlayout-element'});
 
@@ -1052,9 +1108,19 @@ define([
 
         // Content
         var $rightside = APP.$rightside;
-        for (var f in create) {
+        /*for (var f in create) {
             if (typeof create[f] !== "function") { continue; }
             $rightside.append(create[f]());
+        }*/
+        var addItem = function (cssClass) {
+            var item = cssClass.slice(12); // remove 'cp-settings-'
+            if (typeof (create[item]) === "function") {
+                $rightside.append(create[item]());
+            }
+        };
+        for (var cat in categories) {
+            if (!Array.isArray(categories[cat])) { continue; }
+            categories[cat].forEach(addItem);
         }
 
         // TODO RPC

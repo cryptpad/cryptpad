@@ -206,6 +206,12 @@ define([
         }, cb);
     };
 
+    funcs.isPadStored = function (cb) {
+        ctx.sframeChan.query("Q_IS_PAD_STORED", null, function (err, obj) {
+            cb (err || (obj && obj.error), obj);
+        });
+    };
+
     funcs.sendAnonRpcMsg = function (msg, content, cb) {
         ctx.sframeChan.query('Q_ANON_RPC_MESSAGE', {
             msg: msg,
@@ -450,6 +456,10 @@ define([
                 });
                 UI.findOKButton().click();
                 UI.errorLoadingScreen($err, true, true);
+            });
+
+            ctx.sframeChan.on('EV_AUTOSTORE_DISPLAY_POPUP', function (data) {
+                UIElements.displayStorePadPopup(funcs, data);
             });
 
             ctx.metadataMgr.onReady(waitFor());

@@ -49,6 +49,12 @@
                     background-color: @colortheme_checkmark-back2;
                     border-color: @colortheme_checkmark-back2;
                 }
+                &:disabled ~ .cp-checkmark-mark {
+                    background-color: @colortheme_checkmark-disabled;
+                }
+                &:disabled ~ .cp-checkmark-label {
+                    color: @colortheme_checkmark-disabled;
+                }
             }
         }
         &:hover .cp-checkmark-mark {
@@ -63,6 +69,12 @@
                 &:after {
                     display: block;
                 }
+            }
+            &:disabled ~ .cp-checkmark-mark {
+                background-color: @colortheme_checkmark-disabled;
+            }
+            &:disabled ~ .cp-checkmark-label {
+                color: @colortheme_checkmark-disabled;
             }
         }
 
@@ -128,6 +140,12 @@
                 &:checked ~ .cp-radio-mark {
                     background-color: @colortheme_checkmark-back2;
                 }
+                &:disabled ~ .cp-checkmark-mark {
+                    background-color: @colortheme_checkmark-disabled;
+                }
+                &:disabled ~ .cp-checkmark-label {
+                    color: @colortheme_checkmark-disabled;
+                }
             }
         }
         &:hover .cp-radio-mark {
@@ -142,6 +160,12 @@
                 &:after {
                     display: block;
                 }
+            }
+            &:disabled ~ .cp-checkmark-mark {
+                background-color: @colortheme_checkmark-disabled;
+            }
+            &:disabled ~ .cp-checkmark-label {
+                color: @colortheme_checkmark-disabled;
             }
         }
 

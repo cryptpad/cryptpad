@@ -9,7 +9,7 @@ define([
     var Pages = {};
     var urlArgs = Config.requireConf.urlArgs;
 
-    var setHTML = function (e, html) {
+    var setHTML = Pages.setHTML = function (e, html) {
         e.innerHTML = html;
         return e;
     };
@@ -712,11 +712,15 @@ define([
 
         $(input).change(function () { $(mark).focus(); });
 
-        return h('label.cp-radio', labelOpts, [
+        var radio =  h('label', labelOpts, [
             input,
             mark,
             label
         ]);
+
+        $(radio).addClass('cp-radio');
+
+        return radio;
     };
 
     Pages['/user/'] = Pages['/user/index.html'] = function () {

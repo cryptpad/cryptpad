@@ -772,22 +772,32 @@ define([
 
             // Add the pad if it does not exist in our drive
             if (!contains) {
-                var roHref;
-                if (h.mode === "view") {
-                    roHref = href;
-                    href = undefined;
+                var autoStore = Util.find(store.proxy, ['settings', 'general', 'autostore']);
+                var ownedByMe = Array.isArray(owners) && owners.indexOf(store.proxy.edPublic) !== -1;
+                if (autoStore !== 1 && !data.forceSave && !data.path && !ownedByMe) {
+                    // send event to inner to display the corner popup
+                    postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
+                        autoStore: autoStore
+                    });
+                    return void cb();
+                } else {
+                    var roHref;
+                    if (h.mode === "view") {
+                        roHref = href;
+                        href = undefined;
+                    }
+                    Store.addPad(clientId, {
+                        href: href,
+                        roHref: roHref,
+                        channel: channel,
+                        title: title,
+                        owners: owners,
+                        expire: expire,
+                        password: data.password,
+                        path: data.path
+                    }, cb);
+                    return;
                 }
-                Store.addPad(clientId, {
-                    href: href,
-                    roHref: roHref,
-                    channel: channel,
-                    title: title,
-                    owners: owners,
-                    expire: expire,
-                    password: data.password,
-                    path: data.path
-                }, cb);
-                return;
             } else {
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]

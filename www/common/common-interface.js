@@ -879,5 +879,52 @@ define([
 
     UI.createRadio = Pages.createRadio;
 
+    UI.cornerPopup = function (text, actions, footer, startHidden) {
+        var minimize = h('div.cp-corner-minimize.fa.fa-window-minimize');
+        var maximize = h('div.cp-corner-maximize.fa.fa-window-maximize');
+        var popup = h('div.cp-corner-container', [
+            minimize,
+            maximize,
+            h('div.cp-corner-filler', { style: "width:130px;" }),
+            h('div.cp-corner-filler', { style: "width:90px;" }),
+            h('div.cp-corner-filler', { style: "width:60px;" }),
+            h('div.cp-corner-filler', { style: "width:40px;" }),
+            h('div.cp-corner-filler', { style: "width:20px;" }),
+            h('div.cp-corner-text', text),
+            h('div.cp-corner-actions', actions),
+            Pages.setHTML(h('div.cp-corner-footer'), footer)
+        ]);
+
+        $(minimize).click(function () {
+            $(popup).addClass('cp-minimized');
+        });
+        $(maximize).click(function () {
+            $(popup).removeClass('cp-minimized');
+        });
+
+        if (startHidden) {
+            $(popup).addClass('cp-minimized');
+        }
+
+        var hide = function () {
+            $(popup).hide();
+        };
+        var show = function () {
+            $(popup).show();
+        };
+        var deletePopup = function () {
+            $(popup).remove();
+        };
+
+        $('body').append(popup);
+
+        return {
+            popup: popup,
+            hide: hide,
+            show: show,
+            delete: deletePopup
+        };
+    };
+
     return UI;
 });
