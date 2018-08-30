@@ -45,6 +45,7 @@ define([
         var readOnly = config.readOnly || false;
         var sframeChan = config.sframeChan;
         var metadataMgr = config.metadataMgr;
+        var updateLoadingProgress = config.updateLoadingProgress;
         config = undefined;
 
         var chainpad = ChainPad.create({
@@ -64,6 +65,7 @@ define([
 
         var myID;
         var isReady = false;
+        var isHistory = 1;
         var evConnected = Util.mkEvent(true);
         var evInfiniteSpinner = Util.mkEvent(true);
 
@@ -114,11 +116,19 @@ define([
                 onLocal(true); // should be onBeforeMessage
             }
             chainpad.message(content);
+            if (isHistory && updateLoadingProgress) {
+                updateLoadingProgress({
+                    state: 2,
+                    progress: isHistory
+                }, false);
+                isHistory++;
+            }
             cb('OK');
         });
         sframeChan.on('EV_RT_READY', function () {
             if (isReady) { return; }
             isReady = true;
+            isHistory = false;
             chainpad.start();
             setMyID({ myID: myID });
             onReady({ realtime: chainpad });

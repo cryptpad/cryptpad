@@ -288,7 +288,7 @@ define([
             var newContentStr = cpNfInner.chainpad.getUserDoc();
             if (state === STATE.DELETED) { return; }
 
-            //UI.updateLoadingProgress({ state: -1 }, false);
+            UI.updateLoadingProgress({ state: -1 }, false);
 
             var newPad = false;
             if (newContentStr === '') { newPad = true; }
@@ -452,9 +452,9 @@ define([
         nThen(function (waitFor) {
             UI.addLoadingScreen();
             SFCommon.create(waitFor(function (c) { common = c; }));
-            /*UI.updateLoadingProgress({
+            UI.updateLoadingProgress({
                 state: 1
-            }, false);*/
+            }, false);
         }).nThen(function (waitFor) {
             common.getSframeChannel().onReady(waitFor());
         }).nThen(function (waitFor) {
@@ -481,14 +481,16 @@ define([
                 onRemote: onRemote,
                 onLocal: onLocal,
                 onInit: function () {
-                    /*UI.updateLoadingProgress({
-                        state: 2
-                    }, false);*/
+                    UI.updateLoadingProgress({
+                        state: 2,
+                        progress: 0.1
+                    }, false);
                     stateChange(STATE.INITIALIZING);
                 },
                 onReady: function () { evStart.reg(onReady); },
                 onConnectionChange: onConnectionChange,
-                onError: onError
+                onError: onError,
+                updateLoadingProgress: UI.updateLoadingProgress
             });
 
             var privReady = Util.once(waitFor());
