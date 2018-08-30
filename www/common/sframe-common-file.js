@@ -217,6 +217,10 @@ define([
         };
 
         // Get the upload options
+        var modalState = {
+            owned: true,
+            store: true
+        };
         var fileUploadModal = function (file, cb) {
             var extIdx = file.name.lastIndexOf('.');
             var name = extIdx !== -1 ? file.name.slice(0,extIdx) : file.name;
@@ -235,9 +239,11 @@ define([
 
             var privateData = common.getMetadataMgr().getPrivateData();
             var autoStore = Util.find(privateData, ['settings', 'general', 'autostore']) || 0;
+            var initialState = modalState.owned || modalState.store;
+            var initialDisabled = modalState.owned ? { disabled: true } : {};
             var manualStore = autoStore === 1 ? undefined :
-                UI.createCheckbox('cp-upload-store', Messages.autostore_forceSave, true, {
-                    input: { disabled: true }
+                UI.createCheckbox('cp-upload-store', Messages.autostore_forceSave, initialState, {
+                    input: initialDisabled
                 });
 
             // Ask for name, password and owner
@@ -251,7 +257,7 @@ define([
                 h('span', {
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
-                    UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, true),
+                    UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, modalState.owned),
                     createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
                 ]),
                 manualStore
@@ -274,6 +280,9 @@ define([
                 var password = $(content).find('#cp-upload-password').val() || undefined;
                 var owned = $(content).find('#cp-upload-owned').is(':checked');
                 var forceSave = owned || $(content).find('#cp-upload-store').is(':checked');
+
+                modalState.owned = owned;
+                modalState.store = forceSave;
 
                 // Add extension to the name if needed
                 if (!newName || !newName.trim()) { newName = file.name; }
