@@ -28,6 +28,8 @@
         },
         init: function( editor ) {
             var pluginName = 'mediatag';
+            var Messages = CKEDITOR._mediatagTranslations;
+            var targetWidget;
 
             // Register the dialog.
             CKEDITOR.dialog.add( pluginName, this.path + 'mediatag-plugin-dialog.js' );
@@ -42,6 +44,44 @@
                 }
 
             });
+
+            editor.addCommand('importMediatag', {
+                exec: function (editor) {
+                    var w = targetWidget;
+                    targetWidget = undefined;
+                    var $mt = $(w.$).find('media-tag');
+                    editor.plugins.mediatag.import($mt);
+                }
+            });
+
+            if (editor.addMenuItems) {
+                editor.addMenuGroup('mediatag');
+                editor.addMenuItem('importMediatag', {
+                        label: Messages.import,
+                        icon: 'save',
+                        command: 'importMediatag',
+                        group: 'mediatag'
+                });
+                editor.addMenuItem('mediatag', {
+                        label: Messages.options,
+                        icon: 'image',
+                        command: 'mediatag',
+                        group: 'mediatag'
+                });
+            }
+            if (editor.contextMenu) {
+                editor.contextMenu.addListener(function (element) {
+                    if (element.is('.cke_widget_mediatag')
+                        || element.getAttribute('data-cke-display-name') === 'media-tag') {
+                        targetWidget = element;
+                        return {
+                            mediatag: CKEDITOR.TRISTATE_OFF,
+                            importMediatag: CKEDITOR.TRISTATE_OFF,
+                        };
+                    }
+                });
+            }
+
         },
     } );
 

@@ -2361,5 +2361,96 @@ define([
 
     };
 
+    var createContextMenu = function (menu) {
+        var $menu = $(menu).appendTo($('body'));
+
+        var display = function (e) {
+            $menu.css({ display: "block" });
+            var h = $menu.outerHeight();
+            var w = $menu.outerWidth();
+            var wH = window.innerHeight;
+            var wW = window.innerWidth;
+            if (h > wH) {
+                $menu.css({
+                    top: '0px',
+                    bottom: ''
+                });
+            } else if (e.pageY + h <= wH) {
+                $menu.css({
+                    top: e.pageY+'px',
+                    bottom: ''
+                });
+            } else {
+                $menu.css({
+                    bottom: '0px',
+                    top: ''
+                });
+            }
+            if(w > wW) {
+                $menu.css({
+                    left: '0px',
+                    right: ''
+                });
+            } else if (e.pageX + w <= wW) {
+                $menu.css({
+                    left: e.pageX+'px',
+                    right: ''
+                });
+            } else {
+                $menu.css({
+                    left: '',
+                    right: '0px',
+                });
+            }
+        };
+
+        var hide = function () {
+            $menu.hide();
+        };
+        var remove = function () {
+            $menu.remove();
+        };
+
+        $('body').click(hide);
+
+        return {
+            menu: menu,
+            show: display,
+            hide: hide,
+            remove: remove
+        };
+    };
+
+    var mediatagContextMenu;
+    UIElements.importMediaTagMenu = function (common) {
+        if (mediatagContextMenu) { return mediatagContextMenu; }
+
+        // Create context menu
+        var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
+            h('ul.dropdown-menu', {
+                'role': 'menu',
+                'aria-labelledBy': 'dropdownMenu',
+                'style': 'display:block;position:static;margin-bottom:5px;'
+            }, [
+                h('li', h('a.dropdown-item', {
+                    'tabindex': '-1',
+                }, Messages.pad_mediatagImport))
+            ])
+        ]);
+        var m = createContextMenu(menu);
+
+        mediatagContextMenu = m;
+
+        var $menu = $(m.menu);
+        $menu.on('click', 'a', function (e) {
+            e.stopPropagation();
+            m.hide();
+            var $mt = $menu.data('mediatag');
+            common.importMediaTag($mt);
+        });
+
+        return m;
+    };
+
     return UIElements;
 });

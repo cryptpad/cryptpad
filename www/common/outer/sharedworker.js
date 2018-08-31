@@ -18,6 +18,9 @@ var debug = function (msg) { console.log(msg); };
 
 var init = function (client, cb) {
     debug('SharedW INIT');
+    require.config({
+        waitSeconds: 600
+    });
 
     require(['/api/config?cb=' + (+new Date()).toString(16)], function (ApiConfig) {
         if (ApiConfig.requireConf) { require.config(ApiConfig.requireConf); }

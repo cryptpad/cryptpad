@@ -261,4 +261,7 @@ define({
     'EV_AUTOSTORE_DISPLAY_POPUP': true,
     'Q_AUTOSTORE_STORE': true,
     'Q_IS_PAD_STORED': true,
+
+    // Import mediatag from a pad
+    'Q_IMPORT_MEDIATAG': true
 });

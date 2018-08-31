@@ -166,7 +166,8 @@ define([
         return patch;
     };
 
-    DiffMd.apply = function (newHtml, $content) {
+    DiffMd.apply = function (newHtml, $content, common) {
+        var contextMenu = common.importMediaTagMenu();
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
         var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
@@ -192,6 +193,11 @@ define([
             DD.apply($content[0], patch);
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
+                $(el).contextmenu(function (e) {
+                    e.preventDefault();
+                    $(contextMenu.menu).data('mediatag', $(el));
+                    contextMenu.show(e);
+                });
                 MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {

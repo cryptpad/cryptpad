@@ -110,7 +110,7 @@ define([
                     return;
                 }
                 $previewContainer.removeClass('cp-app-code-preview-isempty');
-                DiffMd.apply(DiffMd.render(editor.getValue()), $preview);
+                DiffMd.apply(DiffMd.render(editor.getValue()), $preview, framework._.sfCommon);
             } catch (e) { console.error(e); }
         };
         var drawPreview = Util.throttle(function () {

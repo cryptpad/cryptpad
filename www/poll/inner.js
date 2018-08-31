@@ -645,7 +645,7 @@ define([
 
     var updatePublishedDescription = function () {
         var v = APP.editor.getValue();
-        DiffMd.apply(DiffMd.render(v || ''), APP.$descriptionPublished);
+        DiffMd.apply(DiffMd.render(v || ''), APP.$descriptionPublished, common);
     };
     var updateDescription = function (old, n) {
         var o = APP.editor.getValue();

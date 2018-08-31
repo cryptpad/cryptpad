@@ -379,6 +379,29 @@ define([
                 });
             });
 
+            sframeChan.on('Q_IMPORT_MEDIATAG', function (obj, cb) {
+                var key = obj.key;
+                var channel = obj.channel;
+                var hash = Utils.Hash.getFileHashFromKeys({
+                    version: 1,
+                    channel: channel,
+                    keys: {
+                        fileKeyStr: key
+                    }
+                });
+                var href = '/file/#' + hash;
+                var data = {
+                    title: obj.name,
+                    href: href,
+                    channel: channel,
+                    owners: obj.owners,
+                    forceSave: true,
+                };
+                Cryptpad.setPadTitle(data, function (err) {
+                    Cryptpad.setPadAttribute('fileType', obj.type, null, href);
+                    cb(err);
+                });
+            });
 
             sframeChan.on('Q_SETTINGS_SET_DISPLAY_NAME', function (newName, cb) {
                 Cryptpad.setDisplayName(newName, function (err) {

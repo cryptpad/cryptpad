@@ -390,6 +390,7 @@
         var end = function (decrypted) {
             process(mediaObject, decrypted, cfg, function (err) {
                 if (err) { return void emit('error', err); }
+                mediaObject._blob = decrypted;
                 emit('complete', decrypted);
             });
         };

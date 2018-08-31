@@ -244,7 +244,7 @@ define([
     };
 
     var createContextMenu = function () {
-        var menu = h('div.cp-app-drive-context.dropdown.cp-unselectable', [
+        var menu = h('div.cp-contextmenu.dropdown.cp-unselectable', [
             h('ul.dropdown-menu', {
                 'role': 'menu',
                 'aria-labelledby': 'dropdownMenu',
@@ -2594,12 +2594,12 @@ define([
                         $li = findDataHolder($tree.find('.cp-app-drive-element-active'));
                     }
                     // Close if already opened
-                    if ($('.cp-app-drive-context:visible').length) {
+                    if ($('.cp-contextmenu:visible').length) {
                         APP.hideMenu();
                         return;
                     }
                     // Open the menu
-                    $('.cp-app-drive-context').css({
+                    $('.cp-contextmenu').css({
                         top: ($context.offset().top + 32) + 'px',
                         right: '0px',
                         left: ''

@@ -1,0 +1,19 @@
+@import (reference) "./colortheme-all.less";
+
+.contextmenu_main() {
+    --LessLoader_require: LessLoader_currentFile();
+};
+& {
+    .cp-contextmenu {
+        display: none;
+        position: absolute;
+        z-index: 50000;
+        li {
+            padding: 0;
+            font-size: @colortheme_app-font-size;
+            a {
+                cursor: pointer;
+            }
+        }
+    }
+}

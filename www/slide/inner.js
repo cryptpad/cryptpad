@@ -9,7 +9,6 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
-    '/common/diffMarked.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
 
@@ -54,7 +53,6 @@ define([
     Util,
     Hash,
     UI,
-    DiffMd,
     Messages,
     CMeditor)
 {

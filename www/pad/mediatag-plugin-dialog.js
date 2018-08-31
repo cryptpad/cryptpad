@@ -1,5 +1,5 @@
 CKEDITOR.dialog.add('mediatag', function (editor) {
-    var Messages = editor.plugins.mediatag.translations;
+    var Messages = CKEDITOR._mediatagTranslations;
     return {
         title: Messages.title,
         minWidth: 400,
@@ -51,6 +51,8 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
             },
         ],
         onShow: function () {
+
+            var thiss = this;
             var sel = editor.getSelection();
             element = sel.getSelectedElement();
             if (!element) { return; }
@@ -82,6 +84,11 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
             });
             $preview.html('').append($clone);
 
+            var center = function () {
+                var top = Math.max(($(document).height()/2) - (thiss.getSize().height/2), 0);
+                thiss.move(thiss.getPosition().x, top);
+            };
+
             var update = function () {
                 var w = $(wInput).val() || Math.round(rect.width);
                 var h = $(hInput).val() || Math.round(rect.height);
@@ -91,6 +98,7 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
                     height: h+'px',
                     'border-width': b+'px'
                 });
+                center();
             };
 
             $(wInput).on('keyup', function () {
@@ -116,6 +124,8 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
             $(borderInput).on('keyup', function () {
                 update();
             });
+
+            setTimeout(center);
         },
         onOk: function() {
             var dialog = this;

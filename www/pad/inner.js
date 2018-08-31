@@ -777,8 +777,18 @@ define([
                         'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
                         'box-sizing: border-box; overflow: auto;'+
                     '}' +
-                    '.cke_body_width body > *:first-child { margin-top: 0; }';
+                    '.cke_body_width body > *:first-child { margin-top: 0; }' +
                 Ckeditor.addCss(newCss);
+                Ckeditor._mediatagTranslations = {
+                    title: Messages.pad_mediatagTitle,
+                    width: Messages.pad_mediatagWidth,
+                    height: Messages.pad_mediatagHeight,
+                    ratio: Messages.pad_mediatagRatio,
+                    border: Messages.pad_mediatagBorder,
+                    preview: Messages.pad_mediatagPreview,
+                    'import': Messages.pad_mediatagImport,
+                    options: Messages.pad_mediatagOptions
+                };
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
                 Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
@@ -786,13 +796,8 @@ define([
                 });
                 editor.on('instanceReady', waitFor());
             }).nThen(function () {
-                editor.plugins.mediatag.translations = {
-                    title: Messages.pad_mediatagTitle,
-                    width: Messages.pad_mediatagWidth,
-                    height: Messages.pad_mediatagHeight,
-                    ratio: Messages.pad_mediatagRatio,
-                    border: Messages.pad_mediatagBorder,
-                    preview: Messages.pad_mediatagPreview,
+                editor.plugins.mediatag.import = function ($mt) {
+                    framework._.sfCommon.importMediaTag($mt);
                 };
                 Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             }).nThen(function () {

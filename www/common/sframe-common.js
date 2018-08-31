@@ -94,6 +94,7 @@ define([
     funcs.getPadCreationScreen = callWithCommon(UIElements.getPadCreationScreen);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
     funcs.onServerError = callWithCommon(UIElements.onServerError);
+    funcs.importMediaTagMenu = callWithCommon(UIElements.importMediaTagMenu);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -130,6 +131,24 @@ define([
         }
         return;
     };
+    funcs.importMediaTag = function ($mt) {
+        if (!$mt || !$mt.is('media-tag')) { return; }
+        var chanStr = $mt.attr('src');
+        var keyStr = $mt.attr('data-crypto-key');
+        var channel = chanStr.replace(/\/blob\/[0-9a-f]{2}\//i, '');
+        var key = keyStr.replace(/cryptpad:/i, '');
+        var metadata = $mt[0]._mediaObject._blob.metadata;
+        ctx.sframeChan.query('Q_IMPORT_MEDIATAG', {
+            channel: channel,
+            key: key,
+            name: metadata.name,
+            type: metadata.type,
+            owners: metadata.owners
+        }, function () {
+            UI.log(Messages.saved);
+        });
+    };
+
     funcs.getFileSize = function (channelId, cb) {
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
             if (!data) { return void cb("No response"); }
