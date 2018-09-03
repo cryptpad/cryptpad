@@ -1,0 +1,100 @@
+.kanban-container * {
+    box-sizing: border-box;
+}
+
+.kanban-board {
+    position: relative;
+    float: left;
+    background: #E2E4E6;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    margin: 10px;
+    vertical-align: top;
+    display: flex;
+    flex-flow: column;
+}
+
+.kanban-board.disabled-board {
+    opacity: .3;
+}
+
+.kanban-board.is-moving.gu-mirror {
+    transform: rotate(3deg);
+}
+
+.kanban-board.is-moving.gu-mirror .kanban-drag {
+    overflow: hidden;
+    padding-right: 50px;
+}
+
+.kanban-board header {
+    font-size: 16px;
+    padding: 10px;
+}
+
+.kanban-board header .kanban-title-board {
+    font-weight: 700;
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+.kanban-board header .kanban-title-button {
+    float: right;
+    line-height: 1;
+    padding: .25rem .5rem;
+}
+
+.kanban-board .kanban-drag {
+    min-height: 200px;
+    padding: 20px;
+    flex: 1;
+}
+
+.kanban-item {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.kanban-item:hover {
+    cursor: move;
+}
+
+.kanban-item:last-child {
+    margin: 0;
+}
+
+.kanban-item.is-moving.gu-mirror {
+    transform: rotate(3deg);
+    height: auto !important;
+}
+
+/* Dragula CSS  */
+
+.gu-mirror {
+    position: fixed !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
+}
+
+.gu-hide {
+    display: none !important;
+}
+
+.gu-unselectable {
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+}
+
+.gu-transit {
+    opacity: 0.2 !important;
+    transform: rotate(0deg) !important;
+}
+
+.form-group {
+    text-align: right;
+    margin-button: 5px;
+}

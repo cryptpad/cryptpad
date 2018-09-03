@@ -19,8 +19,8 @@ define([
     'css!/bower_components/codemirror/addon/dialog/dialog.css',
     'css!/bower_components/codemirror/addon/fold/foldgutter.css',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/profile/app-profile.less',
     '/bower_components/croppie/croppie.min.js',
     'css!/bower_components/croppie/croppie.css',
 ], function (
@@ -42,16 +42,6 @@ define([
     var APP = window.APP = {
         _onRefresh: []
     };
-
-    // Decryption event for avatar mediatag (TODO not needed anymore?)
-    $(window.document).on('decryption', function (e) {
-        var decrypted = e.originalEvent;
-        if (decrypted.callback) { decrypted.callback(); }
-    })
-    .on('decryptionError', function (e) {
-        var error = e.originalEvent;
-        UI.alert(error.message);
-    });
 
     $(window).click(function () {
         $('.cp-dropdown-content').hide();

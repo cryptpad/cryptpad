@@ -2,12 +2,12 @@ define(function () {
     var out = {};
 
     out.main_title = "CryptPad: Zero Knowledge, Collaborative Real Time Editing";
-    out.main_slogan = "Unity is Strength - Collaboration is Key"; // TODO remove?
 
     out.type = {};
     out.type.pad = 'Rich text';
     out.type.code = 'Code';
     out.type.poll = 'Poll';
+    out.type.kanban = 'Kanban';
     out.type.slide = 'Presentation';
     out.type.drive = 'CryptDrive';
     out.type.whiteboard = 'Whiteboard';
@@ -27,6 +27,7 @@ define(function () {
     out.button_newoodoc = 'New OnlyOffice document';
     out.button_newooslide = 'New OnlyOffice presentation';
     out.button_newoocell = 'New OnlyOffice spreadsheet';
+    out.button_newkanban = 'New Kanban';
 
     // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Server Connection Lost</b><br>You're now in read-only mode until the connection is back.";
@@ -34,7 +35,7 @@ define(function () {
 
     out.websocketError = 'Unable to connect to the websocket server...';
     out.typeError = "This pad is not compatible with the selected application";
-    out.onLogout = 'You are logged out, <a href="/" target="_blank">click here</a> to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
+    out.onLogout = 'You are logged out, {0}click here{1} to log in<br>or press <em>Escape</em> to access your pad in read-only mode.';
     out.wrongApp = "Unable to display the content of that realtime session in your browser. Please try to reload that page.";
     out.padNotPinned = 'This pad will expire after 3 months of inactivity, {0}login{1} or {2}register{3} to preserve it.';
     out.anonymousStoreDisabled = "The webmaster of this CryptPad instance has disabled the store for anonymous users. You have to log in to be able to use CryptDrive.";
@@ -44,6 +45,9 @@ define(function () {
     out.chainpadError = 'A critical error occurred when updating your content. This page is in read-only mode to make sure you won\'t lose your work.<br>' +
                         'Hit <em>Esc</em> to continue to view this pad, or reload to try editing again.';
     out.errorCopy = ' You can still copy the content to another location by pressing <em>Esc</em>.<br>Once you leave this page, it will disappear forever!';
+    out.errorRedirectToHome = 'Press <em>Esc</em> to be redirected to your CryptDrive.';
+    out.newVersionError = "A new version of CryptPad is available.<br>" +
+                          "<a href='#'>Reload</a> to use the new version, or press escape to access your content in <b>offline mode</b>.";
 
     out.loading = "Loading...";
     out.error = "Error";
@@ -52,7 +56,7 @@ define(function () {
     out.deleted = "Pad deleted from your CryptDrive";
     out.deletedFromServer = "Pad deleted from the server";
 
-    out.realtime_unrecoverableError = "The realtime engine has encountered an unrecoverable error. Click OK to reload.";
+    out.realtime_unrecoverableError = "An unrecoverable error has occured. Click OK to reload.";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
@@ -152,6 +156,8 @@ define(function () {
     out.useTemplate = "Start with a template?"; //Would you like to "You have available templates for this type of pad. Do you want to use one?";
     out.useTemplateOK = 'Pick a template (Enter)';
     out.useTemplateCancel = 'Start fresh (Esc)';
+    out.template_import = "Import a template";
+    out.template_empty = "No template available";
 
     out.previewButtonTitle = "Display or hide the Markdown preview mode";
 
@@ -222,6 +228,7 @@ define(function () {
     out.notifyRenamed = "{0} is now known as {1}";
     out.notifyLeft = "{0} has left the collaborative session";
 
+    out.ok = 'OK';
     out.okButton = 'OK (enter)';
 
     out.cancel = "Cancel";
@@ -234,12 +241,10 @@ define(function () {
 
     out.historyText = "History";
     out.historyButton = "Display the document history";
-    out.history_next = "Go to the next version";
-    out.history_prev = "Go to the previous version";
-    out.history_goTo = "Go to the selected version";
-    out.history_close = "Back";
+    out.history_next = "Newer version";
+    out.history_prev = "Older version";
+    out.history_loadMore = "Load more history";
     out.history_closeTitle = "Close the history";
-    out.history_restore = "Restore";
     out.history_restoreTitle = "Restore the selected version of the document";
     out.history_restorePrompt = "Are you sure you want to replace the current version of the document by the displayed one?";
     out.history_restoreDone = "Document restored";
@@ -250,6 +255,22 @@ define(function () {
     out.pad_mediatagTitle = "Media-Tag settings";
     out.pad_mediatagWidth = "Width (px)";
     out.pad_mediatagHeight = "Height (px)";
+    out.pad_mediatagRatio = "Keep ratio";
+    out.pad_mediatagBorder = "Border width (px)";
+    out.pad_mediatagPreview = "Preview";
+    out.pad_mediatagImport = 'Save in CryptDrive';
+    out.pad_mediatagOptions = 'Image properties';
+
+    // Kanban
+    out.kanban_newBoard = "New board";
+    out.kanban_item = "Item {0}"; // Item number for initial content
+    out.kanban_todo = "To Do";
+    out.kanban_done = "Done";
+    out.kanban_working = "In progress";
+    out.kanban_deleteBoard = "Are you sure you want to delete this board?";
+    out.kanban_addBoard = "Add a board";
+    out.kanban_removeItem = "Remove this item";
+    out.kanban_removeItemConfirm = "Are you sure you want to delete this item?";
 
     // Polls
 
@@ -378,12 +399,14 @@ define(function () {
     out.fm_searchName = "Search";
     out.fm_recentPadsName = "Recent pads";
     out.fm_ownedPadsName = "Owned";
+    out.fm_tagsName = "Tags";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
     out.fm_newFolder = "New folder";
     out.fm_newFile = "New pad";
     out.fm_folder = "Folder";
+    out.fm_sharedFolder = "Shared folder";
     out.fm_folderName = "Folder name";
     out.fm_numberOfFolders = "# of folders";
     out.fm_numberOfFiles = "# of files";
@@ -433,6 +456,7 @@ define(function () {
     out.fm_viewListButton = "List view";
     out.fm_viewGridButton = "Grid view";
     out.fm_renamedPad = "You've set a custom name for this pad. Its shared title is:<br><b>{0}</b>";
+    out.fm_canBeShared = "This folder can be shared";
     out.fm_prop_tagsList = "Tags";
     out.fm_burnThisDriveButton = "Erase all information stored by CryptPad in your browser";
     out.fm_burnThisDrive = "Are you sure you want to remove everything stored by CryptPad in your browser?<br>" +
@@ -440,8 +464,13 @@ define(function () {
     out.fm_padIsOwned = "You are the owner of this pad";
     out.fm_padIsOwnedOther = "This pad is owned by another user";
     out.fm_deletedPads = "These pads no longer exist on the server, they've been removed from your CryptDrive: {0}";
+    out.fm_tags_name = "Tag name";
+    out.fm_tags_used = "Number of uses";
+    out.fm_restoreDrive = "Resetting your drive to an earlier state. For best results, avoid making changes to your drive until this process is complete.";
+    out.fm_moveNestedSF = "You can't place one shared folder within another. The folder {0} was not moved.";
     // File - Context menu
     out.fc_newfolder = "New folder";
+    out.fc_newsharedfolder = "New shared folder";
     out.fc_rename = "Rename";
     out.fc_open = "Open";
     out.fc_open_ro = "Open (read-only)";
@@ -449,12 +478,13 @@ define(function () {
     out.fc_delete_owned = "Delete from the server";
     out.fc_restore = "Restore";
     out.fc_remove = "Remove from your CryptDrive";
+    out.fc_remove_sharedfolder = "Remove";
     out.fc_empty = "Empty the trash";
     out.fc_prop = "Properties";
     out.fc_hashtag = "Tags";
     out.fc_sizeInKilobytes = "Size in Kilobytes";
     // fileObject.js (logs)
-    out.fo_moveUnsortedError = "You can't move a folder to the list of unsorted pads";
+    out.fo_moveUnsortedError = "You can't move a folder to the list of templates";
     out.fo_existingNameError = "Name already used in that directory. Please choose another one.";
     out.fo_moveFolderToChildError = "You can't move a folder into one of its descendants";
     out.fo_unableToRestore = "Unable to restore that file to its original location. You can try to move it to a new location.";
@@ -554,6 +584,14 @@ define(function () {
     out.settings_importConfirm = "Are you sure you want to import recent pads from this browser to your user account's CryptDrive?";
     out.settings_importDone = "Import completed";
 
+    out.settings_autostoreTitle = "Pad storage in CryptDrive";
+    out.settings_autostoreHint = "<b>Automatic</b> pad storage results in all the pads you visit being stored in your CryptDrive.<br>" +
+                                 "<b>Manual (always ask)</b> results in the pads not being stored but a reminder will appear to ask you if you want to store them in CryptDrive.<br>" +
+                                 "<b>Manual (never ask)</b> results in the pads not being stored and option to store them will be available but in a hidden way.";
+    out.settings_autostoreYes = "Automatic";
+    out.settings_autostoreNo = "Manual (never ask)";
+    out.settings_autostoreMaybe = "Manual (always ask)";
+
     out.settings_userFeedbackTitle = "Feedback";
     out.settings_userFeedbackHint1 = "CryptPad provides some very basic feedback to the server, to let us know how to improve your experience. ";
     out.settings_userFeedbackHint2 = "Your pad's content will never be shared with the server.";
@@ -563,6 +601,8 @@ define(function () {
     out.settings_deleteHint = "Account deletion is permanent. Your CryptDrive and your list of pads will be deleted from the server. The rest of your pads will be deleted in 90 days if nobody else has stored them in their CryptDrive.";
     out.settings_deleteButton = "Delete your account";
     out.settings_deleteModal = "Share the following information with your CryptPad administrator in order to have your data removed from their server.";
+    out.settings_deleteConfirm = "Clicking OK will delete your account permanently. Are you sure?";
+    out.settings_deleted = "Your user account is now deleted. Press OK to go to the home page.";
 
     out.settings_anonymous = "You are not logged in. Settings here are specific to this browser.";
     out.settings_publicSigningKey = "Public Signing Key";
@@ -593,10 +633,27 @@ define(function () {
     out.settings_templateSkip = "Skip the template selection modal";
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
+    out.settings_ownDriveTitle = "Drive migration"; // XXX
+    out.settings_ownDriveHint = "Migrating your drive to the new version will give you access to new features..."; // XXX
+    out.settings_ownDriveButton = "Migrate"; // XXX
+    out.settings_ownDriveConfirm = "Are you sure?"; // XXX
+
+    out.settings_changePasswordTitle = "Change your password";
+    out.settings_changePasswordHint = "Change your account's password. Enter your current password, and confirm the new password by typing it twice.<br>" +
+                                      "<b>We can't reset your password if you forget it, so be very careful!</b>";
+    out.settings_changePasswordButton = "Change password";
+    out.settings_changePasswordCurrent = "Current password";
+    out.settings_changePasswordNew = "New password";
+    out.settings_changePasswordNewConfirm = "Confirm new password";
+    out.settings_changePasswordConfirm = "Are you sure you want to change your password? You will need to log back in on all your devices.";
+    out.settings_changePasswordError = "An unexpected error occurred. If you are unable to login or change your password, contact your CryptPad administrators.";
+    out.settings_changePasswordPending = "Your password is being updated. Please do not close or reload this page until the process has completed.";
+    out.settings_changePasswordNewPasswordSameAsOld = "Your new password must be different than your current password.";
+
     out.upload_title = "File upload";
-    out.upload_rename = "Do you want to rename <b>{0}</b> before uploading it to the server?<br>" +
-                        "<em>The file extension ({1}) will be added automatically. "+
-                        "This name will be permanent and visible to other users.</em>";
+    out.upload_modal_title = "File upload options";
+    out.upload_modal_filename = "File name (extension <em>{0}</em> added automatically)";
+    out.upload_modal_owner = "Owned file";
     out.upload_serverError = "Server Error: unable to upload your file at this time.";
     out.upload_uploadPending = "You already have an upload in progress. Cancel it and upload your new file?";
     out.upload_success = "Your file ({0}) has been successfully uploaded and added to your drive.";
@@ -613,7 +670,7 @@ define(function () {
     out.upload_mustLogin = "You must be logged in to upload files";
     out.download_button = "Decrypt & Download";
     out.download_mt_button = "Download";
-    out.download_resourceNotAvailable = "The requested resource was not available...";
+    out.download_resourceNotAvailable = "The requested resource was not available... Press Esc to continue.";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Describe your task...";
@@ -625,9 +682,7 @@ define(function () {
     // pad
     out.pad_showToolbar = "Show toolbar";
     out.pad_hideToolbar = "Hide toolbar";
-
-    // general warnings
-    out.warn_notPinned = "This pad is not in anyone's CryptDrive. It will expire after 3 months. <a href='/about.html#pinning'>Learn more...</a>";
+    out.pad_base64 = "This pad contains images stored in an inefficient way. These images will increase significantly the size of the pad in your CryptDrive, and they will make it slower to load.     Do you want to migrate these images to a better format (they will be stored separately in your drive)?"; // XXX
 
     // markdown toolbar
     out.mdToolbar_button = "Show or hide the Markdown toolbar";
@@ -649,11 +704,11 @@ define(function () {
 
 
     //about.html
-    out.main_p2 = 'This project uses the <a href="http://ckeditor.com/">CKEditor</a> Visual Editor, <a href="https://codemirror.net/">CodeMirror</a>, and the <a href="https://github.com/xwiki-contrib/chainpad">ChainPad</a> realtime engine.';
-    out.main_howitworks_p1 = 'CryptPad uses a variant of the <a href="https://en.wikipedia.org/wiki/Operational_transformation">Operational transformation</a> algorithm which is able to find distributed consensus using a <a href="https://bitcoin.org/bitcoin.pdf">Nakamoto Blockchain</a>, a construct popularized by <a href="https://en.wikipedia.org/wiki/Bitcoin">Bitcoin</a>. This way the algorithm can avoid the need for a central server to resolve Operational Transform Edit Conflicts and without the need for resolving conflicts, the server can be kept unaware of the content which is being edited on the pad.';
+    out.about_intro = 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.';
+    out.about_core = 'Core Developers';
+    out.about_contributors = 'Key Contributors';
 
     // contact.html
-    out.main_about_p2 = 'If you have any questions or comments, feel free to reach out!<br/>You can <a href="https://twitter.com/cryptpad"><i class="fa fa-twitter"></i>tweet us</a>, open an issue <a href="https://github.com/xwiki-labs/cryptpad/issues/" title="our issue tracker">on <i class="fa fa-github"></i>GitHub</a>. Come say hi on <a href="https://riot.im/app/#/room/#cryptpad:matrix.org" title="Matrix">our <i class="fa fa-comment"></i>Matrix channel</a> or IRC (#cryptpad on irc.freenode.net), or <a href="mailto:research@xwiki.com"><i class="fa fa-envelope"></i>send us an email</a>.';
     out.main_about_p22 = 'Tweet us';
     out.main_about_p23 = 'open an issue on GitHub';
     out.main_about_p24 = 'say Hello (Matrix)';
@@ -663,25 +718,10 @@ define(function () {
     out.main_info = "<h2>Collaborate in Confidence</h2> Grow your ideas together with shared documents while <strong>Zero Knowledge</strong> technology secures your privacy; <strong>even from us</strong>.";
     out.main_catch_phrase = "The Zero Knowledge Cloud";
 
-    out.main_howitworks = 'How It Works';
-    out.main_zeroKnowledge = 'Zero Knowledge';
-    out.main_zeroKnowledge_p = "You don't have to trust that we <em>won't</em> look at your pads, with CryptPad's revolutionary Zero Knowledge Technology we <em>can't</em>. Learn more about how we protect your <a href=\"/privacy.html\" title='Privacy'>Privacy and Security</a>.";
-    out.main_writeItDown = 'Write it down';
-
-    out.main_writeItDown_p = "The greatest projects come from the smallest ideas. Take down the moments of inspiration and unexpected ideas because you never know which one might be a breakthrough.";
-    out.main_share = 'Share the link, share the pad';
-    out.main_share_p = "Grow your ideas together: conduct efficient meetings, collaborate on TODO lists and make quick presentations with all your friends and all your devices.";
-    out.main_organize = 'Get organized';
-    out.main_organize_p = "With CryptPad Drive, you can keep your sights on what's important. Folders allow you to keep track of your projects and have a global vision of where things are going.";
-    out.tryIt = 'Try it out!';
     out.main_richText = 'Rich Text editor';
-    out.main_richText_p = 'Edit rich text pads collaboratively with our realtime Zero Knowledge <a href="http://ckeditor.com" target="_blank">CkEditor</a> application.';
     out.main_code = 'Code editor';
-    out.main_code_p = 'Edit code from your software collaboratively with our realtime Zero Knowledge <a href="https://www.codemirror.net" target="_blank">CodeMirror</a> application.';
     out.main_slide = 'Slide editor';
-    out.main_slide_p = 'Create your presentations using the Markdown syntax, and display them in your browser.';
     out.main_poll = 'Polls';
-    out.main_poll_p = 'Plan your meeting or your event, or vote for the best solution regarding your problem.';
     out.main_drive = 'CryptDrive';
 
     out.main_richTextPad = 'Rich Text Pad';
@@ -689,6 +729,7 @@ define(function () {
     out.main_slidePad = 'Markdown Presentation';
     out.main_pollPad = 'Poll or Schedule';
     out.main_whiteboardPad = 'Whiteboard';
+    out.main_kanbanPad = 'Kanban';
     out.main_localPads = 'Local Pads';
     out.main_yourCryptDrive = 'Your CryptDrive';
     out.main_footerText = "With CryptPad, you can make quick collaborative documents for taking notes and writing down ideas together.";
@@ -721,7 +762,7 @@ define(function () {
     out.whatis_drive_p2 = 'With intuitive drag-and-drop, you can move pads around in your drive and the link to these pads will stay the same so your collaborators will never lose access.';
     out.whatis_drive_p3 = 'You can also upload files in your CryptDrive and share them with colleagues. Uploaded files can be organized just like collaborative pads.';
     out.whatis_business = 'CryptPad for Business';
-    out.whatis_business_p1 = 'CryptPad\'s Zero Knowledge encryption is excellent for multiplying the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using employee access credentials, CryptPad removes the hacker jackpot which exists in traditional IT servers. Read the <a href="https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf">CryptPad Whitepaper</a> to learn more about how it can help your business.';
+    out.whatis_business_p1 = "CryptPad\'s Zero Knowledge encryption multiplies the effectiveness of existing security protocols by mirroring organizational access controls in cryptography. Because sensitive assets can only be decrypted using user access credentials, CryptPad is less valuable as a target when compared to traditional cloud services. Read the <a href='https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf'>CryptPad Whitepaper</a> to learn more about how it can help your business.";
     out.whatis_business_p2 = 'CryptPad is deployable on premises and the <a href="https://cryptpad.fr/about.html">CryptPad developers</a> at XWiki SAS are able to offer commercial support, customization and development. Reach out to <a href="mailto:sales@cryptpad.fr">sales@cryptpad.fr</a> for more information.';
 
     // privacy.html
@@ -757,8 +798,8 @@ define(function () {
     out.features_f_history = "History";
     out.features_f_history_notes = "View and restore any version of your pads";
     out.features_f_todo = "Create a TODO-list";
-    out.features_f_drive = "CryptDrive";
-    out.features_f_drive_notes = "Basic features for anonymous users";
+    out.features_f_drive = "Limited CryptDrive functionality";
+    out.features_f_drive_full = "Complete CryptDrive functionality";
     out.features_f_export = "Export/Import";
     out.features_f_export_notes = "For pads and CryptDrive";
     out.features_f_viewFiles = "View files";
@@ -778,14 +819,15 @@ define(function () {
     out.features_f_contacts = "Contacts application";
     out.features_f_contacts_notes = "Add contacts and chat with them in an encrypted session";
     out.features_f_storage = "Storage";
-    out.features_f_storage_anon = "Pads deleted after 3 months";
+    out.features_f_storage_anon = "Pads are deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
+    out.features_f_register = "Register for free";
 
     // faq.html
 
     out.faq_link = "FAQ";
     out.faq_title = "Frequently Asked Questions";
-    out.faq_whatis = "What is CryptPad?";
+    out.faq_whatis = "What is <span class='cp-brand-font'>CryptPad</span>?";
     out.faq = {};
     out.faq.keywords = {
         title: 'Keywords',
@@ -817,6 +859,10 @@ define(function () {
             " Any existing pad can be turned into a template by moving it into the <em>Templates</em> section in your CryptDrive." +
             " You can also create a copy of a pad to be used as a template by clicking the template button (<span class='fa fa-bookmark'></span>) in the editor's toolbar."
         },
+        abandoned: {
+            q: "What is an abandoned pad?",
+            a: "An <em>abandoned pad</em> is a pad that is not pinned in any registered user's CryptDrive and that hasn't been changed for six months. Abandoned documents will be automatically removed from the server."
+        },
     };
     out.faq.privacy = {
         title: 'Privacy',
@@ -847,8 +893,7 @@ define(function () {
             "We use our <em>feedback</em> functionality to inform the server that someone with your IP has registered an account." +
             " We use this to measure how many people register for CryptPad accounts, and to see what regions they are in so that we can guess which languages may need better support.<br><br>" +
 
-            "When you register, you generate a public key which is used to tell the server that the pads in your CryptDrive should not be deleted even if they are not actively being used." +
-            " This information does reveal more about how you are using CryptPad, but the system allows us to remove pads from the server once nobody cares enough to keep them."
+            "Registered users inform the server which pads are in their CryptDrive so that such pads are not considered abandoned, and are removed from the server due to inactivity."
         },
         other: {
             q: "What can other collaborators learn about me?",
@@ -1007,9 +1052,6 @@ define(function () {
 
     // Header.html
 
-    out.header_france = '<a href="http://www.xwiki.com/" target="_blank" rel="noopener noreferrer">With <img class="bottom-bar-heart" src="/customize/heart.png" alt="love" /> from <img class="bottom-bar-fr" src="/customize/fr.png" title="France" alt="France"/> by <img src="/customize/logo-xwiki.png" alt="XWiki SAS" class="bottom-bar-xwiki"/></a>';
-
-    out.header_support = '<a href="http://ng.open-paas.org/" title="OpenPaaS::ng" target="_blank" rel="noopener noreferrer"> <img src="/customize/openpaasng.png" alt="OpenPaaS-ng" class="bottom-bar-openpaas" /></a>';
     out.updated_0_header_logoTitle = 'Go to your CryptDrive';
     out.header_logoTitle = out.updated_0_header_logoTitle;
     out.header_homeTitle = 'Go to CryptPad homepage';
@@ -1059,6 +1101,11 @@ define(function () {
         embed: 'Embed images from your disk <span class="fa fa-file-image-o"></span> or your CryptDrive <span class="fa fa-image"></span> and export them as PNG to your disk <span class="fa fa-download"></span> or your CryptDrive <span class="fa fa-cloud-upload"></span>'
     };
 
+    out.help.kanban = {
+        add: 'Add new boards using the <span class="fa fa-plus"></span> button in the top-right corner',
+        task: 'Move items by dragging and dropping them from one board to another',
+        color: 'Change the colors by clicking on the colored part next to the board titles',
+    };
 
     out.initialState = [
         '<p>',
@@ -1141,6 +1188,7 @@ define(function () {
     out.creation_expireMonths = "Month(s)";
     out.creation_expire1 = "An <b>unlimited</b> pad will not be removed from the server until its owner deletes it.";
     out.creation_expire2 = "An <b>expiring</b> pad has a set lifetime, after which it will be automatically removed from the server and other users' CryptDrives.";
+    out.creation_password = "Add a password";
     out.creation_noTemplate = "No template";
     out.creation_newTemplate = "New template";
     out.creation_create = "Create";
@@ -1152,11 +1200,30 @@ define(function () {
     out.creation_ownedByOther = "Owned by another user";
     out.creation_noOwner = "No owner";
     out.creation_expiration = "Expiration time";
+    out.creation_passwordValue = "Password";
     out.creation_propertiesTitle = "Availability";
     out.creation_appMenuName = "Advanced mode (Ctrl + E)";
     out.creation_newPadModalDescription = "Click on a pad type to create it. You can also press <b>Tab</b> to select the type and press <b>Enter</b> to confirm.";
     out.creation_newPadModalDescriptionAdvanced = "You can check the box (or press <b>Space</b> to change its value) if you want to display the pad creation screen (for owned pads, expiring pads, etc.).";
     out.creation_newPadModalAdvanced = "Display the pad creation screen";
+
+    // Password prompt on the loading screen
+    out.password_info = "The pad you're trying to open is protected with a password. Enter the correct password to access its content.";
+    out.password_error = "Pad not found!<br>This error can be caused by two factors: either the password in invalid, or the pad has been deleted from the server.";
+    out.password_placeholder = "Type the password here...";
+    out.password_submit = "Submit";
+    out.password_show = "Show";
+
+    // Change password in pad properties
+    out.properties_addPassword = "Add a password";
+    out.properties_changePassword = "Change the password";
+    out.properties_confirmNew = "Are you sure? Adding a password will change this pad's URL and remove its history. Users without the password will lose access to this pad";
+    out.properties_confirmChange = "Are you sure? Changing the password will remove its history. Users without the new password will lose access to this pad";
+    out.properties_passwordSame = "New passwords must differ from the current one.";
+    out.properties_passwordError = "An error occured while trying to change the password. Please try again.";
+    out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your acces rights.";
+    out.properties_passwordSuccess = "The password was successfully changed.<br>Press OK to reload and update your access rights.";
+    out.properties_changePasswordButton = "Submit";
 
     // New share modal
     out.share_linkCategory = "Share link";
@@ -1171,6 +1238,33 @@ define(function () {
     out.share_embedCategory = "Embed";
     out.share_mediatagCopy = "Copy mediatag to clipboard";
 
+    // Loading info
+    out.loading_pad_1 = "Initializing pad";
+    out.loading_pad_2 = "Loading pad content";
+    out.loading_drive_1 = "Loading data";
+    out.loading_drive_2 = "Updating data format";
+    out.loading_drive_3 = "Verifying data integrity";
+
+    // Shared folders
+    out.sharedFolders_forget = "This pad is only stored in a shared folder, you can't move it to the trash. You can use your CryptDrive if you want to delete it.";
+    out.sharedFolders_duplicate = "Some of the pads you were trying to move were already shared in the destination folder.";
+    out.sharedFolders_create = "Create a shared folder";
+    out.sharedFolders_create_name = "Folder name";
+    out.sharedFolders_create_owned = "Owned folder";
+    out.sharedFolders_create_password = "Folder password";
+    out.sharedFolders_share = "Share this URL with other registered users to give them access to the shared folder. Once they open this URL, the shared folder will be added to the root directory of their CryptDrive.";
+
+    out.chrome68 = "It seems that you're using the browser Chrome or Chromium version 68. It contains a bug resulting in the page turning completely white after a few seconds or the page being unresponsive to clicks. To fix this issue, you can switch to another tab and come back, or try to scroll in the page. This bug should be fixed in the next version of your browser.";
+
+    // Manual pad storage popup
+    out.autostore_notstored = "This pad is not in your CryptDrive. Do you want to store it now?"; // XXX
+    out.autostore_settings = "You can enable automatic pad storage in your <a href=\"/settings/\">Settings</a> page!"; // XXX
+    out.autostore_store = "Store";
+    out.autostore_hide = "Don't store";
+    out.autostore_error = "Unexpected error: we were unable to store this pad, please try again.";
+    out.autostore_saved = "The pad was successfully stored in your CryptDrive!";
+    out.autostore_forceSave = "Store the file in CryptDrive"; // File upload modal
+    out.autostore_notAvailable = "You must store this pad in your CryptDrive before being able to use this feature."; // Properties/tags/move to trash
 
     return out;
 });

@@ -8,7 +8,7 @@ define([
     '/common/outer/local-store.js',
     '/common/test.js',
 
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Cryptpad, Login, UI, Realtime, Feedback, LocalStore, Test) {
     $(function () {
         var $main = $('#mainBlock');

@@ -42,6 +42,9 @@ define([
         exp.updateTitle = function (newTitle, cb) {
             cb = cb || $.noop;
             if (newTitle === exp.title) { return void cb(); }
+            if (newTitle === exp.defaultTitle) {
+                newTitle = "";
+            }
             metadataMgr.updateTitle(newTitle);
             titleUpdated = cb;
         };
@@ -51,11 +54,16 @@ define([
             if ($title) {
                 $title.find('span.cp-toolbar-title-value').text(md.title || md.defaultTitle);
                 $title.find('input').val(md.title || md.defaultTitle);
+                $title.find('input').prop('placeholder', md.defaultTitle);
             }
+            exp.defaultTitle = md.defaultTitle;
             exp.title = md.title;
         });
-        metadataMgr.onTitleChange(function (title) {
-            sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', title, function (err) {
+        metadataMgr.onTitleChange(function (title, defaultTitle) {
+            sframeChan.query('Q_SET_PAD_TITLE_IN_DRIVE', {
+                title: title,
+                defaultTitle: defaultTitle
+            }, function (err) {
                 if (err === 'E_OVER_LIMIT') {
                     return void UI.alert(Messages.pinLimitNotPinned, null, true);
                 } else if (err) { return; }

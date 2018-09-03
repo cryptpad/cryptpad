@@ -1,26 +1,36 @@
 define([
     'jquery',
     '/common/common-interface.js',
+    '/bower_components/nthen/index.js',
     //'/bower_components/chainpad-json-validator/json-ot.js',
 
     '/bower_components/chainpad/chainpad.dist.js',
-], function ($, UI, ChainPad /* JsonOT */) {
+], function ($, UI, nThen, ChainPad /* JsonOT */) {
     //var ChainPad = window.ChainPad;
     var History = {};
 
-    var getStates = function (rt) {
-        var states = [];
-        var b = rt.getAuthBlock();
-        if (b) { states.unshift(b); }
-        while (b.getParent()) {
-            b = b.getParent();
-            states.unshift(b);
-        }
-        return states;
-    };
+    History.create = function (common, config) {
+        if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
+        if (History.loading) { return void console.error("History is already being loaded..."); }
+        History.loading = true;
+        var $toolbar = config.$toolbar;
 
-    var loadHistory = function (config, common, cb) {
-        var createRealtime = function () {
+        if (!config.applyVal || !config.setHistory || !config.onLocal || !config.onRemote) {
+            throw new Error("Missing config element: applyVal, onLocal, onRemote, setHistory");
+        }
+
+        var getStates = function (rt) {
+            var states = [];
+            var b = rt.getAuthBlock();
+            if (b) { states.unshift(b); }
+            while (b.getParent()) {
+                b = b.getParent();
+                states.unshift(b);
+            }
+            return states;
+        };
+
+        var createRealtime = function (config) {
             return ChainPad.create({
                 userName: 'history',
                 validateContent: function (content) {
@@ -33,36 +43,45 @@ define([
                     }
                 },
                 initialState: '',
-                //patchTransformer: ChainPad.NaiveJSONTransformer,
-                //logLevel: 0,
-                //transformFunction: JsonOT.validate,
                 logLevel: config.debug ? 2 : 0,
                 noPrune: true
             });
         };
-        var realtime = createRealtime();
 
-        History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
+        var loadFullHistory = function (config, common, cb) {
+            var realtime = createRealtime(config);
+            common.getFullHistory(realtime, function () {
+                cb(null, realtime);
+            });
+        };
+        loadFullHistory = loadFullHistory;
 
-        /*var to = window.setTimeout(function () {
-            cb('[GET_FULL_HISTORY_TIMEOUT]');
-        }, 30000);*/
+        var fillChainPad = function (realtime, messages) {
+            messages.forEach(function (m) {
+                realtime.message(m);
+            });
+        };
 
-        common.getFullHistory(realtime, function () {
-            //window.clearTimeout(to);
-            cb(null, realtime);
-        });
-    };
+        var allMessages = [];
+        var lastKnownHash;
+        var isComplete = false;
+        var loadMoreHistory = function (config, common, cb) {
+            if (isComplete) { return void cb ('EFULL'); }
+            var realtime = createRealtime(config);
+            var sframeChan = common.getSframeChannel();
 
-    History.create = function (common, config) {
-        if (!config.$toolbar) { return void console.error("config.$toolbar is undefined");}
-        if (History.loading) { return void console.error("History is already being loaded..."); }
-        History.loading = true;
-        var $toolbar = config.$toolbar;
-
-        if (!config.applyVal || !config.setHistory || !config.onLocal || !config.onRemote) {
-            throw new Error("Missing config element: applyVal, onLocal, onRemote, setHistory");
-        }
+            sframeChan.query('Q_GET_HISTORY_RANGE', {
+                lastKnownHash: lastKnownHash
+            }, function (err, data) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(data.messages)) { return void console.error('Not an array!'); }
+                lastKnownHash = data.lastKnownHash;
+                isComplete = data.isFull;
+                Array.prototype.unshift.apply(allMessages, data.messages); // Destructive concat
+                fillChainPad(realtime, allMessages);
+                cb (null, realtime, data.isFull);
+            });
+        };
 
         // config.setHistory(bool, bool)
         // - bool1: history value
@@ -84,21 +103,20 @@ define([
         };
 
         config.setHistory(true);
-        var onReady = function () { };
 
         var Messages = common.Messages;
 
         var realtime;
 
         var states = [];
-        var c = states.length - 1;
+        var c = 0;//states.length - 1;
 
         var $hist = $toolbar.find('.cp-toolbar-history');
         var $left = $toolbar.find('.cp-toolbar-leftside');
         var $right = $toolbar.find('.cp-toolbar-rightside');
         var $cke = $toolbar.find('.cke_toolbox_main');
 
-        $hist.html('').show();
+        $hist.html('').css('display', 'flex');
         $left.hide();
         $right.hide();
         $cke.hide();
@@ -107,29 +125,78 @@ define([
 
         var onUpdate;
 
-        var update = function () {
+        var update = function (newRt) {
+            realtime = newRt;
             if (!realtime) { return []; }
             states = getStates(realtime);
             if (typeof onUpdate === "function") { onUpdate(); }
             return states;
         };
 
+        var $loadMore, $version, get;
+
         // Get the content of the selected version, and change the version number
-        var get = function (i) {
+        var loading = false;
+        var loadMore = function (cb) {
+            if (loading) { return; }
+            loading = true;
+            $loadMore.removeClass('fa fa-ellipsis-h')
+                .append($('<span>', {'class': 'fa fa-refresh fa-spin fa-3x fa-fw'}));
+
+            loadMoreHistory(config, common, function (err, newRt, isFull) {
+                if (err === 'EFULL') {
+                    $loadMore.off('click').hide();
+                    get(c);
+                    $version.show();
+                    return;
+                }
+                loading = false;
+                if (err) { return void console.error(err); }
+                update(newRt);
+                $loadMore.addClass('fa fa-ellipsis-h').html('');
+                get(c);
+                if (isFull) {
+                    $loadMore.off('click').hide();
+                    $version.show();
+                }
+                if (cb) { cb(); }
+            });
+        };
+        get = function (i) {
             i = parseInt(i);
             if (isNaN(i)) { return; }
-            if (i < 0) { i = 0; }
-            if (i > states.length - 1) { i = states.length - 1; }
-            var val = states[i].getContent().doc;
+            if (i > 0) { i = 0; }
+            if (i < -(states.length - 2)) { i = -(states.length - 2); }
+            if (i <= -(states.length - 11)) {
+                loadMore();
+            }
+            var idx = states.length - 1 + i;
+            var val = states[idx].getContent().doc;
             c = i;
             if (typeof onUpdate === "function") { onUpdate(); }
-            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous').css('visibility', '');
-            if (c === states.length - 1) { $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden'); }
-            if (c === 0) { $hist.find('.cp-toolbar-history-previous').css('visibility', 'hidden'); }
+            $hist.find('.cp-toolbar-history-next, .cp-toolbar-history-previous, ' +
+                       '.cp-toolbar-history-fast-next, .cp-toolbar-history-fast-previous')
+                .css('visibility', '');
+            if (c === -(states.length-1)) {
+                $hist.find('.cp-toolbar-history-previous').css('visibility', 'hidden');
+                $hist.find('.cp-toolbar-history-fast-previous').css('visibility', 'hidden');
+            }
+            if (c === 0) {
+                $hist.find('.cp-toolbar-history-next').css('visibility', 'hidden');
+                $hist.find('.cp-toolbar-history-fast-next').css('visibility', 'hidden');
+            }
+            var $pos = $hist.find('.cp-toolbar-history-pos');
+            var p = 100 * (1 - (-c / (states.length-2)));
+            $pos.css('margin-left', p+'%');
+
+            // Display the version when the full history is loaded
+            // Note: the first version is always empty and probably can't be displayed, so
+            // we can consider we have only states.length - 1 versions
+            $version.text(idx + ' / ' + (states.length-1));
 
             if (config.debug) {
-                console.log(states[i]);
-                var ops = states[i] && states[i].getPatch() && states[i].getPatch().operations;
+                console.log(states[idx]);
+                var ops = states[idx] && states[idx].getPatch() && states[idx].getPatch().operations;
                 if (Array.isArray(ops)) {
                     ops.forEach(function (op) { console.log(op); });
                 }
@@ -148,6 +215,17 @@ define([
         // Create the history toolbar
         var display = function () {
             $hist.html('');
+
+            var $rev = $('<button>', {
+                'class':'cp-toolbar-history-revert buttonSuccess fa fa-check-circle-o',
+                title: Messages.history_restoreTitle
+            }).appendTo($hist);//.text(Messages.history_restore);
+            if (History.readOnly) { $rev.css('visibility', 'hidden'); }
+            $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
+            var $fastPrev = $('<button>', {
+                'class': 'cp-toolbar-history-fast-previous fa fa-fast-backward buttonPrimary',
+                title: Messages.history_prev
+            }).appendTo($hist);
             var $prev =$('<button>', {
                 'class': 'cp-toolbar-history-previous fa fa-step-backward buttonPrimary',
                 title: Messages.history_prev
@@ -157,58 +235,73 @@ define([
                 'class': 'cp-toolbar-history-next fa fa-step-forward buttonPrimary',
                 title: Messages.history_next
             }).appendTo($hist);
-
-            $('<label>').text(Messages.history_version).appendTo($nav);
-            var $cur = $('<input>', {
-                'class' : 'cp-toolbar-history-goto-input',
-                'type' : 'number',
-                'min' : '1',
-                'max' : states.length
-            }).val(c + 1).appendTo($nav).mousedown(function (e) {
-                // stopPropagation because the event would be cancelled by the dropdown menus
-                e.stopPropagation();
-            });
-            var $label2 = $('<label>').text(' / '+ states.length).appendTo($nav);
-            $('<br>').appendTo($nav);
+            var $fastNext = $('<button>', {
+                'class': 'cp-toolbar-history-fast-next fa fa-fast-forward buttonPrimary',
+                title: Messages.history_next
+            }).appendTo($hist);
+            $('<span>', {'class': 'cp-history-filler'}).appendTo($hist);
             var $close = $('<button>', {
-                'class':'cp-toolbar-history-close',
+                'class':'cp-toolbar-history-close fa fa-window-close',
                 title: Messages.history_closeTitle
-            }).text(Messages.history_closeTitle).appendTo($nav);
-            var $rev = $('<button>', {
-                'class':'cp-toolbar-history-revert buttonSuccess',
-                title: Messages.history_restoreTitle
-            }).text(Messages.history_restore).appendTo($nav);
-            if (History.readOnly) { $rev.hide(); }
+            }).appendTo($hist);
+
+            var $bar = $('<div>', {'class': 'cp-toolbar-history-bar'}).appendTo($nav);
+            var $container = $('<div>', {'class':'cp-toolbar-history-pos-container'}).appendTo($bar);
+            $('<div>', {'class': 'cp-toolbar-history-pos'}).appendTo($container);
+
+            $version = $('<span>', {
+                'class': 'cp-toolbar-history-version'
+            }).prependTo($bar).hide();
+            $loadMore = $('<button>', {
+                'class':'cp-toolbar-history-loadmore fa fa-ellipsis-h',
+                title: Messages.history_loadMore
+            }).click(function () {
+                loadMore(function () {
+                    get(c);
+                });
+            }).prependTo($container);
+
+            // Load a version when clicking on the bar
+            $container.click(function (e) {
+                e.stopPropagation();
+                if (!$(e.target).is('.cp-toolbar-history-pos-container')) { return; }
+                var p = e.offsetX / $container.width();
+                var v = -Math.round((states.length - 1) * (1 - p));
+                render(get(v));
+            });
 
             onUpdate = function () {
-                $cur.attr('max', states.length);
-                $cur.val(c+1);
-                $label2.text(' / ' + states.length);
+                // Called when a new version is loaded
             };
 
+            var onKeyDown, onKeyUp;
             var close = function () {
                 $hist.hide();
                 $left.show();
                 $right.show();
                 $cke.show();
                 $(window).trigger('resize');
+                $(window).off('keydown', onKeyDown);
+                $(window).off('keyup', onKeyUp);
             };
 
-            // Buttons actions
+            // Version buttons
             $prev.click(function () { render(getPrevious()); });
             $next.click(function () { render(getNext()); });
-            $cur.keydown(function (e) {
+            $fastPrev.click(function () { render(getPrevious(10)); });
+            $fastNext.click(function () { render(getNext(10)); });
+            onKeyDown = function (e) {
                 var p = function () { e.preventDefault(); };
-                if (e.which === 13) { p(); return render( get($cur.val() - 1) ); } // Enter
                 if ([37, 40].indexOf(e.which) >= 0) { p(); return render(getPrevious()); } // Left
                 if ([38, 39].indexOf(e.which) >= 0) { p(); return render(getNext()); } // Right
                 if (e.which === 33) { p(); return render(getNext(10)); } // PageUp
                 if (e.which === 34) { p(); return render(getPrevious(10)); } // PageUp
                 if (e.which === 27) { p(); $close.click(); }
-            }).keyup(function (e) { e.stopPropagation(); }).focus();
-            $cur.on('change', function () {
-                render( get($cur.val() - 1) );
-            });
+            };
+            onKeyUp = function (e) { e.stopPropagation(); };
+            $(window).on('keydown', onKeyDown).on('keyup', onKeyUp).focus();
+
+            // Close & restore buttons
             $close.click(function () {
                 states = [];
                 close();
@@ -229,14 +322,17 @@ define([
         };
 
         // Load all the history messages into a new chainpad object
-        loadHistory(config, common, function (err, newRt) {
+        loadMoreHistory(config, common, function (err, newRt, isFull) {
+            History.readOnly = common.getMetadataMgr().getPrivateData().readOnly;
             History.loading = false;
             if (err) { throw new Error(err); }
-            realtime = newRt;
-            update();
+            update(newRt);
             c = states.length - 1;
             display();
-            onReady();
+            if (isFull) {
+                $loadMore.off('click').hide();
+                $version.show();
+            }
         });
     };
 

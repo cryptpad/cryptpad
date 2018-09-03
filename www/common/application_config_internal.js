@@ -9,9 +9,9 @@ define(function() {
     /* Select the buttons displayed on the main page to create new collaborative sessions
      * Existing types : pad, code, poll, slide
      */
-    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'whiteboard',
+    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
                                 'oodoc', 'ooslide', 'oocell', 'file', 'todo', 'contacts'];
-    config.registeredOnlyTypes = ['file', 'contacts'];
+    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'oocell'];
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
@@ -85,6 +85,8 @@ define(function() {
         oodoc: 'fa-file-word-o',
         ooslide: 'fa-file-powerpoint-o',
         oocell: 'fa-file-excel-o',
+        kanban: 'fa-columns',
+        drive: 'fa-hdd-o',
     };
 
     // Ability to create owned pads and expiring pads through a new pad creation screen.
@@ -120,6 +122,19 @@ define(function() {
     // from an external source and make sure the users can't change them from CryptPad.
     // You can use config.afterLogin to import these values in the users' drive.
     //config.disableProfile = true;
+
+    // Disable the use of webworkers and sharedworkers in CryptPad.
+    // Workers allow us to run the websockets connection and open the user drive in a separate thread.
+    // SharedWorkers allow us to load only one websocket and one user drive for all the browser tabs,
+    // making it much faster to open new tabs.
+    // Warning: This is an experimental feature. It will be enabled by default once we're sure it's stable.
+    config.disableWorkers = true;
+
+    // Shared folder are in a beta-test state. They are likely to disappear from a user's drive
+    // spontaneously, resulting in the deletion of the entire folder's content.
+    // We highly recommend to keep them disabled until they are stable enough to be enabled
+    // by default by the CryptPad developers.
+    config.disableSharedFolders = true;
 
     return config;
 });

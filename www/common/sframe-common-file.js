@@ -3,11 +3,13 @@ define([
     '/file/file-crypto.js',
     '/common/common-thumbnail.js',
     '/common/common-interface.js',
+    '/common/common-ui-elements.js',
     '/common/common-util.js',
+    '/common/hyperscript.js',
     '/customize/messages.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, Thumb, UI, Util, Messages) {
+], function ($, FileCrypto, Thumb, UI, UIElements, Util, h, Messages) {
     var Nacl = window.nacl;
     var module = {};
 
@@ -26,6 +28,7 @@ define([
 
     module.create = function (common, config) {
         var File = {};
+        var origin = common.getMetadataMgr().getPrivateData().origin;
 
         var queue = File.queue = {
             queue: [],
@@ -53,6 +56,7 @@ define([
 
             data.name = file.metadata.name;
             data.url = href;
+            data.password = file.password;
             if (file.metadata.type.slice(0,6) === 'image/') {
                 data.mediatag = true;
             }
@@ -219,29 +223,89 @@ define([
             queue.next();
         };
 
-        // Don't show the rename prompt if we don't want to store the file in the drive (avatar)
-        var showNamePrompt = !config.noStore;
-
-        var promptName = function (file, cb) {
+        // Get the upload options
+        var modalState = {
+            owned: true,
+            store: true
+        };
+        var fileUploadModal = function (file, cb) {
             var extIdx = file.name.lastIndexOf('.');
             var name = extIdx !== -1 ? file.name.slice(0,extIdx) : file.name;
             var ext = extIdx !== -1 ? file.name.slice(extIdx) : "";
-            var msg = Messages._getKey('upload_rename', [
-                Util.fixHTML(file.name),
-                Util.fixHTML(ext)
+
+            var createHelper = function (href, text) {
+                var q = h('a.fa.fa-question-circle', {
+                    style: 'text-decoration: none !important;',
+                    title: text,
+                    href: origin + href,
+                    target: "_blank",
+                    'data-tippy-placement': "right"
+                });
+                return q;
+            };
+
+            var privateData = common.getMetadataMgr().getPrivateData();
+            var autoStore = Util.find(privateData, ['settings', 'general', 'autostore']) || 0;
+            var initialState = modalState.owned || modalState.store;
+            var initialDisabled = modalState.owned ? { disabled: true } : {};
+            var manualStore = autoStore === 1 ? undefined :
+                UI.createCheckbox('cp-upload-store', Messages.autostore_forceSave, initialState, {
+                    input: initialDisabled
+                });
+
+            // Ask for name, password and owner
+            var content = h('div', [
+                h('h4', Messages.upload_modal_title),
+                UIElements.setHTML(h('label', {for: 'cp-upload-name'}),
+                                   Messages._getKey('upload_modal_filename', [ext])),
+                h('input#cp-upload-name', {type: 'text', placeholder: name}),
+                h('label', {for: 'cp-upload-password'}, Messages.creation_passwordValue),
+                UI.passwordInput({id: 'cp-upload-password'}),
+                h('span', {
+                    style: 'display:flex;align-items:center;justify-content:space-between'
+                }, [
+                    UI.createCheckbox('cp-upload-owned', Messages.upload_modal_owner, modalState.owned),
+                    createHelper('/faq.html#keywords-owned', Messages.creation_owned1)
+                ]),
+                manualStore
             ]);
-            UI.prompt(msg, name, function (newName) {
-                if (newName === null) {
-                    showNamePrompt = false;
-                    return void cb (file.name);
+
+            $(content).find('#cp-upload-owned').on('change', function () {
+                var val = $(content).find('#cp-upload-owned').is(':checked');
+                if (val) {
+                    $(content).find('#cp-upload-store').prop('checked', true).prop('disabled', true);
+                } else {
+                    $(content).find('#cp-upload-store').prop('disabled', false);
                 }
-                if (!newName || !newName.trim()) { return void cb (file.name); }
+            });
+
+            UI.confirm(content, function (yes) {
+                if (!yes) { return void cb(); }
+
+                // Get the values
+                var newName = $(content).find('#cp-upload-name').val();
+                var password = $(content).find('#cp-upload-password').val() || undefined;
+                var owned = $(content).find('#cp-upload-owned').is(':checked');
+                var forceSave = owned || $(content).find('#cp-upload-store').is(':checked');
+
+                modalState.owned = owned;
+                modalState.store = forceSave;
+
+                // Add extension to the name if needed
+                if (!newName || !newName.trim()) { newName = file.name; }
                 var newExtIdx = newName.lastIndexOf('.');
                 var newExt = newExtIdx !== -1 ? newName.slice(newExtIdx) : "";
                 if (newExt !== ext) { newName += ext; }
-                cb(newName);
-            }, {cancel: Messages.doNotAskAgain}, true);
+
+                cb({
+                    name: newName,
+                    password: password,
+                    owned: owned,
+                    forceSave: forceSave
+                });
+            });
         };
+
         var handleFileState = {
             queue: [],
             inProgress: false
@@ -253,17 +317,25 @@ define([
             var thumb;
             var file_arraybuffer;
             var name = file.name;
-            var finish = function () {
-                var metadata = {
-                    name: name,
-                    type: file.type,
-                };
-                if (thumb) { metadata.thumbnail = thumb; }
-                queue.push({
-                    blob: file_arraybuffer,
-                    metadata: metadata,
-                    dropEvent: e
-                });
+            var password;
+            var owned = true;
+            var forceSave;
+            var finish = function (abort) {
+                if (!abort) {
+                    var metadata = {
+                        name: name,
+                        type: file.type,
+                    };
+                    if (thumb) { metadata.thumbnail = thumb; }
+                    queue.push({
+                        blob: file_arraybuffer,
+                        metadata: metadata,
+                        password: password,
+                        owned: owned,
+                        forceSave: forceSave,
+                        dropEvent: e
+                    });
+                }
                 handleFileState.inProgress = false;
                 if (handleFileState.queue.length) {
                     var next = handleFileState.queue.shift();
@@ -271,9 +343,17 @@ define([
                 }
             };
             var getName = function () {
-                if (!showNamePrompt) { return void finish(); }
-                promptName(file, function (newName) {
-                    name = newName;
+                // If "noStore", it means we don't want to store this file in our drive (avatar)
+                // In this case, we don't want a password or a filename, and we own the file
+                if (config.noStore) { return void finish(); }
+
+                // Otherwise, ask for password, name and ownership
+                fileUploadModal(file, function (obj) {
+                    if (!obj) { return void finish(true); }
+                    name = obj.name;
+                    password = obj.password;
+                    owned = obj.owned;
+                    forceSave = obj.forceSave;
                     finish();
                 });
             };
@@ -340,6 +420,8 @@ define([
             var editor = config.ckeditor;
             editor.document.on('drop', function (ev) {
                 var dropped = ev.data.$.dataTransfer.files;
+                editor.document.focus();
+                if (!dropped || !dropped.length) { return; }
                 onFileDrop(dropped, ev);
                 ev.data.preventDefault(true);
             });

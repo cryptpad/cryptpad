@@ -94,6 +94,7 @@ define([
     funcs.getPadCreationScreen = callWithCommon(UIElements.getPadCreationScreen);
     funcs.createNewPadModal = callWithCommon(UIElements.createNewPadModal);
     funcs.onServerError = callWithCommon(UIElements.onServerError);
+    funcs.importMediaTagMenu = callWithCommon(UIElements.importMediaTagMenu);
 
     // Thumb
     funcs.displayThumbnail = callWithCommon(Thumb.displayThumbnail);
@@ -112,22 +113,43 @@ define([
         var origin = ctx.metadataMgr.getPrivateData().origin;
         return '<script src="' + origin + '/common/media-tag-nacl.min.js"></script>';
     };
-    funcs.getMediatagFromHref = function (href) {
-        var parsed = Hash.parsePadUrl(href);
-        var secret = Hash.getSecrets('file', parsed.hash);
+    funcs.getMediatagFromHref = function (obj) {
         var data = ctx.metadataMgr.getPrivateData();
+        var secret;
+        if (obj) {
+            secret = Hash.getSecrets('file', obj.hash, obj.password);
+        } else {
+            secret = Hash.getSecrets('file', data.availableHashes.fileHash, data.password);
+        }
         if (secret.keys && secret.channel) {
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var hexFileName = Util.base64ToHex(secret.channel);
+            var key = Hash.encodeBase64(secret.keys && secret.keys.cryptKey);
+            var hexFileName = secret.channel;
             var origin = data.fileHost || data.origin;
             var src = origin + Hash.getBlobPathFromHex(hexFileName);
-            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + cryptKey + '">' +
+            return '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '">' +
                    '</media-tag>';
         }
         return;
     };
-    funcs.getFileSize = function (href, cb) {
-        var channelId = Hash.hrefToHexChannelId(href);
+    funcs.importMediaTag = function ($mt) {
+        if (!$mt || !$mt.is('media-tag')) { return; }
+        var chanStr = $mt.attr('src');
+        var keyStr = $mt.attr('data-crypto-key');
+        var channel = chanStr.replace(/\/blob\/[0-9a-f]{2}\//i, '');
+        var key = keyStr.replace(/cryptpad:/i, '');
+        var metadata = $mt[0]._mediaObject._blob.metadata;
+        ctx.sframeChan.query('Q_IMPORT_MEDIATAG', {
+            channel: channel,
+            key: key,
+            name: metadata.name,
+            type: metadata.type,
+            owners: metadata.owners
+        }, function () {
+            UI.log(Messages.saved);
+        });
+    };
+
+    funcs.getFileSize = function (channelId, cb) {
         funcs.sendAnonRpcMsg("GET_FILE_SIZE", channelId, function (data) {
             if (!data) { return void cb("No response"); }
             if (data.error) { return void cb(data.error); }
@@ -170,6 +192,7 @@ define([
 
     // Store
     funcs.handleNewFile = function (waitFor) {
+        if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
         if (priv.isNewFile) {
             var c = (priv.settings.general && priv.settings.general.creation) || {};
@@ -196,9 +219,16 @@ define([
         ctx.sframeChan.query("Q_CREATE_PAD", {
             owned: cfg.owned,
             expire: cfg.expire,
+            password: cfg.password,
             template: cfg.template,
             templateId: cfg.templateId
         }, cb);
+    };
+
+    funcs.isPadStored = function (cb) {
+        ctx.sframeChan.query("Q_IS_PAD_STORED", null, function (err, obj) {
+            cb (err || (obj && obj.error), obj);
+        });
     };
 
     funcs.sendAnonRpcMsg = function (msg, content, cb) {
@@ -233,17 +263,20 @@ define([
         });
     };
 
-    funcs.getPadAttribute = function (key, cb) {
+    // href is optional here: if not provided, we use the href of the current tab
+    funcs.getPadAttribute = function (key, cb, href) {
         ctx.sframeChan.query('Q_GET_PAD_ATTRIBUTE', {
-            key: key
+            key: key,
+            href: href
         }, function (err, res) {
             cb (err || res.error, res.data);
         });
     };
-    funcs.setPadAttribute = function (key, value, cb) {
+    funcs.setPadAttribute = function (key, value, cb, href) {
         cb = cb || $.noop;
         ctx.sframeChan.query('Q_SET_PAD_ATTRIBUTE', {
             key: key,
+            href: href,
             value: value
         }, cb);
     };
@@ -343,6 +376,27 @@ define([
         window.open(bounceHref);
     };
 
+    funcs.fixLinks = function (domElement) {
+        var origin = ctx.metadataMgr.getPrivateData().origin;
+        $(domElement).find('a[target="_blank"]').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            var href = $(this).attr('href');
+            var absolute = /^https?:\/\//i;
+            if (!absolute.test(href)) {
+                if (href.slice(0,1) !== '/') { href = '/' + href; }
+                href = origin + href;
+            }
+            funcs.openUnsafeURL(href);
+        });
+        $(domElement).find('a[target!="_blank"]').click(function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            funcs.gotoURL($(this).attr('href'));
+        });
+        return $(domElement)[0];
+    };
+
     funcs.whenRealtimeSyncs = evRealtimeSynced.reg;
 
     var logoutHandlers = [];
@@ -397,19 +451,6 @@ define([
 
             UI.addTooltips();
 
-            ctx.sframeChan.on('EV_LOGOUT', function () {
-                $(window).on('keyup', function (e) {
-                    if (e.keyCode === 27) {
-                        UI.removeLoadingScreen();
-                    }
-                });
-                UI.addLoadingScreen({hideTips: true});
-                UI.errorLoadingScreen(Messages.onLogout, true);
-                logoutHandlers.forEach(function (h) {
-                    if (typeof (h) === "function") { h(); }
-                });
-            });
-
             ctx.sframeChan.on('Q_INCOMING_FRIEND_REQUEST', function (confirmMsg, cb) {
                 UI.confirm(confirmMsg, cb, null, true);
             });
@@ -419,12 +460,63 @@ define([
                 UI.log(data.logText);
             });
 
+            ctx.sframeChan.on("EV_PAD_PASSWORD", function () {
+                UIElements.displayPasswordPrompt(funcs);
+            });
+
+            ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
+                UI.updateLoadingProgress(data, true);
+            });
+
+            ctx.sframeChan.on('EV_NEW_VERSION', function () {
+                var $err = $('<div>').append(Messages.newVersionError);
+                $err.find('a').click(function () {
+                    funcs.gotoURL();
+                });
+                UI.findOKButton().click();
+                UI.errorLoadingScreen($err, true, true);
+            });
+
+            ctx.sframeChan.on('EV_AUTOSTORE_DISPLAY_POPUP', function (data) {
+                UIElements.displayStorePadPopup(funcs, data);
+            });
+
             ctx.metadataMgr.onReady(waitFor());
         }).nThen(function () {
             try {
                 var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
+
+            ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
+                if (err === 'DELETED') {
+                    var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
+                    UI.errorLoadingScreen(msg, false, function () {
+                        funcs.gotoURL('/drive/');
+                    });
+                }
+            });
+
+            ctx.sframeChan.on('EV_LOGOUT', function () {
+                $(window).on('keyup', function (e) {
+                    if (e.keyCode === 27) {
+                        UI.removeLoadingScreen();
+                    }
+                });
+                UI.addLoadingScreen({hideTips: true});
+                var origin = ctx.metadataMgr.getPrivateData().origin;
+                var href = origin + "/login/";
+                var onLogoutMsg = Messages._getKey('onLogout', ['<a href="' + href + '" target="_blank">', '</a>']);
+                UI.errorLoadingScreen(onLogoutMsg, true);
+                logoutHandlers.forEach(function (h) {
+                    if (typeof (h) === "function") { h(); }
+                });
+            });
+
+            ctx.sframeChan.on('EV_CHROME_68', function () {
+                UI.alert(Messages.chrome68);
+            });
+
             ctx.sframeChan.ready();
             cb(funcs);
         });

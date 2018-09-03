@@ -11,8 +11,8 @@ define([
     '/common/common-interface.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/contacts/app-contacts.less',
 ], function (
     $,
     Crypto,

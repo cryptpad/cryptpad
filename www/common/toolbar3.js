@@ -420,7 +420,7 @@ define([
         var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
-            'class': 'fa fa-share-alt cp-toolbar-share-button',
+            'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
         var modal = UIElements.createShareModal({
@@ -449,7 +449,7 @@ define([
         var hashes = metadataMgr.getPrivateData().availableHashes;
 
         var $shareBlock = $('<button>', {
-            'class': 'fa fa-share-alt cp-toolbar-share-button',
+            'class': 'fa fa-shhare-alt cp-toolbar-share-button',
             title: Messages.shareButton
         });
         var modal = UIElements.createFileShareModal({
@@ -576,9 +576,7 @@ define([
         if (Common.isLoggedIn()) { return; }
         var pd = config.metadataMgr.getPrivateData();
         var o = pd.origin;
-        var hashes = pd.availableHashes;
-        var url = pd.origin + pd.pathname + '#' + (hashes.editHash || hashes.viewHash);
-        var cid = Hash.hrefToHexChannelId(url);
+        var cid = pd.channel;
         Common.sendAnonRpcMsg('IS_CHANNEL_PINNED', cid, function (x) {
             if (x.error || !Array.isArray(x.response)) { return void console.log(x); }
             if (x.response[0] === true) {

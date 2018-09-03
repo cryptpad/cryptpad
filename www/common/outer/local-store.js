@@ -58,6 +58,14 @@ define([
         localStorage[Constants.userHashKey] = sHash;
     };
 
+    LocalStore.getBlockHash = function () {
+        return localStorage[Constants.blockHashKey];
+    };
+
+    LocalStore.setBlockHash = function (hash) {
+        localStorage[Constants.blockHashKey] = hash;
+    };
+
     LocalStore.getAccountName = function () {
         return localStorage[Constants.userNameKey];
     };
@@ -65,10 +73,6 @@ define([
     LocalStore.isLoggedIn = function () {
         return typeof getUserHash() === "string";
     };
-
-
-
-
 
     LocalStore.login = function (hash, name, cb) {
         if (!hash) { throw new Error('expected a user hash'); }
@@ -92,10 +96,11 @@ define([
         });
     };
     var logoutHandlers = [];
-    LocalStore.logout = function (cb) {
+    LocalStore.logout = function (cb, isDeletion) {
         [
             Constants.userNameKey,
             Constants.userHashKey,
+            Constants.blockHashKey,
             'loginToken',
             'plan',
         ].forEach(function (k) {
@@ -108,13 +113,15 @@ define([
         // Make sure we have an FS_hash in localStorage before reloading all the tabs
         // so that we don't end up with tabs using different anon hashes
         if (!LocalStore.getFSHash()) {
-            LocalStore.setFSHash(Hash.createRandomHash());
+            LocalStore.setFSHash(Hash.createRandomHash('drive'));
         }
         eraseTempSessionValues();
 
-        logoutHandlers.forEach(function (h) {
-            if (typeof (h) === "function") { h(); }
-        });
+        if (!isDeletion) {
+            logoutHandlers.forEach(function (h) {
+                if (typeof (h) === "function") { h(); }
+            });
+        }
 
         if (typeof(AppConfig.customizeLogout) === 'function') {
             return void AppConfig.customizeLogout(cb);

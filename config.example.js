@@ -2,7 +2,7 @@
 /*
     globals module
 */
-var domain = ' http://localhost:3000/';
+var domain = 'http://localhost:3000/';
 
 // You can `kill -USR2` the node process and it will write out a heap dump.
 // If your system doesn't support dumping, comment this out and install with
@@ -12,6 +12,10 @@ var domain = ' http://localhost:3000/';
 // to enable this feature, uncomment the line below:
 // require('heapdump');
 
+
+// we prepend a space because every usage expects it
+// requiring admins to preserve it is unnecessarily confusing
+domain = ' ' + domain;
 module.exports = {
 
     // the address you want to bind to, :: means all ipv4 and ipv6 addresses
@@ -207,6 +211,11 @@ module.exports = {
     */
     taskPath: './tasks',
 
+    /*  if you would like users' authenticated blocks to be stored in
+        a custom location, change the path below:
+    */
+    blockPath: './block',
+
     /*
      *  By default, CryptPad also contacts our accounts server once a day to check for changes in
      *  the people who have accounts. This check-in will also send the version of your CryptPad
@@ -267,7 +276,7 @@ module.exports = {
      */
     blobStagingPath: './blobstage',
 
-    /*  CryptPad's file storage adaptor closes unused files after a configurale
+    /*  CryptPad's file storage adaptor closes unused files after a configurable
      *  number of milliseconds (default 30000 (30 seconds))
      */
     channelExpirationMs: 30000,

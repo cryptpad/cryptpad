@@ -30,14 +30,17 @@ define([
     '/api/config',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/bower_components/chainpad/chainpad.dist.js',
     '/customize/application_config.js',
+    '/common/test.js',
 
     '/bower_components/diff-dom/diffDOM.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/pad/app-pad.less'
 ], function (
     $,
     Hyperjson,
@@ -51,8 +54,12 @@ define([
     ApiConfig,
     Hash,
     Util,
+    UI,
+    h,
     ChainPad,
-    AppConfig)
+    AppConfig,
+    Test
+)
 {
     var DiffDom = window.diffDOM;
 
@@ -82,10 +89,52 @@ define([
         Cursor: Cursor,
     };
 
+    // MEDIATAG: Filter elements to serialize
+    // * Remove the drag&drop and resizers from the hyperjson
+    var isWidget = function (el) {
+        return typeof (el.getAttribute) === "function" &&
+                   (el.getAttribute('data-cke-hidden-sel') ||
+                    (el.getAttribute('class') &&
+                        (/cke_widget_drag/.test(el.getAttribute('class')) ||
+                         /cke_image_resizer/.test(el.getAttribute('class')))
+                    )
+                   );
+    };
+
     var isNotMagicLine = function (el) {
         return !(el && typeof(el.getAttribute) === 'function' &&
             el.getAttribute('class') &&
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
+    };
+
+    var shouldSerialize = function (el) {
+        return isNotMagicLine(el) && !isWidget(el);
+    };
+
+    // MEDIATAG: Filter attributes in the serialized elements
+    var widgetFilter = function (hj) {
+        // Send a widget ID == 0 to avoid a fight between browsers and
+        // prevent the container from having the "selected" class (blue border)
+        if (hj[1].class) {
+            var split = hj[1].class.split(' ');
+            if (split.indexOf('cke_widget_wrapper') !== -1 &&
+                split.indexOf('cke_widget_block') !== -1) {
+                hj[1].class = "cke_widget_wrapper cke_widget_block";
+                hj[1]['data-cke-widget-id'] = "0";
+            }
+            if (split.indexOf('cke_widget_wrapper') !== -1 &&
+                split.indexOf('cke_widget_inline') !== -1) {
+                hj[1].class = "cke_widget_wrapper cke_widget_inline";
+                delete hj[1]['data-cke-widget-id'];
+                //hj[1]['data-cke-widget-id'] = "0";
+            }
+            // Remove the title attribute of the drag&drop icons (translation conflicts)
+            if (split.indexOf('cke_widget_drag_handler')  !== -1 ||
+                split.indexOf('cke_image_resizer') !== -1) {
+                hj[1].title = undefined;
+            }
+        }
+        return hj;
     };
 
     var hjsonFilters = function (hj) {
@@ -100,6 +149,7 @@ define([
         };
         brFilter(hj);
         mediatagContentFilter(hj);
+        widgetFilter(hj);
         return hj;
     };
 
@@ -117,7 +167,14 @@ define([
     ];
 
     var getHTML = function (inner) {
-        return ('<!DOCTYPE html>\n' + '<html>\n' + inner.innerHTML);
+        return ('<!DOCTYPE html>\n' + '<html>\n' +
+                '  <head><meta charset="utf-8"></head>\n  <body>' +
+            inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/g,
+                function(match,realElt){
+                    //console.log("returning realElt \"" + unescape(realElt)+ "\".");
+                    return decodeURIComponent(realElt); }) +
+            '  </body>\n</html>'
+        );
     };
 
     var CKEDITOR_CHECK_INTERVAL = 100;
@@ -168,6 +225,36 @@ define([
                         return true;
                     }
                 }
+
+
+                // MEDIATAG
+                // Never modify widget ids
+                if (info.node && info.node.tagName === 'SPAN' && info.diff.name === 'data-cke-widget-id') {
+                    return true;
+                }
+                if (info.node && info.node.tagName === 'SPAN' &&
+                    info.node.getAttribute('class') &&
+                    /cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
+                    if (info.diff.action === 'modifyAttribute' && info.diff.name === 'class') {
+                        return true;
+                    }
+                    //console.log(info);
+                }
+                // CkEditor drag&drop icon container
+                if (info.node && info.node.tagName === 'SPAN' &&
+                        info.node.getAttribute('class') &&
+                        info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler_container') !== -1) {
+                    return true;
+                }
+                // CkEditor drag&drop title (language fight)
+                if (info.node && info.node.getAttribute &&
+                        info.node.getAttribute('class') &&
+                        (info.node.getAttribute('class').split(' ').indexOf('cke_widget_drag_handler') !== -1 ||
+                         info.node.getAttribute('class').split(' ').indexOf('cke_image_resizer') !== -1 ) ) {
+                    return true;
+                }
+
+
                 /*
                     Also reject any elements which would insert any one of
                     our forbidden tag types: script, iframe, object,
@@ -199,20 +286,26 @@ define([
                 if (info.node && info.node.tagName === 'SPAN' &&
                     info.node.getAttribute('contentEditable') === "false") {
                     // it seems to be a magicline plugin element...
+                    // but it can also be a widget (MEDIATAG), in which case the removal was
+                    // probably intentional
+
                     if (info.diff.action === 'removeElement') {
                         // and you're about to remove it...
-                        // this probably isn't what you want
+                        if (!info.node.getAttribute('class') ||
+                            !/cke_widget_wrapper/.test(info.node.getAttribute('class'))) {
+                            // This element is not a widget!
+                            // this probably isn't what you want
+                            /*
+                                I have never seen this in the console, but the
+                                magic line is still getting removed on remote
+                                edits. This suggests that it's getting removed
+                                by something other than diffDom.
+                            */
+                            console.log("preventing removal of the magic line!");
 
-                        /*
-                            I have never seen this in the console, but the
-                            magic line is still getting removed on remote
-                            edits. This suggests that it's getting removed
-                            by something other than diffDom.
-                        */
-                        console.log("preventing removal of the magic line!");
-
-                        // return true to prevent diff application
-                        return true;
+                            // return true to prevent diff application
+                            return true;
+                        }
                     }
                 }
 
@@ -322,7 +415,7 @@ define([
             var src = tag.getAttribute('src');
             if (mediaTagMap[src]) {
                 mediaTagMap[src].forEach(function (n) {
-                    tag.appendChild(n);
+                    tag.appendChild(n.cloneNode());
                 });
             }
         });
@@ -370,8 +463,11 @@ define([
 
         framework.setMediaTagEmbedder(function ($mt) {
             $mt.attr('contenteditable', 'false');
-            $mt.attr('tabindex', '1');
-            editor.insertElement(new window.CKEDITOR.dom.element($mt[0]));
+            //$mt.attr('tabindex', '1');
+            //MEDIATAG
+            var element = new window.CKEDITOR.dom.element($mt[0]);
+            editor.insertElement(element);
+            editor.widgets.initOn( element, 'mediatag' );
         });
 
         framework.setTitleRecommender(function () {
@@ -403,7 +499,18 @@ define([
 
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
+
+            // MEDIATAG: Migrate old mediatags to the widget system
+            $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+                var element = new window.CKEDITOR.dom.element(el);
+                editor.widgets.initOn( element, 'mediatag' );
+            });
+
             displayMediaTags(framework, inner, mediaTagMap);
+
+            // MEDIATAG: Initialize mediatag widgets inserted in the document by other users
+            editor.widgets.checkWidgets();
+
             if (framework.isReadOnly()) {
                 var $links = $(inner).find('a');
                 // off so that we don't end up with multiple identical handlers
@@ -425,7 +532,7 @@ define([
         framework.setContentGetter(function () {
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
-            return Hyperjson.fromDOM(inner, isNotMagicLine, hjsonFilters);
+            return Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
         });
 
         $bar.find('#cke_1_toolbar_collapser').hide();
@@ -460,10 +567,18 @@ define([
                 body: $('body'),
                 onUploaded: function (ev, data) {
                     var parsed = Hash.parsePadUrl(data.url);
-                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
-                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-                    var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '" tabindex="1"></media-tag>';
-                    editor.insertElement(window.CKEDITOR.dom.element.createFromHtml(mt));
+                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                    var src = Hash.getBlobPathFromHex(secret.channel);
+                    var key = Hash.encodeBase64(secret.keys.cryptKey);
+                    var mt = '<media-tag contenteditable="false" src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
+                    // MEDIATAG
+                    var element = window.CKEDITOR.dom.element.createFromHtml(mt);
+                    if (ev && ev.insertElement) {
+                        ev.insertElement(element);
+                    } else {
+                        editor.insertElement(element);
+                    }
+                    editor.widgets.initOn( element, 'mediatag' );
                 }
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
@@ -472,6 +587,38 @@ define([
                 if (data) {
                     var $iframe = $('html').find('iframe').contents();
                     $iframe.find('html').addClass('cke_body_width');
+                }
+            });
+
+            framework._.sfCommon.isPadStored(function (err, val) {
+                if (!val) { return; }
+                var b64images = $(inner).find('img[src^="data:image"]:not(.cke_reset)');
+                if (b64images.length && framework._.sfCommon.isLoggedIn()) {
+                    var no = h('button.cp-corner-cancel', Messages.cancel);
+                    var yes = h('button.cp-corner-primary', Messages.ok);
+                    var actions = h('div', [yes, no]);
+                    var modal = UI.cornerPopup(Messages.pad_base64, actions, '', {big: true});
+                    $(no).click(function () {
+                        modal.delete();
+                    });
+                    $(yes).click(function () {
+                        modal.delete();
+                        b64images.each(function (i, el) {
+                            var src = $(el).attr('src');
+                            var blob = Util.dataURIToBlob(src);
+                            var ext = '.' + (blob.type.split('/')[1] || 'png');
+                            var name = (framework._.title.getTitle() || 'Pad')+'_image';
+                            blob.name = name + ext;
+                            var ev = {
+                                insertElement: function (newEl) {
+                                    var element = new window.CKEDITOR.dom.element(el);
+                                    newEl.replace(element);
+                                    setTimeout(framework.localChange);
+                                }
+                            };
+                            window.APP.FM.handleFile(blob, ev);
+                        });
+                    });
                 }
             });
             /*setTimeout(function () {
@@ -504,10 +651,12 @@ define([
             var $clone = $(inner).clone();
             nThen(function (waitFor) {
                 $(inner).find('media-tag').each(function (i, el) {
-                    if (!$(el).data('blob')) { return; }
-                    Util.blobToImage($(el).data('blob'), waitFor(function (imgSrc) {
+                    if (!$(el).data('blob') || !el.blob) { return; }
+                    Util.blobToImage(el.blob || $(el).data('blob'), waitFor(function (imgSrc) {
                         $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
                             .attr('src', imgSrc);
+                        $clone.find('media-tag').parent()
+                            .find('.cke_widget_drag_handler_container').remove();
                     }));
                 });
             }).nThen(function () {
@@ -628,18 +777,27 @@ define([
                         'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
                         'box-sizing: border-box; overflow: auto;'+
                     '}' +
-                    '.cke_body_width body > *:first-child { margin-top: 0; }';
+                    '.cke_body_width body > *:first-child { margin-top: 0; }' +
                 Ckeditor.addCss(newCss);
+                Ckeditor._mediatagTranslations = {
+                    title: Messages.pad_mediatagTitle,
+                    width: Messages.pad_mediatagWidth,
+                    height: Messages.pad_mediatagHeight,
+                    ratio: Messages.pad_mediatagRatio,
+                    border: Messages.pad_mediatagBorder,
+                    preview: Messages.pad_mediatagPreview,
+                    'import': Messages.pad_mediatagImport,
+                    options: Messages.pad_mediatagOptions
+                };
                 Ckeditor.plugins.addExternal('mediatag','/pad/', 'mediatag-plugin.js');
+                Ckeditor.plugins.addExternal('blockbase64','/pad/', 'disable-base64.js');
                 module.ckeditor = editor = Ckeditor.replace('editor1', {
                     customConfig: '/customize/ckeditor-config.js',
                 });
                 editor.on('instanceReady', waitFor());
             }).nThen(function () {
-                editor.plugins.mediatag.translations = {
-                    title: Messages.pad_mediatagTitle,
-                    width: Messages.pad_mediatagWidth,
-                    height: Messages.pad_mediatagHeight
+                editor.plugins.mediatag.import = function ($mt) {
+                    framework._.sfCommon.importMediaTag($mt);
                 };
                 Links.addSupportForOpeningLinksInNewTab(Ckeditor)({editor: editor});
             }).nThen(function () {
@@ -654,6 +812,79 @@ define([
             }).nThen(waitFor());
 
         }).nThen(function (/*waitFor*/) {
+            function launchAnchorTest(test) {
+                // -------- anchor test: make sure the exported anchor contains <a name="...">  -------
+                console.log('---- anchor test: make sure the exported anchor contains <a name="...">  -----.');
+
+                function tryAndTestExport() {
+                    console.log("Starting tryAndTestExport.");
+                    editor.on( 'dialogShow', function( evt ) {
+                        console.log("Anchor dialog detected.");
+                        var dialog = evt.data;
+                        $(dialog.parts.contents.$).find("input").val('xx-' + Math.round(Math.random()*1000));
+                        dialog.click(window.CKEDITOR.dialog.okButton(editor).id);
+                    } );
+                    var existingText = editor.getData();
+                    editor.insertText("A bit of text");
+                    console.log("Launching anchor command.");
+                    editor.execCommand(editor.ui.get('Anchor').command);
+                    console.log("Anchor command launched.");
+
+                    var waitH = window.setInterval(function() {
+                        console.log("Waited 2s for the dialog to appear");
+                        var anchors = window.CKEDITOR.plugins["link"].getEditorAnchors(editor);
+                        if(!anchors || anchors.length===0) {
+                            test.fail("No anchors found. Please adjust document");
+                        } else {
+                            console.log(anchors.length + " anchors found.");
+                            var exported = getHTML(window.inner);
+                            console.log("Obtained exported: " + exported);
+                            var allFound = true;
+                            for(var i=0; i<anchors.length; i++) {
+                                var anchor = anchors[i];
+                                console.log("Anchor " + anchor.name);
+                                var expected = "<a id=\"" + anchor.id + "\" name=\"" + anchor.name + "\" ";
+                                var found = exported.indexOf(expected)>=0;
+                                console.log("Found " + expected + " " + found + ".");
+                                allFound = allFound && found;
+                            }
+
+                            console.log("Cleaning up.");
+                            if(allFound) {
+                                // clean-up
+                                editor.execCommand('undo');
+                                editor.execCommand('undo');
+                                var nint = window.setInterval(function(){
+                                    console.log("Waiting for undo to yield same result.");
+                                    if(existingText === editor.getData()) {
+                                        window.clearInterval(nint);
+                                        test.pass();
+                                    }
+                                }, 500);
+                                }  else
+                            {
+                                test.fail("Not all expected a elements found for document at " + window.top.location + ".");
+                            }
+                        }
+                        window.clearInterval(waitH);
+                    },2000);
+
+
+                }
+                var intervalHandle = window.setInterval(function() {
+                    if(editor.status==="ready") {
+                        window.clearInterval(intervalHandle);
+                        console.log("Editor is ready.");
+                        tryAndTestExport();
+                    } else {
+                        console.log("Waiting for editor to be ready.");
+                    }
+                }, 100);
+            }
+            Test(function(test) {
+
+                launchAnchorTest(test);
+            });
             andThen2(editor, Ckeditor, framework);
         });
     };

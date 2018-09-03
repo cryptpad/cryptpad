@@ -11,7 +11,7 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
 
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, Login, Cryptpad, Test, Cred, UI, Util, Realtime, Constants, Feedback, LocalStore) {
     var Messages = Cryptpad.Messages;
 
@@ -57,11 +57,6 @@ define([
         var test;
 
         $register.click(function () {
-            if (registering) {
-                console.log("registration is already in progress");
-                return;
-            }
-
             var uname = $uname.val();
             var passwd = $passwd.val();
             var confirmPassword = $confirm.val();
@@ -118,15 +113,10 @@ define([
         }, 500);
 
         $register.on('keypress', function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-
-            console.error(e.which);
-            switch (e.which) {
-                case 13: return clickRegister();
-                case 13: return clickRegister();
-                default:
-                    //console.log(e.which);
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                return clickRegister();
             }
         });
 

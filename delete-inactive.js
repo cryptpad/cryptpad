@@ -33,7 +33,7 @@ nThen(function (waitFor) {
         sem.take(function (give) {
             Fs.unlink(f.filename, give(function (err) {
                 if (err) { return void console.error(err + " " + f.filename); }
-                console.log(f.filename + " " + f.size + " " + (+f.atime) + " " + (+new Date()));
+                console.log(f.filename + " " + f.size + " " + (+f.mtime) + " " + (+new Date()));
             }));
         });
     });

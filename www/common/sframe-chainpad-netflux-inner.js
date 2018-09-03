@@ -41,10 +41,11 @@ define([
         var patchTransformer = config.patchTransformer;
         var validateContent = config.validateContent;
         var avgSyncMilliseconds = config.avgSyncMilliseconds;
-        var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 2;
+        var logLevel = typeof(config.logLevel) !== 'undefined'? config.logLevel : 1;
         var readOnly = config.readOnly || false;
         var sframeChan = config.sframeChan;
         var metadataMgr = config.metadataMgr;
+        var updateLoadingProgress = config.updateLoadingProgress;
         config = undefined;
 
         var chainpad = ChainPad.create({
@@ -64,6 +65,7 @@ define([
 
         var myID;
         var isReady = false;
+        var isHistory = 1;
         var evConnected = Util.mkEvent(true);
         var evInfiniteSpinner = Util.mkEvent(true);
 
@@ -79,10 +81,12 @@ define([
             evInfiniteSpinner.fire();
         }, 2000);
 
-        sframeChan.on('EV_RT_DISCONNECT', function () {
+        sframeChan.on('EV_RT_DISCONNECT', function (isPermanent) {
             isReady = false;
             chainpad.abort();
-            onConnectionChange({ state: false });
+            // Permanent flag is here to choose if we wnat to display
+            // "reconnecting" or "disconnected" in the toolbar state
+            onConnectionChange({ state: false, permanent: isPermanent });
         });
         sframeChan.on('EV_RT_ERROR', function (err) {
             isReady = false;
@@ -112,11 +116,19 @@ define([
                 onLocal(true); // should be onBeforeMessage
             }
             chainpad.message(content);
+            if (isHistory && updateLoadingProgress) {
+                updateLoadingProgress({
+                    state: 2,
+                    progress: isHistory
+                }, false);
+                isHistory++;
+            }
             cb('OK');
         });
         sframeChan.on('EV_RT_READY', function () {
             if (isReady) { return; }
             isReady = true;
+            isHistory = false;
             chainpad.start();
             setMyID({ myID: myID });
             onReady({ realtime: chainpad });

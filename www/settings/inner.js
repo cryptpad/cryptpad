@@ -9,13 +9,14 @@ define([
     '/common/common-hash.js',
     '/customize/messages.js',
     '/common/hyperscript.js',
+    '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/settings/app-settings.less',
 ], function (
     $,
     Toolbar,
@@ -27,6 +28,7 @@ define([
     Hash,
     Messages,
     h,
+    Cred,
     AppConfig,
     ApiConfig
     )
@@ -45,9 +47,9 @@ define([
             'cp-settings-displayname',
             'cp-settings-language-selector',
             'cp-settings-logout-everywhere',
-            'cp-settings-resettips',
-            'cp-settings-thumbnails',
+            'cp-settings-autostore',
             'cp-settings-userfeedback',
+            'cp-settings-change-password',
             'cp-settings-delete'
         ],
         'creation': [
@@ -57,6 +59,8 @@ define([
             'cp-settings-creation-template'
         ],
         'drive': [
+            'cp-settings-resettips',
+            'cp-settings-thumbnails',
             'cp-settings-drive-backup',
             'cp-settings-drive-import-local',
             'cp-settings-drive-reset'
@@ -205,74 +209,56 @@ define([
         return $div;
     };
 
-    create['resettips'] = function () {
-        var $div = $('<div>', {'class': 'cp-settings-resettips cp-sidebarlayout-element'});
-        $('<label>').text(Messages.settings_resetTips).appendTo($div);
+    create['autostore'] = function () {
+        var $div = $('<div>', { 'class': 'cp-settings-autostore cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_autostoreTitle).appendTo($div);
+
         $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_resetTipsButton).appendTo($div);
-        var $button = $('<button>', {'id': 'cp-settings-resettips', 'class': 'btn btn-primary'})
-            .text(Messages.settings_resetTipsAction).appendTo($div);
-
-        var localStore = window.cryptpadStore;
-        $button.click(function () {
-            Object.keys(localStore).forEach(function (k) {
-                if(k.slice(0, 9) === "hide-info") {
-                    localStore.put(k, undefined);
-                }
-            });
-            UI.alert(Messages.settings_resetTipsDone);
-        });
-
-        return $div;
-    };
-
-    create['thumbnails'] = function () {
-        var $div = $('<div>', {'class': 'cp-settings-thumbnails cp-sidebarlayout-element'});
-        $('<label>').text(Messages.settings_thumbnails).appendTo($div);
-
-        // Disable
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_disableThumbnailsDescription).appendTo($div);
-        var $label = $('<label>', { 'for': 'disableThumbnails', 'class': 'noTitle' })
-            .text(Messages.settings_disableThumbnailsAction);
+            .append(Messages.settings_autostoreHint).appendTo($div);
 
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
-        var $checkbox = $('<input>', {
-            'type': 'checkbox',
-            id: 'disableThumbnails'
-        }).on('change', function () {
+        var opt1 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-no',
+                                Messages.settings_autostoreNo, false, {
+                                    input: { value: -1 },
+                                    label: { class: 'noTitle' }
+                                });
+        var opt2 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-maybe',
+                                Messages.settings_autostoreMaybe, true, {
+                                    input: { value: 0 },
+                                    label: { class: 'noTitle' }
+                                });
+        var opt3 = UI.createRadio('cp-settings-autostore', 'cp-settings-autostore-yes',
+                                Messages.settings_autostoreYes, false, {
+                                    input: { value: 1 },
+                                    label: { class: 'noTitle' }
+                                });
+        var $div2 = $(h('div.cp-settings-autostore-radio', [
+            opt1,
+            opt2,
+            opt3
+        ])).appendTo($div);
+
+        $div.find('input[type="radio"]').on('change', function () {
             $spinner.show();
             $ok.hide();
-            var val = $checkbox.is(':checked') || false;
-            common.setAttribute(['general', 'disableThumbnails'], val, function () {
+            var val = $('input:radio[name="cp-settings-autostore"]:checked').val();
+            val = Number(val) || 0;
+            common.setAttribute(['general', 'autostore'], val, function () {
                 $spinner.hide();
                 $ok.show();
             });
         });
 
-        $checkbox.appendTo($div);
-        $label.appendTo($div);
+        $ok.hide().appendTo($div2);
+        $spinner.hide().appendTo($div2);
 
-        $ok.hide().appendTo($div);
-        $spinner.hide().appendTo($div);
-
-        common.getAttribute(['general', 'disableThumbnails'], function (e, val) {
-            $checkbox[0].checked = val;
-        });
-
-        // Reset
-        $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_resetThumbnailsDescription).appendTo($div);
-        var $button = $('<button>', {'id': 'resetThumbnails', 'class': 'btn btn-primary'})
-            .text(Messages.settings_resetThumbnailsAction).appendTo($div);
-
-        $button.click(function () {
-            sframeChan.query("Q_THUMBNAIL_CLEAR", null, function (err) {
-                if (err) { return void console.error("Cannot clear localForage"); }
-                UI.alert(Messages.settings_resetThumbnailsDone);
-            });
+        common.getAttribute(['general', 'autostore'], function (err, val) {
+            if (val === 1) { return void $('#cp-settings-autostore-yes').prop('checked', true); }
+            if (val === -1) { return void $('#cp-settings-autostore-no').prop('checked', true); }
+            $('#cp-settings-autostore-maybe').prop('checked', true);
         });
 
         return $div;
@@ -283,9 +269,6 @@ define([
 
         $('<span>', {'class': 'label'}).text(Messages.settings_userFeedbackTitle).appendTo($div);
 
-        var $label = $('<label>', { 'for': 'cp-settings-userfeedback', 'class': 'noTitle' })
-            .text(Messages.settings_userFeedback);
-
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .append(Messages.settings_userFeedbackHint1)
             .append(Messages.settings_userFeedbackHint2).appendTo($div);
@@ -293,10 +276,10 @@ define([
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
-        var $checkbox = $('<input>', {
-            'type': 'checkbox',
-            id: 'cp-settings-userfeedback'
-        }).on('change', function () {
+        var $cbox = $(UI.createCheckbox('cp-settings-userfeedback',
+                                   Messages.settings_userFeedback,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
             $spinner.show();
             $ok.hide();
             var val = $checkbox.is(':checked') || false;
@@ -306,11 +289,10 @@ define([
             });
         });
 
-        $checkbox.appendTo($div);
-        $label.appendTo($div);
+        $cbox.appendTo($div);
 
-        $ok.hide().appendTo($div);
-        $spinner.hide().appendTo($div);
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
 
         if (privateData.feedbackAllowed) {
             $checkbox[0].checked = true;
@@ -319,6 +301,7 @@ define([
     };
 
     create['delete'] = function () {
+        if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', { 'class': 'cp-settings-delete cp-sidebarlayout-element'});
 
         $('<span>', {'class': 'label'}).text(Messages.settings_deleteTitle).appendTo($div);
@@ -326,7 +309,7 @@ define([
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .append(Messages.settings_deleteHint).appendTo($div);
 
-        //var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
         var $button = $('<button>', {'id': 'cp-settings-delete', 'class': 'btn btn-danger'})
@@ -334,13 +317,27 @@ define([
 
         $button.click(function () {
             $spinner.show();
-            sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function (err, data) {
-                var msg = h('div.cp-app-settings-delete-alert', [
-                    h('p', Messages.settings_deleteModal),
-                    h('pre', JSON.stringify(data, 0, 2))
-                ]);
-                UI.alert(msg);
-                $spinner.hide();
+            UI.confirm(Messages.settings_deleteConfirm, function (yes) {
+                if (!yes) { return; }
+                sframeChan.query("Q_SETTINGS_DELETE_ACCOUNT", null, function (err, data) {
+                    // Owned drive
+                    if (data.state === true) {
+                        sframeChan.query('Q_SETTINGS_LOGOUT', null, function () {});
+                        UI.alert(Messages.settings_deleted, function () {
+                            common.gotoURL('/');
+                        });
+                        $ok.show();
+                        $spinner.hide();
+                        return;
+                    }
+                    // Not owned drive
+                    var msg = h('div.cp-app-settings-delete-alert', [
+                        h('p', Messages.settings_deleteModal),
+                        h('pre', JSON.stringify(data, 0, 2))
+                    ]);
+                    UI.alert(msg);
+                    $spinner.hide();
+                });
             });
             // TODO
             /*
@@ -356,6 +353,156 @@ define([
         });
 
         $spinner.hide().appendTo($div);
+        $ok.hide().appendTo($div);
+
+        return $div;
+    };
+
+    create['change-password'] = function () {
+        if (!common.isLoggedIn()) { return; }
+
+        var $div = $('<div>', { 'class': 'cp-settings-change-password cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_changePasswordTitle).appendTo($div);
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .append(Messages.settings_changePasswordHint).appendTo($div);
+
+        // var publicKey = privateData.edPublic;
+
+        var form = h('div', [
+            UI.passwordInput({
+                id: 'cp-settings-change-password-current',
+                placeholder: Messages.settings_changePasswordCurrent
+            }, true),
+            h('br'),
+            UI.passwordInput({
+                id: 'cp-settings-change-password-new',
+                placeholder: Messages.settings_changePasswordNew
+            }, true),
+            UI.passwordInput({
+                id: 'cp-settings-change-password-new2',
+                placeholder: Messages.settings_changePasswordNewConfirm
+            }, true),
+            h('button.btn.btn-primary', Messages.settings_changePasswordButton)
+        ]);
+
+        $(form).appendTo($div);
+
+        var updateBlock = function (data, cb) {
+            sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function (err, obj) {
+                if (err || obj.error) { return void cb ({error: err || obj.error}); }
+                cb (obj);
+            });
+        };
+
+        var todo = function () {
+            var oldPassword = $(form).find('#cp-settings-change-password-current').val();
+            var newPassword = $(form).find('#cp-settings-change-password-new').val();
+            var newPasswordConfirm = $(form).find('#cp-settings-change-password-new2').val();
+
+            /* basic validation */
+            if (!Cred.isLongEnoughPassword(newPassword)) {
+                var warning = Messages._getKey('register_passwordTooShort', [
+                    Cred.MINIMUM_PASSWORD_LENGTH
+                ]);
+                return void UI.alert(warning);
+            }
+
+            if (newPassword !== newPasswordConfirm) {
+                UI.alert(Messages.register_passwordsDontMatch);
+                return;
+            }
+
+            if (oldPassword === newPassword) {
+                return void UI.alert(Messages.settings_changePasswordNewPasswordSameAsOld);
+            }
+
+            UI.confirm(Messages.settings_changePasswordConfirm,
+            function (yes) {
+                if (!yes) { return; }
+
+                UI.addLoadingScreen({
+                    hideTips: true,
+                    loadingText: Messages.settings_changePasswordPending,
+                });
+                updateBlock({
+                    password: oldPassword,
+                    newPassword: newPassword
+                }, function (obj) {
+                    UI.removeLoadingScreen();
+                    if (obj && obj.error) {
+                        // TODO
+                        UI.alert(Messages.settings_changePasswordError);
+                    }
+                });
+            }, {
+                ok: Messages.register_writtenPassword,
+                cancel: Messages.register_cancel,
+                cancelClass: 'safe',
+                okClass: 'danger',
+                reverseOrder: true,
+                done: function ($dialog) {
+                    $dialog.find('> div').addClass('half');
+                },
+            }, true);
+        };
+
+        $(form).find('button').click(function () {
+            todo();
+        });
+        $(form).find('input').keydown(function (e) {
+            // Save on Enter
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                todo();
+            }
+        });
+
+        return $div;
+    };
+
+    create['migrate'] = function () {
+        if (true) { return; } // STUBBED until we have a reason to deploy this
+        // TODO
+        // if (!loginBlock) { return; }
+        // if (alreadyMigrated) { return; }
+        if (!common.isLoggedIn()) { return; }
+
+        var $div = $('<div>', { 'class': 'cp-settings-migrate cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_ownDriveTitle).appendTo($div);
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .append(Messages.settings_ownDriveHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $button = $('<button>', {'id': 'cp-settings-delete', 'class': 'btn btn-primary'})
+            .text(Messages.settings_ownDriveButton).appendTo($div);
+
+        $button.click(function () {
+            $spinner.show();
+            UI.confirm(Messages.settings_ownDriveConfirm, function (yes) {
+                if (!yes) { return; }
+                sframeChan.query("Q_OWN_USER_DRIVE", null, function (err, data) {
+                    if (err || data.error) {
+                        console.error(err || data.error);
+                        // TODO
+                        $spinner.hide();
+                        return;
+                    }
+                    // TODO: drive is migrated, autoamtic redirect from outer?
+                    $ok.show();
+                    $spinner.hide();
+                });
+            });
+        });
+
+        $spinner.hide().appendTo($div);
+        $ok.hide().appendTo($div);
 
         return $div;
     };
@@ -598,6 +745,76 @@ define([
 
     // Drive settings
 
+    create['resettips'] = function () {
+        var $div = $('<div>', {'class': 'cp-settings-resettips cp-sidebarlayout-element'});
+        $('<label>').text(Messages.settings_resetTips).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_resetTipsButton).appendTo($div);
+        var $button = $('<button>', {'id': 'cp-settings-resettips', 'class': 'btn btn-primary'})
+            .text(Messages.settings_resetTipsAction).appendTo($div);
+
+        var localStore = window.cryptpadStore;
+        $button.click(function () {
+            Object.keys(localStore).forEach(function (k) {
+                if(k.slice(0, 9) === "hide-info") {
+                    localStore.put(k, undefined);
+                }
+            });
+            UI.alert(Messages.settings_resetTipsDone);
+        });
+
+        return $div;
+    };
+
+    create['thumbnails'] = function () {
+        var $div = $('<div>', {'class': 'cp-settings-thumbnails cp-sidebarlayout-element'});
+        $('<label>').text(Messages.settings_thumbnails).appendTo($div);
+
+        // Disable
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_disableThumbnailsDescription).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $cbox = $(UI.createCheckbox('disableThumbnails',
+                                   Messages.settings_disableThumbnailsAction,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked') || false;
+            common.setAttribute(['general', 'disableThumbnails'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['general', 'disableThumbnails'], function (e, val) {
+            $checkbox[0].checked = typeof(val) === "undefined" || val;
+        });
+
+        // Reset
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_resetThumbnailsDescription).appendTo($div);
+        var $button = $('<button>', {'id': 'resetThumbnails', 'class': 'btn btn-primary'})
+            .text(Messages.settings_resetThumbnailsAction).appendTo($div);
+
+        $button.click(function () {
+            sframeChan.query("Q_THUMBNAIL_CLEAR", null, function (err) {
+                if (err) { return void console.error("Cannot clear localForage"); }
+                UI.alert(Messages.settings_resetThumbnailsDone);
+            });
+        });
+
+        return $div;
+    };
+
     create['drive-backup'] = function () {
         var $div = $('<div>', {'class': 'cp-settings-drive-backup cp-sidebarlayout-element'});
 
@@ -715,30 +932,28 @@ define([
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
-        var $label = $('<label>', { 'for': 'cp-settings-padwidth', 'class': 'noTitle' })
-                    .text(Messages.settings_padWidthLabel);
-        var $input = $('<input>', {
-            type: 'checkbox',
-            id: 'cp-settings-padwidth'
-        }).on('change', function () {
+        var $cbox = $(UI.createCheckbox('cp-settings-padwidth',
+                                   Messages.settings_padWidthLabel,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
             $spinner.show();
             $ok.hide();
-            var val = $input.is(':checked');
+            var val = $checkbox.is(':checked');
             common.setAttribute(['pad', 'width'], val, function () {
                 $spinner.hide();
                 $ok.show();
             });
-        }).appendTo($div);
-        $label.appendTo($div);
+        });
+        $cbox.appendTo($div);
 
-        $ok.hide().appendTo($div);
-        $spinner.hide().appendTo($div);
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
 
 
         common.getAttribute(['pad', 'width'], function (e, val) {
             if (e) { return void console.error(e); }
             if (val) {
-                $input.attr('checked', 'checked');
+                $checkbox.attr('checked', 'checked');
             }
         });
         return $div;
@@ -790,13 +1005,14 @@ define([
         }).css('flex-flow', 'column')
         .appendTo($div);
 
-        var $input = $('<input>', {
-            type: 'checkbox',
-        }).on('change', function () {
-            var val = $input.is(':checked');
+
+        var $cbox = $(UI.createCheckbox('cp-settings-codeindent'));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            var val = $checkbox.is(':checked');
             if (typeof(val) !== 'boolean') { return; }
             common.setAttribute(['codemirror', key], val);
-        }).appendTo($inputBlock);
+        });
+        $cbox.appendTo($inputBlock);
 
         /*proxy.on('change', ['settings', 'codemirror', key], function (o, n) {
             $input[0].checked = !!n;
@@ -804,7 +1020,7 @@ define([
 
         common.getAttribute(['codemirror', key], function (e, val) {
             if (e) { return void console.error(e); }
-            $input[0].checked = !!val;
+            $checkbox[0].checked = !!val;
         });
         return $div;
     };
@@ -892,9 +1108,19 @@ define([
 
         // Content
         var $rightside = APP.$rightside;
-        for (var f in create) {
+        /*for (var f in create) {
             if (typeof create[f] !== "function") { continue; }
             $rightside.append(create[f]());
+        }*/
+        var addItem = function (cssClass) {
+            var item = cssClass.slice(12); // remove 'cp-settings-'
+            if (typeof (create[item]) === "function") {
+                $rightside.append(create[item]());
+            }
+        };
+        for (var cat in categories) {
+            if (!Array.isArray(categories[cat])) { continue; }
+            categories[cat].forEach(addItem);
         }
 
         // TODO RPC

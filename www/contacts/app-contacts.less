@@ -1,20 +1,14 @@
-@import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/toolbar.less";
-@import (once) "../../customize/src/less2/include/markdown.less";
-@import (once) '../../customize/src/less2/include/fileupload.less';
-@import (once) '../../customize/src/less2/include/alertify.less';
-@import (once) '../../customize/src/less2/include/avatar.less';
-
-.toolbar_main(
-    @bg-color: @colortheme_friends-bg,
-    @warn-color: @colortheme_friends-warn,
-    @color: @colortheme_friends-color
-);
-.fileupload_main();
-.alertify_main();
+@import (reference) '../../customize/src/less2/include/avatar.less';
+@import (reference) '../../customize/src/less2/include/framework.less';
 
 // body
 &.cp-app-contacts {
+    .framework_min_main(
+        @bg-color: @colortheme_friends-bg,
+        @warn-color: @colortheme_friends-warn,
+        @color: @colortheme_friends-color
+    );
+
     @keyframes example {
         0% {
             background: rgba(0,0,0,0.1);

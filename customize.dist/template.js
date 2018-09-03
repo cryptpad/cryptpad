@@ -3,7 +3,7 @@ define([
     '/common/hyperscript.js',
     '/customize/pages.js',
 
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
 ], function ($, h, Pages) {
 $(function () {
     var $body = $('body');
@@ -26,9 +26,8 @@ $(function () {
 
     window.Tether = function () {};
     require([
-        'less!/customize/src/less2/main.less',
-        'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-        '/bower_components/bootstrap/dist/js/bootstrap.bundle.min.js'
+        'less!/customize/src/less2/pages/page-' + css + '.less',
+        'css!/bower_components/bootstrap/dist/css/bootstrap.min.css'
     ], function () {
         $body.append($main);
 

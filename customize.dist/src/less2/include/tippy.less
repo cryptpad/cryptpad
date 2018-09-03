@@ -1,0 +1,18 @@
+@import (reference) './colortheme-all.less';
+
+.tippy_main() {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
+    .tippy-tooltip.cryptpad-theme {
+        /* Your styling here. Example: */
+        background-color: white;
+        box-shadow: 2px 2px 10px #000;
+        font-weight: bold;
+        color: #333;
+        overflow-wrap: break-word;
+        [x-circle] {
+            background-color: unset;
+        }
+    }
+}

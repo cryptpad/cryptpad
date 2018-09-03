@@ -1,5 +1,8 @@
-@import (once) "./colortheme-all.less";
+@import (reference) "./colortheme-all.less";
 .iconColors_main () {
+    --LessLoader_require: LessLoader_currentFile();
+}
+& {
     // Classes used in common-interface.js
     .cp-icon-color-pad { color: @colortheme_pad-bg; }
     .cp-icon-color-code { color: @colortheme_code-bg; }
@@ -16,6 +19,7 @@
     .cp-icon-color-oodoc { color: @colortheme_oodoc-bg; }
     .cp-icon-color-ooslide { color: @colortheme_ooslide-bg; }
     .cp-icon-color-oocell { color: @colortheme_oocell-bg; }
+    .cp-icon-color-kanban { color: @colortheme_kanban-bg; }
 
     .cp-border-color-pad { border-color: @colortheme_pad-bg !important; }
     .cp-border-color-code { border-color: @colortheme_code-bg !important; }
@@ -32,5 +36,6 @@
     .cp-border-color-oodoc { border-color: @colortheme_oodoc-bg !important; }
     .cp-border-color-ooslide { border-color: @colortheme_ooslide-bg !important; }
     .cp-border-color-oocell { border-color: @colortheme_oocell-bg !important; }
+    .cp-border-color-kanban { border-color: @colortheme_kanban-bg !important; }
 }
 

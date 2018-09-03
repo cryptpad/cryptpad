@@ -14,5 +14,7 @@ data
 npm-debug.log
 pins/
 blob/
+block/
 blobstage/
+block/
 privileged.conf

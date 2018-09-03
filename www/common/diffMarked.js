@@ -41,10 +41,15 @@ define([
     };
     renderer.image = function (href, title, text) {
         if (href.slice(0,6) === '/file/') {
+            // DEPRECATED
+            // Mediatag using markdown syntax should not be used anymore so they don't support
+            // password-protected files
+            console.log('DEPRECATED: mediatag using markdown syntax!');
             var parsed = Hash.parsePadUrl(href);
-            var hexFileName = Util.base64ToHex(parsed.hashData.channel);
-            var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '">';
+            var secret = Hash.getSecrets('file', parsed.hash);
+            var src = Hash.getBlobPathFromHex(secret.channel);
+            var key = Hash.encodeBase64(secret.keys.cryptKey);
+            var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
             if (mediaMap[src]) {
                 mt += mediaMap[src];
             }
@@ -161,7 +166,8 @@ define([
         return patch;
     };
 
-    DiffMd.apply = function (newHtml, $content) {
+    DiffMd.apply = function (newHtml, $content, common) {
+        var contextMenu = common.importMediaTagMenu();
         var id = $content.attr('id');
         if (!id) { throw new Error("The element must have a valid id"); }
         var pattern = /(<media-tag src="([^"]*)" data-crypto-key="([^"]*)">)<\/media-tag>/g;
@@ -187,6 +193,11 @@ define([
             DD.apply($content[0], patch);
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
+                $(el).contextmenu(function (e) {
+                    e.preventDefault();
+                    $(contextMenu.menu).data('mediatag', $(el));
+                    contextMenu.show(e);
+                });
                 MediaTag(el);
                 var observer = new MutationObserver(function(mutations) {
                     mutations.forEach(function(mutation) {

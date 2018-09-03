@@ -151,7 +151,7 @@ define([
             };
 
             exp.removeOwnedChannel = function (channel, cb) {
-                if (typeof(channel) !== 'string' || channel.length !== 32) {
+                if (typeof(channel) !== 'string' || [32,48].indexOf(channel.length) === -1) {
                     // can't use this on files because files can't be owned...
                     return void cb('INVALID_ARGUMENTS');
                 }
@@ -165,8 +165,30 @@ define([
                 });
             };
 
-            exp.uploadComplete = function (cb) {
-                rpc.send('UPLOAD_COMPLETE', null, function (e, res) {
+            exp.removePins = function (cb) {
+                rpc.send('REMOVE_PINS', undefined, function (e, response) {
+                    if (e) { return void cb(e); }
+                    if (response && response.length && response[0] === "OK") {
+                        cb();
+                    } else {
+                        cb('INVALID_RESPONSE');
+                    }
+                });
+            };
+
+            exp.uploadComplete = function (id, cb) {
+                rpc.send('UPLOAD_COMPLETE', id, function (e, res) {
+                    if (e) { return void cb(e); }
+                    var id = res[0];
+                    if (typeof(id) !== 'string') {
+                        return void cb('INVALID_ID');
+                    }
+                    cb(void 0, id);
+                });
+            };
+
+            exp.ownedUploadComplete = function (id, cb) {
+                rpc.send('OWNED_UPLOAD_COMPLETE', id, function (e, res) {
                     if (e) { return void cb(e); }
                     var id = res[0];
                     if (typeof(id) !== 'string') {
@@ -192,10 +214,41 @@ define([
                 });
             };
 
-            exp.uploadCancel = function (cb) {
-                rpc.send('UPLOAD_CANCEL', void 0, function (e) {
+            exp.uploadCancel = function (size, cb) {
+                rpc.send('UPLOAD_CANCEL', size, function (e) {
                     if (e) { return void cb(e); }
                     cb();
+                });
+            };
+
+            exp.writeLoginBlock = function (data, cb) {
+                if (!data) { return void cb('NO_DATA'); }
+                if (!data.publicKey || !data.signature || !data.ciphertext) {
+                    console.log(data);
+                    return void cb("MISSING_PARAMETERS");
+                }
+
+                rpc.send('WRITE_LOGIN_BLOCK', [
+                    data.publicKey,
+                    data.signature,
+                    data.ciphertext
+                ], function (e) {
+                    cb(e);
+                });
+            };
+
+            exp.removeLoginBlock = function (data, cb) {
+                if (!data) { return void cb('NO_DATA'); }
+                if (!data.publicKey || !data.signature) {
+                    console.log(data);
+                    return void cb("MISSING_PARAMETERS");
+                }
+
+                rpc.send('REMOVE_LOGIN_BLOCK', [
+                    data.publicKey, // publicKey
+                    data.signature, // signature
+                ], function (e) {
+                    cb(e);
                 });
             };
 

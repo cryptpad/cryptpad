@@ -1,23 +1,15 @@
-@import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/toolbar.less";
-@import (once) "../../customize/src/less2/include/markdown.less";
-@import (once) '../../customize/src/less2/include/fileupload.less';
-@import (once) '../../customize/src/less2/include/alertify.less';
+@import (reference) '../../customize/src/less2/include/framework.less';
+@import (reference) '../../customize/src/less2/include/sidebar-layout.less';
 
-@import (once) '../../customize/src/less2/include/avatar.less';
-@import (once) '../../customize/src/less2/include/sidebar-layout.less';
-
-.toolbar_main(
-    @bg-color: @colortheme_profile-bg,
-    @warn-color: @colortheme_profile-warn,
-    @color: @colortheme_profile-color
-);
-.fileupload_main();
-.alertify_main();
-.sidebar-layout_main();
-
-// body
 &.cp-app-profile {
+
+    .framework_min_main(
+        @bg-color: @colortheme_profile-bg,
+        @warn-color: @colortheme_profile-warn,
+        @color: @colortheme_profile-color
+    );
+    .sidebar-layout_main();
+
     display: flex;
     flex-flow: column;
     #cp-app-profile-header {

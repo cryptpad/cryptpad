@@ -5,12 +5,12 @@ CKEDITOR.editorConfig = function( config ) {
     config.needsBrFiller= fixThings;
     config.needsNbspFiller= fixThings;
 
-    config.removeButtons= 'Source,Maximize,Anchor';
+    config.removeButtons= 'Source,Maximize';
     // magicline plugin inserts html crap into the document which is not part of the
     // document itself and causes problems when it's sent across the wire and reflected back
     config.removePlugins= 'resize,elementspath';
     config.resize_enabled= false; //bottom-bar
-    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print';
+    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64';
     config.toolbarGroups= [
         // {"name":"clipboard","groups":["clipboard","undo"]},
         //{"name":"editing","groups":["find","selection"]},

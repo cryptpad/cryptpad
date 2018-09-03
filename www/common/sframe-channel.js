@@ -21,16 +21,18 @@ define([
         var chan = {};
 
         // Send a query.  channel.query('Q_SOMETHING', { args: "whatever" }, function (reply) { ... });
-        chan.query = function (q, content, cb) {
+        chan.query = function (q, content, cb, opts) {
             if (!otherWindow) { throw new Error('not yet initialized'); }
             if (!SFrameProtocol[q]) {
                 throw new Error('please only make queries are defined in sframe-protocol.js');
             }
+            opts = opts || {};
             var txid = mkTxid();
+            var to = opts.timeout || 30000;
             var timeout = setTimeout(function () {
                 delete queries[txid];
                 console.log("Timeout making query " + q);
-            }, 30000);
+            }, to);
             queries[txid] = function (data, msg) {
                 clearTimeout(timeout);
                 delete queries[txid];

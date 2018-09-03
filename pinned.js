@@ -15,6 +15,7 @@ const hashesFromPinFile = (pinFile, fileName) => {
         switch (l[0]) {
             case 'RESET': {
                 pins = {};
+                if (l[1] && l[1].length) { l[1].forEach((x) => { pins[x] = 1; }); }
                 //jshint -W086
                 // fallthrough
             }
@@ -32,7 +33,7 @@ const hashesFromPinFile = (pinFile, fileName) => {
     return Object.keys(pins);
 };
 
-module.exports.load = function (cb) {
+module.exports.load = function (cb, config) {
     nThen((waitFor) => {
         Fs.readdir('./pins', waitFor((err, list) => {
             if (err) {
@@ -49,7 +50,10 @@ module.exports.load = function (cb) {
             sema.take((returnAfter) => {
                 Fs.readdir('./pins/' + f, waitFor(returnAfter((err, list2) => {
                     if (err) { throw err; }
-                    list2.forEach((ff) => { fileList.push('./pins/' + f + '/' + ff); });
+                    list2.forEach((ff) => {
+                        if (config && config.exclude && config.exclude.indexOf(ff) > -1) { return; }
+                        fileList.push('./pins/' + f + '/' + ff);
+                    });
                 })));
             });
         });

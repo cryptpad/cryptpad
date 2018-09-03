@@ -12,17 +12,23 @@ define([
     '/common/common-feedback.js',
     '/common/outer/local-store.js',
     '/customize/messages.js',
+    '/bower_components/nthen/index.js',
+    '/common/outer/login-block.js',
+    '/common/common-hash.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/scrypt-async/scrypt-async.min.js', // better load speed
 ], function ($, Listmap, Crypto, Util, NetConfig, Cred, ChainPad, Realtime, Constants, UI,
-            Feedback, LocalStore, Messages) {
+            Feedback, LocalStore, Messages, nThen, Block, Hash) {
     var Exports = {
         Cred: Cred,
+        // this is depended on by non-customizable files
+        // be careful when modifying login.js
+        requiredBytes: 192,
     };
 
     var Nacl = window.nacl;
-    var allocateBytes = function (bytes) {
+    var allocateBytes = Exports.allocateBytes = function (bytes) {
         var dispense = Cred.dispenser(bytes);
 
         var opt = {};
@@ -41,6 +47,10 @@ define([
         // 32 more for a signing key
         var edSeed = opt.edSeed = dispense(32);
 
+        // 64 more bytes to seed an additional signing key
+        var blockKeys = opt.blockKeys = Block.genkeys(new Uint8Array(dispense(64)));
+        opt.blockHash = Block.getBlockHash(blockKeys);
+
         // derive a private key from the ed seed
         var signingKeypair = Nacl.sign.keyPair.fromSeed(new Uint8Array(edSeed));
 
@@ -58,10 +68,24 @@ define([
         // should never happen
         if (channelHex.length !== 32) { throw new Error('invalid channel id'); }
 
-        opt.channel64 = Util.hexToBase64(channelHex);
+        var channel64 = Util.hexToBase64(channelHex);
 
-        opt.userHash = '/1/edit/' + [opt.channel64, opt.keys.editKeyStr].join('/');
+        // we still generate a v1 hash because this function needs to deterministically
+        // derive the same values as it always has. New accounts will generate their own
+        // userHash values
+        opt.userHash = '/1/edit/' + [channel64, opt.keys.editKeyStr].join('/') + '/';
 
+        return opt;
+    };
+
+
+    var loginOptionsFromBlock = function (blockInfo) {
+        var opt = {};
+        var parsed = Hash.getSecrets('pad', blockInfo.User_hash);
+        opt.channelHex = parsed.channel;
+        opt.keys = parsed.keys;
+        opt.edPublic = blockInfo.edPublic;
+        opt.User_name = blockInfo.User_name;
         return opt;
     };
 
@@ -92,6 +116,14 @@ define([
         return Object.keys(proxy).length === 0;
     };
 
+    var setMergeAnonDrive = function () {
+        sessionStorage.migrateAnonDrive = 1;
+    };
+
+    var setCreateReadme = function () {
+        sessionStorage.createReadme = 1;
+    };
+
     Exports.loginOrRegister = function (uname, passwd, isRegister, shouldImport, cb) {
         if (typeof(cb) !== 'function') { return; }
 
@@ -105,22 +137,101 @@ define([
             return void cb('PASS_TOO_SHORT');
         }
 
-        Cred.deriveFromPassphrase(uname, passwd, 128, function (bytes) {
-            // results...
-            var res = {
-                register: isRegister,
-            };
+        // results...
+        var res = {
+            register: isRegister,
+        };
 
-            // run scrypt to derive the user's keys
-            var opt = res.opt = allocateBytes(bytes);
+        var RT, blockKeys, blockHash, Pinpad, rpc, userHash;
 
-            // use the derived key to generate an object
-            loadUserObject(opt, function (err, rt) {
+        nThen(function (waitFor) {
+            // derive a predefined number of bytes from the user's inputs,
+            // and allocate them in a deterministic fashion
+            Cred.deriveFromPassphrase(uname, passwd, Exports.requiredBytes, waitFor(function (bytes) {
+                res.opt = allocateBytes(bytes);
+                blockHash = res.opt.blockHash;
+                blockKeys = res.opt.blockKeys;
+            }));
+        }).nThen(function (waitFor) {
+            // the allocated bytes can be used either in a legacy fashion,
+            // or in such a way that a previously unused byte range determines
+            // the location of a layer of indirection which points users to
+            // an encrypted block, from which they can recover the location of
+            // the rest of their data
+
+            // determine where a block for your set of keys would be stored
+            var blockUrl = Block.getBlockUrl(res.opt.blockKeys);
+
+            // Check whether there is a block at that location
+            Util.fetch(blockUrl, waitFor(function (err, block) {
+                // if users try to log in or register, we must check
+                // whether there is a block.
+
+                // the block is only useful if it can be decrypted, though
+                if (err) {
+                    console.log("no block found");
+                    return;
+                }
+
+                var decryptedBlock = Block.decrypt(block, blockKeys);
+                if (!decryptedBlock) {
+                    console.error("Found a login block but failed to decrypt");
+                    return;
+                }
+
+                console.error(decryptedBlock);
+                res.blockInfo = decryptedBlock;
+            }));
+        }).nThen(function (waitFor) {
+            // we assume that if there is a block, it was created in a valid manner
+            // so, just proceed to the next block which handles that stuff
+            if (res.blockInfo) { return; }
+
+            var opt = res.opt;
+
+            // load the user's object using the legacy credentials
+            loadUserObject(opt, waitFor(function (err, rt) {
                 if (err) { return void cb(err); }
 
+                // if a proxy is marked as deprecated, it is because someone had a non-owned drive
+                // but changed their password, and couldn't delete their old data.
+                // if they are here, they have entered their old credentials, so we should not
+                // allow them to proceed. In time, their old drive should get deleted, since
+                // it will should be pinned by anyone's drive.
+                if (rt.proxy[Constants.deprecatedKey]) {
+                    return void cb('NO_SUCH_USER', res);
+                }
+
+                if (isRegister && isProxyEmpty(rt.proxy)) {
+                    // If they are trying to register,
+                    // and the proxy is empty, then there is no 'legacy user' either
+                    // so we should just shut down this session and disconnect.
+                    rt.network.disconnect();
+                    return; // proceed to the next async block
+                }
+
+                // they tried to just log in but there's no such user
+                // and since we're here at all there is no modern-block
+                if (!isRegister && isProxyEmpty(rt.proxy)) {
+                    rt.network.disconnect(); // clean up after yourself
+                    waitFor.abort();
+                    return void cb('NO_SUCH_USER', res);
+                }
+
+                // they tried to register, but those exact credentials exist
+                if (isRegister && !isProxyEmpty(rt.proxy)) {
+                    rt.network.disconnect();
+                    waitFor.abort();
+                    Feedback.send('LOGIN', true);
+                    return void cb('ALREADY_REGISTERED', res);
+                }
+
+                // if you are here, then there is no block, the user is trying
+                // to log in. The proxy is **not** empty. All values assigned here
+                // should have been deterministically created using their credentials
+                // so setting them is just a precaution to keep things in good shape
                 res.proxy = rt.proxy;
                 res.realtime = rt.realtime;
-                res.network = rt.network;
 
                 // they're registering...
                 res.userHash = opt.userHash;
@@ -130,38 +241,14 @@ define([
                 res.edPrivate = opt.edPrivate;
                 res.edPublic = opt.edPublic;
 
+                // export their encryption key
                 res.curvePrivate = opt.curvePrivate;
                 res.curvePublic = opt.curvePublic;
 
-                // they tried to just log in but there's no such user
-                if (!isRegister && isProxyEmpty(rt.proxy)) {
-                    rt.network.disconnect(); // clean up after yourself
-                    return void cb('NO_SUCH_USER', res);
-                }
+                if (shouldImport) { setMergeAnonDrive(); }
 
-                // they tried to register, but those exact credentials exist
-                if (isRegister && !isProxyEmpty(rt.proxy)) {
-                    rt.network.disconnect();
-                    return void cb('ALREADY_REGISTERED', res);
-                }
-
-                if (isRegister) {
-                    var proxy = rt.proxy;
-                    proxy.edPublic = res.edPublic;
-                    proxy.edPrivate = res.edPrivate;
-                    proxy.curvePublic = res.curvePublic;
-                    proxy.curvePrivate = res.curvePrivate;
-                    proxy.login_name = uname;
-                    proxy[Constants.displayNameKey] = uname;
-                    sessionStorage.createReadme = 1;
-                    Feedback.send('REGISTRATION', true);
-                } else {
-                    Feedback.send('LOGIN', true);
-                }
-
-                if (shouldImport) {
-                    sessionStorage.migrateAnonDrive = 1;
-                }
+                // don't proceed past this async block.
+                waitFor.abort();
 
                 // We have to call whenRealtimeSyncs asynchronously here because in the current
                 // version of listmap, onLocal calls `chainpad.contentUpdate(newValue)`
@@ -170,12 +257,152 @@ define([
                 // `contentUpdate` so that we have an update userDoc in chainpad.
                 setTimeout(function () {
                     Realtime.whenRealtimeSyncs(rt.realtime, function () {
+                        // the following stages are there to initialize a new drive
+                        // if you are registering
                         LocalStore.login(res.userHash, res.userName, function () {
                             setTimeout(function () { cb(void 0, res); });
                         });
                     });
                 });
-            });
+            }));
+        }).nThen(function (waitFor) { // MODERN REGISTRATION / LOGIN
+            var opt;
+            if (res.blockInfo) {
+                opt = loginOptionsFromBlock(res.blockInfo);
+                userHash = res.blockInfo.User_hash;
+                console.error(opt, userHash);
+            } else {
+                console.log("allocating random bytes for a new user object");
+                opt = allocateBytes(Nacl.randomBytes(Exports.requiredBytes));
+                // create a random v2 hash, since we don't need backwards compatibility
+                userHash = opt.userHash = Hash.createRandomHash('drive');
+                var secret = Hash.getSecrets('drive', userHash);
+                opt.keys = secret.keys;
+                opt.channelHex = secret.channel;
+            }
+
+            // according to the location derived from the credentials which you entered
+            loadUserObject(opt, waitFor(function (err, rt) {
+                if (err) {
+                    waitFor.abort();
+                    return void cb('MODERN_REGISTRATION_INIT');
+                }
+
+                console.error(JSON.stringify(rt.proxy));
+
+                // export the realtime object you checked
+                RT = rt;
+
+                var proxy = rt.proxy;
+                if (isRegister && !isProxyEmpty(proxy) && (!proxy.edPublic || !proxy.edPrivate)) {
+                    console.error("INVALID KEYS");
+                    console.log(JSON.stringify(proxy));
+                    return;
+                }
+
+                res.proxy = rt.proxy;
+                res.realtime = rt.realtime;
+
+                // they're registering...
+                res.userHash = userHash;
+                res.userName = uname;
+
+                // somehow they have a block present, but nothing in the user object it specifies
+                // this shouldn't happen, but let's send feedback if it does
+                if (!isRegister && isProxyEmpty(rt.proxy)) {
+                    // this really shouldn't happen, but let's handle it anyway
+                    Feedback.send('EMPTY_LOGIN_WITH_BLOCK');
+
+                    rt.network.disconnect(); // clean up after yourself
+                    waitFor.abort();
+                    return void cb('NO_SUCH_USER', res);
+                }
+
+                // they tried to register, but those exact credentials exist
+                if (isRegister && !isProxyEmpty(rt.proxy)) {
+                    rt.network.disconnect();
+                    waitFor.abort();
+                    res.blockHash = blockHash;
+                    if (shouldImport) {
+                        setMergeAnonDrive();
+                    }
+
+                    return void cb('ALREADY_REGISTERED', res);
+                }
+
+                if (!isRegister && !isProxyEmpty(rt.proxy)) {
+                    LocalStore.setBlockHash(blockHash);
+                    waitFor.abort();
+                    if (shouldImport) {
+                        setMergeAnonDrive();
+                    }
+                    return void LocalStore.login(userHash, uname, function () {
+                        cb(void 0, res);
+                    });
+                }
+
+                if (isRegister && isProxyEmpty(rt.proxy)) {
+                    proxy.edPublic = opt.edPublic;
+                    proxy.edPrivate = opt.edPrivate;
+                    proxy.curvePublic = opt.curvePublic;
+                    proxy.curvePrivate = opt.curvePrivate;
+                    proxy.login_name = uname;
+                    proxy[Constants.displayNameKey] = uname;
+                    setCreateReadme();
+                    if (shouldImport) {
+                        setMergeAnonDrive();
+                    } else {
+                        proxy.version = 6;
+                    }
+
+                    Feedback.send('REGISTRATION', true);
+                } else {
+                    Feedback.send('LOGIN', true);
+                }
+
+                setTimeout(waitFor(function () {
+                    Realtime.whenRealtimeSyncs(rt.realtime, waitFor());
+                }));
+            }));
+        }).nThen(function (waitFor) {
+            require(['/common/pinpad.js'], waitFor(function (_Pinpad) {
+                console.log("loaded rpc module");
+                Pinpad = _Pinpad;
+            }));
+        }).nThen(function (waitFor) {
+            // send an RPC to store the block which you created.
+            console.log("initializing rpc interface");
+
+            Pinpad.create(RT.network, RT.proxy, waitFor(function (e, _rpc) {
+                if (e) {
+                    waitFor.abort();
+                    console.error(e); // INVALID_KEYS
+                    return void cb('RPC_CREATION_ERROR');
+                }
+                rpc = _rpc;
+                console.log("rpc initialized");
+            }));
+        }).nThen(function (waitFor) {
+            console.log("creating request to publish a login block");
+
+            // Finally, create the login block for the object you just created.
+            var toPublish = {};
+
+            toPublish[Constants.userNameKey] = uname;
+            toPublish[Constants.userHashKey] = userHash;
+            toPublish.edPublic = RT.proxy.edPublic;
+
+            var blockRequest = Block.serialize(JSON.stringify(toPublish), res.opt.blockKeys);
+
+            rpc.writeLoginBlock(blockRequest, waitFor(function (e) {
+                if (e) { return void console.error(e); }
+
+                console.log("blockInfo available at:", blockHash);
+                LocalStore.setBlockHash(blockHash);
+                LocalStore.login(userHash, uname, function () {
+                    cb(void 0, res);
+                });
+            }));
         });
     };
     Exports.redirect = function () {
@@ -212,6 +439,7 @@ define([
                 loadingText: Messages.login_hashing,
                 hideTips: true,
             });
+
             // We need a setTimeout(cb, 0) otherwise the loading screen is only displayed
             // after hashing the password
             window.setTimeout(function () {
@@ -253,17 +481,27 @@ define([
                                 });
                                 break;
                             case 'ALREADY_REGISTERED':
-                                // logMeIn should reset registering = false
                                 UI.removeLoadingScreen(function () {
                                     UI.confirm(Messages.register_alreadyRegistered, function (yes) {
-                                        if (!yes) { return; }
+                                        if (!yes) {
+                                            hashing = false;
+                                            return;
+                                        }
                                         proxy.login_name = uname;
 
                                         if (!proxy[Constants.displayNameKey]) {
                                             proxy[Constants.displayNameKey] = uname;
                                         }
                                         LocalStore.eraseTempSessionValues();
-                                        proceed(result);
+
+
+                                        if (result.blockHash) {
+                                            LocalStore.setBlockHash(result.blockHash);
+                                        }
+
+                                        LocalStore.login(result.userHash, result.userName, function () {
+                                            setTimeout(function () { proceed(result); });
+                                        });
                                     });
                                 });
                                 break;

@@ -7,13 +7,14 @@ var Nacl = require("tweetnacl");
 /* globals process */
 
 var Fs = require("fs");
+
+var Fse = require("fs-extra");
 var Path = require("path");
 var Https = require("https");
 const Package = require('./package.json');
 const Pinned = require('./pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
-const Mkdirp = require("mkdirp");
 
 var RPC = module.exports;
 
@@ -25,7 +26,7 @@ var SUPPRESS_RPC_ERRORS = false;
 
 var WARN = function (e, output) {
     if (!SUPPRESS_RPC_ERRORS && e && output) {
-        console.error(new Date().toISOString() + ' [' + e + ']', output);
+        console.error(new Date().toISOString() + ' [' + String(e) + ']', output);
         console.error(new Error(e).stack);
         console.error();
     }
@@ -36,6 +37,7 @@ var isValidId = function (chan) {
         [32, 48].indexOf(chan.length) > -1;
 };
 
+/*
 var uint8ArrayToHex = function (a) {
     // call slice so Uint8Arrays work as expected
     return Array.prototype.slice.call(a).map(function (e) {
@@ -52,14 +54,24 @@ var uint8ArrayToHex = function (a) {
         }
     }).join('');
 };
+*/
 
+var testFileId = function (id) {
+    if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
+        return false;
+    }
+    return true;
+};
+
+/*
 var createFileId = function () {
     var id = uint8ArrayToHex(Nacl.randomBytes(24));
-    if (id.length !== 48 || /[^a-f0-9]/.test(id)) {
+    if (!testFileId(id)) {
         throw new Error('file ids must consist of 48 hex characters');
     }
     return id;
 };
+*/
 
 var makeToken = function () {
     return Number(Math.floor(Math.random() * Number.MAX_SAFE_INTEGER))
@@ -324,6 +336,24 @@ var getFileSize = function (Env, channel, cb) {
         if (typeof(size) === 'undefined') { return void cb(e); }
         cb(void 0, size);
     });
+};
+
+var getMetadata = function (Env, channel, cb) {
+    if (!isValidId(channel)) { return void cb('INVALID_CHAN'); }
+
+    if (channel.length === 32) {
+        if (typeof(Env.msgStore.getChannelMetadata) !== 'function') {
+            return cb('GET_CHANNEL_METADATA_UNSUPPORTED');
+        }
+
+        return void Env.msgStore.getChannelMetadata(channel, function (e, data) {
+            if (e) {
+                if (e.code === 'INVALID_METADATA') { return void cb(void 0, {}); }
+                return void cb(e.code);
+            }
+            cb(void 0, data);
+        });
+    }
 };
 
 var getMultipleFileSize = function (Env, channels, cb) {
@@ -793,6 +823,17 @@ var makeFileStream = function (root, id, cb) {
     });
 };
 
+var isFile = function (filePath, cb) {
+    /*:: if (typeof(filePath) !== 'string') { throw new Error('should never happen'); } */
+    Fs.stat(filePath, function (e, stats) {
+        if (e) {
+            if (e.code === 'ENOENT') { return void cb(void 0, false); }
+            return void cb(e.message);
+        }
+        return void cb(void 0, stats.isFile());
+    });
+};
+
 var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     if (typeof(channelId) !== 'string' || channelId.length !== 32) {
         return cb('INVALID_ARGUMENTS');
@@ -816,9 +857,64 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
+var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
+    var safeKey = escapeKeyCharacters(unsafeKey);
+    var safeKeyPrefix = safeKey.slice(0,3);
+    var blobPrefix = blobId.slice(0,2);
+
+    var blobPath = makeFilePath(Env.paths.blob, blobId);
+    var ownPath = Path.join(Env.paths.blob, safeKeyPrefix, safeKey, blobPrefix, blobId);
+
+    nThen(function (w) {
+        // Check if the blob exists
+        isFile(blobPath, w(function (e, isFile) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+            if (!isFile) {
+                WARN('removeOwnedBlob', 'The provided blob ID is not a file!');
+                w.abort();
+                return void cb('EINVAL_BLOBID');
+            }
+        }));
+    }).nThen(function (w) {
+        // Check if you're the owner
+        isFile(ownPath, w(function (e, isFile) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+            if (!isFile) {
+                WARN('removeOwnedBlob', 'Incorrect owner');
+                w.abort();
+                return void cb('INSUFFICIENT_PERMISSIONS');
+            }
+        }));
+    }).nThen(function (w) {
+        // Delete the blob
+        /*:: if (typeof(blobPath) !== 'string') { throw new Error('should never happen'); } */
+        Fs.unlink(blobPath, w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e.code);
+            }
+        }));
+    }).nThen(function () {
+        // Delete the proof of ownership
+        Fs.unlink(ownPath, function (e) {
+            cb(e && e.code);
+        });
+    });
+};
+
 var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
-    if (typeof(channelId) !== 'string' || channelId.length !== 32) {
+    if (typeof(channelId) !== 'string' || !isValidId(channelId)) {
         return cb('INVALID_ARGUMENTS');
+    }
+
+    if (testFileId(channelId)) {
+        return void removeOwnedBlob(Env, channelId, unsafeKey, cb);
     }
 
     if (!(Env.msgStore && Env.msgStore.removeChannel && Env.msgStore.getChannelMetadata)) {
@@ -858,7 +954,7 @@ var upload = function (Env, publicKey, content, cb) {
     var session = getSession(Env.Sessions, publicKey);
 
     if (typeof(session.currentUploadSize) !== 'number' ||
-        typeof(session.currentUploadSize) !== 'number') {
+        typeof(session.pendingUploadSize) !== 'number') {
         // improperly initialized... maybe they didn't check before uploading?
         // reject it, just in case
         return cb('NOT_READY');
@@ -884,12 +980,12 @@ var upload = function (Env, publicKey, content, cb) {
     }
 };
 
-var upload_cancel = function (Env, publicKey, cb) {
+var upload_cancel = function (Env, publicKey, fileSize, cb) {
     var paths = Env.paths;
 
     var session = getSession(Env.Sessions, publicKey);
-    delete session.currentUploadSize;
-    delete session.pendingUploadSize;
+    session.pendingUploadSize = fileSize;
+    session.currentUploadSize = 0;
     if (session.blobstage) { session.blobstage.close(); }
 
     var path = makeFilePath(paths.staging, publicKey);
@@ -905,17 +1001,7 @@ var upload_cancel = function (Env, publicKey, cb) {
     });
 };
 
-var isFile = function (filePath, cb) {
-    Fs.stat(filePath, function (e, stats) {
-        if (e) {
-            if (e.code === 'ENOENT') { return void cb(void 0, false); }
-            return void cb(e.message);
-        }
-        return void cb(void 0, stats.isFile());
-    });
-};
-
-var upload_complete = function (Env, publicKey, cb) {
+var upload_complete = function (Env, publicKey, id, cb) {
     var paths = Env.paths;
     var session = getSession(Env.Sessions, publicKey);
 
@@ -924,14 +1010,18 @@ var upload_complete = function (Env, publicKey, cb) {
         delete session.blobstage;
     }
 
+    if (!testFileId(id)) {
+        WARN('uploadComplete', "id is invalid");
+        return void cb('EINVAL_ID');
+    }
+
     var oldPath = makeFilePath(paths.staging, publicKey);
     if (!oldPath) {
         WARN('safeMkdir', "oldPath is null");
         return void cb('RENAME_ERR');
     }
 
-    var tryRandomLocation = function (cb) {
-        var id = createFileId();
+    var tryLocation = function (cb) {
         var prefix = id.slice(0, 2);
         var newPath = makeFilePath(paths.blob, id);
         if (typeof(newPath) !== 'string') {
@@ -950,7 +1040,8 @@ var upload_complete = function (Env, publicKey, cb) {
                     return void cb(e);
                 }
                 if (yes) {
-                    return void tryRandomLocation(cb);
+                    WARN('isFile', 'FILE EXISTS!');
+                    return void cb('RENAME_ERR');
                 }
 
                 cb(void 0, newPath, id);
@@ -958,40 +1049,25 @@ var upload_complete = function (Env, publicKey, cb) {
         });
     };
 
-    var retries = 3;
-
     var handleMove = function (e, newPath, id) {
         if (e || !oldPath || !newPath) {
-            if (retries--) {
-                setTimeout(function () {
-                    return tryRandomLocation(handleMove);
-                }, 750);
-            } else {
-                cb(e);
-            }
-            return;
+            return void cb(e || 'PATH_ERR');
         }
 
         // lol wut handle ur errors
-        Fs.rename(oldPath, newPath, function (e) {
+        Fse.move(oldPath, newPath, function (e) {
             if (e) {
                 WARN('rename', e);
-
-                if (retries--) {
-                    return void setTimeout(function () {
-                        tryRandomLocation(handleMove);
-                    }, 750);
-                }
-
                 return void cb('RENAME_ERR');
             }
             cb(void 0, id);
         });
     };
 
-    tryRandomLocation(handleMove);
+    tryLocation(handleMove);
 };
 
+/*
 var owned_upload_complete = function (Env, safeKey, cb) {
     var session = getSession(Env.Sessions, safeKey);
 
@@ -1051,7 +1127,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
     var finalPath;
     nThen(function (w) {
         // make the requisite directory structure using Mkdirp
-        Mkdirp(plannedPath, w(function (e /*, path */) {
+        Mkdirp(plannedPath, w(function (e) {
             if (e) { // does not throw error if the directory already existed
                 w.abort();
                 return void cb(e);
@@ -1070,8 +1146,8 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         // move the existing file to its new path
 
         // flow is dumb and I need to guard against this which will never happen
-        /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
-        Fs.rename(oldPath /* XXX */, finalPath, w(function (e) {
+        // / *:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } * /
+        Fs.move(oldPath, finalPath, w(function (e) {
             if (e) {
                 w.abort();
                 return void cb(e.code);
@@ -1082,6 +1158,118 @@ var owned_upload_complete = function (Env, safeKey, cb) {
         // clean up their session when you're done
         // call back with the blob id...
         cb(void 0, blobId);
+    });
+};
+*/
+
+var owned_upload_complete = function (Env, safeKey, id, cb) {
+    var session = getSession(Env.Sessions, safeKey);
+
+    // the file has already been uploaded to the staging area
+    // close the pending writestream
+    if (session.blobstage && session.blobstage.close) {
+        session.blobstage.close();
+        delete session.blobstage;
+    }
+
+    if (!testFileId(id)) {
+        WARN('ownedUploadComplete', "id is invalid");
+        return void cb('EINVAL_ID');
+    }
+
+    var oldPath = makeFilePath(Env.paths.staging, safeKey);
+    if (typeof(oldPath) !== 'string') {
+        return void cb('EINVAL_CONFIG');
+    }
+
+    // construct relevant paths
+    var root = Env.paths.blob;
+
+    //var safeKey = escapeKeyCharacters(safeKey);
+    var safeKeyPrefix = safeKey.slice(0, 3);
+
+    //var blobId = createFileId();
+    var blobIdPrefix = id.slice(0, 2);
+
+    var ownPath = Path.join(root, safeKeyPrefix, safeKey, blobIdPrefix);
+    var filePath = Path.join(root, blobIdPrefix);
+
+    var tryId = function (path, cb) {
+        Fs.access(path, Fs.constants.R_OK | Fs.constants.W_OK, function (e) {
+            if (!e) {
+                // generate a new id (with the same prefix) and recurse
+                WARN('ownedUploadComplete', 'id is already used '+ id);
+                return void cb('EEXISTS');
+            } else if (e.code === 'ENOENT') {
+                // no entry, so it's safe for us to proceed
+                return void cb();
+            } else {
+                // it failed in an unexpected way. log it
+                WARN('ownedUploadComplete', e);
+                return void cb(e.code);
+            }
+        });
+    };
+
+    // the user wants to move it into blob and create a empty file with the same id
+    // in their own space:
+    // /blob/safeKeyPrefix/safeKey/blobPrefix/blobID
+
+    var finalPath;
+    var finalOwnPath;
+    nThen(function (w) {
+        // make the requisite directory structure using Mkdirp
+        Fse.mkdirp(filePath, w(function (e /*, path */) {
+            if (e) { // does not throw error if the directory already existed
+                w.abort();
+                return void cb(e.code);
+            }
+        }));
+        Fse.mkdirp(ownPath, w(function (e /*, path */) {
+            if (e) { // does not throw error if the directory already existed
+                w.abort();
+                return void cb(e.code);
+            }
+        }));
+    }).nThen(function (w) {
+        // make sure the id does not collide with another
+        finalPath = Path.join(filePath, id);
+        finalOwnPath = Path.join(ownPath, id);
+        tryId(finalPath, w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e);
+            }
+        }));
+    }).nThen(function (w) {
+        // Create the empty file proving ownership
+        Fs.writeFile(finalOwnPath, '', w(function (e) {
+            if (e) {
+                w.abort();
+                return void cb(e.code);
+            }
+            // otherwise it worked...
+        }));
+    }).nThen(function (w) {
+        // move the existing file to its new path
+
+        // flow is dumb and I need to guard against this which will never happen
+        /*:: if (typeof(oldPath) === 'object') { throw new Error('should never happen'); } */
+        Fse.move(oldPath, finalPath, w(function (e) {
+            if (e) {
+                // Remove the ownership file
+                Fs.unlink(finalOwnPath, function (e) {
+                    WARN('E_UNLINK_OWN_FILE', e);
+                });
+                w.abort();
+                return void cb(e.code);
+            }
+            // otherwise it worked...
+        }));
+    }).nThen(function () {
+        // clean up their session when you're done
+        // call back with the blob id...
+        cb(void 0, id);
     });
 };
 
@@ -1106,6 +1294,159 @@ var upload_status = function (Env, publicKey, filesize, cb) {
                 return cb('UNNOWN_ERROR');
             }
             cb(e, yes);
+        });
+    });
+};
+
+/*
+    We assume that the server is secured against MitM attacks
+    via HTTPS, and that malicious actors do not have code execution
+    capabilities. If they do, we have much more serious problems.
+
+    The capability to replay a block write or remove results in either
+    a denial of service for the user whose block was removed, or in the
+    case of a write, a rollback to an earlier password.
+
+    Since block modification is destructive, this can result in loss
+    of access to the user's drive.
+
+    So long as the detached signature is never observed by a malicious
+    party, and the server discards it after proof of knowledge, replays
+    are not possible. However, this precludes verification of the signature
+    at a later time.
+
+    Despite this, an integrity check is still possible by the original
+    author of the block, since we assume that the block will have been
+    encrypted with xsalsa20-poly1305 which is authenticated.
+*/
+var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
+    // convert the public key to a Uint8Array and validate it
+    if (typeof(publicKey) !== 'string') { return void cb('E_INVALID_KEY'); }
+
+    var u8_public_key;
+    try {
+        u8_public_key = Nacl.util.decodeBase64(publicKey);
+    } catch (e) {
+        return void cb('E_INVALID_KEY');
+    }
+
+    var u8_signature;
+    try {
+        u8_signature = Nacl.util.decodeBase64(signature);
+    } catch (e) {
+        console.error(e);
+        return void cb('E_INVALID_SIGNATURE');
+    }
+
+    // convert the block to a Uint8Array
+    var u8_block;
+    try {
+        u8_block = Nacl.util.decodeBase64(block);
+    } catch (e) {
+        return void cb('E_INVALID_BLOCK');
+    }
+
+    // take its hash
+    var hash = Nacl.hash(u8_block);
+
+    // validate the signature against the hash of the content
+    var verified = Nacl.sign.detached.verify(hash, u8_signature, u8_public_key);
+
+    // existing authentication ensures that users cannot replay old blocks
+
+    // call back with (err) if unsuccessful
+    if (!verified) { return void cb("E_COULD_NOT_VERIFY"); }
+
+    return void cb(null, u8_block);
+};
+
+var createLoginBlockPath = function (Env, publicKey) {
+    // prepare publicKey to be used as a file name
+    var safeKey = escapeKeyCharacters(publicKey);
+
+    // validate safeKey
+    if (typeof(safeKey) !== 'string') {
+        return;
+    }
+
+    // derive the full path
+    // /home/cryptpad/cryptpad/block/fg/fg32kefksjdgjkewrjksdfksjdfsdfskdjfsfd
+    return Path.join(Env.paths.block, safeKey.slice(0, 2), safeKey);
+};
+
+var writeLoginBlock = function (Env, msg, cb) {
+    //console.log(msg);
+    var publicKey = msg[0];
+    var signature = msg[1];
+    var block = msg[2];
+
+    validateLoginBlock(Env, publicKey, signature, block, function (e, validatedBlock) {
+        if (e) { return void cb(e); }
+        if (!(validatedBlock instanceof Uint8Array)) { return void cb('E_INVALID_BLOCK'); }
+
+        // derive the filepath
+        var path = createLoginBlockPath(Env, publicKey);
+
+        // make sure the path is valid
+        if (typeof(path) !== 'string') {
+            return void cb('E_INVALID_BLOCK_PATH');
+        }
+
+        var parsed = Path.parse(path);
+        if (!parsed || typeof(parsed.dir) !== 'string') {
+            return void cb("E_INVALID_BLOCK_PATH_2");
+        }
+
+        nThen(function (w) {
+            // make sure the path to the file exists
+            Fse.mkdirp(parsed.dir, w(function (e) {
+                if (e) {
+                    w.abort();
+                    cb(e);
+                }
+            }));
+        }).nThen(function () {
+            // actually write the block
+
+            // flow is dumb and I need to guard against this which will never happen
+            /*:: if (typeof(validatedBlock) === 'undefined') { throw new Error('should never happen'); } */
+            /*:: if (typeof(path) === 'undefined') { throw new Error('should never happen'); } */
+            Fs.writeFile(path, new Buffer(validatedBlock), { encoding: "binary", }, function (err) {
+                if (err) { return void cb(err); }
+                cb();
+            });
+        });
+    });
+};
+
+/*
+    When users write a block, they upload the block, and provide
+    a signature proving that they deserve to be able to write to
+    the location determined by the public key.
+
+    When removing a block, there is nothing to upload, but we need
+    to sign something. Since the signature is considered sensitive
+    information, we can just sign some constant and use that as proof.
+
+*/
+var removeLoginBlock = function (Env, msg, cb) {
+    var publicKey = msg[0];
+    var signature = msg[1];
+    var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
+
+    validateLoginBlock(Env, publicKey, signature, block, function (e /*::, validatedBlock */) {
+        if (e) { return void cb(e); }
+        // derive the filepath
+        var path = createLoginBlockPath(Env, publicKey);
+
+        // make sure the path is valid
+        if (typeof(path) !== 'string') {
+            return void cb('E_INVALID_BLOCK_PATH');
+        }
+
+        Fs.unlink(path, function (err) {
+            if (err) { return void cb(err); }
+            cb();
         });
     });
 };
@@ -1139,6 +1480,7 @@ var isNewChannel = function (Env, channel, cb) {
 var isUnauthenticatedCall = function (call) {
     return [
         'GET_FILE_SIZE',
+        'GET_METADATA',
         'GET_MULTIPLE_FILE_SIZE',
         'IS_CHANNEL_PINNED',
         'IS_NEW_CHANNEL',
@@ -1165,6 +1507,8 @@ var isAuthenticatedCall = function (call) {
         'CLEAR_OWNED_CHANNEL',
         'REMOVE_OWNED_CHANNEL',
         'REMOVE_PINS',
+        'WRITE_LOGIN_BLOCK',
+        'REMOVE_LOGIN_BLOCK',
     ].indexOf(call) !== -1;
 };
 
@@ -1235,6 +1579,7 @@ RPC.create = function (
     var pinPath = paths.pin = keyOrDefaultString('pinPath', './pins');
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
+    paths.block = keyOrDefaultString('blockPath', './block');
 
     var isUnauthenticateMessage = function (msg) {
         return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
@@ -1260,11 +1605,13 @@ RPC.create = function (
             }
             case 'GET_FILE_SIZE':
                 return void getFileSize(Env, msg[1], function (e, size) {
-                    if (e) {
-                        console.error(e);
-                    }
                     WARN(e, msg[1]);
                     respond(e, [null, size, null]);
+                });
+            case 'GET_METADATA':
+                return void getMetadata(Env, msg[1], function (e, data) {
+                    WARN(e, msg[1]);
+                    respond(e, [null, data, null]);
                 });
             case 'GET_MULTIPLE_FILE_SIZE':
                 return void getMultipleFileSize(Env, msg[1], function (e, dict) {
@@ -1369,7 +1716,7 @@ RPC.create = function (
             var session = Sessions[safeKey];
             var token = session? session.tokens.slice(-1)[0]: '';
             var cookie = makeCookie(token).join('|');
-            respond(e, [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
+            respond(e ? String(e): e, [cookie].concat(typeof(msg) !== 'undefined' ?msg: []));
         };
 
         if (typeof(msg) !== 'object' || !msg.length) {
@@ -1458,9 +1805,9 @@ RPC.create = function (
                     Respond(void 0, "OK");
                 });
             case 'REMOVE_PINS':
-                return void removePins(Env, safeKey, function (e, response) {
+                return void removePins(Env, safeKey, function (e) {
                     if (e) { return void Respond(e); }
-                    Respond(void 0, response);
+                    Respond(void 0, "OK");
                 });
             // restricted to privileged users...
             case 'UPLOAD':
@@ -1483,20 +1830,39 @@ RPC.create = function (
                 });
             case 'UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void upload_complete(Env, safeKey, function (e, hash) {
+                return void upload_complete(Env, safeKey, msg[1], function (e, hash) {
                     WARN(e, hash);
                     Respond(e, hash);
                 });
             case 'OWNED_UPLOAD_COMPLETE':
                 if (!privileged) { return deny(); }
-                return void owned_upload_complete(Env, safeKey, function (e, blobId) {
+                return void owned_upload_complete(Env, safeKey, msg[1], function (e, blobId) {
                     WARN(e, blobId);
                     Respond(e, blobId);
                 });
             case 'UPLOAD_CANCEL':
                 if (!privileged) { return deny(); }
-                return void upload_cancel(Env, safeKey, function (e) {
-                    WARN(e);
+                // msg[1] is fileSize
+                // if we pass it here, we can start an upload right away without calling
+                // UPLOAD_STATUS again
+                return void upload_cancel(Env, safeKey, msg[1], function (e) {
+                    WARN(e, 'UPLOAD_CANCEL');
+                    Respond(e);
+                });
+            case 'WRITE_LOGIN_BLOCK':
+                return void writeLoginBlock(Env, msg[1], function (e) {
+                    if (e) {
+                        WARN(e, 'WRITE_LOGIN_BLOCK');
+                        return void Respond(e);
+                    }
+                    Respond(e);
+                });
+            case 'REMOVE_LOGIN_BLOCK':
+                return void removeLoginBlock(Env, msg[1], function (e) {
+                    if (e) {
+                        WARN(e, 'REMOVE_LOGIN_BLOCK');
+                        return void Respond(e);
+                    }
                     Respond(e);
                 });
             default:

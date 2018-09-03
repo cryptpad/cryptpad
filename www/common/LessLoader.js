@@ -4,9 +4,11 @@ const define = (x:any, y:any) => {};
 const require = define;
 */
 define([
-    '/api/config'
-], function (Config) { /*::});module.exports = (function() {
+    '/api/config',
+    '/bower_components/nthen/index.js'
+], function (Config, nThen) { /*::});module.exports = (function() {
     const Config = (undefined:any);
+    const nThen = (undefined:any);
     */
 
     var module = { exports: {} };
@@ -49,6 +51,7 @@ define([
         if (ua[0].indexOf(':') === -1 && ua[0].indexOf('/') && parent) {
             ua[0] = parent.replace(/\/[^\/]*$/, '/') + ua[0];
         }
+        ua[0] = ua[0].replace(/^\/\.\.\//, '/');
         var out = ua.join('#');
         //console.log(url + "  -->  " + out);
         return out;
@@ -91,17 +94,36 @@ define([
     };
 
     var lessEngine;
+    var tempCache = { key: Math.random() };
     var getLessEngine = function (cb) {
         if (lessEngine) {
             cb(lessEngine);
         } else {
             require(['/bower_components/less/dist/less.min.js'], function (Less) {
+                if (lessEngine) { return void cb(lessEngine); }
                 lessEngine = Less;
+                Less.functions.functionRegistry.add('LessLoader_currentFile', function () {
+                    return new Less.tree.UnicodeDescriptor('"' +
+                        fixURL(this.currentFileInfo.filename) + '"');
+                });
                 var doXHR = lessEngine.FileManager.prototype.doXHR;
                 lessEngine.FileManager.prototype.doXHR = function (url, type, callback, errback) {
                     url = fixURL(url);
-                    //console.log("xhr: " + url);
-                    return doXHR(url, type, callback, errback);
+                    var cached = tempCache[url];
+                    if (cached && cached.res) {
+                        var res = cached.res;
+                        return void setTimeout(function () { callback(res[0], res[1]); });
+                    }
+                    if (cached) { return void cached.queue.push(callback); }
+                    cached = tempCache[url] = { queue: [ callback ], res: undefined };
+                    return doXHR(url, type, function (text, lastModified) {
+                        cached.res = [ text, lastModified ];
+                        var queue = cached.queue;
+                        cached.queue = [];
+                        queue.forEach(function (f) {
+                            setTimeout(function () { f(text, lastModified); });
+                        });
+                    }, errback);
                 };
                 cb(lessEngine);
             });
@@ -117,19 +139,38 @@ define([
         });
     };
 
-    module.exports.load = function (url /*:string*/, cb /*:()=>void*/) {
-        cacheGet(url, function (css) {
-            if (css) {
-                inject(css, url);
-                return void cb();
+    var loadSubmodulesAndInject = function (css, url, cb, stack) {
+        inject(css, url);
+        nThen(function (w) {
+            css.replace(/\-\-LessLoader_require\:\s*"([^"]*)"\s*;/g, function (all, u) {
+                u = u.replace(/\?.*$/, '');
+                module.exports.load(u, w(), stack);
+                return '';
+            });
+        }).nThen(function () { cb(); });
+    };
+
+    module.exports.load = function (url /*:string*/, cb /*:()=>void*/, stack /*:?Array<string>*/) {
+        var btime = stack ? null : +new Date();
+        stack = stack || [];
+        if (stack.indexOf(url) > -1) { return void cb(); }
+        var timeout = setTimeout(function () { console.log('failed', url); }, 10000);
+        var done = function () {
+            clearTimeout(timeout);
+            if (btime) {
+                console.log("Compiling [" + url + "] took " + (+new Date() - btime) + "ms");
             }
+            cb();
+        };
+        stack.push(url);
+        cacheGet(url, function (css) {
+            if (css) { return void loadSubmodulesAndInject(css, url, done, stack); }
             console.log('CACHE MISS ' + url);
             ((/\.less([\?\#].*)?$/.test(url)) ? loadLess : loadCSS)(url, function (err, css) {
                 if (!css) { return void console.error(err); }
                 var output = fixAllURLs(css, url);
                 cachePut(url, output);
-                inject(output, url);
-                cb();
+                loadSubmodulesAndInject(output, url, done, stack);
             });
         });
     };

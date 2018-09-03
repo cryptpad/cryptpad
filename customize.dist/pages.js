@@ -1,16 +1,36 @@
 define([
     '/api/config',
     '/common/hyperscript.js',
+    '/common/common-language.js',
     '/customize/messages.js',
     'jquery',
     '/customize/application_config.js',
-], function (Config, h, Msg, $, AppConfig) {
+], function (Config, h, Language, Msg, $, AppConfig) {
     var Pages = {};
     var urlArgs = Config.requireConf.urlArgs;
 
-    var setHTML = function (e, html) {
+    var setHTML = Pages.setHTML = function (e, html) {
         e.innerHTML = html;
         return e;
+    };
+
+    var languageSelector = function () {
+        var options = [];
+        var languages = Msg._languages;
+        var selected = Msg._languageUsed;
+        var keys = Object.keys(languages).sort();
+        keys.forEach(function (l) {
+            var attr = { value: l };
+            if (selected === l) { attr.selected = 'selected'; }
+            options.push(h('option', attr, languages[l]));
+        });
+        var select = h('select', {}, options);
+        $(select).change(function () {
+            Language.setLanguage($(select).val() || '', null, function () {
+                window.location.reload();
+            });
+        });
+        return select;
     };
 
     var footerCol = function (title, L, literal) {
@@ -47,7 +67,8 @@ define([
                 h('div.row', [
                     footerCol(null, [
                         h('div.cp-bio-foot', [
-                            h('p', Msg.main_footerText)
+                            h('p', Msg.main_footerText),
+                            languageSelector()
                         ])
                     ], ''),
                     footerCol('footer_applications', [
@@ -56,6 +77,7 @@ define([
                         footLink('/code/', 'main_code'),
                         footLink('/slide/', 'main_slide'),
                         footLink('/poll/', 'main_poll'),
+                        footLink('/kanban/', 'main_kanban'),
                         footLink('/whiteboard/', null, Msg.type.whiteboard)
                     ]),
                     footerCol('footer_aboutUs', [
@@ -72,7 +94,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v1.28.0 (toString)")
+            h('div.cp-version-footer', "CryptPad v2.6.0 (Gibbon)")
         ]);
     };
 
@@ -92,16 +114,25 @@ define([
             ]);
         }
 
+        var button = h('button.navbar-toggler', {
+            'type':'button',
+            /*'data-toggle':'collapse',
+            'data-target':'#menuCollapse',
+            'aria-controls': 'menuCollapse',
+            'aria-expanded':'false',
+            'aria-label':'Toggle navigation'*/
+        }, h('i.fa.fa-bars '));
+
+        $(button).click(function () {
+            if ($('#menuCollapse').is(':visible')) {
+                return void $('#menuCollapse').slideUp();
+            }
+            $('#menuCollapse').slideDown();
+        });
+
         return h('nav.navbar.navbar-expand-lg',
             h('a.navbar-brand', { href: '/index.html'}),
-            h('button.navbar-toggler', {
-                'type':'button',
-                'data-toggle':'collapse',
-                'data-target':'#menuCollapse',
-                'aria-controls': 'menuCollapse',
-                'aria-expanded':'false',
-                'aria-label':'Toggle navigation'
-            }, h('i.fa.fa-bars ')),
+            button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
                 h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
@@ -120,8 +151,8 @@ define([
             h('div.container-fluid.cp-about-intro', [
                 h('div.container', [
                     h('center', [
-                    h('h1', Msg.about),
-                    setHTML(h('p'), 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.'),
+                        h('h1', Msg.about),
+                        setHTML(h('p'), Msg.about_intro),
                     ]),
                 ]),
             ]),
@@ -129,7 +160,7 @@ define([
                 h('div.row', [
                     h('div.cp-develop-about.col-12',[
                             h('div.cp-icon-cent'),
-                            h('h2.text-center', 'Core Developers')
+                            h('h2.text-center', Msg.about_core)
                         ]),
                     ]),
                 h('div.row.align-items-center', [
@@ -149,10 +180,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/AaronMacSween.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-1.cp-profile-det',[
                         h('h3', "Aaron MacSween"),
                         h('hr'),
                         setHTML(h('div#bioAaron'), '<p>Aaron transitioned into distributed systems development from a background in jazz and live stage performance. <br/> He appreciates the elegance of biological systems and functional programming, and focused on both as a student at the University of Toronto, where he studied cognitive and computer sciences.<br/>He moved to Paris in 2015 to work as a research engineer at XWiki SAS, after having dedicated significant time to various cryptography-related software projects.<br/>He spends his spare time experimenting with guitars, photography, science fiction, and spicy food.</p>'),
@@ -180,7 +211,7 @@ define([
                 h('div.row', [
                     h('div.cp-develop-about.col-12.cp-contrib',[
                             h('div.cp-icon-cent'),
-                            h('h2.text-center', 'Key Contributors')
+                            h('h2.text-center', Msg.about_contributors)
                         ]),
                     ]),
                 h('div.row.align-items-center', [
@@ -200,10 +231,10 @@ define([
                     ]),
                 ]),
                 h('div.row.align-items-center',[
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-2.cp-bio-avatar.cp-bio-avatar-right', [
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-2.cp-bio-avatar.cp-bio-avatar-right', [
                             h('img.img-fluid', {'src': '/customize/images/Catalin.jpg'})
                     ]),
-                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-1.cp-profile-det',[
+                    h('div.col-12.col-sm-12.col-md-12.col-lg-6.order-lg-1.cp-profile-det',[
                         h('h3', "Catalin Scripcariu"),
                         h('hr'),
                         setHTML(h('div#bioCatalin'), '<p> Catalin is a Maths majour and has worked in B2B sales for 12 years. Design was always his passion and 3 years ago he started to dedicate himself to web design and front-end.<br/>At the beginning of 2017 he joined the XWiki, where he worked both on the business and the community side of XWiki, including the research team and CryptPad. </p>'),
@@ -239,113 +270,83 @@ define([
     Pages['/features.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.features_title)),
-                h('table#cp-features-table', [
-                    h('thead', h('tr', [
-                        h('th', Msg.features_feature),
-                        h('th', Msg.features_anon),
-                        h('th', Msg.features_registered),
-                        h('th', Msg.features_notes)
-                    ])),
-                    h('tbody', [
-                        h('tr', [
-                            h('td', Msg.features_f_pad),
-                            h('td.yes', '✔'),// u2714, u2715
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_pad_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_history),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_history_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_export),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_export_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_todo),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_viewFiles),
-                            h('td.yes', '✔'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_drive),
-                            h('td.part', '~'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_drive_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_uploadFiles),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_embedFiles),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_multiple),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_multiple_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_logoutEverywhere),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_logoutEverywhere_notes || '')
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_templates),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_templates_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_profile),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_profile_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_tags),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_tags_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_contacts),
-                            h('td.no', '✕'),
-                            h('td.yes', '✔'),
-                            h('td', Msg.features_f_contacts_notes)
-                        ]),
-                        h('tr', [
-                            h('td', Msg.features_f_storage),
-                            h('td.no', Msg.features_f_storage_anon),
-                            setHTML(h('td.yes.left'), Msg.features_f_storage_registered),
-                            h('td')
-                        ]),
-                    ])
+            h('div.container-fluid.cp_cont_features',[
+                h('div.container',[
+                    h('center', h('h1', Msg.features_title)),
                 ]),
-                h('div#cp-features-register', [
-                    h('a', {
-                        href: '/register/'
-                    }, h('button.cp-features-register-button', 'Register for free'))
-                ])
+            ]),
+            h('div.container',[
+                h('div.row.cp-container.cp-features-web.justify-content-sm-center',[
+                    h('div.col-12.col-sm-6.cp-anon-user',[
+                        h('div.card',[
+                            h('div.card-body',[
+                                h('h3.text-center',Msg.features_anon)
+                            ]),
+                            h('ul.list-group.list-group-flush', [
+                                h('li.list-group-item.text-center', Msg.features_f_pad , [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_pad_notes}, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_history, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_history_notes }, h('i.fa.fa-question') )
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_export, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_export_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_todo),
+                                h('li.list-group-item.text-center', Msg.features_f_viewFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_drive),
+                                h('li.list-group-item.text-center', Msg.features_f_storage_anon),
+                            ]),
+                        ]),  
+                    ]),
+                    h('div.col-12.col-sm-6.cp-regis-user',[
+                        h('div.card',[
+                            h('div.card-body',[
+                                h('h3.text-center',Msg.features_registered)
+                            ]),
+                            h('ul.list-group.list-group-flush', [
+                                h('li.list-group-item.text-center', Msg.features_f_pad, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_pad_notes}, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_history, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_history_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_export, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_export_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_todo),
+                                h('li.list-group-item.text-center', Msg.features_f_viewFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_drive_full),
+                                h('li.list-group-item.text-center', Msg.features_f_uploadFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_embedFiles),
+                                h('li.list-group-item.text-center', Msg.features_f_multiple, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_multiple_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_logoutEverywhere),
+                                h('li.list-group-item.text-center', Msg.features_f_templates, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_templates_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_profile, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_profile_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_tags, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_tags_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', Msg.features_f_contacts, [
+                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_contacts_notes }, h('i.fa.fa-question'))
+                                ]),
+                                h('li.list-group-item.text-center', setHTML(h('div'), Msg.features_f_storage_registered)),
+                            ]),
+                            h('div.card-body',[
+                                h('div#cp-features-register', [
+                                    h('a', {
+                                        href: '/register/'
+                                    }, h('button.cp-features-register-button', Msg.features_f_register))
+                                ]),
+                            ]),
+                        ]), 
+                    ]),
+                ]),
             ]),
             infopageFooter()
         ]);
@@ -354,25 +355,35 @@ define([
     Pages['/privacy.html'] = function () {
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.policy_title)),
-                h('h2', Msg.policy_whatweknow),
+            h('.container-fluid.cp-privacy-top', [
+                h('div.container',[
+                    h('center', h('h1', Msg.policy_title)),
+                ]),
+            ]),
+            h('div.container.cp-container.cp-privacy',[
+                h('h3', Msg.policy_whatweknow),
+                h('hr'),
                 setHTML(h('p'), Msg.policy_whatweknow_p1),
 
-                h('h2', Msg.policy_howweuse),
+                h('h3', Msg.policy_howweuse),
+                h('hr'),
                 h('p', Msg.policy_howweuse_p1),
                 h('p', Msg.policy_howweuse_p2),
 
-                h('h2', Msg.policy_whatwetell),
+                h('h3', Msg.policy_whatwetell),
+                h('hr'),
                 h('p', Msg.policy_whatwetell_p1),
 
-                h('h2', Msg.policy_links),
+                h('h3', Msg.policy_links),
+                h('hr'),
                 h('p', Msg.policy_links_p1),
 
-                h('h2', Msg.policy_ads),
+                h('h3', Msg.policy_ads),
+                h('hr'),
                 h('p', Msg.policy_ads_p1),
 
-                h('h2', Msg.policy_choices),
+                h('h3', Msg.policy_choices),
+                h('hr'),
                 h('p', Msg.policy_choices_open),
                 setHTML(h('p'), Msg.policy_choices_vpn),
             ]),
@@ -393,8 +404,10 @@ define([
                 var question = h('p.cp-faq-questions-q#' + hash);
                 $(question).click(function () {
                     if ($(answer).is(':visible')) {
+                        $(question).toggleClass('cp-active-faq');
                         return void $(answer).slideUp();
                     }
+                    $(question).toggleClass('cp-active-faq');
                     $(answer).slideDown();
                 });
                 questions.push(h('div.cp-faq-questions-items', [
@@ -413,11 +426,15 @@ define([
         }
         return h('div#cp-main', [
             infopageTopbar(),
-            h('div.container.cp-container', [
-                h('center', h('h1', Msg.faq_title)),
-                h('p.cp-faq-header', h('a.nav-item.nav-link', {
+            h('div.container-fluid.cp-faq', [
+                h('div.container',[
+                    h('center', h('h1', Msg.faq_title)),
+                ]),
+            ]),
+            h('div.container.cp-faq-ques-det',[
+                h('div.cp-faq-header.text-center', h('a.nav-item.nav-link', {
                     href: '/what-is-cryptpad.html'
-                }, Msg.faq_whatis)),
+                }, setHTML(h('h4'),Msg.faq_whatis))),
                 h('div.cp-faq-container', categories)
             ]),
             infopageFooter()
@@ -452,28 +469,28 @@ define([
                     h('div.col-12',
                         setHTML(h('h4.text-center'), Msg.main_about_p26)
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://twitter.com/cryptpad"}, 
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p22)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://github.com/xwiki-labs/cryptpad/issues/"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p23)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://riot.im/app/#/room/#cryptpad:matrix.org"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p24)
                             )
                         )
                     ),
-                    h('div.col-6.col-sm-3.col-md-3.col-lg-3',
+                    h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "mailto:research@xwiki.com"},
                             h('div.card-body', 
                                 setHTML(h('p'), Msg.main_about_p25)
@@ -553,12 +570,13 @@ define([
         var showingMore = false;
 
         var icons = [
-                [ 'pad', '/pad/', Msg.main_richTextPad, 'fa-file-word-o' ],
-                [ 'code', '/code/', Msg.main_codePad, 'fa-file-code-o' ],
-                [ 'slide', '/slide/', Msg.main_slidePad, 'fa-file-powerpoint-o' ],
-                [ 'poll', '/poll/', Msg.main_pollPad, 'fa-calendar' ],
-                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'fa-paint-brush' ],
-                [ 'recent', '/drive/', Msg.main_localPads, 'fa-hdd-o' ]
+                [ 'pad', '/pad/', Msg.main_richTextPad, 'pad' ],
+                [ 'code', '/code/', Msg.main_codePad, 'code' ],
+                [ 'slide', '/slide/', Msg.main_slidePad, 'slide' ],
+                [ 'poll', '/poll/', Msg.main_pollPad, 'poll' ],
+                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'kanban' ],
+                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'whiteboard' ],
+                [ 'recent', '/drive/', Msg.main_localPads, 'drive' ]
             ].filter(function (x) {
                 return isAvailableType(x[1]);
             })
@@ -568,7 +586,7 @@ define([
                 return h('a', [
                     { href: x[1] },
                     h(s, [
-                        h('i.fa.' + x[3]),
+                        h('i.fa.' + AppConfig.applicationsIcon[x[3]]),
                         h('div.pad-button-text', [ h('h4', x[2]) ])
                     ])
                 ]);
@@ -614,26 +632,95 @@ define([
                     ])
                 ]),
             ]),
+            infopageFooter(),
         ];
     };
 
-    var loadingScreen = Pages.loadingScreen = function () {
-        return h('div#cp-loading', 
-            h('div.cp-loading-container', [
-                h('img.cp-loading-cryptofist', {
-                    src: '/customize/cryptpad-new-logo-colors-logoonly.png?' + urlArgs
-                }),
-                h('div.cp-loading-spinner-container',
-                    h('span.fa.fa-circle-o-notch.fa-spin.fa-4x.fa-fw')),
-                h('p'),
-            ])
-        );
+    Pages.createCheckbox = function (id, labelTxt, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'checkbox',
+            id: id
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
+
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-checkmark-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
+            }
+        });
+
+        $(input).change(function () { $(mark).focus(); });
+
+        return h('label.cp-checkmark', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
     };
 
-    var hiddenLoader = function () {
-        var loader = loadingScreen();
-        loader.style.display = 'none';
-        return loader;
+    Pages.createRadio = function (name, id, labelTxt, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'radio',
+            id: id,
+            name: name
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
+
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-radio-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
+            }
+        });
+
+        $(input).change(function () { $(mark).focus(); });
+
+        var radio =  h('label', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
+
+        $(radio).addClass('cp-radio');
+
+        return radio;
     };
 
     Pages['/user/'] = Pages['/user/index.html'] = function () {
@@ -679,27 +766,10 @@ define([
                         placeholder: Msg.login_confirm,
                     }),
                     h('div.checkbox-container', [
-                        h('input#import-recent', {
-                            name: 'import-recent',
-                            type: 'checkbox',
-                            checked: true
-                        }),
-                        // hscript doesn't generate for on label for some
-                        // reason... use jquery as a temporary fallback
-                        setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
-                        /*h('label', {
-                            'for': 'import-recent',
-                        }, Msg.register_importRecent),*/
+                        Pages.createCheckbox('import-recent', Msg.register_importRecent, true)
                     ]),
                     h('div.checkbox-container', [
-                        h('input#accept-terms', {
-                            name: 'accept-terms',
-                            type: 'checkbox'
-                        }),
-                        setHTML($('<label for="accept-terms"></label>')[0], Msg.register_acceptTerms)
-                        /*setHTML(h('label', {
-                            'for': 'accept-terms',
-                        }), Msg.register_acceptTerms),*/
+                        $(Pages.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
                     ]),
                     h('button#register.btn.cp-login-register', Msg.login_register)
                 ])
@@ -714,7 +784,6 @@ define([
             ]),
 
             infopageFooter(),
-            hiddenLoader(),
         ])];
     };
 
@@ -741,17 +810,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.checkbox-container', [
-                            h('input#import-recent', {
-                                name: 'import-recent',
-                                type: 'checkbox',
-                                checked: true
-                            }),
-                            // hscript doesn't generate for on label for some
-                            // reason... use jquery as a temporary fallback
-                            setHTML($('<label for="import-recent"></label>')[0], Msg.register_importRecent)
-                            /*h('label', {
-                                'for': 'import-recent',
-                            }, Msg.register_importRecent),*/
+                            Pages.createCheckbox('import-recent', Msg.register_importRecent, true),
                         ]),
                         h('div.extra', [
                             h('button.login.first.btn', Msg.login_login)
@@ -760,7 +819,6 @@ define([
                 ]),
             ]),
             infopageFooter(),
-            hiddenLoader(),
         ])];
     };
 

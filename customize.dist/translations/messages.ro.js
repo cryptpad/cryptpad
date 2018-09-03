@@ -13,7 +13,7 @@ define(function () {
     out.common_connectionLost = out.updated_0_common_connectionLost;
     out.websocketError = "Conexiune inexistentă către serverul websocket...";
     out.typeError = "Această filă nu este compatibilă cu aplicația aleasă";
-    out.onLogout = "Nu mai ești autentificat, <a href=\"/\" target=\"_blank\">apasă aici</a> să te autentifici<br>sau apasă <em>Escape</em>să accesezi fila în modul citire.";
+    out.onLogout = "Nu mai ești autentificat, {0}apasă aici{1} să te autentifici<br>sau apasă <em>Escape</em>să accesezi fila în modul citire.";
     out.wrongApp = "Momentan nu putem arăta conținutul sesiunii în timp real în fereastra ta. Te rugăm reîncarcă pagina.";
     out.loading = "Încarcă...";
     out.error = "Eroare";

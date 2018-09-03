@@ -9,13 +9,12 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/common-interface.js',
-    '/common/diffMarked.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/slide/app-slide.less',
 
     'css!cm/lib/codemirror.css',
     'css!cm/addon/dialog/dialog.css',
@@ -54,7 +53,6 @@ define([
     Util,
     Hash,
     UI,
-    DiffMd,
     Messages,
     CMeditor)
 {
@@ -153,53 +151,33 @@ define([
             $('<b>').text(Messages.printOptions).appendTo($p);
             $p.append($('<br>'));
             // Slide number
-            $('<input>', {
-                type: 'checkbox',
-                id: 'cp-app-slide-options-number',
-                checked: slideOptionsTmp.slide
-            }).on('change', function () {
+            var cbox = UI.createCheckbox('cp-app-slide-options-number', Messages.printSlideNumber,
+                                         slideOptionsTmp.slide);
+            $(cbox).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.slide = c;
-            }).appendTo($p).css('width', 'auto');
-            $('<label>', {'for': 'cp-app-slide-options-number'}).text(Messages.printSlideNumber)
-                .appendTo($p);
-            $p.append($('<br>'));
+            }).css('width', 'auto');
             // Date
-            $('<input>', {
-                type: 'checkbox',
-                id: 'cp-app-slide-options-date',
-                checked: slideOptionsTmp.date
-            }).on('change', function () {
+            var cboxDate = UI.createCheckbox('cp-app-slide-options-date', Messages.printDate,
+                                         slideOptionsTmp.date);
+            $(cboxDate).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.date = c;
-            }).appendTo($p).css('width', 'auto');
-            $('<label>', {'for': 'cp-app-slide-options-date'}).text(Messages.printDate)
-                .appendTo($p);
-            $p.append($('<br>'));
+            }).css('width', 'auto');
             // Title
-            $('<input>', {
-                type: 'checkbox',
-                id: 'cp-app-slide-options-title',
-                checked: slideOptionsTmp.title
-            }).on('change', function () {
+            var cboxTitle = UI.createCheckbox('cp-app-slide-options-title', Messages.printTitle,
+                                         slideOptionsTmp.title);
+            $(cboxTitle).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.title = c;
-            }).appendTo($p).css('width', 'auto');
-            $('<label>', {'for': 'cp-app-slide-options-title'}).text(Messages.printTitle)
-                .appendTo($p);
-            $p.append($('<br>'));
+            }).css('width', 'auto');
             // Transition
-            $('<input>', {
-                type: 'checkbox',
-                id: 'cp-app-slide-options-transition',
-                checked: slideOptionsTmp.transition
-            }).on('change', function () {
+            var cboxTransition = UI.createCheckbox('cp-app-slide-options-transition', Messages.printTransition,
+                                         slideOptionsTmp.transition);
+            $(cboxTransition).appendTo($p).find('input').on('change', function () {
                 var c = this.checked;
                 slideOptionsTmp.transition = c;
-            }).appendTo($p).css('width', 'auto');
-            $('<label>', {'for': 'cp-app-slide-options-transition'}).text(Messages.printTransition)
-                .appendTo($p);
-            $p.append($('<br>'));
+            }).css('width', 'auto');
             $p.append($('<br>'));
             // Background image
             $('<label>', {'for': 'cp-app-slide-options-bg'}).text(Messages.printBackground)
@@ -520,13 +498,11 @@ define([
                 dropArea: $('.CodeMirror'),
                 body: $('body'),
                 onUploaded: function (ev, data) {
-                    //var cursor = editor.getCursor();
-                    //var cleanName = data.name.replace(/[\[\]]/g, '');
-                    //var text = '!['+cleanName+']('+data.url+')';
                     var parsed = Hash.parsePadUrl(data.url);
-                    var hexFileName = Util.base64ToHex(parsed.hashData.channel);
-                    var src = '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName;
-                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + parsed.hashData.key + '"></media-tag>';
+                    var secret = Hash.getSecrets('file', parsed.hash, data.password);
+                    var src = Hash.getBlobPathFromHex(secret.channel);
+                    var key = Hash.encodeBase64(secret.keys.cryptKey);
+                    var mt = '<media-tag src="' + src + '" data-crypto-key="cryptpad:' + key + '"></media-tag>';
                     editor.replaceSelection(mt);
                 }
             };

@@ -16,8 +16,8 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
-    'less!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
+    'less!/file/app-file.less',
 
 ], function (
     $,
@@ -37,6 +37,9 @@ define([
     var Nacl = window.nacl;
 
     var APP = window.APP = {};
+    MediaTag.setDefaultConfig('download', {
+        text: Messages.download_mt_button
+    });
 
     var andThen = function (common) {
         var $appContainer = $('#cp-app-file-content');
@@ -54,16 +57,14 @@ define([
 
         var uploadMode = false;
         var secret;
-        var hexFileName;
         var metadataMgr = common.getMetadataMgr();
         var priv = metadataMgr.getPrivateData();
 
         if (!priv.filehash) {
             uploadMode = true;
         } else {
-            secret = Hash.getSecrets('file', priv.filehash);
+            secret = Hash.getSecrets('file', priv.filehash, priv.password);
             if (!secret.keys) { throw new Error("You need a hash"); }
-            hexFileName = Util.base64ToHex(secret.channel);
         }
 
         var Title = common.createTitle({});
@@ -86,27 +87,40 @@ define([
         toolbar.$rightside.html('');
 
         if (!uploadMode) {
+            var hexFileName = secret.channel;
             var src = Hash.getBlobPathFromHex(hexFileName);
-            var cryptKey = secret.keys && secret.keys.fileKeyStr;
-            var key = Nacl.util.decodeBase64(cryptKey);
+            var key = secret.keys && secret.keys.cryptKey;
+            var cryptKey = Nacl.util.encodeBase64(key);
 
             FileCrypto.fetchDecryptedMetadata(src, key, function (e, metadata) {
                 if (e) {
                     if (e === 'XHR_ERROR') {
-                        return void UI.errorLoadingScreen(Messages.download_resourceNotAvailable);
+                        return void UI.errorLoadingScreen(Messages.download_resourceNotAvailable, false, function () {
+                            common.gotoURL('/file/');
+                        });
                     }
                     return void console.error(e);
                 }
+
+                // Add pad attributes when the file is saved in the drive
+                Title.onTitleChange(function () {
+                    var owners = metadata.owners;
+                    if (owners) {
+                        common.setPadAttribute('owners', owners);
+                    }
+                    common.setPadAttribute('fileType', metadata.type);
+                });
+
+                // Save to the drive or update the acces time
                 var title = document.title = metadata.name;
                 Title.updateTitle(title || Title.defaultTitle);
+
                 toolbar.addElement(['pageTitle'], {pageTitle: title});
                 toolbar.$rightside.append(common.createButton('forget', true));
+                toolbar.$rightside.append(common.createButton('properties', true));
                 if (common.isLoggedIn()) {
                     toolbar.$rightside.append(common.createButton('hashtag', true));
                 }
-
-
-                common.setPadAttribute('fileType', metadata.type);
 
                 var displayFile = function (ev, sizeMb, CB) {
                     var called_back;
@@ -117,38 +131,21 @@ define([
                     };
 
                     var $mt = $dlview.find('media-tag');
-                    var cryptKey = secret.keys && secret.keys.fileKeyStr;
-                    var hexFileName = Util.base64ToHex(secret.channel);
-                    $mt.attr('src', '/blob/' + hexFileName.slice(0,2) + '/' + hexFileName);
+                    $mt.attr('src', src);
                     $mt.attr('data-crypto-key', 'cryptpad:'+cryptKey);
 
                     var rightsideDisplayed = false;
-                    $(window.document).on('decryption', function (e) {
-                        /* FIXME
-                            we're listening for decryption events and assuming that only
-                            the main media-tag exists. In practice there is also your avatar
-                            and there could be other things in the future, so we should
-                            figure out a generic way target media-tag decryption events.
-                        */
-                        var decrypted = e.originalEvent;
-                        if (decrypted.callback) {
-                            decrypted.callback();
-                        }
 
+                    MediaTag($mt[0]).on('complete', function (decrypted) {
                         $dlview.show();
                         $dlform.hide();
                         var $dlButton = $dlview.find('media-tag button');
                         if (ev) { $dlButton.click(); }
-                        $dlButton.addClass('btn btn-success');
-                        var text = Messages.download_mt_button + '<br>';
-                        text += '<b>' + Util.fixHTML(title) + '</b><br>';
-                        text += '<em>' + Messages._getKey('formattedMB', [sizeMb]) + '</em>';
-                        $dlButton.html(text);
 
                         if (!rightsideDisplayed) {
                             toolbar.$rightside
                             .append(common.createButton('export', true, {}, function () {
-                                saveAs(decrypted.blob, decrypted.metadata.name);
+                                saveAs(decrypted.content, decrypted.metadata.name);
                             }));
                             rightsideDisplayed = true;
                         }
@@ -171,42 +168,12 @@ define([
                         } else {
                             cb();
                         }
-                    })
-                    .on('decryptionError', function (e) {
-                        var error = e.originalEvent;
-                        //UI.alert(error.message);
-                        cb(error.message);
-                    })
-                    .on('decryptionProgress', function (e) {
-                        var progress = e.originalEvent;
-                        var p = progress.percent +'%';
+                    }).on('progress', function (data) {
+                        var p = data.progress +'%';
                         $progress.width(p);
+                    }).on('error', function (err) {
+                        console.error(err);
                     });
-
-                    /**
-                     * Allowed mime types that have to be set for a rendering after a decryption.
-                     *
-                     * @type       {Array}
-                     */
-                    var allowedMediaTypes = [
-                        'image/png',
-                        'image/jpeg',
-                        'image/jpg',
-                        'image/gif',
-                        'audio/mp3',
-                        'audio/ogg',
-                        'audio/wav',
-                        'audio/webm',
-                        'video/mp4',
-                        'video/ogg',
-                        'video/webm',
-                        'application/pdf',
-                        'application/dash+xml',
-                        'download'
-                    ];
-                    MediaTag.CryptoFilter.setAllowedMediaTypes(allowedMediaTypes);
-
-                    MediaTag($mt[0]);
                 };
 
                 var todoBigFile = function (sizeMb) {
@@ -233,8 +200,7 @@ define([
                     if (typeof(sizeMb) === 'number' && sizeMb < 5) { return void onClick(); }
                     $dlform.find('#cp-app-file-dlfile, #cp-app-file-dlprogress').click(onClick);
                 };
-                var href = priv.origin + priv.pathname + priv.filehash;
-                common.getFileSize(href, function (e, data) {
+                common.getFileSize(hexFileName, function (e, data) {
                     if (e) {
                         return void UI.errorLoadingScreen(e);
                     }
@@ -263,7 +229,7 @@ define([
             dropArea: $form,
             hoverArea: $label,
             body: $body,
-            keepTable: true // Don't fadeOut the tbale with the uploaded files
+            keepTable: true // Don't fadeOut the table with the uploaded files
         };
 
         var FM = common.createFileManager(fmConfig);

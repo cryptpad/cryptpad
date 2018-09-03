@@ -1,15 +1,12 @@
-@import (once) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/framework.less";
 
-.framework_main(
-    @bg-color: @colortheme_pad-bg,
-    @warn-color: @colortheme_pad-warn,
-    @color: @colortheme_pad-color
-);
-.alertify_main();
+body.cp-app-pad {
+    .framework_main(
+        @bg-color: @colortheme_pad-bg,
+        @warn-color: @colortheme_pad-warn,
+        @color: @colortheme_pad-color
+    );
 
-// body
-&.cp-app-pad {
-    .tokenfield_main();
     #cke_1_top {
         overflow: visible;
         padding: 0px;
@@ -46,17 +43,22 @@
         }
     }
 
-}
-
-.cke_wysiwyg_frame {
-    min-width: 60%;
-}
-
-@media print {
-    #cke_1_top {
-        display:none !important;
+    .cke_dialog {
+        display: block;
+        overflow-x: auto;
+        max-height: 100vh;
     }
-    &.cp-app-pad .cp-toolbar-userlist-drawer {
-        display:none;
+
+    .cke_wysiwyg_frame {
+        min-width: 60%;
+    }
+
+    @media print {
+        #cke_1_top {
+            display:none !important;
+        }
+        &.cp-app-pad .cp-toolbar-userlist-drawer {
+            display:none;
+        }
     }
 }
