@@ -669,7 +669,7 @@ define(function () {
     // pad
     out.pad_showToolbar = "Show toolbar";
     out.pad_hideToolbar = "Hide toolbar";
-    out.pad_base64 = "This pad contains images stored in an inefficient way. These images will increase significantly the size of the pad in your CryptDrive, and they will make it slower to load.     Do you want to migrate these images to a better format (they will be stored separately in your drive)?"; // XXX
+    out.pad_base64 = "This pad contains images stored in an inefficient way. These images will significantly increase the size of the pad in your CryptDrive, and make it slower to load. You can migrate these files to a new format which will be stored separately in your CryptDrive. Do you want to migrate these images now?";
 
     // markdown toolbar
     out.mdToolbar_button = "Show or hide the Markdown toolbar";
@@ -1244,13 +1244,13 @@ define(function () {
     out.chrome68 = "It seems that you're using the browser Chrome or Chromium version 68. It contains a bug resulting in the page turning completely white after a few seconds or the page being unresponsive to clicks. To fix this issue, you can switch to another tab and come back, or try to scroll in the page. This bug should be fixed in the next version of your browser.";
 
     // Manual pad storage popup
-    out.autostore_notstored = "This pad is not in your CryptDrive. Do you want to store it now?"; // XXX
-    out.autostore_settings = "You can enable automatic pad storage in your <a href=\"/settings/\">Settings</a> page!"; // XXX
+    out.autostore_notstored = "This pad is not in your CryptDrive. Do you want to store it now?";
+    out.autostore_settings = "You can enable automatic pad storage in your <a href=\"/settings/\">Settings</a> page!";
     out.autostore_store = "Store";
     out.autostore_hide = "Don't store";
     out.autostore_error = "Unexpected error: we were unable to store this pad, please try again.";
     out.autostore_saved = "The pad was successfully stored in your CryptDrive!";
-    out.autostore_forceSave = "Store the file in CryptDrive"; // File upload modal
+    out.autostore_forceSave = "Store the file in your CryptDrive"; // File upload modal
     out.autostore_notAvailable = "You must store this pad in your CryptDrive before being able to use this feature."; // Properties/tags/move to trash
 
     return out;
