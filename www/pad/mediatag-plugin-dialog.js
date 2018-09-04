@@ -43,9 +43,7 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
                         type: 'html',
                         id: 'preview',
                         html: '<label>'+Messages.preview+'</label>'+
-                              '<div id="ck-mediatag-preview"'+
-                'style="margin:auto;resize:both;max-width:300px;max-height:300px;overflow:auto"'+
-                              '></div>'
+                              '<div id="ck-mediatag-preview"></div>'
                     },
                 ]
             },
@@ -77,11 +75,6 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
 
             var $preview = $(dialog).find('#ck-mediatag-preview');
             var $clone = $(el.$).clone();
-            $clone.css({
-                display: 'flex',
-                'border-style': 'solid',
-                'border-color': 'black'
-            });
             $preview.html('').append($clone);
 
             var center = function () {
