@@ -236,9 +236,9 @@ define([
                                     label: { class: 'noTitle' }
                                 });
         var $div2 = $(h('div.cp-settings-autostore-radio', [
-            opt1,
+            opt3,
             opt2,
-            opt3
+            opt1
         ])).appendTo($div);
 
         $div.find('input[type="radio"]').on('change', function () {
