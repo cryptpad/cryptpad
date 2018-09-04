@@ -1,3 +1,60 @@
+# Hedgehog release (v2.7.0)
+
+## Update notes
+
+### Features
+
+* checkmark styles
+* contextmenu to 'adopt' media-tags
+* new corner popup UI
+* migrate base64 images
+* configurable pad storage behaviour
+* add progress bar for loading screen
+* improved media-tag properties dialog in rich text pad
+
+### Bug fixes
+
+* Chrome 68 warning
+* increase requirejs timeout for sharedWorkers
+
+
+# Gibbon release (v2.6.0)
+
+* cp-tools font
+  * template icon
+* nicer spinner
+* footer on homepage
+* refactored less files
+  * documentation for what was done
+* shared folders
+  * it still says shared drive...
+  * application_config.js allows us to enable them
+    * but they are disabled by default
+* use fs-extra to support folders stored across different partitions
+* fancy less loader
+* hack to prevent alertify from injecting css
+  * see common-interface.js
+* support roHref
+* fix bugs in password change logic
+* Migrate-6 feedback key
+* ProxyManager
+  * `disableSharedFolders`
+
+## Goals
+
+## Update notes
+
+* shared workers
+  * add `config.disableSharedFolders = true;`
+  * per-user `localStorage.CryptPad_SF = "1";`
+
+
+
+### Features
+
+### Bug fixes
+
+
 # Fossa release (v2.5.0)
 
 ## Goals
