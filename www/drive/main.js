@@ -41,7 +41,7 @@ define([
             var secret = Utils.Hash.getSecrets('drive', hash);
             if (hash) {
                 // Add a shared folder!
-                // XXX password?
+                // TODO password?
                 Cryptpad.addSharedFolder(secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
                     // Update the hash in the address bar
