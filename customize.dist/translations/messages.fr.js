@@ -220,6 +220,7 @@ define(function () {
     out.notifyRenamed = "{0} a changé son nom en {1}";
     out.notifyLeft = "{0} a quitté la session collaborative";
 
+    out.ok = 'OK';
     out.okButton = 'OK (Entrée)';
 
     out.cancel = "Annuler";
@@ -246,6 +247,11 @@ define(function () {
     out.pad_mediatagTitle = "Options du Media-Tag";
     out.pad_mediatagWidth = "Largeur (px)";
     out.pad_mediatagHeight = "Hauteur (px)";
+    out.pad_mediatagRatio = "Préserver les proportions";
+    out.pad_mediatagBorder = "Éaisseur de la bordure (px)";
+    out.pad_mediatagPreview = "Aperçu";
+    out.pad_mediatagImport = 'Sauver dans votre CryptDrive';
+    out.pad_mediatagOptions = 'Propriétés de l\'image';
 
     // Kanban
     out.kanban_newBoard = "Nouveau tableau";
@@ -561,6 +567,14 @@ define(function () {
     out.settings_importConfirm = "Êtes-vous sûr de vouloir importer les pads récents de ce navigateur dans le CryptDrive de votre compte utilisateur ?";
     out.settings_importDone = "Importation terminée";
 
+    out.settings_autostoreTitle = "Stockage des pads dans CryptDrive";
+    out.settings_autostoreHint = "Le stockage <b>Automatique</b> des pads permet de sauver tous les pads que vous visitez dans votre CryptDrive, sans action de votre part.<br>" +
+                                 "Le stockage <b>Manuel (toujours demander)</b> permet de ne pas stocker automatiquement les pads, mais d'afficher un message vous demandant s'il faut le faire ou non.<br>" +
+                                 "Le stockage <b>Manuel (ne pas demander)</b> permet de ne pas stocker les pads ni d'afficher le message. Une option permettant de les stocker sera toujours disponible, mais cachée.";
+    out.settings_autostoreYes = "Automatique";
+    out.settings_autostoreNo = "Manuel (ne pas demander)";
+    out.settings_autostoreMaybe = "Manuel (toujours demander)";
+
     out.settings_userFeedbackTitle = "Retour d'expérience";
     out.settings_userFeedbackHint1 = "CryptPad peut envoyer des retours d'expérience très limités vers le serveur, de manière à nous permettre d'améliorer l'expérience des utilisateurs. ";
     out.settings_userFeedbackHint2 = "Le contenu de vos pads et les clés de déchiffrement ne seront jamais partagés avec le serveur.";
@@ -646,6 +660,7 @@ define(function () {
     // pad
     out.pad_showToolbar = "Afficher la barre d'outils";
     out.pad_hideToolbar = "Cacher la barre d'outils";
+    out.pad_base64 = "Ce pad contient des images stockées de manière inefficace. Ces images vont augmenter de manière significative la taille du pad dans votre CryptDrive, et le rendre plus lent à charger. Vous pouvez migrer ces fichiers afin de les stocker séparément dans votre CryptDrive. Voulez-vous commencer la migration maintenant?";
 
     // markdown toolbar
     out.mdToolbar_button = "Afficher ou cacher la barre d'outils Markdown";
@@ -1176,6 +1191,18 @@ define(function () {
     out.sharedFolders_create_owned = "Être propriétaire du dossier";
     out.sharedFolders_create_password = "Mot de passe du dossier";
     out.sharedFolders_share = "Partager cette URL avec d'autres utilisateurs enregistrés leur donne accès au dossier partagé. Une fois l'URL ouverte, le dossier partagé sera ajouté au répertoire racine de leur CryptDrive.";
+
+    out.chrome68 = "Il semblerait que vous utilisiez le navigateur Chrome version 68. Ce navigateur contient un bug rendant certaines pages entièrement blanches après quelques secondes ou bloquant les clics. Pour corriger ce problème, vous pouvez vous déplacer vers un nouvel onglet et revenir ou vous pouvez essayer de faire défiler la page. Ce bug devrait être corrigé dans la prochaine version du navigateur.";
+
+    // Manual pad storage popup
+    out.autostore_notstored = "Ce pad n'est pas dans votre CryptDrive. Souhaitez-vous le stocker ?";
+    out.autostore_settings = "Vous pouvez activer le stockage automatique des pads dans vos <a href=\"/settings/\">Préférences</a> !";
+    out.autostore_store = "Stocker";
+    out.autostore_hide = "Ne pas stocker";
+    out.autostore_error = "Erreur : nous n'avons pas réussi à stocker ce pad, veuillez ré-essayer.";
+    out.autostore_saved = "Ce pad a été stocké avec succès dans votre CryptDrive !";
+    out.autostore_forceSave = "Stocker le fichier dans votre CryptDrive"; // File upload modal
+    out.autostore_notAvailable = "Vous devez stocker ce pad dans votre CryptDrive avant de pouvoir utiliser cette fonctionnalité.";
 
     return out;
 });

@@ -1,4 +1,4 @@
-DEFINE(function () {
+define(function () {
     var out = {};
 
     out.main_title = "CryptPad: Zero Knowledge, Collaborative Real Time Editing";
