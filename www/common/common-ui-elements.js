@@ -2329,6 +2329,7 @@ define([
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
+        if (data && data.stored) { return; } // We won't display the popup for dropped files
 
         var text = Messages.autostore_notstored;
         var footer = Messages.autostore_settings;

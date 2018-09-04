@@ -796,12 +796,20 @@ define([
                         password: data.password,
                         path: data.path
                     }, cb);
+                    // Let inner know that dropped files shouldn't trigger the popup
+                    postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
+                        stored: true
+                    });
                     return;
                 }
             } else {
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
+                // Let inner know that dropped files shouldn't trigger the popup
+                postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
+                    stored: true
+                });
             }
             onSync(cb);
         };
