@@ -1,4 +1,4 @@
-define(function () {
+DEFINE(function () {
     var out = {};
 
     out.main_title = "CryptPad: Zero Knowledge, Collaborative Real Time Editing";
@@ -252,7 +252,7 @@ define(function () {
     out.pad_mediatagRatio = "Keep ratio";
     out.pad_mediatagBorder = "Border width (px)";
     out.pad_mediatagPreview = "Preview";
-    out.pad_mediatagImport = 'Save in CryptDrive';
+    out.pad_mediatagImport = 'Save in your CryptDrive';
     out.pad_mediatagOptions = 'Image properties';
 
     // Kanban
