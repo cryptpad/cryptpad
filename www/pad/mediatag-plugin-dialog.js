@@ -118,7 +118,7 @@ CKEDITOR.dialog.add('mediatag', function (editor) {
                 update();
             });
 
-            setTimeout(center);
+            setTimeout(update);
         },
         onOk: function() {
             var dialog = this;
