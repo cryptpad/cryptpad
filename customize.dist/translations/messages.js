@@ -572,9 +572,9 @@ define(function () {
     out.settings_importDone = "Import completed";
 
     out.settings_autostoreTitle = "Pad storage in CryptDrive";
-    out.settings_autostoreHint = "<b>Automatic</b> pad storage results in all the pads you visit being stored in your CryptDrive.<br>" +
-                                 "<b>Manual (always ask)</b> results in the pads not being stored but a reminder will appear to ask you if you want to store them in CryptDrive.<br>" +
-                                 "<b>Manual (never ask)</b> results in the pads not being stored and option to store them will be available but in a hidden way.";
+    out.settings_autostoreHint = "<b>Automatic</b> All the pads you visit are stored in your CryptDrive.<br>" +
+                                 "<b>Manual (always ask)</b> If you have not stored a pad yet, you will be asked if you want to store them in your CryptDrive.<br>" +
+                                 "<b>Manual (never ask)</b> Pads are not stored automatically in your Cryptpad. The option to store them will be hidden.";
     out.settings_autostoreYes = "Automatic";
     out.settings_autostoreNo = "Manual (never ask)";
     out.settings_autostoreMaybe = "Manual (always ask)";
