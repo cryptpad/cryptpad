@@ -567,6 +567,14 @@ define(function () {
     out.settings_importConfirm = "Bist Du sicher, dass Du die kürzlich besuchte Dokumente in Deinem Konto importieren möchtest??";
     out.settings_importDone = "Import erledigt";
 
+    out.settings_autostoreTitle = "Automatisches Speichern im CryptDrive";
+    out.settings_autostoreHint = "<b>Automatisch:</b> Alle Pads werden in deinem CryptDrive gespeichert.<br>" +
+	                         "<b>Manuell (immer nachfragen):</b> Wenn du ein Pad noch nicht gespeichert hast, wirst du gefragt, ob du es im CryptDrive speichern willst.<br>" +
+	                         "<b>Manuell (nie nachfragen):</b> Pads werden nicht automatisch im CryptDrive gespeichert. Die Option, sie trotzdem zu speichern, ist versteckt.<br>";
+    out.settings_autostoreYes = "Automatisch";
+    out.settings_autostoreNo = "Manuell (nie nachfragen)";
+    out.settings_autostoreMaybe = "Manual (immer nachfragen)";
+
     out.settings_userFeedbackTitle = "Rückmeldung";
     out.settings_userFeedbackHint1 = "CryptPad gibt grundlegende Rückmeldungen zum Server, um die Benutzer-Erfahrung zu verbessern können.";
     out.settings_userFeedbackHint2 = "Der Inhalt deiner Dokumente wird nie mit dem Server geteilt.";
@@ -1199,6 +1207,27 @@ define(function () {
     out.loading_drive_1 = "Lade Daten";
     out.loading_drive_2 = "Aktualisiere Datenformat";
     out.loading_drive_3 = "Verifiziere Datenintegrität";
+
+    // Shared folders
+    out.sharedFolders_forget = "Dieses pad wird nur in einem geteilten Ordner gespeichert, du kannst es nicht in den Papierkorb verschieben. Du kannst es in deinem CryptDrive löschen.";
+    out.sharedFolders_duplicate = "Einige der pads, die du versucht hast zu verschieben, waren schon im Zielordner geteilt.";
+    out.sharedFolders_create = "Erstelle einen geteilten Ordner";
+    out.sharedFolders_create_name = "Neuer Ordner";
+    out.sharedFolders_create_owned = "Eigener Ordner";
+    out.sharedFolders_create_password = "Ordnerpasswort";
+    out.sharedFolders_share = "Teile diese URL mit anderen registrierten Benutzern, um ihnen Zugriff auf den geteilten Ordner zu geben. Sobald sie diese URL öffnen, wird der geteilte Ordner zu ihrem CryptDrive hinzugefügt.";
+
+    out.chrome68 = "Anscheinend benutzt du Chrome oder Chromium version 68. Darin ist ein bug, der dafür sorgt, dass nach ein paar Sekunden die Seite komplett weiß ist oder nicht mehr auf Klicks reagiert. Um das Problem zu beheben, wechsle den Tab und komme wieder, oder versuche zu scrollen. Dieser Bug sollte in der nächsten Version deines Browsers gefixt sein.";
+
+    // Manual pad storage popup
+    out.autostore_notstored = "Dieses Pad ist noch nicht in deinem CryptDrive. Willst du es jetzt speichern?";
+    out.autostore_settings = "Du kannst automatisches Speichern im CryptDrive in deinen <a href=\"/settings/\">Einstellungen</a> aktivieren!";
+    out.autostore_store = "Speichern";
+    out.autostore_hide = "Nicht speichern";
+    out.autostore_error = "Unerwarteter Fehler: wir konnten das Pad nicht speichern, bitte versuche es nochmal.";
+    out.autostore_saved = "Das Pad wurde erfolgreich in deinem CryptDrive gespeichert!";
+    out.autostore_forceSave = "Speicher die Datei in deinem CryptDrive"; // File upload modal
+    out.autostore_notAvailable = "Du musst dieses Pad in deinem CryptDrive speichern, bevor du dieses Feature benutzen kannst."; // Properties/tags/move to trash
 
     return out;
   });
