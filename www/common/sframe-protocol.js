@@ -171,6 +171,10 @@ define({
     'Q_CONTACTS_SET_CHANNEL_HEAD': true,
     'Q_CONTACTS_CLEAR_OWNED_CHANNEL': true,
 
+    // Chat
+    'EV_CHAT_EVENT': true,
+    'Q_CHAT_COMMAND': true,
+
     // Put one or more entries to the localStore which will go in localStorage.
     'EV_LOCALSTORE_PUT': true,
     // Put one entry in the parent sessionStorage

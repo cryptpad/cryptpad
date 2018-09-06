@@ -150,7 +150,8 @@ define([
                         }
                         cfg.friendComplete({
                             logText: Messages.contacts_added,
-                            netfluxId: sender
+                            netfluxId: sender,
+                            friend: msgData
                         });
                         var msg = ["FRIEND_REQ_ACK", chan];
                         var msgStr = Crypto.encrypt(JSON.stringify(msg), key);
@@ -163,7 +164,7 @@ define([
                     if (i !== -1) { pendingRequests.splice(i, 1); }
                     cfg.friendComplete({
                         logText: Messages.contacts_rejected,
-                        netfluxId: sender
+                        netfluxId: sender,
                     });
                     cfg.updateMetadata();
                     return;
@@ -180,7 +181,8 @@ define([
                         }
                         cfg.friendComplete({
                             logText: Messages.contacts_added,
-                            netfluxId: sender
+                            netfluxId: sender,
+                            friend: data
                         });
                     });
                     return;

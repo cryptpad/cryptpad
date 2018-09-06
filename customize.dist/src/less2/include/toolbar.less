@@ -134,9 +134,37 @@
         }
     }
 
-    .cp-toolbar-userlist-drawer {
+    .cp-toolbar-chat-drawer {
         background-color: @toolbar-bg-color;
         background-color: var(--toolbar-bg-color);
+        font: @colortheme_app-font-size @colortheme_font;
+        width: 400px;
+        display: block;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0;
+        box-sizing: border-box;
+        position: relative;
+        order: -2;
+        #cp-app-contacts-container {
+            height: 100%;
+        }
+        .cp-toolbar-chat-drawer-close {
+            color: @toolbar-color;
+            color: var(--toolbar-color);
+            position: absolute;
+            top: 0;
+            right: 1px;
+            font-size: 15px;
+            opacity: 0.5;
+            cursor: pointer;
+            text-shadow: unset;
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+    .cp-toolbar-userlist-drawer {
         font: @colortheme_app-font-size @colortheme_font;
         min-width: 175px;
         width: 175px;
@@ -145,6 +173,7 @@
         overflow-x: hidden;
         padding: 10px;
         box-sizing: border-box;
+        order: -1;
         .cp-toolbar-userlist-drawer-close {
             position: absolute;
             margin-top: -10px;

@@ -6,8 +6,11 @@ define([
     '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-feedback.js',
+    '/common/sframe-messenger-inner.js',
+    '/contacts/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages) {
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback,
+Messenger, MessengerUI, Messages) {
     var Common;
 
     var Bar = {
@@ -407,6 +410,72 @@ define([
         });
 
         initUserList(toolbar, config);
+        return $container;
+    };
+
+    var initChat = function (toolbar, config) {
+        var $container = $('<div>', {id: 'cp-app-contacts-container'})
+                            .prependTo(toolbar.chatContent);
+        var sframeChan = Common.getSframeChannel();
+        var messenger = Messenger.create(sframeChan);
+        MessengerUI.create(messenger, $container, Common);
+    };
+    var createChat = function (toolbar, config) {
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the chat");
+        }
+        var $content = $('<div>', {'class': 'cp-toolbar-chat-drawer'});
+        $content.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        var $closeIcon = $('<span>', {"class": "fa fa-window-close cp-toolbar-chat-drawer-close"}).appendTo($content);
+        //$('<h2>').text(Messages.users).appendTo($content);
+        //$('<p>', {'class': USERLIST_CLS}).appendTo($content);
+
+        toolbar.chatContent = $content;
+
+        var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open', title: Messages.chatButton || 'CHAT'}); //XXX
+
+        var $button = $('<button>').text('Chat').appendTo($container); //XXX
+        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
+
+        toolbar.$leftside.prepend($container);
+
+        if (config.$contentContainer) {
+            config.$contentContainer.prepend($content);
+        }
+
+        var hide = function () {
+            $content.hide();
+            $button.removeClass('cp-toolbar-button-active');
+        };
+        var show = function () {
+            if (Bar.isEmbed) { $content.hide(); return; }
+            $content.show();
+            $button.addClass('cp-toolbar-button-active');
+        };
+        $closeIcon.click(function () {
+            Common.setAttribute(['toolbar', 'chat-drawer'], false);
+            hide();
+        });
+        $button.click(function () {
+            var visible = $content.is(':visible');
+            if (visible) { hide(); }
+            else { show(); }
+            visible = !visible;
+            Common.setAttribute(['toolbar', 'chat-drawer'], visible);
+            //Feedback.send(visible?'USERLIST_SHOW': 'USERLIST_HIDE'); // XXX
+        });
+        show();
+        Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {
+            if (val === false || ($(window).height() < 800 && $(window).width() < 800)) {
+                return void hide();
+            }
+            show();
+        });
+
+        initChat(toolbar, config);
         return $container;
     };
 
@@ -997,6 +1066,7 @@ define([
         // Create the subelements
         var tb = {};
         tb['userlist'] = createUserList;
+        tb['chat'] = createChat;
         tb['share'] = createShare;
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;

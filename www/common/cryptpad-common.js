@@ -622,6 +622,12 @@ define([
     messenger.setChannelHead = function (data, cb) {
         postMessage("CONTACTS_SET_CHANNEL_HEAD", data, cb);
     };
+
+    messenger.execCommand = function (data, cb) {
+        postMessage("CHAT_COMMAND", data, cb);
+    };
+
+    messenger.onEvent = Util.mkEvent();
     messenger.onMessageEvent = Util.mkEvent();
     messenger.onJoinEvent = Util.mkEvent();
     messenger.onLeaveEvent = Util.mkEvent();
@@ -1059,6 +1065,8 @@ define([
         CONTACTS_UPDATE: common.messenger.onUpdateEvent.fire,
         CONTACTS_FRIEND: common.messenger.onFriendEvent.fire,
         CONTACTS_UNFRIEND: common.messenger.onUnfriendEvent.fire,
+        // Chat
+        CHAT_EVENT: common.messenger.onEvent.fire,
         // Pad
         PAD_READY: common.padRpc.onReadyEvent.fire,
         PAD_MESSAGE: common.padRpc.onMessageEvent.fire,

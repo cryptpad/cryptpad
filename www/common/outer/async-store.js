@@ -59,6 +59,9 @@ define([
                 obj[key] = data.value;
             }
             broadcast([clientId], "UPDATE_METADATA");
+            if (Array.isArray(path) && path[0] === 'profile' && store.messenger) {
+                store.messenger.updateMyData();
+            }
             onSync(cb);
         };
 
@@ -597,6 +600,7 @@ define([
         Store.setDisplayName = function (clientId, value, cb) {
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
+            if (store.messenger) { store.messenger.updateMyData(); }
             onSync(cb);
         };
 
@@ -859,6 +863,9 @@ define([
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
                 friendComplete: function (data) {
+                    if (data.friend && store.messenger && store.messenger.onFriendAdded) {
+                        store.messenger.onFriendAdded(data.friend);
+                    }
                     postMessage(clientId, "EV_FRIEND_COMPLETE", data);
                 },
                 friendRequest: function (data, cb) {
@@ -957,6 +964,10 @@ define([
                         error: e
                     });
                 });
+            },
+
+            execCommand: function (clientId, data, cb) {
+                store.messenger.execCommand(data, cb);
             }
         };
 
@@ -1317,7 +1328,6 @@ define([
             }
         };
 
-        var messengerEventInit = false;
         var sendMessengerEvent = function (q, data) {
             messengerEventClients.forEach(function (cId) {
                 postMessage(cId, q, data);
@@ -1327,41 +1337,47 @@ define([
             if (messengerEventClients.indexOf(clientId) === -1) {
                 messengerEventClients.push(clientId);
             }
-            if (!messengerEventInit) {
-                var messenger = store.messenger = Messenger.messenger(store);
-                messenger.on('message', function (message) {
-                    sendMessengerEvent('CONTACTS_MESSAGE', message);
+        };
+        var loadMessenger = function () {
+            var messenger = store.messenger = Messenger.messenger(store);
+            messenger.on('message', function (message) {
+                sendMessengerEvent('CONTACTS_MESSAGE', message);
+            });
+            messenger.on('join', function (curvePublic, channel) {
+                sendMessengerEvent('CONTACTS_JOIN', {
+                    curvePublic: curvePublic,
+                    channel: channel,
                 });
-                messenger.on('join', function (curvePublic, channel) {
-                    sendMessengerEvent('CONTACTS_JOIN', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
+            });
+            messenger.on('leave', function (curvePublic, channel) {
+                sendMessengerEvent('CONTACTS_LEAVE', {
+                    curvePublic: curvePublic,
+                    channel: channel,
                 });
-                messenger.on('leave', function (curvePublic, channel) {
-                    sendMessengerEvent('CONTACTS_LEAVE', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
+            });
+            messenger.on('update', function (info, types) {
+                sendMessengerEvent('CONTACTS_UPDATE', {
+                    types: types,
+                    info: info,
                 });
-                messenger.on('update', function (info, curvePublic) {
-                    sendMessengerEvent('CONTACTS_UPDATE', {
-                        curvePublic: curvePublic,
-                        info: info,
-                    });
+            });
+            messenger.on('friend', function (curvePublic) {
+                sendMessengerEvent('CONTACTS_FRIEND', {
+                    curvePublic: curvePublic,
                 });
-                messenger.on('friend', function (curvePublic) {
-                    sendMessengerEvent('CONTACTS_FRIEND', {
-                        curvePublic: curvePublic,
-                    });
+            });
+            messenger.on('unfriend', function (curvePublic, removedByMe) {
+                sendMessengerEvent('CONTACTS_UNFRIEND', {
+                    curvePublic: curvePublic,
+                    removedByMe: removedByMe
                 });
-                messenger.on('unfriend', function (curvePublic) {
-                    sendMessengerEvent('CONTACTS_UNFRIEND', {
-                        curvePublic: curvePublic,
-                    });
+            });
+            messenger.on('ready', function () {
+                console.log('here');
+                sendMessengerEvent('CHAT_EVENT', {
+                    ev: 'READY'
                 });
-                messengerEventInit = true;
-            }
+            });
         };
 
 
@@ -1450,6 +1466,7 @@ define([
                 });
                 userObject.fixFiles();
                 loadSharedFolders(waitFor);
+                loadMessenger();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");

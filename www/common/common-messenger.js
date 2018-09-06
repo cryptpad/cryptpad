@@ -5,7 +5,9 @@ define([
     '/common/common-util.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
-], function (Crypto, Curve, Hash, Util, Realtime, Constants) {
+
+    '/bower_components/nthen/index.js',
+], function (Crypto, Curve, Hash, Util, Realtime, Constants, nThen) {
     'use strict';
     var Msg = {
         inputs: [],
@@ -65,6 +67,7 @@ define([
                 update: [],
                 friend: [],
                 unfriend: [],
+                ready: []
             },
             range_requests: {},
         };
@@ -95,19 +98,26 @@ define([
         Msg.hk = network.historyKeeper;
         var friends = getFriendList(proxy);
 
-        var getChannel = function (curvePublic) {
-            var friend = friends[curvePublic];
-            if (!friend) { return; }
-            var chanId = friend.channel;
-            if (!chanId) { return; }
+        var getChannel = function (chanId) {
             return channels[chanId];
         };
 
-        var initRangeRequest = function (txid, curvePublic, sig, cb) {
+        var getFriendFromChannel = function (id) {
+            var friend;
+            for (var k in friends) {
+                if (friends[k].channel === id) {
+                    friend = friends[k];
+                    break;
+                }
+            }
+            return friend;
+        };
+
+        var initRangeRequest = function (txid, chanId, sig, cb) {
             messenger.range_requests[txid] = {
                 messages: [],
                 cb: cb,
-                curvePublic: curvePublic,
+                chanId: chanId,
                 sig: sig,
             };
         };
@@ -120,24 +130,22 @@ define([
             delete messenger.range_requests[txid];
         };
 
-        messenger.getMoreHistory = function (curvePublic, hash, count, cb) {
+        messenger.getMoreHistory = function (chanId, hash, count, cb) {
             if (typeof(cb) !== 'function') { return; }
 
             if (typeof(hash) !== 'string') {
-                // FIXME hash is not necessarily defined.
-                // What does this mean?
-                console.error("not sure what to do here");
-                return;
+                // Channel is empty!
+                return void cb(void 0, []);
             }
 
-            var chan = getChannel(curvePublic);
+            var chan = getChannel(chanId);
             if (typeof(chan) === 'undefined') {
                 console.error("chan is undefined. we're going to have a problem here");
                 return;
             }
 
             var txid = Util.uid();
-            initRangeRequest(txid, curvePublic, hash, cb);
+            initRangeRequest(txid, chanId, hash, cb);
             var msg = [ 'GET_HISTORY_RANGE', chan.id, {
                     from: hash,
                     count: count,
@@ -151,23 +159,58 @@ define([
             });
         };
 
-        var getCurveForChannel = function (id) {
+        /*var getCurveForChannel = function (id) {
             var channel = channels[id];
             if (!channel) { return; }
             return channel.curve;
-        };
+        };*/
 
-        messenger.getChannelHead = function (curvePublic, cb) {
-            var friend = friends[curvePublic];
-            if (!friend) { return void cb('NO_SUCH_FRIEND'); }
-            cb(void 0, friend.lastKnownHash);
-        };
+        /*messenger.getChannelHead = function (id, cb) {
+            var channel = getChannel(id);
+            if (channel.isFriendChat) {
+                var friend;
+                for (var k in friends) {
+                    if (friends[k].channel === id) {
+                        friend = friends[k];
+                        break;
+                    }
+                }
+                if (!friend) { return void cb('NO_SUCH_FRIEND'); }
+                cb(void 0, friend.lastKnownHash);
+            } else {
+                // TODO room
+                cb('NOT_IMPLEMENTED');
+            }
+        };*/
 
-        messenger.setChannelHead = function (curvePublic, hash, cb) {
-            var friend = friends[curvePublic];
-            if (!friend) { return void cb('NO_SUCH_FRIEND'); }
-            friend.lastKnownHash = hash;
+        messenger.setChannelHead = function (id, hash, cb) {
+            var channel = getChannel(id);
+            if (channel.isFriendChat) {
+                var friend = getFriendFromChannel(id);
+                if (!friend) { return void cb('NO_SUCH_FRIEND'); }
+                friend.lastKnownHash = hash;
+            } else {
+                // TODO room
+                return void cb('NOT_IMPLEMENTED');
+            }
             cb();
+        };
+
+        // Make sure the data we have about our friends are up-to-date when we see them online
+        var checkFriendData = function (curve, data) {
+            if (curve === proxy.curvePublic) { return; }
+            var friend = getFriend(proxy, curve);
+            var types = [];
+            Object.keys(data).forEach(function (k) {
+                if (friend[k] !== data[k]) {
+                    types.push(k);
+                    friend[k] = data[k];
+                }
+            });
+
+            eachHandler('update', function (f) {
+                f(clone(data), types);
+            });
         };
 
         // Id message allows us to map a netfluxId with a public curve key
@@ -206,20 +249,22 @@ define([
             // the sender field. This is to prevent replay attacks.
             if (parsed[2] !== sender || !parsed[1]) { return; }
             channel.mapId[sender] = parsed[1];
+            checkFriendData(parsed[1].curvePublic, parsed[1]);
             eachHandler('join', function (f) {
                 f(parsed[1], channel.id);
             });
 
             if (parsed[0] !== Types.mapId) { return; } // Don't send your key if it's already an ACK
             // Answer with your own key
-            var rMsg = [Types.mapIdAck, proxy.curvePublic, channel.wc.myID];
+            var myData = createData(proxy);
+            delete myData.channel;
+            var rMsg = [Types.mapIdAck, myData, channel.wc.myID];
             var rMsgStr = JSON.stringify(rMsg);
             var cryptMsg = channel.encryptor.encrypt(rMsgStr);
             network.sendto(sender, cryptMsg);
         };
 
-        var orderMessages = function (curvePublic, new_messages /*, sig */) {
-            var channel = getChannel(curvePublic);
+        var orderMessages = function (channel, new_messages /*, sig */) {
             var messages = channel.messages;
 
             // TODO improve performance, guarantee correct ordering
@@ -250,8 +295,9 @@ define([
                     author: parsedMsg[1],
                     time: parsedMsg[2],
                     text: parsedMsg[3],
+                    channel: channel.id
                     // this makes debugging a whole lot easier
-                    curve: getCurveForChannel(channel.id),
+                    //curve: getCurveForChannel(channel.id),
                 };
 
                 channel.messages.push(res);
@@ -262,31 +308,21 @@ define([
                 return true;
             }
             if (parsedMsg[0] === Types.update) {
-                if (parsedMsg[1] === proxy.curvePublic) { return; }
-                curvePublic = parsedMsg[1];
-                var newdata = parsedMsg[3];
-                var data = getFriend(proxy, parsedMsg[1]);
-                var types = [];
-                Object.keys(newdata).forEach(function (k) {
-                    if (data[k] !== newdata[k]) {
-                        types.push(k);
-                        data[k] = newdata[k];
-                    }
-                });
-
-                eachHandler('update', function (f) {
-                    f(clone(newdata), curvePublic);
-                });
+                checkFriendData(parsedMsg[1], parsedMsg[3]);
                 return;
             }
             if (parsedMsg[0] === Types.unfriend) {
                 curvePublic = parsedMsg[1];
-                delete friends[curvePublic];
 
-                removeFromFriendList(parsedMsg[1], function () {
+                // If this a removal from our part by in another tab, do nothing.
+                // The channel is already closed in the proxy.on('remove') part
+                if (curvePublic === proxy.curvePublic) { return; }
+
+                removeFromFriendList(curvePublic, function () {
                     channel.wc.leave(Types.unfriend);
+                    delete channels[channel.id];
                     eachHandler('unfriend', function (f) {
-                        f(curvePublic);
+                        f(curvePublic, false);
                     });
                 });
                 return;
@@ -324,7 +360,7 @@ define([
                     });
                 });
                 eachHandler('update', function (f) {
-                    f(myData, myData.curvePublic);
+                    f(myData, ['displayName', 'profile', 'avatar']);
                 });
                 friends.me = myData;
             }
@@ -356,8 +392,7 @@ define([
                     req.messages.push(parsed[2]);
                 } else if (type === 'HISTORY_RANGE_END') {
                     // process all the messages (decrypt)
-                    var curvePublic = req.curvePublic;
-                    var channel = getChannel(curvePublic);
+                    var channel = getChannel(req.chanId);
 
                     var decrypted = req.messages.map(function (msg) {
                         if (msg[2] !== 'MSG') { return; }
@@ -379,11 +414,11 @@ define([
                             author: O.d[1],
                             time: O.d[2],
                             text: O.d[3],
-                            curve: curvePublic,
+                            channel: req.chanId
                         };
                     });
 
-                    orderMessages(curvePublic, decrypted, req.sig);
+                    orderMessages(channel, decrypted, req.sig);
                     req.cb(void 0, decrypted);
                     return deleteRangeRequest(txid);
                 } else {
@@ -395,6 +430,7 @@ define([
             if ((parsed.validateKey || parsed.owners) && parsed.channel) {
                 return;
             }
+            // End of initial history
             if (parsed.state && parsed.state === 1 && parsed.channel) {
                 if (channels[parsed.channel]) {
                     // parsed.channel is Ready
@@ -409,6 +445,7 @@ define([
                 }
                 return;
             }
+            // Initial history message
             var chan = parsed[3];
             if (!chan || !channels[chan]) { return; }
             pushMsg(channels[chan], parsed[4]);
@@ -440,7 +477,7 @@ define([
             if (!data) {
                 // friend is not valid
                 console.error('friend is not valid');
-                return;
+                return void cb('INVALID_FRIEND');
             }
 
             var channel = channels[data.channel];
@@ -458,12 +495,13 @@ define([
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
 
-            // TODO emit remove_friend event?
             try {
                 channel.wc.bcast(cryptMsg).then(function () {
-                    delete friends[curvePublic];
-                    delete channels[curvePublic];
-                    Realtime.whenRealtimeSyncs(realtime, function () {
+                    removeFromFriendList(curvePublic, function () {
+                        delete channels[channel.id];
+                        eachHandler('unfriend', function (f) {
+                            f(curvePublic, true);
+                        });
                         cb();
                     });
                 }, function (err) {
@@ -476,7 +514,7 @@ define([
         };
 
         var getChannelMessagesSince = function (chan, data, keys) {
-            console.log('Fetching [%s] messages since [%s]', data.curvePublic, data.lastKnownHash || '');
+            console.log('Fetching [%s] messages since [%s]', chan.id, data.lastKnownHash || '');
             var cfg = {
                 validateKey: keys.validateKey,
                 owners: [proxy.edPublic, data.edPublic],
@@ -489,39 +527,19 @@ define([
             });
         };
 
-        var openFriendChannel = function (data, f) {
-            var keys = Curve.deriveKeys(data.curvePublic, proxy.curvePrivate);
+        var openChannel = function (data) {
+            var keys = data.keys;
             var encryptor = Curve.createEncryptor(keys);
             network.join(data.channel).then(function (chan) {
                 var channel = channels[data.channel] = {
                     id: data.channel,
+                    isFriendChat: data.isFriendChat,
                     sending: false,
-                    friendEd: f,
-                    keys: keys,
-                    curve: data.curvePublic,
                     encryptor: encryptor,
                     messages: [],
                     wc: chan,
                     userList: [],
                     mapId: {},
-                    send: function (payload, cb) {
-                        if (!network.webChannels.some(function (wc) {
-                            if (wc.id === channel.wc.id) { return true; }
-                        })) {
-                            return void cb('NO_SUCH_CHANNEL');
-                        }
-
-                        var msg = [Types.message, proxy.curvePublic, +new Date(), payload];
-                        var msgStr = JSON.stringify(msg);
-                        var cryptMsg = channel.encryptor.encrypt(msgStr);
-
-                        channel.wc.bcast(cryptMsg).then(function () {
-                            pushMsg(channel, cryptMsg);
-                            cb();
-                        }, function (err) {
-                            cb(err);
-                        });
-                    }
                 };
                 chan.on('message', function (msg, sender) {
                     onMessage(msg, sender, chan);
@@ -530,9 +548,12 @@ define([
                 var onJoining = function (peer) {
                     if (peer === Msg.hk) { return; }
                     if (channel.userList.indexOf(peer) !== -1) { return; }
-
                     channel.userList.push(peer);
-                    var msg = [Types.mapId, proxy.curvePublic, chan.myID];
+
+                    // Join event will be sent once we are able to ID this peer
+                    var myData = createData(proxy);
+                    delete myData.channel;
+                    var msg = [Types.mapId, myData, chan.myID];
                     var msgStr = JSON.stringify(msg);
                     var cryptMsg = channel.encryptor.encrypt(msgStr);
                     network.sendto(peer, cryptMsg);
@@ -544,16 +565,24 @@ define([
                 });
                 chan.on('join', onJoining);
                 chan.on('leave', function (peer) {
-                    var curvePublic = channel.mapId[peer];
                     var i = channel.userList.indexOf(peer);
                     while (i !== -1) {
                         channel.userList.splice(i, 1);
                         i = channel.userList.indexOf(peer);
                     }
                     // update status
-                    if (!curvePublic) { return; }
+                    var otherData = channel.mapId[peer];
+                    if (!otherData) { return; }
+
+                    // Make sure the leaving user is not connected with another netflux id
+                    if (channel.userList.some(function (nId) {
+                        return channel.mapId[nId]
+                                && channel.mapId[nId].curvePublic === otherData.curvePublic;
+                    })) { return; }
+
+                    // Send the notification
                     eachHandler('leave', function (f) {
-                        f(curvePublic, channel.id);
+                        f(otherData, channel.id);
                     });
                 });
 
@@ -573,7 +602,7 @@ define([
             }));
         };
 
-        messenger.openFriendChannel = function (curvePublic, cb) {
+        /*messenger.openFriendChannel = function (curvePublic, cb) {
             if (typeof(curvePublic) !== 'string') { return void cb('INVALID_ID'); }
             if (typeof(cb) !== 'function') { throw new Error('expected callback'); }
 
@@ -585,10 +614,10 @@ define([
             if (!channel) { return void cb('E_NO_CHANNEL'); }
             joining[channel] = cb;
             openFriendChannel(friend, curvePublic);
-        };
+        };*/
 
-        messenger.sendMessage = function (curvePublic, payload, cb) {
-            var channel = getChannel(curvePublic);
+        messenger.sendMessage = function (id, payload, cb) {
+            var channel = getChannel(id);
             if (!channel) { return void cb('NO_CHANNEL'); }
             if (!network.webChannels.some(function (wc) {
                 if (wc.id === channel.wc.id) { return true; }
@@ -597,6 +626,9 @@ define([
             }
 
             var msg = [Types.message, proxy.curvePublic, +new Date(), payload];
+            if (!channel.isFriendChat) {
+                msg.push(proxy[Constants.displayNameKey]);
+            }
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);
 
@@ -608,18 +640,27 @@ define([
             });
         };
 
-        messenger.getStatus = function (curvePublic, cb) {
-            var channel = getChannel(curvePublic);
+        messenger.getStatus = function (chanId, cb) {
+            // Display green status if one member is not me
+            var channel = getChannel(chanId);
             if (!channel) { return void cb('NO_SUCH_CHANNEL'); }
             var online = channel.userList.some(function (nId) {
-                return channel.mapId[nId] === curvePublic;
+                var data = channel.mapId[nId] || undefined;
+                if (!data) { return false; }
+                return data.curvePublic !== proxy.curvePublic;
             });
             cb(void 0, online);
         };
 
-        messenger.getFriendInfo = function (curvePublic, cb) {
+        messenger.getFriendInfo = function (channel, cb) {
             setTimeout(function () {
-                var friend = friends[curvePublic];
+                var friend;
+                for (var k in friends) {
+                    if (friends[k].channel === channel) {
+                        friend = friends[k];
+                        break;
+                    }
+                }
                 if (!friend) { return void cb('NO_SUCH_FRIEND'); }
                 // this clone will be redundant when ui uses postmessage
                 cb(void 0, clone(friend));
@@ -633,27 +674,162 @@ define([
             });
         };
 
-        // TODO listen for changes to your friend list
-        // emit 'update' events for clients
+        var loadFriend = function (friend, cb) {
+            var channel = friend.channel;
+            if (getChannel(channel)) { return void cb(); }
 
-        //var update = function (curvePublic
+            joining[channel] = cb;
+            var keys = Curve.deriveKeys(friend.curvePublic, proxy.curvePrivate);
+            var data = {
+                keys: keys,
+                channel: friend.channel,
+                lastKnownHash: friend.lastKnownHash,
+                owners: [proxy.edPublic, friend.edPublic],
+                isFriendChat: true
+            };
+            openChannel(data);
+        };
+
+        // Detect friends changes made in another worker
         proxy.on('change', ['friends'], function (o, n, p) {
             var curvePublic;
             if (o === undefined) {
                 // new friend added
                 curvePublic = p.slice(-1)[0];
-                eachHandler('friend', function (f) {
-                    f(curvePublic, clone(n));
+
+                // Load channel
+                var friend = friends[curvePublic];
+                if (typeof(friend) !== 'object') { return; }
+                var channel = friend.channel;
+                if (!channel) { return; }
+                loadFriend(friend, function () {
+                    eachHandler('friend', function (f) {
+                        f(curvePublic);
+                    });
                 });
                 return;
             }
 
+            if (typeof(n) === 'undefined') {
+                // Handled by .on('remove')
+                return;
+            }
             console.error(o, n, p);
         }).on('remove', ['friends'], function (o, p) {
+            var curvePublic = p[1];
+            if (!curvePublic) { return; }
+            if (p[2] !== 'channel') { return; }
+            var channel = channels[o];
+            channel.wc.leave(Types.unfriend);
+            delete channels[channel.id];
             eachHandler('unfriend', function (f) {
-                f(p[1]); // TODO
+                f(curvePublic, true);
             });
         });
+
+        // Friend added in our contacts in the current worker
+        messenger.onFriendAdded = function (friendData) {
+            var friend = friends[friendData.curvePublic];
+            if (typeof(friend) !== 'object') { return; }
+            var channel = friend.channel;
+            if (!channel) { return; }
+            loadFriend(friend, function () {
+                eachHandler('friend', function (f) {
+                    f(friend.curvePublic);
+                });
+            });
+        };
+
+        var ready = false;
+        var init = function () {
+            var friends = getFriendList(proxy);
+
+            nThen(function (waitFor) {
+                Object.keys(friends).forEach(function (key) {
+                    if (key === 'me') { return; }
+                    var friend = clone(friends[key]);
+                    if (typeof(friend) !== 'object') { return; }
+                    var channel = friend.channel;
+                    if (!channel) { return; }
+                    loadFriend(friend, waitFor());
+                });
+                // TODO load rooms
+            }).nThen(function () {
+                // TODO send event chat ready
+                // Remove spinner in chatbox
+                ready = true;
+                eachHandler('ready', function (f) {
+                    f();
+                });
+            });
+        };
+        init();
+
+        var getRooms = function (curvePublic, cb) {
+            if (curvePublic) {
+                // We need to get data about a new friend's room
+                var friend = getFriend(proxy, curvePublic);
+                if (!friend) { return void cb({error: 'NO_SUCH_FRIEND'}); }
+                var channel = getChannel(friend.channel);
+                if (!channel) { return void cb({error: 'NO_SUCH_CHANNEL'}); }
+                return void cb([{
+                    id: channel.id,
+                    isFriendChat: true,
+                    name: friend.displayName,
+                    lastKnownHash: friend.lastKnownHash,
+                    curvePublic: friend.curvePublic
+                }]);
+            }
+
+            var rooms = Object.keys(channels).map(function (id) {
+                var r = getChannel(id);
+                var name, lastKnownHash, curvePublic;
+                if (r.isFriendChat) {
+                    var friend = getFriendFromChannel(id);
+                    if (!friend) { return null; }
+                    name = friend.displayName;
+                    lastKnownHash = friend.lastKnownHash;
+                    curvePublic = friend.curvePublic;
+                } else {
+                    // TODO room get metadata (name) && lastKnownHash
+                }
+                return {
+                    id: r.id,
+                    isFriendChat: r.isFriendChat,
+                    name: name,
+                    lastKnownHash: lastKnownHash,
+                    curvePublic: curvePublic
+                };
+            }).filter(function (x) { return x; });
+            cb(rooms);
+        };
+
+        var getUserList = function (data, cb) {
+            var room = getChannel(data.id);
+            if (!room) { return void cb({error: 'NO_SUCH_CHANNEL'}); }
+            if (room.isFriendChat) {
+                var friend = getFriendFromChannel(data.id);
+                if (!friend) { return void cb({error: 'NO_SUCH_FRIEND'}); }
+                cb([friend]);
+            } else {
+                // TODO room userlist in rooms...
+                // (this is the static userlist, not the netflux one)
+            }
+        };
+
+        messenger.execCommand = function (obj, cb) {
+            var cmd = obj.cmd;
+            var data = obj.data;
+            if (cmd === 'IS_READY') {
+                return void cb(ready);
+            }
+            if (cmd === 'GET_ROOMS') {
+                return void getRooms(data, cb);
+            }
+            if (cmd === 'GET_USERLIST') {
+                return void getUserList(data, cb);
+            }
+        };
 
         Object.freeze(messenger);
 

@@ -559,6 +559,7 @@ define([
             }, onLocal);
             var configTb = {
                 displayed: [
+                    'chat',
                     'userlist',
                     'title',
                     'useradmin',

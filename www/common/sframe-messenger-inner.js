@@ -35,7 +35,7 @@ define([], function () {
         });
         sFrameChan.on('EV_CONTACTS_UPDATE', function (data) {
             _handlers.update.forEach(function (f) {
-                f(data.info, data.curvePublic);
+                f(data.info, data.types);
             });
         });
         sFrameChan.on('EV_CONTACTS_FRIEND', function (data) {
@@ -45,7 +45,7 @@ define([], function () {
         });
         sFrameChan.on('EV_CONTACTS_UNFRIEND', function (data) {
             _handlers.unfriend.forEach(function (f) {
-                f(data.curvePublic);
+                f(data.curvePublic, data.removedByMe);
             });
         });
 
