@@ -41,7 +41,6 @@ define([
 
         $container.addClass('cp-app-contacts-initializing');
 
-        var spinner = '<span class="fa fa-spinner fa-pulse fa-4x fa-fw"></span>';
         var messaging = h('div#cp-app-contacts-messaging', [
             h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
             h('div.cp-app-contacts-info', [
@@ -210,7 +209,6 @@ define([
             $(removeHistory).click(function () {
                 // XXX
                 console.error("TODO: only display clear button if owned");
-                return;
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
@@ -607,8 +605,9 @@ define([
             $messages.find(userQuery(curvePublic)).remove();
             if (channel && channel.curvePublic === curvePublic) {
                 showInfo();
+            }
+            if (!removedByMe) {
                 // TODO UI.alert if this is triggered by the other guy
-                // (we need more data on the 'unfriend' event to determine its origin)
             }
         });
 

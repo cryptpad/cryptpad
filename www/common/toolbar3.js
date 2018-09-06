@@ -413,7 +413,7 @@ Messenger, MessengerUI, Messages) {
         return $container;
     };
 
-    var initChat = function (toolbar, config) {
+    var initChat = function (toolbar) {
         var $container = $('<div>', {id: 'cp-app-contacts-container'})
                             .prependTo(toolbar.chatContent);
         var sframeChan = Common.getSframeChannel();
