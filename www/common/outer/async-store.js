@@ -1372,10 +1372,10 @@ define([
                     removedByMe: removedByMe
                 });
             });
-            messenger.on('ready', function () {
-                console.log('here');
+            messenger.on('event', function (ev, data) {
                 sendMessengerEvent('CHAT_EVENT', {
-                    ev: 'READY'
+                    ev: ev,
+                    data: data
                 });
             });
         };

@@ -776,11 +776,19 @@ define([
                     Cryptpad.messenger.setChannelHead(opt, cb);
                 });
 
+                sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
+                    Cryptpad.messenger.execCommand({
+                        cmd: 'OPEN_PAD_CHAT',
+                        data: {
+                            channel: data,
+                            secret: secret
+                        }
+                    }, cb);
+                });
                 sframeChan.on('Q_CHAT_COMMAND', function (data, cb) {
                     Cryptpad.messenger.execCommand(data, cb);
                 });
                 Cryptpad.messenger.onEvent.reg(function (data) {
-                    console.log(data);
                     sframeChan.event('EV_CHAT_EVENT', data);
                 });
 

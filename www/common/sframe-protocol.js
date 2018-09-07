@@ -174,6 +174,7 @@ define({
     // Chat
     'EV_CHAT_EVENT': true,
     'Q_CHAT_COMMAND': true,
+    'Q_CHAT_OPENPADCHAT': true,
 
     // Put one or more entries to the localStore which will go in localStorage.
     'EV_LOCALSTORE_PUT': true,

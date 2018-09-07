@@ -161,6 +161,19 @@ define([
         });
     };
 
+    // Chat
+    funcs.openPadChat = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.chat || Hash.createChannelId();
+        if (!md.chat) {
+            md.chat = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
 
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);

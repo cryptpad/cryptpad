@@ -24,13 +24,19 @@ define([
 
     var initChannel = function (state, info) {
         console.log('initializing channel for [%s]', info.id);
+        var h, t;
+        if (Array.isArray(info.messages) && info.messages.length) {
+            h = info.messages[info.messages.length -1].sig;
+            t = info.messages[0].sig;
+        }
         state.channels[info.id] = {
-            messages: [],
+            messages: info.messages || [],
             name: info.name,
             isFriendChat: info.isFriendChat,
+            isPadChat: info.isPadChat,
             curvePublic: info.curvePublic,
-            HEAD: info.lastKnownHash,
-            TAIL: null,
+            HEAD: h || info.lastKnownHash,
+            TAIL: t || null,
         };
     };
 
@@ -114,7 +120,7 @@ define([
         var markup = {};
         markup.message = function (msg) {
             var curvePublic = msg.author;
-            var name = contactsData[msg.author].displayName;
+            var name = msg.name || contactsData[msg.author].displayName;
             return h('div.cp-app-contacts-message', {
                 title: msg.time? new Date(msg.time).toLocaleString(): '?',
                 'data-user': curvePublic,
@@ -172,9 +178,13 @@ define([
                         return;
                     }
 
-                    history.forEach(function (msg) {
+                    history.forEach(function (msg, i) {
                         if (channel.exhausted) { return; }
                         if (msg.sig) {
+                            if (i === 0 && history.length > 1 && msg.sig === channel.TAIL) {
+                                // First message is usually the lastKnownHash, ignore it
+                                return;
+                            }
                             if (msg.sig === channel.TAIL) {
                                 console.error('No more messages to fetch');
                                 channel.exhausted = true;
@@ -227,7 +237,7 @@ define([
             var header = h('div.cp-app-contacts-header', [
                 avatar,
                 moreHistory,
-                removeHistory,
+                data.isFriendChat ? removeHistory: undefined,
             ]);
             var messages = h('div.cp-app-contacts-messages');
             var input = h('textarea', {
@@ -242,18 +252,16 @@ define([
             ]);
 
             var $avatar = $(avatar);
-            if (data.isFriendChat) {
-                var friend = contactsData[curvePublic];
-                if (friend.avatar && avatars[friend.avatar]) {
-                    $avatar.append(avatars[friend.avatar]).append(rightCol);
-                } else {
-                    common.displayAvatar($avatar, friend.avatar, friend.displayName, function ($img) {
-                        if (friend.avatar && $img) {
-                            avatars[friend.avatar] = $img[0].outerHTML;
-                        }
-                        $(rightCol).insertAfter($avatar);
-                    });
-                }
+            var friend = contactsData[curvePublic] || {};
+            if (friend.avatar && avatars[friend.avatar]) {
+                $avatar.append(avatars[friend.avatar]).append(rightCol);
+            } else {
+                common.displayAvatar($avatar, friend.avatar, displayName, function ($img) {
+                    if (friend.avatar && $img) {
+                        avatars[friend.avatar] = $img[0].outerHTML;
+                    }
+                    $(rightCol).insertAfter($avatar);
+                });
             }
 
             var sending = false;
@@ -368,7 +376,13 @@ define([
                     var $more = $chat.find('.cp-app-contacts-more-history');
                     $more.click();
                 }
-                return void $chat.show();
+                $chat.show();
+                if (channel.isPadChat) {
+                    // Always scroll bottom for now in pad chat (no last known hash)
+                    var $messagebox = $chat.find('.cp-app-contacts-messages');
+                    $messagebox.scrollTop($messagebox.outerHeight());
+                }
+                return;
             } else {
                 console.error("Chat is missing... Please reload the page and try again.");
             }
@@ -389,10 +403,14 @@ define([
             var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
                 title: Messages.contacts_remove
             });
+            var leaveRoom = h('span.cp-app-contacts-remove.fa.fa-sign-out', {
+                title: 'Leave this room' // XXX
+            });
+
             var status = h('span.cp-app-contacts-status');
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.name]),
-                remove,
+                room.isFriendChat ? remove : leaveRoom,
             ]);
 
             var friendData = room.isFriendChat ? userlist[0] : {};
@@ -406,23 +424,20 @@ define([
             $(remove).click(function (e) {
                 e.stopPropagation();
                 var channel = state.channels[id];
-                if (channel.isFriendChat) {
-                    var curvePublic = channel.curvePublic;
-                    var friend = contactsData[curvePublic] || friendData;
-                    UI.confirm(Messages._getKey('contacts_confirmRemove', [
-                        Util.fixHTML(friend.name)
-                    ]), function (yes) {
-                        if (!yes) { return; }
-                        removeFriend(curvePublic, function (e) {
-                            if (e) { return void console.error(e); }
-                        });
-                        // TODO remove friend from userlist ui
-                        // FIXME seems to trigger EJOINED from netflux-websocket (from server);
-                        // (tried to join a channel in which you were already present)
-                    }, undefined, true);
-                } else {
-                    // TODO room remove room
-                }
+                if (!channel.isFriendChat) { return; }
+                var curvePublic = channel.curvePublic;
+                var friend = contactsData[curvePublic] || friendData;
+                UI.confirm(Messages._getKey('contacts_confirmRemove', [
+                    Util.fixHTML(friend.name)
+                ]), function (yes) {
+                    if (!yes) { return; }
+                    removeFriend(curvePublic, function (e) {
+                        if (e) { return void console.error(e); }
+                    });
+                    // TODO remove friend from userlist ui
+                    // FIXME seems to trigger EJOINED from netflux-websocket (from server);
+                    // (tried to join a channel in which you were already present)
+                }, undefined, true);
             });
 
             if (friendData.avatar && avatars[friendData.avatar]) {
@@ -457,6 +472,7 @@ define([
 
             var channel = state.channels[chanId];
             if (!channel) {
+                console.log(message);
                 console.error('expected channel [%s] to be open', chanId);
                 return;
             }
@@ -568,31 +584,40 @@ define([
 
             execCommand('GET_USERLIST', {id: id}, function (e, list) {
                 if (e || list.error) { return void console.error(e || list.error); }
-                if (!Array.isArray(list) || !list.length) {
+                if (!room.isPadChat && (!Array.isArray(list) || !list.length)) {
                     return void console.error("Empty room!");
                 }
                 debug('userlist: ' + JSON.stringify(list));
 
-                // This is a friend, the userlist is only one user.
-                var friend = list[0];
-                contactsData[friend.curvePublic] = friend;
+                var friend = {};
+
+                if (room.isFriendChat) {
+                    // This is a friend, the userlist is only one user.
+                    friend = list[0];
+                    contactsData[friend.curvePublic] = friend;
+                }
 
                 var chatbox = markup.chatbox(id, room, friend.curvePublic);
                 $(chatbox).hide();
                 $messages.append(chatbox);
+
+                var $messagebox = $(chatbox).find('.cp-app-contacts-messages');
+                room.messages.forEach(function (msg) {
+                    var el_message = markup.message(msg);
+                    $messagebox.append(el_message);
+                });
+                normalizeLabels($messagebox);
 
                 var roomEl = markup.room(id, room, list);
                 $userlist.append(roomEl);
 
                 updateStatus(id);
             });
-
-            // TODO room group chat
         };
 
         messenger.on('friend', function (curvePublic) {
             debug('new friend: ', curvePublic);
-            execCommand('GET_ROOMS', curvePublic, function (err, rooms) {
+            execCommand('GET_ROOMS', {curvePublic: curvePublic}, function (err, rooms) {
                 if (err) { return void console.error(err); }
                 debug('rooms: ' + JSON.stringify(rooms));
                 rooms.forEach(initializeRoom);
@@ -636,14 +661,32 @@ define([
             $container.removeClass('cp-app-contacts-initializing');
         };
 
+        var onPadChatReady = function (data) {
+            execCommand('GET_ROOMS', {padChat: data}, function (err, rooms) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(rooms) || rooms.length !== 1) {
+                    return void console.error('Invalid pad chat');
+                }
+                var room = rooms[0];
+                room.name = 'XXX Pad chat';
+                rooms.forEach(initializeRoom);
+            });
+
+            $container.removeClass('cp-app-contacts-initializing');
+        };
+
         // Initialize chat when outer is ready (all channels loaded)
         // TODO: try again in outer if fail to load a channel
         execCommand('IS_READY', null, function (err, yes) {
             if (yes) { onMessengerReady(); }
         });
-        sframeChan.on('EV_CHAT_EVENT', function (data) {
-            if (data.ev === 'READY') {
+        sframeChan.on('EV_CHAT_EVENT', function (obj) {
+            if (obj.ev === 'READY') {
                 onMessengerReady();
+                return;
+            }
+            if (obj.ev === 'PADCHAT_READY') {
+                onPadChatReady(obj.data);
                 return;
             }
         });
