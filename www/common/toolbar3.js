@@ -414,8 +414,10 @@ Messenger, MessengerUI, Messages) {
     };
 
     var initChat = function (toolbar) {
-        var $container = $('<div>', {id: 'cp-app-contacts-container'})
-                            .prependTo(toolbar.chatContent);
+        var $container = $('<div>', {
+            id: 'cp-app-contacts-container',
+            'class': 'cp-app-contacts-inapp'
+        }).prependTo(toolbar.chatContent);
         var sframeChan = Common.getSframeChannel();
         var messenger = Messenger.create(sframeChan);
         MessengerUI.create(messenger, $container, Common);

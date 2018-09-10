@@ -54,8 +54,7 @@
     }
 
     #cp-app-contacts-friendlist {
-        width: 350px;
-        max-width: 30%;
+        width: 200px;
         height: 100%;
         background-color: lighten(@bg-color, 10%);
         overflow-y: auto;
@@ -65,10 +64,16 @@
             margin: 10px;
             cursor: pointer;
             position: relative;
+            height: 48px;
             .cp-app-contacts-right-col {
                 margin-left: 5px;
                 display: flex;
                 flex-flow: column;
+                flex: 1;
+                min-width: 0;
+                .cp-app-contacts-name {
+                    white-space: nowrap;
+                }
             }
             &:hover {
                 background-color: rgba(0,0,0,0.3);
@@ -82,6 +87,54 @@
             width: 20px;
             &:hover {
                 color: darken(@color, 20%);
+            }
+        }
+
+        .cp-app-contacts-category {
+            display: flex;
+            flex-flow: column;
+            .cp-app-contacts-category-title {
+                order: 1;
+                font-size: 18px;
+                margin: 0 5px;
+                text-align: center;
+                background: rgba(0,0,0,0.1);
+                font-weight: bold;
+                height: 22px;
+                line-height: 22px;
+            }
+            .cp-app-contacts-category-content {
+                order: 2;
+                &:empty {
+                    display: none;
+                    & ~ .cp-app-contacts-category-title {
+                        display: none;
+                    }
+                }
+            }
+        }
+    }
+    #cp-app-contacts-container.cp-app-contacts-inapp {
+        #cp-app-contacts-friendlist {
+            transition: width 0.2s ease-in-out 0.2s;
+            width: 70px;
+            .cp-app-contacts-friend {
+                .cp-app-contacts-right-col {
+                    overflow: hidden;
+                }
+            }
+            .cp-app-contacts-category-title {
+                transition: font-size 0.2s ease-in-out 0.2s;
+                margin: 0 2px;
+                font-size: 16px;
+            }
+            &:hover {
+                transition-delay: 1.5s;
+                width: 200px;
+                .cp-app-contacts-category-title {
+                    transition-delay: 1.5s;
+                    font-size: 18px;
+                }
             }
         }
     }
@@ -227,7 +280,7 @@
                 margin: 5px 0;
                 padding: 5px 10px;
                 border: none;
-                height: 50px;
+                height: 54px; // 2 lines (22px height) + 2 margins (5px)
                 flex: 1;
                 background-color: darken(@bg-color, 10%);
                 color: @color;
@@ -239,7 +292,7 @@
                 }
             }
             button {
-                height: 50px;
+                height: 54px;
                 border-radius: 0;
                 border: none;
                 background-color: darken(@bg-color, 15%);

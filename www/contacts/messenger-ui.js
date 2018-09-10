@@ -60,6 +60,17 @@ define([
 
         var friendList = h('div#cp-app-contacts-friendlist', [
             h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
+            h('div.cp-app-contacts-padchat.cp-app-contacts-category', [
+                h('div.cp-app-contacts-category-content')
+            ]),
+            h('div.cp-app-contacts-friends.cp-app-contacts-category', [
+                h('div.cp-app-contacts-category-content'),
+                h('h2.cp-app-contacts-category-title', 'Friends'), // XXX
+            ]),
+            h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
+                h('div.cp-app-contacts-category-content'),
+                h('h2.cp-app-contacts-category-title', 'Rooms'), // XXX
+            ]),
         ]);
 
         var $userlist = $(friendList).appendTo($container);
@@ -217,8 +228,6 @@ define([
             });
 
             $(removeHistory).click(function () {
-                // XXX
-                console.error("TODO: only display clear button if owned");
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
@@ -397,7 +406,8 @@ define([
         markup.room = function (id, room, userlist) {
             var roomEl = h('div.cp-app-contacts-friend.cp-avatar', {
                 'data-key': id,
-                'data-user': room.isFriendChat ? userlist[0].curvePublic : ''
+                'data-user': room.isFriendChat ? userlist[0].curvePublic : '',
+                title: room.name
             });
 
             var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
@@ -410,7 +420,8 @@ define([
             var status = h('span.cp-app-contacts-status');
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.name]),
-                room.isFriendChat ? remove : leaveRoom,
+                room.isFriendChat ? remove :
+                    room.isPadChat ? undefined : leaveRoom,
             ]);
 
             var friendData = room.isFriendChat ? userlist[0] : {};
@@ -609,7 +620,16 @@ define([
                 normalizeLabels($messagebox);
 
                 var roomEl = markup.room(id, room, list);
-                $userlist.append(roomEl);
+
+                var $parentEl;
+                if (room.isFriendChat) {
+                    $parentEl = $userlist.find('.cp-app-contacts-friends');
+                } else if (room.isPadChat) {
+                    $parentEl = $userlist.find('.cp-app-contacts-padchat');
+                } else {
+                    $parentEl = $userlist.find('.cp-app-contacts-rooms');
+                }
+                $parentEl.find('.cp-app-contacts-category-content').append(roomEl);
 
                 updateStatus(id);
             });
@@ -668,7 +688,7 @@ define([
                     return void console.error('Invalid pad chat');
                 }
                 var room = rooms[0];
-                room.name = 'XXX Pad chat';
+                room.name = 'XXX Pad chat'; // XXX
                 rooms.forEach(initializeRoom);
             });
 
