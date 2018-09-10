@@ -113,7 +113,6 @@ define([
             });
 
             channels.forEach(function (c, i) {
-                var m1 = state.channels[c].messages.slice(-1)[0];
                 $userlist.find(dataQuery(c)).css('order', i);
             });
 
