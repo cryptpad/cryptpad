@@ -162,6 +162,10 @@ define([
     };
 
     // Chat
+    var padChatChannel;
+    funcs.getPadChat = function () {
+        return padChatChannel;
+    };
     funcs.openPadChat = function (saveChanges) {
         var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
         var channel = md.chat || Hash.createChannelId();
@@ -170,6 +174,7 @@ define([
             ctx.metadataMgr.updateMetadata(md);
             setTimeout(saveChanges);
         }
+        padChatChannel = channel;
         ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
             if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
         });

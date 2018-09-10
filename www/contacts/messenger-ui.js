@@ -708,6 +708,8 @@ define([
         };
 
         var onPadChatReady = function (data) {
+            var padChat = common.getPadChat();
+            if (data !== padChat) { return; }
             execCommand('GET_ROOMS', {padChat: data}, function (err, rooms) {
                 if (err) { return void console.error(err); }
                 if (!Array.isArray(rooms) || rooms.length !== 1) {
