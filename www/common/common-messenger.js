@@ -735,7 +735,6 @@ define([
                 // Handled by .on('remove')
                 return;
             }
-            console.error(o, n, p);
         }).on('remove', ['friends'], function (o, p) {
             var curvePublic = p[1];
             if (!curvePublic) { return; }

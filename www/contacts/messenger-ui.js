@@ -3,11 +3,10 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-interface.js',
-    '/common/common-notifier.js',
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
     '/common/media-tag.js',
-], function ($, Messages, Util, UI, Notifier, h, Marked, MediaTag) {
+], function ($, Messages, Util, UI, h, Marked, MediaTag) {
     'use strict';
 
     var debug = console.log;
@@ -493,9 +492,8 @@ define([
             return ($elem[0].scrollHeight - $elem.scrollTop() === $elem.outerHeight());
         };
 
-        var initializing = true;
         messenger.on('message', function (message) {
-            if (!initializing) { Notifier.notify(); }
+            common.notify();
             var chanId = message.channel;
 
             var chat = getChat(chanId);
