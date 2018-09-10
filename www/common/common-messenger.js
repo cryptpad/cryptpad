@@ -853,6 +853,12 @@ define([
 
         var openPadChat = function (data, cb) {
             var channel = data.channel;
+            if (getChannel(channel)) {
+                eachHandler('event', function (f) {
+                    f('PADCHAT_READY', channel);
+                });
+                return void cb();
+            }
             var keys = data.secret && data.secret.keys;
             var cryptKey = keys.viewKeyStr ? Crypto.b64AddSlashes(keys.viewKeyStr) : data.secret.key;
             var encryptor = Crypto.createEncryptor(cryptKey);
