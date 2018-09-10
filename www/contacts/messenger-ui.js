@@ -103,6 +103,30 @@ define([
             find.inList(id).removeClass('cp-app-contacts-notify');
         };
 
+        var reorderRooms = function () {
+            var channels = Object.keys(state.channels).sort(function (a, b) {
+                var m1 = state.channels[a].messages.slice(-1)[0];
+                var m2 = state.channels[b].messages.slice(-1)[0];
+                if (!m2) { return !m1 ? 0 : 1; }
+                if (!m1) { return -1; }
+                return m1.time - m2.time;
+            });
+
+            channels.forEach(function (c, i) {
+                var m1 = state.channels[c].messages.slice(-1)[0];
+                $userlist.find(dataQuery(c)).css('order', i);
+            });
+
+            // Make sure the width is correct even if there is a scrollbar
+            var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
+            $userlist.css('width', (70 + w)+'px');
+        };
+
+        $(window).on('resize', function () {
+            var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
+            $userlist.css('width', (70 + w)+'px');
+        });
+
         var m = function (md) {
             var d = h('div.cp-app-contacts-content');
             try {
@@ -504,6 +528,7 @@ define([
                 $messagebox.scrollTop($messagebox.outerHeight());
             }
             normalizeLabels($messagebox);
+            reorderRooms();
 
             if (isActive(chanId)) {
                 channel.HEAD = message.sig;
@@ -630,6 +655,8 @@ define([
                     $parentEl = $userlist.find('.cp-app-contacts-rooms');
                 }
                 $parentEl.find('.cp-app-contacts-category-content').append(roomEl);
+
+                reorderRooms();
 
                 updateStatus(id);
             });

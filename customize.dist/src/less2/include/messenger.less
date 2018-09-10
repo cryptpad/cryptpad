@@ -58,10 +58,13 @@
         height: 100%;
         background-color: lighten(@bg-color, 10%);
         overflow-y: auto;
+        display: flex;
+        flex-flow: column;
         .cp-app-contacts-friend {
             background: rgba(0,0,0,0.1);
             padding: 5px;
             margin: 10px;
+            margin-bottom: 0;
             cursor: pointer;
             position: relative;
             height: 48px;
@@ -93,10 +96,12 @@
         .cp-app-contacts-category {
             display: flex;
             flex-flow: column;
+            flex-grow: 0;
+            flex-shrink: 0;
             .cp-app-contacts-category-title {
                 order: 1;
                 font-size: 18px;
-                margin: 0 5px;
+                margin: 0px 5px;
                 text-align: center;
                 background: rgba(0,0,0,0.1);
                 font-weight: bold;
@@ -105,6 +110,9 @@
             }
             .cp-app-contacts-category-content {
                 order: 2;
+                display: flex;
+                flex-flow: column-reverse;
+                padding-bottom: 10px;
                 &:empty {
                     display: none;
                     & ~ .cp-app-contacts-category-title {
@@ -125,12 +133,12 @@
             }
             .cp-app-contacts-category-title {
                 transition: font-size 0.2s ease-in-out 0.2s;
-                margin: 0 2px;
+                margin: 0px 2px;
                 font-size: 16px;
             }
             &:hover {
                 transition-delay: 1.5s;
-                width: 200px;
+                width: 200px !important;
                 .cp-app-contacts-category-title {
                     transition-delay: 1.5s;
                     font-size: 18px;
