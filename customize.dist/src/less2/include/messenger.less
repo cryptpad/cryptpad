@@ -20,6 +20,7 @@
     @button-border: 2px;
     @bg-color: @colortheme_friends-bg;
     @color: @colortheme_friends-color;
+    @room-height: 48px;
 
     #cp-app-contacts-container {
         flex: 1;
@@ -67,7 +68,7 @@
             margin-bottom: 0;
             cursor: pointer;
             position: relative;
-            height: 48px;
+            height: @room-height;
             .cp-app-contacts-right-col {
                 margin-left: 5px;
                 display: flex;
@@ -125,7 +126,7 @@
     #cp-app-contacts-container.cp-app-contacts-inapp {
         #cp-app-contacts-friendlist {
             transition: width 0.2s ease-in-out 0.2s;
-            width: 70px;
+            width: 68px;
             .cp-app-contacts-friend {
                 .cp-app-contacts-right-col {
                     overflow: hidden;
@@ -161,21 +162,32 @@
         }
         media-tag, .cp-avatar-default {
             margin-right: 5px;
+            flex-shrink: 0;
+            z-index: 1;
+            margin: 5px;
         }
         .cp-app-contacts-status {
-            width: 5px;
+            //width: 5px;
             display: inline-block;
             position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            opacity: 0.7;
-            background-color: #777;
+            //right: 0;
+            //top: 0;
+            //bottom: 0;
+            //opacity: 0.7;
+            //background-color: #777;
+
+            width: (@room-height - 6px);
+            top: 3px;
+            bottom: 3px;
+            left: 3px;
+            border-radius: 100%;
+
             &.cp-app-contacts-online {
-                background-color: green;
+                //background-color: green;
+                background-color: white;
             }
             &.cp-app-contacts-offline {
-                background-color: red;
+                //background-color: red;
             }
         }
     }

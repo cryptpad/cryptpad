@@ -118,12 +118,12 @@ define([
 
             // Make sure the width is correct even if there is a scrollbar
             var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
-            $userlist.css('width', (70 + w)+'px');
+            $userlist.css('width', (68 + w)+'px');
         };
 
         $(window).on('resize', function () {
             var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
-            $userlist.css('width', (70 + w)+'px');
+            $userlist.css('width', (68 + w)+'px');
         });
 
         var m = function (md) {
