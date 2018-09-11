@@ -1115,7 +1115,7 @@ define(function () {
     out.readme_cat2_l2 = "Der Titel eines Dokuments kann mit einem Klick auf den Stift geändert werden.";
     out.readme_cat3 = "Entdecke CryptPad Apps";
     out.readme_cat3_l1 = "Mit dem CryptPad Codeeditor kannst du Code wie JavaScript, Markdown, oder HTML bearbeiten";
-    out.readme_cat3_l2 = "Mit dem CryptPad Präsentationseditor kannst du schnell Vorträge mit Hilfe von Markdwon gestalten";
+    out.readme_cat3_l2 = "Mit dem CryptPad Präsentationseditor kannst du schnell Vorträge mit Hilfe von Markdown gestalten";
     out.readme_cat3_l3 = "Mit der CryptPad Umfrage kannst du schnell Abstimmungen durchführen, insbesondere, um Meetings zu planen, die in den Kalender von allen passen.";
 
     // Tips
