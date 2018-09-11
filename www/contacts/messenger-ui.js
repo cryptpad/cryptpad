@@ -499,7 +499,6 @@ define([
         };
 
         messenger.on('message', function (message) {
-            common.notify();
             var chanId = message.channel;
 
             var chat = getChat(chanId);
@@ -514,6 +513,7 @@ define([
                 console.error('expected channel [%s] to be open', chanId);
                 return;
             }
+            common.notify();
 
             channel.messages.push(message);
 

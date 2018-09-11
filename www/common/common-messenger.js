@@ -435,6 +435,7 @@ define([
                             return null;
                         }
                     }).filter(function (decrypted) {
+                        if (decrypted.d && decrypted.d[0] !== Types.message) { return; }
                         return decrypted;
                     }).map(function (O) {
                         return {
