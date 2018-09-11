@@ -742,7 +742,7 @@ define([
                 }
                 var room = rooms[0];
                 var md = common.getMetadataMgr().getMetadata();
-                var name = md.title || md.defaultTitle();
+                var name = md.title || md.defaultTitle;
                 room.name = name;
                 rooms.forEach(initializeRoom);
             });
