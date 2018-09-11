@@ -32,6 +32,7 @@ define([
             messages: info.messages || [],
             name: info.name,
             isFriendChat: info.isFriendChat,
+            needMoreHistory: !info.isPadChat,
             isPadChat: info.isPadChat,
             curvePublic: info.curvePublic,
             HEAD: h || info.lastKnownHash,
@@ -412,16 +413,12 @@ define([
             $messages.find('div.cp-app-contacts-chat[data-key]').hide();
             if ($chat.length) {
                 var $chat_messages = $chat.find('div.cp-app-contacts-message');
-                if (!$chat_messages.length) {
+                if (!$chat_messages.length || channel.needMoreHistory) {
+                    delete channel.needMoreHistory;
                     var $more = $chat.find('.cp-app-contacts-more-history');
                     $more.click();
                 }
                 $chat.show();
-                if (channel.isPadChat) {
-                    // Always scroll bottom for now in pad chat (no last known hash)
-                    var $messagebox = $chat.find('.cp-app-contacts-messages');
-                    $messagebox.scrollTop($messagebox.outerHeight());
-                }
                 return;
             } else {
                 console.error("Chat is missing... Please reload the page and try again.");

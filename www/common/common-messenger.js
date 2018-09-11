@@ -113,12 +113,11 @@ define([
             return friend;
         };
 
-        var initRangeRequest = function (txid, chanId, sig, cb) {
+        var initRangeRequest = function (txid, chanId, cb) {
             messenger.range_requests[txid] = {
                 messages: [],
                 cb: cb,
                 chanId: chanId,
-                sig: sig,
             };
         };
 
@@ -145,7 +144,7 @@ define([
             }
 
             var txid = Util.uid();
-            initRangeRequest(txid, chanId, hash, cb);
+            initRangeRequest(txid, chanId, cb);
             var msg = [ 'GET_HISTORY_RANGE', chan.id, {
                     from: hash,
                     count: count,
@@ -275,7 +274,7 @@ define([
             network.sendto(sender, JSON.stringify(data));
         };
 
-        var orderMessages = function (channel, new_messages /*, sig */) {
+        var orderMessages = function (channel, new_messages) {
             var messages = channel.messages;
 
             // TODO improve performance, guarantee correct ordering
@@ -403,6 +402,21 @@ define([
                     return void console.error("received response to unknown request");
                 }
 
+                if (!req.cb) {
+                    // This is the initial history for a pad chat
+                    if (type === 'HISTORY_RANGE') {
+                        if (!getChannel(req.chanId)) { return; }
+                        if (!Array.isArray(parsed[2])) { return; }
+                        pushMsg(getChannel(req.chanId), parsed[2][4]);
+                    } else if (type === 'HISTORY_RANGE_END') {
+                        if (!getChannel(req.chanId)) { return; }
+                        getChannel(req.chanId).ready = true;
+                        onChannelReady(req.chanId);
+                        return;
+                    }
+                    return;
+                }
+
                 if (type === 'HISTORY_RANGE') {
                     req.messages.push(parsed[2]);
                 } else if (type === 'HISTORY_RANGE_END') {
@@ -434,7 +448,7 @@ define([
                         };
                     });
 
-                    orderMessages(channel, decrypted, req.sig);
+                    orderMessages(channel, decrypted);
                     req.cb(void 0, decrypted);
                     return deleteRangeRequest(txid);
                 } else {
@@ -453,11 +467,6 @@ define([
                     // channel[parsed.channel].ready();
                     channels[parsed.channel].ready = true;
                     onChannelReady(parsed.channel);
-                    var updateTypes = channels[parsed.channel].updateOnReady;
-                    if (updateTypes) {
-
-                        //channels[parsed.channel].updateUI(updateTypes);
-                    }
                 }
                 return;
             }
@@ -531,6 +540,24 @@ define([
 
         var getChannelMessagesSince = function (chan, data, keys) {
             console.log('Fetching [%s] messages since [%s]', chan.id, data.lastKnownHash || '');
+
+            if (chan.isPadChat) {
+                // We need to use GET_HISTORY_RANGE to make sure we won't get the full history
+                var txid = Util.uid();
+                initRangeRequest(txid, chan.id, undefined);
+                var msg = ['GET_HISTORY_RANGE', chan.id, {
+                        //from: hash,
+                        count: 10,
+                        txid: txid,
+                    }
+                ];
+                network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
+                }, function (err) {
+                    throw new Error(err);
+                });
+                return;
+            }
+
             var cfg = {
                 validateKey: keys ? keys.validateKey : undefined,
                 owners: [proxy.edPublic, data.edPublic],
@@ -608,7 +635,7 @@ define([
                 });
 
                 // FIXME don't subscribe to the channel implicitly
-                getChannelMessagesSince(chan, data, keys);
+                getChannelMessagesSince(channel, data, keys);
             }, function (err) {
                 console.error(err);
             });
