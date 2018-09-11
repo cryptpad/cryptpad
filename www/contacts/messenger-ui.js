@@ -701,7 +701,7 @@ define([
             $lAvatar.find('.cp-avatar-default, media-tag').remove();
 
             var $div = $('<div>');
-            common.displayAvatar($div, null, name, function ($img) {
+            common.displayAvatar($div, null, name, function () {
                 $mAvatar.html($div.html());
                 $lAvatar.find('.cp-app-contacts-right-col').before($div.html());
             });

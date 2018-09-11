@@ -545,13 +545,13 @@ define([
                 // We need to use GET_HISTORY_RANGE to make sure we won't get the full history
                 var txid = Util.uid();
                 initRangeRequest(txid, chan.id, undefined);
-                var msg = ['GET_HISTORY_RANGE', chan.id, {
+                var msg0 = ['GET_HISTORY_RANGE', chan.id, {
                         //from: hash,
                         count: 10,
                         txid: txid,
                     }
                 ];
-                network.sendto(network.historyKeeper, JSON.stringify(msg)).then(function () {
+                network.sendto(network.historyKeeper, JSON.stringify(msg0)).then(function () {
                 }, function (err) {
                     throw new Error(err);
                 });
