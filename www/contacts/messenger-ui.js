@@ -153,6 +153,7 @@ define([
 
         var markup = {};
         markup.message = function (msg) {
+            if (msg.type !== 'MSG') { return; }
             var curvePublic = msg.author;
             var name = msg.name || contactsData[msg.author].displayName;
             var d = msg.time ? new Date(msg.time) : undefined;
@@ -413,7 +414,7 @@ define([
             $messages.find('div.cp-app-contacts-chat[data-key]').hide();
             if ($chat.length) {
                 var $chat_messages = $chat.find('div.cp-app-contacts-message');
-                if (!$chat_messages.length || channel.needMoreHistory) {
+                if ($chat_messages.length < 10) { //|| channel.needMoreHistory) { XXX
                     delete channel.needMoreHistory;
                     var $more = $chat.find('.cp-app-contacts-more-history');
                     $more.click();
