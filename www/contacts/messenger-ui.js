@@ -690,7 +690,7 @@ define([
         common.getMetadataMgr().onTitleChange(function () {
             var padChat = common.getPadChat();
             var md = common.getMetadataMgr().getMetadata();
-            var name = md.title || md.defaultTitle();
+            var name = md.title || md.defaultTitle;
             $userlist.find(dataQuery(padChat)).find('.cp-app-contacts-name').text(name);
             $userlist.find(dataQuery(padChat)).attr('title', name);
             $messages.find(dataQuery(padChat) + ' .cp-app-contacts-header .cp-app-contacts-name')
