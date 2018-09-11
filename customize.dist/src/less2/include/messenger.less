@@ -266,6 +266,8 @@
                 flex: 1;
                 overflow-x: auto;
                 .cp-app-contacts-message {
+                    display: flex;
+                    flex-wrap: wrap;
                     & > div {
                         padding: 0 10px;
                     }
@@ -275,6 +277,8 @@
                         &> * {
                             margin: 0;
                         }
+                        flex: 1;
+                        min-width: 70%;
                     }
                     .cp-app-contacts-date {
                         display: none;
@@ -284,6 +288,20 @@
                         margin-top: 10px;
                         font-weight: bold;
                         background-color: rgba(0,0,0,0.1);
+                        display: flex;
+                        justify-content: space-between;
+                        width: 100%;
+                    }
+                    .cp-app-contacts-time {
+                        display: none;
+                        font-size: 0.8em;
+                        align-items: center;
+                        color: @color;
+                    }
+                    &:hover {
+                        .cp-app-contacts-time {
+                            display: flex;
+                        }
                     }
                 }
             }

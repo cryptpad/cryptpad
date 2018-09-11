@@ -154,12 +154,20 @@ define([
         markup.message = function (msg) {
             var curvePublic = msg.author;
             var name = msg.name || contactsData[msg.author].displayName;
+            var d = msg.time ? new Date(msg.time) : undefined;
+            var day = d ? d.toLocaleDateString() : '';
+            var hour = d ? d.toLocaleTimeString() : '';
             return h('div.cp-app-contacts-message', {
-                title: msg.time? new Date(msg.time).toLocaleString(): '?',
+                //title: time || '?',
                 'data-user': curvePublic,
+                'data-day': day
             }, [
-                name? h('div.cp-app-contacts-sender', name): undefined,
+                name? h('div.cp-app-contacts-sender', [
+                    h('span.cp-app-contacts-sender-name', name),
+                    h('span.cp-app-contacts-sender-time', day)
+                ]): undefined,
                 m(msg.text),
+                h('div.cp-app-contacts-time', hour)
             ]);
         };
 
@@ -170,7 +178,8 @@ define([
         var normalizeLabels = function ($messagebox) {
             $messagebox.find('div.cp-app-contacts-message').toArray().reduce(function (a, b) {
                 var $b = $(b);
-                if ($(a).data('user') === $b.data('user')) {
+                if ($(a).data('user') === $b.data('user') &&
+                    $(a).data('day') === $b.data('day')) {
                     $b.find('.cp-app-contacts-sender').hide();
                     return a;
                 }
@@ -567,6 +576,7 @@ define([
 
                 // update label in friend list
                 $userlist.find(userQuery(curvePublic)).find('.cp-app-contacts-name').text(name);
+                $userlist.find(userQuery(curvePublic)).attr('title', name);
 
                 // update title bar and messages
                 $messages.find(userQuery(curvePublic) + ' .cp-app-contacts-header ' +
@@ -680,6 +690,25 @@ define([
             }
         });
 
+        common.getMetadataMgr().onTitleChange(function () {
+            var padChat = common.getPadChat();
+            var md = common.getMetadataMgr().getMetadata();
+            var name = md.title || md.defaultTitle();
+            $userlist.find(dataQuery(padChat)).find('.cp-app-contacts-name').text(name);
+            $userlist.find(dataQuery(padChat)).attr('title', name);
+            $messages.find(dataQuery(padChat) + ' .cp-app-contacts-header .cp-app-contacts-name')
+                .text(name);
+
+            var $mAvatar = $messages.find(dataQuery(padChat) +' .cp-app-contacts-header .cp-avatar');
+            var $lAvatar = $userlist.find(dataQuery(padChat));
+            $lAvatar.find('.cp-avatar-default, media-tag').remove();
+
+            var $div = $('<div>');
+            common.displayAvatar($div, null, name, function ($img) {
+                $mAvatar.html($div.html());
+                $lAvatar.find('.cp-app-contacts-right-col').before($div.html());
+            });
+        });
 
         // TODO room
         // messenger.on('joinroom', function (chanid))
@@ -715,7 +744,9 @@ define([
                     return void console.error('Invalid pad chat');
                 }
                 var room = rooms[0];
-                room.name = 'XXX Pad chat'; // XXX
+                var md = common.getMetadataMgr().getMetadata();
+                var name = md.title || md.defaultTitle();
+                room.name = name;
                 rooms.forEach(initializeRoom);
             });
 
