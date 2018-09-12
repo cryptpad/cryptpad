@@ -426,6 +426,7 @@ Messenger, MessengerUI, Messages) {
         if (!config.metadataMgr) {
             throw new Error("You must provide a `metadataMgr` to display the chat");
         }
+        if (Config.availablePadTypes.indexOf('contacts') === -1) { return; }
         var $content = $('<div>', {'class': 'cp-toolbar-chat-drawer'});
         $content.on('drop dragover', function (e) {
             e.preventDefault();
