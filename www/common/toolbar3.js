@@ -7,7 +7,7 @@ define([
     '/common/common-hash.js',
     '/common/common-feedback.js',
     '/common/sframe-messenger-inner.js',
-    '/contacts/messenger-ui.js?'+ +new Date(),
+    '/contacts/messenger-ui.js',
     '/customize/messages.js',
 ], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback,
 Messenger, MessengerUI, Messages) {
