@@ -7,7 +7,7 @@ define([
     '/common/common-hash.js',
     '/common/common-feedback.js',
     '/common/sframe-messenger-inner.js',
-    '/contacts/messenger-ui.js',
+    '/contacts/messenger-ui.js?'+ +new Date(),
     '/customize/messages.js',
 ], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback,
 Messenger, MessengerUI, Messages) {
@@ -437,9 +437,9 @@ Messenger, MessengerUI, Messages) {
 
         toolbar.chatContent = $content;
 
-        var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open', title: Messages.chatButton || 'CHAT'}); //XXX
+        var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open', title: Messages.chatButton});
 
-        var $button = $('<button>').text('Chat').appendTo($container); //XXX
+        var $button = $('<button>', {'class': 'fa fa-comments'}).appendTo($container);
         $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
 
         toolbar.$leftside.prepend($container);
@@ -451,11 +451,13 @@ Messenger, MessengerUI, Messages) {
         var hide = function () {
             $content.hide();
             $button.removeClass('cp-toolbar-button-active');
+            config.$contentContainer.removeClass('cp-chat-visible');
         };
         var show = function () {
             if (Bar.isEmbed) { $content.hide(); return; }
             $content.show();
             $button.addClass('cp-toolbar-button-active');
+            config.$contentContainer.addClass('cp-chat-visible');
         };
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'chat-drawer'], false);
@@ -467,7 +469,6 @@ Messenger, MessengerUI, Messages) {
             else { show(); }
             visible = !visible;
             Common.setAttribute(['toolbar', 'chat-drawer'], visible);
-            //Feedback.send(visible?'USERLIST_SHOW': 'USERLIST_HIDE'); // XXX
         });
         show();
         Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {

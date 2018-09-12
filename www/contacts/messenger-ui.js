@@ -65,11 +65,11 @@ define([
             ]),
             h('div.cp-app-contacts-friends.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
-                h('h2.cp-app-contacts-category-title', 'Friends'), // XXX
+                h('h2.cp-app-contacts-category-title', Messages.contacts_friends),
             ]),
             h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
                 h('div.cp-app-contacts-category-content'),
-                h('h2.cp-app-contacts-category-title', 'Rooms'), // XXX
+                h('h2.cp-app-contacts-category-title', Messages.contacts_rooms),
             ]),
         ]);
 
@@ -443,7 +443,7 @@ define([
                 title: Messages.contacts_remove
             });
             var leaveRoom = h('span.cp-app-contacts-remove.fa.fa-sign-out', {
-                title: 'Leave this room' // XXX
+                title: Messages.contacts_leaveRoom
             });
 
             var status = h('span.cp-app-contacts-status');
@@ -581,8 +581,6 @@ define([
                     '.cp-app-contacts-name, div.cp-app-contacts-message'+
                     userQuery(curvePublic) + ' div.cp-app-contacts-sender').text(name);
 
-                // XXX update name in state.channels[id] ??
-
                 // TODO room
                 // Update name in room userlist
             }
@@ -628,7 +626,7 @@ define([
                 if (!room.isPadChat && (!Array.isArray(list) || !list.length)) {
                     return void console.error("Empty room!");
                 }
-                debug('userlist: ' + JSON.stringify(list));
+                debug('userlist: ' + JSON.stringify(list), id);
 
                 var friend = {};
 

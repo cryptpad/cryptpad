@@ -54,7 +54,7 @@ define([
 
     var msgAlreadyKnown = function (channel, sig) {
         return channel.messages.some(function (message) {
-            return message[0] === sig;
+            return message.sig === sig;
         });
     };
 
@@ -291,9 +291,9 @@ define([
         };
 
         var pushMsg = function (channel, cryptMsg) {
-            var msg = channel.encryptor.decrypt(cryptMsg);
             var sig = cryptMsg.slice(0, 64);
             if (msgAlreadyKnown(channel, sig)) { return; }
+            var msg = channel.encryptor.decrypt(cryptMsg);
 
             var parsedMsg = JSON.parse(msg);
             var curvePublic;
@@ -435,7 +435,8 @@ define([
                             return null;
                         }
                     }).filter(function (decrypted) {
-                        if (decrypted.d && decrypted.d[0] !== Types.message) { return; }
+                        if (!decrypted.d || decrypted.d[0] !== Types.message) { return; }
+                        if (msgAlreadyKnown(channel, decrypted.sig)) { return; }
                         return decrypted;
                     }).map(function (O) {
                         return {
@@ -803,8 +804,6 @@ define([
                 });
                 // TODO load rooms
             }).nThen(function () {
-                // TODO send event chat ready
-                // Remove spinner in chatbox
                 ready = true;
                 eachHandler('event', function (f) {
                     f('READY');
@@ -850,6 +849,8 @@ define([
                     name = friend.displayName;
                     lastKnownHash = friend.lastKnownHash;
                     curvePublic = friend.curvePublic;
+                } else if (r.isPadChat) {
+                    return;
                 } else {
                     // TODO room get metadata (name) && lastKnownHash
                 }

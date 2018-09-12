@@ -147,6 +147,7 @@
         box-sizing: border-box;
         position: relative;
         order: -2;
+        resize: horizontal;
         #cp-app-contacts-container {
             height: 100%;
         }
@@ -991,7 +992,8 @@
             height: @toolbar_line-height;
         }
 
-        #cp-toolbar-userlist-drawer-open { order: 1; }
+        #cp-toolbar-userlist-drawer-open { order: 0; }
+        #cp-toolbar-chat-drawer-open { order: 1; }
         .cp-toolbar-share-button { order: 2; }
         .cp-toolbar-spinner { order: 3; }
 
