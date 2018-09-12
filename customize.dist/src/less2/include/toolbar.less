@@ -72,6 +72,18 @@
     .modal_main();
 };
 & {
+    @keyframes notification {
+        0% {
+            background: rgba(0,0,0,0);
+        }
+        50% {
+            background: rgba(0,0,0,0.2);
+        }
+        100% {
+            background: rgba(0,0,0,0);
+        }
+    }
+
     .toolbar_vars();
     @toolbar_line-height: 32px;
     @toolbar_top-height: 64px;
@@ -1000,6 +1012,11 @@
         #cp-toolbar-userlist-drawer-open button {
             width: 125px;
             text-align: center;
+        }
+        #cp-toolbar-chat-drawer-open button {
+            &.cp-toolbar-notification {
+                animation: notification 2s ease-in-out infinite;
+            }
         }
         .cp-toolbar-share-button {
             width: 50px;

@@ -40,7 +40,7 @@ define([
         };
     };
 
-    MessengerUI.create = function (messenger, $container, common) {
+    MessengerUI.create = function (messenger, $container, common, toolbar) {
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var origin = metadataMgr.getPrivateData().origin;
@@ -96,8 +96,15 @@ define([
             return $userlist.find(dataQuery(id));
         };
 
+        var notifyToolbar = function () {
+            if (!toolbar || !toolbar['chat']) { return; }
+            if (toolbar['chat'].find('button').hasClass('cp-toolbar-button-active')) { return; }
+            toolbar['chat'].find('button').addClass('cp-toolbar-notification');
+        };
+
         var notify = function (id) {
             find.inList(id).addClass('cp-app-contacts-notify');
+            notifyToolbar();
         };
         var unnotify = function (id) {
             find.inList(id).removeClass('cp-app-contacts-notify');

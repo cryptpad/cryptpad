@@ -420,7 +420,7 @@ Messenger, MessengerUI, Messages) {
         }).prependTo(toolbar.chatContent);
         var sframeChan = Common.getSframeChannel();
         var messenger = Messenger.create(sframeChan);
-        MessengerUI.create(messenger, $container, Common);
+        MessengerUI.create(messenger, $container, Common, toolbar);
     };
     var createChat = function (toolbar, config) {
         if (!config.metadataMgr) {
@@ -459,6 +459,7 @@ Messenger, MessengerUI, Messages) {
             $content.show();
             $button.addClass('cp-toolbar-button-active');
             config.$contentContainer.addClass('cp-chat-visible');
+            $button.removeClass('cp-toolbar-notification');
         };
         $closeIcon.click(function () {
             Common.setAttribute(['toolbar', 'chat-drawer'], false);
