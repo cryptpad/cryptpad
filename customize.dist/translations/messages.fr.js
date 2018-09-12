@@ -135,6 +135,8 @@ define(function () {
 
     out.userListButton = "Liste d'utilisateurs";
 
+    out.chatButton = "Chat";
+
     out.userAccountButton = "Votre compte";
 
     out.newButton = 'Nouveau';
@@ -364,7 +366,6 @@ define(function () {
     out.contacts_confirmRemove = 'Êtes-vous sûr de vouloir supprimer <em>{0}</em> de vos contacts ?';
     out.contacts_typeHere = "Entrez un message ici...";
 
-
     out.contacts_info1 = "Voici vos contacts. Ici, vous pouvez :";
     out.contacts_info2 = "Cliquer sur le nom d'un contact pour discuter avec lui";
     out.contacts_info3 = "Double-cliquer sur son nom pour voir son profil";
@@ -374,6 +375,10 @@ define(function () {
     out.contacts_confirmRemoveHistory = 'Êtes-vous sûr de vouloir supprimer définitivement l\'historique de votre chat ? Les messages ne pourront pas être restaurés.';
     out.contacts_removeHistoryServerError = 'Une erreur est survenue lors de la supprimer de l\'historique du chat. Veuillez réessayer plus tard.';
     out.contacts_fetchHistory = "Récupérer l'historique plus ancien";
+
+    out.contacts_friends = "Amis";
+    out.contacts_rooms = "Salons";
+    out.contacts_leaveRoom = "Quitter ce salon";
 
     // File manager
 
