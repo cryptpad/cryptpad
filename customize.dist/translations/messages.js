@@ -368,8 +368,11 @@ define(function () {
     out.contacts_confirmRemove = 'Are you sure you want to remove <em>{0}</em> from your contacts?';
     out.contacts_typeHere = "Type a message here...";
 
-    out.contacts_info1 = "These are your contacts. From here, you can:";
-    out.contacts_info2 = "Click your contact's icon to chat with them";
+    out.contacts_info1_new = "Here is CryptPad messaging. From here, you can:";
+    out.contacts_info2_new = "Click the top icon to chat with members of this pad";
+    out.contacts_info2a_new = "Editors and viewers can use the chat";
+    out.contacts_info3_new = "Click on your friend's icon to chat with them";
+    out.contacts_info3a_new = "You can add a friend by joining the same pad and using the userlist";
     out.contacts_info3 = "Double-click their icon to view their profile";
     out.contacts_info4 = "Either participant can clear permanently a chat history";
 

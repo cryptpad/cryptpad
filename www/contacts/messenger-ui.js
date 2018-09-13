@@ -50,10 +50,22 @@ define([
         var messaging = h('div#cp-app-contacts-messaging', [
             h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
             h('div.cp-app-contacts-info', [
-                h('h2', Messages.contacts_info1),
+                h('h2', Messages.contacts_info1_new),
                 h('ul', [
-                    h('li', Messages.contacts_info2),
-                    h('li', Messages.contacts_info3),
+                    toolbar ? h('li', [
+                        Messages.contacts_info2_new,
+                        h('ul', [
+                            h('li', Messages.contacts_info2a_new)
+                        ])
+                    ]) : undefined, // Display the pad chat info only if we're in a pad
+                    h('li', [
+                        Messages.contacts_info3_new,
+                        h('ul', [
+                            h('li', Messages.contacts_info3a_new),
+                            h('li', Messages.contacts_info3),
+                            h('li', Messages.contacts_info4),
+                        ])
+                    ]),
                 ])
             ])
         ]);
