@@ -122,6 +122,12 @@ define([
             find.inList(id).removeClass('cp-app-contacts-notify');
         };
 
+        var onResize = function () {
+            // Don't update the width if we are in the contacts app
+            if (!toolbar) { return; }
+            var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
+            $userlist.css('width', (68 + w)+'px');
+        };
         var reorderRooms = function () {
             var channels = Object.keys(state.channels).sort(function (a, b) {
                 var m1 = state.channels[a].messages.slice(-1)[0];
@@ -136,14 +142,10 @@ define([
             });
 
             // Make sure the width is correct even if there is a scrollbar
-            var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
-            $userlist.css('width', (68 + w)+'px');
+            onResize();
         };
 
-        $(window).on('resize', function () {
-            var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
-            $userlist.css('width', (68 + w)+'px');
-        });
+        $(window).on('resize', onResize);
 
         var m = function (md) {
             var d = h('div.cp-app-contacts-content');
@@ -174,7 +176,8 @@ define([
         markup.message = function (msg) {
             if (msg.type !== 'MSG') { return; }
             var curvePublic = msg.author;
-            var name = msg.name || contactsData[msg.author].displayName;
+            var name = typeof msg.name !== "undefined" ? (msg.name || Messages.anonymous)
+                            : contactsData[msg.author].displayName;
             var d = msg.time ? new Date(msg.time) : undefined;
             var day = d ? d.toLocaleDateString() : '';
             var hour = d ? d.toLocaleTimeString() : '';
@@ -770,6 +773,15 @@ define([
             $container.removeClass('cp-app-contacts-initializing');
         };
 
+        var onDisconnect = function () {
+            debug('disconnected');
+            $messages.find('.cp-app-contacts-input textarea').prop('disabled', true);
+        };
+        var onReconnect = function () {
+            debug('reconnected');
+            $messages.find('.cp-app-contacts-input textarea').prop('disabled', false);
+        };
+
         // Initialize chat when outer is ready (all channels loaded)
         // TODO: try again in outer if fail to load a channel
         execCommand('IS_READY', null, function (err, yes) {
@@ -782,6 +794,14 @@ define([
             }
             if (obj.ev === 'PADCHAT_READY') {
                 onPadChatReady(obj.data);
+                return;
+            }
+            if (obj.ev === 'DISCONNECT') {
+                onDisconnect();
+                return;
+            }
+            if (obj.ev === 'RECONNECT') {
+                onReconnect();
                 return;
             }
         });

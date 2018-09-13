@@ -76,6 +76,12 @@ define([
             messenger.handlers[type].forEach(g);
         };
 
+        var emit = function (ev, data) {
+            eachHandler('event', function (f) {
+                f(ev, data);
+            });
+        };
+
         messenger.on = function (type, f) {
             var stack = messenger.handlers[type];
             if (!Array.isArray(stack)) {
@@ -575,71 +581,84 @@ define([
         var openChannel = function (data) {
             var keys = data.keys;
             var encryptor = data.encryptor || Curve.createEncryptor(keys);
-            network.join(data.channel).then(function (chan) {
-                var channel = channels[data.channel] = {
-                    id: data.channel,
-                    isFriendChat: data.isFriendChat,
-                    isPadChat: data.isPadChat,
-                    sending: false,
-                    encryptor: encryptor,
-                    messages: [],
-                    wc: chan,
-                    userList: [],
-                    mapId: {},
+            var channel = {
+                id: data.channel,
+                isFriendChat: data.isFriendChat,
+                isPadChat: data.isPadChat,
+                sending: false,
+                encryptor: encryptor,
+                messages: [],
+                userList: [],
+                mapId: {},
+            };
+
+            var onJoining = function (peer) {
+                if (peer === Msg.hk) { return; }
+                if (channel.userList.indexOf(peer) !== -1) { return; }
+                channel.userList.push(peer);
+
+                // Join event will be sent once we are able to ID this peer
+                var myData = createData(proxy);
+                delete myData.channel;
+                var msg = [Types.mapId, myData, channel.wc.myID];
+                var msgStr = JSON.stringify(msg);
+                var cryptMsg = channel.encryptor.encrypt(msgStr);
+                var data = {
+                    channel: channel.id,
+                    msg: cryptMsg
                 };
+                network.sendto(peer, JSON.stringify(data));
+            };
+
+            var onLeaving = function (peer) {
+                var i = channel.userList.indexOf(peer);
+                while (i !== -1) {
+                    channel.userList.splice(i, 1);
+                    i = channel.userList.indexOf(peer);
+                }
+                // update status
+                var otherData = channel.mapId[peer];
+                if (!otherData) { return; }
+
+                // Make sure the leaving user is not connected with another netflux id
+                if (channel.userList.some(function (nId) {
+                    return channel.mapId[nId]
+                            && channel.mapId[nId].curvePublic === otherData.curvePublic;
+                })) { return; }
+
+                // Send the notification
+                eachHandler('leave', function (f) {
+                    f(otherData, channel.id);
+                });
+            };
+
+            var onOpen = function (chan) {
+                channel.wc = chan;
+                channels[data.channel] = channel;
+
                 chan.on('message', function (msg, sender) {
                     onMessage(msg, sender, chan);
                 });
 
-                var onJoining = function (peer) {
-                    if (peer === Msg.hk) { return; }
-                    if (channel.userList.indexOf(peer) !== -1) { return; }
-                    channel.userList.push(peer);
-
-                    // Join event will be sent once we are able to ID this peer
-                    var myData = createData(proxy);
-                    delete myData.channel;
-                    var msg = [Types.mapId, myData, chan.myID];
-                    var msgStr = JSON.stringify(msg);
-                    var cryptMsg = channel.encryptor.encrypt(msgStr);
-                    var data = {
-                        channel: channel.id,
-                        msg: cryptMsg
-                    };
-                    network.sendto(peer, JSON.stringify(data));
-                };
                 chan.members.forEach(function (peer) {
                     if (peer === Msg.hk) { return; }
                     if (channel.userList.indexOf(peer) !== -1) { return; }
                     channel.userList.push(peer);
                 });
                 chan.on('join', onJoining);
-                chan.on('leave', function (peer) {
-                    var i = channel.userList.indexOf(peer);
-                    while (i !== -1) {
-                        channel.userList.splice(i, 1);
-                        i = channel.userList.indexOf(peer);
-                    }
-                    // update status
-                    var otherData = channel.mapId[peer];
-                    if (!otherData) { return; }
-
-                    // Make sure the leaving user is not connected with another netflux id
-                    if (channel.userList.some(function (nId) {
-                        return channel.mapId[nId]
-                                && channel.mapId[nId].curvePublic === otherData.curvePublic;
-                    })) { return; }
-
-                    // Send the notification
-                    eachHandler('leave', function (f) {
-                        f(otherData, channel.id);
-                    });
-                });
+                chan.on('leave', onLeaving);
 
                 // FIXME don't subscribe to the channel implicitly
                 getChannelMessagesSince(channel, data, keys);
-            }, function (err) {
+            };
+            network.join(data.channel).then(onOpen, function (err) {
                 console.error(err);
+            });
+            network.on('reconnect', function () {
+                if (!channels[data.channel]) { return; }
+                network.join(data.channel).then(onOpen, function (err) {
+                    console.error(err);
+                });
             });
         };
 
@@ -805,9 +824,7 @@ define([
                 // TODO load rooms
             }).nThen(function () {
                 ready = true;
-                eachHandler('event', function (f) {
-                    f('READY');
-                });
+                emit('READY');
             });
         };
         init();
@@ -883,9 +900,7 @@ define([
         var openPadChat = function (data, cb) {
             var channel = data.channel;
             if (getChannel(channel)) {
-                eachHandler('event', function (f) {
-                    f('PADCHAT_READY', channel);
-                });
+                emit('PADCHAT_READY', channel);
                 return void cb();
             }
             var keys = data.secret && data.secret.keys;
@@ -901,12 +916,17 @@ define([
             };
             openChannel(chanData);
             joining[channel] = function () {
-                eachHandler('event', function (f) {
-                    f('PADCHAT_READY', channel);
-                });
+                emit('PADCHAT_READY', channel);
             };
             cb();
         };
+
+        network.on('disconnect', function () {
+            emit('DISCONNECT');
+        });
+        network.on('reconnect', function () {
+            emit('RECONNECT');
+        });
 
         messenger.execCommand = function (obj, cb) {
             var cmd = obj.cmd;
