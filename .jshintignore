@@ -16,6 +16,7 @@ www/pad/mediatag-plugin.js
 www/pad/mediatag-plugin-dialog.js
 
 www/kanban/jkanban.js
+www/kanban/jscolor.js
 
 www/common/media-tag-nacl.min.js
 
