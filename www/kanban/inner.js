@@ -207,15 +207,36 @@ define([
                     }
                 });
             },
-            colorClick: function (el) {
+            colorClick: function (el, type) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
-                verbose("in color click");
-                var board = $(el.parentNode).attr("data-id");
-                var boardJSON = kanban.getBoardJSON(board);
+                verbose("on color click");
+                var boardJSON;
+                var board;
+                if (type === "board") {
+                    verbose("board color click");
+                    board = $(el.parentNode).attr("data-id");
+                    boardJSON = kanban.getBoardJSON(board);
+                } else {
+                    verbose("item color click");
+                    board = $(el.parentNode.parentNode).attr("data-id");
+                    var pos = kanban.findElementPosition(el);
+                    boardJSON = kanban.getBoardJSON(board).item[pos];
+                }
                 var onchange = function (colorL) {
                     var elL = el;
-                    var boardL = $(elL.parentNode).attr("data-id");
-                    var boardJSONL = kanban.getBoardJSON(boardL);
+                    var typeL = type;
+                    var boardJSONL;
+                    var boardL;
+                    if (typeL === "board") {
+                        verbose("board color change");
+                        boardL = $(elL.parentNode).attr("data-id");
+                        boardJSONL = kanban.getBoardJSON(boardL);
+                    } else {
+                        verbose("item color change");
+                        boardL = $(elL.parentNode.parentNode).attr("data-id");
+                        var pos = kanban.findElementPosition(elL);
+                        boardJSONL = kanban.getBoardJSON(boardL).item[pos];
+                    }
                     var currentColor = boardJSONL.color;
                     verbose("Current color " + currentColor);
                     if (currentColor !== colorL.toString()) {
@@ -226,12 +247,16 @@ define([
                 };
                 var jscolorL;
                 el._jscLinkedInstance = undefined;
-                jscolorL = new jscolor(el,{onFineChange: onchange, valueElement:undefined});
+                jscolorL = new window.jscolor(el,{onFineChange: onchange, valueElement:undefined});
                 jscolorL.show();
                 var currentColor = boardJSON.color;
+                if (currentColor == undefined) {
+                    currentColor = ''
+                }
                 jscolorL.fromString(currentColor);
             },
             buttonClick: function (el, boardId) {
+                e.stopPropagation();
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {
                     if (!yes) { return; }

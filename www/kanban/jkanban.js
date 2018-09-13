@@ -68,7 +68,7 @@
                     click: function (el) {},
                     boardTitleclick: function (el, boardId) {},
                     buttonClick: function (el, boardId) {},
-                    colorClick: function (el, boardId) {},
+                    colorClick: function (el, type) {},
                     addItemClick: function (el, boardId) {},
                     onChange: function () {}
                 };
@@ -345,7 +345,7 @@
                         titleBoard.clickfn = board.boardTitleClick;
                         __onboardTitleClickHandler(titleBoard);
                         headerBoard.appendChild(titleBoard);
-                        __onColorClickHandler(headerBoard);
+                        __onColorClickHandler(headerBoard, "board");
 
                         // if add button is true, add button to the board
                         if (addButton) {
@@ -378,25 +378,7 @@
                             nodeItemText.dropfn = itemKanban.drop;
                             //add click handler of item
                             __onclickHandler(nodeItemText);
-
-                            var onchange = function (colorL) {
-                                var currentColor = itemKanban.color;
-                                if (currentColor !== colorL.toString()) {
-                                    itemKanban.color = colorL.toString();
-                                    self.onChange();
-                                }
-                            };
-
-                            var jscolorL;
-                            nodeItem._jscLinkedInstance = undefined;
-                            jscolorL = new jscolor(nodeItem,{onFineChange: onchange, valueElement:undefined});
-                            var currentColor = itemKanban.color;
-                            // If not defined dont have it undefined
-                            if (currentColor == undefined) {
-                                currentColor = ''
-                            }
-                            console.log(currentColor);
-                            jscolorL.fromString(currentColor);
+                            __onColorClickHandler(nodeItem, "item");
 
                             contentBoard.appendChild(nodeItem);
                         }
@@ -545,12 +527,10 @@
                     });
                 }
 
-                function __onColorClickHandler(nodeItem, clickfn) {
+                function __onColorClickHandler(nodeItem, type) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
-                        self.options.colorClick(this);
-                        if (typeof (this.clickfn) === 'function')
-                            this.clickfn(this);
+                        self.options.colorClick(this, type);
                     });
                 }
 
