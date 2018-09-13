@@ -12,10 +12,11 @@ define([
     '/common/clipboard.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/customize/pages.js',
     '/bower_components/nthen/index.js',
     'css!/customize/fonts/cptools/style.css'
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
-             Messages, AppConfig, NThen) {
+             Messages, AppConfig, Pages, NThen) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -2325,6 +2326,44 @@ define([
         $(password).find('.cp-password-input').focus();
     };
 
+    var crowdfundingState = false;
+    UIElements.displayCrowdfunding = function (common) {
+        if (crowdfundingState) { return; }
+        crowdfundingState = true;
+        setTimeout(function () {
+            common.getAttribute(['general', 'crowdfunding'], function (err, val) {
+                if (err || val === false) { return; }
+                // Display the popup
+                var text = Messages.crowdfunding_popup_text;
+                var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
+                var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
+                var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
+                var actions = h('div', [yes, no, never]);
+
+                var modal = UI.cornerPopup(text, actions, null, {big: true});
+
+                $(yes).click(function () {
+                    modal.delete();
+                    common.openURL('https://opencollective.com/cryptpad/contribute');
+                });
+                $(modal.popup).find('a').click(function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    modal.delete();
+                    common.openURL('https://opencollective.com/cryptpad/');
+                });
+                $(no).click(function () {
+                    modal.delete();
+                });
+                $(never).click(function () {
+                    modal.delete();
+                    common.setAttribute(['general', 'crowdfunding'], false);
+                });
+
+            });
+        }, 5000);
+    };
+
     var storePopupState = false;
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
@@ -2347,9 +2386,11 @@ define([
         });
 
         $(hide).click(function () {
+            UIElements.displayCrowdfunding(common);
             modal.delete();
         });
         $(store).click(function () {
+            UIElements.displayCrowdfunding(common);
             modal.delete();
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
                 if (err || (obj && obj.error)) {

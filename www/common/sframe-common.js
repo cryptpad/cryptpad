@@ -535,6 +535,11 @@ define([
                 UI.alert(Messages.chrome68);
             });
 
+            funcs.isPadStored(function (err, val) {
+                if (err || !val) { return; }
+                UIElements.displayCrowdfunding(funcs);
+            });
+
             ctx.sframeChan.ready();
             cb(funcs);
         });

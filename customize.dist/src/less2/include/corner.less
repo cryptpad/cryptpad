@@ -43,6 +43,10 @@
         //transform: scale(0.1);
         //transform: scale(1);
 
+        h1, h2, h3 {
+            font-size: 1.5em;
+        }
+
         .cp-corner-filler {
             float: left;
             clear: left;
@@ -94,6 +98,8 @@
         .cp-corner-footer {
             font-style: italic;
             font-size: 0.8em;
+        }
+        .cp-corner-footer, .cp-corner-text {
             a {
                 color: @corner-link;
                 &:hover {
@@ -103,10 +109,10 @@
         }
 
         button {
-            color: white;
             border: 0px;
             padding: 5px;
             color: @colortheme_base;
+            margin-left: 5px;
             &.cp-corner-primary {
                 background-color: @corner-button-ok;
                 font-weight: bold;

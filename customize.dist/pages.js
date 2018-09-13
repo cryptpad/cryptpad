@@ -615,6 +615,19 @@ define([
                 }
             ]);
 
+        var crowdFunding = h('button', [
+            Msg.crowdfunding_home1,
+            h('br'),
+            Msg.crowdfunding_home2
+        ]);
+        $(crowdFunding).click(function () {
+            var a = document.createElement("a");
+            a.href = "https://opencollective.com/cryptpad/contribute";
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.click();
+        });
+
         return [
             h('div#cp-main', [
                 infopageTopbar(),
@@ -628,6 +641,11 @@ define([
                         h('div.col-12.col-sm-6', [
                             icons,
                             more
+                        ])
+                    ]),
+                    h('div.row', [
+                        h('div.cp-crowdfunding', [
+                            crowdFunding
                         ])
                     ])
                 ]),
