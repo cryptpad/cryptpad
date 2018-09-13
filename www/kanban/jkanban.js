@@ -31,7 +31,7 @@
          * @author: Riccardo Tartaglia
          */
 
-            //Require dragula
+        //Require dragula
         var dragula = require('dragula');
 
         (function () {
@@ -591,7 +591,7 @@
         }());
 
 
-    }, {
+}, {
         "dragula": 9
     }],
     2: [function (require, module, exports) {
@@ -599,7 +599,7 @@
             return Array.prototype.slice.call(a, n);
         }
 
-    }, {}],
+}, {}],
     3: [function (require, module, exports) {
         'use strict';
 
@@ -614,7 +614,7 @@
             });
         };
 
-    }, {
+}, {
         "ticky": 10
     }],
     4: [function (require, module, exports) {
@@ -685,7 +685,7 @@
             return thing;
         };
 
-    }, {
+}, {
         "./debounce": 3,
         "atoa": 2
     }],
@@ -802,7 +802,7 @@
             }
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-    }, {
+}, {
         "./eventmap": 6,
         "custom-event": 7
     }],
@@ -823,7 +823,7 @@
             module.exports = eventmap;
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-    }, {}],
+}, {}],
     7: [function (require, module, exports) {
         (function (global) {
 
@@ -853,33 +853,33 @@
 
                 // IE >= 9
                 'function' === typeof document.createEvent ? function CustomEvent(type, params) {
-                        var e = document.createEvent('CustomEvent');
-                        if (params) {
-                            e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
-                        } else {
-                            e.initCustomEvent(type, false, false, void 0);
-                        }
-                        return e;
-                    } :
-
-                    // IE <= 8
-                    function CustomEvent(type, params) {
-                        var e = document.createEventObject();
-                        e.type = type;
-                        if (params) {
-                            e.bubbles = Boolean(params.bubbles);
-                            e.cancelable = Boolean(params.cancelable);
-                            e.detail = params.detail;
-                        } else {
-                            e.bubbles = false;
-                            e.cancelable = false;
-                            e.detail = void 0;
-                        }
-                        return e;
+                    var e = document.createEvent('CustomEvent');
+                    if (params) {
+                        e.initCustomEvent(type, params.bubbles, params.cancelable, params.detail);
+                    } else {
+                        e.initCustomEvent(type, false, false, void 0);
                     }
+                    return e;
+                } :
+
+                // IE <= 8
+                function CustomEvent(type, params) {
+                    var e = document.createEventObject();
+                    e.type = type;
+                    if (params) {
+                        e.bubbles = Boolean(params.bubbles);
+                        e.cancelable = Boolean(params.cancelable);
+                        e.detail = params.detail;
+                    } else {
+                        e.bubbles = false;
+                        e.cancelable = false;
+                        e.detail = void 0;
+                    }
+                    return e;
+                }
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-    }, {}],
+}, {}],
     8: [function (require, module, exports) {
         'use strict';
 
@@ -915,7 +915,7 @@
             rm: rmClass
         };
 
-    }, {}],
+}, {}],
     9: [function (require, module, exports) {
         (function (global) {
             'use strict';
@@ -1602,7 +1602,7 @@
             module.exports = dragula;
 
         }).call(this, typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-    }, {
+}, {
         "./classes": 8,
         "contra/emitter": 4,
         "crossvent": 5
@@ -1621,5 +1621,5 @@
         }
 
         module.exports = tick;
-    }, {}]
+}, {}]
 }, {}, [1]);
