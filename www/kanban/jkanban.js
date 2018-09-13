@@ -85,18 +85,18 @@
 
                         //Init Drag Board
                         self.drakeBoard = self.dragula([self.container], {
-                            moves: function (el, source, handle, sibling) {
-                                if (self.options.readOnly) { return false; }
-                                if (!self.options.dragBoards) return false;
-                                return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
-                            },
-                            accepts: function (el, target, source, sibling) {
-                                if (self.options.readOnly) { return false; }
-                                return target.classList.contains('kanban-container');
-                            },
-                            revertOnSpill: true,
-                            direction: 'horizontal',
-                        })
+                                moves: function (el, source, handle, sibling) {
+                                    if (self.options.readOnly) { return false; }
+                                    if (!self.options.dragBoards) return false;
+                                    return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
+                                },
+                                accepts: function (el, target, source, sibling) {
+                                    if (self.options.readOnly) { return false; }
+                                    return target.classList.contains('kanban-container');
+                                },
+                                revertOnSpill: true,
+                                direction: 'horizontal',
+                            })
                             .on('drag', function (el, source) {
                                 el.classList.add('is-moving');
                                 self.options.dragBoard(el, source);
@@ -311,14 +311,6 @@
                         if (self.options.boards !== boards)
                             self.options.boards.push(board);
 
-                        /*if (!self.options.responsivePercentage) {
-                            //add width to container
-                            if (self.container.style.width === '') {
-                                self.container.style.width = parseInt(boardWidth) + (parseInt(self.options.gutter) * 2) + 'px';
-                            } else {
-                                self.container.style.width = parseInt(self.container.style.width) + parseInt(boardWidth) + (parseInt(self.options.gutter) * 2) + 'px';
-                            }
-                        }*/
                         //create node
                         var boardNode = document.createElement('div');
                         boardNode.dataset.id = board.id;
