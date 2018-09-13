@@ -37,6 +37,8 @@ define([
     'cm/addon/fold/comment-fold',
     'cm/addon/display/placeholder',
 
+    'less!/code/app-code.less'
+
 ], function (
     $,
     DiffMd,

@@ -12,6 +12,8 @@ define([
     '/kanban/jkanban.js',
     '/kanban/jscolor.js',
     'css!/kanban/jkanban.css',
+
+    'less!/kanban/app-kanban.less'
 ], function (
     $,
     Sortify,

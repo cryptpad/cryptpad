@@ -26,7 +26,7 @@ $(function () {
 
     window.Tether = function () {};
     require([
-        'less!/customize/src/less2/main.less',
+        'less!/customize/src/less2/pages/page-' + css + '.less',
         'css!/bower_components/bootstrap/dist/css/bootstrap.min.css'
     ], function () {
         $body.append($main);

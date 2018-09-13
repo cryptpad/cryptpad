@@ -70,7 +70,7 @@ define([
 
     module.test = function (assert) {
         var config = {
-            pinPads: Cryptpad.pinPads,
+            outer: true,
             workgroup: false,
             testMode: true,
             loggedIn: false
@@ -237,7 +237,8 @@ define([
                         && typeof files.template[0] === "number"
                         && typeof files.filesData[files.template[0]] === "object"
                         && !files.filesData[files.template[0]].filename
-                        && files.filesData[files.template[0]].href === href3
+                        && !files.filesData[files.template[0]].href
+                        && files.filesData[files.template[0]].roHref === href3
                         && typeof fileId2 === "number"
                         && typeof files.filesData[fileId2] === "object"
                         && files.filesData[fileId2].filename === "Trash"
@@ -390,11 +391,6 @@ define([
                 fo.getFileData(id1).filename !== "NewFileName1" ||
                 fo.getTitle(id1) !== "NewFileName1") {
                 console.log("DRIVE operations: rename");
-                return cb();
-            }
-            fo.replace(href1, href2);
-            if (fo.getFileData(id1).href !== href2) {
-                console.log("DRIVE operations: replace");
                 return cb();
             }
 

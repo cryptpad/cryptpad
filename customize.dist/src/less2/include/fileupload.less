@@ -1,7 +1,11 @@
-@import (once) './colortheme-all.less';
-@import (once) './modal.less';
+@import (reference) './colortheme-all.less';
+@import (reference) './modal.less';
 
 .fileupload_main () {
+    --LessLoader_require: LessLoader_currentFile();
+    .modal_main();
+}
+& {
     /* Upload status table */
     #cp-fileupload {
         .modal_base();
@@ -54,4 +58,3 @@
         }
     }
 }
-

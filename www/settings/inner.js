@@ -16,7 +16,7 @@ define([
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
     'css!/bower_components/components-font-awesome/css/font-awesome.min.css',
-    'less!/customize/src/less2/main.less',
+    'less!/settings/app-settings.less',
 ], function (
     $,
     Toolbar,
@@ -426,6 +426,10 @@ define([
             if (newPassword !== newPasswordConfirm) {
                 UI.alert(Messages.register_passwordsDontMatch);
                 return;
+            }
+
+            if (oldPassword === newPassword) {
+                return void UI.alert(Messages.settings_changePasswordNewPasswordSameAsOld);
             }
 
             UI.confirm(Messages.settings_changePasswordConfirm,

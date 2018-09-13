@@ -1,13 +1,15 @@
-@import (once) "../../customize/src/less2/include/browser.less";
-@import (once) "../../customize/src/less2/include/framework.less";
-@import (once) "../../customize/src/less2/include/tools.less";
-
-.framework_main( @bg-color: @colortheme_kanban-bg,
-    @warn-color: @colortheme_kanban-warn,
-    @color: @colortheme_kanban-color);
+@import (reference) "../../customize/src/less2/include/browser.less";
+@import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/tools.less";
 
 // body
 &.cp-app-kanban {
+    .framework_main(
+        @bg-color: @colortheme_kanban-bg,
+        @warn-color: @colortheme_kanban-warn,
+        @color: @colortheme_kanban-color
+    );
+
     display: flex;
     flex-flow: column;
     max-height: 100%;

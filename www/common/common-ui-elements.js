@@ -13,6 +13,7 @@ define([
     '/customize/messages.js',
     '/customize/application_config.js',
     '/bower_components/nthen/index.js',
+    'css!/customize/fonts/cptools/style.css'
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
              Messages, AppConfig, NThen) {
     var UIElements = {};
@@ -73,26 +74,14 @@ define([
                 data.password = val;
             }));
         }).nThen(function (waitFor) {
+            var base = common.getMetadataMgr().getPrivateData().origin;
             common.getPadAttribute('href', waitFor(function (err, val) {
-                var base = common.getMetadataMgr().getPrivateData().origin;
-
-                var parsed = Hash.parsePadUrl(val);
-                if (parsed.hashData.mode === "view") {
-                    data.roHref = base + val;
-                    return;
-                }
-
-                // We're not in a read-only pad
+                if (!val) { return; }
                 data.href = base + val;
-
-                // Get Read-only href
-                if (parsed.hashData.type !== "pad") { return; }
-                var i = data.href.indexOf('#') + 1;
-                var hBase = data.href.slice(0, i);
-                var hrefsecret = Hash.getSecrets(parsed.type, parsed.hash, data.password);
-                if (!hrefsecret.keys) { return; }
-                var viewHash = Hash.getViewHashFromKeys(hrefsecret);
-                data.roHref = hBase + viewHash;
+            }));
+            common.getPadAttribute('roHref', waitFor(function (err, val) {
+                if (!val) { return; }
+                data.roHref = base + val;
             }));
             common.getPadAttribute('channel', waitFor(function (err, val) {
                 data.channel = val;
@@ -137,82 +126,86 @@ define([
             id: 'cp-app-prop-owners',
         }));
 
-        var expire = Messages.creation_expireFalse;
-        if (data.expire && typeof (data.expire) === "number") {
-            expire = new Date(data.expire).toLocaleString();
-        }
-        $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(expire, {
-            id: 'cp-app-prop-expire',
-        }));
-
-        var hasPassword = data.password;
-        if (hasPassword) {
-            $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
-                .appendTo($d);
-            var password = UI.passwordInput({
-                id: 'cp-app-prop-password',
-                readonly: 'readonly'
-            });
-            var $pwInput = $(password).find('.cp-password-input');
-            $pwInput.val(data.password).click(function () {
-                $pwInput[0].select();
-            });
-            $d.append(password);
-        }
-
-        var parsed = Hash.parsePadUrl(data.href);
-        if (owned && parsed.hashData.type === 'pad') {
-            var sframeChan = common.getSframeChannel();
-            var changePwTitle = Messages.properties_changePassword;
-            var changePwConfirm = Messages.properties_confirmChange;
-            if (!hasPassword) {
-                changePwTitle = Messages.properties_addPassword;
-                changePwConfirm = Messages.properties_confirmNew;
+        if (!data.noExpiration) {
+            var expire = Messages.creation_expireFalse;
+            if (data.expire && typeof (data.expire) === "number") {
+                expire = new Date(data.expire).toLocaleString();
             }
-            $('<label>', {'for': 'cp-app-prop-change-password'})
-                .text(changePwTitle).appendTo($d);
-            var newPassword = UI.passwordInput({
-                id: 'cp-app-prop-change-password',
-                style: 'flex: 1;'
-            });
-            var passwordOk = h('button', Messages.properties_changePasswordButton);
-            var changePass = h('span.cp-password-container', [
-                newPassword,
-                passwordOk
-            ]);
-            $(passwordOk).click(function () {
-                var newPass = $(newPassword).find('input').val();
-                if (data.password === newPass ||
-                    (!data.password && !newPass)) {
-                    return void UI.alert(Messages.properties_passwordSame);
+            $('<label>', {'for': 'cp-app-prop-expire'}).text(Messages.creation_expiration)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(expire, {
+                id: 'cp-app-prop-expire',
+            }));
+        }
+
+        if (!data.noPassword) {
+            var hasPassword = data.password;
+            if (hasPassword) {
+                $('<label>', {'for': 'cp-app-prop-password'}).text(Messages.creation_passwordValue)
+                    .appendTo($d);
+                var password = UI.passwordInput({
+                    id: 'cp-app-prop-password',
+                    readonly: 'readonly'
+                });
+                var $pwInput = $(password).find('.cp-password-input');
+                $pwInput.val(data.password).click(function () {
+                    $pwInput[0].select();
+                });
+                $d.append(password);
+            }
+
+            var parsed = Hash.parsePadUrl(data.href || data.roHref);
+            if (owned && parsed.hashData.type === 'pad') {
+                var sframeChan = common.getSframeChannel();
+                var changePwTitle = Messages.properties_changePassword;
+                var changePwConfirm = Messages.properties_confirmChange;
+                if (!hasPassword) {
+                    changePwTitle = Messages.properties_addPassword;
+                    changePwConfirm = Messages.properties_confirmNew;
                 }
-                UI.confirm(changePwConfirm, function (yes) {
-                    if (!yes) { return; }
-                    sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
-                        href: data.href,
-                        password: newPass
-                    }, function (err, data) {
-                        if (err || data.error) {
-                            return void UI.alert(Messages.properties_passwordError);
-                        }
-                        UI.findOKButton().click();
-                        // If we didn't have a password, we have to add the /p/
-                        // If we had a password and we changed it to a new one, we just have to reload
-                        // If we had a password and we removed it, we have to remove the /p/
-                        if (data.warning) {
-                            return void UI.alert(Messages.properties_passwordWarning, function () {
-                                common.gotoURL(hasPassword && newPass ? undefined : data.href);
-                            }, {force: true});
-                        }
-                        return void UI.alert(Messages.properties_passwordSuccess, function () {
-                            common.gotoURL(hasPassword && newPass ? undefined : data.href);
-                        }, {force: true});
+                $('<label>', {'for': 'cp-app-prop-change-password'})
+                    .text(changePwTitle).appendTo($d);
+                var newPassword = UI.passwordInput({
+                    id: 'cp-app-prop-change-password',
+                    style: 'flex: 1;'
+                });
+                var passwordOk = h('button', Messages.properties_changePasswordButton);
+                var changePass = h('span.cp-password-container', [
+                    newPassword,
+                    passwordOk
+                ]);
+                $(passwordOk).click(function () {
+                    var newPass = $(newPassword).find('input').val();
+                    if (data.password === newPass ||
+                        (!data.password && !newPass)) {
+                        return void UI.alert(Messages.properties_passwordSame);
+                    }
+                    UI.confirm(changePwConfirm, function (yes) {
+                        if (!yes) { return; }
+                        sframeChan.query("Q_PAD_PASSWORD_CHANGE", {
+                            href: data.href || data.roHref,
+                            password: newPass
+                        }, function (err, data) {
+                            if (err || data.error) {
+                                return void UI.alert(Messages.properties_passwordError);
+                            }
+                            UI.findOKButton().click();
+                            // If we didn't have a password, we have to add the /p/
+                            // If we had a password and we changed it to a new one, we just have to reload
+                            // If we had a password and we removed it, we have to remove the /p/
+                            if (data.warning) {
+                                return void UI.alert(Messages.properties_passwordWarning, function () {
+                                    common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                                }, {force: true});
+                            }
+                            return void UI.alert(Messages.properties_passwordSuccess, function () {
+                                common.gotoURL(hasPassword && newPass ? undefined : (data.href || data.roHref));
+                            }, {force: true});
+                        });
                     });
                 });
-            });
-            $d.append(changePass);
+                $d.append(changePass);
+            }
         }
 
         cb(void 0, $d);
@@ -242,17 +235,21 @@ define([
             }));
         }
 
-        $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
-            id: 'cp-app-prop-ctime',
-        }));
+        if (data.ctime) {
+            $('<label>', {'for': 'cp-app-prop-ctime'}).text(Messages.fm_creation)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(new Date(data.ctime).toLocaleString(), {
+                id: 'cp-app-prop-ctime',
+            }));
+        }
 
-        $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
-            .appendTo($d);
-        $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
-            id: 'cp-app-prop-atime',
-        }));
+        if (data.atime) {
+            $('<label>', {'for': 'cp-app-prop-atime'}).text(Messages.fm_lastAccess)
+                .appendTo($d);
+            $d.append(UI.dialog.selectable(new Date(data.atime).toLocaleString(), {
+                id: 'cp-app-prop-atime',
+            }));
+        }
 
         if (common.isLoggedIn() && AppConfig.enablePinning) {
             // check the size of this file...
@@ -463,6 +460,7 @@ define([
         var pathname = config.pathname;
         var hashes = config.hashes;
         var common = config.common;
+        var fileData = config.fileData;
 
         if (!hashes.fileHash) { throw new Error("You must provide a file hash"); }
         var url = origin + pathname + '#' + hashes.fileHash;
@@ -498,7 +496,7 @@ define([
             UI.dialog.selectable(common.getMediatagScript()),
             h('p', Messages.fileEmbedTag),
             h('br'),
-            UI.dialog.selectable(common.getMediatagFromHref(url)),
+            UI.dialog.selectable(common.getMediatagFromHref(fileData)),
         ]);
         var embedButtons = [{
             name: Messages.cancel,
@@ -508,7 +506,7 @@ define([
             className: 'primary',
             name: Messages.share_mediatagCopy,
             onClick: function () {
-                var v = common.getMediatagFromHref(url);
+                var v = common.getMediatagFromHref(fileData);
                 var success = Clipboard.copy(v);
                 if (success) { UI.log(Messages.shareSuccess); }
             },
@@ -532,6 +530,35 @@ define([
             });
         }
         return tabs;
+    };
+    UIElements.createSFShareModal = function (config) {
+        var origin = config.origin;
+        var pathname = config.pathname;
+        var hashes = config.hashes;
+
+        if (!hashes.editHash) { throw new Error("You must provide a valid hash"); }
+        var url = origin + pathname + '#' + hashes.editHash;
+
+        // Share link tab
+        var link = h('div.cp-share-modal', [
+            h('label', Messages.sharedFolders_share),
+            h('br'),
+            UI.dialog.selectable(url, { id: 'cp-share-link-preview', tabindex: 1 })
+        ]);
+        var linkButtons = [{
+            name: Messages.cancel,
+            onClick: function () {},
+            keys: [27]
+        }, {
+            className: 'primary',
+            name: Messages.share_linkCopy,
+            onClick: function () {
+                var success = Clipboard.copy(url);
+                if (success) { UI.log(Messages.shareSuccess); }
+            },
+            keys: [13]
+        }];
+        return UI.dialog.customModal(link, {buttons: linkButtons});
     };
 
     UIElements.createButton = function (common, type, rightside, data, callback) {
@@ -695,17 +722,27 @@ define([
                 button
                 .click(common.prepareFeedback(type))
                 .click(function() {
-                    var msg = common.isLoggedIn() ? Messages.forgetPrompt : Messages.fm_removePermanentlyDialog;
-                    UI.confirm(msg, function (yes) {
-                        if (!yes) { return; }
-                        sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
-                            if (err) { return void callback(err); }
-                            var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
-                            var msg = common.fixLinks($('<div>').html(cMsg));
-                            UI.alert(msg);
-                            callback();
+                    sframeChan.query('Q_IS_ONLY_IN_SHARED_FOLDER', null, function (err, res) {
+                        if (err || res.error) { return void console.log(err || res.error); }
+                        var msg = Messages.forgetPrompt;
+                        if (res) {
+                            UI.alert(Messages.sharedFolders_forget);
                             return;
+                        } else if (!common.isLoggedIn()) {
+                            msg = Messages.fm_removePermanentlyDialog;
+                        }
+                        UI.confirm(msg, function (yes) {
+                            if (!yes) { return; }
+                            sframeChan.query('Q_MOVE_TO_TRASH', null, function (err) {
+                                if (err) { return void callback(err); }
+                                var cMsg = common.isLoggedIn() ? Messages.movedToTrash : Messages.deleted;
+                                var msg = common.fixLinks($('<div>').html(cMsg));
+                                UI.alert(msg);
+                                callback();
+                                return;
+                            });
                         });
+
                     });
                 });
                 break;
@@ -2010,12 +2047,14 @@ define([
             allData.unshift({
                 name: Messages.creation_newTemplate,
                 id: -1,
-                icon: h('span.fa.fa-bookmark')
+                //icon: h('span.fa.fa-bookmark')
+                icon: h('span.cptools.cptools-new-template')
             });
             allData.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
-                icon: h('span.fa.fa-file')
+                //icon: h('span.fa.fa-file')
+                icon: UI.getFileIcon({type: type})
             });
             var redraw = function (index) {
                 if (index < 0) { i = 0; }
@@ -2031,7 +2070,9 @@ define([
                     }).appendTo($container);
                     $span.data('id', obj.id);
                     if (idx === selected) { $span.addClass('cp-creation-template-selected'); }
-                    $span.append(obj.icon || UI.getFileIcon({type: type}));
+                    if (!obj.thumbnail) {
+                        $span.append(obj.icon || h('span.cptools.cptools-template'));
+                    }
                     $('<span>', {'class': 'cp-creation-template-element-name'}).text(name)
                         .appendTo($span);
                     $span.click(function () {

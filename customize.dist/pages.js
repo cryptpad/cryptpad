@@ -32,7 +32,6 @@ define([
         });
         return select;
     };
-    languageSelector = languageSelector; // jshint
 
     var footerCol = function (title, L, literal) {
         return h('div.col-6.col-sm-3', [
@@ -95,7 +94,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v2.5.0 (Fossa)")
+            h('div.cp-version-footer', "CryptPad v2.6.0 (Gibbon)")
         ]);
     };
 
@@ -633,6 +632,7 @@ define([
                     ])
                 ]),
             ]),
+            infopageFooter(),
         ];
     };
 

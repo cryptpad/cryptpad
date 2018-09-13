@@ -1,38 +1,58 @@
-@import (once) "./colortheme-all.less";
-@import (once) "./toolbar.less";
-@import (once) './fileupload.less';
-@import (once) './alertify.less';
-@import (once) './tokenfield.less';
-@import (once) './creation.less';
-@import (once) './tippy.less';
-@import (once) "./checkmark.less";
-@import (once) "./password-input.less";
+@import (reference) "./colortheme-all.less";
+@import (reference) "./toolbar.less";
+@import (reference) './fileupload.less';
+@import (reference) './alertify.less';
+@import (reference) './tokenfield.less';
+@import (reference) './creation.less';
+@import (reference) './tippy.less';
+@import (reference) "./checkmark.less";
+@import (reference) "./password-input.less";
+@import (reference) './font.less';
+@import (reference) "./app-print.less";
+@import (reference) "./app-noscroll.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
+    --LessLoader_require: LessLoader_currentFile();
+    // Set the HTML style for the apps which shouldn't have a body scrollbar
+    .app-noscroll_main();
+
+    // Set the HTML style for printing slides
+    .app-print_main();
+
+    .font_main();
+
     .toolbar_main(
         @bg-color: @bg-color,
         @warn-color: @warn-color,
         @color: @color
     );
-    .fileupload_main();
     .alertify_main();
+    .fileupload_main();
     .tokenfield_main();
     .tippy_main();
     .checkmark_main(20px);
     .password_main();
     .creation_main(
         @bg-color: @bg-color,
-        @warn-color: @warn-color,
         @color: @color
     );
     font: @colortheme_app-font;
-}
+};
 
 .framework_min_main(
     @color: @colortheme_default-color, // Color of the text for the toolbar
     @bg-color: @colortheme_default-bg, // color of the toolbar background
     @warn-color: @colortheme_default-warn, // color of the warning text in the toolbar
 ) {
+    --LessLoader_require: LessLoader_currentFile();
+    // Set the HTML style for the apps which shouldn't have a body scrollbar
+    .app-noscroll_main();
+
+    // Set the HTML style for printing slides
+    .app-print_main();
+
+    .font_main();
+
     .toolbar_main(
         @bg-color: @bg-color,
         @warn-color: @warn-color,
@@ -46,4 +66,7 @@
     font: @colortheme_app-font;
 }
 
+& {
+    body.cp-readonly .cp-hidden-if-readonly { display: none !important; }
+}
 
