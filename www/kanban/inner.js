@@ -250,12 +250,12 @@ define([
                 jscolorL = new window.jscolor(el,{onFineChange: onchange, valueElement:undefined});
                 jscolorL.show();
                 var currentColor = boardJSON.color;
-                if (currentColor == undefined) {
-                    currentColor = ''
+                if (currentColor === undefined) {
+                    currentColor = '';
                 }
                 jscolorL.fromString(currentColor);
             },
-            buttonClick: function (el, boardId) {
+            buttonClick: function (el, boardId, e) {
                 e.stopPropagation();
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
                 UI.confirm(Messages.kanban_deleteBoard, function (yes) {

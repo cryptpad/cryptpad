@@ -275,6 +275,7 @@
                     nodeItem.dragendfn = element.dragend;
                     nodeItem.dropfn = element.drop;
                     __onclickHandler(nodeItem);
+                    __onColorClickHandler(nodeItem, "item");
                     board.appendChild(nodeItem);
                     // send event that board has changed
                     self.onChange();
