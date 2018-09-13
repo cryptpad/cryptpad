@@ -378,6 +378,10 @@
                             nodeItemText.dropfn = itemKanban.drop;
                             //add click handler of item
                             __onclickHandler(nodeItemText);
+                            if (itemKanban.color !== '' && itemKanban.color !== undefined) {
+	                            jscolorL = new jscolor(nodeItem,{valueElement:undefined});
+	                            jscolorL.fromString(itemKanban.color);
+	                        }
                             __onColorClickHandler(nodeItem, "item");
 
                             contentBoard.appendChild(nodeItem);
