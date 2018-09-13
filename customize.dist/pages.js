@@ -810,7 +810,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.checkbox-container', [
-                            Pages.createCheckbox('import-recent', Msg.register_importRecent, true),
+                            Pages.createCheckbox('import-recent', Msg.register_importRecent),
                         ]),
                         h('div.extra', [
                             h('button.login.first.btn', Msg.login_login)
