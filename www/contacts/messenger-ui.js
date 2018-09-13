@@ -465,7 +465,9 @@ define([
                 title: Messages.contacts_leaveRoom
             });
 
-            var status = h('span.cp-app-contacts-status');
+            var status = h('span.cp-app-contacts-status', {
+                title: Messages.contacts_online
+            });
             var rightCol = h('span.cp-app-contacts-right-col', [
                 h('span.cp-app-contacts-name', [room.name]),
                 room.isFriendChat ? remove :

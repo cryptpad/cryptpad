@@ -385,6 +385,8 @@ define(function () {
     out.contacts_rooms = "Rooms";
     out.contacts_leaveRoom = "Leave this room";
 
+    out.contacts_online = "Another user from this room is online";
+
     // File manager
 
     out.fm_rootName = "Documents";
