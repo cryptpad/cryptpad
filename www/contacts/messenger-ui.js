@@ -52,22 +52,11 @@ define([
         var messaging = h('div#cp-app-contacts-messaging', [
             h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
             h('div.cp-app-contacts-info', [
-                h('h2', Messages.contacts_info1_new),
+                h('h2', Messages.contacts_info1),
                 h('ul', [
-                    isApp ? h('li', [
-                        Messages.contacts_info2_new,
-                        h('ul', [
-                            h('li', Messages.contacts_info2a_new)
-                        ])
-                    ]) : undefined, // Display the pad chat info only if we're in a pad
-                    h('li', [
-                        Messages.contacts_info3_new,
-                        h('ul', [
-                            h('li', Messages.contacts_info3a_new),
-                            h('li', Messages.contacts_info3),
-                            h('li', Messages.contacts_info4),
-                        ])
-                    ]),
+                    h('li', Messages.contacts_info2),
+                    h('li', Messages.contacts_info3),
+                    h('li', Messages.contacts_info4),
                 ])
             ])
         ]);
@@ -300,11 +289,31 @@ define([
             });
 
             var avatar = h('div.cp-avatar');
-            var header = h('div.cp-app-contacts-header', [
-                avatar,
-                moreHistory,
-                data.isFriendChat ? removeHistory: undefined,
-            ]);
+
+            var headerContent = [avatar, moreHistory, data.isFriendCHat ? removeHistory : undefined];
+            if (isApp) {
+                headerContent = [
+                    h('div.cp-app-contacts-header-title', Messages.contacts_padTitle),
+                    moreHistory
+                ];
+            }
+            var header = h('div.cp-app-contacts-header', headerContent);
+
+            var priv = metadataMgr.getPrivateData();
+
+            var closeTips = h('span.fa.fa-window-close.cp-app-contacts-tips-close');
+            var tips;
+            if (isApp && Util.find(priv.settings, ['general', 'hidetips', 'chat']) !== true) {
+                tips = h('div.cp-app-contacts-tips', [
+                    closeTips,
+                    Messages.contacts_warning
+                ]);
+            }
+            $(closeTips).click(function () {
+                $(tips).hide();
+                common.setAttribute(['general', 'hidetips', 'chat'], true);
+            });
+
             var messages = h('div.cp-app-contacts-messages');
             var input = h('textarea', {
                 placeholder: Messages.contacts_typeHere
@@ -386,6 +395,7 @@ define([
                 'data-user': data.isFriendChat && curvePublic
             }, [
                 header,
+                tips,
                 messages,
                 h('div.cp-app-contacts-input', [
                     input,

@@ -266,6 +266,24 @@
                     color: darken(@bg-color, 5%);
                 }
             }
+
+            .cp-app-contacts-header-title {
+                padding: 10px;
+                flex: 1;
+            }
+        }
+        .cp-app-contacts-tips {
+            margin: 1em;
+            background-color: lighten(@bg-color, 15%);
+            font-size: 14px;
+            padding: 10px;
+            position: relative;
+            .cp-app-contacts-tips-close {
+                cursor: pointer;
+                position: absolute;
+                top: 2px;
+                right: 2px;
+            }
         }
         .cp-app-contacts-chat {
             height: 100%;

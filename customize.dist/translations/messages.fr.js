@@ -365,6 +365,8 @@ define(function () {
     out.contacts_remove = 'Supprimer ce contact';
     out.contacts_confirmRemove = 'Êtes-vous sûr de vouloir supprimer <em>{0}</em> de vos contacts ?';
     out.contacts_typeHere = "Entrez un message ici...";
+    out.contacts_warning = "Tout ce que vous tapez ici est permanent et visible par tous les utilisateurs actuels et futurs de ce pad. Soyez prudent avec vos données confidentielles !";
+    out.contacts_padTitle = "Chat";
 
     out.contacts_info1 = "Voici vos contacts. Ici, vous pouvez :";
     out.contacts_info2 = "Cliquer sur le nom d'un contact pour discuter avec lui";
@@ -379,6 +381,8 @@ define(function () {
     out.contacts_friends = "Amis";
     out.contacts_rooms = "Salons";
     out.contacts_leaveRoom = "Quitter ce salon";
+
+    out.contacts_online = "Un autre utilisateur est en ligne dans ce salon";
 
     // File manager
 
