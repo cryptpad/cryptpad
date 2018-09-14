@@ -262,6 +262,14 @@
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
+                        button {
+                            width: 20px;
+                            font-size: 16px;
+                            padding: 0;
+                            border: none;
+                            height: 20px;
+                            cursor: pointer;
+                        }
                     }
                     .cp-toolbar-userlist-name-input {
                         flex: 1;
@@ -277,14 +285,6 @@
                         min-width: 0;
                         min-height: 0;
                         text-overflow: ellipsis;
-                    }
-                    .cp-toolbar-userlist-name-edit {
-                        width: 20px;
-                        font-size: 16px;
-                        padding: 0;
-                        border: none;
-                        height: 20px;
-                        cursor: pointer;
                     }
                     .cp-toolbar-userlist-friend {
                         padding: 0;
@@ -387,7 +387,7 @@
             color: @toolbar-color;
             color: var(--toolbar-color);
         }
-        .cp-toolbar-userlist-name-edit {
+        .cp-toolbar-userlist-button {
             color: @toolbar-userlist-name-edit;
             color: var(--toolbar-userlist-name-edit);
             background: transparent;

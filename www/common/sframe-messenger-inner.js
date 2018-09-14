@@ -35,7 +35,7 @@ define([], function () {
         });
         sFrameChan.on('EV_CONTACTS_UPDATE', function (data) {
             _handlers.update.forEach(function (f) {
-                f(data.info, data.types);
+                f(data.info, data.types, data.channel);
             });
         });
         sFrameChan.on('EV_CONTACTS_FRIEND', function (data) {

@@ -1366,10 +1366,11 @@ define([
                     channel: channel,
                 });
             });
-            messenger.on('update', function (info, types) {
+            messenger.on('update', function (info, types, channel) {
                 sendMessengerEvent('CONTACTS_UPDATE', {
                     types: types,
                     info: info,
+                    channel: channel
                 });
             });
             messenger.on('friend', function (curvePublic) {

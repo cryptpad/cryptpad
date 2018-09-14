@@ -204,7 +204,7 @@ define([
         };
 
         // Make sure the data we have about our friends are up-to-date when we see them online
-        var checkFriendData = function (curve, data) {
+        var checkFriendData = function (curve, data, channel) {
             if (curve === proxy.curvePublic) { return; }
             var friend = getFriend(proxy, curve);
             if (!friend) { return; }
@@ -217,7 +217,7 @@ define([
             });
 
             eachHandler('update', function (f) {
-                f(clone(data), types);
+                f(clone(data), types, channel);
             });
         };
 
@@ -261,7 +261,7 @@ define([
             // the sender field. This is to prevent replay attacks.
             if (parsed[2] !== sender || !parsed[1]) { return; }
             channel.mapId[sender] = parsed[1];
-            checkFriendData(parsed[1].curvePublic, parsed[1]);
+            checkFriendData(parsed[1].curvePublic, parsed[1], channel.id);
             eachHandler('join', function (f) {
                 f(parsed[1], channel.id);
             });
@@ -328,7 +328,7 @@ define([
                 return true;
             }
             if (parsedMsg[0] === Types.update) {
-                checkFriendData(parsedMsg[1], parsedMsg[3]);
+                checkFriendData(parsedMsg[1], parsedMsg[3], channel.id);
                 return;
             }
             if (parsedMsg[0] === Types.unfriend) {
@@ -809,7 +809,10 @@ define([
         };
 
         var ready = false;
+        var initialized = false;
         var init = function () {
+            if (initialized) { return; }
+            initialized = true;
             var friends = getFriendList(proxy);
 
             nThen(function (waitFor) {
@@ -827,7 +830,7 @@ define([
                 emit('READY');
             });
         };
-        init();
+        //init();
 
         var getRooms = function (data, cb) {
             if (data && data.curvePublic) {
@@ -931,6 +934,10 @@ define([
         messenger.execCommand = function (obj, cb) {
             var cmd = obj.cmd;
             var data = obj.data;
+            if (cmd === 'INIT_FRIENDS') {
+                init();
+                return void cb();
+            }
             if (cmd === 'IS_READY') {
                 return void cb(ready);
             }

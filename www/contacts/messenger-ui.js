@@ -45,6 +45,8 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var origin = metadataMgr.getPrivateData().origin;
 
+        var isApp = typeof(toolbar) !== "undefined";
+
         $container.addClass('cp-app-contacts-initializing');
 
         var messaging = h('div#cp-app-contacts-messaging', [
@@ -52,7 +54,7 @@ define([
             h('div.cp-app-contacts-info', [
                 h('h2', Messages.contacts_info1_new),
                 h('ul', [
-                    toolbar ? h('li', [
+                    isApp ? h('li', [
                         Messages.contacts_info2_new,
                         h('ul', [
                             h('li', Messages.contacts_info2a_new)
@@ -124,7 +126,7 @@ define([
 
         var onResize = function () {
             // Don't update the width if we are in the contacts app
-            if (!toolbar) { return; }
+            if (!isApp) { return; }
             var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
             $userlist.css('width', (68 + w)+'px');
         };
@@ -401,6 +403,7 @@ define([
         };
 
         var updateStatus = function (id) {
+            if (!state.channels[id]) { return; }
             var $status = find.inList(id).find('.cp-app-contacts-status');
             messenger.getStatus(id, function (e, online) {
                 // if error maybe you shouldn't display this friend...
@@ -525,6 +528,8 @@ define([
 
         messenger.on('message', function (message) {
             var chanId = message.channel;
+            var channel = state.channels[chanId];
+            if (!channel) { return; }
 
             var chat = getChat(chanId);
 
@@ -532,12 +537,6 @@ define([
 
             var el_message = markup.message(message);
 
-            var channel = state.channels[chanId];
-            if (!channel) {
-                console.log(message);
-                console.error('expected channel [%s] to be open', chanId);
-                return;
-            }
             common.notify();
 
             channel.messages.push(message);
@@ -588,8 +587,11 @@ define([
         });
 
         // change in your friend list
-        messenger.on('update', function (info, types) {
+        messenger.on('update', function (info, types, channel) {
             if (!info || !info.curvePublic) { return; }
+            // Make sure we don't store useless data (friends data in pad chat or the other way)
+            if (channel && !state.channels[channel]) { return; }
+
             var curvePublic = info.curvePublic;
             contactsData[curvePublic] = info;
 
@@ -636,7 +638,7 @@ define([
 
         var execCommand = function (cmd, data, cb) {
             sframeChan.query('Q_CHAT_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
-                if (err || obj.error) { return void cb(err || obj.error); }
+                if (err || (obj && obj.error)) { return void cb(err || (obj && obj.error)); }
                 cb(void 0, obj);
             });
         };
@@ -686,10 +688,16 @@ define([
                 reorderRooms();
 
                 updateStatus(id);
+
+                if (isApp && room.isPadChat) {
+                    $container.removeClass('cp-app-contacts-initializing');
+                    display(room.id);
+                }
             });
         };
 
         messenger.on('friend', function (curvePublic) {
+            if (isApp) { return; }
             debug('new friend: ', curvePublic);
             execCommand('GET_ROOMS', {curvePublic: curvePublic}, function (err, rooms) {
                 if (err) { return void console.error(err); }
@@ -699,6 +707,7 @@ define([
         });
 
         messenger.on('unfriend', function (curvePublic, removedByMe) {
+            if (isApp) { return; }
             var channel = state.channels[state.active];
             $userlist.find(userQuery(curvePublic)).remove();
             $messages.find(userQuery(curvePublic)).remove();
@@ -741,6 +750,7 @@ define([
 
         var ready = false;
         var onMessengerReady = function () {
+            if (isApp) { return; }
             if (ready) { return; }
             ready = true;
 
@@ -769,8 +779,6 @@ define([
                 room.name = name;
                 rooms.forEach(initializeRoom);
             });
-
-            $container.removeClass('cp-app-contacts-initializing');
         };
 
         var onDisconnect = function () {
@@ -784,9 +792,12 @@ define([
 
         // Initialize chat when outer is ready (all channels loaded)
         // TODO: try again in outer if fail to load a channel
-        execCommand('IS_READY', null, function (err, yes) {
-            if (yes) { onMessengerReady(); }
-        });
+        if (!isApp) {
+            execCommand('INIT_FRIENDS', null, function () {});
+            execCommand('IS_READY', null, function (err, yes) {
+                if (yes) { onMessengerReady(); }
+            });
+        }
         sframeChan.on('EV_CHAT_EVENT', function (obj) {
             if (obj.ev === 'READY') {
                 onMessengerReady();
