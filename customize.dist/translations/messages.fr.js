@@ -1209,5 +1209,16 @@ define(function () {
     out.autostore_forceSave = "Stocker le fichier dans votre CryptDrive"; // File upload modal
     out.autostore_notAvailable = "Vous devez stocker ce pad dans votre CryptDrive avant de pouvoir utiliser cette fonctionnalité.";
 
+    // Crowdfunding messages
+    out.crowdfunding_home1 = "CryptPad a besoin d'aide !";
+    out.crowdfunding_home2 = "Cliquez pour découvrir notre campagne de financement participatif.";
+
+    out.crowdfunding_popup_text = "<h3>Aider CryptPad</h3>" +
+                                  "Pour vous assurer que CryptPad soit activement développé, nous vous invitons à supporter le projet via la " +
+                                  '<a href="https://opencollective.com/cryptpad">page OpenCollective</a>, où vous pouvez trouver notre <b>Roadmap</b> et nos <b>objectifs de financement</b>.';
+    out.crowdfunding_popup_yes = "Voir la page";
+    out.crowdfunding_popup_no = "Pas maintenant";
+    out.crowdfunding_popup_never = "Ne plus demander";
+
     return out;
 });

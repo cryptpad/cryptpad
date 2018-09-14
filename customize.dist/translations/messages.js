@@ -1270,7 +1270,7 @@ define(function () {
 
     out.crowdfunding_popup_text = "<h3>We need your help!</h3>" +
                                   "To ensure that CryptPad is actively developed, consider supporting the project via the " +
-                                  '<a href="https://opencollective.com/cryptpad">OpenCollective page</a>, where you can see our <b>Roadmap</b> and <b>Funding goals</b>';
+                                  '<a href="https://opencollective.com/cryptpad">OpenCollective page</a>, where you can see our <b>Roadmap</b> and <b>Funding goals</b>.';
     out.crowdfunding_popup_yes = "Go to OpenCollective";
     out.crowdfunding_popup_no = "Not now";
     out.crowdfunding_popup_never = "Don't ask me again";
