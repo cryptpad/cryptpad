@@ -615,7 +615,7 @@ define([
                 }
             ]);
 
-        var crowdFunding = h('button', [
+        var crowdFunding = AppConfig.disableCrowdfundingMessages ? undefined : h('button', [
             Msg.crowdfunding_home1,
             h('br'),
             Msg.crowdfunding_home2

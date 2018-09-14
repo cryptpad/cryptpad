@@ -2329,6 +2329,7 @@ define([
     var crowdfundingState = false;
     UIElements.displayCrowdfunding = function (common) {
         if (crowdfundingState) { return; }
+        if (AppConfig.disableCrowdfundingMessages) { return; }
         crowdfundingState = true;
         setTimeout(function () {
             common.getAttribute(['general', 'crowdfunding'], function (err, val) {
