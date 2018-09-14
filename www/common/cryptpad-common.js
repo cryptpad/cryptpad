@@ -1433,7 +1433,7 @@ define([
                 postMessage("INIT_RPC", null, waitFor(function (obj) {
                     console.log('RPC handshake complete');
                     if (obj.error) { return; }
-                    localStorage.plan = obj.plan;
+                    localStorage[Constants.plan] = obj.plan;
                 }));
             } else if (PINNING_ENABLED) {
                 console.log('not logged in. pads will not be pinned');
