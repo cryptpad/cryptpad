@@ -518,7 +518,22 @@ define([
 
                     if (testing) { return void proceed(result); }
 
-                    proceed(result);
+                    if (!(proxy.curvePrivate && proxy.curvePublic &&
+                          proxy.edPrivate && proxy.edPublic)) {
+
+                        console.log("recovering derived public/private keypairs");
+                        // **** reset keys ****
+                        proxy.curvePrivate = result.curvePrivate;
+                        proxy.curvePublic  = result.curvePublic;
+                        proxy.edPrivate    = result.edPrivate;
+                        proxy.edPublic     = result.edPublic;
+                    }
+
+                    setTimeout(function () {
+                        Realtime.whenRealtimeSyncs(result.realtime, function () {
+                            proceed(result);
+                        });
+                    });
                 });
             }, 500);
         }, 200);
