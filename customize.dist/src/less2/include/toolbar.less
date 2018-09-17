@@ -319,11 +319,15 @@
                 margin: 50px;
             }
             &> div {
+                flex: 1;
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
                 align-content: center;
-                overflow-y: auto;
+            }
+            &> div:last-child {
+                flex: unset;
+                margin: 50px 0;
             }
         }
 
@@ -342,13 +346,15 @@
             margin-left: 5px;
         }
 
-        @media screen and (max-height: @browser_media-not-big) {
+        @media screen and (max-height: @browser_media-medium-screen),
+               screen and (max-width: @browser_media-medium-screen) {
             .cp-modal {
                 & > p {
                     display: none;
                 }
                 & > div {
                     align-content: unset;
+                    align-items: center;
                     li {
                         height: 40px;
                         width: 200px;
@@ -356,9 +362,11 @@
                         align-items: center;
                         .fa {
                             font-size: 32px;
+                            min-width: 50px;
                         }
                         .cp-icons-name {
                             height: auto;
+                            text-align: left;
                         }
                     }
                 }

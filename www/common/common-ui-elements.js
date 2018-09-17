@@ -1782,13 +1782,16 @@ define([
 
         var $container = $('<div>');
         var i = 0;
-        AppConfig.availablePadTypes.forEach(function (p) {
+        var types = AppConfig.availablePadTypes.filter(function (p) {
             if (p === 'drive') { return; }
             if (p === 'contacts') { return; }
             if (p === 'todo') { return; }
             if (p === 'file') { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
+            return true;
+        });
+        types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
                 'id': 'cp-newpad-icons-'+ (i++)
@@ -1812,7 +1815,7 @@ define([
 
         var selected = -1;
         var next = function () {
-            selected = ++selected % 5;
+            selected = ++selected % types.length;
             $container.find('.cp-icons-element-selected').removeClass('cp-icons-element-selected');
             $container.find('#cp-newpad-icons-'+selected).addClass('cp-icons-element-selected');
         };
