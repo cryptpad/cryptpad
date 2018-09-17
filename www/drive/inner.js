@@ -1298,6 +1298,7 @@ define([
             if (!oldPaths) { return; }
             // A moved element should be removed from its previous location
             var movedPaths = [];
+
             var sharedF = false;
             oldPaths.forEach(function (p) {
                 movedPaths.push(p.path);
@@ -1309,9 +1310,25 @@ define([
             var newPath = findDropPath(ev.target);
             if (!newPath) { return; }
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
-                deletePaths(null, movedPaths);
-                return;
+                return void deletePaths(null, movedPaths);
             }
+
+            if (manager.isPathIn(newPath, [TRASH])) {
+                // Filter the selection to remove shared folders.
+                // Shared folders can't be moved to the trash!
+                var filteredPaths = movedPaths.filter(function (p) {
+                    var el = manager.find(p);
+                    return !manager.isSharedFolder(el);
+                });
+
+                if (!filteredPaths.length) {
+                    // We only have shared folder, delete them
+                    return void deletePaths(null, movedPaths);
+                }
+
+                movedPaths = filteredPaths;
+            }
+
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
             }
