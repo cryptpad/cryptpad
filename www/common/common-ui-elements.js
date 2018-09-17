@@ -2354,19 +2354,23 @@ define([
                 $(yes).click(function () {
                     modal.delete();
                     common.openURL('https://opencollective.com/cryptpad/contribute');
+                    Feedback.send('CROWDFUNDING_YES');
                 });
                 $(modal.popup).find('a').click(function (e) {
                     e.stopPropagation();
                     e.preventDefault();
                     modal.delete();
                     common.openURL('https://opencollective.com/cryptpad/');
+                    Feedback.send('CROWDFUNDING_LINK');
                 });
                 $(no).click(function () {
                     modal.delete();
+                    Feedback.send('CROWDFUNDING_NO');
                 });
                 $(never).click(function () {
                     modal.delete();
                     common.setAttribute(['general', 'crowdfunding'], false);
+                    Feedback.send('CROWDFUNDING_NEVER');
                 });
 
             });
