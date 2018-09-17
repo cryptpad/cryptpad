@@ -25,9 +25,11 @@ define([
     // Tasks list
     var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
     var uncheckedTaskItemPtn = /^\s*(<p>)?\[ ?\](<\/p>)?\s*/;
+    var bogusCheckPtn = /<input( checked=""){0,1} disabled="" type="checkbox">/;
     renderer.listitem = function (text) {
         var isCheckedTaskItem = checkedTaskItemPtn.test(text);
         var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
+        var hasBogusInput = bogusCheckPtn.test(text);
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
                 '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
@@ -35,6 +37,15 @@ define([
         if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
                 '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+        }
+        if (!isCheckedTaskItem && !isUncheckedTaskItem && hasBogusInput) {
+            if (/checked/.test(text)) {
+                text = text.replace(bogusCheckPtn, 
+                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
+            } else if (/disabled/.test(text)) {
+                text = text.replace(bogusCheckPtn, 
+                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+            }
         }
         var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
