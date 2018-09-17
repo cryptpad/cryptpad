@@ -1892,9 +1892,11 @@ define([
 
         var createShareButton = function (id, $container) {
             var $shareBlock = $('<button>', {
-                'class': 'fa fa-shhare-alt cp-toolbar-share-button',
+                'class': 'cp-toolbar-share-button',
                 title: Messages.shareButton
             });
+            var $icon = $sharedIcon.clone().appendTo($shareBlock);
+            var $text = $('<span>').text(Messages.shareButton).appendTo($shareBlock);
             var data = manager.getSharedFolderData(id);
             var parsed = Hash.parsePadUrl(data.href);
             if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
