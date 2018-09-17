@@ -1895,8 +1895,8 @@ define([
                 'class': 'cp-toolbar-share-button',
                 title: Messages.shareButton
             });
-            var $icon = $sharedIcon.clone().appendTo($shareBlock);
-            var $text = $('<span>').text(Messages.shareButton).appendTo($shareBlock);
+            $sharedIcon.clone().appendTo($shareBlock);
+            $('<span>').text(Messages.shareButton).appendTo($shareBlock);
             var data = manager.getSharedFolderData(id);
             var parsed = Hash.parsePadUrl(data.href);
             if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
@@ -2579,7 +2579,12 @@ define([
             createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
             var sfId = manager.isInSharedFolder(currentPath);
             if (sfId) {
+                var sfData = manager.getSharedFolderData(sfId);
+                var parsed = Hash.parsePadUrl(sfData.href);
+                sframeChan.event('EV_DRIVE_SET_HASH', parsed.hash || '');
                 createShareButton(sfId, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+            } else {
+                sframeChan.event('EV_DRIVE_SET_HASH', '');
             }
 
             createTitle($toolbar.find('.cp-app-drive-path'), path);

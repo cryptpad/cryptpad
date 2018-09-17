@@ -223,6 +223,8 @@ define({
     // Refresh the drive when the drive has changed ('change' or 'remove' events)
     'EV_DRIVE_CHANGE': true,
     'EV_DRIVE_REMOVE': true,
+    // Set shared folder hash in the address bar
+    'EV_DRIVE_SET_HASH': true,
 
     // Remove an owned pad from the server
     'Q_REMOVE_OWNED_CHANNEL': true,
