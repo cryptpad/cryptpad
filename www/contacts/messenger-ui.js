@@ -107,7 +107,6 @@ define([
 
         var notify = function (id) {
             find.inList(id).addClass('cp-app-contacts-notify');
-            notifyToolbar();
         };
         var unnotify = function (id) {
             find.inList(id).removeClass('cp-app-contacts-notify');
@@ -548,6 +547,7 @@ define([
             var el_message = markup.message(message);
 
             common.notify();
+            notifyToolbar();
 
             channel.messages.push(message);
 
