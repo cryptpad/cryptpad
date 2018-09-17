@@ -631,23 +631,25 @@ define([
                 if (!data.FM) { return; }
                 var $input = $('<input>', {
                     'type': 'file',
-                    'style': 'display: none;'
+                    'style': 'display: none;',
+                    'multiple': 'multiple'
                 }).on('change', function (e) {
-                    var file = e.target.files[0];
-                    var ev = {
-                        target: data.target
-                    };
-                    if (data.filter && !data.filter(file)) {
-                        return;
-                    }
-                    if (data.transformer) {
-                        data.transformer(file, function (newFile) {
-                            data.FM.handleFile(newFile, ev);
-                            if (callback) { callback(); }
-                        });
-                        return;
-                    }
-                    data.FM.handleFile(file, ev);
+                    var files = Util.slice(e.target.files);
+                    files.forEach(function (file) {
+                        var ev = {
+                            target: data.target
+                        };
+                        if (data.filter && !data.filter(file)) {
+                            return;
+                        }
+                        if (data.transformer) {
+                            data.transformer(file, function (newFile) {
+                                data.FM.handleFile(newFile, ev);
+                            });
+                            return;
+                        }
+                        data.FM.handleFile(file, ev);
+                    });
                     if (callback) { callback(); }
                 });
                 if (data.accept) { $input.attr('accept', data.accept); }

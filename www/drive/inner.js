@@ -1805,14 +1805,17 @@ define([
                     .click(function () {
                     var $input = $('<input>', {
                         'type': 'file',
-                        'style': 'display: none;'
+                        'style': 'display: none;',
+                        'multiple': 'multiple'
                     }).on('change', function (e) {
-                        var file = e.target.files[0];
-                        var ev = {
-                            target: $content[0],
-                            path: findDropPath($content[0])
-                        };
-                        APP.FM.handleFile(file, ev);
+                        var files = Util.slice(e.target.files);
+                        files.forEach(function (file) {
+                            var ev = {
+                                target: $content[0],
+                                path: findDropPath($content[0])
+                            };
+                            APP.FM.handleFile(file, ev);
+                        });
                     });
                     $input.click();
                 });
