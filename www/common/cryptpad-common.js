@@ -345,6 +345,9 @@ define([
     };
     common.getPadAttribute = function (attr, cb, href) {
         href = Hash.getRelativeHref(href || window.location.href);
+        if (!href) {
+            return void cb('E404');
+        }
         postMessage("GET_PAD_ATTRIBUTE", {
             href: href,
             attr: attr,

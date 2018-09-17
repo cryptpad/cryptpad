@@ -2396,13 +2396,16 @@ define([
             modal.delete();
         });
         $(store).click(function () {
-            UIElements.displayCrowdfunding(common);
-            modal.delete();
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
-                if (err || (obj && obj.error)) {
-                    console.error(err || obj.error);
+                var error = err || (obj && obj.error);
+                if (error) {
+                    if (error === 'E_OVER_LIMIT') {
+                        return void UI.warn(Messages.pinLimitReached);
+                    }
                     return void UI.warn(Messages.autostore_error);
                 }
+                modal.delete();
+                UIElements.displayCrowdfunding(common);
                 UI.log(Messages.autostore_saved);
             });
         });

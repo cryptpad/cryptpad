@@ -465,7 +465,7 @@ define([
             if (data.password) { pad.password = data.password; }
             if (data.channel) { pad.channel = data.channel; }
             store.manager.addPad(data.path, pad, function (e) {
-                if (e) { return void cb({error: "Error while adding the pad:"+ e}); }
+                if (e) { return void cb({error: e}); }
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);

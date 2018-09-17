@@ -371,7 +371,7 @@ define([
                     forceSave: true
                 };
                 Cryptpad.setPadTitle(data, function (err) {
-                    cb(err);
+                    cb({error: err});
                 });
             });
             sframeChan.on('Q_IS_PAD_STORED', function (data, cb) {
