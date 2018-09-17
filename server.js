@@ -86,7 +86,6 @@ var setHeaders = (function () {
 
 (function () {
 if (!config.logFeedback) { return; }
-console.log(config.logFeedback);
 
 const logFeedback = function (url) {
     url.replace(/\?(.*?)=/, function (all, fb) {

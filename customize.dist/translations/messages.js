@@ -417,12 +417,13 @@ define(function () {
     out.fm_openParent = "Show in folder";
     out.fm_noname = "Untitled Document";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
-    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from your CryptDrive permanently?";
-    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
+    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to permanently remove these {0} elements from your CryptDrive?";
+    out.fm_removePermanentlyNote = "Owned pads will be removed from the server if you continue.";
+    out.fm_removePermanentlyDialog = "Are you sure you want to permanently remove that element from your CryptDrive?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
-    out.fm_deleteOwnedPad = "Are you sure you want to remove permanently this pad from the server?";
-    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently these pads from the server?";
+    out.fm_deleteOwnedPad = "Are you sure you want to permanently remove this pad from the server?";
+    out.fm_deleteOwnedPads = "Are you sure you want to permanently remove these pads from the server?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";

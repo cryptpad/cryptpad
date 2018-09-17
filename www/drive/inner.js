@@ -1207,15 +1207,23 @@ define([
             if (paths) {
                 paths.forEach(function (p) { pathsList.push(p.path); });
             }
+            var hasOwned = pathsList.some(function (p) {
+                var el = manager.find(p);
+                var data = manager.isSharedFolder(el) ? manager.getSharedFolderData(el)
+                                        : manager.getFileData(el);
+                return data.owners && data.owners.indexOf(edPublic) !== -1;
+            });
             var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
             if (pathsList.length === 1) {
-                msg = Messages.fm_removePermanentlyDialog;
+                msg = hasOwned ? Messages.fm_deleteOwnedPad : Messages.fm_removePermanentlyDialog;
+            } else if (hasOwned) {
+                msg = msg + '<br><em>' + Messages.fm_removePermanentlyNote + '</em>';
             }
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
                 manager.delete(pathsList, refresh);
-            });
+            }, null, true);
         };
         // Drag & drop:
         // The data transferred is a stringified JSON containing the path of the dragged element
@@ -3231,16 +3239,23 @@ define([
                     paths.push($(elmt).data('path'));
                 });
                 if (!paths.length) { return; }
+                // Remove shared folders from the selection (they can't be moved to the trash)
+                // unless the selection is only shared folders
+                var paths2 = paths.filter(function (p) {
+                    var el = manager.find(p);
+                    return !manager.isSharedFolder(el);
+                });
                 // If we are in the trash or anon pad or if we are holding the "shift" key,
                 // delete permanently
                 // Or if we are in a shared folder
+                // Or if the selection is only shared folders
                 if (!APP.loggedIn || isTrash || manager.isInSharedFolder(currentPath)
-                        || e.shiftKey) {
+                        || e.shiftKey || !paths2.length) {
                     deletePaths(null, paths);
                     return;
                 }
                 // else move to trash
-                moveElements(paths, [TRASH], false, refresh);
+                moveElements(paths2, [TRASH], false, refresh);
                 return;
             }
         });
