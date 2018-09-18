@@ -2756,7 +2756,7 @@ define([
             }
             var dataPath = isSharedFolder ? path.slice(0, -1) : path;
             $elementRow.data('path', dataPath);
-            addDragAndDropHandlers($elementRow, path, true, droppable);
+            addDragAndDropHandlers($elementRow, dataPath, true, droppable);
             if (active) {
                 $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
             }
