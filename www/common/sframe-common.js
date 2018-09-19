@@ -161,6 +161,24 @@ define([
         });
     };
 
+    // Chat
+    var padChatChannel;
+    funcs.getPadChat = function () {
+        return padChatChannel;
+    };
+    funcs.openPadChat = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.chat || Hash.createChannelId();
+        if (!md.chat) {
+            md.chat = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        padChatChannel = channel;
+        ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
 
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
@@ -515,6 +533,11 @@ define([
 
             ctx.sframeChan.on('EV_CHROME_68', function () {
                 UI.alert(Messages.chrome68);
+            });
+
+            funcs.isPadStored(function (err, val) {
+                if (err || !val) { return; }
+                UIElements.displayCrowdfunding(funcs);
             });
 
             ctx.sframeChan.ready();

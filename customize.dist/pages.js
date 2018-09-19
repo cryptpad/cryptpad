@@ -94,7 +94,7 @@ define([
                     ])
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v2.7.0 (Hedgehog)")
+            h('div.cp-version-footer', "CryptPad v2.8.0 (Ibis)")
         ]);
     };
 
@@ -615,6 +615,19 @@ define([
                 }
             ]);
 
+        var crowdFunding = AppConfig.disableCrowdfundingMessages ? undefined : h('button', [
+            Msg.crowdfunding_home1,
+            h('br'),
+            Msg.crowdfunding_home2
+        ]);
+        $(crowdFunding).click(function () {
+            var a = document.createElement("a");
+            a.href = "https://opencollective.com/cryptpad/contribute";
+            a.target = "_blank";
+            a.rel = "noopener";
+            a.click();
+        });
+
         return [
             h('div#cp-main', [
                 infopageTopbar(),
@@ -628,6 +641,11 @@ define([
                         h('div.col-12.col-sm-6', [
                             icons,
                             more
+                        ])
+                    ]),
+                    h('div.row', [
+                        h('div.cp-crowdfunding', [
+                            crowdFunding
                         ])
                     ])
                 ]),
@@ -810,7 +828,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.checkbox-container', [
-                            Pages.createCheckbox('import-recent', Msg.register_importRecent, true),
+                            Pages.createCheckbox('import-recent', Msg.register_importRecent),
                         ]),
                         h('div.extra', [
                             h('button.login.first.btn', Msg.login_login)

@@ -191,7 +191,10 @@ define([
 
             // load the user's object using the legacy credentials
             loadUserObject(opt, waitFor(function (err, rt) {
-                if (err) { return void cb(err); }
+                if (err) {
+                    waitFor.abort();
+                    return void cb(err);
+                }
 
                 // if a proxy is marked as deprecated, it is because someone had a non-owned drive
                 // but changed their password, and couldn't delete their old data.
@@ -199,6 +202,7 @@ define([
                 // allow them to proceed. In time, their old drive should get deleted, since
                 // it will should be pinned by anyone's drive.
                 if (rt.proxy[Constants.deprecatedKey]) {
+                    waitFor.abort();
                     return void cb('NO_SUCH_USER', res);
                 }
 
@@ -514,7 +518,22 @@ define([
 
                     if (testing) { return void proceed(result); }
 
-                    proceed(result);
+                    if (!(proxy.curvePrivate && proxy.curvePublic &&
+                          proxy.edPrivate && proxy.edPublic)) {
+
+                        console.log("recovering derived public/private keypairs");
+                        // **** reset keys ****
+                        proxy.curvePrivate = result.curvePrivate;
+                        proxy.curvePublic  = result.curvePublic;
+                        proxy.edPrivate    = result.edPrivate;
+                        proxy.edPublic     = result.edPublic;
+                    }
+
+                    setTimeout(function () {
+                        Realtime.whenRealtimeSyncs(result.realtime, function () {
+                            proceed(result);
+                        });
+                    });
                 });
             }, 500);
         }, 200);

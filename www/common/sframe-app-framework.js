@@ -322,6 +322,8 @@ define([
                 if (!readOnly) { onLocal(); }
                 evOnReady.fire(newPad);
 
+                common.openPadChat(onLocal);
+
                 UI.removeLoadingScreen(emitResize);
 
                 var privateDat = cpNfInner.metadataMgr.getPrivateData();
@@ -559,6 +561,7 @@ define([
             }, onLocal);
             var configTb = {
                 displayed: [
+                    'chat',
                     'userlist',
                     'title',
                     'useradmin',

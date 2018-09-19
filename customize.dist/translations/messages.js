@@ -136,6 +136,8 @@ define(function () {
 
     out.userListButton = "User list";
 
+    out.chatButton = "Chat";
+
     out.userAccountButton = "Your account";
 
     out.newButton = 'New';
@@ -365,6 +367,8 @@ define(function () {
     out.contacts_remove = 'Remove this contact';
     out.contacts_confirmRemove = 'Are you sure you want to remove <em>{0}</em> from your contacts?';
     out.contacts_typeHere = "Type a message here...";
+    out.contacts_warning = "Everything you type here is persistent and available to all the existing and future users of this pad. Be careful with sensitive information!";
+    out.contacts_padTitle = "Chat";
 
     out.contacts_info1 = "These are your contacts. From here, you can:";
     out.contacts_info2 = "Click your contact's icon to chat with them";
@@ -375,6 +379,12 @@ define(function () {
     out.contacts_confirmRemoveHistory = 'Are you sure you want to permanently remove your chat history? Data cannot be restored';
     out.contacts_removeHistoryServerError = 'There was an error while removing your chat history. Try again later';
     out.contacts_fetchHistory = "Retrieve older history";
+
+    out.contacts_friends = "Friends";
+    out.contacts_rooms = "Rooms";
+    out.contacts_leaveRoom = "Leave this room";
+
+    out.contacts_online = "Another user from this room is online";
 
     // File manager
 
@@ -407,12 +417,13 @@ define(function () {
     out.fm_openParent = "Show in folder";
     out.fm_noname = "Untitled Document";
     out.fm_emptyTrashDialog = "Are you sure you want to empty the trash?";
-    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to remove these {0} elements from your CryptDrive permanently?";
-    out.fm_removePermanentlyDialog = "Are you sure you want to remove that element from your CryptDrive permanently?";
+    out.fm_removeSeveralPermanentlyDialog = "Are you sure you want to permanently remove these {0} elements from your CryptDrive?";
+    out.fm_removePermanentlyNote = "Owned pads will be removed from the server if you continue.";
+    out.fm_removePermanentlyDialog = "Are you sure you want to permanently remove that element from your CryptDrive?";
     out.fm_removeSeveralDialog = "Are you sure you want to move these {0} elements to the trash?";
     out.fm_removeDialog = "Are you sure you want to move {0} to the trash?";
-    out.fm_deleteOwnedPad = "Are you sure you want to remove permanently this pad from the server?";
-    out.fm_deleteOwnedPads = "Are you sure you want to remove permanently these pads from the server?";
+    out.fm_deleteOwnedPad = "Are you sure you want to permanently remove this pad from the server?";
+    out.fm_deleteOwnedPads = "Are you sure you want to permanently remove these pads from the server?";
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
@@ -1252,6 +1263,17 @@ define(function () {
     out.autostore_saved = "The pad was successfully stored in your CryptDrive!";
     out.autostore_forceSave = "Store the file in your CryptDrive"; // File upload modal
     out.autostore_notAvailable = "You must store this pad in your CryptDrive before being able to use this feature."; // Properties/tags/move to trash
+
+    // Crowdfunding messages
+    out.crowdfunding_home1 = "CryptPad needs your help!";
+    out.crowdfunding_home2 = "Click to learn about our crowdfunding campaign.";
+
+    out.crowdfunding_popup_text = "<h3>We need your help!</h3>" +
+                                  "To ensure that CryptPad is actively developed, consider supporting the project via the " +
+                                  '<a href="https://opencollective.com/cryptpad">OpenCollective page</a>, where you can see our <b>Roadmap</b> and <b>Funding goals</b>.';
+    out.crowdfunding_popup_yes = "Go to OpenCollective";
+    out.crowdfunding_popup_no = "Not now";
+    out.crowdfunding_popup_never = "Don't ask me again";
 
     return out;
 });

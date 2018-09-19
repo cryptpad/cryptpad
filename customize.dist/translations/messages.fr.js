@@ -135,6 +135,8 @@ define(function () {
 
     out.userListButton = "Liste d'utilisateurs";
 
+    out.chatButton = "Chat";
+
     out.userAccountButton = "Votre compte";
 
     out.newButton = 'Nouveau';
@@ -363,7 +365,8 @@ define(function () {
     out.contacts_remove = 'Supprimer ce contact';
     out.contacts_confirmRemove = 'Êtes-vous sûr de vouloir supprimer <em>{0}</em> de vos contacts ?';
     out.contacts_typeHere = "Entrez un message ici...";
-
+    out.contacts_warning = "Tout ce que vous tapez ici est permanent et visible par tous les utilisateurs actuels et futurs de ce pad. Soyez prudent avec vos données confidentielles !";
+    out.contacts_padTitle = "Chat";
 
     out.contacts_info1 = "Voici vos contacts. Ici, vous pouvez :";
     out.contacts_info2 = "Cliquer sur le nom d'un contact pour discuter avec lui";
@@ -374,6 +377,12 @@ define(function () {
     out.contacts_confirmRemoveHistory = 'Êtes-vous sûr de vouloir supprimer définitivement l\'historique de votre chat ? Les messages ne pourront pas être restaurés.';
     out.contacts_removeHistoryServerError = 'Une erreur est survenue lors de la supprimer de l\'historique du chat. Veuillez réessayer plus tard.';
     out.contacts_fetchHistory = "Récupérer l'historique plus ancien";
+
+    out.contacts_friends = "Amis";
+    out.contacts_rooms = "Salons";
+    out.contacts_leaveRoom = "Quitter ce salon";
+
+    out.contacts_online = "Un autre utilisateur est en ligne dans ce salon";
 
     // File manager
 
@@ -407,6 +416,7 @@ define(function () {
     out.fm_noname = "Document sans titre";
     out.fm_emptyTrashDialog = "Êtes-vous sûr de vouloir vider la corbeille ?";
     out.fm_removeSeveralPermanentlyDialog = "Êtes-vous sûr de vouloir supprimer ces {0} éléments de votre CryptDrive de manière permanente ?";
+    out.fm_removePermanentlyNote = "Les pads dont vous êtes le propriétaire seront supprimés du serveur.";
     out.fm_removePermanentlyDialog = "Êtes-vous sûr de vouloir supprimer cet élément de votre CryptDrive de manière permanente ?";
     out.fm_deleteOwnedPad = "Êtes-vous sûr de vouloir supprimer définitivement ce pad du serveur ?";
     out.fm_deleteOwnedPads = "Êtes-vous sûr de vouloir supprimer définitivement ces pads du serveur ?";
@@ -1203,6 +1213,17 @@ define(function () {
     out.autostore_saved = "Ce pad a été stocké avec succès dans votre CryptDrive !";
     out.autostore_forceSave = "Stocker le fichier dans votre CryptDrive"; // File upload modal
     out.autostore_notAvailable = "Vous devez stocker ce pad dans votre CryptDrive avant de pouvoir utiliser cette fonctionnalité.";
+
+    // Crowdfunding messages
+    out.crowdfunding_home1 = "CryptPad a besoin d'aide !";
+    out.crowdfunding_home2 = "Cliquez pour découvrir notre campagne de financement participatif.";
+
+    out.crowdfunding_popup_text = "<h3>Aider CryptPad</h3>" +
+                                  "Pour vous assurer que CryptPad soit activement développé, nous vous invitons à supporter le projet via la " +
+                                  '<a href="https://opencollective.com/cryptpad">page OpenCollective</a>, où vous pouvez trouver notre <b>Roadmap</b> et nos <b>objectifs de financement</b>.';
+    out.crowdfunding_popup_yes = "Voir la page";
+    out.crowdfunding_popup_no = "Pas maintenant";
+    out.crowdfunding_popup_never = "Ne plus demander";
 
     return out;
 });

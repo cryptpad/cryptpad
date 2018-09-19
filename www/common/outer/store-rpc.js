@@ -69,6 +69,8 @@ define([
             CONTACTS_GET_MORE_HISTORY: Store.messenger.getMoreHistory,
             CONTACTS_SEND_MESSAGE: Store.messenger.sendMessage,
             CONTACTS_SET_CHANNEL_HEAD: Store.messenger.setChannelHead,
+            // Chat
+            CHAT_COMMAND: Store.messenger.execCommand,
             // Pad
             SEND_PAD_MSG: Store.sendPadMsg,
             JOIN_PAD: Store.joinPad,

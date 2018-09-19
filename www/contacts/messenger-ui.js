@@ -3,57 +3,139 @@ define([
     '/customize/messages.js',
     '/common/common-util.js',
     '/common/common-interface.js',
-    '/common/common-notifier.js',
     '/common/hyperscript.js',
     '/bower_components/marked/marked.min.js',
     '/common/media-tag.js',
-], function ($, Messages, Util, UI, Notifier, h, Marked, MediaTag) {
+], function ($, Messages, Util, UI, h, Marked, MediaTag) {
     'use strict';
+
+    var debug = console.log;
+    debug = function () {};
 
     var MessengerUI = {};
 
-    var dataQuery = function (curvePublic) {
-        return '[data-key="' + curvePublic + '"]';
+    var dataQuery = function (id) {
+        return '[data-key="' + id + '"]';
+    };
+    var userQuery = function (curve) {
+        return '[data-user="' + curve + '"]';
     };
 
-    var initChannel = function (state, curvePublic, info) {
-        console.log('initializing channel for [%s]', curvePublic);
-        state.channels[curvePublic] = {
-            messages: [],
-            HEAD: info.lastKnownHash,
-            TAIL: null,
+    var initChannel = function (state, info) {
+        console.log('initializing channel for [%s]', info.id);
+        var h, t;
+        if (Array.isArray(info.messages) && info.messages.length) {
+            h = info.messages[info.messages.length -1].sig;
+            t = info.messages[0].sig;
+        }
+        state.channels[info.id] = {
+            messages: info.messages || [],
+            name: info.name,
+            isFriendChat: info.isFriendChat,
+            needMoreHistory: !info.isPadChat,
+            isPadChat: info.isPadChat,
+            curvePublic: info.curvePublic,
+            HEAD: h || info.lastKnownHash,
+            TAIL: t || null,
         };
     };
 
-    MessengerUI.create = function (messenger, $userlist, $messages, common) {
-        var origin = common.getMetadataMgr().getPrivateData().origin;
+    MessengerUI.create = function (messenger, $container, common, toolbar) {
+        var sframeChan = common.getSframeChannel();
+        var metadataMgr = common.getMetadataMgr();
+        var origin = metadataMgr.getPrivateData().origin;
+
+        var isApp = typeof(toolbar) !== "undefined";
+
+        $container.addClass('cp-app-contacts-initializing');
+
+        var messaging = h('div#cp-app-contacts-messaging', [
+            h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
+            h('div.cp-app-contacts-info', [
+                h('h2', Messages.contacts_info1),
+                h('ul', [
+                    h('li', Messages.contacts_info2),
+                    h('li', Messages.contacts_info3),
+                    h('li', Messages.contacts_info4),
+                ])
+            ])
+        ]);
+
+        var friendList = h('div#cp-app-contacts-friendlist', [
+            h('span.fa.fa-spinner.fa-pulse.fa-4x.fa-fw.cp-app-contacts-spinner'),
+            h('div.cp-app-contacts-padchat.cp-app-contacts-category', [
+                h('div.cp-app-contacts-category-content')
+            ]),
+            h('div.cp-app-contacts-friends.cp-app-contacts-category', [
+                h('div.cp-app-contacts-category-content'),
+                h('h2.cp-app-contacts-category-title', Messages.contacts_friends),
+            ]),
+            h('div.cp-app-contacts-rooms.cp-app-contacts-category', [
+                h('div.cp-app-contacts-category-content'),
+                h('h2.cp-app-contacts-category-title', Messages.contacts_rooms),
+            ]),
+        ]);
+
+        var $userlist = $(friendList).appendTo($container);
+        var $messages = $(messaging).appendTo($container);
 
         var state = window.state = {
             active: '',
+            channels: {}
         };
 
-        state.channels = {};
-        var displayNames = state.displayNames = {};
+        var contactsData = state.contactsData = {};
 
         var avatars = state.avatars = {};
-        var setActive = function (curvePublic) {
-            state.active = curvePublic;
+        var setActive = function (id) {
+            state.active = id;
         };
-        var isActive = function (curvePublic) {
-            return curvePublic === state.active;
+        var isActive = function (id) {
+            return id === state.active;
         };
 
         var find = {};
-        find.inList = function (curvePublic) {
-            return $userlist.find(dataQuery(curvePublic));
+        find.inList = function (id) {
+            return $userlist.find(dataQuery(id));
         };
 
-        var notify = function (curvePublic) {
-            find.inList(curvePublic).addClass('cp-app-contacts-notify');
+        var notifyToolbar = function () {
+            if (!toolbar || !toolbar['chat']) { return; }
+            if (toolbar['chat'].find('button').hasClass('cp-toolbar-button-active')) { return; }
+            toolbar['chat'].find('button').addClass('cp-toolbar-notification');
         };
-        var unnotify = function (curvePublic) {
-            find.inList(curvePublic).removeClass('cp-app-contacts-notify');
+
+        var notify = function (id) {
+            find.inList(id).addClass('cp-app-contacts-notify');
         };
+        var unnotify = function (id) {
+            find.inList(id).removeClass('cp-app-contacts-notify');
+        };
+
+        var onResize = function () {
+            // Don't update the width if we are in the contacts app
+            if (!isApp) { return; }
+            var w = $userlist[0].offsetWidth - $userlist[0].clientWidth;
+            $userlist.css('width', (68 + w)+'px');
+        };
+        var reorderRooms = function () {
+            var channels = Object.keys(state.channels).sort(function (a, b) {
+                var m1 = state.channels[a].messages.slice(-1)[0];
+                var m2 = state.channels[b].messages.slice(-1)[0];
+                if (!m2) { return !m1 ? 0 : 1; }
+                if (!m1) { return -1; }
+                return m1.time - m2.time;
+            });
+
+            channels.forEach(function (c, i) {
+                $userlist.find(dataQuery(c)).css('order', i);
+            });
+
+            // Make sure the width is correct even if there is a scrollbar
+            onResize();
+        };
+
+        $(window).on('resize', onResize);
 
         var m = function (md) {
             var d = h('div.cp-app-contacts-content');
@@ -82,25 +164,36 @@ define([
 
         var markup = {};
         markup.message = function (msg) {
+            if (msg.type !== 'MSG') { return; }
             var curvePublic = msg.author;
-            var name = displayNames[msg.author];
+            var name = typeof msg.name !== "undefined" ? (msg.name || Messages.anonymous)
+                            : contactsData[msg.author].displayName;
+            var d = msg.time ? new Date(msg.time) : undefined;
+            var day = d ? d.toLocaleDateString() : '';
+            var hour = d ? d.toLocaleTimeString() : '';
             return h('div.cp-app-contacts-message', {
-                title: msg.time? new Date(msg.time).toLocaleString(): '?',
-                'data-key': curvePublic,
+                //title: time || '?',
+                'data-user': curvePublic,
+                'data-day': day
             }, [
-                name? h('div.cp-app-contacts-sender', name): undefined,
+                name? h('div.cp-app-contacts-sender', [
+                    h('span.cp-app-contacts-sender-name', name),
+                    h('span.cp-app-contacts-sender-time', day)
+                ]): undefined,
                 m(msg.text),
+                h('div.cp-app-contacts-time', hour)
             ]);
         };
 
-        var getChat = function (curvePublic) {
-            return $messages.find(dataQuery(curvePublic));
+        var getChat = function (id) {
+            return $messages.find(dataQuery(id));
         };
 
         var normalizeLabels = function ($messagebox) {
             $messagebox.find('div.cp-app-contacts-message').toArray().reduce(function (a, b) {
                 var $b = $(b);
-                if ($(a).data('key') === $b.data('key')) {
+                if ($(a).data('user') === $b.data('user') &&
+                    $(a).data('day') === $b.data('day')) {
                     $b.find('.cp-app-contacts-sender').hide();
                     return a;
                 }
@@ -108,29 +201,31 @@ define([
             }, []);
         };
 
-        markup.chatbox = function (curvePublic, data) {
+        markup.chatbox = function (id, data, curvePublic) {
             var moreHistory = h('span.cp-app-contacts-more-history.fa.fa-history', {
                 title: Messages.contacts_fetchHistory,
             });
-            var displayName = data.displayName;
+
+            var chan = state.channels[id];
+            var displayName = chan.name;
 
             var fetching = false;
             var $moreHistory = $(moreHistory).click(function () {
                 if (fetching) { return; }
 
                 // get oldest known message...
-                var channel = state.channels[curvePublic];
+                var channel = state.channels[id];
 
                 if (channel.exhausted) {
                     return void $moreHistory.addClass('cp-app-contacts-faded');
                 }
 
-                console.log('getting history');
+                debug('getting history');
                 var sig = channel.TAIL || channel.HEAD;
 
                 fetching = true;
-                var $messagebox = $(getChat(curvePublic)).find('.cp-app-contacts-messages');
-                messenger.getMoreHistory(curvePublic, sig, 10, function (e, history) {
+                var $messagebox = $(getChat(id)).find('.cp-app-contacts-messages');
+                messenger.getMoreHistory(id, sig, 10, function (e, history) {
                     fetching = false;
                     if (e) { return void console.error(e); }
 
@@ -139,13 +234,16 @@ define([
                         return;
                     }
 
-                    history.forEach(function (msg) {
+                    history.forEach(function (msg, i) {
                         if (channel.exhausted) { return; }
                         if (msg.sig) {
+                            if (i === 0 && history.length > 1 && msg.sig === channel.TAIL) {
+                                // First message is usually the lastKnownHash, ignore it
+                                return;
+                            }
                             if (msg.sig === channel.TAIL) {
                                 console.error('No more messages to fetch');
                                 channel.exhausted = true;
-                                console.log(channel);
                                 return void $moreHistory.addClass('cp-app-contacts-faded');
                             } else {
                                 channel.TAIL = msg.sig;
@@ -156,9 +254,11 @@ define([
                         if (msg.type !== 'MSG') { return; }
 
                     // FIXME Schlameil the painter (performance does not scale well)
+                        // XXX trust the server?
+                        /*
                         if (channel.messages.some(function (old) {
                             return msg.sig === old.sig;
-                        })) { return; }
+                        })) { return; }*/
 
                         channel.messages.unshift(msg);
                         var el_message = markup.message(msg);
@@ -176,22 +276,43 @@ define([
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
-                    messenger.clearOwnedChannel(data.channel, function (e) {
+                    messenger.clearOwnedChannel(id, function (e) {
                         if (e) {
                             console.error(e);
                             UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
+                        // XXX clear the UI?
                     });
                 });
             });
 
             var avatar = h('div.cp-avatar');
-            var header = h('div.cp-app-contacts-header', [
-                avatar,
-                moreHistory,
-                removeHistory,
-            ]);
+
+            var headerContent = [avatar, moreHistory, data.isFriendCHat ? removeHistory : undefined];
+            if (isApp) {
+                headerContent = [
+                    h('div.cp-app-contacts-header-title', Messages.contacts_padTitle),
+                    moreHistory
+                ];
+            }
+            var header = h('div.cp-app-contacts-header', headerContent);
+
+            var priv = metadataMgr.getPrivateData();
+
+            var closeTips = h('span.fa.fa-window-close.cp-app-contacts-tips-close');
+            var tips;
+            if (isApp && Util.find(priv.settings, ['general', 'hidetips', 'chat']) !== true) {
+                tips = h('div.cp-app-contacts-tips', [
+                    closeTips,
+                    Messages.contacts_warning
+                ]);
+            }
+            $(closeTips).click(function () {
+                $(tips).hide();
+                common.setAttribute(['general', 'hidetips', 'chat'], true);
+            });
+
             var messages = h('div.cp-app-contacts-messages');
             var input = h('textarea', {
                 placeholder: Messages.contacts_typeHere
@@ -205,12 +326,13 @@ define([
             ]);
 
             var $avatar = $(avatar);
-            if (data.avatar && avatars[data.avatar]) {
-                $avatar.append(avatars[data.avatar]).append(rightCol);
+            var friend = contactsData[curvePublic] || {};
+            if (friend.avatar && avatars[friend.avatar]) {
+                $avatar.append(avatars[friend.avatar]).append(rightCol);
             } else {
-                common.displayAvatar($avatar, data.avatar, data.displayName, function ($img) {
-                    if (data.avatar && $img) {
-                        avatars[data.avatar] = $img[0].outerHTML;
+                common.displayAvatar($avatar, friend.avatar, displayName, function ($img) {
+                    if (friend.avatar && $img) {
+                        avatars[friend.avatar] = $img[0].outerHTML;
                     }
                     $(rightCol).insertAfter($avatar);
                 });
@@ -221,14 +343,14 @@ define([
                 if (typeof(content) !== 'string' || !content.trim()) { return; }
                 if (sending) { return false; }
                 sending = true;
-                messenger.sendMessage(curvePublic, content, function (e) {
+                messenger.sendMessage(id, content, function (e) {
                     if (e) {
                         // failed to send
                         return void console.error('failed to send');
                     }
                     input.value = '';
                     sending = false;
-                    console.log('sent successfully');
+                    debug('sent successfully');
                     var $messagebox = $(messages);
 
                     var height = $messagebox[0].scrollHeight;
@@ -268,9 +390,11 @@ define([
             $(sendButton).click(function () { send(input.value); });
 
             return h('div.cp-app-contacts-chat', {
-                'data-key': curvePublic,
+                'data-key': id,
+                'data-user': data.isFriendChat && curvePublic
             }, [
                 header,
+                tips,
                 messages,
                 h('div.cp-app-contacts-input', [
                     input,
@@ -283,16 +407,20 @@ define([
             $messages.find('.cp-app-contacts-info').hide();
         };
 
-        var updateStatus = function (curvePublic) {
-            var $status = find.inList(curvePublic).find('.cp-app-contacts-status');
-            // FIXME this stopped working :(
-            messenger.getStatus(curvePublic, function (e, online) {
+        var showInfo = function () {
+            $messages.find('.cp-app-contacts-info').show();
+        };
+
+        var updateStatus = function (id) {
+            if (!state.channels[id]) { return; }
+            var $status = find.inList(id).find('.cp-app-contacts-status');
+            messenger.getStatus(id, function (e, online) {
                 // if error maybe you shouldn't display this friend...
                 if (e) {
-                    find.inList(curvePublic).hide();
-                    getChat(curvePublic).hide();
+                    find.inList(id).hide();
+                    getChat(id).hide();
 
-                    return void console.error(curvePublic, e);
+                    return void console.error(id, e);
                 }
                 if (online) {
                     return void $status
@@ -302,72 +430,81 @@ define([
             });
         };
 
-        var display = function (curvePublic) {
-            var channel = state.channels[curvePublic];
+        var display = function (chanId) {
+            var channel = state.channels[chanId];
             var lastMsg = channel.messages.slice(-1)[0];
 
             if (lastMsg) {
                 channel.HEAD = lastMsg.sig;
-                messenger.setChannelHead(curvePublic, channel.HEAD, function (e) {
+                messenger.setChannelHead(chanId, channel.HEAD, function (e) {
                     if (e) { console.error(e); }
                 });
             }
 
-            setActive(curvePublic);
-            unnotify(curvePublic);
-            var $chat = getChat(curvePublic);
+            setActive(chanId);
+            unnotify(chanId);
+            var $chat = getChat(chanId);
             hideInfo();
             $messages.find('div.cp-app-contacts-chat[data-key]').hide();
             if ($chat.length) {
                 var $chat_messages = $chat.find('div.cp-app-contacts-message');
-                if (!$chat_messages.length) {
+                if ($chat_messages.length < 10) { //|| channel.needMoreHistory) { XXX
+                    delete channel.needMoreHistory;
                     var $more = $chat.find('.cp-app-contacts-more-history');
                     $more.click();
                 }
-                return void $chat.show();
+                $chat.show();
+                return;
+            } else {
+                console.error("Chat is missing... Please reload the page and try again.");
             }
-            messenger.getFriendInfo(curvePublic, function (e, info) {
-                if (e) { return void console.error(e); } // FIXME
-                var chatbox = markup.chatbox(curvePublic, info);
-                $messages.append(chatbox);
-            });
         };
 
         var removeFriend = function (curvePublic) {
             messenger.removeFriend(curvePublic, function (e /*, removed */) {
                 if (e) { return void console.error(e); }
-                find.inList(curvePublic).remove();
-                //console.log(removed);
             });
         };
 
-        markup.friend = function (data) {
-            var curvePublic = data.curvePublic;
-            var friend = h('div.cp-app-contacts-friend.cp-avatar', {
-                'data-key': curvePublic,
+        markup.room = function (id, room, userlist) {
+            var roomEl = h('div.cp-app-contacts-friend.cp-avatar', {
+                'data-key': id,
+                'data-user': room.isFriendChat ? userlist[0].curvePublic : '',
+                title: room.name
             });
 
             var remove = h('span.cp-app-contacts-remove.fa.fa-user-times', {
                 title: Messages.contacts_remove
             });
-            var status = h('span.cp-app-contacts-status');
+            var leaveRoom = h('span.cp-app-contacts-remove.fa.fa-sign-out', {
+                title: Messages.contacts_leaveRoom
+            });
+
+            var status = h('span.cp-app-contacts-status', {
+                title: Messages.contacts_online
+            });
             var rightCol = h('span.cp-app-contacts-right-col', [
-                h('span.cp-app-contacts-name', [data.displayName]),
-                remove,
+                h('span.cp-app-contacts-name', [room.name]),
+                room.isFriendChat ? remove :
+                    room.isPadChat ? undefined : leaveRoom,
             ]);
 
-            var $friend = $(friend)
-            .click(function () {
-                display(curvePublic);
-            })
-            .dblclick(function () {
-                if (data.profile) { window.open(origin + '/profile/#' + data.profile); }
+            var friendData = room.isFriendChat ? userlist[0] : {};
+
+            var $room = $(roomEl).click(function () {
+                display(id);
+            }).dblclick(function () {
+                if (friendData.profile) { window.open(origin + '/profile/#' + friendData.profile); }
             });
 
             $(remove).click(function (e) {
                 e.stopPropagation();
+                var channel = state.channels[id];
+                if (!channel.isFriendChat) { return; }
+                var curvePublic = channel.curvePublic;
+                var friend = contactsData[curvePublic] || friendData;
                 UI.confirm(Messages._getKey('contacts_confirmRemove', [
-                    Util.fixHTML(data.displayName)
+                    Util.fixHTML(friend.name)
                 ]), function (yes) {
                     if (!yes) { return; }
                     removeFriend(curvePublic, function (e) {
@@ -379,41 +516,42 @@ define([
                 }, undefined, true);
             });
 
-            if (data.avatar && avatars[data.avatar]) {
-                $friend.append(avatars[data.avatar]);
-                $friend.append(rightCol);
+            if (friendData.avatar && avatars[friendData.avatar]) {
+                $room.append(avatars[friendData.avatar]);
+                $room.append(rightCol);
             } else {
-                common.displayAvatar($friend, data.avatar, data.displayName, function ($img) {
-                    if (data.avatar && $img) {
-                        avatars[data.avatar] = $img[0].outerHTML;
+                common.displayAvatar($room, friendData.avatar, room.name, function ($img) {
+                    if (friendData.avatar && $img) {
+                        avatars[friendData.avatar] = $img[0].outerHTML;
                     }
-                    $friend.append(rightCol);
+                    $room.append(rightCol);
                 });
             }
-            $friend.append(status);
-            return $friend;
+            $room.append(status);
+            return $room;
         };
 
         var isBottomedOut = function ($elem) {
             return ($elem[0].scrollHeight - $elem.scrollTop() === $elem.outerHeight());
         };
 
-        var initializing = true;
         messenger.on('message', function (message) {
-            if (!initializing) { Notifier.notify(); }
-            var curvePublic = message.curve;
+            var chanId = message.channel;
+            var channel = state.channels[chanId];
+            if (!channel) { return; }
 
-            var name = displayNames[curvePublic];
-            var chat = getChat(curvePublic, name);
+            var chat = getChat(chanId);
 
-            console.log(message);
+            debug(message);
 
             var el_message = markup.message(message);
 
-            state.channels[curvePublic].messages.push(message);
+            common.notify();
+            notifyToolbar();
+
+            channel.messages.push(message);
 
             var $chat = $(chat);
-
             if (!$chat.length) {
                 console.error("Got a message but the chat isn't open");
             }
@@ -427,111 +565,266 @@ define([
                 $messagebox.scrollTop($messagebox.outerHeight());
             }
             normalizeLabels($messagebox);
+            reorderRooms();
 
-            var channel = state.channels[curvePublic];
-            if (!channel) {
-                console.error('expected channel [%s] to be open', curvePublic);
-                return;
-            }
-
-            if (isActive(curvePublic)) {
+            if (isActive(chanId)) {
                 channel.HEAD = message.sig;
-                messenger.setChannelHead(curvePublic, message.sig, function (e) {
+                messenger.setChannelHead(chanId, message.sig, function (e) {
                     if (e) { return void console.error(e); }
                 });
                 return;
             }
             var lastMsg = channel.messages.slice(-1)[0];
             if (lastMsg.sig !== channel.HEAD) {
-                return void notify(curvePublic);
+                return void notify(chanId);
             }
-            unnotify(curvePublic);
+            unnotify(chanId);
         });
 
-        messenger.on('join', function (curvePublic, channel) {
-            channel = channel;
-            updateStatus(curvePublic);
+        messenger.on('join', function (data, channel) {
+            if (data.curvePublic) {
+                contactsData[data.curvePublic] = data;
+            }
+            updateStatus(channel);
+            // TODO room refresh online userlist
         });
-        messenger.on('leave', function (curvePublic, channel) {
-            channel = channel;
-            updateStatus(curvePublic);
+        messenger.on('leave', function (data, channel) {
+            if (contactsData[data.curvePublic]) {
+                delete contactsData[data.curvePublic];
+            }
+            updateStatus(channel);
+            // TODO room refresh online userlist
         });
 
         // change in your friend list
-        messenger.on('update', function (info, curvePublic) {
-            var name = displayNames[curvePublic] = info.displayName;
+        messenger.on('update', function (info, types, channel) {
+            if (!info || !info.curvePublic) { return; }
+            // Make sure we don't store useless data (friends data in pad chat or the other way)
+            if (channel && !state.channels[channel]) { return; }
 
-            // update label in friend list
-            find.inList(curvePublic).find('.cp-app-contacts-name').text(name);
+            var curvePublic = info.curvePublic;
+            contactsData[curvePublic] = info;
 
-            // update title bar and messages
-            $messages.find(dataQuery(curvePublic) + ' .cp-app-contacts-header ' +
-                '.cp-app-contacts-name, div.cp-app-contacts-message'+
-                dataQuery(curvePublic) + ' div.cp-app-contacts-sender').text(name).text(name);
+            if (types.indexOf('displayName') !== -1) {
+                var name = info.displayName;
+
+                // update label in friend list
+                $userlist.find(userQuery(curvePublic)).find('.cp-app-contacts-name').text(name);
+                $userlist.find(userQuery(curvePublic)).attr('title', name);
+
+                // update title bar and messages
+                $messages.find(userQuery(curvePublic) + ' .cp-app-contacts-header ' +
+                    '.cp-app-contacts-name, div.cp-app-contacts-message'+
+                    userQuery(curvePublic) + ' div.cp-app-contacts-sender').text(name);
+
+                // TODO room
+                // Update name in room userlist
+            }
+
+            if (types.indexOf('profile') !== -1) {
+                // update dblclick event in friend list
+                $userlist.find(userQuery(curvePublic)).off('dblclick').dblclick(function () {
+                    if (info.profile) { window.open(origin + '/profile/#' + info.profile); }
+                });
+            }
+
+            if (types.indexOf('avatar') !== -1) {
+                var $mAvatar = $messages
+                    .find(userQuery(curvePublic) +' .cp-app-contacts-header .cp-avatar');
+                var $lAvatar = $userlist.find(userQuery(curvePublic));
+                $lAvatar.find('.cp-avatar-default, media-tag').remove();
+
+                var $div = $('<div>');
+                common.displayAvatar($div, info.avatar, info.displayName, function ($img) {
+                    if (info.avatar && $img) {
+                        avatars[info.avatar] = $img[0].outerHTML;
+                    }
+                    $mAvatar.html($div.html());
+                    $lAvatar.find('.cp-app-contacts-right-col').before($div.html());
+                });
+
+            }
         });
 
-        var connectToFriend = function (curvePublic, cb) {
-            messenger.getFriendInfo(curvePublic, function (e, info) {
-                if (e) { return void console.error(e); }
-                var name = displayNames[curvePublic] = info.displayName;
-                initChannel(state, curvePublic, info);
+        var execCommand = function (cmd, data, cb) {
+            sframeChan.query('Q_CHAT_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
+                if (err || (obj && obj.error)) { return void cb(err || (obj && obj.error)); }
+                cb(void 0, obj);
+            });
+        };
 
-                var chatbox = markup.chatbox(curvePublic, info);
+        var initializeRoom = function (room) {
+            var id = room.id;
+            initChannel(state, room);
+
+            execCommand('GET_USERLIST', {id: id}, function (e, list) {
+                if (e || list.error) { return void console.error(e || list.error); }
+                if (!room.isPadChat && (!Array.isArray(list) || !list.length)) {
+                    return void console.error("Empty room!");
+                }
+                debug('userlist: ' + JSON.stringify(list), id);
+
+                var friend = {};
+
+                if (room.isFriendChat) {
+                    // This is a friend, the userlist is only one user.
+                    friend = list[0];
+                    contactsData[friend.curvePublic] = friend;
+                }
+
+                var chatbox = markup.chatbox(id, room, friend.curvePublic);
                 $(chatbox).hide();
                 $messages.append(chatbox);
 
-                var friend = markup.friend(info, name);
-                $userlist.append(friend);
-                messenger.openFriendChannel(curvePublic, function (e) {
-                    if (e) { return void console.error(e); }
-                    cb();
-                    updateStatus(curvePublic);
-                    // don't add friends that are already in your userlist
-                    //if (friendExistsInUserList(k)) { return; }
+                var $messagebox = $(chatbox).find('.cp-app-contacts-messages');
+                room.messages.forEach(function (msg) {
+                    var el_message = markup.message(msg);
+                    $messagebox.append(el_message);
                 });
+                normalizeLabels($messagebox);
+
+                var roomEl = markup.room(id, room, list);
+
+                var $parentEl;
+                if (room.isFriendChat) {
+                    $parentEl = $userlist.find('.cp-app-contacts-friends');
+                } else if (room.isPadChat) {
+                    $parentEl = $userlist.find('.cp-app-contacts-padchat');
+                } else {
+                    $parentEl = $userlist.find('.cp-app-contacts-rooms');
+                }
+                $parentEl.find('.cp-app-contacts-category-content').append(roomEl);
+
+                reorderRooms();
+
+                updateStatus(id);
+
+                if (isApp && room.isPadChat) {
+                    $container.removeClass('cp-app-contacts-initializing');
+                    display(room.id);
+                }
             });
         };
 
         messenger.on('friend', function (curvePublic) {
-            console.log('new friend: ', curvePublic);
-            //console.error("TODO redraw user list");
-            //console.error("TODO connect to new friend");
-            // FIXME this doesn't work right now because the friend hasn't been fully added?
-            connectToFriend(curvePublic, function () {
-                //console.error('connected');
+            if (isApp) { return; }
+            debug('new friend: ', curvePublic);
+            execCommand('GET_ROOMS', {curvePublic: curvePublic}, function (err, rooms) {
+                if (err) { return void console.error(err); }
+                debug('rooms: ' + JSON.stringify(rooms));
+                rooms.forEach(initializeRoom);
             });
         });
 
-        messenger.on('unfriend', function (curvePublic) {
-            console.log('unfriend', curvePublic);
-            find.inList(curvePublic).remove();
-            console.error('TODO remove chatbox');
-            console.error('TODO show something if that chatbox was active');
+        messenger.on('unfriend', function (curvePublic, removedByMe) {
+            if (isApp) { return; }
+            var channel = state.channels[state.active];
+            $userlist.find(userQuery(curvePublic)).remove();
+            $messages.find(userQuery(curvePublic)).remove();
+            if (channel && channel.curvePublic === curvePublic) {
+                showInfo();
+            }
+            if (!removedByMe) {
+                // TODO UI.alert if this is triggered by the other guy
+            }
         });
 
-        common.getMetadataMgr().onChange(function () {
-            //messenger.checkNewFriends();
-            messenger.updateMyData();
+        common.getMetadataMgr().onTitleChange(function () {
+            var padChat = common.getPadChat();
+            var md = common.getMetadataMgr().getMetadata();
+            var name = md.title || md.defaultTitle;
+            $userlist.find(dataQuery(padChat)).find('.cp-app-contacts-name').text(name);
+            $userlist.find(dataQuery(padChat)).attr('title', name);
+            $messages.find(dataQuery(padChat) + ' .cp-app-contacts-header .cp-app-contacts-name')
+                .text(name);
+
+            var $mAvatar = $messages.find(dataQuery(padChat) +' .cp-app-contacts-header .cp-avatar');
+            var $lAvatar = $userlist.find(dataQuery(padChat));
+            $lAvatar.find('.cp-avatar-default, media-tag').remove();
+
+            var $div = $('<div>');
+            common.displayAvatar($div, null, name, function () {
+                $mAvatar.html($div.html());
+                $lAvatar.find('.cp-app-contacts-right-col').before($div.html());
+            });
         });
 
-        // FIXME dirty hack
+        // TODO room
+        // messenger.on('joinroom', function (chanid))
+        // messenger.on('leaveroom', function (chanid))
+
+
         messenger.getMyInfo(function (e, info) {
-            displayNames[info.curvePublic] = info.displayName;
+            contactsData[info.curvePublic] = info;
         });
 
-        messenger.getFriendList(function (e, keys) {
-            var count = keys.length + 1;
-            var ready = function () {
-                count--;
-                if (count === 0) {
-                    initializing = false;
-                    UI.removeLoadingScreen();
-                }
-            };
-            ready();
-            keys.forEach(function (curvePublic) {
-                connectToFriend(curvePublic, ready);
+        var ready = false;
+        var onMessengerReady = function () {
+            if (isApp) { return; }
+            if (ready) { return; }
+            ready = true;
+
+            execCommand('GET_ROOMS', null, function (err, rooms) {
+                if (err) { return void console.error(err); }
+
+                debug('rooms: ' + JSON.stringify(rooms));
+                rooms.forEach(initializeRoom);
             });
+
+            $container.removeClass('cp-app-contacts-initializing');
+        };
+
+        var onPadChatReady = function (data) {
+            var padChat = common.getPadChat();
+            if (data !== padChat) { return; }
+            if (state.channels[data]) { return; }
+            execCommand('GET_ROOMS', {padChat: data}, function (err, rooms) {
+                if (err) { return void console.error(err); }
+                if (!Array.isArray(rooms) || rooms.length !== 1) {
+                    return void console.error('Invalid pad chat');
+                }
+                var room = rooms[0];
+                var md = common.getMetadataMgr().getMetadata();
+                var name = md.title || md.defaultTitle;
+                room.name = name;
+                rooms.forEach(initializeRoom);
+            });
+        };
+
+        var onDisconnect = function () {
+            debug('disconnected');
+            $messages.find('.cp-app-contacts-input textarea').prop('disabled', true);
+        };
+        var onReconnect = function () {
+            debug('reconnected');
+            $messages.find('.cp-app-contacts-input textarea').prop('disabled', false);
+        };
+
+        // Initialize chat when outer is ready (all channels loaded)
+        // TODO: try again in outer if fail to load a channel
+        if (!isApp) {
+            execCommand('INIT_FRIENDS', null, function () {});
+            execCommand('IS_READY', null, function (err, yes) {
+                if (yes) { onMessengerReady(); }
+            });
+        }
+        sframeChan.on('EV_CHAT_EVENT', function (obj) {
+            if (obj.ev === 'READY') {
+                onMessengerReady();
+                return;
+            }
+            if (obj.ev === 'PADCHAT_READY') {
+                onPadChatReady(obj.data);
+                return;
+            }
+            if (obj.ev === 'DISCONNECT') {
+                onDisconnect();
+                return;
+            }
+            if (obj.ev === 'RECONNECT') {
+                onReconnect();
+                return;
+            }
         });
     };
 

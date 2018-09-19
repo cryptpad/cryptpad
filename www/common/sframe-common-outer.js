@@ -262,6 +262,7 @@ define([
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
                         },
+                        plan: localStorage[Utils.Constants.plan],
                         isNewFile: isNewFile,
                         isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen,
@@ -370,7 +371,7 @@ define([
                     forceSave: true
                 };
                 Cryptpad.setPadTitle(data, function (err) {
-                    cb(err);
+                    cb({error: err});
                 });
             });
             sframeChan.on('Q_IS_PAD_STORED', function (data, cb) {
@@ -774,6 +775,22 @@ define([
                 });
                 sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
                     Cryptpad.messenger.setChannelHead(opt, cb);
+                });
+
+                sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
+                    Cryptpad.messenger.execCommand({
+                        cmd: 'OPEN_PAD_CHAT',
+                        data: {
+                            channel: data,
+                            secret: secret
+                        }
+                    }, cb);
+                });
+                sframeChan.on('Q_CHAT_COMMAND', function (data, cb) {
+                    Cryptpad.messenger.execCommand(data, cb);
+                });
+                Cryptpad.messenger.onEvent.reg(function (data) {
+                    sframeChan.event('EV_CHAT_EVENT', data);
                 });
 
                 Cryptpad.messenger.onMessageEvent.reg(function (data) {

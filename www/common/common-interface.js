@@ -892,7 +892,7 @@ define([
             h('div.cp-corner-filler', { style: "width:60px;" }),
             h('div.cp-corner-filler', { style: "width:40px;" }),
             h('div.cp-corner-filler', { style: "width:20px;" }),
-            h('div.cp-corner-text', text),
+            Pages.setHTML(h('div.cp-corner-text'), text),
             h('div.cp-corner-actions', actions),
             Pages.setHTML(h('div.cp-corner-footer'), footer)
         ]);

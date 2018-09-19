@@ -653,8 +653,10 @@
     #cp-app-drive-new-ghost-dialog.cp-modal-container {
         .drive_fileIcon;
 
+        border: 1px solid @colortheme_modal-fg;
         li:not(.cp-app-drive-element-selected):hover {
-            border: 1px solid white;
+            background: @colortheme_modal-fg;
+            color: @colortheme_modal-bg;
         }
         .cp-modal {
             display: flex;
@@ -663,14 +665,16 @@
                 cursor: pointer;
             }
             &> p {
-                margin: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             &> div {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
                 align-content: center;
-                overflow-y: auto;
+                flex: 1;
                 .cp-app-drive-new-upload {
                     break-after: always;
                     page-break-after: always;
@@ -682,23 +686,27 @@
             white-space: nowrap;
         }
 
-        @media screen and (max-height: @browser_media-not-big) {
+        @media screen and (max-width: @browser_media-medium-screen),
+               screen and (max-height: @browser_media-medium-screen) {
             .cp-modal {
                 & > p {
                     display: none;
                 }
                 & > div {
-                    align-content: unset;
                     li {
                         height: 40px;
                         width: 90%;
                         display: flex;
                         align-items: center;
+                        align-content: unset;
                         .fa {
                             font-size: 32px;
+                            min-width: 50px;
                         }
                         .cp-app-drive-new-name {
                             height: auto;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
                     }
                 }

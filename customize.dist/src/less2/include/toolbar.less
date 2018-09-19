@@ -72,6 +72,18 @@
     .modal_main();
 };
 & {
+    @keyframes notification {
+        0% {
+            background: rgba(0,0,0,0);
+        }
+        50% {
+            background: rgba(0,0,0,0.2);
+        }
+        100% {
+            background: rgba(0,0,0,0);
+        }
+    }
+
     .toolbar_vars();
     @toolbar_line-height: 32px;
     @toolbar_top-height: 64px;
@@ -134,9 +146,39 @@
         }
     }
 
-    .cp-toolbar-userlist-drawer {
+    .cp-toolbar-chat-drawer {
         background-color: @toolbar-bg-color;
         background-color: var(--toolbar-bg-color);
+        font: @colortheme_app-font-size @colortheme_font;
+        width: 20%;
+        min-width: 200px;
+        display: block;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 0;
+        box-sizing: border-box;
+        position: relative;
+        order: -2;
+        resize: horizontal;
+        #cp-app-contacts-container {
+            height: 100%;
+        }
+        .cp-toolbar-chat-drawer-close {
+            color: @toolbar-color;
+            color: var(--toolbar-color);
+            position: absolute;
+            top: 0;
+            right: 1px;
+            font-size: 15px;
+            opacity: 0.5;
+            cursor: pointer;
+            text-shadow: unset;
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+    .cp-toolbar-userlist-drawer {
         font: @colortheme_app-font-size @colortheme_font;
         min-width: 175px;
         width: 175px;
@@ -145,6 +187,7 @@
         overflow-x: hidden;
         padding: 10px;
         box-sizing: border-box;
+        order: -3;
         .cp-toolbar-userlist-drawer-close {
             position: absolute;
             margin-top: -10px;
@@ -219,6 +262,14 @@
                         display: flex;
                         justify-content: space-between;
                         align-items: center;
+                        button {
+                            width: 20px;
+                            font-size: 16px;
+                            padding: 0;
+                            border: none;
+                            height: 20px;
+                            cursor: pointer;
+                        }
                     }
                     .cp-toolbar-userlist-name-input {
                         flex: 1;
@@ -234,14 +285,6 @@
                         min-width: 0;
                         min-height: 0;
                         text-overflow: ellipsis;
-                    }
-                    .cp-toolbar-userlist-name-edit {
-                        width: 20px;
-                        font-size: 16px;
-                        padding: 0;
-                        border: none;
-                        height: 20px;
-                        cursor: pointer;
                     }
                     .cp-toolbar-userlist-friend {
                         padding: 0;
@@ -276,11 +319,15 @@
                 margin: 50px;
             }
             &> div {
+                flex: 1;
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
                 align-content: center;
-                overflow-y: auto;
+            }
+            &> div:last-child {
+                flex: unset;
+                margin: 50px 0;
             }
         }
 
@@ -299,13 +346,15 @@
             margin-left: 5px;
         }
 
-        @media screen and (max-height: @browser_media-not-big) {
+        @media screen and (max-height: @browser_media-medium-screen),
+               screen and (max-width: @browser_media-medium-screen) {
             .cp-modal {
                 & > p {
                     display: none;
                 }
                 & > div {
                     align-content: unset;
+                    align-items: center;
                     li {
                         height: 40px;
                         width: 200px;
@@ -313,9 +362,11 @@
                         align-items: center;
                         .fa {
                             font-size: 32px;
+                            min-width: 50px;
                         }
                         .cp-icons-name {
                             height: auto;
+                            text-align: left;
                         }
                     }
                 }
@@ -344,7 +395,7 @@
             color: @toolbar-color;
             color: var(--toolbar-color);
         }
-        .cp-toolbar-userlist-name-edit {
+        .cp-toolbar-userlist-button {
             color: @toolbar-userlist-name-edit;
             color: var(--toolbar-userlist-name-edit);
             background: transparent;
@@ -961,13 +1012,19 @@
             height: @toolbar_line-height;
         }
 
-        #cp-toolbar-userlist-drawer-open { order: 1; }
+        #cp-toolbar-userlist-drawer-open { order: 0; }
+        #cp-toolbar-chat-drawer-open { order: 1; }
         .cp-toolbar-share-button { order: 2; }
         .cp-toolbar-spinner { order: 3; }
 
         #cp-toolbar-userlist-drawer-open button {
             width: 125px;
             text-align: center;
+        }
+        #cp-toolbar-chat-drawer-open button {
+            &.cp-toolbar-notification {
+                animation: notification 2s ease-in-out infinite;
+            }
         }
         .cp-toolbar-share-button {
             width: 50px;
