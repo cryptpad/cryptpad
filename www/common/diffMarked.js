@@ -4,16 +4,32 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/media-tag.js',
+    '/common/highlight/highlight.pack.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-],function ($, Marked, Hash, Util, MediaTag) {
+    'css!/common/highlight/styles/github.css'
+],function ($, Marked, Hash, Util, MediaTag, Highlight) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
 
+    var highlighter = function () {
+        return function(code, lang) {
+            if (lang) {
+                try {
+                    return Highlight.highlight(lang, code).value;
+                } catch (e) {
+                    return code;
+                }
+            }
+            return code;
+        };
+    };
+
     Marked.setOptions({
-        renderer: renderer
+        renderer: renderer,
+        highlight: highlighter(),
     });
 
     DiffMd.render = function (md) {
