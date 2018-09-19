@@ -137,7 +137,7 @@ define([
 
         $(window).on('resize', onResize);
 
-        var m = function (md) {
+        var m = function (md, hour) {
             var d = h('div.cp-app-contacts-content');
             try {
                 d.innerHTML = Marked(md || '');
@@ -155,6 +155,9 @@ define([
 
                 // activate media-tags
                 $d.find('media-tag').each(function (i, e) { MediaTag(e); });
+
+                var time = h('div.cp-app-contacts-time', hour);
+                $d.append(time);
             } catch (e) {
                 console.error(md);
                 console.error(e);
@@ -180,8 +183,7 @@ define([
                     h('span.cp-app-contacts-sender-name', name),
                     h('span.cp-app-contacts-sender-time', day)
                 ]): undefined,
-                m(msg.text),
-                h('div.cp-app-contacts-time', hour)
+                m(msg.text, hour),
             ]);
         };
 

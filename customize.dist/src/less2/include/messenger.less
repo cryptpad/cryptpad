@@ -308,6 +308,7 @@
                         }
                         flex: 1;
                         min-width: 70%;
+                        position: relative;
                     }
                     .cp-app-contacts-date {
                         display: none;
@@ -326,6 +327,15 @@
                         font-size: 0.8em;
                         align-items: center;
                         color: @color;
+                        font-weight: bold;
+                        position: absolute;
+                        right: 0;
+                        top: 0;
+                        bottom: 0;
+                        background: rgba(0,0,0,0.3);
+                        border-top-left-radius: 50%;
+                        border-bottom-left-radius: 50%;
+                        padding: 0 10px;
                     }
                     &:hover {
                         .cp-app-contacts-time {
