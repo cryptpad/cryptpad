@@ -10,6 +10,7 @@ define([
     '/common/modes.js',
     '/customize/messages.js',
     '/kanban/jkanban.js',
+    '/kanban/jscolor.js',
     'css!/kanban/jkanban.css',
 
     'less!/kanban/app-kanban.less'
@@ -107,7 +108,7 @@ define([
 
         var kanban = new window.jKanban({
             element: '#cp-app-kanban-content',
-            gutter: '15px',
+            gutter: '5px',
             widthBoard: '300px',
             buttonContent: '❌',
             colors: COLORS,
@@ -138,7 +139,7 @@ define([
                     // Remove the input
                     $(el).text(name);
                     // Save the value for the correct board
-                    var board = $(el.parentNode.parentNode).attr("data-id");
+                    var board = $(el.parentNode.parentNode.parentNode).attr("data-id");
                     var pos = kanban.findElementPosition(el);
                     kanban.getBoardJSON(board).item[pos].title = name;
                     kanban.onChange();
@@ -206,24 +207,53 @@ define([
                     }
                 });
             },
-            colorClick: function (el) {
+            colorClick: function (el, type) {
                 if (framework.isReadOnly() || framework.isLocked()) { return; }
-                verbose("in color click");
-                var board = $(el.parentNode).attr("data-id");
-                var boardJSON = kanban.getBoardJSON(board);
+                verbose("on color click");
+                var boardJSON;
+                var board;
+                if (type === "board") {
+                    verbose("board color click");
+                    board = $(el.parentNode).attr("data-id");
+                    boardJSON = kanban.getBoardJSON(board);
+                } else {
+                    verbose("item color click");
+                    board = $(el.parentNode.parentNode).attr("data-id");
+                    var pos = kanban.findElementPosition(el);
+                    boardJSON = kanban.getBoardJSON(board).item[pos];
+                }
+                var onchange = function (colorL) {
+                    var elL = el;
+                    var typeL = type;
+                    var boardJSONL;
+                    var boardL;
+                    if (typeL === "board") {
+                        verbose("board color change");
+                        boardL = $(elL.parentNode).attr("data-id");
+                        boardJSONL = kanban.getBoardJSON(boardL);
+                    } else {
+                        verbose("item color change");
+                        boardL = $(elL.parentNode.parentNode).attr("data-id");
+                        var pos = kanban.findElementPosition(elL);
+                        boardJSONL = kanban.getBoardJSON(boardL).item[pos];
+                    }
+                    var currentColor = boardJSONL.color;
+                    verbose("Current color " + currentColor);
+                    if (currentColor !== colorL.toString()) {
+                        $(elL).removeClass("kanban-header-" + currentColor);
+                        boardJSONL.color = colorL.toString();
+                        kanban.onChange();
+                    }
+                };
+                var jscolorL;
+                el._jscLinkedInstance = undefined;
+                jscolorL = new window.jscolor(el,{onFineChange: onchange, valueElement:undefined});
+                jscolorL.show();
                 var currentColor = boardJSON.color;
-                verbose("Current color " + currentColor);
-                var index = kanban.options.colors.findIndex(function (element) {
-                    return (element === currentColor);
-                }) + 1;
-                verbose("Next index " + index);
-                if (index >= kanban.options.colors.length) { index = 0; }
-                var nextColor = kanban.options.colors[index];
-                verbose("Next color " + nextColor);
-                boardJSON.color = nextColor;
-                $(el).removeClass("kanban-header-" + currentColor);
-                $(el).addClass("kanban-header-" + nextColor);
-                kanban.onChange();
+                if (currentColor === undefined) {
+                    currentColor = '';
+                }
+                jscolorL.fromString(currentColor);
             },
             buttonClick: function (el, boardId, e) {
                 e.stopPropagation();
