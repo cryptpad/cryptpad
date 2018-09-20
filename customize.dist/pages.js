@@ -625,11 +625,11 @@ define([
             Msg.crowdfunding_home1,
             h('br'),
             Msg.crowdfunding_home2,
-            link
+            _link
         ]);
 
         $(crowdFunding).click(function () {
-            link.click();
+            _link.click();
         });
 
         return [
