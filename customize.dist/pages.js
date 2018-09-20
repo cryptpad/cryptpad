@@ -615,17 +615,21 @@ define([
                 }
             ]);
 
+        var _link = h('a', {
+            href: "https://opencollective.com/cryptpad/contribute",
+            target: '_blank',
+            rel: 'noopener',
+        });
+
         var crowdFunding = AppConfig.disableCrowdfundingMessages ? undefined : h('button', [
             Msg.crowdfunding_home1,
             h('br'),
-            Msg.crowdfunding_home2
+            Msg.crowdfunding_home2,
+            link
         ]);
+
         $(crowdFunding).click(function () {
-            var a = document.createElement("a");
-            a.href = "https://opencollective.com/cryptpad/contribute";
-            a.target = "_blank";
-            a.rel = "noopener";
-            a.click();
+            link.click();
         });
 
         return [
