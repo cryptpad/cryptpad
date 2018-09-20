@@ -1,3 +1,30 @@
+# Ibis release (v2.8.0)
+
+## Goals
+
+We've been making use of some hidden features for a while, to make sure that they were safe to deploy.
+This release, we worked on making _contextual chat_ and _shared folders_ available to everyone.
+
+## Update notes
+
+* run `bower update` to download an updated version of _marked.js_
+
+### Features
+
+* Our kanban application now features a much more consistent and flexible colorpicker, thanks to @MTRNord (https://github.com/MTRNord)
+* File upload dialogs now allow you to upload multiple files at once
+* Updated German translations thanks to [b3yond](https://github.com/b3yond/)
+* An explicit pad storage policy to better suit different privacy constraints
+  * _import local pads_ at login time is no longer default
+* An embedded chat room in every pad, so you can work alongside your fellow editors more easily
+* Promotion of our [crowdfunding campaign](https://opencollective.com/cryptpad), including a button on the home page, and a one-time dialog for users
+
+### Bug fixes
+
+* Updating our markdown library resolved an issue which incorrectly rendered links containing parentheses.
+* We discovered an issue logging in with _very old_ credentials which were initialized without a public key. We now regenerate your keyring if you do not have public keys stored in association with your account.
+* We found another bug in our login process; under certain conditions the terminating function could be called more than once.
+
 # Hedgehog release (v2.7.0)
 
 ## Goals
