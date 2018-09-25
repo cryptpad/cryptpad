@@ -41,22 +41,7 @@ define([
 
         document.body.appendChild(toolbarElement);
 
-        var messaging = h('div#cp-app-contacts-messaging', [
-            h('div.cp-app-contacts-info', [
-                h('h2', Messages.contacts_info1),
-                h('ul', [
-                    h('li', Messages.contacts_info2),
-                    h('li', Messages.contacts_info3),
-                ])
-            ])
-        ]);
-
-        var friendList = h('div#cp-app-contacts-friendlist');
-
-        var appElement = h('div#cp-app-contacts-container', [
-            friendList,
-            messaging,
-        ]);
+        var appElement = h('div#cp-app-contacts-container');
 
         document.body.appendChild(appElement);
 
@@ -73,7 +58,7 @@ define([
 
         var messenger = Messenger.create(sFrameChan);
 
-        MessengerUI.create(messenger, $(friendList), $(messaging), common);
+        MessengerUI.create(messenger, $(appElement), common);
 
         UI.removeLoadingScreen();
 

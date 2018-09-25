@@ -1,3 +1,85 @@
+# Ibis release (v2.8.0)
+
+## Goals
+
+We've been making use of some hidden features for a while, to make sure that they were safe to deploy.
+This release, we worked on making _contextual chat_ and _shared folders_ available to everyone.
+
+## Update notes
+
+* run `bower update` to download an updated version of _marked.js_
+
+### Features
+
+* Our kanban application now features a much more consistent and flexible colorpicker, thanks to @MTRNord (https://github.com/MTRNord)
+* File upload dialogs now allow you to upload multiple files at once
+* Updated German translations thanks to [b3yond](https://github.com/b3yond/)
+* An explicit pad storage policy to better suit different privacy constraints
+  * _import local pads_ at login time is no longer default
+* An embedded chat room in every pad, so you can work alongside your fellow editors more easily
+* Promotion of our [crowdfunding campaign](https://opencollective.com/cryptpad), including a button on the home page, and a one-time dialog for users
+
+### Bug fixes
+
+* Updating our markdown library resolved an issue which incorrectly rendered links containing parentheses.
+* We discovered an issue logging in with _very old_ credentials which were initialized without a public key. We now regenerate your keyring if you do not have public keys stored in association with your account.
+* We found another bug in our login process; under certain conditions the terminating function could be called more than once.
+
+# Hedgehog release (v2.7.0)
+
+## Goals
+
+This release overlapped with the publication and presentation of a paper written about CryptPad's architecture.
+As such, we didn't plan for any very ambitious new features, and instead focused on bug fixes and some new workflows.
+
+## Update notes
+
+This is a fairly simple release. Just download the latest commits and update your cache-busting string.
+
+### Features
+
+* In order to address some privacy concerns, we've changed CryptPad such that pads are not immediately stored in your CryptDrive as soon as you open them. Instead, users are presented with a prompt in the bottom-right corner which asks them whether they'd like to store it manually. Alternatively, you can use your settings page to revert to the old automatic behaviour, or choose not to store, and to never be asked.
+* It was brought to our attention that it was possible to upload base64-encoded images in the rich text editor. These images had a negative performance impact on such pads. From now on, if these images are detected in a pad, users are prompted to run a migration to convert them to uploaded (and encrypted) files.
+* We've added a progress bar which is displayed while you are loading a pad, as we found that it was not very clear whether large pads were loading, or if they had become unresponsive due to a bug.
+* We've added an option to allow users to right-click uploaded files wherever they appear, and to store that file in their CryptDrive.
+* We've improved the dialog which is used to modify the properties of encrypted media embedded within rich text pads.
+
+### Bug fixes
+
+* Due to a particularly disastrous bug in Chrome 68 which was unfortunately beyond our power to fix, we've added a warning for anyone affected by that bug to let them know the cause.
+* We've increased the module loading timeout value used by requirejs in our sharedWorker implementation to match the value used by the rest of CryptPad.
+
+# Gibbon release (v2.6.0)
+
+## Goals
+
+For this release we focused on deploying two very large changes in CryptPad.
+For one, we'd worked on a large refactoring of the system we use to compile CSS from LESS, so as to make it more efficient.
+Secondly, we reworked the architecture we use for implementing the CryptDrive functionality, so as to integrate support for shared folders.
+
+## Update notes
+
+To test the _shared folders_ functionality, users can run the following command in their browser console:
+
+`localStorage.CryptPad_SF = "1";`
+
+Alternatively, if the instance administrator would like to enable shared folders for all users, they can do so via their `/customize/application_config.js` file, by adding the following line:
+
+`config.disableSharedFolders = true;`
+
+### Features
+
+* As mentioned in the _goals_ for this release, we've merged in the work done to drastically improve performance when compiling styles. The system features documentation for anyone interested in understanding how it works.
+* We've refactored the APIs used to interact with your CryptDrive, implementing a single interface with which applications can interact, which then manages any number of sub-objects each representing a shared folder. Shared folders are still disabled by default. See the _Update notes_ section for more information.
+* The home page now features the same footer which has been displayed on all other information pages until now.
+* We've added a slightly nicer spinner icon on loading pages.
+* We've created a custom font _cp-tools_ for our custom-designed icons
+
+### Bug fixes
+
+* We've accepted a pull request implementing serverside support for moving files across different drives, for system administrators hosting CryptPad on systems which segregate folders on different partitions.
+* We've addressed a report of an edge case in CryptPad's user password change logic which could cause users to delete their accounts.
+
 # Fossa release (v2.5.0)
 
 ## Goals

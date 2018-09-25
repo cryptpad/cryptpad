@@ -171,6 +171,11 @@ define({
     'Q_CONTACTS_SET_CHANNEL_HEAD': true,
     'Q_CONTACTS_CLEAR_OWNED_CHANNEL': true,
 
+    // Chat
+    'EV_CHAT_EVENT': true,
+    'Q_CHAT_COMMAND': true,
+    'Q_CHAT_OPENPADCHAT': true,
+
     // Put one or more entries to the localStore which will go in localStorage.
     'EV_LOCALSTORE_PUT': true,
     // Put one entry in the parent sessionStorage
@@ -218,6 +223,8 @@ define({
     // Refresh the drive when the drive has changed ('change' or 'remove' events)
     'EV_DRIVE_CHANGE': true,
     'EV_DRIVE_REMOVE': true,
+    // Set shared folder hash in the address bar
+    'EV_DRIVE_SET_HASH': true,
 
     // Remove an owned pad from the server
     'Q_REMOVE_OWNED_CHANNEL': true,

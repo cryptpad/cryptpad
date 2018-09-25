@@ -13,6 +13,8 @@ define(function () {
         storageKey: 'filesData',
         tokenKey: 'loginToken',
         displayPadCreationScreen: 'displayPadCreationScreen',
-        deprecatedKey: 'deprecated'
+        deprecatedKey: 'deprecated',
+        // Sub
+        plan: 'CryptPad_plan'
     };
 });

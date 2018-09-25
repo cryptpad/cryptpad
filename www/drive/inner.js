@@ -1207,15 +1207,23 @@ define([
             if (paths) {
                 paths.forEach(function (p) { pathsList.push(p.path); });
             }
+            var hasOwned = pathsList.some(function (p) {
+                var el = manager.find(p);
+                var data = manager.isSharedFolder(el) ? manager.getSharedFolderData(el)
+                                        : manager.getFileData(el);
+                return data.owners && data.owners.indexOf(edPublic) !== -1;
+            });
             var msg = Messages._getKey("fm_removeSeveralPermanentlyDialog", [pathsList.length]);
             if (pathsList.length === 1) {
-                msg = Messages.fm_removePermanentlyDialog;
+                msg = hasOwned ? Messages.fm_deleteOwnedPad : Messages.fm_removePermanentlyDialog;
+            } else if (hasOwned) {
+                msg = msg + '<br><em>' + Messages.fm_removePermanentlyNote + '</em>';
             }
             UI.confirm(msg, function(res) {
                 $(window).focus();
                 if (!res) { return; }
                 manager.delete(pathsList, refresh);
-            });
+            }, null, true);
         };
         // Drag & drop:
         // The data transferred is a stringified JSON containing the path of the dragged element
@@ -1290,6 +1298,7 @@ define([
             if (!oldPaths) { return; }
             // A moved element should be removed from its previous location
             var movedPaths = [];
+
             var sharedF = false;
             oldPaths.forEach(function (p) {
                 movedPaths.push(p.path);
@@ -1301,9 +1310,25 @@ define([
             var newPath = findDropPath(ev.target);
             if (!newPath) { return; }
             if (sharedF && manager.isPathIn(newPath, [TRASH])) {
-                deletePaths(null, movedPaths);
-                return;
+                return void deletePaths(null, movedPaths);
             }
+
+            if (manager.isPathIn(newPath, [TRASH])) {
+                // Filter the selection to remove shared folders.
+                // Shared folders can't be moved to the trash!
+                var filteredPaths = movedPaths.filter(function (p) {
+                    var el = manager.find(p);
+                    return !manager.isSharedFolder(el);
+                });
+
+                if (!filteredPaths.length) {
+                    // We only have shared folder, delete them
+                    return void deletePaths(null, movedPaths);
+                }
+
+                movedPaths = filteredPaths;
+            }
+
             if (movedPaths && movedPaths.length) {
                 moveElements(movedPaths, newPath, null, refresh);
             }
@@ -1805,14 +1830,17 @@ define([
                     .click(function () {
                     var $input = $('<input>', {
                         'type': 'file',
-                        'style': 'display: none;'
+                        'style': 'display: none;',
+                        'multiple': 'multiple'
                     }).on('change', function (e) {
-                        var file = e.target.files[0];
-                        var ev = {
-                            target: $content[0],
-                            path: findDropPath($content[0])
-                        };
-                        APP.FM.handleFile(file, ev);
+                        var files = Util.slice(e.target.files);
+                        files.forEach(function (file) {
+                            var ev = {
+                                target: $content[0],
+                                path: findDropPath($content[0])
+                            };
+                            APP.FM.handleFile(file, ev);
+                        });
                     });
                     $input.click();
                 });
@@ -1889,9 +1917,11 @@ define([
 
         var createShareButton = function (id, $container) {
             var $shareBlock = $('<button>', {
-                'class': 'fa fa-shhare-alt cp-toolbar-share-button',
+                'class': 'cp-toolbar-share-button',
                 title: Messages.shareButton
             });
+            $sharedIcon.clone().appendTo($shareBlock);
+            $('<span>').text(Messages.shareButton).appendTo($shareBlock);
             var data = manager.getSharedFolderData(id);
             var parsed = Hash.parsePadUrl(data.href);
             if (!parsed || !parsed.hash) { return void console.error("Invalid href: "+data.href); }
@@ -2574,7 +2604,12 @@ define([
             createNewButton(isInRoot, $toolbar.find('.cp-app-drive-toolbar-leftside'));
             var sfId = manager.isInSharedFolder(currentPath);
             if (sfId) {
+                var sfData = manager.getSharedFolderData(sfId);
+                var parsed = Hash.parsePadUrl(sfData.href);
+                sframeChan.event('EV_DRIVE_SET_HASH', parsed.hash || '');
                 createShareButton(sfId, $toolbar.find('.cp-app-drive-toolbar-leftside'));
+            } else {
+                sframeChan.event('EV_DRIVE_SET_HASH', '');
             }
 
             createTitle($toolbar.find('.cp-app-drive-path'), path);
@@ -2721,7 +2756,7 @@ define([
             }
             var dataPath = isSharedFolder ? path.slice(0, -1) : path;
             $elementRow.data('path', dataPath);
-            addDragAndDropHandlers($elementRow, path, true, droppable);
+            addDragAndDropHandlers($elementRow, dataPath, true, droppable);
             if (active) {
                 $elementRow.addClass('cp-app-drive-element-active cp-leftside-active');
             }
@@ -3221,16 +3256,23 @@ define([
                     paths.push($(elmt).data('path'));
                 });
                 if (!paths.length) { return; }
+                // Remove shared folders from the selection (they can't be moved to the trash)
+                // unless the selection is only shared folders
+                var paths2 = paths.filter(function (p) {
+                    var el = manager.find(p);
+                    return !manager.isSharedFolder(el);
+                });
                 // If we are in the trash or anon pad or if we are holding the "shift" key,
                 // delete permanently
                 // Or if we are in a shared folder
+                // Or if the selection is only shared folders
                 if (!APP.loggedIn || isTrash || manager.isInSharedFolder(currentPath)
-                        || e.shiftKey) {
+                        || e.shiftKey || !paths2.length) {
                     deletePaths(null, paths);
                     return;
                 }
                 // else move to trash
-                moveElements(paths, [TRASH], false, refresh);
+                moveElements(paths2, [TRASH], false, refresh);
                 return;
             }
         });

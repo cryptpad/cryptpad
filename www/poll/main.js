@@ -37,7 +37,8 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         SFCommonO.start({
-            useCreationScreen: true
+            useCreationScreen: true,
+            messaging: true
         });
     });
 });

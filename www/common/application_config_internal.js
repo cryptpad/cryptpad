@@ -134,7 +134,7 @@ define(function() {
     // spontaneously, resulting in the deletion of the entire folder's content.
     // We highly recommend to keep them disabled until they are stable enough to be enabled
     // by default by the CryptPad developers.
-    config.disableSharedFolders = true;
+    config.disableSharedFolders = false;
 
     return config;
 });

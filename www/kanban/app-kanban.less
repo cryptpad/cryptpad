@@ -67,7 +67,6 @@
                     text-overflow: ellipsis;
                 }
                 #kanban-edit {
-                    color: black;
                     font-weight: bold;
                 }
             }
@@ -77,6 +76,7 @@
             width: 100%;
             background: transparent;
             border: 1px solid rgba(0,0,0,0.3);
+            color: inherit;
         }
 
         @button-size: 50px;
@@ -117,39 +117,39 @@
         }
 
         .kanban-header-yellow {
-            background: #FC3;
+            background: #FC3 !important;
         }
 
         .kanban-header-orange {
-            background: #F91;
+            background: #F91 !important;
         }
 
         .kanban-header-blue {
-            background: #0AC;
+            background: #0AC !important;
         }
 
         .kanban-header-red {
-            background: #E43;
+            background: #E43 !important;
         }
 
         .kanban-header-green {
-            background: #8C4;
+            background: #8C4 !important;
         }
 
         .kanban-header-purple {
-            background: #c851ff;
+            background: #c851ff !important;
         }
 
         .kanban-header-cyan {
-            background: #00ffff;
+            background: #00ffff !important;
         }
 
         .kanban-header-lightgreen {
-            background: #c3ff5b;
+            background: #c3ff5b !important;
         }
 
         .kanban-header-lightblue {
-            background: #adeeff;
+            background: #adeeff !important;
         }
 
         @media (max-width: @browser_media-medium-screen) {

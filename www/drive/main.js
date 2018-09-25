@@ -41,7 +41,7 @@ define([
             var secret = Utils.Hash.getSecrets('drive', hash);
             if (hash) {
                 // Add a shared folder!
-                // XXX password?
+                // TODO password?
                 Cryptpad.addSharedFolder(secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
                     // Update the hash in the address bar
@@ -86,6 +86,14 @@ define([
                     if (err) { return void console.error(err); }
                     cb(obj);
                 });
+            });
+            sframeChan.on('EV_DRIVE_SET_HASH', function (hash) {
+                // Update the hash in the address bar
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location.hash = hash || '';
+                window.onhashchange = ohc;
+                ohc({reset:true});
             });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');

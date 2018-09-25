@@ -1092,6 +1092,11 @@ define([
             Test(passIfOk);
         }
 
+        // No need for onLocal in openPadChat because in poll, we listen for metadata changes
+        // and save them everytime.
+        // See `metadataMgr.onChange(function () {`
+        common.openPadChat(function () {});
+
         UI.removeLoadingScreen();
         var privateDat = metadataMgr.getPrivateData();
         var skipTemp = Util.find(privateDat,
@@ -1160,6 +1165,7 @@ define([
 
         var configTb = {
             displayed: [
+                'chat',
                 'userlist',
                 'title',
                 'useradmin',
