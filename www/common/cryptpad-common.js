@@ -1367,6 +1367,9 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
+                        // XXX validate that data exists, probably return otherwise.
+                        // got here via a reference error:
+                        // uncaught exception: TypeError: data is undefined
                         if (data.error) { throw new Error(data.error); }
                         if (data.state === 'ALREADY_INIT') {
                             data = data.returned;
