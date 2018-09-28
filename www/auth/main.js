@@ -27,6 +27,53 @@ define([
                                           sessionStorage[Constants.userHashKey];
 
     var proxy;
+
+    var whenReady = function (cb) {
+        if (proxy) { return void cb(); }
+        console.log('CryptPad not ready...');
+        setTimeout(function () {
+            whenReady(cb);
+        }, 100);
+    };
+
+    $(window).on("message", function (jqe) {
+        var evt = jqe.originalEvent;
+        var data = JSON.parse(evt.data);
+        var domain = evt.origin;
+        var srcWindow = evt.source;
+        var ret = { txid: data.txid };
+        console.log('CP receiving', data);
+        if (data.cmd === 'PING') {
+            ret.res = 'PONG';
+        } else if (data.cmd === 'SIGN') {
+            if (!AUTHORIZED_DOMAINS.filter(function (x) { return x.test(domain); }).length) {
+                ret.error = "UNAUTH_DOMAIN";
+            } else if (!LocalStore.isLoggedIn()) {
+                ret.error = "NOT_LOGGED_IN";
+            } else {
+                return void whenReady(function () {
+                    var sig = signMsg(data.data, proxy.edPrivate);
+                    ret.res = {
+                        uname: proxy.login_name,
+                        edPublic: proxy.edPublic,
+                        sig: sig
+                    };
+                    srcWindow.postMessage(JSON.stringify(ret), domain);
+                });
+            }
+        } else if (data.cmd === 'UPDATE_LIMIT') {
+            return void whenReady(function () {
+                Cryptpad.updatePinLimit(function (e, limit, plan, note) {
+                    ret.res = [limit, plan, note];
+                    srcWindow.postMessage(JSON.stringify(ret), domain);
+                });
+            });
+        } else {
+            ret.error = "UNKNOWN_CMD";
+        }
+        srcWindow.postMessage(JSON.stringify(ret), domain);
+    });
+
     nThen(function (waitFor) {
         Cryptpad.ready(waitFor());
     }).nThen(function (waitFor) {
@@ -39,37 +86,6 @@ define([
             // This is only here to maybe trigger an error.
             window.drive = proxy['drive'];
             Test.passed();
-        });
-        $(window).on("message", function (jqe) {
-            var evt = jqe.originalEvent;
-            var data = JSON.parse(evt.data);
-            var domain = evt.origin;
-            var srcWindow = evt.source;
-            var ret = { txid: data.txid };
-            if (data.cmd === 'PING') {
-                ret.res = 'PONG';
-            } else if (data.cmd === 'SIGN') {
-                if (!AUTHORIZED_DOMAINS.filter(function (x) { return x.test(domain); }).length) {
-                    ret.error = "UNAUTH_DOMAIN";
-                } else if (!LocalStore.isLoggedIn()) {
-                    ret.error = "NOT_LOGGED_IN";
-                } else {
-                    var sig = signMsg(data.data, proxy.edPrivate);
-                    ret.res = {
-                        uname: proxy.login_name,
-                        edPublic: proxy.edPublic,
-                        sig: sig
-                    };
-                }
-            } else if (data.cmd === 'UPDATE_LIMIT') {
-                return Cryptpad.updatePinLimit(function (e, limit, plan, note) {
-                    ret.res = [limit, plan, note];
-                    srcWindow.postMessage(JSON.stringify(ret), domain);
-                });
-            } else {
-                ret.error = "UNKNOWN_CMD";
-            }
-            srcWindow.postMessage(JSON.stringify(ret), domain);
         });
     });
 });
