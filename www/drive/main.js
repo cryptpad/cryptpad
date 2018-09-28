@@ -39,7 +39,7 @@ define([
         var getSecrets = function (Cryptpad, Utils, cb) {
             var hash = window.location.hash.slice(1);
             var secret = Utils.Hash.getSecrets('drive', hash);
-            if (hash) {
+            if (hash && Utils.LocalStore.isLoggedIn()) {
                 // Add a shared folder!
                 // TODO password?
                 Cryptpad.addSharedFolder(secret, function (id) {
@@ -50,6 +50,16 @@ define([
                     window.location.hash = "";
                     window.onhashchange = ohc;
                     ohc({reset:true});
+                    cb(null, secret);
+                });
+                return;
+            } else if (hash) {
+                var id = Utils.Util.createRandomInteger();
+                window.CryptPad_newSharedFolder = id;
+                var data = {
+                    href: Utils.Hash.getRelativeHref(window.location.href),
+                };
+                Cryptpad.loadSharedFolder(id, data, function () {
                     cb(null, secret);
                 });
                 return;

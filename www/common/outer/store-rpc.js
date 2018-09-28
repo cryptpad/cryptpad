@@ -56,6 +56,7 @@ define([
             INCREMENT_TEMPLATE_USE: Store.incrementTemplateUse,
             GET_SHARED_FOLDER: Store.getSharedFolder,
             ADD_SHARED_FOLDER: Store.addSharedFolder,
+            LOAD_SHARED_FOLDER: Store.loadSharedFolderAnon,
             // Messaging
             INVITE_FROM_USERLIST: Store.inviteFromUserlist,
             ADD_DIRECT_MESSAGE_HANDLERS: Store.addDirectMessageHandlers,
