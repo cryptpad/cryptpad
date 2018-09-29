@@ -624,7 +624,7 @@ define(function () {
     out.settings_padWidthLabel = "Reduce the editor's width";
 
     out.settings_creationSkip = "Skip the pad creation screen";
-    out.settings_creationSkipHint = "The pad creation screen offers new options to create a pad, providing you more control and security over your data. However, it may slow down your workflow by adding one additionnal step so, here, you have the option to skip this screen and use the default settings selected above.";
+    out.settings_creationSkipHint = "The pad creation screen offers new options to create a pad, providing you more control and security over your data. However, it may slow down your workflow by adding one additional step so, here, you have the option to skip this screen and use the default settings selected above.";
     out.settings_creationSkipTrue = "Skip";
     out.settings_creationSkipFalse = "Display";
 
