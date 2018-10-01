@@ -838,7 +838,8 @@ define([
     var getFileData = _getFileData;
     var getUserObjectPath = _getUserObjectPath;
 
-    var find = function (Env, path) {
+    var find = function (Env, path, fId) {
+        if (fId) { return Env.folders[fId].userObject.find(path); }
         var resolved = _resolvePath(Env, path);
         return resolved.userObject.find(resolved.path);
     };

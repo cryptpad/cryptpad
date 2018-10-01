@@ -397,6 +397,7 @@ define(function () {
     out.fm_recentPadsName = "Recent pads";
     out.fm_ownedPadsName = "Owned";
     out.fm_tagsName = "Tags";
+    out.fm_sharedFolderName = "Shared folder";
     out.fm_searchPlaceholder = "Search...";
     out.fm_newButton = "New";
     out.fm_newButtonTitle = "Create a new pad or folder, import a file in the current folder";
@@ -439,6 +440,8 @@ define(function () {
     out.fm_info_anonymous = 'You are not logged in so your pads will expire after 3 months (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">find out more</a>). ' +
                             'They are stored in your browser so clearing history may make them disappear.<br>' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.<br>';
+    out.fm_info_sharedFolder = "This is a shared folder. You're not logged in so you can only access it in read-only mode.<br>" +
+                               '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to be able to import it to your CryptDrive and to modify it.';
     out.fm_info_owned = "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.";
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep it secret.<br>" +

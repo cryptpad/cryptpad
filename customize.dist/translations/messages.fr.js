@@ -395,6 +395,7 @@ define(function () {
     out.fm_recentPadsName = "Pads récents";
     out.fm_ownedPadsName = "Pads en votre possession";
     out.fm_tagsName = "Mots-clés";
+    out.fm_sharedFolderName = "Dossier partagé";
     out.fm_searchPlaceholder = "Rechercher...";
     out.fm_newButton = "Nouveau";
     out.fm_newButtonTitle = "Créer un nouveau pad ou un dossier, importer un fichier dans le dossier courant";
@@ -437,6 +438,8 @@ define(function () {
     out.fm_info_anonymous = 'Vous n\'êtes pas connecté, ces pads seront donc supprimés après 3 mois d\'inactivité (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">découvrez pourquoi</a>). ' +
                             'Ils sont stockés dans votre navigateur donc nettoyer votre historique peut les faire disparaître.<br>' +
                             '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour les maintenir en vie.';
+    out.fm_info_sharedFolder = "Voici le contenu d'un dossier partagé. Il n'est accessible qu'en lecture seule car vous n'êtes pas connecté.<br>" +
+                               '<a href="/register/">Inscrivez-vous</a> ou <a href="/login/">connectez-vous</a> pour pouvoir l\'importer dans votre CryptDrive et le modifier.';
     out.fm_info_owned = "Vous êtes propriétaire des pads affichés dans cette catégorie. Cela signifie que vous pouvez choisir de les supprimer définitivement du serveur à n'importe quel moment. Ils seront alors inaccessibles pour tous les autres utilisateurs.";
     out.fm_alert_backupUrl = "Lien de secours pour ce CryptDrive.<br>" +
                              "Il est <strong>fortement recommandé</strong> de garder ce lien pour vous-même.<br>" +

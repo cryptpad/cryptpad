@@ -89,6 +89,12 @@ define([
             cb(obj);
         });
     };
+    common.loadSharedFolder = function (id, data, cb) {
+        postMessage("LOAD_SHARED_FOLDER", {
+            id: id,
+            data: data
+        }, cb);
+    };
     // Settings and ready
     common.mergeAnonDrive = function (cb) {
         var data = {
