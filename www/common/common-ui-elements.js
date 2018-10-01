@@ -2382,8 +2382,12 @@ define([
         if (storePopupState) { return; }
         storePopupState = true;
         if (data && data.stored) { return; } // We won't display the popup for dropped files
+        var priv = common.getMetadataMgr().getPrivateData();
 
-        var text = Messages.autostore_notstored;
+        var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
+                        priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
+                          Messages.autostore_pad;
+        var text = Messages._getKey('autostore_notstored', [typeMsg]);
         var footer = Messages.autostore_settings;
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);

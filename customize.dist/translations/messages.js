@@ -1258,7 +1258,10 @@ define(function () {
     out.chrome68 = "It seems that you're using the browser Chrome or Chromium version 68. It contains a bug resulting in the page turning completely white after a few seconds or the page being unresponsive to clicks. To fix this issue, you can switch to another tab and come back, or try to scroll in the page. This bug should be fixed in the next version of your browser.";
 
     // Manual pad storage popup
-    out.autostore_notstored = "This pad is not in your CryptDrive. Do you want to store it now?";
+    out.autostore_file = "file";
+    out.autostore_sf = "folder";
+    out.autostore_pad = "pad";
+    out.autostore_notstored = "This {0} is not in your CryptDrive. Do you want to store it now?";
     out.autostore_settings = "You can enable automatic pad storage in your <a href=\"/settings/\">Settings</a> page!";
     out.autostore_store = "Store";
     out.autostore_hide = "Don't store";

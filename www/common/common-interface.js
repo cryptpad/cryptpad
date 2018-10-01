@@ -887,7 +887,7 @@ define([
         var popup = h('div.cp-corner-container', [
             minimize,
             maximize,
-            h('div.cp-corner-filler', { style: "width:130px;" }),
+            h('div.cp-corner-filler', { style: "width:120px;" }),
             h('div.cp-corner-filler', { style: "width:90px;" }),
             h('div.cp-corner-filler', { style: "width:60px;" }),
             h('div.cp-corner-filler', { style: "width:40px;" }),

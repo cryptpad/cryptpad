@@ -1208,7 +1208,10 @@ define(function () {
     out.chrome68 = "Il semblerait que vous utilisiez le navigateur Chrome version 68. Ce navigateur contient un bug rendant certaines pages entièrement blanches après quelques secondes ou bloquant les clics. Pour corriger ce problème, vous pouvez vous déplacer vers un nouvel onglet et revenir ou vous pouvez essayer de faire défiler la page. Ce bug devrait être corrigé dans la prochaine version du navigateur.";
 
     // Manual pad storage popup
-    out.autostore_notstored = "Ce pad n'est pas dans votre CryptDrive. Souhaitez-vous le stocker ?";
+    out.autostore_file = "fichier";
+    out.autostore_sf = "dossier";
+    out.autostore_pad = "pad";
+    out.autostore_notstored = "Ce {0} n'est pas dans votre CryptDrive. Souhaitez-vous le stocker ?";
     out.autostore_settings = "Vous pouvez activer le stockage automatique des pads dans vos <a href=\"/settings/\">Préférences</a> !";
     out.autostore_store = "Stocker";
     out.autostore_hide = "Ne pas stocker";
