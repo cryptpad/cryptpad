@@ -99,6 +99,7 @@ define([
             });
             sframeChan.on('EV_DRIVE_SET_HASH', function (hash) {
                 // Update the hash in the address bar
+                if (!Utils.LocalStore.isLoggedIn()) { return; }
                 var ohc = window.onhashchange;
                 window.onhashchange = function () {};
                 window.location.hash = hash || '';

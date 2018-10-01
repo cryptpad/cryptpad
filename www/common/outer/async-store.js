@@ -1240,7 +1240,9 @@ define([
             return rt;
         };
         Store.loadSharedFolderAnon = function (clientId, data, cb) {
-            loadSharedFolder(data.id, data.data, cb);
+            loadSharedFolder(data.id, data.data, function () {
+                cb();
+            });
         };
         Store.addSharedFolder = function (clientId, data, cb) {
             Store.userObjectCommand(clientId, {
