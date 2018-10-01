@@ -441,7 +441,7 @@ define(function () {
                             'They are stored in your browser so clearing history may make them disappear.<br>' +
                             '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to keep them alive.<br>';
     out.fm_info_sharedFolder = "This is a shared folder. You're not logged in so you can only access it in read-only mode.<br>" +
-                               '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to be able to import it in your CryptDrive and to modify it.<br>';
+                               '<a href="/register/">Sign up</a> or <a href="/login/">Log in</a> to be able to import it to your CryptDrive and to modify it.';
     out.fm_info_owned = "You are the owner of the pads displayed here. This means you can remove them permanently from the server whenever you want. If you do so, other users won't be able to access them anymore.";
     out.fm_alert_backupUrl = "Backup link for this drive.<br>" +
                              "It is <strong>highly recommended</strong> that you keep it secret.<br>" +
