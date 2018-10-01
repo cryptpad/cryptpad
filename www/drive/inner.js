@@ -3378,6 +3378,11 @@ define([
             var path = data.path.slice();
             var originalPath = data.path.slice();
 
+            if (!APP.loggedIn && APP.newSharedFolder && data.id === APP.newSharedFolder) {
+                // ANON_SHARED_FOLDER
+                return void onRefresh.refresh();
+            }
+
             // Fix the path if this is about a shared folder
             if (data.id && manager.folders[data.id]) {
                 var uoPath = manager.getUserObjectPath(manager.folders[data.id].userObject);
@@ -3407,6 +3412,11 @@ define([
             if (history.isHistoryMode) { return; }
 
             var path = data.path.slice();
+
+            if (!APP.loggedIn && APP.newSharedFolder && data.id === APP.newSharedFolder) {
+                // ANON_SHARED_FOLDER
+                return void onRefresh.refresh();
+            }
 
             // Fix the path if this is about a shared folder
             if (data.id && manager.folders[data.id]) {
