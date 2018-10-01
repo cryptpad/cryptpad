@@ -1513,8 +1513,9 @@ define([
         var displayNameCls = config.displayNameCls || 'cp-toolbar-user-name';
         var $displayedName = $('<span>', {'class': displayNameCls});
 
-        var accountName = metadataMgr.getPrivateData().accountName;
-        var origin = metadataMgr.getPrivateData().origin;
+        var priv = metadataMgr.getPrivateData();
+        var accountName = priv.accountName;
+        var origin = priv.origin;
         var padType = metadataMgr.getMetadata().type;
 
         var $userName = $('<span>');
@@ -1538,7 +1539,7 @@ define([
                 content: $userAdminContent.html()
             });
         }
-        if (padType !== 'drive') {
+        if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
                 attributes: {

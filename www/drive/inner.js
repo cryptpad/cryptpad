@@ -385,15 +385,11 @@ define([
             e.stopPropagation();
         });
 
-
-
         // TOOLBAR
 
         /* add a "change username" button */
         if (!APP.readOnly) {
             APP.$displayName.text(user.name || Messages.anonymous);
-        } else {
-            APP.$displayName.html('<span class="' + Toolbar.constants.readonly + '">' + Messages.readonly + '</span>');
         }
 
         // FILE MANAGER
@@ -3559,7 +3555,7 @@ define([
                 displayed: ['useradmin', 'pageTitle', 'newpad', 'limit'],
                 pageTitle: pageTitle,
                 metadataMgr: metadataMgr,
-                readOnly: readOnly,
+                readOnly: privateData.readOnly,
                 sfCommon: common,
                 $container: APP.$bar
             };

@@ -729,8 +729,12 @@ Messenger, MessengerUI, Messages) {
         var privateData = config.metadataMgr.getPrivateData();
         var origin = privateData.origin;
         var pathname = privateData.pathname;
-        var href = inDrive.test(pathname) ? origin+'/index.html' : origin+'/drive/';
-        var buttonTitle = inDrive.test(pathname) ? Messages.header_homeTitle : Messages.header_logoTitle;
+
+        var isAnonSF = privateData.newSharedFolder && !privateData.accountName;
+        var toMain = inDrive.test(pathname) && !isAnonSF;
+
+        var href = toMain ? origin+'/index.html' : origin+'/drive/';
+        var buttonTitle = toMain ? Messages.header_homeTitle : Messages.header_logoTitle;
 
         var $aTag = $('<a>', {
             href: href,
