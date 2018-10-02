@@ -1,3 +1,24 @@
+# Jerboa release (v2.9.0)
+
+## Goals
+
+Since last release introduced several big features, this release was allocated towards usability improvements largely related to those new features.
+
+## Update notes
+
+This is a simple release. Just deploy the latest source.
+
+### Features
+
+* At a user's request, we now highlight annotated code blocks according to their language's syntax
+* Shared folders can now be viewed by unregistered users (in read-only mode)
+* The authentication process that we use for handling accounts has been improved so as to tolerate very slow networks more effectively
+* The chat system embedded within pads can now optionally use the browser's system notifications API
+
+### Bugfixes
+
+* We found and fixed a race condition when initializing two tabs at once, which could leave one of the tabs in a broken state
+
 # Ibis release (v2.8.0)
 
 ## Goals
