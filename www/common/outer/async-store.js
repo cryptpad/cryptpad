@@ -1661,20 +1661,17 @@ define([
          */
         var initialized = false;
 
-        var whenReady = function (cb, i) {
+        var whenReady = function (cb) {
             if (store.returned) { return void cb(); }
-            if (i === 600) { return void cb(true); }
-            i = i || 0;
             setTimeout(function() {
-                whenReady(cb, ++i);
+                whenReady(cb);
             }, 100);
         };
 
         Store.init = function (clientId, data, _callback) {
             var callback = Util.once(_callback);
             if (initialized) {
-                return void whenReady(function (isTo) {
-                    if (isTo) { return void callback({error: 'TIMEOUT'}); }
+                return void whenReady(function () {
                     callback({
                         state: 'ALREADY_INIT',
                         returned: store.returned
