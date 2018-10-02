@@ -12,10 +12,22 @@ define([
         }
     };
 
-    Notifier.notify = function () {
+    Notifier.notify = function (data) {
         if (Visible.isSupported() && !Visible.currently()) {
+            if (data) {
+                var title = data.title;
+                if (document.title) { title += ' (' + document.title + ')'; }
+                Notify.system(data.msg, title);
+                return;
+            }
             Notifier.unnotify();
             notify.tabNotification = Notify.tab(1000, 10);
+        }
+    };
+
+    Notifier.getPermission = function () {
+        if (Notify.isSupported()) {
+            Notify.getPermission();
         }
     };
 

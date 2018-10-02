@@ -421,8 +421,8 @@ define([
                 Utils.LocalStore.logout(cb);
             });
 
-            sframeChan.on('EV_NOTIFY', function () {
-                Notifier.notify();
+            sframeChan.on('EV_NOTIFY', function (data) {
+                Notifier.notify(data);
             });
 
             sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
@@ -745,6 +745,7 @@ define([
             }
 
             if (cfg.messaging) {
+                Notifier.getPermission();
                 sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
                     Cryptpad.messenger.getFriendList(cb);
                 });

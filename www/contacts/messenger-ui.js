@@ -549,6 +549,11 @@ define([
             var el_message = markup.message(message);
 
             common.notify();
+            if (message.type === 'MSG') {
+                var name = typeof message.name !== "undefined" ? (message.name || Messages.anonymous)
+                                : contactsData[message.author].displayName;
+                common.notify({title: name, msg: message.text});
+            }
             notifyToolbar();
 
             channel.messages.push(message);
@@ -578,7 +583,7 @@ define([
             }
             var lastMsg = channel.messages.slice(-1)[0];
             if (lastMsg.sig !== channel.HEAD) {
-                return void notify(chanId);
+                return void notify(chanId, message);
             }
             unnotify(chanId);
         });

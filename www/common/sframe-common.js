@@ -189,8 +189,8 @@ define([
         ctx.sframeChan.query('Q_LOGOUT', null, cb);
     };
 
-    funcs.notify = function () {
-        ctx.sframeChan.event('EV_NOTIFY');
+    funcs.notify = function (data) {
+        ctx.sframeChan.event('EV_NOTIFY', data);
     };
     funcs.setTabTitle = function (newTitle) {
         ctx.sframeChan.event('EV_SET_TAB_TITLE', newTitle);
