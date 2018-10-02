@@ -1554,7 +1554,7 @@ define([
             var hash = data.userHash || data.anonHash || Hash.createRandomHash('drive');
             storeHash = hash;
             if (!hash) {
-                throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
+                return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
@@ -1660,11 +1660,25 @@ define([
          *   - requestLogin
          */
         var initialized = false;
-        Store.init = function (clientId, data, callback) {
+
+        var whenReady = function (cb, i) {
+            if (store.returned) { return void cb(); }
+            if (i === 600) { return void cb(true); }
+            i = i || 0;
+            setTimeout(function() {
+                whenReady(cb, ++i);
+            }, 100);
+        };
+
+        Store.init = function (clientId, data, _callback) {
+            var callback = Util.once(_callback);
             if (initialized) {
-                return void callback({
-                    state: 'ALREADY_INIT',
-                    returned: store.returned
+                return void whenReady(function (isTo) {
+                    if (isTo) { return void callback({error: 'TIMEOUT'}); }
+                    callback({
+                        state: 'ALREADY_INIT',
+                        returned: store.returned
+                    });
                 });
             }
             initialized = true;
@@ -1680,7 +1694,11 @@ define([
                 if (Object.keys(store.proxy).length === 1) {
                     Feedback.send("FIRST_APP_USE", true);
                 }
-                store.returned = ret;
+                if (ret && ret.error) {
+                    initialized = false;
+                } else {
+                    store.returned = ret;
+                }
 
                 callback(ret);
             });
