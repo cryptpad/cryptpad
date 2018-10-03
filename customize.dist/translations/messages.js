@@ -793,7 +793,48 @@ define(function () {
     out.features_feature = "Feature";
     out.features_anon = "Anonymous user";
     out.features_registered = "Registered user";
+    out.features_premium = "Premium user";
     out.features_notes = "Notes";
+    // XXX
+    out.features_f_apps = "Access to the main applications";
+    out.features_f_core = "Common features for the applications";
+    out.features_f_core_note = "Edit, Import & Export, History, Userlist, Chat";
+    out.features_f_file0 = "Open files";
+    out.features_f_file0_note = "View and download files shared by other users";
+    out.features_f_cryptdrive0 = "Limited access to CryptDrive";
+    out.features_f_cryptdrive0_note = "Ability to store visited pads in your browser to be able to open them later";
+    out.features_f_storage0 = "Limited storage time";
+    out.features_f_storage0_note = "Created pads risk deletion after 3 months of inactivity";
+
+    out.features_f_anon = "All anonymous users features";
+    out.features_f_anon_note = "With better usability and more power over your pads";
+    out.features_f_cryptdrive1 = "Complete CryptDrive functionalities";
+    out.features_f_cryptdrive1_note = "Folders, shared folders, templates, tags";
+    out.features_f_devices = "Your pads on all your devices";
+    out.features_f_devices_note = "Access your CryptDrive everywhere with your user account";
+    out.features_f_social = "Social applications";
+    out.features_f_social_note = "Create a profile, use an avatar, chat with contacts";
+    out.features_f_file1 = "Upload and share files";
+    out.features_f_file1_note = "Share files with your friends or embed them in your pads";
+    out.features_f_storage1 = "Permanent storage (50MB)";
+    out.features_f_storage1_note = "Pads stored in your CryptDrive are never deleted for inactivity";
+    out.features_f_register = "Register for free";
+    out.features_f_register_note = "No email or personal information required";
+
+    out.features_f_reg = "All registered users features";
+    out.features_f_reg_note = "And help CryptPad's developement";
+    out.features_f_storage2 = "Extra storage space";
+    out.features_f_storage2_note = "From 5GB to 50GB depending on the selected plan";
+    out.features_f_support = "Faster support";
+    out.features_f_support_note = "Professional email support with the Team plan";
+    out.features_f_supporter = "Become a privacy supporter";
+    out.features_f_supporter_note = "Help us show that privacy-enhancing softwares should be the norm";
+    out.features_f_project = "Keep the project alive";
+    out.features_f_project_note = "Help us keep this open-source project running by funding its hosting and developement";
+    out.features_f_subscribe = "Subscribe to premium";
+    out.features_f_subscribe_note = "You need to be logged in to CryptPad first";
+    // End XXX
+
     out.features_f_pad = "Create/edit/view a pad";
     out.features_f_pad_notes = "Rich Text, Code, Slide, Poll and Whiteboard applications";
     out.features_f_history = "History";
@@ -822,7 +863,6 @@ define(function () {
     out.features_f_storage = "Storage";
     out.features_f_storage_anon = "Pads are deleted after 3 months";
     out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
-    out.features_f_register = "Register for free";
 
     // faq.html
 

@@ -789,7 +789,7 @@ define(function () {
     out.features_f_history_notes = "Voir et restaurer n'importe quelle version d'un pad";
     out.features_f_todo = "Créer une TODO-list";
     out.features_f_drive = "Fonctionnalités CryptDrive limitées";
-    out.features_f_drive_full = "Fonctionnalités CryptDrive limitées";
+    out.features_f_drive_full = "Fonctionnalités CryptDrive complètes";
     out.features_f_export = "Export/Import";
     out.features_f_export_notes = "Pour les pads et CryptDrive";
     out.features_f_viewFiles = "Voir des fichiers";

@@ -38,6 +38,7 @@ define([
         }
     };
 
+    // Upgrade and donate URLs duplicated in pages.js
     var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,

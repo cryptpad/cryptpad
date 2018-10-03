@@ -2,17 +2,15 @@ define([
     '/api/config',
     '/common/hyperscript.js',
     '/common/common-language.js',
+    '/common/common-interface.js',
     '/customize/messages.js',
     'jquery',
     '/customize/application_config.js',
-], function (Config, h, Language, Msg, $, AppConfig) {
+], function (Config, h, Language, UI, Msg, $, AppConfig) {
     var Pages = {};
     var urlArgs = Config.requireConf.urlArgs;
 
-    var setHTML = Pages.setHTML = function (e, html) {
-        e.innerHTML = html;
-        return e;
-    };
+    var setHTML = UI.setHTML;
 
     var languageSelector = function () {
         var options = [];
@@ -267,7 +265,16 @@ define([
         ]);
     };
 
+    var origin = encodeURIComponent(window.location.hostname);
+    var accounts = {
+        donateURL: 'https://accounts.cryptpad.fr/#/donate?on=' + origin,
+        upgradeURL: 'https://accounts.cryptpad.fr/#/?on=' + origin,
+    };
     Pages['/features.html'] = function () {
+        Msg.features_f_apps_note = AppConfig.availablePadTypes.map(function (app) {
+            if (AppConfig.registeredOnlyTypes.indexOf(app) !== -1) { return; }
+            return Msg.type[app];
+        }).filter(function (x) { return x; }).join(', ');
         return h('div#cp-main', [
             infopageTopbar(),
             h('div.container-fluid.cp_cont_features',[
@@ -277,74 +284,77 @@ define([
             ]),
             h('div.container',[
                 h('div.row.cp-container.cp-features-web.justify-content-sm-center',[
-                    h('div.col-12.col-sm-6.cp-anon-user',[
+                    h('div.col-12.col-sm-4.cp-anon-user',[
                         h('div.card',[
                             h('div.card-body',[
                                 h('h3.text-center',Msg.features_anon)
                             ]),
-                            h('ul.list-group.list-group-flush', [
-                                h('li.list-group-item.text-center', Msg.features_f_pad , [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_pad_notes}, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_history, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_history_notes }, h('i.fa.fa-question') )
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_export, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_export_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_todo),
-                                h('li.list-group-item.text-center', Msg.features_f_viewFiles),
-                                h('li.list-group-item.text-center', Msg.features_f_drive),
-                                h('li.list-group-item.text-center', Msg.features_f_storage_anon),
-                            ]),
-                        ]),  
+                            h('ul.list-group.list-group-flush',
+                                ['apps', 'core', 'file0', 'cryptdrive0', 'storage0'].map(function (f) {
+                                    return h('li.list-group-item', [
+                                        h('div.cp-check'),
+                                        h('div.cp-content', [
+                                            h('div.cp-feature', Msg['features_f_' + f]),
+                                            h('div.cp-note', Msg['features_f_' + f + '_note'])
+                                        ])
+                                    ]);
+                                })
+                            ),
+                        ]),
                     ]),
-                    h('div.col-12.col-sm-6.cp-regis-user',[
+                    h('div.col-12.col-sm-4.cp-regis-user',[
                         h('div.card',[
                             h('div.card-body',[
                                 h('h3.text-center',Msg.features_registered)
                             ]),
                             h('ul.list-group.list-group-flush', [
-                                h('li.list-group-item.text-center', Msg.features_f_pad, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_pad_notes}, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_history, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_history_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_export, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_export_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_todo),
-                                h('li.list-group-item.text-center', Msg.features_f_viewFiles),
-                                h('li.list-group-item.text-center', Msg.features_f_drive_full),
-                                h('li.list-group-item.text-center', Msg.features_f_uploadFiles),
-                                h('li.list-group-item.text-center', Msg.features_f_embedFiles),
-                                h('li.list-group-item.text-center', Msg.features_f_multiple, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_multiple_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_logoutEverywhere),
-                                h('li.list-group-item.text-center', Msg.features_f_templates, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_templates_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_profile, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_profile_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_tags, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_tags_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', Msg.features_f_contacts, [
-                                    h('a.voted', {href: '#', 'data-toggle' : 'tooltip', 'data-placement': 'bottom', title : Msg.features_f_contacts_notes }, h('i.fa.fa-question'))
-                                ]),
-                                h('li.list-group-item.text-center', setHTML(h('div'), Msg.features_f_storage_registered)),
+                                ['anon', 'social', 'file1', 'cryptdrive1', 'devices', 'storage1'].map(function (f) {
+                                    return h('li.list-group-item', [
+                                        h('div.cp-check'),
+                                        h('div.cp-content', [
+                                            h('div.cp-feature', Msg['features_f_' + f]),
+                                            h('div.cp-note', Msg['features_f_' + f + '_note'])
+                                        ])
+                                    ]);
+                                }),
                             ]),
                             h('div.card-body',[
-                                h('div#cp-features-register', [
+                                h('div.cp-features-register#cp-features-register', [
                                     h('a', {
                                         href: '/register/'
                                     }, h('button.cp-features-register-button', Msg.features_f_register))
                                 ]),
+                                h('div.cp-note', Msg.features_f_register_note)
                             ]),
-                        ]), 
+                        ]),
+                    ]),
+                    h('div.col-12.col-sm-4.cp-anon-user',[
+                        h('div.card',[
+                            h('div.card-body',[
+                                h('h3.text-center',Msg.features_premium)
+                            ]),
+                            h('ul.list-group.list-group-flush', [
+                                ['reg', 'storage2', 'support', 'supporter'/*, 'project'*/].map(function (f) { // XXX
+                                    return h('li.list-group-item', [
+                                        h('div.cp-check'),
+                                        h('div.cp-content', [
+                                            h('div.cp-feature', Msg['features_f_' + f]),
+                                            h('div.cp-note', Msg['features_f_' + f + '_note'])
+                                        ])
+                                    ]);
+                                }),
+                            ]),
+                            h('div.card-body',[
+                                h('div.cp-features-register#cp-features-subscribe', [
+                                    h('a', {
+                                        href: accounts.upgradeURL,
+                                        target: '_blank',
+                                        rel: 'noopener noreferrer'
+                                    }, h('button.cp-features-register-button', Msg.features_f_subscribe))
+                                ]),
+                                h('div.cp-note', Msg.features_f_subscribe_note)
+                            ]),
+                        ]),
                     ]),
                 ]),
             ]),
@@ -658,93 +668,6 @@ define([
         ];
     };
 
-    Pages.createCheckbox = function (id, labelTxt, checked, opts) {
-        opts = opts|| {};
-        // Input properties
-        var inputOpts = {
-            type: 'checkbox',
-            id: id
-        };
-        if (checked) { inputOpts.checked = 'checked'; }
-        $.extend(inputOpts, opts.input || {});
-
-        // Label properties
-        var labelOpts = {};
-        $.extend(labelOpts, opts.label || {});
-        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
-
-        // Mark properties
-        var markOpts = { tabindex: 0 };
-        $.extend(markOpts, opts.mark || {});
-
-        var input = h('input', inputOpts);
-        var mark = h('span.cp-checkmark-mark', markOpts);
-        var label = h('span.cp-checkmark-label', labelTxt);
-
-        $(mark).keydown(function (e) {
-            if (e.which === 32) {
-                e.stopPropagation();
-                e.preventDefault();
-                $(input).prop('checked', !$(input).is(':checked'));
-                $(input).change();
-            }
-        });
-
-        $(input).change(function () { $(mark).focus(); });
-
-        return h('label.cp-checkmark', labelOpts, [
-            input,
-            mark,
-            label
-        ]);
-    };
-
-    Pages.createRadio = function (name, id, labelTxt, checked, opts) {
-        opts = opts|| {};
-        // Input properties
-        var inputOpts = {
-            type: 'radio',
-            id: id,
-            name: name
-        };
-        if (checked) { inputOpts.checked = 'checked'; }
-        $.extend(inputOpts, opts.input || {});
-
-        // Label properties
-        var labelOpts = {};
-        $.extend(labelOpts, opts.label || {});
-        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
-
-        // Mark properties
-        var markOpts = { tabindex: 0 };
-        $.extend(markOpts, opts.mark || {});
-
-        var input = h('input', inputOpts);
-        var mark = h('span.cp-radio-mark', markOpts);
-        var label = h('span.cp-checkmark-label', labelTxt);
-
-        $(mark).keydown(function (e) {
-            if (e.which === 32) {
-                e.stopPropagation();
-                e.preventDefault();
-                $(input).prop('checked', !$(input).is(':checked'));
-                $(input).change();
-            }
-        });
-
-        $(input).change(function () { $(mark).focus(); });
-
-        var radio =  h('label', labelOpts, [
-            input,
-            mark,
-            label
-        ]);
-
-        $(radio).addClass('cp-radio');
-
-        return radio;
-    };
-
     Pages['/user/'] = Pages['/user/index.html'] = function () {
         return h('div#container');
     };
@@ -788,10 +711,10 @@ define([
                         placeholder: Msg.login_confirm,
                     }),
                     h('div.checkbox-container', [
-                        Pages.createCheckbox('import-recent', Msg.register_importRecent, true)
+                        UI.createCheckbox('import-recent', Msg.register_importRecent, true)
                     ]),
                     h('div.checkbox-container', [
-                        $(Pages.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
+                        $(UI.createCheckbox('accept-terms')).find('.cp-checkmark-label').append(Msg.register_acceptTerms).parent()[0]
                     ]),
                     h('button#register.btn.cp-login-register', Msg.login_register)
                 ])
@@ -832,7 +755,7 @@ define([
                             placeholder: Msg.login_password,
                         }),
                         h('div.checkbox-container', [
-                            Pages.createCheckbox('import-recent', Msg.register_importRecent),
+                            UI.createCheckbox('import-recent', Msg.register_importRecent),
                         ]),
                         h('div.extra', [
                             h('button.login.first.btn', Msg.login_login)
