@@ -584,12 +584,14 @@ define([
     };
 
     var getTagsList = function (Env) {
-        var list = [];
+        var list = {};
         var userObjects = _getUserObjects(Env);
         userObjects.forEach(function (uo) {
-            Array.prototype.push.apply(list, uo.getTagsList());
+            var l = uo.getTagsList();
+            Object.keys(l).forEach(function (t) {
+                list[t] = list[t] ? (list[t] + l[t]) : l[t];
+            });
         });
-        list = Util.deduplicateString(list);
         return list;
     };
 
