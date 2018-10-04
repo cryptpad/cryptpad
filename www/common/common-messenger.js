@@ -585,6 +585,7 @@ define([
                 id: data.channel,
                 isFriendChat: data.isFriendChat,
                 isPadChat: data.isPadChat,
+                padChan: data.padChan,
                 sending: false,
                 encryptor: encryptor,
                 messages: [],
@@ -655,6 +656,7 @@ define([
                 console.error(err);
             });
             network.on('reconnect', function () {
+                if (channel && channel.stopped) { return; }
                 if (!channels[data.channel]) { return; }
                 network.join(data.channel).then(onOpen, function (err) {
                     console.error(err);
@@ -910,6 +912,7 @@ define([
             var cryptKey = keys.viewKeyStr ? Crypto.b64AddSlashes(keys.viewKeyStr) : data.secret.key;
             var encryptor = Crypto.createEncryptor(cryptKey);
             var chanData = {
+                padChan: data.secret && data.secret.channel,
                 encryptor: encryptor,
                 channel: data.channel,
                 isPadChat: true,
@@ -930,6 +933,17 @@ define([
         network.on('reconnect', function () {
             emit('RECONNECT');
         });
+
+        messenger.leavePad = function (padChan) {
+            // Leave chat and prevent reconnect when we leave a pad
+            Object.keys(channels).some(function (chatChan) {
+                var channel = channels[chatChan];
+                if (channel.padChan !== padChan) { return; }
+                if (channel.wc) { channel.wc.leave(); }
+                channel.stopped = true;
+                return true;
+            });
+        };
 
         messenger.execCommand = function (obj, cb) {
             var cmd = obj.cmd;
