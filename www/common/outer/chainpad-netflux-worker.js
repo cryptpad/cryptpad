@@ -45,6 +45,7 @@ define([], function () {
         conf = undefined;
 
         var initializing = true;
+        var stopped = false;
         var lastKnownHash;
 
         var messageFromOuter = function () {};
@@ -239,6 +240,12 @@ define([], function () {
                 onOpen(wc, network, firstConnection);
             }, function(err) {
                 console.error(err);
+                if (onError) {
+                    onError({
+                        type: err && (err.type || err),
+                        loaded: !initializing
+                    });
+                }
             });
         };
 
@@ -250,11 +257,13 @@ define([], function () {
         });
 
         network.on('reconnect', function () {
+            if (stopped) { return; }
             initializing = true;
             connectTo(network, false);
         });
 
         network.on('message', function (msg, sender) { // Direct message
+            if (stopped) { return; }
             var wchan = findChannelById(network.webChannels, channel);
             if (wchan) {
                 onMsg(sender, msg, wchan, network, true);
@@ -262,6 +271,14 @@ define([], function () {
         });
 
         connectTo(network, true);
+
+        return {
+            stop: function () {
+                var wchan = findChannelById(network.webChannels, channel);
+                if (wchan) { wchan.leave(''); }
+                stopped = true;
+            }
+        };
     };
 
     return {

@@ -985,7 +985,7 @@ define([
         /////////////////////// PAD //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        var channels = Store.channels = {};
+        var channels = Store.channels = store.channels = {};
 
         Store.joinPad = function (clientId, data) {
             var isNew = typeof channels[data.channel] === "undefined";
@@ -1093,12 +1093,12 @@ define([
                     });
                 }
             };
-            CpNfWorker.start(conf);
+            channel.cpNf = CpNfWorker.start(conf);
         };
         Store.leavePad = function (clientId, data, cb) {
             var channel = channels[data.channel];
-            if (!channel || !channel.wc) { return void cb ({error: 'EINVAL'}); }
-            channel.wc.leave();
+            if (!channel || !channel.cpNf) { return void cb ({error: 'EINVAL'}); }
+            channel.cpNf.stop();
             delete channels[data.channel];
             cb();
         };
@@ -1278,9 +1278,12 @@ define([
         var dropChannel = function (chanId) {
             if (!Store.channels[chanId]) { return; }
 
-            if (Store.channels[chanId].wc) {
-                Store.channels[chanId].wc.leave('');
+            if (Store.channels[chanId].cpNf) {
+                Store.channels[chanId].cpNf.stop();
             }
+
+            store.messenger.leavePad(chanId);
+
             delete Store.channels[chanId];
         };
         Store._removeClient = function (clientId) {
