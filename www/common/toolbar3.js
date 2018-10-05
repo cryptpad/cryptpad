@@ -1096,8 +1096,8 @@ Messenger, MessengerUI, Messages) {
         tb['useradmin'] = createUserAdmin;
         tb['unpinnedWarning'] = createUnpinnedWarning;
 
-        var addElement = toolbar.addElement = function (arr, additionnalCfg, init) {
-            if (typeof additionnalCfg === "object") { $.extend(true, config, additionnalCfg); }
+        var addElement = toolbar.addElement = function (arr, additionalCfg, init) {
+            if (typeof additionalCfg === "object") { $.extend(true, config, additionalCfg); }
             arr.forEach(function (el) {
                 if (typeof el !== "string" || !el.trim()) { return; }
                 if (typeof tb[el] === "function") {
