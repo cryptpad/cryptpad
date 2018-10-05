@@ -8,6 +8,7 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/modes.js',
+    '/common/visible.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
 
@@ -49,6 +50,7 @@ define([
     Util,
     Hash,
     Modes,
+    Visible,
     Messages,
     CMeditor)
 {
@@ -219,6 +221,12 @@ define([
             if (e) { return void console.error(e); }
             if (data === false && $previewButton) {
                 $previewButton.click();
+            }
+        });
+
+        Visible.onChange(function (visible) {
+            if (visible) {
+                drawPreview();
             }
         });
 
