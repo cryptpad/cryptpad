@@ -217,6 +217,9 @@ types of messages:
             });
         });
 
+        // network.onHistoryKeeperChange is defined in chainpad-netflux.js
+        // The function we pass will be called when the drive reconnects and
+        // chainpad-netflux detects a new history keeper id
         if (network.onHistoryKeeperChange) {
             network.onHistoryKeeperChange(function () {
                 send('COOKIE', "", function (e) {
