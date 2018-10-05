@@ -1763,8 +1763,8 @@ define([
                 h('h4', Messages.sharedFolders_create),
                 h('label', {for: 'cp-app-drive-sf-name'}, Messages.sharedFolders_create_name),
                 h('input#cp-app-drive-sf-name', {type: 'text', placeholder: Messages.fm_newFolder}),
-                //h('label', {for: 'cp-app-drive-sf-password'}, Messages.sharedFolders_create_password),
-                //UI.passwordInput({id: 'cp-app-drive-sf-password'}),
+                h('label', {for: 'cp-app-drive-sf-password'}, Messages.sharedFolders_create_password),
+                UI.passwordInput({id: 'cp-app-drive-sf-password'}),
                 h('span', {
                     style: 'display:flex;align-items:center;justify-content:space-between'
                 }, [
@@ -1784,8 +1784,7 @@ define([
 
                 // Get the values
                 var newName = $(content).find('#cp-app-drive-sf-name').val();
-                //var password = $(content).find('#cp-app-drive-sf-password').val() || undefined;
-                var password;
+                var password = $(content).find('#cp-app-drive-sf-password').val() || undefined;
                 var owned = $(content).find('#cp-app-drive-sf-owned').is(':checked');
 
                 cb({
@@ -3067,7 +3066,8 @@ define([
 
             if (manager.isSharedFolder(el)) {
                 delete data.roHref;
-                data.noPassword = true;
+                //data.noPassword = true;
+                data.noEditPassword = true;
                 data.noExpiration = true;
             }
 

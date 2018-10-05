@@ -36,21 +36,13 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils, cb) {
+        var afterSecrets = function (Cryptpad, Utils, secret, cb) {
             var hash = window.location.hash.slice(1);
-            var secret = Utils.Hash.getSecrets('drive', hash);
             if (hash && Utils.LocalStore.isLoggedIn()) {
                 // Add a shared folder!
-                // TODO password?
                 Cryptpad.addSharedFolder(secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
-                    // Update the hash in the address bar
-                    var ohc = window.onhashchange;
-                    window.onhashchange = function () {};
-                    window.location.hash = "";
-                    window.onhashchange = ohc;
-                    ohc({reset:true});
-                    cb(null, secret);
+                    cb();
                 });
                 return;
             } else if (hash) {
@@ -58,14 +50,11 @@ define([
                 window.CryptPad_newSharedFolder = id;
                 var data = {
                     href: Utils.Hash.getRelativeHref(window.location.href),
+                    password: secret.password
                 };
-                Cryptpad.loadSharedFolder(id, data, function () {
-                    cb(null, secret);
-                });
-                return;
+                return void Cryptpad.loadSharedFolder(id, data, cb);
             }
-            // No password for drive
-            cb(null, secret);
+            cb();
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_BURN_ANON_DRIVE', function () {
@@ -123,7 +112,7 @@ define([
             });
         };
         SFCommonO.start({
-            getSecrets: getSecrets,
+            afterSecrets: afterSecrets,
             noHash: true,
             noRealtime: true,
             driveEvents: true,

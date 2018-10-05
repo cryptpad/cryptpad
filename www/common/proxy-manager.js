@@ -386,14 +386,14 @@ define([
             if (data.folderData) { return; }
 
             // Folder creation
-            var hash = Hash.createRandomHash('drive');
-            var href = '/drive/#' + hash;
-            var secret = Hash.getSecrets('drive', hash);
+            var hash = Hash.createRandomHash('drive', data.password);
+            var secret = Hash.getSecrets('drive', hash, data.password);
+            var hashes = Hash.getHashes(secret);
             folderData = {
-                href: href,
-                roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
+                href: '/drive/#' + hashes.editHash,
+                roHref: '/drive/#' + hashes.viewHash,
                 channel: secret.channel,
-                ctime: +new Date()
+                ctime: +new Date(),
             };
             if (data.password) { folderData.password = data.password; }
             if (data.owned) { folderData.owners = [Env.edPublic]; }
@@ -541,6 +541,11 @@ define([
     // Set the value everywhere the given pad is stored (main and shared folders)
     var setPadAttribute = function (Env, data, cb) {
         cb = cb || function () {};
+        if (!data.attr || !data.attr.trim()) { return void cb("E_INVAL_ATTR"); }
+        var sfId = Env.user.userObject.getSFIdFromHref(data.href);
+        if (sfId) {
+            Env.user.proxy[UserObject.SHARED_FOLDERS][sfId][data.attr] = data.value;
+        }
         var datas = findHref(Env, data.href);
         var nt = nThen;
         datas.forEach(function (d) {
@@ -557,6 +562,10 @@ define([
     // correct one.
     var getPadAttribute = function (Env, data, cb) {
         cb = cb || function () {};
+        var sfId = Env.user.userObject.getSFIdFromHref(data.href);
+        if (sfId) {
+            return void cb(null, Env.user.proxy[UserObject.SHARED_FOLDERS][sfId][data.attr]);
+        }
         var datas = findHref(Env, data.href);
         var nt = nThen;
         var res = {};

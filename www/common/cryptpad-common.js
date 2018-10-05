@@ -128,6 +128,7 @@ define([
                 href: '/drive/#' + Hash.getEditHashFromKeys(secret),
                 roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
                 channel: secret.channel,
+                password: secret.password,
                 ctime: +new Date()
             }
         }, cb);

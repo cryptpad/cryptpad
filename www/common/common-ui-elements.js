@@ -156,7 +156,7 @@ define([
             }
 
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (owned && parsed.hashData.type === 'pad') {
+            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad') {
                 var sframeChan = common.getSframeChannel();
                 var changePwTitle = Messages.properties_changePassword;
                 var changePwConfirm = Messages.properties_confirmChange;

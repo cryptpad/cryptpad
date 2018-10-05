@@ -205,6 +205,10 @@ define([
                 todo();
             }
         }).nThen(function (waitFor) {
+            if (cfg.afterSecrets) {
+                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor());
+            }
+        }).nThen(function (waitFor) {
             // Check if the pad exists on server
             if (!window.location.hash) { isNewFile = true; return; }
 
