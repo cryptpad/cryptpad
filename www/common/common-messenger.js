@@ -5,9 +5,10 @@ define([
     '/common/common-util.js',
     '/common/common-realtime.js',
     '/common/common-constants.js',
+    '/customize/messages.js',
 
     '/bower_components/nthen/index.js',
-], function (Crypto, Curve, Hash, Util, Realtime, Constants, nThen) {
+], function (Crypto, Curve, Hash, Util, Realtime, Constants, Messages, nThen) {
     'use strict';
     var Msg = {
         inputs: [],
@@ -698,7 +699,9 @@ define([
 
             var msg = [Types.message, proxy.curvePublic, +new Date(), payload];
             if (!channel.isFriendChat) {
-                msg.push(proxy[Constants.displayNameKey]);
+                var name = proxy[Constants.displayNameKey] ||
+                            Messages.anonymous + '#' + proxy.uid.slice(0,5);
+                msg.push(name);
             }
             var msgStr = JSON.stringify(msg);
             var cryptMsg = channel.encryptor.encrypt(msgStr);

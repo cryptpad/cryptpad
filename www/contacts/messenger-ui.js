@@ -169,14 +169,15 @@ define([
         markup.message = function (msg) {
             if (msg.type !== 'MSG') { return; }
             var curvePublic = msg.author;
-            var name = typeof msg.name !== "undefined" ? (msg.name || Messages.anonymous)
-                            : contactsData[msg.author].displayName;
+            var name = typeof msg.name !== "undefined" ?
+                            (msg.name || Messages.anonymous) :
+                            contactsData[msg.author].displayName;
             var d = msg.time ? new Date(msg.time) : undefined;
             var day = d ? d.toLocaleDateString() : '';
             var hour = d ? d.toLocaleTimeString() : '';
             return h('div.cp-app-contacts-message', {
                 //title: time || '?',
-                'data-user': curvePublic,
+                'data-user': curvePublic || name,
                 'data-day': day
             }, [
                 name? h('div.cp-app-contacts-sender', [
@@ -550,8 +551,9 @@ define([
 
             common.notify();
             if (message.type === 'MSG') {
-                var name = typeof message.name !== "undefined" ? (message.name || Messages.anonymous)
-                                : contactsData[message.author].displayName;
+                var name = typeof message.name !== "undefined" ?
+                        (message.name || Messages.anonymous) :
+                        contactsData[message.author].displayName;
                 common.notify({title: name, msg: message.text});
             }
             notifyToolbar();
