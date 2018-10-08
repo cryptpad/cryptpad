@@ -73,6 +73,7 @@ define([
         "Perl perl",
         "PHP php",
         "Pig pig",
+        "PowerShell powershell",
         "Properties properties",
         "Protocol_Buffers protobuf",
         "Puppet puppet",
