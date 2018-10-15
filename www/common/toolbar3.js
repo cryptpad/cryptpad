@@ -931,7 +931,7 @@ Messenger, MessengerUI, Messages) {
     var initClickEvents = function (toolbar) {
         var removeDropdowns =  function () {
             window.setTimeout(function () {
-                toolbar.$toolbar.find('.cp-dropdown-content').hide();
+                $('body').find('.cp-dropdown-content').hide();
             });
         };
         var cancelEditTitle = function (e) {

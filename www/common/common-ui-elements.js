@@ -1424,6 +1424,9 @@ define([
         };
 
         var show = function () {
+            var wh = $(window).height();
+            var topPos = $container[0].getBoundingClientRect().bottom;
+            $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {

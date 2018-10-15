@@ -3011,13 +3011,15 @@ define([
             $categories.scrollTop(s);
         };
 
-        APP.hideMenu = function () {
+        APP.hideMenu = function (e) {
             $contextMenu.hide();
             $trashTreeContextMenu.hide();
             $trashContextMenu.hide();
             $contentContextMenu.hide();
             $defaultContextMenu.hide();
-            $('.cp-dropdown-content').hide();
+            if (!e || !$(e.target).parents('.cp-dropdown')) {
+                $('.cp-dropdown-content').hide();
+            }
         };
 
         var stringifyPath = function (path) {
@@ -3297,7 +3299,6 @@ define([
         $appContainer.on('click', function (e) {
             if (e.which !== 1) { return ; }
             removeInput();
-            hideNewButton();
         });
         $appContainer.on('drag drop', function (e) {
             removeInput();
