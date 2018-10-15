@@ -1948,10 +1948,6 @@ define([
             $container.append($shareBlock);
         };
 
-        var hideNewButton = function () {
-            $('.cp-dropdown-content').hide();
-        };
-
         var SORT_FOLDER_DESC = 'sortFoldersDesc';
         var SORT_FILE_BY = 'sortFilesBy';
         var SORT_FILE_DESC = 'sortFilesDesc';
