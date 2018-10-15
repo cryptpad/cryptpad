@@ -262,7 +262,7 @@ define([], function () {
         }
         for (var k in b) {
             if (Util.isObject(b[k])) {
-                a[k] = {};
+                a[k] = Util.isObject(a[k]) ? a[k] : {};
                 Util.extend(a[k], b[k]);
                 continue;
             }
