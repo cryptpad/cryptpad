@@ -555,7 +555,7 @@ define(function () {
     out.settings_save = "Save";
 
     out.settings_backupCategory = "Backup";
-    out.settings_backupTitle = "Backup or restore all your data";
+    out.settings_backupHint = "Backup or restore all your CryptDrive's content. It won't contain the content of your pads, just the link to access them.";
     out.settings_backup = "Backup";
     out.settings_restore = "Restore";
 

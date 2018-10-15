@@ -850,7 +850,7 @@ define([
 
         $('<label>', {'for' : 'exportDrive'}).text(Messages.settings_backupCategory).appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
-            .text(Messages.settings_backupTitle).appendTo($div);
+            .text(Messages.settings_backupHint || Messages.settings_backupTitle).appendTo($div);
         /* add an export button */
         var $export = common.createButton('export', true, {}, exportFile);
         $export.attr('class', 'btn btn-success').text(Messages.settings_backup);

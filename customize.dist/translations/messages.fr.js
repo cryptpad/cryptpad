@@ -83,7 +83,7 @@ define(function () {
     out.upgrade = "Augmenter votre limite";
     out.upgradeTitle = "Améliorer votre compte pour augmenter la limite de stockage";
 
-    out.upgradeAccount = "Améliorer le compte";
+    out.upgradeAccount = "Augmenter la limite";
     out.MB = "Mo";
     out.GB = "Go";
     out.KB = "Ko";
