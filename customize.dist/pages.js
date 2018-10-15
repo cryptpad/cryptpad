@@ -3,10 +3,11 @@ define([
     '/common/hyperscript.js',
     '/common/common-language.js',
     '/common/common-interface.js',
+    '/common/outer/local-store.js',
     '/customize/messages.js',
     'jquery',
     '/customize/application_config.js',
-], function (Config, h, Language, UI, Msg, $, AppConfig) {
+], function (Config, h, Language, UI, LocalStore, Msg, $, AppConfig) {
     var Pages = {};
     var urlArgs = Config.requireConf.urlArgs;
 
@@ -275,6 +276,19 @@ define([
             if (AppConfig.registeredOnlyTypes.indexOf(app) !== -1) { return; }
             return Msg.type[app];
         }).filter(function (x) { return x; }).join(', ');
+        var premiumButton = h('a', {
+            href: accounts.upgradeURL,
+            target: '_blank',
+            rel: 'noopener noreferrer'
+        }, h('button.cp-features-register-button', Msg.features_f_subscribe));
+        $(premiumButton).click(function (e) {
+            if (LocalStore.isLoggedIn()) { return; }
+            // Not logged in: go to /login with a redirect to this page
+            e.preventDefault();
+            e.stopPropagation();
+            sessionStorage.redirectTo = '/features.html';
+            window.location.href = '/login/';
+        });
         return h('div#cp-main', [
             infopageTopbar(),
             h('div.container-fluid.cp_cont_features',[
@@ -346,13 +360,9 @@ define([
                             ]),
                             h('div.card-body',[
                                 h('div.cp-features-register#cp-features-subscribe', [
-                                    h('a', {
-                                        href: accounts.upgradeURL,
-                                        target: '_blank',
-                                        rel: 'noopener noreferrer'
-                                    }, h('button.cp-features-register-button', Msg.features_f_subscribe))
+                                    premiumButton
                                 ]),
-                                h('div.cp-note', Msg.features_f_subscribe_note)
+                                LocalStore.isLoggedIn() ? undefined : h('div.cp-note', Msg.features_f_subscribe_note)
                             ]),
                         ]),
                     ]),
