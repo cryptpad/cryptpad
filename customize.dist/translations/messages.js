@@ -703,6 +703,8 @@ define(function () {
 
     // index.html
 
+    out.home_product = "CryptPad is an open-source and private-by-design alternative to popular office tools and cloud services. All the content stored on CryptPad is encrypted before being sent, which means nobody can access your data unless you give them the keys.";
+    out.home_host = "This is a community-hosted instance of CryptPad. The source code is available <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">on Github</a>.";
 
     //about.html
     out.about_intro = 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.';
@@ -1312,7 +1314,8 @@ define(function () {
 
     // Crowdfunding messages
     out.crowdfunding_home1 = "CryptPad needs your help!";
-    out.crowdfunding_home2 = "Click to learn about our crowdfunding campaign.";
+    out.crowdfunding_home2 = "Click on the button to learn about our crowdfunding campaign.";
+    out.crowdfunding_button = "Support CryptPad";
 
     out.crowdfunding_popup_text = "<h3>We need your help!</h3>" +
                                   "To ensure that CryptPad is actively developed, consider supporting the project via the " +

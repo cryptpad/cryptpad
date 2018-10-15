@@ -714,13 +714,13 @@ define(function () {
     out.main_poll = 'Sondages';
     out.main_drive = 'CryptDrive';
 
-    out.main_richTextPad = 'Pad de Texte Riche';
-    out.main_codePad = 'Pad de Code';
-    out.main_slidePad = 'Présentation Markdown';
+    out.main_richTextPad = 'Éditeur de Texte Riche';
+    out.main_codePad = 'Éditeur de Code';
+    out.main_slidePad = 'Éditeur de Présentations';
     out.main_pollPad = 'Sondage ou Planning';
     out.main_whiteboardPad = 'Tableau blanc';
     out.main_kanbanPad = 'Kanban';
-    out.main_localPads = 'Pads Locaux';
+    out.main_localPads = 'Pads récents';
     out.main_yourCryptDrive = 'Votre CryptDrive';
     out.main_footerText = "Avec CryptPad, vous pouvez créer des documents collaboratifs rapidement pour prendre des notes à plusieurs.";
 
