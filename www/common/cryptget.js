@@ -58,6 +58,11 @@ define([
             Session.network = info.network;
             finish(Session, void 0, rt.getUserDoc());
         };
+
+        config.onChannelError = function (info) {
+            finish(Session, info.error);
+        };
+
         overwrite(config, opt);
 
         Session.realtime = CPNetflux.start(config);
