@@ -497,6 +497,10 @@ define([
             userDocStateDom.normalize();
             inner.normalize();
 
+            $(userDocStateDom).find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+                $(el).remove();
+            });
+
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
 
@@ -530,6 +534,10 @@ define([
             return str;
         });
         framework.setContentGetter(function () {
+            $(inner).find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+                $(el).remove();
+            });
+
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
             return Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
