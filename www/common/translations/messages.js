@@ -562,6 +562,8 @@ define(function () {
     out.settings_backupCategory = "Backup";
     out.settings_backupHint = "Backup or restore all your CryptDrive's content. It won't contain the content of your pads, just the link to access them.";
     out.settings_backup = "Backup";
+    out.settings_backupHint2 = "Download all your pads. Pads will be downloaded in an readable format when available.";
+    out.settings_backup2 = "Download my CryptDrive";
     out.settings_restore = "Restore";
 
     out.settings_resetNewTitle = "Clean CryptDrive";

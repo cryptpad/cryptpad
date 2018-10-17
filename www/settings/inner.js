@@ -12,6 +12,7 @@ define([
     '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
+    '/settings/make-backup.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -30,7 +31,8 @@ define([
     h,
     Cred,
     AppConfig,
-    ApiConfig
+    ApiConfig,
+    Backup,
     )
 {
     var saveAs = window.saveAs;
@@ -50,6 +52,7 @@ define([
             'cp-settings-autostore',
             'cp-settings-userfeedback',
             'cp-settings-change-password',
+            'cp-settings-backup',
             'cp-settings-delete'
         ],
         'creation': [
@@ -297,6 +300,45 @@ define([
         if (privateData.feedbackAllowed) {
             $checkbox[0].checked = true;
         }
+        return $div;
+    };
+
+    create['backup'] = function () {
+        if (!common.isLoggedIn()) { return; }
+        var $div = $('<div>', { 'class': 'cp-settings-backup cp-sidebarlayout-element'});
+
+        $('<span>', {'class': 'label'}).text(Messages.settings_backupTitle || 'TODO BACKUP').appendTo($div); // XXX
+
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .append(Messages.settings_backupHint || 'TODO').appendTo($div); // XXX
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $button = $('<button>', {'id': 'cp-settings-delete', 'class': 'btn btn-danger'})
+            .text(Messages.settings_backupButton || 'BACKUP').appendTo($div); // XXX
+
+        $button.click(function () {
+            $spinner.show();
+            UI.confirm(Messages.settings_backupConfirm || 'TODO Are you sure?', function (yes) { // XXX
+                if (!yes) { return; }
+            });
+            // TODO
+            /*
+            UI.confirm("Are you sure?", function (yes) {
+                // Logout everywhere
+                // Disconnect other tabs
+                // Remove owned pads
+                // Remove owned drive
+                // Remove pinstore
+                // Alert: "Account deleted", press OK to be redirected to the home page
+                $spinner.hide();
+            });*/
+        });
+
+        $spinner.hide().appendTo($div);
+        $ok.hide().appendTo($div);
+
         return $div;
     };
 
@@ -860,6 +902,40 @@ define([
         var $import = common.createButton('import', true, {}, importFile);
         $import.attr('class', 'btn btn-success').text(Messages.settings_restore);
         $div.append($import);
+
+        // Backup all the pads
+        var exportDrive = function () {
+            var todo = function (data, filename) {
+                var getPad = function (data, cb) {
+                    sframeChan.query("Q_CRYPTGET", data, function (err, obj) {
+                        if (err) { return void cb(err); }
+                        if (obj.error) { return void cb(obj.error); }
+                        cb(null, obj.data);
+                    });
+                };
+
+                Backup.create(data, getPad, function (blob) {
+                    saveAs(blob, filename);
+                });
+            };
+            sframeChan.query("Q_SETTINGS_DRIVE_GET", null, function (err, data) {
+                if (err) { return void console.error(err); }
+                var sjson = JSON.stringify(data);
+                var name = displayName || accountName || Messages.anonymous;
+                var suggestion = name + '-' + new Date().toDateString();
+
+                UI.prompt('TODO are you sure? if ye,s pick a name...', // XXX
+                    Util.fixFileName(suggestion) + '.json', function (filename) {
+                    if (!(typeof(filename) === 'string' && filename)) { return; }
+                    todo(data, filename);
+                });
+            });
+        };
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_backupHint2).appendTo($div);
+        var $export = common.createButton('export', true, {}, exportDrive);
+        $export.attr('class', 'btn btn-success').text(Messages.settings_backup2);
+        $div.append($export);
 
         return $div;
     };

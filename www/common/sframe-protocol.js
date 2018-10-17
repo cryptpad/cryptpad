@@ -270,5 +270,9 @@ define({
     'Q_IS_PAD_STORED': true,
 
     // Import mediatag from a pad
-    'Q_IMPORT_MEDIATAG': true
+    'Q_IMPORT_MEDIATAG': true,
+
+    // Ability to get a pad's content from its hash
+    'Q_CRYPTGET': true,
+
 });

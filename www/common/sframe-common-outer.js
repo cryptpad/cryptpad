@@ -744,6 +744,15 @@ define([
                 Cryptpad.removeLoginBlock(data, cb);
             });
 
+            sframeChan.on('Q_CRYPTGET', function (data, cb) {
+                Cryptget.get(data.hash, function (err, val) {
+                    cb({
+                        error: err,
+                        data: val
+                    });
+                }, data.opts);
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
