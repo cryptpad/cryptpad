@@ -16,6 +16,12 @@ body
     background-color: #fff;
 
     margin: 20px;
+    padding: 20px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .cke_editable

@@ -785,7 +785,7 @@ define([
                         'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
                         'box-sizing: border-box; overflow: auto;'+
                     '}' +
-                    '.cke_body_width body > *:first-child { margin-top: 0; }' +
+                    '.cke_body_width body > *:first-child { margin-top: 0; }';
                 Ckeditor.addCss(newCss);
                 Ckeditor._mediatagTranslations = {
                     title: Messages.pad_mediatagTitle,
