@@ -274,5 +274,6 @@ define({
 
     // Ability to get a pad's content from its hash
     'Q_CRYPTGET': true,
+    'EV_CRYPTGET_DISCONNECT': true,
 
 });

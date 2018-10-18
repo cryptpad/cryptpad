@@ -12,11 +12,18 @@ define([
         S.cb(err, doc);
         S.done = true;
 
-        var disconnect = Util.find(S, ['network', 'disconnect']);
-        if (typeof(disconnect) === 'function') { disconnect(); }
-        var abort = Util.find(S, ['realtime', 'realtime', 'abort']);
+        if (!S.hasNetwork) {
+            var disconnect = Util.find(S, ['network', 'disconnect']);
+            if (typeof(disconnect) === 'function') { disconnect(); }
+        }
+        if (S.leave) {
+            try {
+                S.leave();
+            } catch (e) { console.log(e); }
+        }
+        var abort = Util.find(S, ['session', 'realtime', 'abort']);
         if (typeof(abort) === 'function') {
-            S.realtime.realtime.sync();
+            S.session.realtime.sync();
             abort();
         }
     };
@@ -51,11 +58,12 @@ define([
         opt = opt || {};
 
         var config = makeConfig(hash, opt.password);
-        var Session = { cb: cb, };
+        var Session = { cb: cb, hasNetwork: Boolean(opt.network) };
 
         config.onReady = function (info) {
             var rt = Session.session = info.realtime;
             Session.network = info.network;
+            Session.leave = info.leave;
             finish(Session, void 0, rt.getUserDoc());
         };
 

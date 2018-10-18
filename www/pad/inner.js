@@ -25,6 +25,7 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     '/pad/links.js',
+    '/pad/export.js',
     '/bower_components/nthen/index.js',
     '/common/media-tag.js',
     '/api/config',
@@ -49,6 +50,7 @@ define([
     TypingTest,
     Messages,
     Links,
+    Exporter,
     nThen,
     MediaTag,
     ApiConfig,
@@ -165,17 +167,6 @@ define([
         //'VIDEO',
         //'AUDIO'
     ];
-
-    var getHTML = function (inner) {
-        return ('<!DOCTYPE html>\n' + '<html>\n' +
-                '  <head><meta charset="utf-8"></head>\n  <body>' +
-            inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/g,
-                function(match,realElt){
-                    //console.log("returning realElt \"" + unescape(realElt)+ "\".");
-                    return decodeURIComponent(realElt); }) +
-            '  </body>\n</html>'
-        );
-    };
 
     var CKEDITOR_CHECK_INTERVAL = 100;
     var ckEditorAvailable = function (cb) {
@@ -647,26 +638,8 @@ define([
             });
         }, true);
 
-        var exportMediaTags = function (inner, cb) {
-            var $clone = $(inner).clone();
-            nThen(function (waitFor) {
-                $(inner).find('media-tag').each(function (i, el) {
-                    if (!$(el).data('blob') || !el.blob) { return; }
-                    Util.blobToImage(el.blob || $(el).data('blob'), waitFor(function (imgSrc) {
-                        $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
-                            .attr('src', imgSrc);
-                        $clone.find('media-tag').parent()
-                            .find('.cke_widget_drag_handler_container').remove();
-                    }));
-                });
-            }).nThen(function () {
-                cb($clone[0]);
-            });
-        };
-        framework.setFileExporter('html', function (cb) {
-            exportMediaTags(inner, function (toExport) {
-                cb(new Blob([ getHTML(toExport) ], { type: "text/html;charset=utf-8" }));
-            });
+        framework.setFileExporter(Exporter.type, function (cb) {
+            Exporter.main(inner, cb);
         }, true);
 
         framework.setNormalizer(function (hjson) {
@@ -837,7 +810,7 @@ define([
                             test.fail("No anchors found. Please adjust document");
                         } else {
                             console.log(anchors.length + " anchors found.");
-                            var exported = getHTML(window.inner);
+                            var exported = Exporter.getHTML(window.inner);
                             console.log("Obtained exported: " + exported);
                             var allFound = true;
                             for(var i=0; i<anchors.length; i++) {

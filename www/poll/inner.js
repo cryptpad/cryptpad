@@ -9,6 +9,7 @@ define([
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
     '/customize/pages.js',
     '/poll/render.js',
+    '/poll/export.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
@@ -38,6 +39,7 @@ define([
     Listmap,
     Pages,
     Renderer,
+    Exporter,
     DiffMd,
     SframeCM,
     Thumb,
@@ -69,55 +71,19 @@ define([
         return JSON.parse(JSON.stringify(obj));
     };
 
-    var getCSV = APP.getCSV = function () {
-        if (!APP.proxy) { return; }
-        var data = copyObject(APP.proxy.content);
-        var res = '';
-
-        var escapeStr = function (str) {
-            return '"' + str.replace(/"/g, '""') + '"';
-        };
-
-        [null].concat(data.rowsOrder).forEach(function (rowId, i) {
-            [null].concat(data.colsOrder).forEach(function (colId, j) {
-                // thead
-                if (i === 0) {
-                    if (j === 0) { res += ','; return; }
-                    if (!colId) { throw new Error("Invalid data"); }
-                    res += escapeStr(data.cols[colId] || Messages.anonymous) + ',';
-                    return;
-                }
-                // tbody
-                if (!rowId) { throw new Error("Invalid data"); }
-                if (j === 0) {
-                    res += escapeStr(data.rows[rowId] || Messages.poll_optionPlaceholder) + ',';
-                    return;
-                }
-                if (!colId) { throw new Error("Invalid data"); }
-                res += (data.cells[colId + '_' + rowId] || 3) + ',';
-            });
-            // last column: total
-            // thead
-            if (i === 0) {
-                res += escapeStr(Messages.poll_total) + '\n';
-                return;
-            }
-            // tbody
-            if (!rowId) { throw new Error("Invalid data"); }
-            res += APP.count[rowId] || '?';
-            res += '\n';
-        });
-
-        return res;
+    APP.getCSV = function () {
+        return Exporter.getCSV(APP.proxy.content);
     };
+
     var exportFile = function () {
-        var csv = getCSV();
-        var suggestion = Title.suggestTitle(Title.defaultTitle);
-        UI.prompt(Messages.exportPrompt,
-            Util.fixFileName(suggestion) + '.csv', function (filename) {
-            if (!(typeof(filename) === 'string' && filename)) { return; }
-            var blob = new Blob([csv], {type: "application/csv;charset=utf-8"});
-            saveAs(blob, filename);
+        Exporter.main(APP.proxy, function (blob, isJson) {
+            var suggestion = Title.suggestTitle(Title.defaultTitle);
+            var ext = isJson ? '.json' : '.csv';
+            UI.prompt(Messages.exportPrompt,
+                Util.fixFileName(suggestion) + ext, function (filename) {
+                if (!(typeof(filename) === 'string' && filename)) { return; }
+                saveAs(blob, filename);
+            });
         });
     };
 

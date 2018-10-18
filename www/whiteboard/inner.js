@@ -277,6 +277,7 @@ define([
 
     // Start of the main loop
     var andThen2 = function (framework) {
+        APP.framework = framework;
         var canvas = APP.canvas = new Fabric.Canvas('cp-app-whiteboard-canvas', {
             containerClass: 'cp-app-whiteboard-canvas-container'
         });

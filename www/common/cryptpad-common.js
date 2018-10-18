@@ -59,6 +59,19 @@ define([
         cb();
     };
 
+    common.makeNetwork = function (cb) {
+        require([
+            '/bower_components/netflux-websocket/netflux-client.js',
+            '/common/outer/network-config.js'
+        ], function (Netflux, NetConfig) {
+            var wsUrl = NetConfig.getWebsocketURL();
+            Netflux.connect(wsUrl).then(function (network) {
+                cb(null, network);
+            }, function (err) {
+                cb(err);
+            });
+        });
+    };
 
     // RESTRICTED
     // Settings only

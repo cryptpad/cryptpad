@@ -862,13 +862,13 @@ define([
 
         var accountName = privateData.accountName;
         var displayName = metadataMgr.getUserData().name || '';
+        var name = displayName || accountName || Messages.anonymous;
+        var suggestion = name + '-' + new Date().toDateString();
 
         var exportFile = function () {
             sframeChan.query("Q_SETTINGS_DRIVE_GET", null, function (err, data) {
                 if (err) { return void console.error(err); }
                 var sjson = JSON.stringify(data);
-                var name = displayName || accountName || Messages.anonymous;
-                var suggestion = name + '-' + new Date().toDateString();
                 UI.prompt(Messages.exportPrompt,
                     Util.fixFileName(suggestion) + '.json', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
@@ -916,16 +916,14 @@ define([
 
                 Backup.create(data, getPad, function (blob) {
                     saveAs(blob, filename);
+                    sframeChan.event('EV_CRYPTGET_DISCONNECT');
                 });
             };
-            sframeChan.query("Q_SETTINGS_DRIVE_GET", null, function (err, data) {
+            sframeChan.query("Q_SETTINGS_DRIVE_GET", "full", function (err, data) {
                 if (err) { return void console.error(err); }
-                var sjson = JSON.stringify(data);
-                var name = displayName || accountName || Messages.anonymous;
-                var suggestion = name + '-' + new Date().toDateString();
-
-                UI.prompt('TODO are you sure? if ye,s pick a name...', // XXX
-                    Util.fixFileName(suggestion) + '.json', function (filename) {
+                if (data.error) { return void console.error(data.error); }
+                UI.prompt('TODO are you sure? if yes, pick a name...', // XXX
+                    Util.fixFileName(suggestion) + '.zip', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
                     todo(data, filename);
                 });

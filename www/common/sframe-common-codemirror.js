@@ -38,6 +38,12 @@ define([
         return cursor;
     };
 
+    module.getContentExtension = function (mode) {
+        return (Modes.extensionOf(mode) || '.txt').slice(1);
+    };
+    module.fileExporter = function (content) {
+        return new Blob([ content ], { type: 'text/plain;charset=utf-8' });
+    };
     module.setValueAndCursor = function (editor, oldDoc, remoteDoc) {
         var scroll = editor.getScrollInfo();
         //get old cursor here
@@ -271,10 +277,10 @@ define([
         };
 
         exp.getContentExtension = function () {
-            return (Modes.extensionOf(exp.highlightMode) || '.txt').slice(1);
+            return module.getContentExtension(exp.highlightMode);
         };
         exp.fileExporter = function () {
-            return new Blob([ editor.getValue() ], { type: 'text/plain;charset=utf-8' });
+            return module.fileExporter(editor.getValue());
         };
         exp.fileImporter = function (content, file) {
             var $toolbarContainer = $('#cme_toolbox');
