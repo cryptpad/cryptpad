@@ -10,9 +10,17 @@ define([
     };
 
     module.getCSV = function (content) {
-        if (!APP.proxy) { return; }
         var data = copyObject(content);
         var res = '';
+
+        var count = {};
+        data.rowsOrder.forEach(function (rId) {
+            var c = Object.keys(data.cells)
+                .filter(function (k) {
+                    return k.indexOf(rId) !== -1 && data.cells[k] === 1;
+                }).length;
+            count[rId] = c;
+        });
 
         var escapeStr = function (str) {
             return '"' + str.replace(/"/g, '""') + '"';
@@ -44,7 +52,7 @@ define([
             }
             // tbody
             if (!rowId) { throw new Error("Invalid data"); }
-            res += APP.count[rowId] || '?';
+            res += count[rowId] || '?';
             res += '\n';
         });
 
@@ -60,7 +68,7 @@ define([
             var blob2 = new Blob([JSON.stringify(content, 0, 2)], {
                 type: 'application/json',
             });
-            return void cb(content, true);
+            return void cb(blob2, true);
         }
         var blob = new Blob([csv], {type: "application/csv;charset=utf-8"});
         cb(blob);
