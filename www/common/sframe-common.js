@@ -483,7 +483,7 @@ define([
             });
 
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
-                UI.updateLoadingProgress(data, true);
+                UI.updateLoadingProgress(data, 'drive');
             });
 
             ctx.sframeChan.on('EV_NEW_VERSION', function () {

@@ -566,6 +566,22 @@ define(function () {
     out.settings_backup2 = "Download my CryptDrive";
     out.settings_restore = "Restore";
 
+    // XXX
+    out.settings_backup2Confirm = "This will download all the pads and files from your CryptDrive. If you want to continue, pick a name and press OK";
+    out.settings_exportTitle = "Export your CryptDrive";
+    out.settings_exportDescription = "Please wait while we're downloading and decrypting your documents, this may take a few minutes. Closing the tab will interrupt the process.";
+    out.settings_exportWarning = "For better performances, it is recommended to leave this tab focused.";
+    out.settings_exportCancel = "Are you sure you want to cancel the export? You will have to start again from the beginning for your next export.";
+    out.settings_export_reading = "Reading your CryptDrive...";
+    out.settings_export_download = "Decrypting and downloading your documents...";
+    out.settings_export_compressing = "Compressing the data...";
+    out.settings_export_done = "Export is ready!";
+    out.settings_exportError = "View errors";
+    out.settings_exportErrorDescription = "We weren't able to add the following documents into the export:";
+    out.settings_exportErrorEmpty = "The document can't be exported (empty or invalid content).";
+    out.settings_exportErrorMissing = "The document is missing from our servers (expired or deleted by its owner)";
+    out.settings_exportErrorOther = "An error occured while trying to export the document: {0}";
+
     out.settings_resetNewTitle = "Clean CryptDrive";
     out.settings_resetButton = "Remove";
     out.settings_reset = "Remove all the files and folders from your CryptDrive";

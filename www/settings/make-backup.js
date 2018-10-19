@@ -60,79 +60,92 @@ define([
         // waitFor is used to make sure all the pads and files are process before downloading the zip.
         var w = ctx.waitFor();
 
+        ctx.max++;
         // Work with only 10 pad/files at a time
         ctx.sem.take(function (give) {
-            var opts = {
-                password: fData.password
-            };
-            var rawName = fData.filename || fData.title || 'File';
-            console.log(rawName);
             var g = give();
+            if (ctx.stop) { return; }
+            setTimeout(function () {
+                if (ctx.stop) { return; }
+                var opts = {
+                    password: fData.password
+                };
+                var rawName = fData.filename || fData.title || 'File';
+                console.log(rawName);
 
-            var done = function () {
-                //setTimeout(g, 2000);
-                g();
-                w();
-            };
-            var error = function (err) {
-                done();
-                return void ctx.errors.push({
-                    error: err,
-                    data: fData
-                });
-            };
-
-            // Pads (pad,code,slide,kanban,poll,...)
-            var todoPad = function () {
-                ctx.get({
-                    hash: parsed.hash,
-                    opts: opts
-                }, function (err, val) {
-                    if (err) { return void error(err); }
-                    if (!val) { return void error('EEMPTY'); }
-
-                    var opts = {
-                        binary: true,
-                    };
-                    transform(ctx, parsed.type, val, function (res) {
-                        if (!res.data) { return void error('EEMPTY'); }
-                        var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
-                        existingNames.push(fileName.toLowerCase());
-                        zip.file(fileName, res.data, opts);
-                        console.log('DONE ---- ' + fileName);
-                        setTimeout(done, 1000);
+                var done = function () {
+                    if (ctx.stop) { return; }
+                    //setTimeout(g, 2000);
+                    g();
+                    w();
+                    ctx.done++;
+                    ctx.updateProgress('download', {max: ctx.max, current: ctx.done});
+                };
+                var error = function (err) {
+                    if (ctx.stop) { return; }
+                    done();
+                    return void ctx.errors.push({
+                        error: err,
+                        data: fData
                     });
-                });
-            };
+                };
 
-            // Files (mediatags...)
-            var todoFile = function () {
-                var secret = Hash.getSecrets('file', parsed.hash, fData.password);
-                var hexFileName = secret.channel;
-                var src = Hash.getBlobPathFromHex(hexFileName);
-                var key = secret.keys && secret.keys.cryptKey;
-                Util.fetch(src, function (err, u8) {
-                    if (err) { return void error('E404'); }
-                    FileCrypto.decrypt(u8, key, function (err, res) {
+                // Pads (pad,code,slide,kanban,poll,...)
+                var todoPad = function () {
+                    ctx.get({
+                        hash: parsed.hash,
+                        opts: opts
+                    }, function (err, val) {
+                        if (ctx.stop) { return; }
                         if (err) { return void error(err); }
+                        if (!val) { return void error('EEMPTY'); }
+
                         var opts = {
                             binary: true,
                         };
-                        var extIdx = rawName.lastIndexOf('.');
-                        var name = extIdx !== -1 ? rawName.slice(0,extIdx) : rawName;
-                        var ext = extIdx !== -1 ? rawName.slice(extIdx) : "";
-                        var fileName = getUnique(sanitize(name), ext, existingNames);
-                        existingNames.push(fileName.toLowerCase());
-                        zip.file(fileName, res.content, opts);
-                        console.log('DONE ---- ' + fileName);
-                        setTimeout(done, 1000);
+                        transform(ctx, parsed.type, val, function (res) {
+                            if (ctx.stop) { return; }
+                            if (!res.data) { return void error('EEMPTY'); }
+                            var fileName = getUnique(sanitize(rawName), res.ext, existingNames);
+                            existingNames.push(fileName.toLowerCase());
+                            zip.file(fileName, res.data, opts);
+                            console.log('DONE ---- ' + fileName);
+                            setTimeout(done, 500);
+                        });
                     });
-                });
-            };
-            if (parsed.hashData.type === 'file') {
-                return void todoFile();
-            }
-            todoPad();
+                };
+
+                // Files (mediatags...)
+                var todoFile = function () {
+                    var secret = Hash.getSecrets('file', parsed.hash, fData.password);
+                    var hexFileName = secret.channel;
+                    var src = Hash.getBlobPathFromHex(hexFileName);
+                    var key = secret.keys && secret.keys.cryptKey;
+                    Util.fetch(src, function (err, u8) {
+                        if (ctx.stop) { return; }
+                        if (err) { return void error('E404'); }
+                        FileCrypto.decrypt(u8, key, function (err, res) {
+                            if (ctx.stop) { return; }
+                            if (err) { return void error(err); }
+                            var opts = {
+                                binary: true,
+                            };
+                            var extIdx = rawName.lastIndexOf('.');
+                            var name = extIdx !== -1 ? rawName.slice(0,extIdx) : rawName;
+                            var ext = extIdx !== -1 ? rawName.slice(extIdx) : "";
+                            var fileName = getUnique(sanitize(name), ext, existingNames);
+                            existingNames.push(fileName.toLowerCase());
+                            zip.file(fileName, res.content, opts);
+                            console.log('DONE ---- ' + fileName);
+                            setTimeout(done, 1000);
+                        });
+                    });
+                };
+                if (parsed.hashData.type === 'file') {
+                    return void todoFile();
+                }
+                todoPad();
+            });
         });
         // cb(err, blob);
     };
@@ -163,7 +176,7 @@ define([
     };
 
     // Main function. Create the empty zip and fill it starting from drive.root
-    var create = function (data, getPad, cb) {
+    var create = function (data, getPad, cb, progress) {
         if (!data || !data.uo || !data.uo.drive) { return void cb('EEMPTY'); }
         var sem = Saferphore.create(5);
         var ctx = {
@@ -173,18 +186,33 @@ define([
             zip: new JsZip(),
             errors: [],
             sem: sem,
+            updateProgress: progress,
+            max: 0,
+            done: 0
         };
+        progress('reading', -1);
         nThen(function (waitFor) {
             ctx.waitFor = waitFor;
             var zipRoot = ctx.zip.folder('Root');
             makeFolder(ctx, ctx.data.root, zipRoot, ctx.data.filesData);
+            progress('download', {});
         }).nThen(function () {
             console.log(ctx.zip);
             console.log(ctx.errors);
+            progress('compressing', -1);
             ctx.zip.generateAsync({type: 'blob'}).then(function (content) {
-                cb(content);
+                progress('done', -1);
+                cb(content, ctx.errors);
             });
         });
+
+        var stop = function () {
+            ctx.stop = true;
+            delete ctx.zip;
+        };
+        return {
+            stop: stop
+        };
     };
 
     return {

@@ -769,7 +769,7 @@ define([
                     i = 0;
                     cgNetwork = undefined;
                 }
-                i++
+                i++;
                 if (!cgNetwork) {
                     cgNetwork = true;
                     return void Cryptpad.makeNetwork(function (err, nw) {
