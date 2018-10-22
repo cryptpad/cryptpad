@@ -348,7 +348,7 @@ define([
                                 h('h3.text-center',Msg.features_premium)
                             ]),
                             h('ul.list-group.list-group-flush', [
-                                ['reg', 'storage2', 'support', 'supporter'/*, 'project'*/].map(function (f) { // XXX
+                                ['reg', 'storage2', 'support', 'supporter'].map(function (f) {
                                     return h('li.list-group-item', [
                                         h('div.cp-check'),
                                         h('div.cp-content', [
