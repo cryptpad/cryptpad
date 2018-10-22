@@ -21,6 +21,13 @@
                 margin-top: 6em;
             }
         }
+        & > .cp-container {
+            flex: 1;
+            display: flex;
+            flex-flow: column;
+            justify-content: space-around;
+            justify-content: space-evenly;
+        }
     }
     body {
         font-family: "Open Sans", Helvetica;
@@ -181,9 +188,7 @@
         }
     }
 
-    .cp-crowdfunding {
-        width: 100%;
-        text-align: center;
+    .cp-index-block-help {
         button {
             outline: none;
             background-color: @colortheme_logo-2;
@@ -195,6 +200,26 @@
             &:hover {
                 background-color: lighten(@colortheme_logo-2, 3%);
             }
+        }
+    }
+
+    .cp-index-block {
+        min-height: 100%;
+        & > div {
+            background: rgba(0,0,0,0.5);
+            margin: 0 5px;
+            padding: 15px 10px;
+            height: 100%;
+            display: flex;
+            flex-flow: column;
+            justify-content: space-evenly;
+        }
+        img {
+            margin: auto;
+            max-width: 70%;
+            background: white;
+            max-height: 50px;
+            margin-top: 1em;
         }
     }
 

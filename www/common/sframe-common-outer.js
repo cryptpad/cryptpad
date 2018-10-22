@@ -21,7 +21,9 @@ define([
         var FilePicker;
         var Messaging;
         var Notifier;
-        var Utils = {};
+        var Utils = {
+            nThen: nThen
+        };
         var AppConfig;
         var Test;
         var password;
@@ -742,6 +744,48 @@ define([
 
             sframeChan.on('Q_REMOVE_LOGIN_BLOCK', function (data, cb) {
                 Cryptpad.removeLoginBlock(data, cb);
+            });
+
+            var cgNetwork;
+            var whenCGReady = function (cb) {
+                if (cgNetwork && cgNetwork !== true) { console.log(cgNetwork); return void cb(); }
+                setTimeout(function () {
+                    whenCGReady(cb);
+                }, 500);
+            };
+            var i = 0;
+            sframeChan.on('Q_CRYPTGET', function (data, cb) {
+                var todo = function () {
+                    data.opts.network = cgNetwork;
+                    Cryptget.get(data.hash, function (err, val) {
+                        cb({
+                            error: err,
+                            data: val
+                        });
+                    }, data.opts);
+                };
+                //return void todo();
+                if (i > 30) {
+                    i = 0;
+                    cgNetwork = undefined;
+                }
+                i++;
+                if (!cgNetwork) {
+                    cgNetwork = true;
+                    return void Cryptpad.makeNetwork(function (err, nw) {
+                        console.log(nw);
+                        cgNetwork = nw;
+                        todo();
+                    });
+                } else if (cgNetwork === true) {
+                    return void whenCGReady(todo);
+                }
+                todo();
+            });
+            sframeChan.on('EV_CRYPTGET_DISCONNECT', function () {
+                if (!cgNetwork) { return; }
+                cgNetwork.disconnect();
+                cgNetwork = undefined;
             });
 
             if (cfg.addRpc) {

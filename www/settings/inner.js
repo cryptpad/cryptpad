@@ -12,6 +12,7 @@ define([
     '/customize/credential.js',
     '/customize/application_config.js',
     '/api/config',
+    '/settings/make-backup.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -30,7 +31,8 @@ define([
     h,
     Cred,
     AppConfig,
-    ApiConfig
+    ApiConfig,
+    Backup
     )
 {
     var saveAs = window.saveAs;
@@ -50,6 +52,7 @@ define([
             'cp-settings-autostore',
             'cp-settings-userfeedback',
             'cp-settings-change-password',
+            'cp-settings-backup',
             'cp-settings-delete'
         ],
         'creation': [
@@ -815,18 +818,155 @@ define([
         return $div;
     };
 
+
+    var createExportUI = function () {
+        var progress = h('div.cp-export-progress');
+        var actions = h('div.cp-export-actions');
+        var errors = h('div.cp-export-errors', [
+            h('p', Messages.settings_exportErrorDescription)
+        ]);
+        var exportUI = h('div#cp-export-container', [
+            h('div.cp-export-block', [
+                h('h3', Messages.settings_exportTitle),
+                h('p', [
+                    Messages.settings_exportDescription,
+                    h('br'),
+                    Messages.settings_exportWarning
+                ]),
+                progress,
+                actions,
+                errors
+            ])
+        ]);
+        $('body').append(exportUI);
+        $('#cp-sidebarlayout-container').hide();
+
+        var close = function () {
+            $(exportUI).remove();
+            $('#cp-sidebarlayout-container').show();
+        };
+
+        var _onCancel = [];
+        var onCancel = function (h) {
+            if (typeof (h) !== "function") { return; }
+            _onCancel.push(h);
+        };
+        var cancel = h('button.btn.btn-default', Messages.cancel);
+        $(cancel).click(function () {
+            UI.confirm(Messages.settings_exportCancel, function (yes) {
+                if (!yes) { return; }
+                _onCancel.forEach(function (h) { h(); });
+            });
+        }).appendTo(actions);
+
+        var error = h('button.btn.btn-danger', Messages.settings_exportError);
+        var translateErrors = function (err) {
+            if (err === 'EEMPTY') {
+                return Messages.settings_exportErrorEmpty;
+            }
+            if (['E404', 'EEXPIRED', 'EDELETED'].indexOf(err) !== -1) {
+                return Messages.settings_exportErrorMissing;
+            }
+            return Messages._getKey('settings_exportErrorOther', [err]);
+        };
+        var addErrors = function (errs) {
+            if (!errs.length) { return; }
+            var onClick = function () {
+                console.error('clicked?');
+                $(errors).toggle();
+            };
+            $(error).click(onClick).appendTo(actions);
+            var list = h('div.cp-export-errors-list');
+            $(list).appendTo(errors);
+            errs.forEach(function (err) {
+                if (!err.data) { return; }
+                var href = err.data.href || err.data.roHref;
+                $(h('div', [
+                    h('div.title', err.data.filename || err.data.title),
+                    h('div.link', [
+                        h('a', {
+                            href: err.data.href || err.data.roHref,
+                            target: '_blank'
+                        }, privateData.origin + href)
+                    ]),
+                    h('div.reason', translateErrors(err.error))
+                ])).appendTo(list);
+            });
+        };
+
+        var download = h('button.btn.btn-primary', Messages.download_mt_button);
+        var completed = false;
+        var complete = function (h, err) {
+            if (completed) { return; }
+            completed = true;
+            $(progress).find('.fa-square-o').removeClass('fa-square-o')
+                .addClass('fa-check-square-o');
+            $(cancel).text(Messages.filePicker_close).off('click').click(function () {
+                _onCancel.forEach(function (h) { h(); });
+            });
+            $(download).click(h).appendTo(actions);
+            addErrors(err);
+        };
+
+        var done = {};
+        var update = function (step, state) {
+            console.log(step, state);
+            console.log(done[step]);
+            if (done[step] && done[step] === -1) { return; }
+
+
+            // New step
+            if (!done[step]) {
+                $(progress).find('.fa-square-o').removeClass('fa-square-o')
+                    .addClass('fa-check-square-o');
+                $(progress).append(h('p', [
+                    h('span.fa.fa-square-o'),
+                    h('span.text', Messages['settings_export_'+step] || step)
+                ]));
+                done[step] = state; // -1 if no bar, object otherwise
+                if (state !== -1) {
+                    var bar = h('div.cp-export-progress-bar');
+                    $(progress).append(h('div.cp-export-progress-bar-container', [
+                        bar
+                    ]));
+                    done[step] = { bar: bar };
+                }
+                return;
+            }
+
+            // Updating existing step
+            if (typeof state !== "object") { return; }
+            var b = done[step].bar;
+            var w = (state.current/state.max) * 100;
+            $(b).css('width', w + '%');
+            if (!done[step].text) {
+                done[step].text = h('div.cp-export-progress-text');
+                $(done[step].text).appendTo(b);
+            }
+            $(done[step].text).text(state.current + ' / ' + state.max);
+            if (state.current === state.max) { done[step] = -1; }
+        };
+
+        return {
+            close: close,
+            update: update,
+            complete: complete,
+            onCancel: onCancel
+        };
+    };
+
     create['drive-backup'] = function () {
         var $div = $('<div>', {'class': 'cp-settings-drive-backup cp-sidebarlayout-element'});
 
         var accountName = privateData.accountName;
         var displayName = metadataMgr.getUserData().name || '';
+        var name = displayName || accountName || Messages.anonymous;
+        var suggestion = name + '-' + new Date().toDateString();
 
         var exportFile = function () {
             sframeChan.query("Q_SETTINGS_DRIVE_GET", null, function (err, data) {
                 if (err) { return void console.error(err); }
                 var sjson = JSON.stringify(data);
-                var name = displayName || accountName || Messages.anonymous;
-                var suggestion = name + '-' + new Date().toDateString();
                 UI.prompt(Messages.exportPrompt,
                     Util.fixFileName(suggestion) + '.json', function (filename) {
                     if (!(typeof(filename) === 'string' && filename)) { return; }
@@ -860,6 +1000,48 @@ define([
         var $import = common.createButton('import', true, {}, importFile);
         $import.attr('class', 'btn btn-success').text(Messages.settings_restore);
         $div.append($import);
+
+        // Backup all the pads
+        var exportDrive = function () {
+            var todo = function (data, filename) {
+                var getPad = function (data, cb) {
+                    sframeChan.query("Q_CRYPTGET", data, function (err, obj) {
+                        if (err) { return void cb(err); }
+                        if (obj.error) { return void cb(obj.error); }
+                        cb(null, obj.data);
+                    }, { timeout: 5 * 60 * 1000 });
+                };
+
+                var ui = createExportUI();
+
+                var bu = Backup.create(data, getPad, function (blob, errors) {
+                    console.log(blob);
+                    saveAs(blob, filename);
+                    sframeChan.event('EV_CRYPTGET_DISCONNECT');
+                    ui.complete(function () {
+                        saveAs(blob, filename);
+                    }, errors);
+                }, ui.update);
+                ui.onCancel(function () {
+                    ui.close();
+                    bu.stop();
+                });
+            };
+            sframeChan.query("Q_SETTINGS_DRIVE_GET", "full", function (err, data) {
+                if (err) { return void console.error(err); }
+                if (data.error) { return void console.error(data.error); }
+                UI.prompt(Messages.settings_backup2Confirm,
+                    Util.fixFileName(suggestion) + '.zip', function (filename) {
+                    if (!(typeof(filename) === 'string' && filename)) { return; }
+                    todo(data, filename);
+                });
+            });
+        };
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_backupHint2).appendTo($div);
+        var $export2 = common.createButton('export', true, {}, exportDrive);
+        $export2.attr('class', 'btn btn-success').text(Messages.settings_backup2);
+        $div.append($export2);
 
         return $div;
     };
