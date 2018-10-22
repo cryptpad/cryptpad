@@ -560,27 +560,26 @@ define(function () {
     out.settings_save = "Save";
 
     out.settings_backupCategory = "Backup";
-    out.settings_backupHint = "Backup or restore all your CryptDrive's content. It won't contain the content of your pads, just the link to access them.";
+    out.settings_backupHint = "Backup or restore all your CryptDrive's content. It won't contain the content of your pads, just the keys to access them.";
     out.settings_backup = "Backup";
-    out.settings_backupHint2 = "Download all your pads. Pads will be downloaded in an readable format when available.";
-    out.settings_backup2 = "Download my CryptDrive";
     out.settings_restore = "Restore";
 
-    // XXX
+    out.settings_backupHint2 = "Download the current content of all your pads. Pads will be downloaded in an readable format if such a format is available.";
+    out.settings_backup2 = "Download my CryptDrive";
     out.settings_backup2Confirm = "This will download all the pads and files from your CryptDrive. If you want to continue, pick a name and press OK";
     out.settings_exportTitle = "Export your CryptDrive";
-    out.settings_exportDescription = "Please wait while we're downloading and decrypting your documents, this may take a few minutes. Closing the tab will interrupt the process.";
-    out.settings_exportWarning = "For better performances, it is recommended to leave this tab focused.";
-    out.settings_exportCancel = "Are you sure you want to cancel the export? You will have to start again from the beginning for your next export.";
+    out.settings_exportDescription = "Please wait while we're downloading and decrypting your documents. This may take a few minutes. Closing the tab will interrupt the process.";
+    out.settings_exportWarning = "For better performance, it is recommended to leave this tab focused.";
+    out.settings_exportCancel = "Are you sure you want to cancel the export? You will have to start again from the beginning next time.";
     out.settings_export_reading = "Reading your CryptDrive...";
-    out.settings_export_download = "Decrypting and downloading your documents...";
-    out.settings_export_compressing = "Compressing the data...";
-    out.settings_export_done = "Export is ready!";
+    out.settings_export_download = "Downloading and decrypting your documents...";
+    out.settings_export_compressing = "Compressing data...";
+    out.settings_export_done = "Your download is ready!";
     out.settings_exportError = "View errors";
     out.settings_exportErrorDescription = "We weren't able to add the following documents into the export:";
-    out.settings_exportErrorEmpty = "The document can't be exported (empty or invalid content).";
-    out.settings_exportErrorMissing = "The document is missing from our servers (expired or deleted by its owner)";
-    out.settings_exportErrorOther = "An error occured while trying to export the document: {0}";
+    out.settings_exportErrorEmpty = "This document can't be exported (empty or invalid content).";
+    out.settings_exportErrorMissing = "This document is missing from our servers (expired or deleted by its owner)";
+    out.settings_exportErrorOther = "An error occured while trying to export this document: {0}";
 
     out.settings_resetNewTitle = "Clean CryptDrive";
     out.settings_resetButton = "Remove";
@@ -726,8 +725,9 @@ define(function () {
 
     // index.html
 
-    out.home_product = "CryptPad is an open-source and private-by-design alternative to popular office tools and cloud services. All the content stored on CryptPad is encrypted before being sent, which means nobody can access your data unless you give them the keys.";
-    out.home_host = "This is a community-hosted instance of CryptPad. The source code is available <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">on Github</a>.";
+    out.home_product = "CryptPad is a private-by-design alternative to popular office tools and cloud services. All the content stored on CryptPad is encrypted before being sent, which means nobody can access your data unless you give them the keys (not even us).";
+    out.home_host = "This is an independent community instance of CryptPad. Its source code is available <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">on GitHub</a>.";
+    out.home_host_agpl = "CryptPad is distributed under the terms of the AGPL3 software license";
 
     //about.html
     out.about_intro = 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.';
@@ -814,13 +814,13 @@ define(function () {
     // features.html
 
     out.features = "Features";
-    out.features_title = "Features table";
+    out.features_title = "Feature comparison";
     out.features_feature = "Feature";
     out.features_anon = "Anonymous user";
     out.features_registered = "Registered user";
     out.features_premium = "Premium user";
     out.features_notes = "Notes";
-    // XXX
+
     out.features_f_apps = "Access to the main applications";
     out.features_f_core = "Common features for the applications";
     out.features_f_core_note = "Edit, Import & Export, History, Userlist, Chat";
@@ -831,9 +831,9 @@ define(function () {
     out.features_f_storage0 = "Limited storage time";
     out.features_f_storage0_note = "Created pads risk deletion after 3 months of inactivity";
 
-    out.features_f_anon = "All anonymous users features";
+    out.features_f_anon = "All anonymous user features";
     out.features_f_anon_note = "With better usability and more power over your pads";
-    out.features_f_cryptdrive1 = "Complete CryptDrive functionalities";
+    out.features_f_cryptdrive1 = "Complete CryptDrive functionality";
     out.features_f_cryptdrive1_note = "Folders, shared folders, templates, tags";
     out.features_f_devices = "Your pads on all your devices";
     out.features_f_devices_note = "Access your CryptDrive everywhere with your user account";
@@ -846,48 +846,16 @@ define(function () {
     out.features_f_register = "Register for free";
     out.features_f_register_note = "No email or personal information required";
 
-    out.features_f_reg = "All registered users features";
-    out.features_f_reg_note = "And help CryptPad's developement";
+    out.features_f_reg = "All registered user features";
+    out.features_f_reg_note = "And help CryptPad's development";
     out.features_f_storage2 = "Extra storage space";
     out.features_f_storage2_note = "From 5GB to 50GB depending on the selected plan";
     out.features_f_support = "Faster support";
     out.features_f_support_note = "Professional email support with the Team plan";
     out.features_f_supporter = "Become a privacy supporter";
-    out.features_f_supporter_note = "Help us show that privacy-enhancing softwares should be the norm";
-    out.features_f_project = "Keep the project alive";
-    out.features_f_project_note = "Help us keep this open-source project running by funding its hosting and developement";
+    out.features_f_supporter_note = "Help us show that privacy-enhancing software should be the norm";
     out.features_f_subscribe = "Subscribe to premium";
     out.features_f_subscribe_note = "You need to be logged in to CryptPad first";
-    // End XXX
-
-    out.features_f_pad = "Create/edit/view a pad";
-    out.features_f_pad_notes = "Rich Text, Code, Slide, Poll and Whiteboard applications";
-    out.features_f_history = "History";
-    out.features_f_history_notes = "View and restore any version of your pads";
-    out.features_f_todo = "Create a TODO-list";
-    out.features_f_drive = "Limited CryptDrive functionality";
-    out.features_f_drive_full = "Complete CryptDrive functionality";
-    out.features_f_export = "Export/Import";
-    out.features_f_export_notes = "For pads and CryptDrive";
-    out.features_f_viewFiles = "View files";
-    out.features_f_uploadFiles = "Upload files";
-    out.features_f_embedFiles = "Embed files";
-    out.features_f_embedFiles_notes = "Embed a file stored in CryptDrive in a pad";
-    out.features_f_multiple = "Use on multiple devices";
-    out.features_f_multiple_notes = "Easy way to access your pads from any device";
-    out.features_f_logoutEverywhere = "Log out from other devices";
-    out.features_f_logoutEverywhere_notes = ""; // Used in the French translation to explain
-    out.features_f_templates = "Use templates";
-    out.features_f_templates_notes = "Create templates and create new pads from your templates";
-    out.features_f_profile = "Create a profile";
-    out.features_f_profile_notes = "Personal page including an avatar and a description";
-    out.features_f_tags = "Use tags";
-    out.features_f_tags_notes = "Allow users to search by tags in CryptDrive";
-    out.features_f_contacts = "Contacts application";
-    out.features_f_contacts_notes = "Add contacts and chat with them in an encrypted session";
-    out.features_f_storage = "Storage";
-    out.features_f_storage_anon = "Pads are deleted after 3 months";
-    out.features_f_storage_registered = "Free: 50MB<br>Premium: 5GB/20GB/50GB";
 
     // faq.html
 

@@ -654,7 +654,8 @@ define([
                 h('div.col-12.col-sm-4.cp-index-block.cp-index-block-host', h('div', [
                     setHTML(h('span'), Msg.home_host),
                     h('img', {
-                        src: "/customize/images/agplv3.svg"
+                        src: "/customize/images/AGPL.png",
+                        title: Msg.home_host_agpl
                     })
                 ])),
                 h('div.col-12.col-sm-4.cp-index-block.cp-index-block-product', h('div', [
