@@ -2,7 +2,7 @@
 /*
     globals module
 */
-var domain = 'http://localhost:3000/';
+var _domain = 'http://localhost:3000/';
 
 // You can `kill -USR2` the node process and it will write out a heap dump.
 // If your system doesn't support dumping, comment this out and install with
@@ -15,7 +15,7 @@ var domain = 'http://localhost:3000/';
 
 // we prepend a space because every usage expects it
 // requiring admins to preserve it is unnecessarily confusing
-domain = ' ' + domain;
+var domain = ' ' + _domain;
 module.exports = {
 
     // the address you want to bind to, :: means all ipv4 and ipv6 addresses
@@ -137,34 +137,27 @@ module.exports = {
     /*  Limits, Donations, Subscriptions and Contact
      *
      *  By default, CryptPad limits every registered user to 50MB of storage. It also shows a
-     *  donate button which allows for making a donation to support CryptPad development.
+     *  subscribe button which allows them to upgrade to a paid account. We handle payment,
+     *  and keep 50% of the proceeds to fund ongoing development.
      *
-     *  You can either:
-     *    A: Leave it exactly as it is.
-     *    B: Hide the donate button.
-     *    C: Change the donate button to a subscribe button, people who subscribe will get more
-     *       storage on your instance and you get 50% of the revenue earned.
-     * 
-     *  CryptPad is developed by people who need to live and who deserve an equivilent life to
-     *  what they would get at a company which monitizes user data. However, we intend to have
-     *  a mutually positive relationship with every one of our users, including you. If you are
-     *  getting value from CryptPad, you should be giving equal value back.
-     * 
+     *  You can:
+     *  A: leave things as they are
+     *  B: disable accounts but display a donate button
+     *  C: hide any reference to paid accounts or donation
+     *
+     *  If you chose A then there's nothing to do.
+     *  If you chose B, set 'allowSubscriptions' to false.
+     *  If you chose C, set 'removeDonateButton' to true
+     */
+    allowSubscriptions: true,
+    removeDonateButton: false,
+
+    /*  Sales coming from your server will be identified by your domain
+     *
      *  If you are using CryptPad in a business context, please consider taking a support contract
      *  by contacting sales@cryptpad.fr
-     *
-     *  If you choose A then there's nothing to do.
-     *
-     *  If you choose B, set this variable to true and it will remove the donate button.
      */
-    removeDonateButton: false,
-    /*
-     *  If you choose C, set allowSubscriptions to true, then set myDomain to the domain which people
-     *  use to reach your CryptPad instance. Then contact sales@cryptpad.fr and tell us your domain.
-     *  We will tell you what is needed to get paid.
-     */
-    allowSubscriptions: false,
-    myDomain: 'i.did.not.read.my.config.myserver.tld',
+    myDomain: _domain,
 
     /*
      *  If you are using CryptPad internally and you want to increase the per-user storage limit,
