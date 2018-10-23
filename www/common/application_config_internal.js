@@ -124,7 +124,7 @@ define(function() {
     // SharedWorkers allow us to load only one websocket and one user drive for all the browser tabs,
     // making it much faster to open new tabs.
     // Warning: This is an experimental feature. It will be enabled by default once we're sure it's stable.
-    config.disableWorkers = true;
+    config.disableWorkers = false;
 
     // Shared folder are in a beta-test state. They are likely to disappear from a user's drive
     // spontaneously, resulting in the deletion of the entire folder's content.
