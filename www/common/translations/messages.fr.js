@@ -740,9 +740,9 @@ define(function () {
     out.main_poll = 'Sondages';
     out.main_drive = 'CryptDrive';
 
-    out.main_richTextPad = 'Pad de Texte Riche';
-    out.main_codePad = 'Pad de Code';
-    out.main_slidePad = 'Présentation Markdown';
+    out.main_richTextPad = 'Éditeur de texte';
+    out.main_codePad = 'Éditeur de code';
+    out.main_slidePad = 'Éditeur de Présentations';
     out.main_pollPad = 'Sondage ou Planning';
     out.main_whiteboardPad = 'Tableau blanc';
     out.main_kanbanPad = 'Kanban';
