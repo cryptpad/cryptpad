@@ -65,6 +65,32 @@ define([
         ctx.sem.take(function (give) {
             var g = give();
             if (ctx.stop) { return; }
+
+            var to;
+
+            var done = function () {
+                if (ctx.stop) { return; }
+                if (to) { clearTimeout(to); }
+                //setTimeout(g, 2000);
+                g();
+                w();
+                ctx.done++;
+                ctx.updateProgress('download', {max: ctx.max, current: ctx.done});
+            };
+
+            var error = function (err) {
+                if (ctx.stop) { return; }
+                done();
+                return void ctx.errors.push({
+                    error: err,
+                    data: fData
+                });
+            };
+
+            to = setTimeout(function () {
+                error('TIMEOUT');
+            }, 60000);
+
             setTimeout(function () {
                 if (ctx.stop) { return; }
                 var opts = {
@@ -72,23 +98,6 @@ define([
                 };
                 var rawName = fData.filename || fData.title || 'File';
                 console.log(rawName);
-
-                var done = function () {
-                    if (ctx.stop) { return; }
-                    //setTimeout(g, 2000);
-                    g();
-                    w();
-                    ctx.done++;
-                    ctx.updateProgress('download', {max: ctx.max, current: ctx.done});
-                };
-                var error = function (err) {
-                    if (ctx.stop) { return; }
-                    done();
-                    return void ctx.errors.push({
-                        error: err,
-                        data: fData
-                    });
-                };
 
                 // Pads (pad,code,slide,kanban,poll,...)
                 var todoPad = function () {

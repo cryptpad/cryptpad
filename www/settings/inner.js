@@ -1009,7 +1009,7 @@ define([
                         if (err) { return void cb(err); }
                         if (obj.error) { return void cb(obj.error); }
                         cb(null, obj.data);
-                    }, { timeout: 5 * 60 * 1000 });
+                    }, { timeout: 60000 });
                 };
 
                 var ui = createExportUI();
