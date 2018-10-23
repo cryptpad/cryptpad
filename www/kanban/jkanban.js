@@ -178,18 +178,21 @@
                             })
                             .on('dragend', function (el) {
                                 console.log("In dragend");
+                                el.classList.remove('is-moving');
                                 self.options.dragendEl(el);
                                 if (el !== null && typeof (el.dragendfn) === 'function')
                                     el.dragendfn(el);
                             })
                             .on('cancel', function (el, container, source) {
                                 console.log("In cancel");
+                                el.classList.remove('is-moving');
                                 // FIXME custom code
                                 var boardId = source.parentNode.dataset.id;
                                 self.options.dragcancelEl(el, boardId);
                             })
                             .on('drop', function(el, target, source, sibling) {
                                 self.enableAllBoards();
+                                el.classList.remove('is-moving');
 
                                 console.log("In drop");
 
@@ -335,7 +338,7 @@
                         });
                         if (board.color !== '' && board.color !== undefined) {
                             headerBoard._jscLinkedInstance = undefined;
-                            jscolorL = new jscolor(headerBoard,{valueElement:undefined});
+                            jscolorL = new jscolor(headerBoard,{showOnClick: false, valueElement:undefined});
                             jscolorL.fromString(board.color);
                             headerBoard._jscLinkedInstance = undefined;
                             headerBoard.classList.add("kanban-header-" + board.color);
@@ -380,7 +383,7 @@
                             //add click handler of item
                             __onclickHandler(nodeItemText);
                             if (itemKanban.color !== '' && itemKanban.color !== undefined) {
-	                            jscolorL = new jscolor(nodeItem,{valueElement:undefined});
+	                            jscolorL = new jscolor(nodeItem,{showOnClick: false, valueElement:undefined});
 	                            jscolorL.fromString(itemKanban.color);
 	                        }
                             __onColorClickHandler(nodeItem, "item");
@@ -517,6 +520,7 @@
                 function __onclickHandler(nodeItem, clickfn) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
+                        e.stopPropagation();
                         self.options.click(this);
                         if (typeof (this.clickfn) === 'function')
                             this.clickfn(this);
@@ -534,7 +538,11 @@
 
                 function __onColorClickHandler(nodeItem, type) {
                     nodeItem.addEventListener('click', function (e) {
+                        if (Array.prototype.slice.call(nodeItem.classList).indexOf('is-moving') !== -1) {
+                            return;
+                        }
                         e.preventDefault;
+                        e.stopPropagation();
                         self.options.colorClick(this, type);
                     });
                 }
