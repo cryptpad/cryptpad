@@ -180,7 +180,7 @@ define([
             if (JSONSortify(newContent) === JSONSortify(oldContent)) { return; }
             try {
                 evContentUpdate.fire(newContent, waitFor);
-                setTimeout(function () { oldContent = newContent; });
+                oldContent = newContent;
             } catch (e) {
                 console.log(e.stack);
                 UI.errorLoadingScreen(e.message);
