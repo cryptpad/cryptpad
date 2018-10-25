@@ -1,3 +1,50 @@
+# Koala release (v2.10.0)
+
+## Goals
+
+This release continued to improve our _shared folder_ functionality, addressed user concerns about data portability, and implemented various features for customization for different CryptPad instances.
+
+## Update notes
+
+* This release features updates to client-side dependencies. Run `bower update` to update the following:
+  * netflux-websocket
+  * chainpad-netflux
+* we've added a new field (`fileHost`) in `config.example.js`. It informs clientside code what domain they should use when fetching encrypted blobs.
+* Administrators can now do more to customize their CryptPad server, most notably via the ability to override specific translations. For example, the home page now features a short message which, by default, says that the server is a community-hosted instance of the CryptPad open-source project. On CryptPad.fr, we have replaced this text to talk about our organization. You can do the same by modifying files in `cryptpad/customize/translations/`, like so:
+
+```
+define(['/common/translations/messages.js'], function (Messages) {
+    // Replace the existing keys in your copied file here:
+    Messages.home_host = "CryptPad.fr is the official instance of the open-source CryptPad project. It is administered by XWiki SAS, the employee-owned French company which created and maintains the product.";
+
+    return Messages;
+});
+```
+
+Simply change the text assigned to `home_host` with a blurb about your own organization. We'll update the wiki soon with more info about customization.
+
+### Features
+
+* We've updated our features page to indicate what users get by purchasing a premium account. You can visit our accounts page directly from this list with the click of a button.
+* We've updated our home page to explain more about what CryptPad is.
+* As mentioned above, we've made all of our translation files overrideable.
+* We've made it easier to get your data out of CryptPad, by implementing a complete export of your CryptDrive's content as a zip file. This feature is available on the _settings page_.
+* Shared folders now support password protection.
+
+### Bugfixes
+
+* We fixed an issue which affected users of our Kanban application, which caused the color picker to pop up and get in the way at inopportune moments.
+* We found that when a CryptPad code editor tab finished loading in the background, when it was focused, the markdown preview pane would be blank. We've added a check to try to re-draw the pane in these circumstances.
+* We noticed that anonymous users who used our in-pad chat app could not be distinguished when they both chatted at once. We now add a string at the end of their name which makes it possible to distinguish them.
+* We've updated an internal library (cryptget) such that it correctly tears down realtime sessions after connecting and loading content from the server.
+  * We also added better error handling.
+* At some point in the last few releases we broke export of media-tags in rich text pads. They should be back to normal now.
+* Media-Tags also use the configurable value `fileHost` to construct absolute URLs, instead of using relative URLs to the server.
+* Tall dropdown menus no longer use scrollbars when they are displayed with enough space to display all options.
+* Chrome browser seemed to display our rich text editor correctly, except that no cursor was visible in empty documents. Users will now be able to see where their cursor is placed.
+* It was possible for disconnected users' browsers to enter a bad state after reconnecting. This resulted in that pad being inaccessible until they relaunched their browser. This bad state is now detected and mitigated.
+* Tags for documents in the CryptDrive were stopped functioning correctly as of the last few releases. This release fixes this bug.
+
 # Jerboa release (v2.9.0)
 
 ## Goals

@@ -59,7 +59,7 @@ define([
         return res;
     };
     module.main = function (userDoc, cb) {
-        var content = userDoc.content;
+        var content = userDoc.content || userDoc.table;
         var csv;
         try {
             csv = module.getCSV(content);
