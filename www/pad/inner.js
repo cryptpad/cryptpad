@@ -753,7 +753,7 @@ define([
                 // Used in ckeditor-config.js
                 Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
                 var backColor = AppConfig.appBackgroundColor;
-                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; }' +
+                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; overflow: auto;}' +
                     '.cke_body_width body {' +
                         'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
                         'box-sizing: border-box; overflow: auto;'+
