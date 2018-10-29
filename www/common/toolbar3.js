@@ -481,7 +481,7 @@ Messenger, MessengerUI, Messages) {
         });
         show();
         Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {
-            if (val === false || ($(window).height() < 800 && $(window).width() < 800)) {
+            if (val === false || ($(window).height() < 800 || $(window).width() < 800)) {
                 return void hide();
             }
             show();

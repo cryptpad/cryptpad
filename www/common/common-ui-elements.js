@@ -1122,14 +1122,30 @@ define([
             common.setAttribute(['hideHelp', type], true);
         };
 
-        $(closeButton).click(function () { toggleHelp(true); });
+        var showMore = function () {
+            $(text).addClass("cp-help-small");
+            var $dot = $('<span>').text('...').appendTo($(text).find('h1'));
+            $(text).click(function () {
+                $(text).removeClass('cp-help-small');
+                $(text).off('click');
+                $dot.remove();
+            });
+        };
+
+        $(closeButton).click(function (e) {
+            e.stopPropagation();
+            toggleHelp(true);
+        });
         $toolbarButton.click(function () {
             toggleHelp();
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
-            if ($(window).height() < 800 && $(window).width() < 800) { return void toggleHelp(true); }
-            if (val === true) { toggleHelp(true); }
+            //if ($(window).height() < 800 || $(window).width() < 800) { return void toggleHelp(true); }
+            if (val === true) { return void toggleHelp(true); }
+            if (!val && ($(window).height() < 800 || $(window).width() < 800)) {
+                return void showMore();
+            }
         });
 
         return {
