@@ -73,7 +73,8 @@ define([
         ],
         'code': [
             'cp-settings-code-indent-unit',
-            'cp-settings-code-indent-type'
+            'cp-settings-code-indent-type',
+            'cp-settings-code-font-size',
         ],
         'subscription': {
             onClick: function () {
@@ -1203,6 +1204,39 @@ define([
         common.getAttribute(['codemirror', key], function (e, val) {
             if (e) { return void console.error(e); }
             $checkbox[0].checked = !!val;
+        });
+        return $div;
+    };
+
+    create['code-font-size'] = function () {
+        var key = 'fontSize';
+
+        var $div = $('<div>', {
+            'class': 'cp-settings-code-font-size cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_codeFontSize).appendTo($div);
+
+        var $inputBlock = $('<div>', {
+            'class': 'cp-sidebarlayout-input-block',
+        }).appendTo($div);
+
+        var $input = $('<input>', {
+            'min': 8,
+            'max': 30,
+            type: 'number',
+        }).on('change', function () {
+            var val = parseInt($input.val());
+            if (typeof(val) !== 'number') { return; }
+            common.setAttribute(['codemirror', key], val);
+        }).appendTo($inputBlock);
+
+        common.getAttribute(['codemirror', key], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (typeof(val) !== 'number') {
+                $input.val(12);
+            } else {
+                $input.val(val);
+            }
         });
         return $div;
     };

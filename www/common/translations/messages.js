@@ -643,6 +643,7 @@ define(function () {
 
     out.settings_codeIndentation = 'Code editor indentation (spaces)';
     out.settings_codeUseTabs = "Indent using tabs (instead of spaces)";
+    out.settings_codeFontSize = "Font size in the code editor";
 
     out.settings_padWidth = "Editor's maximum width";
     out.settings_padWidthHint = "Rich text pads use by default the maximum available width on your screen and it can be difficult to read. You can reduce the editor's width here.";
