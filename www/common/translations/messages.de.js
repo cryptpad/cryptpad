@@ -459,7 +459,7 @@ define(function () {
     
     // File - Context menu
     out.fc_newfolder = "Neuer Ordner";
-    out.fc_rename = "Unbenennen";
+    out.fc_rename = "Umbenennen";
     out.fc_open = "Öffnen";
     out.fc_open_ro = "Öffnen (schreibgeschützt)";
     out.fc_delete = "Zum Papierkorb verschieben";
