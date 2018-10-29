@@ -22,6 +22,9 @@ define([
                     }
                     $(question).toggleClass('cp-active-faq');
                     $(answer).slideDown();
+                    var t = $(window).scrollTop();
+                    window.location.hash = hash;
+                    $(window).scrollTop(t);
                 });
                 questions.push(h('div.cp-faq-questions-items', [
                     Pages.setHTML(question, item.q),

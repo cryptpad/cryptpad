@@ -54,7 +54,9 @@ $(function () {
             } else if (/invite/.test(pathname)) {
                 require([ '/invite/main.js'], function () {});
             } else if (/faq/.test(pathname)) {
-                window.location.hash = window.location.hash;
+                var hash = window.location.hash;
+                window.location.hash = '';
+                window.location.hash = hash;
             } else {
                 require([ '/customize/main.js', ], function () {});
             }
