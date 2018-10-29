@@ -430,6 +430,24 @@ define([
 
         var documentBody = ifrWindow.document.body;
 
+        var observer = new MutationObserver(function (muts) {
+            muts.forEach(function (mut) {
+                if (mut.type === 'childList') {
+                    var $a;
+                    for (var i = 0; i < mut.addedNodes.length; i++) {
+                        $a = $(mut.addedNodes[i]);
+                        if ($a.is('p') && $a.find('> span:empty').length
+                            && $a.find('> br').length && $a.children().length === 2) {
+                            $a.find('> span').append($a.find('> br'));
+                        }
+                    }
+                }
+            });
+        });
+        observer.observe(documentBody, {
+            childList: true
+        });
+
         var inner = window.inner = documentBody;
 
         var cursor = module.cursor = Cursor(inner);
