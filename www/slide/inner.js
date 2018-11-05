@@ -457,6 +457,7 @@ define([
         mkMarkdownToolbar(framework, editor);
         mkHelpMenu(framework);
 
+        CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.configureTheme(common);
 
         framework.onContentUpdate(function (newContent) {

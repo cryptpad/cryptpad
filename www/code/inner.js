@@ -238,34 +238,6 @@ define([
         };
     };
 
-    var mkIndentSettings = function (editor, metadataMgr) {
-        var setIndentation = function (units, useTabs, fontSize) {
-            if (typeof(units) !== 'number') { return; }
-            editor.setOption('indentUnit', units);
-            editor.setOption('tabSize', units);
-            editor.setOption('indentWithTabs', useTabs);
-            $('.CodeMirror').css('font-size', fontSize+'px');
-        };
-
-        var indentKey = 'indentUnit';
-        var useTabsKey = 'indentWithTabs';
-        var fontKey = 'fontSize';
-        var updateIndentSettings = function () {
-            if (!metadataMgr) { return; }
-            var data = metadataMgr.getPrivateData().settings;
-            data = data.codemirror || {};
-            var indentUnit = data[indentKey];
-            var useTabs = data[useTabsKey];
-            var fontSize = data[fontKey];
-            setIndentation(
-                typeof(indentUnit) === 'number'? indentUnit : 2,
-                typeof(useTabs) === 'boolean'? useTabs : false,
-                typeof(fontSize) === 'number' ? fontSize : 12);
-        };
-        metadataMgr.onChangeLazy(updateIndentSettings);
-        updateIndentSettings();
-    };
-
     var mkFilePicker = function (framework, editor, evModeChange) {
         evModeChange.reg(function (mode) {
             if (MEDIA_TAG_MODES.indexOf(mode) !== -1) {
@@ -297,7 +269,7 @@ define([
         evModeChange.reg(previewPane.modeChange);
         evModeChange.reg(markdownTb.modeChange);
 
-        mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
+        CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
         mkFilePicker(framework, editor, evModeChange);
 

@@ -346,6 +346,34 @@ define([
             framework._.sfCommon.createFileManager(fmConfig);
         };
 
+        exp.mkIndentSettings = function (metadataMgr) {
+            var setIndentation = function (units, useTabs, fontSize) {
+                if (typeof(units) !== 'number') { return; }
+                editor.setOption('indentUnit', units);
+                editor.setOption('tabSize', units);
+                editor.setOption('indentWithTabs', useTabs);
+                $('.CodeMirror').css('font-size', fontSize+'px');
+            };
+
+            var indentKey = 'indentUnit';
+            var useTabsKey = 'indentWithTabs';
+            var fontKey = 'fontSize';
+            var updateIndentSettings = function () {
+                if (!metadataMgr) { return; }
+                var data = metadataMgr.getPrivateData().settings;
+                data = data.codemirror || {};
+                var indentUnit = data[indentKey];
+                var useTabs = data[useTabsKey];
+                var fontSize = data[fontKey];
+                setIndentation(
+                    typeof(indentUnit) === 'number'? indentUnit : 2,
+                    typeof(useTabs) === 'boolean'? useTabs : false,
+                    typeof(fontSize) === 'number' ? fontSize : 12);
+            };
+            metadataMgr.onChangeLazy(updateIndentSettings);
+            updateIndentSettings();
+        };
+
         return exp;
     };
 
