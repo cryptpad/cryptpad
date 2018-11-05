@@ -639,6 +639,7 @@ define(function () {
 
     out.settings_codeIndentation = "Indentation dans l'éditeur de code (nombre d'espaces)";
     out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
+    out.settings_codeFontSize = "Taille de la police dans l'éditeur de code (px)";
 
     out.settings_padWidth = "Largeur de l'éditeur de texte";
     out.settings_padWidthHint = "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.";
