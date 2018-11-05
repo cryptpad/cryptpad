@@ -861,12 +861,6 @@ Messenger, MessengerUI, Messages) {
             },
             content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
         });
-        $(window).keydown(function (e) {
-            if (e.which === 69 && (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey))) {
-                e.preventDefault();
-                Common.createNewPadModal();
-            }
-        });
         var dropdownConfig = {
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
