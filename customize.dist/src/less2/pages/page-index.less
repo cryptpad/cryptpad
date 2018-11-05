@@ -149,21 +149,23 @@
     .bs-callout:hover.cp-callout-more {
             transform: none !important;
     }
-    .bs-callout .fa {
-        display: flex;
-        align-items: center;
-        font-size: 2em;
-        padding-left: 0.57em;
-        width: 2em;
-        transition: width 0.1s;
-        color: #fff;
+    .bs-callout {
+        .fa, .cptools {
+            display: flex;
+            align-items: center;
+            font-size: 2.5em;
+            justify-content: center;
+            width: 1.3em;
+            transition: width 0.1s;
+            color: #fff;
+        }
     }
-    .cp-callout-pad .fa { background-color: @colortheme_pad-bg; }
-    .cp-callout-code .fa { background-color: @colortheme_code-bg; }
-    .cp-callout-slide .fa { background-color: @colortheme_slide-bg; }
-    .cp-callout-poll .fa { background-color: @colortheme_poll-bg; }
-    .cp-callout-kanban .fa { background-color: @colortheme_kanban-bg; }
-    .cp-callout-whiteboard .fa { background-color: @colortheme_whiteboard-bg; }
+    .cp-callout-pad .cptools { background-color: @colortheme_pad-bg; }
+    .cp-callout-code .cptools { background-color: @colortheme_code-bg; }
+    .cp-callout-slide .cptools { background-color: @colortheme_slide-bg; }
+    .cp-callout-poll .cptools { background-color: @colortheme_poll-bg; }
+    .cp-callout-kanban .cptools { background-color: @colortheme_kanban-bg; }
+    .cp-callout-whiteboard .cptools { background-color: @colortheme_whiteboard-bg; }
     .cp-callout-recent .fa { background-color: @colortheme_drive-bg; }
     .cp-hidden { display: none !important; }
     .cp-callout-more {
@@ -179,7 +181,7 @@
         div {
             .infopages_link();
             color: #fff;
-            .fa {
+            .fa, .cptools {
                 font-size: inherit;
                 padding: 0;
                 width: 1em;

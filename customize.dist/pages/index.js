@@ -4,8 +4,9 @@ define([
     '/common/hyperscript.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/common/outer/local-store.js',
     '/customize/pages.js'
-], function ($, Config, h, Msg, AppConfig, Pages) {
+], function ($, Config, h, Msg, AppConfig, LocalStore, Pages) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var isAvailableType = function (x) {
@@ -25,17 +26,19 @@ define([
                 [ 'poll', '/poll/', Msg.main_pollPad, 'poll' ],
                 [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'kanban' ],
                 [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'whiteboard' ],
-                [ 'recent', '/drive/', Msg.main_localPads, 'drive' ]
+                [ 'recent', '/drive/', LocalStore.isLoggedIn() ? Msg.main_yourCryptDrive : Msg.main_localPads, 'drive' ]
             ].filter(function (x) {
                 return isAvailableType(x[1]);
             })
             .map(function (x, i) {
                 var s = 'div.bs-callout.cp-callout-' + x[0];
                 if (i > 2) { s += '.cp-more.cp-hidden'; }
+                var icon = AppConfig.applicationsIcon[x[3]];
+                var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
                 return h('a', [
                     { href: x[1] },
                     h(s, [
-                        h('i.fa.' + AppConfig.applicationsIcon[x[3]]),
+                        h('i.' + font + '.' + icon),
                         h('div.pad-button-text', [ h('h4', x[2]) ])
                     ])
                 ]);

@@ -71,9 +71,10 @@ define([
     var SHARED_FOLDER_NAME = Messages.fm_sharedFolderName;
 
     // Icons
-    var faFolder = 'fa-folder';
-    var faFolderOpen = 'fa-folder-open';
-    var faSharedFolder = 'fa-folder-o';
+    var faFolder = 'cptools-folder';
+    var faFolderOpen = 'cptools-folder-open';
+    var faSharedFolder = 'cptools-shared-folder';
+    var faSharedFolderOpen = 'cptools-shared-folder-open';
     var faShared = 'fa-shhare-alt';
     var faReadOnly = 'fa-eye';
     var faRename = 'fa-pencil';
@@ -85,15 +86,15 @@ define([
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
     var $folderIcon = $('<span>', {
-        "class": faFolder + " fa cp-app-drive-icon-folder cp-app-drive-content-icon"
+        "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
     });
     //var $folderIcon = $('<img>', {src: "/customize/images/icons/folder.svg", "class": "folder icon"});
     var $folderEmptyIcon = $folderIcon.clone();
-    var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " fa cp-app-drive-icon-folder"});
+    var $folderOpenedIcon = $('<span>', {"class": faFolderOpen + " cptools cp-app-drive-icon-folder"});
     //var $folderOpenedIcon = $('<img>', {src: "/customize/images/icons/folderOpen.svg", "class": "folder icon"});
     var $folderOpenedEmptyIcon = $folderOpenedIcon.clone();
-    var $sharedFolderIcon = $('<span>', {"class": faSharedFolder + " fa cp-app-drive-icon-folder"});
-    //var $sharedFolderOpenedIcon = $sharedFolderIcon.clone();
+    var $sharedFolderIcon = $('<span>', {"class": faSharedFolder + " cptools cp-app-drive-icon-folder"});
+    var $sharedFolderOpenedIcon = $('<span>', {"class": faSharedFolderOpen + " cptools cp-app-drive-icon-folder"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
     var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
@@ -1889,7 +1890,7 @@ define([
                 options.push({
                     tag: 'a',
                     attributes: {'class': 'cp-app-drive-new-upload'},
-                    content: $('<div>').append(getIcon('file')).html() + Messages.uploadButton
+                    content: $('<div>').append(getIcon('fileupload')).html() + Messages.uploadButton
                 });
                 options.push({tag: 'hr'});
             }
@@ -2169,7 +2170,7 @@ define([
                 var $element2 = $('<li>', {
                     'class': 'cp-app-drive-new-upload cp-app-drive-element-row ' +
                              'cp-app-drive-element-grid'
-                }).prepend(getIcon('file')).appendTo($container);
+                }).prepend(getIcon('fileupload')).appendTo($container);
                 $element2.append($('<span>', {'class': 'cp-app-drive-new-name'})
                     .text(Messages.uploadButton));
             }
@@ -2868,7 +2869,7 @@ define([
                     // Fix name
                     key = manager.getSharedFolderData(fId).title;
                     // Fix icon
-                    $icon = $sharedFolderIcon;
+                    $icon = isCurrentFolder ? $sharedFolderOpenedIcon : $sharedFolderIcon;
                 } else {
                     var isEmpty = manager.isFolderEmpty(root[key]);
                     subfolder = manager.hasSubfolder(root[key]);

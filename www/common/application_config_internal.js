@@ -73,15 +73,16 @@ define(function() {
     // Customize the icon used for each application.
     // You can update the colors by making a copy of /customize.dist/src/less2/include/colortheme.less
     config.applicationsIcon = {
-        file: 'fa-file-text-o',
-        pad: 'fa-file-word-o',
-        code: 'fa-file-code-o',
-        slide: 'fa-file-powerpoint-o',
-        poll: 'fa-calendar',
-        whiteboard: 'fa-paint-brush',
-        todo: 'fa-tasks',
-        contacts: 'fa-users',
-        kanban: 'fa-columns',
+        file: 'cptools-file',
+        fileupload: 'cptools-file-upload',
+        pad: 'cptools-pad',
+        code: 'cptools-code',
+        slide: 'cptools-slide',
+        poll: 'cptools-poll',
+        whiteboard: 'cptools-whiteboard',
+        todo: 'cptools-todo',
+        contacts: 'cptools-contacts',
+        kanban: 'cptools-kanban',
         drive: 'fa-hdd-o',
     };
 

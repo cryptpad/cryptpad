@@ -83,7 +83,7 @@
                 max-width: none;
                 margin: 8px 0;
             }
-            .fa {
+            .fa, .cptools {
                 display: block;
                 margin: auto;
                 font-size: 64px;
@@ -134,6 +134,9 @@
     .fa {
         font-family: FontAwesome;
     }
+    .cptools {
+        font-family: cptools;
+    }
 
     ul {
         list-style: none;
@@ -169,13 +172,6 @@
         margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @colortheme_sidebar-left-fg;
-        }
-    }
-
-    span {
-        &.fa-folder, &.fa-folder-open {
-            //color: #FEDE8B;
-            //text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
     }
 
@@ -247,7 +243,7 @@
             margin: 0;
             margin-top: 15px;
             .cp-app-drive-tree-root {
-                &> .fa {
+                .fa, .cptools {
                     min-width: 30px;
                     cursor: pointer;
                 }
@@ -259,9 +255,6 @@
                     padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
-                    .fa {
-                        width: 25px;
-                    }
                 }
             }
         }
@@ -523,7 +516,7 @@
                     position: absolute;
                     top: 3px;
                     right: 3px;
-                    .fa {
+                    .fa, .cptools {
                         margin:0;
                         font-size: 18px;
                     }
@@ -531,7 +524,7 @@
                 .cp-app-drive-element-thumbnail {
                     max-width: 100px;
                     max-height: 100px;
-                    & ~ .fa {
+                    & ~ .fa, & ~ .cptools {
                         display: inline;
                         font-size: 17px;
                         position: absolute;
@@ -555,7 +548,7 @@
                 &:hover {
                     opacity: 0.7;
                 }
-                .fa {
+                .fa, .cptools {
                     cursor: pointer;
                     font-size: 90px;
                     margin-top: 5px;
@@ -594,7 +587,7 @@
                     cursor: default;
                     color: @drive_table-header-fg;
                     span {
-                        &:not(.fa) {
+                        &:not(.fa):not(.cptools) {
                             text-align: left;
                         }
                         &.sortasc, &.sortdesc {
@@ -621,8 +614,10 @@
                     white-space: nowrap;
                     box-sizing: border-box;
                     &.cp-app-drive-element-state {
-                        .fa:not(:last-child) {
-                            margin-right: 5px;
+                        .fa, .cptools {
+                            &:not(:last-child) {
+                                margin-right: 5px;
+                            }
                         }
                     }
                     &.cp-app-drive-content-icon, &.cp-app-drive-element-state, &.cp-icon {
@@ -661,7 +656,7 @@
         .cp-modal {
             display: flex;
             flex-flow: column;
-            li, li .fa {
+            li, li .fa, li .cptools {
                 cursor: pointer;
             }
             &> p {
@@ -699,7 +694,7 @@
                         display: flex;
                         align-items: center;
                         align-content: unset;
-                        .fa {
+                        .fa, .cptools {
                             font-size: 32px;
                             min-width: 50px;
                         }
@@ -748,7 +743,7 @@
             display: inline-block;
             margin: 0;
             padding: 0;
-            .fa {
+            .fa, .cptools {
                 margin: 0;
             }
             button {
@@ -764,7 +759,7 @@
                 .drawer {
                     display: none;
                 }
-                .fa, span {
+                .fa, .cptools, span {
                     font-size: @colortheme_app-font-size;
                 }
                 &:hover {
@@ -794,14 +789,14 @@
             }
             button {
                 padding: 0 10px;
-                .fa {
+                .fa, .cptools {
                     margin-right: 5px;
                 }
                 .cp-dropdown-button-title {
                     display: inline-flex;
                     height: @variables_bar-height;
                     align-items: center;
-                    span:not(.fa) {
+                    span:not(.fa):not(.cptools) {
                         line-height: 23px;
                     }
                 }
@@ -815,6 +810,9 @@
             }
             .fa, &.fa {
                 font-family: FontAwesome;
+            }
+            .cptools, &.cptools {
+                font-family: cptools;
             }
         }
         /* The container <div> - needed to position the dropdown content */

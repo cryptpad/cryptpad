@@ -765,8 +765,11 @@ define([
         var $icon = $defaultIcon.clone();
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
+            var icon = AppConfig.applicationsIcon[type];
+            var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
+            if (type === 'fileupload') { type = 'file'; }
             var appClass = ' cp-icon cp-icon-color-'+type;
-            $icon = $('<span>', {'class': 'fa ' + AppConfig.applicationsIcon[type] + appClass});
+            $icon = $('<span>', {'class': font + ' ' + icon + appClass});
         }
 
         return $icon;

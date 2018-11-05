@@ -38,7 +38,8 @@ $(function () {
     }).nThen(function () {
         require([
             'less!/customize/src/less2/pages/page-' + pageName + '.less',
-            'css!/bower_components/bootstrap/dist/css/bootstrap.min.css'
+            'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
+            'css!/customize/fonts/cptools/style.css'
         ], function () {
             var $main = $(infoPage());
 
