@@ -424,6 +424,24 @@ define([
         logoutHandlers.push(h);
     };
 
+    var shortcuts = [];
+    funcs.addShortcuts = function (w) {
+        w = w || window;
+        if (shortcuts.indexOf(w) !== -1) { return; }
+        shortcuts.push(w);
+        $(w).keydown(function (e) {
+            // Ctrl || Meta (mac)
+            if (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey)) {
+                // Ctrl+E: New pad modal
+                if (e.which === 69) {
+                    e.preventDefault();
+                    return void funcs.createNewPadModal();
+                }
+                // Ctrl+S: prevent default (save)
+                if (e.which === 83) { return void e.preventDefault(); }
+            }
+        });
+    };
 
     Object.freeze(funcs);
     return { create: function (cb) {
@@ -500,6 +518,8 @@ define([
             });
 
             ctx.metadataMgr.onReady(waitFor());
+
+            funcs.addShortcuts();
         }).nThen(function () {
             try {
                 var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;

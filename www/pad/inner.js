@@ -428,6 +428,8 @@ define([
 
         var ifrWindow = $html.find('iframe')[0].contentWindow;
 
+        framework._.sfCommon.addShortcuts(ifrWindow);
+
         var documentBody = ifrWindow.document.body;
 
         var observer = new MutationObserver(function (muts) {

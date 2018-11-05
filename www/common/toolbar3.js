@@ -863,6 +863,7 @@ Messenger, MessengerUI, Messages) {
         });
         $(window).keydown(function (e) {
             if (e.which === 69 && (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey))) {
+                e.preventDefault();
                 Common.createNewPadModal();
             }
         });
