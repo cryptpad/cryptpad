@@ -1,8 +1,9 @@
 @import (reference) '../../customize/src/less2/include/tools.less';
 @import (reference) '../../customize/src/less2/include/avatar.less';
 @import (reference) "../../customize/src/less2/include/framework.less";
+@import (reference) "../../customize/src/less2/include/markdown.less";
 
-&.cp-app-poll { 
+&.cp-app-poll {
 
     .framework_main(
         @bg-color: @colortheme_poll-bg,
@@ -212,27 +213,28 @@
 
     // from cryptpad.less
 
-    table {
-        border-collapse: collapse;
-        border-spacing: 0;
-        margin: 20px;
-    }
-    tbody {
-        * {
-            box-sizing: border-box;
+    #cp-app-poll-table-container {
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
         }
-        tr {
-            text-align: center;
-        }
+        tbody {
+            * {
+                box-sizing: border-box;
+            }
+            tr {
+                text-align: center;
+            }
 
-        td {
-            .tools_unselectable();
-            border-right: 1px solid @poll-border-color;
-            padding: 12px;
-            padding-top: 0px;
-            padding-bottom: 0px;
-            &:last-child {
-                border-right: none;
+            td {
+                .tools_unselectable();
+                border-right: 1px solid @poll-border-color;
+                padding: 12px;
+                padding-top: 0px;
+                padding-bottom: 0px;
+                &:last-child {
+                    border-right: none;
+                }
             }
         }
     }
@@ -256,303 +258,305 @@
         padding: 0px;
         margin: 0px;
 
-        .cp-app-poll-table-scrolled {
-            tr td:last-child {
-                right: 0;
-            }
-            tr td:nth-last-child(2) {
-                right: 100px;
-            }
-        }
-
-        table {
-            border-collapse: collapse;
-            width: ~"calc(100% - 1px)";
-            .cp-app-poll-table-editing {
-                background-color: @poll-editing;
-            }
-            .cp-app-poll-table-uncommitted {
-                .cp-app-poll-table-cover {
-                    background-color: @poll-uncommitted-cell !important;
+        #cp-app-poll-table-container {
+            .cp-app-poll-table-scrolled {
+                tr td:last-child {
+                    right: 0;
                 }
-                div.cp-app-poll-table-text-cell {
+                tr td:nth-last-child(2) {
+                    right: 100px;
+                }
+            }
+
+            table {
+                border-collapse: collapse;
+                width: ~"calc(100% - 1px)";
+                .cp-app-poll-table-editing {
+                    background-color: @poll-editing;
+                }
+                .cp-app-poll-table-uncommitted {
+                    .cp-app-poll-table-cover {
+                        background-color: @poll-uncommitted-cell !important;
+                    }
+                    div.cp-app-poll-table-text-cell {
+                        background-color: @poll-uncommitted-bg !important;
+                        color: @poll-uncommitted-text !important;
+                    }
+                    text-align: center;
                     background-color: @poll-uncommitted-bg !important;
                     color: @poll-uncommitted-text !important;
                 }
-                text-align: center;
-                background-color: @poll-uncommitted-bg !important;
-                color: @poll-uncommitted-text !important;
-            }
-            tr {
-                height: 28px;
-                /* Options */
-                td:first-child {
-                    position:absolute;
-                    left: 0;
-                    top: auto;
-                    width: 25%;
-                }
-                /* Uncommitted column */
-                td:nth-last-child(2) {
-                    position: absolute;
-                    top: auto;
-                    width: 100px;
-                    min-width: unset !important;
-                    height: auto !important;
-                }
-                /* Results */
-                td:last-child {
-                    color: @poll-th-fg;
-                    position:absolute;
-                    top: auto;
-                    margin-left: 100px;
-                    width: 100px;
-                    min-width: unset !important;
-                    background-color: @poll-th-bg;
-                }
-                td {
-                    padding: 0px;
-                    margin: 0px;
-
-                    div.cp-app-poll-table-text-cell {
-                        height: 28px;
+                tr {
+                    height: 28px;
+                    /* Options */
+                    td:first-child {
+                        position:absolute;
+                        left: 0;
+                        top: auto;
+                        width: 25%;
+                    }
+                    /* Uncommitted column */
+                    td:nth-last-child(2) {
+                        position: absolute;
+                        top: auto;
+                        width: 100px;
+                        min-width: unset !important;
+                        height: auto !important;
+                    }
+                    /* Results */
+                    td:last-child {
+                        color: @poll-th-fg;
+                        position:absolute;
+                        top: auto;
+                        margin-left: 100px;
+                        width: 100px;
+                        min-width: unset !important;
+                        background-color: @poll-th-bg;
+                    }
+                    td {
                         padding: 0px;
                         margin: 0px;
-                        display: flex;
-                        align-items: center;
-                        .cp-app-poll-table-remove {
-                            order: 1;
-                        }
-                        .cp-app-poll-table-edit {
-                            order: 3;
-                        }
-                        input {
-                            min-width: 0;
-                            order: 2;
-                            flex: 1;
-                            height: 24px;
-                            border: 0px;
-                            margin: 2px;
-                            &[disabled] {
-                                background-color: transparent;
-                                color: @poll-td-fg;
-                                //font-weight: bold;
+
+                        div.cp-app-poll-table-text-cell {
+                            height: 28px;
+                            padding: 0px;
+                            margin: 0px;
+                            display: flex;
+                            align-items: center;
+                            .cp-app-poll-table-remove {
+                                order: 1;
+                            }
+                            .cp-app-poll-table-edit {
+                                order: 3;
+                            }
+                            input {
+                                min-width: 0;
+                                order: 2;
+                                flex: 1;
+                                height: 24px;
+                                border: 0px;
+                                margin: 2px;
+                                &[disabled] {
+                                    background-color: transparent;
+                                    color: @poll-td-fg;
+                                    //font-weight: bold;
+                                }
                             }
                         }
-                    }
 
-                    &.cp-app-poll-table-checkbox-cell {
-                        margin: 0px;
-                        padding: 0px;
-                        height: 100%;
-                        min-width: 100px;
-
-                        div.cp-app-poll-table-checkbox-contain {
-                            display: inline-block;
+                        &.cp-app-poll-table-checkbox-cell {
+                            margin: 0px;
+                            padding: 0px;
                             height: 100%;
-                            width: 100%;
-                            position: relative;
+                            min-width: 100px;
 
-                            label {
-                                background-color: transparent;
-                                display: block;
-                                position: absolute;
-                                top: 0px;
-                                left: 0px;
+                            div.cp-app-poll-table-checkbox-contain {
+                                display: inline-block;
                                 height: 100%;
                                 width: 100%;
-                            }
+                                position: relative;
 
-                            input {
-                                &[type="number"] {
-                                    &:not(.editable) {
-                                        display: none;
+                                label {
+                                    background-color: transparent;
+                                    display: block;
+                                    position: absolute;
+                                    top: 0px;
+                                    left: 0px;
+                                    height: 100%;
+                                    width: 100%;
+                                }
 
-                                        ~ .cp-app-poll-table-cover {
-                                            line-height: 28px;
-                                            display: block;
-                                            font-weight: bold;
-                                            height: 100%;
-                                            display: block;
+                                input {
+                                    &[type="number"] {
+                                        &:not(.editable) {
+                                            display: none;
 
-                                            color: @poll-cover-color;
-
-                                            &:after {
+                                            ~ .cp-app-poll-table-cover {
+                                                line-height: 28px;
+                                                display: block;
+                                                font-weight: bold;
                                                 height: 100%;
-                                            }
+                                                display: block;
 
+                                                color: @poll-cover-color;
+
+                                                &:after {
+                                                    height: 100%;
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
-                            }
 
-                            input[type="number"][value="0"] {
-                                ~ .cp-app-poll-table-cover {
-                                    background-color: @colortheme_cp-red;
-                                    &:after { content: "✖"; }
+                                input[type="number"][value="0"] {
+                                    ~ .cp-app-poll-table-cover {
+                                        background-color: @colortheme_cp-red;
+                                        &:after { content: "✖"; }
+                                    }
                                 }
-                            }
-                            input[type="number"][value="1"] {
-                                ~ .cp-app-poll-table-cover {
-                                    background-color: @colortheme_cp-green;
-                                    &:after { content: "✔"; }
+                                input[type="number"][value="1"] {
+                                    ~ .cp-app-poll-table-cover {
+                                        background-color: @colortheme_cp-green;
+                                        &:after { content: "✔"; }
+                                    }
                                 }
-                            }
-                            input[type="number"][value="2"] {
-                                ~ .cp-app-poll-table-cover {
-                                    background-color: @poll-option-yellow;
-                                    &:after { content: "~"; }
+                                input[type="number"][value="2"] {
+                                    ~ .cp-app-poll-table-cover {
+                                        background-color: @poll-option-yellow;
+                                        &:after { content: "~"; }
+                                    }
                                 }
-                            }
-                            input[type="number"][value="3"] {
-                                ~ .cp-app-poll-table-cover {
-                                    background-color: @poll-option-gray;
-                                    &:after { content: "?"; }
+                                input[type="number"][value="3"] {
+                                    ~ .cp-app-poll-table-cover {
+                                        background-color: @poll-option-gray;
+                                        &:after { content: "?"; }
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
 
-            input {
-                &[type="text"] {
-                    height: auto;
-                    width: 80%;
+                input {
+                    &[type="text"] {
+                        height: auto;
+                        width: 80%;
+                    }
                 }
-            }
-            span {
-                .tools_unselectable();
-            }
-            thead {
-                height: 52px;
-                tr {
+                span {
+                    .tools_unselectable();
+                }
+                thead {
                     height: 52px;
-                }
-                td {
-                    padding: 0px 5px;
-                    background: @poll-th-bg;
-                    color: @poll-th-fg;
-                    &:not(:last-child) {
-                        border-right: 1px solid rgba(255,255,255,0.2);
-                    }
-                    &:last-child {
+                    tr {
                         height: 52px;
-                        line-height: 52px;
-                        text-align: center;
                     }
-                    &:nth-last-child(2) {
-                        border-right: 1px solid @poll-border-color;
-                    }
-                    &.cp-app-poll-table-own {
-                        background: @poll-th-user-bg;
-                        .cp-app-poll-table-lock {
-                            cursor: default;
+                    td {
+                        padding: 0px 5px;
+                        background: @poll-th-bg;
+                        color: @poll-th-fg;
+                        &:not(:last-child) {
+                            border-right: 1px solid rgba(255,255,255,0.2);
                         }
-                    }
-                    .cp-app-poll-table-buttons {
-                        display: flex;
-                        justify-content: space-between;
-                        flex-wrap: wrap;
-                        align-items: center;
-                        span {
-                            cursor: pointer;
-                            width: 1em;
+                        &:last-child {
+                            height: 52px;
+                            line-height: 52px;
                             text-align: center;
                         }
-                        .cp-app-poll-table-bookmark {
-                            color: darken(@poll-th-fg, 30%);
-                            &.cp-app-poll-table-bookmark-full {
-                                color: @poll-th-fg;
+                        &:nth-last-child(2) {
+                            border-right: 1px solid @poll-border-color;
+                        }
+                        &.cp-app-poll-table-own {
+                            background: @poll-th-user-bg;
+                            .cp-app-poll-table-lock {
+                                cursor: default;
+                            }
+                        }
+                        .cp-app-poll-table-buttons {
+                            display: flex;
+                            justify-content: space-between;
+                            flex-wrap: wrap;
+                            align-items: center;
+                            span {
+                                cursor: pointer;
+                                width: 1em;
+                                text-align: center;
+                            }
+                            .cp-app-poll-table-bookmark {
+                                color: darken(@poll-th-fg, 30%);
+                                &.cp-app-poll-table-bookmark-full {
+                                    color: @poll-th-fg;
+                                }
+                            }
+                        }
+                        input {
+                            &[type="text"] {
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                break-after: always;
+                                width: ~"calc(100% - 2px)"; // borders...
+                                box-sizing: border-box;
+                                padding: 1px 5px;
+                                margin: 1px;
+                                &[disabled] {
+                                    color: @poll-th-fg;
+                                }
                             }
                         }
                     }
-                    input {
-                        &[type="text"] {
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                            break-after: always;
-                            width: ~"calc(100% - 2px)"; // borders...
-                            box-sizing: border-box;
-                            padding: 1px 5px;
-                            margin: 1px;
-                            &[disabled] {
-                                color: @poll-th-fg;
-                            }
-                        }
-                    }
                 }
-            }
 
-            tbody {
-                td:first-child {
-                    background: @poll-td-bg;
-                    color: @poll-td-fg;
-                }
-                td.cp-app-poll-table-winner {
-                    background-color: @poll-winner;
-                    &:last-child { font-weight: bold; }
-                }
-                .cp-app-poll-table-text-cell {
-                    input[type="text"] {
-                        width: ~"calc(100% - 50px)";
-                        padding: 0 0.5em;
+                tbody {
+                    td:first-child {
+                        background: @poll-td-bg;
+                        color: @poll-td-fg;
                     }
-                    .cp-app-poll-table-edit {
-                        float:right;
-                        margin: 2px 10px 0 0;
+                    td.cp-app-poll-table-winner {
+                        background-color: @poll-winner;
+                        &:last-child { font-weight: bold; }
                     }
-                    .cp-app-poll-table-remove {
-                        float: left;
-                        margin: 2px 0 0 10px;
-                    }
-                }
-                tr:not(:first-child) {
-                    td:not(:first-child) {
-                        label {
-                            border-top: 1px solid @poll-border-color;
+                    .cp-app-poll-table-text-cell {
+                        input[type="text"] {
+                            width: ~"calc(100% - 50px)";
+                            padding: 0 0.5em;
                         }
-                    }
-                }
-                tr:not(:last-child) {
-                    &:hover {
-                        td:first-child {
-                            background-color: @poll-highlighted;
-                        }
-                    }
-                }
-            }
-            .cp-app-poll-table-edit {
-                //color: @poll-cover-color;
-                cursor: pointer;
-                float: left;
-                margin-left: 10px;
-            }
-
-            thead {
-                tr {
-                    th {
-                        input[type="text"][disabled] {
-                            background-color: transparent;
-                            color: @poll-fore;
-                            font-weight: bold;
+                        .cp-app-poll-table-edit {
+                            float:right;
+                            margin: 2px 10px 0 0;
                         }
                         .cp-app-poll-table-remove {
-                            cursor: pointer;
-                            font-size: 20px;
+                            float: left;
+                            margin: 2px 0 0 10px;
+                        }
+                    }
+                    tr:not(:first-child) {
+                        td:not(:first-child) {
+                            label {
+                                border-top: 1px solid @poll-border-color;
+                            }
+                        }
+                    }
+                    tr:not(:last-child) {
+                        &:hover {
+                            td:first-child {
+                                background-color: @poll-highlighted;
+                            }
                         }
                     }
                 }
-            }
-            tbody {
-                tr {
-                    td {
+                .cp-app-poll-table-edit {
+                    //color: @poll-cover-color;
+                    cursor: pointer;
+                    float: left;
+                    margin-left: 10px;
+                }
 
+                thead {
+                    tr {
+                        th {
+                            input[type="text"][disabled] {
+                                background-color: transparent;
+                                color: @poll-fore;
+                                font-weight: bold;
+                            }
+                            .cp-app-poll-table-remove {
+                                cursor: pointer;
+                                font-size: 20px;
+                            }
+                        }
                     }
                 }
-            }
-            tfoot {
-                display: none;
+                tbody {
+                    tr {
+                        td {
+
+                        }
+                    }
+                }
+                tfoot {
+                    display: none;
+                }
             }
         }
         #cp-app-poll-nocomments {
