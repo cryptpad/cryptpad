@@ -18,9 +18,6 @@ define([
                 window.location = '/drive/';
                 return;
             }
-
-            $main.find('a[href="/drive/"] div.pad-button-text h4')
-                .text(Messages.main_yourCryptDrive);
         }
         $(window).click(function () {
             $('.cp-dropdown-content').hide();

@@ -832,7 +832,9 @@ define([
                 h('p', [
                     Messages.settings_exportDescription,
                     h('br'),
-                    Messages.settings_exportWarning
+                    Messages.settings_exportFailed,
+                    h('br'),
+                    h('strong', Messages.settings_exportWarning),
                 ]),
                 progress,
                 actions,

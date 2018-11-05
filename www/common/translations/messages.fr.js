@@ -564,7 +564,8 @@ define(function () {
     out.settings_backup2Confirm = "Vous allez télécharger tous les pads de votre CryptDrive. Si vous souhaitez continuer, choisissez un nom et appuyez sur OK.";
     out.settings_exportTitle = "Téléchargement de votre CryptDrive";
     out.settings_exportDescription = "Veuillez patienter pendant que nous téléchargeons et déchiffrons vos documents. Cette opération peut prendre plusieurs minutes. Fermer l'onglet du navigateur interrompra le processus.";
-    out.settings_exportWarning = "Pour de meilleures performances, il est recommandé de ne pas changer d'onglet pendant le téléchargement.";
+    out.settings_exportFailed = "Si un pad nécessite plus d'une minute pour être traité, il ne sera pas inclus dans l'archive. Une liste des pads n'ayant pas été exportés sera disponible à la fin.";
+    out.settings_exportWarning = "Note: cet outil est encore un prototype et peut rencontrer des difficultés lors de l'export. Pour de meilleures performances, il est recommandé de ne pas changer d'onglet pendant le téléchargement.";
     out.settings_exportCancel = "Êtes-vous sûr de vouloir annuler ce téléchargement ? Vous devrez recommencer du début la prochaine fois.";
     out.settings_export_reading = "Lecture de votre CryptDrive...";
     out.settings_export_download = "Téléchargement et déchiffrement des documents...";
