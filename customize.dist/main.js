@@ -1,8 +1,7 @@
 define([
     'jquery',
     '/common/outer/local-store.js',
-    '/customize/messages.js',
-], function ($, LocalStore, Messages) {
+], function ($, LocalStore) {
 
     $(function () {
         var $main = $('#mainBlock');
