@@ -97,7 +97,7 @@ define([
     var $sharedFolderOpenedIcon = $('<span>', {"class": faSharedFolderOpen + " cptools cp-app-drive-icon-folder"});
     //var $upIcon = $('<span>', {"class": "fa fa-arrow-circle-up"});
     var $unsortedIcon = $('<span>', {"class": "fa fa-files-o"});
-    var $templateIcon = $('<span>', {"class": "fa fa-cubes"});
+    var $templateIcon = $('<span>', {"class": "cptools cptools-template"});
     var $recentIcon = $('<span>', {"class": "fa fa-clock-o"});
     var $trashIcon = $('<span>', {"class": "fa " + faTrash});
     var $trashEmptyIcon = $('<span>', {"class": "fa fa-trash-o"});
@@ -2893,7 +2893,7 @@ define([
             var $icon = manager.isFolderEmpty(files[TRASH]) ? $trashEmptyIcon.clone() : $trashIcon.clone();
             var isOpened = manager.comparePath(path, currentPath);
             var $trashElement = createTreeElement(TRASH_NAME, $icon, [TRASH], false, true, false, isOpened);
-            $trashElement.addClass('root');
+            $trashElement.addClass('cp-app-drive-tree-root');
             $trashElement.find('>.cp-app-drive-element-row')
                          .contextmenu(openContextMenu('trashtree'));
             var $trashList = $('<ul>', { 'class': 'cp-app-drive-tree-category' })
