@@ -136,6 +136,7 @@ define(function () {
     out.clickToEdit = "Zum Bearbeiten klicken";
     out.saveTitle = "Bitte gebe den Titel ein (Enter)";
 
+    out.forgetButton = "Entfernen";
     out.forgetButtonTitle = 'Entferne dieses Dokument von deiner Startseitenliste';
     out.forgetButtonTitle = 'Dieses Dokument zum Papierkorb verschieben';
     out.forgetPrompt = 'Mit dem Klick auf OK wird das Dokument aus deinem lokalen Speicher gelöscht. Fortfahren?';
@@ -145,6 +146,8 @@ define(function () {
     out.shareSuccess = 'Die URL wurde in die Zwischenablage kopiert';
 
     out.userListButton = "Benutzerliste";
+       
+    out.chatButton = "Chat";
 
     out.userAccountButton = "Dein Konto";
 
@@ -232,6 +235,7 @@ define(function () {
     out.notifyRenamed = "{0} ist jetzt als {1} bekannt";
     out.notifyLeft = "{0} hat die Mitarbeits-Sitzung verlassen";
 
+    out.ok = 'OK';
     out.okButton = 'OK (enter)';
 
     out.cancel = "Abbrechen";
@@ -246,11 +250,8 @@ define(function () {
     out.historyButton = "Den Dokumentverlauf anzeigen";
     out.history_next = "früher";
     out.history_prev = "Zur früheren Version wechseln";
-    out.history_goTo = "Zur genannten Version wechseln";
-    out.history_loadMore = "Weiteren Verlauf laden"; 
-    out.history_close = "Zurück";
+    out.history_loadMore = "Weiteren Verlauf laden";
     out.history_closeTitle = "Verlauf schliessen";
-    out.history_restore = "wiederherstellen";
     out.history_restoreTitle = "Die gewählte Version des Dokuments wiederherstellen";
     out.history_restorePrompt = "Bist du sicher, dass du die aktuelle Version mit der angezeigten ersetzen möchtest?";
     out.history_restoreDone = "Version wiederhergestellt";
@@ -261,6 +262,11 @@ define(function () {
     out.pad_mediatagTitle = "Media-Tag Einstellungen";
     out.pad_mediatagWidth = "Breite (px)";
     out.pad_mediatagHeight = "Höhe (px)";
+    out.pad_mediatagRatio = "proportional";
+    out.pad_mediatagBorder = "Randdicke (px)";
+    out.pad_mediatagPreview = "Vorschau";
+    out.pad_mediatagImport = 'In deinem CryptDrive speichern';
+    out.pad_mediatagOptions = 'Bildeigenschaften';
 
     // Kanban
     out.kanban_newBoard = "Neues Kanban-Bord";
@@ -371,6 +377,8 @@ define(function () {
     out.contacts_remove = 'Diesen Kontakt entfernen';
     out.contacts_confirmRemove = 'Bist du sicher, dass du <em>{0}</em> von der Kontaktliste entfernen möchtest?';
     out.contacts_typeHere = "Gebe eine Nachricht ein...";
+    out.contacts_warning = "Alles, was du hier eingibst, wird bleiben und ersichtlich zu allen aktuellen und zukünftigen Benutzern. Sei sorgfältig mit sensible Information!";
+    out.contacts_padTitle = "Chat";
 
     out.contacts_info1 = "Diese ist deine Kontaktliste. Ab hier, kannst du:";
     out.contacts_info2 = "Auf den Avatar eines Kontakts klicken, um mit diesem Benutzer zu chatten";
@@ -382,6 +390,12 @@ define(function () {
     out.contacts_removeHistoryServerError = 'Es gab einen Fehler bei dem Löschen des Chatverlaufs. Versuche es später noch einmal';
     out.contacts_fetchHistory = "Den früheren Verlauf laden";
 
+    out.contacts_friends = "Kontakte";
+    out.contacts_rooms = "Chaträume";
+    out.contacts_leaveRoom = "Dieses Chatraum verlassen";
+       
+    out.contacts_online = "Ein anderer Benutzer dieses Raumes ist online";
+
     // File manager
     out.fm_rootName = "Dokumente";
     out.fm_trashName = "Papierkorb";
@@ -392,6 +406,7 @@ define(function () {
     out.fm_recentPadsName = "Zuletzt geöffnete Dokumente";
     out.fm_ownedPadsName = "Eigene";
     out.fm_tagsName = "Tags"; 
+    out.fm_sharedFolderName = "Verteilter Ordner";
     out.fm_searchPlaceholder = "Suchen...";
     out.fm_newButton = "Neu";
     out.fm_newButtonTitle = "Ein neues Dokument oder Ordner erstellen, oder eine Datei in den aktuellen Ordner importieren";
@@ -412,6 +427,7 @@ define(function () {
     out.fm_noname = "Dokument ohne Titel";
     out.fm_emptyTrashDialog = "Soll der Papierkorb wirklich gelöscht werden?";
     out.fm_removeSeveralPermanentlyDialog = "Bist du sicher, dass du diese {0} Elemente dauerhaft aus deinem CryptDrive entfernen willst?";
+    out.fm_removePermanentlyNote = "Wenn Sie fortfahren, werden eigene Pads von dem Server entfernt.";
     out.fm_removePermanentlyDialog = "Bist du sicher, dass du dieses Element dauerhaft aus deinem CryptDrive entfernen willst?";
     out.fm_removeSeveralDialog = "Bist Du sicher, dasss du diese {0} Elemente aus dem Papierkorb entfernen willst?";
     out.fm_removeDialog = "Bist du sicher, dass du {0} zum Papierkorb zu verschieben?";
@@ -441,6 +457,7 @@ define(function () {
                              "Wir haben fortgeschrittene Aktionen aus dem anonymen CryptDrive entfernt, weil wir klar machen wollen, dass es kein sicherer Platz ist, Dinge zu lagern." + 
                              'Du kannst <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">lesen</a>, weshalb wir das machen und weshalb du wirklich ' +
                              '<a href="/register/">registrieren</a> oder <a href="/login/">einloggen</a> solltest.';
+    out.fm_info_sharedFolder = "Dieser Ordner ist verteilt. Da du aber nicht eingeloggt bist, hast du nur einen schreibgeschützen Zugang.<br>";
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'Wie soll diese Datei heissen?';
     out.fm_error_cantPin = "Interner Serverfehler. Bitte lade die Seite neu und versuche es wieder.";
@@ -456,16 +473,19 @@ define(function () {
     out.fm_deletedPads = "Dieses Dokument existiert nicht mehr auf dem Server, es wurde von Deinem CryptDrive gelöscht: {0}";
     out.fm_tags_name = "Tag Bezeichnung";
     out.fm_tags_used = "Anzahl";
+    out.fm_restoreDrive = "Dein Drive wird zu einem früheren Zustand zurückgebracht. Damit es funktioniert, solltest du keine Veränderungen zum Drive während dieses Vorgangs machen.";
+    out.fm_moveNestedSF = "Du kannst keinen verteilten Ordner in einem anderen verteilten Ordner stellen. Der Ordner {0} wurde nicht verschoben.";
     
     // File - Context menu
     out.fc_newfolder = "Neuer Ordner";
-    out.fc_rename = "Unbenennen";
+    out.fc_rename = "Umbenennen";
     out.fc_open = "Öffnen";
     out.fc_open_ro = "Öffnen (schreibgeschützt)";
     out.fc_delete = "Zum Papierkorb verschieben";
     out.fc_delete_owned = "Vom Server löschen";
     out.fc_restore = "Restaurieren";
     out.fc_remove = "Von deinem CryptDrive entfernen";
+    out.fc_remove_sharedfolder = "Entfernen";
     out.fc_empty = "Den Papierkorb leeren";
     out.fc_prop = "Eigenschaften";
     out.fc_hashtag = "Tags";
@@ -542,10 +562,27 @@ define(function () {
     out.settings_save = "Speichern";
 
     out.settings_backupCategory = "Backup";
-    out.settings_backupTitle = "Eine Backup erstellen oder die Daten wiederherstellen";
+    out.settings_backupHint = "Eine Backup erstellen oder die Daten wiederherstellen";
     out.settings_backup = "Backup";
     out.settings_restore = "Wiederherstellen";
 
+    out.settings_backupHint2 = "Der Inhalte ihrer Dokumente runterladen. Die runtergeladene Dateien werden in einem lesbaren Format geladen, wenn verfügbar.";
+    out.settings_backup2 = "Mein CryptDrive runterladen";
+    out.settings_backup2Confirm = "Das wird den gesamten Inhalt ihrer Dokumente und Dateien runterladen. Wenn du weiterfahren möchstest, wähle ein Name und drucke OK.";
+    out.settings_exportTitle = "Dein CryptDrive exportieren";
+    out.settings_exportDescription = "Bitte warte während wir deine Dokumente runterläden und entschlüsseln Es wird ein Paar Minuten dauern. Wenn der Browsertab geschlossen wird, wird der Vorgang unterbrochen";
+    out.settings_exportWarning = "Um eine erhöhte Leistung zu erhalten, empfehlen wir dieses Browsertab im Fokus zu halten.";
+    out.settings_exportCancel = "Bist du sicher, dass du der Exportvorgang unterbrechen möchtest? Der Vorgang wird das nächste Mal neustarten müssen.";
+    out.settings_export_reading = "Dein CryptDrive wird gelesen...";
+    out.settings_export_download = "Deine Dokumente werden runtergeladen und entschlüsselt...";
+    out.settings_export_compressing = "Komprimiereung...";
+    out.settings_export_done = "Das Export ist bereit!";
+    out.settings_exportError = "Fehlermeldungen ansehen";
+    out.settings_exportErrorDescription = "Wir waren nicht in der Lage, die folgende Dokumente zu exportieren:";
+    out.settings_exportErrorEmpty = "Dieses Dokument kann nicht exportiert werden (leeres oder ungültiges Inhalt).";
+    out.settings_exportErrorMissing = "Dieses Dokument fehlt auf dem Server (es ist ausgelaufen oder von seinem Eigentümer gelöscht worden)";
+    out.settings_exportErrorOther = "Es ist einf Fehler beim Export vom Dokument \"{0}\" aufgetreten. ";
+       
     out.settings_resetNewTitle = "CryptDrive säubern";
     out.settings_resetButton = "Löschen";
     out.settings_reset = "Alle Dateien und Ordnern aus deinem CryptDrive löschen";
@@ -621,6 +658,12 @@ define(function () {
     out.settings_templateSkip = "Die Wahl der Vorlage überspringen";
     out.settings_templateSkipHint = "Wenn du ein neues Dokument erstellst und Vorlagen vorhanden sind, erscheint ein Dialog, wo du die Vorlage wählen kannst. Hier kannst du diesen Dialog überspringen und somit keine Vorlage verwenden.";
 
+       
+    out.settings_ownDriveTitle = "Migrations des CryptDrives";
+    out.settings_ownDriveHint = "Wir sind dabei dein CryptDrive zur neuen Version zu migrieren, damit du Zugang zu den neuen Features hast...";
+    out.settings_ownDriveButton = "Migrieren";
+    out.settings_ownDriveConfirm = "Bis du sicher?";
+
     out.settings_changePasswordTitle = "Ändere dein Passwort";
     out.settings_changePasswordHint = "Ändere das Passwort deines Kontos ohne deine Daten zu verlieren. Du mußt einmal das jetzige Passwort eintragen und dann das gewünschte neue Passwort zweimal.<br>" +
                                       "<b>Wir können das Passwort nicht zurücksetzen, wenn du es vergisst, also sei besonders sorgfältig!</b>";
@@ -629,8 +672,14 @@ define(function () {
     out.settings_changePasswordNew = "Neues Passwort";
     out.settings_changePasswordNewConfirm = "Neues Passwort bestätigen";
     out.settings_changePasswordConfirm = "Bist du sicher?";
+    out.settings_changePasswordError = "Ein Fehler ist aufgetreten. Wenn du nicht mehr einloggen oder dein Passwort ändern kannst, solltest du die Administratoren des CryptPad Servers kontaktieren.";
+    out.settings_changePasswordPending = "Dein Passwort wird geändert. Bitte schliesse nicht und lade diese Seite nicht neu, bis dieser Vorgang erledigt ist.";
+    out.settings_changePasswordNewPasswordSameAsOld = "Dein neues Passwort muss anders als dein aktuelles Passwort sein.";
 
     out.upload_title = "Datei hochladen";
+    out.upload_modal_title = "Uploadeinstellungen";
+    out.upload_modal_filename = "Dateiname (die Dateierweiterung <em>{0}</em> wird automatisch hinzugefügt)";
+    out.upload_modal_owner = "Eigene Datei";
     out.upload_rename = "Willst du einen neuen Name für <b>{0}</b> geben, bevor es zum Server hochgeladen wird?<br>" +
                         "<em>Die Dateieendung ({1}) wird automatisch hinzugefügt. "+
                         "Dieser Name bleibt für immer und wird für die andere Benutzer sichtbar.</em>";
@@ -680,6 +729,9 @@ define(function () {
     out.mdToolbar_code = "Code";
 
     // index.html
+    out.home_product = "CryptPad ist eine alternative zu verbreiteten Office- und Clouddienste mit eingebauten Datenschutz. Mit CryptPad, der gesamten Inhalt ist verschlüsselt, bevor es geschickt wird. Das heisst, dass keiner hat Zugang zum Inhalt, ausser du gibst den Schlüssel aus. Selbst die Softwarehersteller haben diesen Zugang nicht.";
+    out.home_host = "Dieses CryptPad Server ist eine unabhängige Installation des Communitysoftwares. Das Quellcode ist <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">auf GitHub</a> verfügbar.";
+    out.home_host_agpl = "CryptPad kann durch die Lizenz AGPL3 verbreitet werden";
 
 
     //about.html
@@ -769,35 +821,41 @@ define(function () {
     out.features_anon = "Anonymer Benutzer";
     out.features_registered = "Angemeldete Benutzer";
     out.features_notes = "Notizzen";
-    out.features_f_pad = "Ein Dokument erstellen/bearbeiten/ansehen";
-    out.features_f_pad_notes = "Rich Text, Code, Präsentation, Umfrage und Whiteboard Apps";
-    out.features_f_history = "Verlauf";
-    out.features_f_history_notes = "Jegliche Version deines Dokuments ansehen und zurückbringen";
-    out.features_f_todo = "Eine ToDo-Liste erstellen";
-    out.features_f_drive = "CryptDrive";
-    out.features_f_drive_notes = "Einfache Funktionen für anonyme Benutzer";
-    out.features_f_export = "Export/Import";
-    out.features_f_export_notes = "Für Dokumente und CryptDrive";
-    out.features_f_viewFiles = "Dateien ansehen";
-    out.features_f_uploadFiles = "Dateien hochladen";
-    out.features_f_embedFiles = "Dateien einbetten";
-    out.features_f_embedFiles_notes = "Eine Datei in ein Dokument einbetten, die im CryptDrive steht";
-    out.features_f_multiple = "Verwendung auf mehrere Geräte";
-    out.features_f_multiple_notes = "Eine leichte Methode, deine Dokumente von jeglichem Gerät zu verwenden";
-    out.features_f_logoutEverywhere = "Auf allen Geräten ausloggen";
-    out.features_f_logoutEverywhere_notes = ""; // Used in the French translation to explain
-    out.features_f_templates = "Vorlagen verwenden";
-    out.features_f_templates_notes = "Neue Vorlagen erstellen und neue Dokumente aus den Vorlagen erstellen";
-    out.features_f_profile = "Ein Profil erstellen";
-    out.features_f_profile_notes = "Persönliche Seite, mit ein Benutzerbild und eine Beschreibung";
-    out.features_f_tags = "Tags anwenden";
-    out.features_f_tags_notes = "Erlaubt dich in CryptDrive anhand Tags zu suchen";
-    out.features_f_contacts = "Kontakte App";
-    out.features_f_contacts_notes = "Kontakte hinzufügen und mit den in einer verschlüsselte Sitzung chatten";
-    out.features_f_storage = "Speicherplatz";
-    out.features_f_storage_anon = "Dokumente sind nach 3 Monate gelöscht";
-    out.features_f_storage_registered = "Frei: 50MB<br>Premium: 5GB/20GB/50GB";
-    out.features_f_register = "Kostenlose Anmeldung"; 
+    out.features_f_apps = "Zugang zu den wichtige Anwendungen";
+    out.features_f_core = "Gemeinsame Funktionen der Anwendungen";
+    out.features_f_core_note = "Bearbeiten, Importieren & Exportieren, Verlauf, Benutzerliste, Chat";
+    out.features_f_file0 = "Dateien öffnen";
+    out.features_f_file0_note = "Dateien, die anderen verteilt haben, ansehen und runterladen";
+    out.features_f_cryptdrive0 = "Begrenzter Zugang zu CryptDrive";
+    out.features_f_cryptdrive0_note = "Du kannst besuchte Dokumente in deinem Browser referenzieren, damit du sie später öffnen kannst";
+    out.features_f_storage0 = "Speicherung für eine begrenzte Zeit";
+    out.features_f_storage0_note = "Neue Dokumente könnten nach drei Monaten ohne Aktivität gelöscht werden";
+       
+    out.features_f_anon = "Alle Funktionen der anonymen Benutzern";
+    out.features_f_anon_note = "Mit eine besser Benutzberakeit und mehr Kontrolle über deine Dokumente";
+    out.features_f_cryptdrive1 = "Gesamt Funktionen von CryptDrive";
+    out.features_f_cryptdrive1_note = "Ordnern, verteilte Ordnern, Vorlagen, Tags";
+    out.features_f_devices = "Deine Dokumente auf deine gesamte Geräten";
+    out.features_f_devices_note = "Zugang zu deinem CryptPad überall mit deinem Benutzer";
+    out.features_f_social = "Soziale Anwendungen";
+    out.features_f_social_note = "Ein Profil Gestalten, ein Profilbild verwenden, mit Konktakte chatten";
+    out.features_f_file1 = "Dateien hochladen und teilen";
+    out.features_f_file1_note = "Dateien mit Freunde teilen, oder sie in Dokumenten einbetten";
+    out.features_f_storage1 = "Langfristige Speicherung (50MB)";
+    out.features_f_storage1_note = "Dateien in deinem CryptDrive sind nicht wegen Aktivitätsmangel gelöscht";
+    out.features_f_register = "Registrieren (kostenlos)";
+    out.features_f_register_note = "Keine Email oder persönliche Information nötig";
+       
+    out.features_f_reg = "Alle Funktionen eines gemeldeten Benutzer";
+    out.features_f_reg_note = "Du hilfst die Entwicklung von CryptPad";
+    out.features_f_storage2 = "Grössere Speicherungraum";
+    out.features_f_storage2_note = "Zwischen 5GB und 50GB, abhängig vom selektierten Plan";
+    out.features_f_support = "Schnelleres Support";
+    out.features_f_support_note = "Professionnelles Emailsupport, mit dem Team Plan";
+    out.features_f_supporter = "Werde ein Unterstützer des Datenschutzes";
+    out.features_f_supporter_note = "Hilfe uns beweisen, dass Software mit eingebauten Datenschutz die Normalität sein sollten";
+    out.features_f_subscribe = "Premium kaufen";
+    out.features_f_subscribe_note = "Du muss zuerst in CryptPad eingeloggt sein";
 
     // faq.html
     out.faq_link = "FAQ";
@@ -1225,7 +1283,10 @@ define(function () {
     out.chrome68 = "Anscheinend benutzt du Chrome oder Chromium version 68. Darin ist ein bug, der dafür sorgt, dass nach ein paar Sekunden die Seite komplett weiß ist oder nicht mehr auf Klicks reagiert. Um das Problem zu beheben, wechsle den Tab und komme wieder, oder versuche zu scrollen. Dieser Bug sollte in der nächsten Version deines Browsers gefixt sein.";
 
     // Manual pad storage popup
-    out.autostore_notstored = "Dieses Pad ist noch nicht in deinem CryptDrive. Willst du es jetzt speichern?";
+    out.autostore_file = "Diese Datei";
+    out.autostore_sf = "Dieser Ordner";
+    out.autostore_pad = "Dieses Dokument";
+    out.autostore_notstored = "{0} ist nicht in deinem CryptDrive. Willst du es dort speichern?";
     out.autostore_settings = "Du kannst automatisches Speichern im CryptDrive in deinen <a href=\"/settings/\">Einstellungen</a> aktivieren!";
     out.autostore_store = "Speichern";
     out.autostore_hide = "Nicht speichern";
@@ -1233,6 +1294,18 @@ define(function () {
     out.autostore_saved = "Das Pad wurde erfolgreich in deinem CryptDrive gespeichert!";
     out.autostore_forceSave = "Speicher die Datei in deinem CryptDrive"; // File upload modal
     out.autostore_notAvailable = "Du musst dieses Pad in deinem CryptDrive speichern, bevor du dieses Feature benutzen kannst."; // Properties/tags/move to trash
+
+    // Crowdfunding messages
+    out.crowdfunding_home1 = "CryptPad braucht deine Hilfe!";
+    out.crowdfunding_home2 = "Klicke auf dem Knopf, um über die Crowdfunding Campagne zu erfahren.";
+    out.crowdfunding_button = "Unterstütze CryptPad";
+
+    out.crowdfunding_popup_text = "<h3>Wir brauchen deine Hilfe!</h3>" +
+                                  "Um sicherzustellen, dass CryptPad weiter aktiv entwickelt wird, unterstütze bitte das Projekt durch die " +
+                                  '<a href="https://opencollective.com/cryptpad">OpenCollective Seite</a>, wo du unser <b>Roadmap</b> und <b>Funding Ziele</b> lesen kannst.';
+    out.crowdfunding_popup_yes = "OpenCollective besuchen";
+    out.crowdfunding_popup_no = "Nicht jetzt";
+    out.crowdfunding_popup_never = "Nicht mehr darum bitten.";
 
     return out;
   });
