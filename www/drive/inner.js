@@ -85,6 +85,7 @@ define([
     var faEmpty = 'fa-trash-o';
     var faRestore = 'fa-repeat';
     var faShowParent = 'fa-location-arrow';
+    var faDownload = 'cptools-file';
     var $folderIcon = $('<span>', {
         "class": faFolder + " cptools cp-app-drive-icon-folder cp-app-drive-content-icon"
     });
@@ -265,6 +266,10 @@ define([
                     'tabindex': '-1',
                     'data-icon': faReadOnly,
                 }, Messages.fc_open_ro)),
+                h('li', h('a.cp-app-drive-context-download.dropdown-item', {
+                    'tabindex': '-1',
+                    'data-icon': faDownload,
+                }, Messages.download_mt_button)),
                 h('li', h('a.cp-app-drive-context-share.dropdown-item', {
                     'tabindex': '-1',
                     'data-icon': 'fa-shhare-alt',
@@ -846,6 +851,9 @@ define([
                         // We can only open parent in virtual categories
                         hide.push('openparent');
                     }
+                    if (!$element.is('.cp-border-color-file')) {
+                        hide.push('download');
+                    }
                     if ($element.is('.cp-app-drive-element-file')) {
                         // No folder in files
                         hide.push('newfolder');
@@ -903,6 +911,7 @@ define([
                     hide.push('rename');
                     hide.push('openparent');
                     hide.push('hashtag');
+                    hide.push('download');
                 }
                 if (containsFolder && paths.length > 1) {
                     // Cannot open multiple folders
@@ -919,7 +928,7 @@ define([
                     show = ['newfolder', 'newsharedfolder', 'newdoc'];
                     break;
                 case 'tree':
-                    show = ['open', 'openro', 'share', 'rename', 'delete', 'deleteowned', 'removesf',
+                    show = ['open', 'openro', 'download', 'share', 'rename', 'delete', 'deleteowned', 'removesf',
                             'newfolder', 'properties', 'hashtag'];
                     break;
                 case 'default':
@@ -1018,7 +1027,8 @@ define([
             $actions.each(function (i, el) {
                 var $a = $('<button>', {'class': 'cp-app-drive-element'});
                 if ($(el).attr('data-icon')) {
-                    $a.addClass('fa').addClass($(el).attr('data-icon'));
+                    var font = $(el).attr('data-icon').indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                    $a.addClass(font).addClass($(el).attr('data-icon'));
                     $a.attr('title', $(el).text());
                 } else {
                     $a.text($(el).text());
@@ -3140,6 +3150,16 @@ define([
                         href = data.roHref;
                     }
                     openFile(null, href);
+                });
+            }
+            else if ($(this).hasClass('cp-app-drive-context-download')) {
+                if (paths.length !== 1) { return; }
+                el = manager.find(paths[0].path);
+                if (!manager.isFile(el)) { return; }
+                data = manager.getFileData(el);
+                APP.FM.downloadFile(data, function (err, obj) {
+                    console.log(err, obj);
+                    console.log('DONE');
                 });
             }
             else if ($(this).hasClass('cp-app-drive-context-share')) {

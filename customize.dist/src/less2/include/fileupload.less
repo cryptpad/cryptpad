@@ -21,9 +21,11 @@
             tr:nth-child(1) {
                 background-color: darken(@colortheme_modal-bg, 20%);
                 td {
-                    text-align: center;
                     font-weight: bold;
                     padding: 0.25em;
+                    &:nth-child(4), &:nth-child(5) {
+                        text-align: center;
+                    }
                 }
             }
             @upload_pad_h: 0.25em;
@@ -38,7 +40,7 @@
                 }
             }
             .cp-fileupload-table-progress {
-                width: 200px;
+                width: 25%;
                 position: relative;
                 text-align: center;
                 box-sizing: border-box;

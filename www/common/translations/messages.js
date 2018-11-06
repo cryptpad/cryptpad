@@ -676,6 +676,7 @@ define(function () {
     out.settings_changePasswordNewPasswordSameAsOld = "Your new password must be different than your current password.";
 
     out.upload_title = "File upload";
+    out.upload_type = "Type";
     out.upload_modal_title = "File upload options";
     out.upload_modal_filename = "File name (extension <em>{0}</em> added automatically)";
     out.upload_modal_owner = "Owned file";
@@ -693,9 +694,13 @@ define(function () {
     out.upload_size = "Size";
     out.upload_progress = "Progress";
     out.upload_mustLogin = "You must be logged in to upload files";
+    out.upload_up = "Upload";
     out.download_button = "Decrypt & Download";
     out.download_mt_button = "Download";
     out.download_resourceNotAvailable = "The requested resource was not available... Press Esc to continue.";
+    out.download_dl = "Download";
+    out.download_step1 = "Downloading";
+    out.download_step2 = "Decrypting";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Describe your task...";

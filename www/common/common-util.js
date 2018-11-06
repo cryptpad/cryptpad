@@ -138,11 +138,19 @@ define([], function () {
     };
 
     // given a path, asynchronously return an arraybuffer
-    Util.fetch = function (src, cb) {
+    Util.fetch = function (src, cb, progress) {
         var CB = Util.once(cb);
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", src, true);
+        if (progress) {
+            xhr.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    progress(percentComplete);
+                }
+            }, false);
+        }
         xhr.responseType = "arraybuffer";
         xhr.onerror = function (err) { CB(err); };
         xhr.onload = function () {

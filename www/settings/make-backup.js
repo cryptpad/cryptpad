@@ -1,12 +1,11 @@
 define([
     '/common/cryptget.js',
     '/common/common-hash.js',
-    '/common/common-util.js',
-    '/file/file-crypto.js',
+    '/common/sframe-common-file.js',
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
     '/bower_components/jszip/dist/jszip.min.js',
-], function (Crypt, Hash, Util, FileCrypto, nThen, Saferphore, JsZip) {
+], function (Crypt, Hash, SFCFile, nThen, Saferphore, JsZip) {
 
     var sanitize = function (str) {
         return str.replace(/[\\/?%*:|"<>]/gi, '_')/*.toLowerCase()*/;
@@ -126,29 +125,28 @@ define([
 
                 // Files (mediatags...)
                 var todoFile = function () {
-                    var secret = Hash.getSecrets('file', parsed.hash, fData.password);
-                    var hexFileName = secret.channel;
-                    var src = Hash.getBlobPathFromHex(hexFileName);
-                    var key = secret.keys && secret.keys.cryptKey;
-                    Util.fetch(src, function (err, u8) {
-                        if (ctx.stop) { return; }
-                        if (err) { return void error('E404'); }
-                        FileCrypto.decrypt(u8, key, function (err, res) {
-                            if (ctx.stop) { return; }
-                            if (err) { return void error(err); }
-                            var opts = {
-                                binary: true,
-                            };
-                            var extIdx = rawName.lastIndexOf('.');
-                            var name = extIdx !== -1 ? rawName.slice(0,extIdx) : rawName;
-                            var ext = extIdx !== -1 ? rawName.slice(extIdx) : "";
-                            var fileName = getUnique(sanitize(name), ext, existingNames);
-                            existingNames.push(fileName.toLowerCase());
-                            zip.file(fileName, res.content, opts);
-                            console.log('DONE ---- ' + fileName);
-                            setTimeout(done, 1000);
-                        });
+                    var it;
+                    var dl = SFCFile.downloadFile(fData, function (err, res) {
+                        if (it) { clearInterval(it); }
+                        if (err) { return void error(err); }
+                        var opts = {
+                            binary: true,
+                        };
+                        var extIdx = rawName.lastIndexOf('.');
+                        var name = extIdx !== -1 ? rawName.slice(0,extIdx) : rawName;
+                        var ext = extIdx !== -1 ? rawName.slice(extIdx) : "";
+                        var fileName = getUnique(sanitize(name), ext, existingNames);
+                        existingNames.push(fileName.toLowerCase());
+                        zip.file(fileName, res.content, opts);
+                        console.log('DONE ---- ' + fileName);
+                        setTimeout(done, 1000);
                     });
+                    it = setInterval(function () {
+                        if (ctx.stop) {
+                            clearInterval(it);
+                            dl.cancel();
+                        }
+                    }, 50);
                 };
                 if (parsed.hashData.type === 'file') {
                     return void todoFile();

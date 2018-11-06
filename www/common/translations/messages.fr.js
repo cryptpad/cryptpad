@@ -666,6 +666,7 @@ define(function () {
     out.settings_changePasswordNewPasswordSameAsOld = "Votre nouveau mot de passe doit être différent de votre mot de passe actuel.";
 
     out.upload_title = "Hébergement de fichiers";
+    out.upload_type = "Type";
     out.upload_modal_title = "Options d'importation du fichier";
     out.upload_modal_filename = "Nom (extension <em>{0}</em> ajoutée automatiquement)";
     out.upload_modal_owner = "Être propriétaire du fichier";
@@ -683,9 +684,13 @@ define(function () {
     out.upload_size = "Taille";
     out.upload_progress = "État";
     out.upload_mustLogin = "Vous devez vous connecter pour importer un fichier";
+    out.upload_up = "Envoyer";
     out.download_button = "Déchiffrer et télécharger";
     out.download_mt_button = "Télécharger";
     out.download_resourceNotAvailable = "Le fichier demandé n'est pas disponible... Appuyez sur Échap pour continuer.";
+    out.download_dl = "Télécharger";
+    out.download_step1 = "Téléchargement";
+    out.download_step2 = "Déchiffrement";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Décrivez votre tâche...";

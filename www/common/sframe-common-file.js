@@ -5,12 +5,15 @@ define([
     '/common/common-interface.js',
     '/common/common-ui-elements.js',
     '/common/common-util.js',
+    '/common/common-hash.js',
     '/common/hyperscript.js',
     '/customize/messages.js',
 
+    '/bower_components/file-saver/FileSaver.min.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-], function ($, FileCrypto, Thumb, UI, UIElements, Util, h, Messages) {
+], function ($, FileCrypto, Thumb, UI, UIElements, Util, Hash, h, Messages) {
     var Nacl = window.nacl;
+    var saveAs = window.saveAs;
     var module = {};
 
     var blobToArrayBuffer = function (blob, cb) {
@@ -41,6 +44,7 @@ define([
 
         var $table = File.$table = $('<table>', { id: 'cp-fileupload-table' });
         var $thead = $('<tr>').appendTo($table);
+        $('<td>').text(Messages.upload_type).appendTo($thead);
         $('<td>').text(Messages.upload_name).appendTo($thead);
         $('<td>').text(Messages.upload_size).appendTo($thead);
         $('<td>').text(Messages.upload_progress).appendTo($thead);
@@ -180,6 +184,7 @@ define([
             // setTimeout to fix a firefox error 'NS_ERROR_NOT_AVAILABLE'
             window.setTimeout(function () { File.$container.show(); });
             var file = queue.queue.shift();
+            if (file.dl) { return void file.dl(file); }
             upload(file);
         };
         queue.push = function (obj) {
@@ -189,7 +194,7 @@ define([
 
             // setTimeout to fix a firefox error 'NS_ERROR_NOT_AVAILABLE'
             window.setTimeout(function () { $table.show(); });
-            var estimate = FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
+            var estimate = obj.dl ? obj.size : FileCrypto.computeEncryptedSize(obj.blob.byteLength, obj.metadata);
 
             var $progressBar = $('<div>', {'class':'cp-fileupload-table-progress-container'});
             var $progressValue = $('<span>', {'class':'cp-fileupload-table-progress-value'}).text(Messages.upload_pending);
@@ -206,8 +211,9 @@ define([
             var $link = $('<a>', {
                 'class': 'cp-fileupload-table-link',
                 'rel': 'noopener noreferrer'
-            }).text(obj.metadata.name);
+            }).text(obj.dl ? obj.name : obj.metadata.name);
 
+            $('<td>').text(obj.dl ? Messages.download_dl : Messages.upload_up).appendTo($tr);
             $('<td>').append($link).appendTo($tr);
             $('<td>').text(prettySize(estimate)).appendTo($tr);
             $('<td>', {'class': 'cp-fileupload-table-progress'}).append($progressBar).append($progressValue).appendTo($tr);
@@ -433,7 +439,123 @@ define([
 
         createUploader(config.dropArea, config.hoverArea, config.body);
 
+        File.downloadFile = function (fData, cb) {
+            var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
+            var hash = parsed.hash;
+            var name = fData.filename || fData.title;
+            var secret = Hash.getSecrets('file', hash, fData.password);
+            var src = Hash.getBlobPathFromHex(secret.channel);
+            var key = secret.keys && secret.keys.cryptKey;
+            common.getFileSize(secret.channel, function (e, data) {
+                var todo = function (file) {
+                    if (queue.inProgress) { return; }
+                    queue.inProgress = true;
+                    var id = file.id;
+
+                    var $row = $table.find('tr[id="'+id+'"]');
+                    var $pv = $row.find('.cp-fileupload-table-progress-value');
+                    var $pb = $row.find('.cp-fileupload-table-progress-container');
+                    var $pc = $row.find('.cp-fileupload-table-progress');
+                    var $link = $row.find('.cp-fileupload-table-link');
+
+                    var done = function () {
+                        $row.find('.cp-fileupload-table-cancel').text('-');
+                        queue.inProgress = false;
+                        queue.next();
+                    };
+
+                    var updateDLProgress = function (progressValue) {
+                        var text = Math.round(progressValue*100) + '%';
+                        text += ' ('+ Messages.download_step1 +'...)';
+                        $pv.text(text);
+                        $pb.css({
+                            width: progressValue * $pc.width()+'px'
+                        });
+                    };
+                    var updateProgress = function (progressValue) {
+                        var text = Math.round(progressValue*100) + '%';
+                        text += progressValue === 1 ? '' : ' ('+ Messages.download_step2 +'...)';
+                        $pv.text(text);
+                        $pb.css({
+                            width: progressValue * $pc.width()+'px'
+                        });
+                    };
+
+                    var dl = module.downloadFile(fData, function (err, obj) {
+                        $link.prepend($('<span>', {'class': 'fa fa-external-link'}))
+                            .attr('href', '#')
+                            .click(function (e) {
+                            e.preventDefault();
+                            obj.download();
+                        });
+                        done();
+                        if (obj) { obj.download(); }
+                        cb(err, obj);
+                    }, {
+                        src: src,
+                        key: key,
+                        name: name,
+                        progress: updateDLProgress,
+                        progress2: updateProgress,
+                    });
+
+                    var $cancel = $('<span>', {'class': 'cp-fileupload-table-cancel-button fa fa-times'}).click(function () {
+                        dl.cancel();
+                        $cancel.remove();
+                        $row.find('.cp-fileupload-table-progress-value').text(Messages.upload_cancelled);
+                        done();
+                    });
+                    $row.find('.cp-fileupload-table-cancel').html('').append($cancel);
+                };
+                queue.push({
+                    dl: todo,
+                    size: data,
+                    name: name
+                });
+            });
+        };
+
         return File;
+    };
+
+    module.downloadFile = function (fData, cb, obj) {
+        var cancelled = false;
+        var cancel = function () {
+            cancelled = true;
+        };
+        var src, key, name;
+        if (obj && obj.src && obj.key && obj.name) {
+            src = obj.src;
+            key = obj.key;
+            name = obj.name;
+        } else {
+            var parsed = Hash.parsePadUrl(fData.href || fData.roHref);
+            var hash = parsed.hash;
+            name = fData.filename || fData.title;
+            var secret = Hash.getSecrets('file', hash, fData.password);
+            src = Hash.getBlobPathFromHex(secret.channel);
+            key = secret.keys && secret.keys.cryptKey;
+        }
+        Util.fetch(src, function (err, u8) {
+            if (cancelled) { return; }
+            if (err) { return void cb('E404'); }
+            FileCrypto.decrypt(u8, key, function (err, res) {
+                if (cancelled) { return; }
+                if (err) { return void cb(err); }
+                if (!res.content) { return void cb('EEMPTY'); }
+                var dl = function () {
+                    saveAs(res.content, name || res.metadata.name);
+                };
+                cb(null, {
+                    metadata: res.metadata,
+                    content: res.content,
+                    download: dl
+                });
+            }, obj && obj.progress2);
+        }, obj && obj.progress);
+        return {
+            cancel: cancel
+        };
     };
 
     return module;
