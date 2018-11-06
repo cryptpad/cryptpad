@@ -1,3 +1,35 @@
+# Lemur release (v2.11.0)
+
+# Lemur release (v2.11.0)
+
+## Goals
+
+This release continued the work on better customization features for community instances. We also worked on usability improvements and UI issues.
+
+## Update notes
+
+* This is a simple release. Just download the latest commits and update your cache-busting string.
+* Customized instances may require additionnal changes in order to make customization easier to maintain in the future.
+  * The static pages content (home page, FAQ, contact, privacy, etc.) has been moved from `./customize.dist/pages.js` to a `./customize.dist/pages/` directory, containing one file per page. This new structure allows administrators to override only some pages instead of all the pages at once.
+  * To override a page, just make a copy of its .js file from `./customize.dist/pages` to a `./customize/pages` and make your changes.
+
+## Features
+
+* We've replaced our Font Awesome application icons with new custom icons. The new icons should be closer to the goals of the apps.
+* We've cancelled the Ctrl+S shortcut from the browser for saving the page. In CryptPad, the result of the browser save was not usable and the content of the pads is automatically saved.
+* As explained above, we've made it easier to customize some specific static pages instead of overriding all of them.
+* Our Markdown renderer should display tables in a nicer and cleaner way (*Code* and *Slide* applications).
+* The font size in the code and slide editors can now be changed from the *Settings* page.
+* We've added a warning text to the CryptDrive export feature from the last release.
+
+## Bugfixes
+
+* We've found an issue causing some deleted characters to be inserted back in the document. It could happen when a least one member of the session had the tab not focused in their browser.
+* We've fixed an issue with our code for detecting small (or zoomed) screens in several part of our UI. This will hide some unnecessary elements of the interface at first load and free space for the actual content of the pad.
+* The "present" mode in the Slide application will no longer display the toolbar.
+* We've fixed an issue in the *Pad* application where the font could be reset to Arial when making a new paragraph.
+* The full CryptDrive export no longer stops when trying to export a very old poll.
+
 # Koala release (v2.10.0)
 
 ## Goals
