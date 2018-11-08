@@ -699,7 +699,8 @@ define([
         window.easyTest = function () {
             cursor.update();
             var start = cursor.Range.start;
-            var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
+            //var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
+            var test = TypingTest.testInput2(editor);
             framework.localChange();
             return test;
         };

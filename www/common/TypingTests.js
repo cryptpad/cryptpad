@@ -56,8 +56,28 @@ define(function () {
         };
     };
 
+    var testInput2 = function (editor) {
+        var i = 0,
+            input = " The quick red fox jumps over the lazy brown dog.",
+            l = input.length,
+            interval;
+        var cancel = function () {
+            if (interval) { interval.cancel(); }
+        };
+
+        interval = setRandomizedInterval(function () {
+            editor.insertText(input.charAt(i));
+            i = (i + 1) % l;
+        }, 200, 50);
+
+        return {
+            cancel: cancel
+        };
+    };
+
     return {
         testInput: testInput,
+        testInput2: testInput2,
         setRandomizedInterval: setRandomizedInterval
     };
 });
