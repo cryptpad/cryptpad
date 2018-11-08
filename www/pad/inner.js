@@ -318,20 +318,23 @@ define([
 
                 if (!frame) { return; }
 
-                if (typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
-                    var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+                if (frame && typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
+                    //var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+                    var ops = ChainPad.Diff.diff(info.diff.oldValue, info.diff.newValue);
 
                     if (frame & 1) {
                         // push cursor start if necessary
-                        if (pushes.commonStart < cursor.Range.start.offset) {
+                        cursor.transformRange(cursor.Range.start, ops);
+                        /*if (pushes.commonStart < cursor.Range.start.offset) {
                             cursor.Range.start.offset += pushes.delta;
-                        }
+                        }*/
                     }
                     if (frame & 2) {
                         // push cursor end if necessary
-                        if (pushes.commonStart < cursor.Range.end.offset) {
+                        cursor.transformRange(cursor.Range.end, ops);
+                        /*if (pushes.commonStart < cursor.Range.end.offset) {
                             cursor.Range.end.offset += pushes.delta;
-                        }
+                        }*/
                     }
                 }
             },
@@ -698,7 +701,7 @@ define([
         // terminate the test like `test.cancel()`
         window.easyTest = function () {
             cursor.update();
-            var start = cursor.Range.start;
+            //var start = cursor.Range.start;
             //var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
             var test = TypingTest.testInput2(editor);
             framework.localChange();
