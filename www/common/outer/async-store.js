@@ -1226,6 +1226,7 @@ define([
                 logLevel: 1,
                 ChainPad: ChainPad,
                 classic: true,
+                network: store.network,
                 owners: owners
             };
             var rt = Listmap.create(listmapConfig);
