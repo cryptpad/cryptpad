@@ -259,6 +259,9 @@ define([
                 if (content === UNINITIALIZED) { return; }
                 throw new Error("Content must be an object or array, type is " + typeof(content));
             }
+
+            oldContent = content;
+
             if (Array.isArray(content)) {
                 // Pad
                 content.push({ metadata: cpNfInner.metadataMgr.getMetadataLazy() });
