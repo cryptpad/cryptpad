@@ -24,7 +24,13 @@ body
     right: 0;
 }
 
+/* Remove margin-top for the first element */
 body > *:first-child {
+    margin-top: 0;
+}
+
+/* If the magic line is the first element, remove margin-top for the next one */
+body > .non-realtime:first-child + * {
     margin-top: 0;
 }
 
