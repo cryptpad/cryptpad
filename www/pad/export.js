@@ -38,7 +38,7 @@ define([
 
     module.main = function (userDoc, cb) {
         var inner;
-        if (userDoc instanceof Element || userDoc instanceof HTMLElement) {
+        if (userDoc && userDoc.tagName) {
             inner = userDoc;
         } else {
             try {
