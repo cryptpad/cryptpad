@@ -101,8 +101,8 @@ define([
         'IFRAME',
         'OBJECT',
         'APPLET',
-        //'VIDEO', // privacy implications of videos are the same as images
-        //'AUDIO', // same with audio
+        'VIDEO', // privacy implications of videos are the same as images
+        'AUDIO', // same with audio
     ];
     var unsafeTag = function (info) {
         /*if (info.node && $(info.node).parents('media-tag').length) {

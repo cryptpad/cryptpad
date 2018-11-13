@@ -4,9 +4,8 @@ define([
     '/common/common-util.js',
     '/common/common-interface.js',
     '/common/hyperscript.js',
-    '/bower_components/marked/marked.min.js',
-    '/common/media-tag.js',
-], function ($, Messages, Util, UI, h, Marked, MediaTag) {
+    '/common/diffMarked.js',
+], function ($, Messages, Util, UI, h, DiffMd) {
     'use strict';
 
     var debug = console.log;
@@ -138,12 +137,14 @@ define([
         $(window).on('resize', onResize);
 
         var m = function (md, hour) {
-            var d = h('div.cp-app-contacts-content');
+            var id = Util.createRandomInteger();
+            var d = h('div', {
+                id: 'msg-'+id
+            });
             try {
-                d.innerHTML = Marked(md || '');
                 var $d = $(d);
-                // remove potentially malicious elements
-                $d.find('script, iframe, object, applet, video, audio').remove();
+                DiffMd.apply(DiffMd.render(md || ''), $d, common);
+                $d.addClass("cp-app-contacts-content");
 
                 // override link clicking, because we're in an iframe
                 $d.find('a').each(function () {
@@ -152,9 +153,6 @@ define([
                         common.openUnsafeURL(href);
                     }).attr('href');
                 });
-
-                // activate media-tags
-                $d.find('media-tag').each(function (i, e) { MediaTag(e); });
 
                 var time = h('div.cp-app-contacts-time', hour);
                 $d.append(time);
