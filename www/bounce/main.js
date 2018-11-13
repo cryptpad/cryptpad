@@ -9,8 +9,8 @@ define(['/api/config'], function (ApiConfig) {
         window.alert('The bounce application must only be used with a valid href to visit');
         return;
     }
-    if (bounceTo.indexOf('javascript:') === 0 ||
-        bounceTo.indexOf('vbscript:') === 0 ||
+    if (bounceTo.indexOf('javascript:') === 0 || // jshint ignore:line
+        bounceTo.indexOf('vbscript:') === 0 || // jshint ignore:line
         bounceTo.indexOf('data:') === 0) {
         window.alert('Illegal bounce URL');
         return;
