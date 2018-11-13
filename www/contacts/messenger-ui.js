@@ -143,7 +143,7 @@ define([
             });
             try {
                 var $d = $(d);
-                DiffMd.apply(DiffMd.render(md || ''), $d, common);
+                DiffMd.apply(DiffMd.render(md || '', true), $d, common);
                 $d.addClass("cp-app-contacts-content");
 
                 // override link clicking, because we're in an iframe
