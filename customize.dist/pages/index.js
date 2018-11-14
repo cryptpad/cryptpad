@@ -85,10 +85,18 @@ define([
             h('div.row.justify-content-sm-center',[
                 h('div.col-12.col-sm-4.cp-index-block.cp-index-block-host', h('div', [
                     Pages.setHTML(h('span'), Msg.home_host),
-                    h('img', {
-                        src: "/customize/images/AGPL.png",
-                        title: Msg.home_host_agpl
-                    })
+                    h('div.cp-img-container', [
+                        h('img.agpl', {
+                            src: "/customize/images/AGPL.png",
+                            title: Msg.home_host_agpl
+                        }),
+                        h('a.img', {
+                            href:'#'
+                        }, h('img.ngi', {
+                            src: "/customize/images/ngi.png",
+                            title: 'NGI Award winner'
+                        }))
+                    ])
                 ])),
                 h('div.col-12.col-sm-4.cp-index-block.cp-index-block-product', h('div', [
                     Msg.home_product

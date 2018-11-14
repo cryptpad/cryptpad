@@ -216,12 +216,18 @@
             flex-flow: column;
             justify-content: space-evenly;
         }
-        img {
+        .cp-img-container {
+            display: flex;
+        }
+        img, a.img {
             margin: auto;
-            max-width: 70%;
             background: white;
-            max-height: 50px;
-            margin-top: 1em;
+            &.agpl {
+                max-height: 50px;
+            }
+            &.ngi {
+                max-height: 100px;
+            }
         }
     }
 
