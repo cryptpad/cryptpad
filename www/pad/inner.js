@@ -705,7 +705,18 @@ define([
             return test;
         };
 
-        $bar.find('.cke_button').click(function () {
+
+        // Fix the scrollbar if it's reset when clicking on a button (firefox only?)
+        var buttoonScrollTop = undefined;
+        $('.cke_toolbox_main').find('.cke_button').mousedown(function (e) {
+            buttonScrollTop = $('iframe').contents().scrollTop();
+            setTimeout(function () {
+                $('iframe').contents().scrollTop(buttonScrollTop);
+            });
+        });
+
+
+        $('.cke_toolbox_main').find('.cke_button').click(function () {
             var e = this;
             var classString = e.getAttribute('class');
             var classes = classString.split(' ').filter(function (c) {
