@@ -698,7 +698,7 @@ define([
         // terminate the test like `test.cancel()`
         window.easyTest = function () {
             cursor.update();
-            var start = cursor.Range.start;
+            //var start = cursor.Range.start;
             //var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
             var test = TypingTest.testInput2(editor);
             framework.localChange();
@@ -707,8 +707,8 @@ define([
 
 
         // Fix the scrollbar if it's reset when clicking on a button (firefox only?)
-        var buttoonScrollTop = undefined;
-        $('.cke_toolbox_main').find('.cke_button').mousedown(function (e) {
+        var buttonScrollTop;
+        $('.cke_toolbox_main').find('.cke_button').mousedown(function () {
             buttonScrollTop = $('iframe').contents().scrollTop();
             setTimeout(function () {
                 $('iframe').contents().scrollTop(buttonScrollTop);
