@@ -735,6 +735,7 @@ define(function () {
     out.home_product = "CryptPad is a private-by-design alternative to popular office tools and cloud services. All the content stored on CryptPad is encrypted before being sent, which means nobody can access your data unless you give them the keys (not even us).";
     out.home_host = "This is an independent community instance of CryptPad. Its source code is available <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">on GitHub</a>.";
     out.home_host_agpl = "CryptPad is distributed under the terms of the AGPL3 software license";
+    out.home_ngi = "NGI Award winner";
 
     //about.html
     out.about_intro = 'CryptPad is created inside of the Research Team at <a href="http://xwiki.com">XWiki SAS</a>, a small business located in Paris France and Iasi Romania. There are 3 core team members working on CryptPad plus a number of contributors both inside and outside of XWiki SAS.';

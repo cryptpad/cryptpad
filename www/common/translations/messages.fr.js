@@ -725,6 +725,7 @@ define(function () {
     out.home_product = "CryptPad est une alternative respectant la vie privée aux outils office et aux services cloud populaires. Tout le contenu stocké dans CryptPad est chiffré avant d'être envoyé, ce qui signifie que personne ne peut accéder à vos données à moins que vous ne leur donniez les clés (même pas nous).";
     out.home_host = "Ceci est une instance communautaire et indépendante de CryptPad. Le code source du projet est disponible <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">sur GitHub</a>.";
     out.home_host_agpl = "CryptPad est distribué sous les termes de la licence logicielle AGPL3";
+    out.home_ngi = "Gagnant d'un prix NGI Awards";
 
     //about.html
     out.about_intro = 'CryptPad est développé au sein de l\'équipe Recherche d\'<a href="http://xwiki.com">XWiki SAS</a>, une petite entreprise située à Paris en France et à Iasi en Roumanie. Il y a 3 développeurs principaux qui travaillent sur CryptPad, ainsi que quelques contributeurs à la fois dans et en dehors d\'XWiki SAS';

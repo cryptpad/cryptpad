@@ -95,7 +95,7 @@ define([
                             target: '_blank'
                         }, h('img.ngi', {
                             src: "/customize/images/ngi.png",
-                            title: 'NGI Award winner'
+                            title: Msg.home_ngi
                         }))
                     ])
                 ])),
