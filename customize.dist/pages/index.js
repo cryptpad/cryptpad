@@ -91,7 +91,8 @@ define([
                             title: Msg.home_host_agpl
                         }),
                         h('a.img', {
-                            href:'#'
+                            href: 'https://blog.cryptpad.fr/2018/11/13/CryptPad-receives-NGI-Startup-Award/',
+                            target: '_blank'
                         }, h('img.ngi', {
                             src: "/customize/images/ngi.png",
                             title: 'NGI Award winner'
