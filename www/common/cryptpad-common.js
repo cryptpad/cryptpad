@@ -1388,7 +1388,7 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
-                        // XXX data should always exist
+                        // FIXME data should always exist
                         // this indicates a false condition in sharedWorker
                         // got here via a reference error:
                         // uncaught exception: TypeError: data is undefined
