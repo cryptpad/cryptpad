@@ -257,12 +257,6 @@ define([
                         if (msg.type !== 'MSG') { return; }
 
                     // FIXME Schlameil the painter (performance does not scale well)
-                        // XXX trust the server?
-                        /*
-                        if (channel.messages.some(function (old) {
-                            return msg.sig === old.sig;
-                        })) { return; }*/
-
                         channel.messages.unshift(msg);
                         var el_message = markup.message(msg);
                         $messagebox.prepend(el_message);
@@ -285,7 +279,7 @@ define([
                             UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
-                        // XXX clear the UI?
+                        // TODO clear the UI
                     });
                 });
             });
@@ -451,7 +445,7 @@ define([
             $messages.find('div.cp-app-contacts-chat[data-key]').hide();
             if ($chat.length) {
                 var $chat_messages = $chat.find('div.cp-app-contacts-message');
-                if ($chat_messages.length < 10) { //|| channel.needMoreHistory) { XXX
+                if ($chat_messages.length < 10) {
                     delete channel.needMoreHistory;
                     var $more = $chat.find('.cp-app-contacts-more-history');
                     $more.click();
