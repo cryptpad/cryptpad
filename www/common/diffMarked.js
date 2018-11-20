@@ -28,12 +28,17 @@ define([
     };
 
     Marked.setOptions({
+        //sanitize: true, // Disable HTML
         renderer: renderer,
         highlight: highlighter(),
     });
 
-    DiffMd.render = function (md) {
-        return Marked(md);
+
+
+    DiffMd.render = function (md, sanitize) {
+        return Marked(md, {
+            sanitize: sanitize
+        });
     };
 
     var mediaMap = {};
@@ -101,8 +106,9 @@ define([
         'IFRAME',
         'OBJECT',
         'APPLET',
-        //'VIDEO', // privacy implications of videos are the same as images
-        //'AUDIO', // same with audio
+        'VIDEO', // privacy implications of videos are the same as images
+        'AUDIO', // same with audio
+        'SVG'
     ];
     var unsafeTag = function (info) {
         /*if (info.node && $(info.node).parents('media-tag').length) {
@@ -117,10 +123,10 @@ define([
         }
         if (['addElement', 'replaceElement'].indexOf(info.diff.action) !== -1) {
             var msg = "Rejecting forbidden tag of type (%s)";
-            if (info.diff.element && forbiddenTags.indexOf(info.diff.element.nodeName) !== -1) {
+            if (info.diff.element && forbiddenTags.indexOf(info.diff.element.nodeName.toUpperCase()) !== -1) {
                 console.log(msg, info.diff.element.nodeName);
                 return true;
-            } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeName) !== -1) {
+            } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeName.toUpperCase()) !== -1) {
                 console.log("Replacing restricted element type (%s) with PRE", info.diff.newValue.nodeName);
                 info.diff.newValue.nodeName = 'PRE';
             }
@@ -142,7 +148,7 @@ define([
 
     var removeForbiddenTags = function (root) {
         if (!root) { return; }
-        if (forbiddenTags.indexOf(root.nodeName) !== -1) { removeNode(root); }
+        if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
     };
 
