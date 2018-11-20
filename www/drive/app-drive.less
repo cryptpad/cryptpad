@@ -27,6 +27,8 @@
     @drive_content-bg: @colortheme_sidebar-right-bg;
     @drive_content-bg-ro: darken(@drive_content-bg, 10%);
 
+    @drive_selected-bg: #888;
+
 
     /* PAGE */
 
@@ -157,7 +159,7 @@
     }
 
     .cp-app-drive-element-selected {
-        background: #666 !important;
+        background: @drive_selected-bg !important;
         color: #eee;
         margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
