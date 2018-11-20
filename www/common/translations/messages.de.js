@@ -457,7 +457,8 @@ define(function () {
                              "Wir haben fortgeschrittene Aktionen aus dem anonymen CryptDrive entfernt, weil wir klar machen wollen, dass es kein sicherer Platz ist, Dinge zu lagern." + 
                              'Du kannst <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">lesen</a>, weshalb wir das machen und weshalb du wirklich ' +
                              '<a href="/register/">registrieren</a> oder <a href="/login/">einloggen</a> solltest.';
-    out.fm_info_sharedFolder = "Dieser Ordner ist verteilt. Da du aber nicht eingeloggt bist, hast du nur einen schreibgeschützen Zugang.<br>";
+    out.fm_info_sharedFolder = 'Dieser Ordner ist verteilt. Da du aber nicht eingeloggt bist, hast du nur einen schreibgeschützen Zugang.<br>' +
+                               '<a href="/register/">Registriere</a> oder <a href="/login/">logge ich ein</a>, damit du dieses Ordner in dein CryptDrive importieren und bearbeiten kannst.';
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'Wie soll diese Datei heissen?';
     out.fm_error_cantPin = "Interner Serverfehler. Bitte lade die Seite neu und versuche es wieder.";
