@@ -9,6 +9,7 @@ define([
     '/common/common-hash.js',
     '/common/modes.js',
     '/common/visible.js',
+    '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
 
@@ -51,6 +52,7 @@ define([
     Hash,
     Modes,
     Visible,
+    TypingTest,
     Messages,
     CMeditor)
 {
@@ -345,6 +347,12 @@ define([
         editor.on('change', framework.localChange);
 
         framework.start();
+
+
+        window.easyTest = function () {
+            var test = TypingTest.testCode(editor);
+            return test;
+        };
     };
 
     var getThumbnailContainer = function () {

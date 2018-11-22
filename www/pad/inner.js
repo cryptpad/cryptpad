@@ -685,6 +685,7 @@ define([
             ];
         });
 
+
         /* hitting enter makes a new line, but places the cursor inside
             of the <br> instead of the <p>. This makes it such that you
             cannot type until you click, which is rather unnacceptable.
@@ -715,7 +716,7 @@ define([
             cursor.update();
             //var start = cursor.Range.start;
             //var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
-            var test = TypingTest.testInput2(editor);
+            var test = TypingTest.testPad(editor, framework.localChange);
             framework.localChange();
             return test;
         };

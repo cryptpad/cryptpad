@@ -56,7 +56,7 @@ define(function () {
         };
     };
 
-    var testInput2 = function (editor) {
+    var testPad = function (editor, onLocal) {
         var i = 0,
             input = " The quick red fox jumps over the lazy brown dog.",
             l = input.length,
@@ -67,6 +67,26 @@ define(function () {
 
         interval = setRandomizedInterval(function () {
             editor.insertText(input.charAt(i));
+            onLocal();
+            i = (i + 1) % l;
+        }, 200, 50);
+
+        return {
+            cancel: cancel
+        };
+    };
+
+    var testCode = function (editor) {
+        var i = 0,
+            input = " The quick red fox jumps over the lazy brown dog.",
+            l = input.length,
+            interval;
+        var cancel = function () {
+            if (interval) { interval.cancel(); }
+        };
+
+        interval = setRandomizedInterval(function () {
+            editor.replaceSelection(input.charAt(i));
             i = (i + 1) % l;
         }, 200, 50);
 
@@ -77,7 +97,8 @@ define(function () {
 
     return {
         testInput: testInput,
-        testInput2: testInput2,
+        testPad: testPad,
+        testCode: testCode,
         setRandomizedInterval: setRandomizedInterval
     };
 });
