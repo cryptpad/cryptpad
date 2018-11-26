@@ -8,6 +8,231 @@ define([
     var Cursor = function (inner) {
         var cursor = {};
 
+        var getTextNodeValue = function (el) {
+            if (!el.data) { return; }
+            // We want to transform html entities into their code (non-breaking spaces into $&nbsp;)
+            var div = document.createElement('div');
+            div.innerText = el.data;
+            return div.innerHTML;
+        };
+
+        // Store the cursor position as an offset from the beginning of the text HTML content
+        var offsetRange = cursor.offsetRange = {
+            start: 0,
+            end: 0
+        };
+
+        // Get the length of the opening tag of an node (<body class="cp"> ==> 17)
+        var getOpeningTagLength = function (node) {
+            if (node.nodeType === node.TEXT_NODE) { return 0; }
+            var html = node.outerHTML;
+            var tagRegex = /^(<\s*[a-zA-Z-]*[^>]*>)(.+)/;
+            var match = tagRegex.exec(html);
+            var res = match && match.length > 1 ? match[1].length : 0;
+            return res;
+        };
+
+        // Get the offset recursively. We start with <body> and continue following the
+        // path to the range
+        var offsetInNode = function (element, offset, path, range) {
+            if (path.length === 0) {
+                offset += getOpeningTagLength(range.el);
+                if (range.el.nodeType === range.el.TEXT_NODE) {
+                    var div = document.createElement('div');
+                    div.innerText = range.el.data.slice(0, range.offset);
+                    return offset + div.innerHTML.length;
+                }
+                return offset + range.offset;
+            }
+            offset += getOpeningTagLength(element);
+            for (var i = 0; i < element.childNodes.length; i++) {
+                if (element.childNodes[i] === path[0]) {
+                    return offsetInNode(path.shift(), offset, path, range);
+                }
+                // It is not yet our path, add the length of the text node or tag's outerHTML
+                offset += (getTextNodeValue(element.childNodes[i]) || element.childNodes[i].outerHTML).length;
+            }
+        };
+
+        // Get the cursor position as a range and transform it into
+        // an offset from the beginning of the outer HTML
+        var getOffsetFromRange = function (element) {
+            var doc = element.ownerDocument || element.document;
+            var win = doc.defaultView || doc.parentWindow;
+            var o = {
+                start: 0,
+                end: 0
+            };
+            if (typeof win.getSelection !== "undefined") {
+                var sel = win.getSelection();
+                if (sel.rangeCount > 0) {
+                    var range = win.getSelection().getRangeAt(0);
+                    // Do it for both start and end
+                    ['start', 'end'].forEach(function (t) {
+                        var inNode = {
+                            el: range[t + 'Container'],
+                            offset: range[t + 'Offset']
+                        };
+                        var current = inNode.el;
+                        var path = [];
+                        while (current !== element) {
+                            path.unshift(current);
+                            current = current.parentElement;
+                        }
+
+                        if (current === element) { // Should always be the case
+                            o[t] = offsetInNode(current, 0, path, inNode);
+                        } else {
+                            console.error('???');
+                        }
+                    });
+                }
+            }
+            return o;
+        };
+
+        // Update the value of the offset
+        // This should be called before applying changes to the document
+        cursor.offsetUpdate = function () {
+            try {
+                var range = getOffsetFromRange(inner);
+                offsetRange.start = range.start;
+                offsetRange.end = range.end;
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
+        // Transform the offset value using the operations from the diff
+        // between the old and the new states of the document.
+        var offsetTransformRange = function (offset, ops) {
+            var transformCursor = function (cursor, op) {
+                if (!op) { return cursor; }
+
+                var pos = op.offset;
+                var remove = op.toRemove;
+                var insert = op.toInsert.length;
+                if (typeof cursor === 'undefined') { return; }
+                if (typeof remove === 'number' && pos < cursor) {
+                    cursor -= Math.min(remove, cursor - pos);
+                }
+                if (typeof insert === 'number' && pos < cursor) {
+                    cursor += insert;
+                }
+                return cursor;
+            };
+            var c = offset;
+            if (Array.isArray(ops)) {
+                for (var i = ops.length - 1; i >= 0; i--) {
+                    c = transformCursor(c, ops[i]);
+                }
+                offset = c;
+            }
+            return offset;
+        };
+
+        // Get the range starting from <body> and the offset value.
+        // We substract length of HTML content to the offset until we reach a text node or 0.
+        // If we reach a text node, it means we're in the final possible child and the
+        // current valu of the offset is the range one.
+        // If we reach 0 or a negative value, it means the range in is the current tag
+        // and we should use offset 0.
+        var getFinalRange = function (el, offset) {
+            if (el.nodeType === el.TEXT_NODE) {
+                // This should be the final text node
+                var txt = document.createElement("textarea");
+                txt.appendChild(el.cloneNode());
+                txt.innerHTML = txt.innerHTML.slice(0, offset);
+                return {
+                    el: el,
+                    offset: txt.value.length
+                };
+            }
+            if (el.tagName === 'BR') {
+                // If the range is in a <br>, we have a brFix that will make it better later
+                return {
+                    el: el,
+                    offset: 0
+                };
+            }
+
+            // Remove the current tag opening length
+            offset = offset - getOpeningTagLength(el);
+
+            if (offset <= 0) {
+                // Return the current node...
+                return {
+                    el: el,
+                    offset: 0
+                };
+            }
+
+            // For each child, if they length is greater than the current offset, they are
+            // containing the range element we're looking for.
+            // Otherwise, our range element is in a later sibling and we can just substract
+            // their length.
+            var newOffset = offset;
+            for (var i = 0; i < el.childNodes.length; i++) {
+                newOffset -= (getTextNodeValue(el.childNodes[i]) || el.childNodes[i].outerHTML).length;
+                if (newOffset <= 0) {
+                    return getFinalRange(el.childNodes[i], offset);
+                }
+                offset = newOffset;
+            }
+
+            // New offset ends up in the closing tag
+            // ==> return the last child...
+            if (el.childNodes.length) {
+                return getFinalRange(el.childNodes[el.childNodes.length - 1], offset);
+            } else {
+                return {
+                    el: el,
+                    offset: 0
+                };
+            }
+        };
+
+        // Transform an offset into a range that we can use to restore the cursor
+        var getRangeFromOffset = function (element) {
+            var range = {
+                start: {
+                    el: null,
+                    offset: 0
+                },
+                end: {
+                    el: null,
+                    offset: 0
+                }
+            };
+
+            ['start', 'end'].forEach(function (t) {
+                var offset = offsetRange[t];
+                var res = getFinalRange(element, offset);
+                range[t].el = res.el;
+                range[t].offset = res.offset;
+            });
+
+
+            return range;
+        };
+
+        // Restore the cursor position after applying the changes.
+        cursor.restoreOffset = function (ops) {
+            try {
+                offsetRange.start = offsetTransformRange(offsetRange.start, ops);
+                offsetRange.end = offsetTransformRange(offsetRange.end, ops);
+                var range = getRangeFromOffset(inner);
+                var sel = cursor.makeSelection();
+                var r = cursor.makeRange();
+                cursor.fixStart(range.start.el, range.start.offset);
+                cursor.fixEnd(range.end.el, range.end.offset);
+                cursor.fixSelection(sel, r);
+                cursor.brFix();
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
         // there ought to only be one cursor at a time, so let's just
         // keep it internally
         var Range = cursor.Range = {

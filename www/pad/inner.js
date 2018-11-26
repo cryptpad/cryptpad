@@ -306,6 +306,7 @@ define([
                     return true;
                 }
 
+/*
                 cursor.update();
 
                 // no use trying to recover the cursor if it doesn't exist
@@ -314,6 +315,7 @@ define([
                 /*  frame is either 0, 1, 2, or 3, depending on which
                     cursor frames were affected: none, first, last, or both
                 */
+/*
                 var frame = info.frame = cursor.inNode(info.node);
 
                 if (!frame) { return; }
@@ -325,19 +327,15 @@ define([
                     if (frame & 1) {
                         // push cursor start if necessary
                         cursor.transformRange(cursor.Range.start, ops);
-                        /*if (pushes.commonStart < cursor.Range.start.offset) {
-                            cursor.Range.start.offset += pushes.delta;
-                        }*/
                     }
                     if (frame & 2) {
                         // push cursor end if necessary
                         cursor.transformRange(cursor.Range.end, ops);
-                        /*if (pushes.commonStart < cursor.Range.end.offset) {
-                            cursor.Range.end.offset += pushes.delta;
-                        }*/
                     }
                 }
+*/
             },
+/*
             postDiffApply: function (info) {
                 if (info.frame) {
                     if (info.node) {
@@ -351,6 +349,7 @@ define([
                     cursor.fixSelection(sel, range);
                 }
             }
+*/
         };
     };
 
@@ -515,8 +514,18 @@ define([
                 $(el).remove();
             });
 
+            // Get cursor position
+            cursor.offsetUpdate();
+            var oldText = inner.outerHTML;
+
+            // Apply the changes
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
+
+            // Restore cursor position
+            var newText = inner.outerHTML;
+            var ops = ChainPad.Diff.diff(oldText, newText);
+            cursor.restoreOffset(ops);
 
             // MEDIATAG: Migrate old mediatags to the widget system
             $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
