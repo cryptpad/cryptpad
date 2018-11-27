@@ -511,7 +511,7 @@ define([
                 }
                 // History cleared while we were offline
                 // ==> we asked for an invalid last known hash
-                if (parsed.error && parsed.errorCode === "EINVAL") {
+                if (parsed.error && parsed.error === "EINVAL") {
                     messenger.setChannelHead(parsed.channel, '', function () {
                         getChannelMessagesSince(getChannel(parsed.channel), {}, {});
                     });
