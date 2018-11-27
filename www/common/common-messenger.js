@@ -405,9 +405,10 @@ define([
                 return;
             }
 
+            var friend = getFriendFromChannel(chan.id) || {};
             var cfg = {
                 validateKey: keys ? keys.validateKey : undefined,
-                owners: [proxy.edPublic, data.edPublic],
+                owners: [proxy.edPublic, friend.edPublic],
                 lastKnownHash: data.lastKnownHash
             };
             var msg = ['GET_HISTORY', chan.id, cfg];
