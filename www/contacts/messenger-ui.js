@@ -202,6 +202,9 @@ define([
             }, []);
         };
 
+        var clearChannel = function (id) {
+            $(getChat(id)).find('.cp-app-contacts-messages').html('');
+        };
         markup.chatbox = function (id, data, curvePublic) {
             var moreHistory = h('span.cp-app-contacts-more-history.fa.fa-history', {
                 title: Messages.contacts_fetchHistory,
@@ -277,14 +280,14 @@ define([
                             UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
-                        // TODO clear the UI
+                        clearChannel(id);
                     });
                 });
             });
 
             var avatar = h('div.cp-avatar');
 
-            var headerContent = [avatar, moreHistory, data.isFriendCHat ? removeHistory : undefined];
+            var headerContent = [avatar, moreHistory, data.isFriendChat ? removeHistory : undefined];
             if (isApp) {
                 headerContent = [
                     h('div.cp-app-contacts-header-title', Messages.contacts_padTitle),
@@ -812,6 +815,10 @@ define([
         sframeChan.on('EV_CHAT_EVENT', function (obj) {
             if (obj.ev === 'READY') {
                 onMessengerReady();
+                return;
+            }
+            if (obj.ev === 'CLEAR_CHANNEL') {
+                clearChannel(obj.data);
                 return;
             }
             if (obj.ev === 'PADCHAT_READY') {

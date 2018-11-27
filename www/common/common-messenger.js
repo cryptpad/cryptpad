@@ -387,6 +387,38 @@ define([
             }
         };
 
+        var getChannelMessagesSince = function (chan, data, keys) {
+            console.log('Fetching [%s] messages since [%s]', chan.id, data.lastKnownHash || '');
+
+            if (chan.isPadChat) {
+                // We need to use GET_HISTORY_RANGE to make sure we won't get the full history
+                var txid = Util.uid();
+                initRangeRequest(txid, chan.id, undefined);
+                var msg0 = ['GET_HISTORY_RANGE', chan.id, {
+                        //from: hash,
+                        count: 10,
+                        txid: txid,
+                    }
+                ];
+                network.sendto(network.historyKeeper, JSON.stringify(msg0)).then(function () {
+                }, function (err) {
+                    throw new Error(err);
+                });
+                return;
+            }
+
+            var cfg = {
+                validateKey: keys ? keys.validateKey : undefined,
+                owners: [proxy.edPublic, data.edPublic],
+                lastKnownHash: data.lastKnownHash
+            };
+            var msg = ['GET_HISTORY', chan.id, cfg];
+            network.sendto(network.historyKeeper, JSON.stringify(msg))
+              .then(function () {}, function (err) {
+                throw new Error(err);
+            });
+        };
+
         var onChannelReady = function (chanId) {
             var cb = joining[chanId];
             if (typeof(cb) !== 'function') {
@@ -469,15 +501,31 @@ define([
             if ((parsed.validateKey || parsed.owners) && parsed.channel) {
                 return;
             }
-            // End of initial history
-            if (parsed.state && parsed.state === 1 && parsed.channel) {
-                if (channels[parsed.channel]) {
+            if (parsed.channel && channels[parsed.channel]) {
+                // Error in initial history
+                // History cleared while we're in the channel
+                if (parsed.error === 'ECLEARED') {
+                    messenger.setChannelHead(parsed.channel, '', function () {});
+                    emit('CLEAR_CHANNEL', parsed.channel);
+                    return;
+                }
+                // History cleared while we were offline
+                // ==> we asked for an invalid last known hash
+                if (parsed.error && parsed.errorCode === "EINVAL") {
+                    messenger.setChannelHead(parsed.channel, '', function () {
+                        getChannelMessagesSince(getChannel(parsed.channel), {}, {});
+                    });
+                    return;
+                }
+
+                // End of initial history
+                if (parsed.state && parsed.state === 1 && parsed.channel) {
                     // parsed.channel is Ready
                     // channel[parsed.channel].ready();
                     channels[parsed.channel].ready = true;
                     onChannelReady(parsed.channel);
+                    return;
                 }
-                return;
             }
             // Initial history message
             var chan = parsed[3];
@@ -495,7 +543,6 @@ define([
                     //channels[chan.id].notify();
                 }
                 //channels[chan.id].refresh();
-                // TODO emit message event
             }
         };
 
@@ -545,38 +592,6 @@ define([
             } catch (e) {
                 cb(e);
             }
-        };
-
-        var getChannelMessagesSince = function (chan, data, keys) {
-            console.log('Fetching [%s] messages since [%s]', chan.id, data.lastKnownHash || '');
-
-            if (chan.isPadChat) {
-                // We need to use GET_HISTORY_RANGE to make sure we won't get the full history
-                var txid = Util.uid();
-                initRangeRequest(txid, chan.id, undefined);
-                var msg0 = ['GET_HISTORY_RANGE', chan.id, {
-                        //from: hash,
-                        count: 10,
-                        txid: txid,
-                    }
-                ];
-                network.sendto(network.historyKeeper, JSON.stringify(msg0)).then(function () {
-                }, function (err) {
-                    throw new Error(err);
-                });
-                return;
-            }
-
-            var cfg = {
-                validateKey: keys ? keys.validateKey : undefined,
-                owners: [proxy.edPublic, data.edPublic],
-                lastKnownHash: data.lastKnownHash
-            };
-            var msg = ['GET_HISTORY', chan.id, cfg];
-            network.sendto(network.historyKeeper, JSON.stringify(msg))
-              .then(function () {}, function (err) {
-                throw new Error(err);
-            });
         };
 
         var openChannel = function (data) {
