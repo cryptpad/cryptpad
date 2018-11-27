@@ -619,45 +619,10 @@ define([
 
     // Messenger
     var messenger = common.messenger = {};
-    messenger.getFriendList = function (cb) {
-        postMessage("CONTACTS_GET_FRIEND_LIST", null, cb);
-    };
-    messenger.getMyInfo = function (cb) {
-        postMessage("CONTACTS_GET_MY_INFO", null, cb);
-    };
-    messenger.getFriendInfo = function (curvePublic, cb) {
-        postMessage("CONTACTS_GET_FRIEND_INFO", curvePublic, cb);
-    };
-    messenger.removeFriend = function (curvePublic, cb) {
-        postMessage("CONTACTS_REMOVE_FRIEND", curvePublic, cb);
-    };
-    messenger.openFriendChannel = function (curvePublic, cb) {
-        postMessage("CONTACTS_OPEN_FRIEND_CHANNEL", curvePublic, cb);
-    };
-    messenger.getFriendStatus = function (curvePublic, cb) {
-        postMessage("CONTACTS_GET_FRIEND_STATUS", curvePublic, cb);
-    };
-    messenger.getMoreHistory = function (data, cb) {
-        postMessage("CONTACTS_GET_MORE_HISTORY", data, cb);
-    };
-    messenger.sendMessage = function (data, cb) {
-        postMessage("CONTACTS_SEND_MESSAGE", data, cb);
-    };
-    messenger.setChannelHead = function (data, cb) {
-        postMessage("CONTACTS_SET_CHANNEL_HEAD", data, cb);
-    };
-
     messenger.execCommand = function (data, cb) {
         postMessage("CHAT_COMMAND", data, cb);
     };
-
     messenger.onEvent = Util.mkEvent();
-    messenger.onMessageEvent = Util.mkEvent();
-    messenger.onJoinEvent = Util.mkEvent();
-    messenger.onLeaveEvent = Util.mkEvent();
-    messenger.onUpdateEvent = Util.mkEvent();
-    messenger.onFriendEvent = Util.mkEvent();
-    messenger.onUnfriendEvent = Util.mkEvent();
 
     // Pad RPC
     var pad = common.padRpc = {};
@@ -1082,13 +1047,6 @@ define([
                 common.onNetworkReconnect.fire(data);
             });
         },
-        // Messenger
-        CONTACTS_MESSAGE: common.messenger.onMessageEvent.fire,
-        CONTACTS_JOIN: common.messenger.onJoinEvent.fire,
-        CONTACTS_LEAVE: common.messenger.onLeaveEvent.fire,
-        CONTACTS_UPDATE: common.messenger.onUpdateEvent.fire,
-        CONTACTS_FRIEND: common.messenger.onFriendEvent.fire,
-        CONTACTS_UNFRIEND: common.messenger.onUnfriendEvent.fire,
         // Chat
         CHAT_EVENT: common.messenger.onEvent.fire,
         // Pad

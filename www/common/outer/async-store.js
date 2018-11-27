@@ -898,83 +898,6 @@ define([
         };
 
         Store.messenger = {
-            getFriendList: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getFriendList(function (e, keys) {
-                    cb({
-                        error: e,
-                        data: keys,
-                    });
-                });
-            },
-            getMyInfo: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getMyInfo(function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            getFriendInfo: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getFriendInfo(data, function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            removeFriend: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.removeFriend(data, function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            openFriendChannel: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.openFriendChannel(data, function (e) {
-                    cb({ error: e, });
-                });
-            },
-            getFriendStatus: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getStatus(data, function (e, online) {
-                    cb({
-                        error: e,
-                        data: online,
-                    });
-                });
-            },
-            getMoreHistory: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getMoreHistory(data.curvePublic, data.sig, data.count, function (e, history) {
-                    cb({
-                        error: e,
-                        data: history,
-                    });
-                });
-            },
-            sendMessage: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.sendMessage(data.curvePublic, data.content, function (e) {
-                    cb({
-                        error: e,
-                    });
-                });
-            },
-            setChannelHead: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.setChannelHead(data.curvePublic, data.sig, function (e) {
-                    cb({
-                        error: e
-                    });
-                });
-            },
-
             execCommand: function (clientId, data, cb) {
                 if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
                 store.messenger.execCommand(data, cb);
@@ -1360,39 +1283,6 @@ define([
         var loadMessenger = function () {
             if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
             var messenger = store.messenger = Messenger.messenger(store);
-            messenger.on('message', function (message) {
-                sendMessengerEvent('CONTACTS_MESSAGE', message);
-            });
-            messenger.on('join', function (curvePublic, channel) {
-                sendMessengerEvent('CONTACTS_JOIN', {
-                    curvePublic: curvePublic,
-                    channel: channel,
-                });
-            });
-            messenger.on('leave', function (curvePublic, channel) {
-                sendMessengerEvent('CONTACTS_LEAVE', {
-                    curvePublic: curvePublic,
-                    channel: channel,
-                });
-            });
-            messenger.on('update', function (info, types, channel) {
-                sendMessengerEvent('CONTACTS_UPDATE', {
-                    types: types,
-                    info: info,
-                    channel: channel
-                });
-            });
-            messenger.on('friend', function (curvePublic) {
-                sendMessengerEvent('CONTACTS_FRIEND', {
-                    curvePublic: curvePublic,
-                });
-            });
-            messenger.on('unfriend', function (curvePublic, removedByMe) {
-                sendMessengerEvent('CONTACTS_UNFRIEND', {
-                    curvePublic: curvePublic,
-                    removedByMe: removedByMe
-                });
-            });
             messenger.on('event', function (ev, data) {
                 sendMessengerEvent('CHAT_EVENT', {
                     ev: ev,

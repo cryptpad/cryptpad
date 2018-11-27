@@ -6,11 +6,10 @@ define([
     '/common/common-interface.js',
     '/common/common-hash.js',
     '/common/common-feedback.js',
-    '/common/sframe-messenger-inner.js',
     '/contacts/messenger-ui.js',
     '/customize/messages.js',
 ], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback,
-Messenger, MessengerUI, Messages) {
+MessengerUI, Messages) {
     var Common;
 
     var Bar = {
@@ -425,9 +424,7 @@ Messenger, MessengerUI, Messages) {
             id: 'cp-app-contacts-container',
             'class': 'cp-app-contacts-inapp'
         }).prependTo(toolbar.chatContent);
-        var sframeChan = Common.getSframeChannel();
-        var messenger = Messenger.create(sframeChan);
-        MessengerUI.create(messenger, $container, Common, toolbar);
+        MessengerUI.create($container, Common, toolbar);
     };
     var createChat = function (toolbar, config) {
         if (!config.metadataMgr) {

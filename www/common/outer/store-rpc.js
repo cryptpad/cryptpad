@@ -60,16 +60,6 @@ define([
             // Messaging
             INVITE_FROM_USERLIST: Store.inviteFromUserlist,
             ADD_DIRECT_MESSAGE_HANDLERS: Store.addDirectMessageHandlers,
-            // Messenger
-            CONTACTS_GET_FRIEND_LIST: Store.messenger.getFriendList,
-            CONTACTS_GET_MY_INFO: Store.messenger.getMyInfo,
-            CONTACTS_GET_FRIEND_INFO: Store.messenger.getFriendInfo,
-            CONTACTS_REMOVE_FRIEND: Store.messenger.removeFriend,
-            CONTACTS_OPEN_FRIEND_CHANNEL: Store.messenger.openFriendChannel,
-            CONTACTS_GET_FRIEND_STATUS: Store.messenger.getFriendStatus,
-            CONTACTS_GET_MORE_HISTORY: Store.messenger.getMoreHistory,
-            CONTACTS_SEND_MESSAGE: Store.messenger.sendMessage,
-            CONTACTS_SET_CHANNEL_HEAD: Store.messenger.setChannelHead,
             // Chat
             CHAT_COMMAND: Store.messenger.execCommand,
             // Pad

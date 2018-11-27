@@ -713,7 +713,7 @@ define([
                 Cryptpad.setLanguage(data, cb);
             });
 
-            sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
+            sframeChan.on('Q_CLEAR_OWNED_CHANNEL', function (channel, cb) {
                 Cryptpad.clearOwnedChannel(channel, cb);
             });
             sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
@@ -794,37 +794,6 @@ define([
 
             if (cfg.messaging) {
                 Notifier.getPermission();
-                sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
-                    Cryptpad.messenger.getFriendList(cb);
-                });
-                sframeChan.on('Q_CONTACTS_GET_MY_INFO', function (data, cb) {
-                    Cryptpad.messenger.getMyInfo(cb);
-                });
-                sframeChan.on('Q_CONTACTS_GET_FRIEND_INFO', function (curvePublic, cb) {
-                    Cryptpad.messenger.getFriendInfo(curvePublic, cb);
-                });
-                sframeChan.on('Q_CONTACTS_REMOVE_FRIEND', function (curvePublic, cb) {
-                    Cryptpad.messenger.removeFriend(curvePublic, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
-                    Cryptpad.messenger.openFriendChannel(curvePublic, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_GET_STATUS', function (curvePublic, cb) {
-                    Cryptpad.messenger.getFriendStatus(curvePublic, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_GET_MORE_HISTORY', function (opt, cb) {
-                    Cryptpad.messenger.getMoreHistory(opt, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_SEND_MESSAGE', function (opt, cb) {
-                    Cryptpad.messenger.sendMessage(opt, cb);
-                });
-                sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
-                    Cryptpad.messenger.setChannelHead(opt, cb);
-                });
 
                 sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
                     Cryptpad.messenger.execCommand({
@@ -840,25 +809,6 @@ define([
                 });
                 Cryptpad.messenger.onEvent.reg(function (data) {
                     sframeChan.event('EV_CHAT_EVENT', data);
-                });
-
-                Cryptpad.messenger.onMessageEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_MESSAGE', data);
-                });
-                Cryptpad.messenger.onJoinEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_JOIN', data);
-                });
-                Cryptpad.messenger.onLeaveEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_LEAVE', data);
-                });
-                Cryptpad.messenger.onUpdateEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_UPDATE', data);
-                });
-                Cryptpad.messenger.onFriendEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_FRIEND', data);
-                });
-                Cryptpad.messenger.onUnfriendEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_UNFRIEND', data);
                 });
             }
 
