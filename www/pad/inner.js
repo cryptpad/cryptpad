@@ -733,7 +733,7 @@ define([
 
         // Fix the scrollbar if it's reset when clicking on a button (firefox only?)
         var buttonScrollTop;
-        $('.cke_toolbox_main').find('.cke_button').mousedown(function () {
+        $('.cke_toolbox_main').find('.cke_button, .cke_combo_button').mousedown(function () {
             buttonScrollTop = $('iframe').contents().scrollTop();
             setTimeout(function () {
                 $('iframe').contents().scrollTop(buttonScrollTop);
