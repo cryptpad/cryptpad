@@ -9,6 +9,7 @@ define([
     '/common/sframe-common-history.js',
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
+    '/common/sframe-common-cursor.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -31,6 +32,7 @@ define([
     History,
     File,
     CodeMirror,
+    Cursor,
     MetadataMgr,
     AppConfig,
     CommonRealtime,
@@ -106,6 +108,9 @@ define([
     // Title module
     funcs.createTitle = callWithCommon(Title.create);
 
+    // Cursor
+    funcs.createCursor = callWithCommon(Cursor.create);
+
     // Files
     funcs.uploadFile = callWithCommon(File.uploadFile);
     funcs.createFileManager = callWithCommon(File.create);
@@ -176,6 +181,24 @@ define([
         }
         padChatChannel = channel;
         ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
+
+    var cursorChannel;
+    funcs.getCursorChannel = function () {
+        return cursorChannel;
+    };
+    funcs.openCursorChannel = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.cursor || Hash.createChannelId();
+        if (!md.cursor) {
+            md.cursor = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        cursorChannel = channel;
+        ctx.sframeChan.query('Q_CURSOR_OPENCHANNEL', channel, function (err, obj) {
             if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
         });
     };

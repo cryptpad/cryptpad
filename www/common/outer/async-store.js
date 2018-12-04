@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/common-messenger.js',
+    '/common/outer/cursor.js',
     '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
@@ -20,7 +21,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             CpNfWorker, NetConfig, AppConfig,
+             Cursor, CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
     var Store = {};
 
@@ -904,6 +905,15 @@ define([
             }
         };
 
+        // Cursor
+
+        Store.cursor = {
+            execCommand: function (clientId, data, cb) {
+                if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
+                store.cursor.execCommand(clientId, data, cb);
+            }
+        };
+
         //////////////////////////////////////////////////////////////////
         /////////////////////// PAD //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
@@ -1200,13 +1210,14 @@ define([
         var messengerEventClients = [];
 
         var dropChannel = function (chanId) {
+            store.messenger.leavePad(chanId);
+            store.cursor.leavePad(chanId);
+
             if (!Store.channels[chanId]) { return; }
 
             if (Store.channels[chanId].cpNf) {
                 Store.channels[chanId].cpNf.stop();
             }
-
-            store.messenger.leavePad(chanId);
 
             delete Store.channels[chanId];
         };
@@ -1219,6 +1230,7 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
+            store.cursor.removeClient(clientId);
             Object.keys(Store.channels).forEach(function (chanId) {
                 var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
                 if (chanIdx !== -1) {
@@ -1291,6 +1303,16 @@ define([
             });
         };
 
+        var loadCursor = function () {
+            store.cursor = Cursor.init(store, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'CURSOR_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
 
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
@@ -1378,6 +1400,7 @@ define([
                 userObject.fixFiles();
                 loadSharedFolders(waitFor);
                 loadMessenger();
+                loadCursor();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");

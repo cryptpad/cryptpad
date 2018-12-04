@@ -301,6 +301,13 @@ define([
             return content;
         });
 
+        framework.onCursorUpdate(CodeMirror.setRemoteCursor);
+        framework.setCursorGetter(CodeMirror.getCursor);
+        editor.on('cursorActivity', function () {
+            if (editor._noCursorUpdate) { console.log('ok'); return; }
+            framework.updateCursor();
+        });
+
         framework.onEditableChange(function () {
             editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());
         });

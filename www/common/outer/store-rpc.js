@@ -62,6 +62,8 @@ define([
             ADD_DIRECT_MESSAGE_HANDLERS: Store.addDirectMessageHandlers,
             // Chat
             CHAT_COMMAND: Store.messenger.execCommand,
+            // Cursor
+            CURSOR_COMMAND: Store.cursor.execCommand,
             // Pad
             SEND_PAD_MSG: Store.sendPadMsg,
             JOIN_PAD: Store.joinPad,

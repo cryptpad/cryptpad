@@ -55,6 +55,7 @@ define([
 
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
+        var evCursorUpdate = Util.mkEvent();
         var evEditableStateChange = Util.mkEvent();
         var evOnReady = Util.mkEvent(true);
         var evOnDefaultContentNeeded = Util.mkEvent();
@@ -68,6 +69,7 @@ define([
         var cpNfInner;
         var readOnly;
         var title;
+        var cursor;
         var toolbar;
         var state = STATE.DISCONNECTED;
         var firstConnection = true;
@@ -90,6 +92,7 @@ define([
         var textContentGetter;
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
+        var cursorGetter;
         var normalize0 = function (x) { return x; };
 
         var normalize = function (x) {
@@ -326,6 +329,11 @@ define([
                 evOnReady.fire(newPad);
 
                 common.openPadChat(onLocal);
+                if (!readOnly && cursorGetter) {
+                    common.openCursorChannel(onLocal);
+                    cursor = common.createCursor();
+                    cursor.onCursorUpdate(evCursorUpdate.fire);
+                }
 
                 UI.removeLoadingScreen(emitResize);
 
@@ -637,6 +645,15 @@ define([
                 // Set the content supplier, this is the function which will supply the content
                 // in the pad when requested by the framework.
                 setContentGetter: function (cg) { contentGetter = cg; },
+
+                // Set the function providing the cursor position when request by the framework.
+                setCursorGetter: function (cg) { cursorGetter = cg; },
+                onCursorUpdate: evCursorUpdate.reg,
+                updateCursor: function () {
+                    if (cursor && cursorGetter) {
+                        cursor.updateCursor(cursorGetter());
+                    }
+                },
 
                 // Set a text content supplier, this is a function which will give a text
                 // representation of the pad content if a text analyzer is configured

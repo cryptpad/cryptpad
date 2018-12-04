@@ -624,6 +624,14 @@ define([
     };
     messenger.onEvent = Util.mkEvent();
 
+    // Cursor
+    var cursor = common.cursor = {};
+    cursor.execCommand = function (data, cb) {
+        postMessage("CURSOR_COMMAND", data, cb);
+    };
+    cursor.onEvent = Util.mkEvent();
+
+
     // Pad RPC
     var pad = common.padRpc = {};
     pad.joinPad = function (data) {
@@ -1049,6 +1057,8 @@ define([
         },
         // Chat
         CHAT_EVENT: common.messenger.onEvent.fire,
+        // Cursor
+        CURSOR_EVENT: common.cursor.onEvent.fire,
         // Pad
         PAD_READY: common.padRpc.onReadyEvent.fire,
         PAD_MESSAGE: common.padRpc.onMessageEvent.fire,

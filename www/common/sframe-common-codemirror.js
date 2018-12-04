@@ -45,6 +45,7 @@ define([
         return new Blob([ content ], { type: 'text/plain;charset=utf-8' });
     };
     module.setValueAndCursor = function (editor, oldDoc, remoteDoc) {
+        editor._noCursorUpdate = true;
         var scroll = editor.getScrollInfo();
         //get old cursor here
         var oldCursor = {};
@@ -59,6 +60,7 @@ define([
             return TextCursor.transformCursor(oldCursor[attr], ops);
         });
 
+        editor._noCursorUpdate = false;
         if(selects[0] === selects[1]) {
             editor.setCursor(posToCursor(selects[0], remoteDoc));
         }
@@ -372,6 +374,56 @@ define([
             };
             metadataMgr.onChangeLazy(updateIndentSettings);
             updateIndentSettings();
+        };
+
+        exp.getCursor = function () {
+            var doc = canonicalize(editor.getValue());
+            var cursor = {};
+            cursor.selectionStart = cursorToPos(editor.getCursor('from'), doc);
+            cursor.selectionEnd = cursorToPos(editor.getCursor('to'), doc);
+            return cursor;
+        };
+
+        var makeCursor = function (id) {
+            if (document.getElementById(id)) {
+                return document.getElementById(id);
+            }
+            return $('<span>', {
+                'id': id,
+                'class': 'cp-codemirror-cursor'
+            })[0];
+        };
+        var marks = {};
+        exp.setRemoteCursor = function (data) {
+            if (data.leave) {
+                $('.cp-codemirror-cursor[id^='+data.id+']').each(function (i, el) {
+                    var id = $(el).attr('id');
+                    if (marks[id]) {
+                        marks[id].clear();
+                        delete marks[id];
+                    }
+                });
+                return;
+            }
+
+            var id = data.id;
+            var cursor = data.cursor;
+            var doc = canonicalize(editor.getValue());
+
+            if (marks[id]) {
+                marks[id].clear();
+                delete marks[id];
+            }
+
+            if (cursor.selectionStart === cursor.selectionEnd) {
+                var cursorPosS = posToCursor(cursor.selectionStart, doc);
+                var el = makeCursor(id);
+                marks[id] = editor.setBookmark(cursorPosS, { widget: el });
+            } else {
+                var pos1 = posToCursor(cursor.selectionStart, doc);
+                var pos2 = posToCursor(cursor.selectionEnd, doc);
+                marks[id] = editor.markText(pos1, pos2, { className: 'cp-codemirror-selection' });
+            }
         };
 
         return exp;

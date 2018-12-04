@@ -158,6 +158,11 @@ define({
     'Q_CHAT_COMMAND': true,
     'Q_CHAT_OPENPADCHAT': true,
 
+    // Cursor
+    'EV_CURSOR_EVENT': true,
+    'Q_CURSOR_COMMAND': true,
+    'Q_CURSOR_OPENCHANNEL': true,
+
     // Put one or more entries to the localStore which will go in localStorage.
     'EV_LOCALSTORE_PUT': true,
     // Put one entry in the parent sessionStorage
