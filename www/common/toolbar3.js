@@ -149,7 +149,6 @@ MessengerUI, Messages) {
         };
     };
 
-    var avatars = {};
     var editingUserName = {
         state: false
     };

@@ -5,7 +5,6 @@ define([
     module.create = function (Common) {
         var exp = {};
         var sframeChan = Common.getSframeChannel();
-        var metadataMgr = Common.getMetadataMgr();
 
         var execCommand = function (cmd, data, cb) {
             sframeChan.query('Q_CURSOR_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
