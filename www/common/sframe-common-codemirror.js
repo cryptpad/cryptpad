@@ -393,6 +393,14 @@ define([
                 'class': 'cp-codemirror-cursor'
             })[0];
         };
+        var makeTippy = function (cursor) {
+            var html = '<span class="cp-cursor-avatar">';
+            if (cursor.avatar && UIElements.getAvatar(cursor.avatar)) {
+                html += UIElements.getAvatar(cursor.avatar);
+            }
+            html += cursor.name + '</span>';
+            return html;
+        };
         var marks = {};
         exp.setRemoteCursor = function (data) {
             if (data.leave) {
@@ -415,14 +423,30 @@ define([
                 delete marks[id];
             }
 
+            if (!cursor.selectionStart) { return; }
+
             if (cursor.selectionStart === cursor.selectionEnd) {
                 var cursorPosS = posToCursor(cursor.selectionStart, doc);
                 var el = makeCursor(id);
+                if (cursor.color) {
+                    $(el).css('border-color', cursor.color);
+                    $(el).css('background-color', cursor.color);
+                }
+                if (cursor.name) {
+                    $(el).attr('title', cursor.name);
+                }
                 marks[id] = editor.setBookmark(cursorPosS, { widget: el });
             } else {
                 var pos1 = posToCursor(cursor.selectionStart, doc);
                 var pos2 = posToCursor(cursor.selectionEnd, doc);
-                marks[id] = editor.markText(pos1, pos2, { className: 'cp-codemirror-selection' });
+                var css = cursor.color
+                    ? 'background-color: rgba(' + Util.hexToRGB(cursor.color).join(',') + ',0.2)'
+                    : 'background-color: rgba(255,0,0,0.2)';
+                marks[id] = editor.markText(pos1, pos2, {
+                    css: css,
+                    title: makeTippy(cursor),
+                    className: 'cp-tippy-html'
+                });
             }
         };
 

@@ -304,7 +304,7 @@ define([
         framework.onCursorUpdate(CodeMirror.setRemoteCursor);
         framework.setCursorGetter(CodeMirror.getCursor);
         editor.on('cursorActivity', function () {
-            if (editor._noCursorUpdate) { console.log('ok'); return; }
+            if (editor._noCursorUpdate) { return; }
             framework.updateCursor();
         });
 

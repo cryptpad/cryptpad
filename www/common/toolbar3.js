@@ -232,6 +232,9 @@ MessengerUI, Messages) {
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'cp-avatar'});
+            if (data.color) {
+                $span.css('border-color', data.color);
+            }
             var $rightCol = $('<span>', {'class': 'cp-toolbar-userlist-rightcol'});
             var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).appendTo($rightCol);
             var $nameValue = $('<span>', {
@@ -322,13 +325,13 @@ MessengerUI, Messages) {
                     window.open(origin+'/profile/#' + data.profile);
                 });
             }
-            if (data.avatar && avatars[data.avatar]) {
-                $span.append(avatars[data.avatar]);
+            if (data.avatar && UIElements.getAvatar(data.avatar)) {
+                $span.append(UIElements.getAvatar(data.avatar));
                 $span.append($rightCol);
             } else {
                 Common.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img && $img.length) {
-                        avatars[data.avatar] = $img[0].outerHTML;
+                        UIElements.setAvatar(data.avatar, $img[0].outerHTML);
                     }
                     $span.append($rightCol);
                 });

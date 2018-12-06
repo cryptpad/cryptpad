@@ -417,6 +417,27 @@ define([
         /////////////////////// Store ////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        // Get or create the user color for the cursor position
+        var getRandomColor = function () {
+            var getColor = function () {
+                return Math.floor(Math.random() * 156) + 70;
+            };
+            return '#' + getColor().toString(16) +
+                         getColor().toString(16) +
+                         getColor().toString(16);
+        };
+        var getUserColor = function () {
+            var color = Util.find(store.proxy, ['settings', 'general', 'color']);
+            if (!color) {
+                color = getRandomColor();
+                Store.setAttribute(null, {
+                    attr: ['general', 'color'],
+                    value: color
+                }, function () {});
+            }
+            return color;
+        };
+
         // Get the metadata for sframe-common-outer
         Store.getMetadata = function (clientId, data, cb) {
             var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
@@ -427,6 +448,7 @@ define([
                     uid: store.proxy.uid,
                     avatar: Util.find(store.proxy, ['profile', 'avatar']),
                     profile: Util.find(store.proxy, ['profile', 'view']),
+                    color: getUserColor(),
                     curvePublic: store.proxy.curvePublic,
                 },
                 // "priv" is not shared with other users but is needed by the apps

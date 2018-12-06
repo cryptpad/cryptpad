@@ -1211,6 +1211,13 @@ define([
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
     };
+    var avatars = {};
+    UIElements.setAvatar = function (hash, data) {
+        avatars[hash] = data;
+    };
+    UIElements.getAvatar = function (hash) {
+        return avatars[hash];
+    };
     UIElements.displayAvatar = function (Common, $container, href, name, cb) {
         var displayDefault = function () {
             var text = getFirstEmojiOrCharacter(name);
