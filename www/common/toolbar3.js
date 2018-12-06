@@ -5,10 +5,11 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/common-feedback.js',
     '/contacts/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback,
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback,
 MessengerUI, Messages) {
     var Common;
 
@@ -161,6 +162,7 @@ MessengerUI, Messages) {
             }
         });
     };
+    var showColors = false;
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
@@ -231,7 +233,7 @@ MessengerUI, Messages) {
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'cp-avatar'});
-            if (data.color) {
+            if (data.color && showColors) {
                 $span.css('border-color', data.color);
             }
             var $rightCol = $('<span>', {'class': 'cp-toolbar-userlist-rightcol'});
@@ -1167,6 +1169,16 @@ MessengerUI, Messages) {
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }
+        };
+
+        // Show user colors in the userlist only if the app is compatible and if the user
+        // wants to see the cursors
+        toolbar.showColors = function () {
+            if (!config.metadataMgr) { return; }
+            var privateData = config.metadataMgr.getPrivateData();
+            var show = Util.find(privateData, ['settings', 'general', 'cursor', 'show']);
+            if (show === false) { return; }
+            showColors = true;
         };
 
         // On log out, remove permanently the realtime elements of the toolbar

@@ -647,7 +647,10 @@ define([
                 setContentGetter: function (cg) { contentGetter = cg; },
 
                 // Set the function providing the cursor position when request by the framework.
-                setCursorGetter: function (cg) { cursorGetter = cg; },
+                setCursorGetter: function (cg) {
+                    toolbar.showColors();
+                    cursorGetter = cg;
+                },
                 onCursorUpdate: evCursorUpdate.reg,
                 updateCursor: function () {
                     if (cursor && cursorGetter) {
