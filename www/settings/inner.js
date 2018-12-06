@@ -68,6 +68,11 @@ define([
             'cp-settings-drive-import-local',
             'cp-settings-drive-reset'
         ],
+        'cursor': [
+            'cp-settings-cursor-color',
+            'cp-settings-cursor-share',
+            'cp-settings-cursor-show',
+        ],
         'pad': [
             'cp-settings-pad-width',
         ],
@@ -1103,6 +1108,118 @@ define([
         return $div;
     };
 
+    // Cursor settings
+
+    create['cursor-color'] = function () {
+        var $div = $('<div>', {
+            'class': 'cp-settings-cursor-color cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_cursorColorTitle).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_cursorColorHint).appendTo($div);
+
+        var $inputBlock = $('<div>').appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $input = $('<input>', {
+            type: 'color',
+        }).on('change', function () {
+            var val = $input.val();
+            if (!/^#[0-9a-fA-F]{6}$/.test(val)) { return; }
+            $spinner.show();
+            $ok.hide();
+            common.setAttribute(['general', 'cursor', 'color'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        }).appendTo($inputBlock);
+
+        $ok.hide().appendTo($inputBlock);
+        $spinner.hide().appendTo($inputBlock);
+
+        common.getAttribute(['general', 'cursor', 'color'], function (e, val) {
+            if (e) { return void console.error(e); }
+            $input.val(val || '');
+        });
+        return $div;
+    };
+
+    create['cursor-share'] = function () {
+        var $div = $('<div>', {
+            'class': 'cp-settings-cursor-share cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_cursorShareTitle).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_cursorShareHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $cbox = $(UI.createCheckbox('cp-settings-cursor-share',
+                                   Messages.settings_cursorShareLabel,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['general', 'cursor', 'share'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['general', 'cursor', 'share'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val !== false) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+        return $div;
+    };
+
+    create['cursor-show'] = function () {
+        var $div = $('<div>', {
+            'class': 'cp-settings-cursor-show cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_cursorShowTitle).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_cursorShowHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $cbox = $(UI.createCheckbox('cp-settings-cursor-show',
+                                   Messages.settings_cursorShowLabel,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['general', 'cursor', 'show'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['general', 'cursor', 'show'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val !== false) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+        return $div;
+    };
+
     // Rich text pads settings
 
     create['pad-width'] = function () {
@@ -1271,6 +1388,7 @@ define([
             var $category = $('<div>', {'class': 'cp-sidebarlayout-category'}).appendTo($categories);
             if (key === 'account') { $category.append($('<span>', {'class': 'fa fa-user-o'})); }
             if (key === 'drive') { $category.append($('<span>', {'class': 'fa fa-hdd-o'})); }
+            if (key === 'cursor') { $category.append($('<span>', {'class': 'fa fa-i-cursor' })); }
             if (key === 'code') { $category.append($('<span>', {'class': 'fa fa-file-code-o' })); }
             if (key === 'pad') { $category.append($('<span>', {'class': 'fa fa-file-word-o' })); }
             if (key === 'creation') { $category.append($('<span>', {'class': 'fa fa-plus-circle' })); }

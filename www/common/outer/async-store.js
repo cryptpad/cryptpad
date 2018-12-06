@@ -427,11 +427,11 @@ define([
                          getColor().toString(16);
         };
         var getUserColor = function () {
-            var color = Util.find(store.proxy, ['settings', 'general', 'color']);
+            var color = Util.find(store.proxy, ['settings', 'general', 'cursor', 'color']);
             if (!color) {
                 color = getRandomColor();
                 Store.setAttribute(null, {
-                    attr: ['general', 'color'],
+                    attr: ['general', 'cursor', 'color'],
                     value: color
                 }, function () {});
             }

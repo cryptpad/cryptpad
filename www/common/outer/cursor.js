@@ -160,7 +160,7 @@ define([
     var updateCursor = function (ctx, data, client, cb) {
         var c = ctx.clients[client];
         if (!c) { return void cb({error: 'NO_CLIENT'}); }
-        data.color = Util.find(ctx.store.proxy, ['settings', 'general', 'color']);
+        data.color = Util.find(ctx.store.proxy, ['settings', 'general', 'cursor', 'color']);
         data.name = ctx.store.proxy[Constants.displayNameKey] || Messages.anonymous;
         data.avatar = Util.find(ctx.store.proxy, ['profile', 'avatar']);
         console.log(data.color);
