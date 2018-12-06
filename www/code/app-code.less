@@ -124,5 +124,17 @@
             display: none !important;
         }
     }
+    @media print {
+        #cp-app-code-container {
+            display: none;
+        }
+    }
+    #cp-app-code-print {
+        position: relative;
+        display: none;
+        margin: 1em auto;
+        .markdown_preformatted-code;
+        .markdown_gfm-table(black);
+    }
 }
 
