@@ -26,6 +26,7 @@ define([
     '/customize/messages.js',
     '/pad/links.js',
     '/pad/export.js',
+    '/pad/cursor.js',
     '/bower_components/nthen/index.js',
     '/common/media-tag.js',
     '/api/config',
@@ -51,6 +52,7 @@ define([
     Messages,
     Links,
     Exporter,
+    Cursors,
     nThen,
     MediaTag,
     ApiConfig,
@@ -109,8 +111,10 @@ define([
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
     };
 
+    var isCursor = Cursors.isCursor;
+
     var shouldSerialize = function (el) {
-        return isNotMagicLine(el) && !isWidget(el);
+        return isNotMagicLine(el) && !isWidget(el) && !isCursor(el);
     };
 
     // MEDIATAG: Filter attributes in the serialized elements
@@ -217,6 +221,10 @@ define([
                     }
                 }
 
+                // Other users cursor
+                if (Cursors.preDiffApply(info)) {
+                    return true;
+                }
 
                 // MEDIATAG
                 // Never modify widget ids
@@ -454,7 +462,11 @@ define([
 
         var inner = window.inner = documentBody;
 
+        // My cursor
         var cursor = module.cursor = Cursor(inner);
+
+        // Display other users cursor
+        var cursors = Cursors.create(inner, hjsonToDom, cursor);
 
         var openLink = function (e) {
             var el = e.currentTarget;
@@ -496,10 +508,17 @@ define([
 
         var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
+        var cursorStopped = false;
+        var updateCursor = function () {
+            if (cursorStopped) { return; }
+            framework.updateCursor();
+        };
+
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function (hjson) {
             if (!Array.isArray(hjson)) { throw new Error(Messages.typeError); }
             var userDocStateDom = hjsonToDom(hjson);
+            cursorStopped = true;
 
             userDocStateDom.setAttribute("contenteditable",
                 inner.getAttribute('contenteditable'));
@@ -526,6 +545,9 @@ define([
             var newText = inner.outerHTML;
             var ops = ChainPad.Diff.diff(oldText, newText);
             cursor.restoreOffset(ops);
+
+            cursorStopped = false;
+            updateCursor();
 
             // MEDIATAG: Migrate old mediatags to the widget system
             $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
@@ -561,9 +583,15 @@ define([
                 $(el).remove();
             });
 
+            // We have to remove the cursors before getting the content because they split
+            // the text nodes and OT/ChainPad would freak out
+            cursors.removeCursors();
+
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
-            return Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
+            var hjson = Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
+
+            return hjson;
         });
 
         $bar.find('#cke_1_toolbar_collapser').hide();
@@ -693,6 +721,12 @@ define([
                 hjson[2]
             ];
         });
+
+        /* Display the cursor of other users and send our cursor */
+        framework.setCursorGetter(cursors.cursorGetter);
+        framework.onCursorUpdate(cursors.onCursorUpdate);
+        inner.addEventListener('click', updateCursor);
+        inner.addEventListener('keyup', updateCursor);
 
 
         /* hitting enter makes a new line, but places the cursor inside

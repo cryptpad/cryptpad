@@ -332,7 +332,11 @@ define([
                 if (!readOnly && cursorGetter) {
                     common.openCursorChannel(onLocal);
                     cursor = common.createCursor();
-                    cursor.onCursorUpdate(evCursorUpdate.fire);
+                    cursor.onCursorUpdate(function (data) {
+                        var newContentStr = cpNfInner.chainpad.getUserDoc();
+                        var hjson = normalize(JSON.parse(newContentStr));
+                        evCursorUpdate.fire(data, hjson);
+                    });
                 }
 
                 UI.removeLoadingScreen(emitResize);
@@ -654,7 +658,9 @@ define([
                 onCursorUpdate: evCursorUpdate.reg,
                 updateCursor: function () {
                     if (cursor && cursorGetter) {
-                        cursor.updateCursor(cursorGetter());
+                        var newContentStr = cpNfInner.chainpad.getUserDoc();
+                        var data = normalize(JSON.parse(newContentStr));
+                        cursor.updateCursor(cursorGetter(data));
                     }
                 },
 

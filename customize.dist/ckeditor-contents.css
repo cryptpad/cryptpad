@@ -149,3 +149,38 @@ a > img {
     border: none;
     outline: 1px solid #0782C1;
 }
+
+.cp-cursor-position {
+    cursor: default;
+    background-color: red;
+    background-clip: padding-box;
+    padding: 0 1px;
+    border: 2px solid red;
+    border-right-color: transparent !important;
+    border-left-color: transparent !important;
+}
+.cp-cursor-position[data-type="start"] {
+    border-left: none;
+    border-right-width: 4px;
+}
+.cp-cursor-position[data-type="end"] {
+    border-right: none;
+    border-left-width: 4px;
+}
+.cp-cursor-avatar {
+    display: flex;
+    align-items: center;
+}
+.cp-cursor-avatar media-tag {
+    min-height: 32px;
+    max-height: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    margin-right: 10px;
+}
+.cp-cursor-avatar media-tag img {
+    border-radius: 4px;
+    max-height: 100%;
+    max-width: 100%;
+}
+
