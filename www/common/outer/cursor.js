@@ -107,7 +107,6 @@ define([
             }
 
 
-            chan.encryptor = Crypto.createEncryptor(secret.keys);
             if (!chan.encryptor) { chan.encryptor = Crypto.createEncryptor(secret.keys); }
 
             wc.on('join', function () {
@@ -117,7 +116,7 @@ define([
                 ctx.emit('MESSAGE', {leave: true, id: peer}, chan.clients);
             });
             wc.on('message', function (cryptMsg) {
-                var msg = chan.encryptor.decrypt(cryptMsg, secret.keys.validateKey);
+                var msg = chan.encryptor.decrypt(cryptMsg, secret.keys && secret.keys.validateKey);
                 var parsed;
                 try {
                     parsed = JSON.parse(msg);
