@@ -433,7 +433,7 @@ define([
                     $(el).css('background-color', cursor.color);
                 }
                 if (cursor.name) {
-                    $(el).attr('title', cursor.name);
+                    $(el).attr('title', makeTippy(cursor));
                 }
                 marks[id] = editor.setBookmark(cursorPosS, { widget: el });
             } else {

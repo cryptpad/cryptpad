@@ -163,7 +163,6 @@ define([
         data.color = Util.find(ctx.store.proxy, ['settings', 'general', 'cursor', 'color']);
         data.name = ctx.store.proxy[Constants.displayNameKey] || Messages.anonymous;
         data.avatar = Util.find(ctx.store.proxy, ['profile', 'avatar']);
-        console.log(data.color);
         c.cursor = data;
         sendMyCursor(ctx, client);
         cb();
