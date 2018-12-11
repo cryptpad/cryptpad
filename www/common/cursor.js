@@ -73,6 +73,10 @@ define([
                             el: range[t + 'Container'],
                             offset: range[t + 'Offset']
                         };
+                        while (inNode.el.nodeType !== Node.TEXT_NODE && inNode.el.childNodes.length > inNode.offset) {
+                            inNode.el = inNode.el.childNodes[inNode.offset];
+                            inNode.offset = 0;
+                        }
                         var current = inNode.el;
                         var path = [];
                         while (current !== element) {
