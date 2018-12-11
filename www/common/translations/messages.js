@@ -172,7 +172,7 @@ define(function () {
 
     out.printText = "Print";
     out.printButton = "Print (enter)";
-    out.printButtonTitle = "Print your document or export it as a PDF file";
+    out.printButtonTitle2 = "Print your document or export it as a PDF file";
     out.printOptions = "Layout options";
     out.printSlideNumber = "Display the slide number";
     out.printDate = "Display the date";

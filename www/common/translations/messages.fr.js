@@ -171,7 +171,7 @@ define(function () {
 
     out.printText = "Imprimer";
     out.printButton = "Imprimer (Entrée)";
-    out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";
+    out.printButtonTitle2 = "Imprimer votre document ou l'enregistrer au format PDF";
     out.printOptions = "Options de mise en page";
     out.printSlideNumber = "Afficher le numéro des slides";
     out.printDate = "Afficher la date";

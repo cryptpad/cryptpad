@@ -768,7 +768,7 @@ define([
                 break;
             case 'print':
                 button = $('<button>', {
-                    title: Messages.printButtonTitle,
+                    title: Messages.printButtonTitle2,
                     'class': "fa fa-print cp-toolbar-icon-print",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
