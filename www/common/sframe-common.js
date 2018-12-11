@@ -173,7 +173,7 @@ define([
     };
     funcs.openPadChat = function (saveChanges) {
         var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
-        if (md.chat) { delete md.chat; } // Old channel without signing key
+        //if (md.chat) { delete md.chat; } // Old channel without signing key
         var channel = md.chat2 || Hash.createChannelId();
         if (!md.chat2) {
             md.chat2 = channel;
