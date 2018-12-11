@@ -173,7 +173,12 @@ define([
             // their length.
             var newOffset = offset;
             for (var i = 0; i < el.childNodes.length; i++) {
+                try {
                 newOffset -= (getTextNodeValue(el.childNodes[i]) || el.childNodes[i].outerHTML).length;
+                } catch (e) {
+                    console.log(el);
+                    console.log(el.childNodes[i]);
+                }
                 if (newOffset <= 0) {
                     return getFinalRange(el.childNodes[i], offset);
                 }
@@ -213,6 +218,19 @@ define([
             });
 
 
+            return range;
+        };
+
+        cursor.getNewOffset = function (ops) {
+            return {
+                selectionStart: offsetTransformRange(offsetRange.start, ops),
+                selectionEnd: offsetTransformRange(offsetRange.end, ops)
+            };
+        };
+        cursor.getNewRange = function (data, ops) {
+            offsetRange.start = offsetTransformRange(data.start, ops);
+            offsetRange.end = offsetTransformRange(data.end, ops);
+            var range = getRangeFromOffset(inner);
             return range;
         };
 
