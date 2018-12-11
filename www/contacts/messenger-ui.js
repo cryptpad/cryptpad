@@ -43,6 +43,7 @@ define([
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var origin = metadataMgr.getPrivateData().origin;
+        var readOnly = metadataMgr.getPrivateData().readOnly;
 
         var isApp = typeof(toolbar) !== "undefined";
 
@@ -358,7 +359,7 @@ define([
                 }, function (e) {
                     if (e) {
                         // failed to send
-                        return void console.error('failed to send');
+                        return void console.error('failed to send', e);
                     }
                     input.value = '';
                     sending = false;
@@ -406,9 +407,9 @@ define([
                 'data-user': data.isFriendChat && curvePublic
             }, [
                 header,
-                tips,
+                readOnly ? undefined : tips,
                 messages,
-                h('div.cp-app-contacts-input', [
+                readOnly ? undefined : h('div.cp-app-contacts-input', [
                     input,
                     sendButton,
                 ]),

@@ -26,6 +26,15 @@ define([
         return JSON.parse(JSON.stringify(o));
     };
 
+    var convertToUint8 = function (obj) {
+        var l = Object.keys(obj).length;
+        var u = new Uint8Array(l);
+        for (var i = 0; i<l; i++) {
+            u[i] = obj[i];
+        }
+        return u;
+    };
+
     // TODO
     // - mute a channel (hide notifications or don't open it?)
     var createData = Msg.createData = function (proxy, hash) {
@@ -234,7 +243,7 @@ define([
                 return;
             }
 
-            var decryptedMsg = channel.encryptor.decrypt(parsed0.msg);
+            var decryptedMsg = channel.decrypt(parsed0.msg);
 
             if (decryptedMsg === null) {
                 return void console.error("Failed to decrypt message");
@@ -264,13 +273,14 @@ define([
                 id: channel.id
             });
 
+            if (channel.readOnly) { return; }
             if (parsed[0] !== Types.mapId) { return; } // Don't send your key if it's already an ACK
             // Answer with your own key
             var myData = createData(proxy);
             delete myData.channel;
             var rMsg = [Types.mapIdAck, myData, channel.wc.myID];
             var rMsgStr = JSON.stringify(rMsg);
-            var cryptMsg = channel.encryptor.encrypt(rMsgStr);
+            var cryptMsg = channel.encrypt(rMsgStr);
             var data = {
                 channel: channel.id,
                 msg: cryptMsg
@@ -297,7 +307,7 @@ define([
         var pushMsg = function (channel, cryptMsg) {
             var sig = cryptMsg.slice(0, 64);
             if (msgAlreadyKnown(channel, sig)) { return; }
-            var msg = channel.encryptor.decrypt(cryptMsg);
+            var msg = channel.decrypt(cryptMsg);
 
             var parsedMsg = JSON.parse(msg);
             var curvePublic;
@@ -364,11 +374,11 @@ define([
                     if (!channel) {
                         return void console.error('NO_SUCH_CHANNEL');
                     }
-
+                    if (channel.readOnly) { return; }
 
                     var msg = [Types.update, myData.curvePublic, +new Date(), myData];
                     var msgStr = JSON.stringify(msg);
-                    var cryptMsg = channel.encryptor.encrypt(msgStr);
+                    var cryptMsg = channel.encrypt(msgStr);
                     channel.wc.bcast(cryptMsg).then(function () {
                         // TODO send event
                         //channel.refresh();
@@ -465,7 +475,7 @@ define([
                         if (msg[2] !== 'MSG') { return; }
                         try {
                             return {
-                                d: JSON.parse(channel.encryptor.decrypt(msg[4])),
+                                d: JSON.parse(channel.decrypt(msg[4])),
                                 sig: msg[4].slice(0, 64),
                             };
                         } catch (e) {
@@ -573,7 +583,7 @@ define([
 
             var msg = [Types.unfriend, proxy.curvePublic, +new Date()];
             var msgStr = JSON.stringify(msg);
-            var cryptMsg = channel.encryptor.encrypt(msgStr);
+            var cryptMsg = channel.encrypt(msgStr);
 
             try {
                 channel.wc.bcast(cryptMsg).then(function () {
@@ -602,24 +612,33 @@ define([
                 isFriendChat: data.isFriendChat,
                 isPadChat: data.isPadChat,
                 padChan: data.padChan,
+                readOnly: data.readOnly,
                 sending: false,
-                encryptor: encryptor,
                 messages: [],
                 userList: [],
                 mapId: {},
+            };
+
+            channel.encrypt = function (msg) {
+                if (channel.readOnly) { return; }
+                return encryptor.encrypt(msg);
+            };
+            channel.decrypt = data.decrypt || function (msg) {
+                return encryptor.decrypt(msg);
             };
 
             var onJoining = function (peer) {
                 if (peer === Msg.hk) { return; }
                 if (channel.userList.indexOf(peer) !== -1) { return; }
                 channel.userList.push(peer);
+                if (channel.readOnly) { return; }
 
                 // Join event will be sent once we are able to ID this peer
                 var myData = createData(proxy);
                 delete myData.channel;
                 var msg = [Types.mapId, myData, channel.wc.myID];
                 var msgStr = JSON.stringify(msg);
-                var cryptMsg = channel.encryptor.encrypt(msgStr);
+                var cryptMsg = channel.encrypt(msgStr);
                 var data = {
                     channel: channel.id,
                     msg: cryptMsg
@@ -693,6 +712,7 @@ define([
         var sendMessage = function (id, payload, cb) {
             var channel = getChannel(id);
             if (!channel) { return void cb({error: 'NO_CHANNEL'}); }
+            if (channel.readOnly) { return void cb({error: 'FORBIDDEN'}); }
             if (!network.webChannels.some(function (wc) {
                 if (wc.id === channel.wc.id) { return true; }
             })) {
@@ -706,7 +726,7 @@ define([
                 msg.push(name);
             }
             var msgStr = JSON.stringify(msg);
-            var cryptMsg = channel.encryptor.encrypt(msgStr);
+            var cryptMsg = channel.encrypt(msgStr);
 
             channel.wc.bcast(cryptMsg).then(function () {
                 pushMsg(channel, cryptMsg);
@@ -893,20 +913,32 @@ define([
             }
         };
 
+        var validateKeys = {};
+        messenger.storeValidateKey = function (chan, key) {
+            validateKeys[chan] = key;
+        };
+
         var openPadChat = function (data, cb) {
             var channel = data.channel;
             if (getChannel(channel)) {
                 emit('PADCHAT_READY', channel);
                 return void cb();
             }
-            var keys = data.secret && data.secret.keys;
-            var cryptKey = keys.viewKeyStr ? Crypto.b64AddSlashes(keys.viewKeyStr) : data.secret.key;
-            var encryptor = Crypto.createEncryptor(cryptKey);
+            var secret = data.secret;
+            if (secret.keys.cryptKey) {
+                secret.keys.cryptKey = convertToUint8(secret.keys.cryptKey);
+            }
+            var encryptor = Crypto.createEncryptor(secret.keys);
+            var vKey = (secret.keys && secret.keys.validateKey) || validateKeys[secret.channel];
             var chanData = {
                 padChan: data.secret && data.secret.channel,
+                readOnly: typeof(secret.keys) === "object" && !secret.keys.validateKey,
                 encryptor: encryptor,
                 channel: data.channel,
                 isPadChat: true,
+                decrypt: function (msg) {
+                    return encryptor.decrypt(msg, vKey);
+                },
                 //lastKnownHash: friend.lastKnownHash,
                 //owners: [proxy.edPublic, friend.edPublic],
                 //isFriendChat: true
@@ -927,6 +959,7 @@ define([
 
         messenger.leavePad = function (padChan) {
             // Leave chat and prevent reconnect when we leave a pad
+            delete validateKeys[padChan];
             Object.keys(channels).some(function (chatChan) {
                 var channel = channels[chatChan];
                 if (channel.padChan !== padChan) { return; }

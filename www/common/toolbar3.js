@@ -488,7 +488,7 @@ MessengerUI, Messages) {
             show();
         });
 
-        initChat(toolbar, config);
+        initChat(toolbar);
         return $container;
     };
 

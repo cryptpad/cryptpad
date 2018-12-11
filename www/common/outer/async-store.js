@@ -995,6 +995,9 @@ define([
             var conf = {
                 onReady: function (padData) {
                     channel.data = padData || {};
+                    if (padData && padData.validateKey && store.messenger) {
+                        store.messenger.storeValidateKey(data.channel, padData.validateKey);
+                    }
                     postMessage(clientId, "PAD_READY");
                 },
                 onMessage: function (user, m, validateKey, isCp) {
