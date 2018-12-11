@@ -959,6 +959,7 @@ define([
 
         messenger.leavePad = function (padChan) {
             // Leave chat and prevent reconnect when we leave a pad
+            delete validateKeys[padchan];
             Object.keys(channels).some(function (chatChan) {
                 var channel = channels[chatChan];
                 if (channel.padChan !== padChan) { return; }
