@@ -1187,7 +1187,7 @@ define([
         var $div = $('<div>', {
             'class': 'cp-settings-cursor-show cp-sidebarlayout-element'
         });
-        $('<label>').text(Messages.settings_cursorShowTitle).appendTo($div);
+        $('<label>').text(Messages.settings_cursorShowTitle + ' (BETA)').appendTo($div);
         $('<span>', {'class': 'cp-sidebarlayout-description'})
             .text(Messages.settings_cursorShowHint).appendTo($div);
 

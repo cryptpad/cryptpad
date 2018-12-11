@@ -676,15 +676,14 @@ define(function () {
     out.settings_changePasswordPending = "Your password is being updated. Please do not close or reload this page until the process has completed.";
     out.settings_changePasswordNewPasswordSameAsOld = "Your new password must be different than your current password.";
 
-    // XXX
     out.settings_cursorColorTitle = "Cursor color";
-    out.settings_cursorColorHint = "Change the color associated to your user in collaborative documents.";
+    out.settings_cursorColorHint = "Change the color associated with your user in collaborative documents.";
     out.settings_cursorShareTitle = "Share my cursor position";
-    out.settings_cursorShareHint = "You can decide if you want other users to see your cursor position in collaborative documents. If shared, your cursor will be displayed in the color picked above.";
-    out.settings_cursorShareLabel = "Share my cursor position";
-    out.settings_cursorShowTitle = "Show other users' cursor position";
+    out.settings_cursorShareHint = "You can decide if you want other users to see your cursor position in collaborative documents.";
+    out.settings_cursorShareLabel = "Share the position";
+    out.settings_cursorShowTitle = "Display other users' cursor position";
     out.settings_cursorShowHint = "You can choose if you want to see the other users' cursor in collaborative documents.";
-    out.settings_cursorShowLabel = "Show the cursors";
+    out.settings_cursorShowLabel = "Show cursors";
 
     out.upload_title = "File upload";
     out.upload_type = "Type";

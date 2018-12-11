@@ -665,6 +665,15 @@ define(function () {
     out.settings_changePasswordPending = "Votre mot de passe est en train d'être modifié. Veuillez ne pas fermer ou recharger cette page avant que le traitement soit terminé.";
     out.settings_changePasswordNewPasswordSameAsOld = "Votre nouveau mot de passe doit être différent de votre mot de passe actuel.";
 
+    out.settings_cursorColorTitle = "Couleur du curseur";
+    out.settings_cursorColorHint = "Changer la couleur associée à votre utilisateur dans les documents collaboratifs";
+    out.settings_cursorShareTitle = "Partager la position de mon curseur";
+    out.settings_cursorShareHint = "Vous pouvez décider si vous souhaitez que les autres puissent voir la position de votre curseur dans les documents collaboratifs ou non.";
+    out.settings_cursorShareLabel = "Partager la position";
+    out.settings_cursorShowTitle = "Afficher les curseurs des autres utilisateurs";
+    out.settings_cursorShowHint = "Vous pouvez choisir si vous souhaitez voir les curseurs des autres utilisateurs dans les documents collaboratifs ou non.";
+    out.settings_cursorShowLabel = "Montrer les curseurs";
+
     out.upload_title = "Hébergement de fichiers";
     out.upload_type = "Type";
     out.upload_modal_title = "Options d'importation du fichier";
