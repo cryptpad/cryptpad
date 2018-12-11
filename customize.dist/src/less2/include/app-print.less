@@ -46,6 +46,38 @@
                     display: block;
                 }
             }
+            // Code app
+            body.cp-app-code {
+                display: block;
+                * {
+                    visibility: hidden;
+                    height: auto;
+                    max-height: none;
+                }
+                #cme_toolbox {
+                    display: none;
+                }
+                #cp-app-code-editor {
+                    display: block;
+                    #cp-app-code-container {
+                        display: none;
+                    }
+                    #cp-app-code-preview {
+                        display: block;
+                        #cp-app-code-print {
+                            display: block;
+                            overflow: visible !important;
+                            width: 100%;
+                            visibility: visible;
+                            * { visibility: visible; }
+                            pre { border: none; }
+                        }
+                        #cp-app-code-preview-content {
+                            display: none !important;
+                        }
+                    }
+                }
+            }
         }
     }
 }

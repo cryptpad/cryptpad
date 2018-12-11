@@ -70,6 +70,16 @@ define([
         'xml',
     ]);
 
+    var mkPrintButton = function (framework, $content, $print) {
+        var $printButton = framework._.sfCommon.createButton('print', true);
+        $printButton.click(function () {
+            $print.html($content.html());
+            window.focus();
+            window.print();
+            framework.feedback('PRINT_CODE');
+        });
+        framework._.toolbar.$drawer.append($printButton);
+    };
     var mkMarkdownTb = function (editor, framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
         var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
@@ -265,6 +275,11 @@ define([
 
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
+
+        var $print = $('#cp-app-code-print');
+        var $content = $('#cp-app-code-preview-content');
+        mkPrintButton(framework, $content, $print);
+
         mkHelpMenu(framework);
 
         var evModeChange = Util.mkEvent();
