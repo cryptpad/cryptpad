@@ -1916,7 +1916,13 @@ define([
                 onSelect: function (data) {
                     if (data.type === type && first) {
                         UI.addLoadingScreen({hideTips: true});
-                        sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                        var chatChan = common.getPadChat();
+                        var cursorChan = common.getCursorChannel();
+                        sframeChan.query('Q_TEMPLATE_USE', {
+                            href: data.href,
+                            chat: chatChan,
+                            cursor: cursorChan
+                        }, function () {
                             first = false;
                             UI.removeLoadingScreen();
                             Feedback.send('TEMPLATE_USED');

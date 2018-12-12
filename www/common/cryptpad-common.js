@@ -493,9 +493,10 @@ define([
         });
     };
 
-    common.useTemplate = function (href, Crypt, cb, optsPut) {
+    common.useTemplate = function (data, Crypt, cb, optsPut) {
         // opts is used to overrides options for chainpad-netflux in cryptput
         // it allows us to add owners and expiration time if it is a new file
+        var href = data.href;
 
         var parsed = Hash.parsePadUrl(href);
         var parsed2 = Hash.parsePadUrl(window.location.href);
@@ -531,8 +532,13 @@ define([
                     }
                     if (typeof(meta) === "object") {
                         meta.defaultTitle = meta.title || meta.defaultTitle;
-                        delete meta.users;
                         meta.title = "";
+                        delete meta.users;
+                        delete meta.chat2;
+                        delete meta.chat;
+                        delete meta.cursor;
+                        if (data.chat) { meta.chat2 = data.chat; }
+                        if (data.cursor) { meta.cursor = data.cursor; }
                     }
                     val = JSON.stringify(parsed);
                 } catch (e) {

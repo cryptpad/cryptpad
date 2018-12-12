@@ -168,12 +168,15 @@ define([
 
     // Chat
     var padChatChannel;
+    // common-ui-elements needs to be able to get the chat channel to put it in metadata when
+    // importing a template
     funcs.getPadChat = function () {
         return padChatChannel;
     };
     funcs.openPadChat = function (saveChanges) {
         var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
         //if (md.chat) { delete md.chat; } // Old channel without signing key
+        // NOTE: "chat2" is also used in cryptpad-common's "useTemplate"
         var channel = md.chat2 || Hash.createChannelId();
         if (!md.chat2) {
             md.chat2 = channel;
@@ -187,6 +190,8 @@ define([
     };
 
     var cursorChannel;
+    // common-ui-elements needs to be able to get the cursor channel to put it in metadata when
+    // importing a template
     funcs.getCursorChannel = function () {
         return cursorChannel;
     };

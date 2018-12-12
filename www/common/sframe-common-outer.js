@@ -647,8 +647,8 @@ define([
                 initFilePicker(data);
             });
 
-            sframeChan.on('Q_TEMPLATE_USE', function (href, cb) {
-                Cryptpad.useTemplate(href, Cryptget, cb);
+            sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
+                Cryptpad.useTemplate(data, Cryptget, cb);
             });
             sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
                 Cryptpad.listTemplates(type, function (err, templates) {
@@ -953,7 +953,9 @@ define([
                         // we need to have the owners and expiration time in the first line on the
                         // server
                         var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
-                        Cryptpad.useTemplate(data.template, Cryptget, function () {
+                        Cryptpad.useTemplate({
+                            href: data.template
+                        }, Cryptget, function () {
                             startRealtime();
                             cb();
                         }, cryptputCfg);
