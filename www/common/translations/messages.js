@@ -55,6 +55,9 @@ define(function () {
     out.deleted = "Pad deleted from your CryptDrive";
     out.deletedFromServer = "Pad deleted from the server";
 
+    out.mustLogin = "You must be logged in to access this page";
+    out.disabledApp = "This application has been disabled. Contact the administrator of this CryptPad to have more information.";
+
     out.realtime_unrecoverableError = "An unrecoverable error has occured. Click OK to reload.";
 
     out.disconnected = 'Disconnected';
@@ -374,6 +377,7 @@ define(function () {
     out.contacts_typeHere = "Type a message here...";
     out.contacts_warning = "Everything you type here is persistent and available to all the existing and future users of this pad. Be careful with sensitive information!";
     out.contacts_padTitle = "Chat";
+    out.contacts_mustLogin = "You must be logged in to add contacts";
 
     out.contacts_info1 = "These are your contacts. From here, you can:";
     out.contacts_info2 = "Click your contact's icon to chat with them";

@@ -555,6 +555,27 @@ define([
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
 
+            try {
+                var forbidden = ctx.metadataMgr.getPrivateData().disabledApp;
+                if (forbidden) {
+                    UI.alert(Messages.disabledApp, function () {
+                        funcs.gotoURL('/drive/');
+                    }, {forefront: true});
+                    return;
+                }
+                var mustLogin = ctx.metadataMgr.getPrivateData().registeredOnly;
+                if (mustLogin) {
+                    UI.alert(Messages.mustLogin, function () {
+                        funcs.setLoginRedirect(function () {
+                            funcs.gotoURL('/login/');
+                        });
+                    }, {forefront: true});
+                    return;
+                }
+            } catch (e) {
+                console.error("Can't check permissions for the app");
+            }
+
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 if (err === 'DELETED') {
                     var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
