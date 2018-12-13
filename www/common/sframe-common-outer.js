@@ -95,6 +95,7 @@ define([
                 Cryptpad.loading.onDriveEvent.reg(function (data) {
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
+
                 Cryptpad.ready(waitFor(function () {
                     if (sframeChan) {
                         sframeChan.event('EV_LOADING_INFO', {
@@ -279,6 +280,15 @@ define([
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
                     }
+                    if (Utils.Constants.criticalApps.indexOf(parsed.type) === -1 &&
+                          AppConfig.availablePadTypes.indexOf(parsed.type) === -1) {
+                        additionalPriv.disabledApp = true;
+                    }
+                    if (!Utils.LocalStore.isLoggedIn() &&
+                        AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1) {
+                        additionalPriv.registeredOnly = true;
+                    }
+
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {

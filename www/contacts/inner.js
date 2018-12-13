@@ -54,6 +54,16 @@ define([
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
 
+        // we're in upload mode
+        if (!common.isLoggedIn()) {
+            UI.removeLoadingScreen();
+            return UI.alert(Messages.contacts_mustLogin, function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/login/');
+                });
+            });
+        }
+
         MessengerUI.create($(appElement), common);
 
         UI.removeLoadingScreen();
