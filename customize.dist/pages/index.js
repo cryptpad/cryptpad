@@ -11,35 +11,40 @@ define([
 
     var isAvailableType = function (x) {
         if (!Array.isArray(AppConfig.availablePadTypes)) { return true; }
-        return AppConfig.availablePadTypes.some(function (type) {
-            return x.indexOf(type) > -1;
-        });
+        return AppConfig.availablePadTypes.indexOf(x) !== -1;
+    };
+
+    var checkRegisteredType = function (x) {
+        // Return true if we're registered or if the app is not registeredOnly
+        if (LocalStore.isLoggedIn()) { return true; }
+        if (!Array.isArray(AppConfig.registeredOnlyTypes)) { return true; }
+        return AppConfig.registeredOnlyTypes.indexOf(x) === -1;
     };
 
     return function () {
         var showingMore = false;
 
         var icons = [
-                [ 'pad', '/pad/', Msg.main_richTextPad, 'pad' ],
-                [ 'code', '/code/', Msg.main_codePad, 'code' ],
-                [ 'slide', '/slide/', Msg.main_slidePad, 'slide' ],
-                [ 'poll', '/poll/', Msg.main_pollPad, 'poll' ],
-                [ 'kanban', '/kanban/', Msg.main_kanbanPad, 'kanban' ],
-                [ 'whiteboard', '/whiteboard/', Msg.main_whiteboardPad, 'whiteboard' ],
-                [ 'recent', '/drive/', LocalStore.isLoggedIn() ? Msg.main_yourCryptDrive : Msg.main_localPads, 'drive' ]
+                [ 'pad', Msg.main_richTextPad],
+                [ 'code', Msg.main_codePad],
+                [ 'slide', Msg.main_slidePad],
+                [ 'poll', Msg.main_pollPad],
+                [ 'kanban', Msg.main_kanbanPad],
+                [ 'whiteboard', Msg.main_whiteboardPad],
+                [ 'drive', LocalStore.isLoggedIn() ? Msg.main_yourCryptDrive : Msg.main_localPads]
             ].filter(function (x) {
-                return isAvailableType(x[1]);
+                return isAvailableType(x[0]) && checkRegisteredType(x[0]);
             })
             .map(function (x, i) {
                 var s = 'div.bs-callout.cp-callout-' + x[0];
                 if (i > 2) { s += '.cp-more.cp-hidden'; }
-                var icon = AppConfig.applicationsIcon[x[3]];
+                var icon = AppConfig.applicationsIcon[x[0]];
                 var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
                 return h('a', [
-                    { href: x[1] },
+                    { href: '/'+ x[0] +'/' },
                     h(s, [
                         h('i.' + font + '.' + icon),
-                        h('div.pad-button-text', [ h('h4', x[2]) ])
+                        h('div.pad-button-text', [ h('h4', x[1]) ])
                     ])
                 ]);
             });
