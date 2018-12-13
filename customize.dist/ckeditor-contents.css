@@ -188,3 +188,18 @@ a > img {
     max-width: 100%;
 }
 
+.cp-link-clicked {
+    position: absolute;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 3px 8px;
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.cp-link-clicked a {
+    cursor: pointer;
+}

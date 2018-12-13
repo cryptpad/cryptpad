@@ -226,6 +226,14 @@ define([
                     return true;
                 }
 
+                if (info.node && info.node.tagName === 'DIV' &&
+                    info.node.getAttribute('class') &&
+                    /cp-link-clicked/.test(info.node.getAttribute('class'))) {
+                    if (info.diff.action === 'removeElement') {
+                        return true;
+                    }
+                }
+
                 // MEDIATAG
                 // Never modify widget ids
                 if (info.node && info.node.tagName === 'SPAN' && info.diff.name === 'data-cke-widget-id') {
@@ -436,6 +444,7 @@ define([
             el.setAttribute('class', 'non-realtime');
         });
 
+        var $iframe = $('html').find('iframe').contents();
         var ifrWindow = $html.find('iframe')[0].contentWindow;
 
         framework._.sfCommon.addShortcuts(ifrWindow);
@@ -461,6 +470,60 @@ define([
         });
 
         var inner = window.inner = documentBody;
+        var $inner = $(inner);
+
+        var onLinkClicked = function (e) {
+            var $target = $(e.target);
+            if (!$target.is('a')) { return; }
+            var href = $target.attr('href');
+            if (!href || href[0] === '#') { return; }
+            e.preventDefault();
+            e.stopPropagation();
+
+            var rect = e.target.getBoundingClientRect();
+            var rect0 = inner.getBoundingClientRect();
+            var l = (rect.left - rect0.left)+'px';
+            var t = rect.bottom + $iframe.scrollTop() +'px';
+
+            var a = h('a', { href: href}, href);
+            var link = h('div.cp-link-clicked.non-realtime', {
+                contenteditable: false,
+                style: 'top:'+t+';left:'+l
+            }, [ a ]);
+            var $link = $(link);
+            $inner.append(link);
+
+            console.log($inner[0].getBoundingClientRect());
+            console.log(rect);
+            console.log($link.width(), $link.outerWidth());
+            console.log($inner.width());
+            console.log(l, t);
+            if (rect.left + $link.outerWidth() - rect0.left > $inner.width()) {
+                $link.css('left', 'unset');
+                $link.css('right', 0);
+            }
+
+            $(a).click(function (ee) {
+                ee.preventDefault();
+                ee.stopPropagation();
+                framework._.sfCommon.openUnsafeURL(href);
+                $link.remove();
+            });
+            $link.on('mouseleave', function () {
+                $link.remove();
+            });
+        };
+        var removeClickedLink = function () {
+            $inner.find('.cp-link-clicked').remove();
+        };
+
+        $inner.click(function (e) {
+            if (e.target.nodeName.toUpperCase() === 'A') {
+                removeClickedLink();
+                return void onLinkClicked(e);
+            }
+            removeClickedLink();
+        });
 
         // My cursor
         var cursor = module.cursor = Cursor(inner);
@@ -481,9 +544,9 @@ define([
 
         framework.onEditableChange(function (unlocked) {
             if (!framework.isReadOnly()) {
-                $(inner).attr('contenteditable', '' + Boolean(unlocked));
+                $inner.attr('contenteditable', '' + Boolean(unlocked));
             }
-            $(inner).css({ background: unlocked ? '#fff' : '#eee' });
+            $inner.css({ background: unlocked ? '#fff' : '#eee' });
         });
 
         framework.setMediaTagEmbedder(function ($mt) {
@@ -498,7 +561,7 @@ define([
         framework.setTitleRecommender(function () {
             var text;
             if (['h1', 'h2', 'h3'].some(function (t) {
-                var $header = $(inner).find(t + ':first-of-type');
+                var $header = $inner.find(t + ':first-of-type');
                 if ($header.length && $header.text()) {
                     text = $header.text();
                     return true;
@@ -550,7 +613,7 @@ define([
             updateCursor();
 
             // MEDIATAG: Migrate old mediatags to the widget system
-            $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+            $inner.find('media-tag:not(.cke_widget_element)').each(function (i, el) {
                 var element = new window.CKEDITOR.dom.element(el);
                 editor.widgets.initOn( element, 'mediatag' );
             });
@@ -561,7 +624,7 @@ define([
             editor.widgets.checkWidgets();
 
             if (framework.isReadOnly()) {
-                var $links = $(inner).find('a');
+                var $links = $inner.find('a');
                 // off so that we don't end up with multiple identical handlers
                 $links.off('click', openLink).on('click', openLink);
             }
@@ -579,7 +642,7 @@ define([
             return str;
         });
         framework.setContentGetter(function () {
-            $(inner).find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+            $inner.find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
                 $(el).remove();
             });
 
@@ -618,7 +681,7 @@ define([
             }
 
             if (framework.isReadOnly()) {
-                $(inner).attr('contenteditable', 'false');
+                $inner.attr('contenteditable', 'false');
             }
 
             var fmConfig = {
@@ -644,14 +707,13 @@ define([
 
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
                 if (data) {
-                    var $iframe = $('html').find('iframe').contents();
                     $iframe.find('html').addClass('cke_body_width');
                 }
             });
 
             framework._.sfCommon.isPadStored(function (err, val) {
                 if (!val) { return; }
-                var b64images = $(inner).find('img[src^="data:image"]:not(.cke_reset)');
+                var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset)');
                 if (b64images.length && framework._.sfCommon.isLoggedIn()) {
                     var no = h('button.cp-corner-cancel', Messages.cancel);
                     var yes = h('button.cp-corner-primary', Messages.ok);
