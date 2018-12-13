@@ -9,6 +9,7 @@ define([
     '/common/sframe-common-history.js',
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
+    '/common/sframe-common-cursor.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -31,6 +32,7 @@ define([
     History,
     File,
     CodeMirror,
+    Cursor,
     MetadataMgr,
     AppConfig,
     CommonRealtime,
@@ -106,6 +108,9 @@ define([
     // Title module
     funcs.createTitle = callWithCommon(Title.create);
 
+    // Cursor
+    funcs.createCursor = callWithCommon(Cursor.create);
+
     // Files
     funcs.uploadFile = callWithCommon(File.uploadFile);
     funcs.createFileManager = callWithCommon(File.create);
@@ -161,6 +166,48 @@ define([
         });
     };
 
+    // Chat
+    var padChatChannel;
+    // common-ui-elements needs to be able to get the chat channel to put it in metadata when
+    // importing a template
+    funcs.getPadChat = function () {
+        return padChatChannel;
+    };
+    funcs.openPadChat = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        //if (md.chat) { delete md.chat; } // Old channel without signing key
+        // NOTE: "chat2" is also used in cryptpad-common's "useTemplate"
+        var channel = md.chat2 || Hash.createChannelId();
+        if (!md.chat2) {
+            md.chat2 = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        padChatChannel = channel;
+        ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
+
+    var cursorChannel;
+    // common-ui-elements needs to be able to get the cursor channel to put it in metadata when
+    // importing a template
+    funcs.getCursorChannel = function () {
+        return cursorChannel;
+    };
+    funcs.openCursorChannel = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.cursor || Hash.createChannelId();
+        if (!md.cursor) {
+            md.cursor = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        cursorChannel = channel;
+        ctx.sframeChan.query('Q_CURSOR_OPENCHANNEL', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
 
     // CodeMirror
     funcs.initCodeMirrorApp = callWithCommon(CodeMirror.create);
@@ -171,8 +218,8 @@ define([
         ctx.sframeChan.query('Q_LOGOUT', null, cb);
     };
 
-    funcs.notify = function () {
-        ctx.sframeChan.event('EV_NOTIFY');
+    funcs.notify = function (data) {
+        ctx.sframeChan.event('EV_NOTIFY', data);
     };
     funcs.setTabTitle = function (newTitle) {
         ctx.sframeChan.event('EV_SET_TAB_TITLE', newTitle);
@@ -406,6 +453,24 @@ define([
         logoutHandlers.push(h);
     };
 
+    var shortcuts = [];
+    funcs.addShortcuts = function (w) {
+        w = w || window;
+        if (shortcuts.indexOf(w) !== -1) { return; }
+        shortcuts.push(w);
+        $(w).keydown(function (e) {
+            // Ctrl || Meta (mac)
+            if (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey)) {
+                // Ctrl+E: New pad modal
+                if (e.which === 69) {
+                    e.preventDefault();
+                    return void funcs.createNewPadModal();
+                }
+                // Ctrl+S: prevent default (save)
+                if (e.which === 83) { return void e.preventDefault(); }
+            }
+        });
+    };
 
     Object.freeze(funcs);
     return { create: function (cb) {
@@ -465,7 +530,7 @@ define([
             });
 
             ctx.sframeChan.on('EV_LOADING_INFO', function (data) {
-                UI.updateLoadingProgress(data, true);
+                UI.updateLoadingProgress(data, 'drive');
             });
 
             ctx.sframeChan.on('EV_NEW_VERSION', function () {
@@ -482,11 +547,34 @@ define([
             });
 
             ctx.metadataMgr.onReady(waitFor());
+
+            funcs.addShortcuts();
         }).nThen(function () {
             try {
                 var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
+
+            try {
+                var forbidden = ctx.metadataMgr.getPrivateData().disabledApp;
+                if (forbidden) {
+                    UI.alert(Messages.disabledApp, function () {
+                        funcs.gotoURL('/drive/');
+                    }, {forefront: true});
+                    return;
+                }
+                var mustLogin = ctx.metadataMgr.getPrivateData().registeredOnly;
+                if (mustLogin) {
+                    UI.alert(Messages.mustLogin, function () {
+                        funcs.setLoginRedirect(function () {
+                            funcs.gotoURL('/login/');
+                        });
+                    }, {forefront: true});
+                    return;
+                }
+            } catch (e) {
+                console.error("Can't check permissions for the app");
+            }
 
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 if (err === 'DELETED') {
@@ -515,6 +603,11 @@ define([
 
             ctx.sframeChan.on('EV_CHROME_68', function () {
                 UI.alert(Messages.chrome68);
+            });
+
+            funcs.isPadStored(function (err, val) {
+                if (err || !val) { return; }
+                UIElements.displayCrowdfunding(funcs);
             });
 
             ctx.sframeChan.ready();

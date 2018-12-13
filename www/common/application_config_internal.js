@@ -6,11 +6,20 @@
 define(function() {
     var config = {};
 
-    /* Select the buttons displayed on the main page to create new collaborative sessions
-     * Existing types : pad, code, poll, slide
+    /* Select the buttons displayed on the main page to create new collaborative sessions.
+     * Removing apps from the list will prevent users from accessing them. They will instead be
+     * redirected to the drive.
+     * You should never remove the drive from this list.
      */
     config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
                                 'oodoc', 'ooslide', 'oocell', 'file', 'todo', 'contacts'];
+    /* The registered only types are apps restricted to registered users.
+     * You should never remove apps from this list unless you know what you're doing. The apps
+     * listed here by default can't work without a user account.
+     * You can however add apps to this list. The new apps won't be visible for unregistered
+     * users and these users will be redirected to the login page if they still try to access
+     * the app
+     */
     config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'oocell'];
 
     /*  Cryptpad apps use a common API to display notifications to users
@@ -74,18 +83,19 @@ define(function() {
     // Customize the icon used for each application.
     // You can update the colors by making a copy of /customize.dist/src/less2/include/colortheme.less
     config.applicationsIcon = {
-        file: 'fa-file-text-o',
-        pad: 'fa-file-word-o',
-        code: 'fa-file-code-o',
-        slide: 'fa-file-powerpoint-o',
-        poll: 'fa-calendar',
-        whiteboard: 'fa-paint-brush',
-        todo: 'fa-tasks',
-        contacts: 'fa-users',
+        file: 'cptools-file',
+        fileupload: 'cptools-file-upload',
+        pad: 'cptools-pad',
+        code: 'cptools-code',
+        slide: 'cptools-slide',
+        poll: 'cptools-poll',
+        whiteboard: 'cptools-whiteboard',
+        todo: 'cptools-todo',
+        contacts: 'cptools-contacts',
+        kanban: 'cptools-kanban',
         oodoc: 'fa-file-word-o',
         ooslide: 'fa-file-powerpoint-o',
         oocell: 'fa-file-excel-o',
-        kanban: 'fa-columns',
         drive: 'fa-hdd-o',
     };
 
@@ -128,13 +138,13 @@ define(function() {
     // SharedWorkers allow us to load only one websocket and one user drive for all the browser tabs,
     // making it much faster to open new tabs.
     // Warning: This is an experimental feature. It will be enabled by default once we're sure it's stable.
-    config.disableWorkers = true;
+    config.disableWorkers = false;
 
     // Shared folder are in a beta-test state. They are likely to disappear from a user's drive
     // spontaneously, resulting in the deletion of the entire folder's content.
     // We highly recommend to keep them disabled until they are stable enough to be enabled
     // by default by the CryptPad developers.
-    config.disableSharedFolders = true;
+    config.disableSharedFolders = false;
 
     return config;
 });

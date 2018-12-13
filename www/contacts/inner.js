@@ -6,7 +6,6 @@ define([
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/contacts/messenger-ui.js',
-    '/common/sframe-messenger-inner.js',
     '/customize/messages.js',
     '/common/common-interface.js',
 
@@ -21,7 +20,6 @@ define([
     SFCommon,
     h,
     MessengerUI,
-    Messenger,
     Messages,
     UI
     )
@@ -41,22 +39,7 @@ define([
 
         document.body.appendChild(toolbarElement);
 
-        var messaging = h('div#cp-app-contacts-messaging', [
-            h('div.cp-app-contacts-info', [
-                h('h2', Messages.contacts_info1),
-                h('ul', [
-                    h('li', Messages.contacts_info2),
-                    h('li', Messages.contacts_info3),
-                ])
-            ])
-        ]);
-
-        var friendList = h('div#cp-app-contacts-friendlist');
-
-        var appElement = h('div#cp-app-contacts-container', [
-            friendList,
-            messaging,
-        ]);
+        var appElement = h('div#cp-app-contacts-container');
 
         document.body.appendChild(appElement);
 
@@ -71,9 +54,17 @@ define([
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
 
-        var messenger = Messenger.create(sFrameChan);
+        // we're in upload mode
+        if (!common.isLoggedIn()) {
+            UI.removeLoadingScreen();
+            return UI.alert(Messages.contacts_mustLogin, function () {
+                common.setLoginRedirect(function () {
+                    common.gotoURL('/login/');
+                });
+            });
+        }
 
-        MessengerUI.create(messenger, $(friendList), $(messaging), common);
+        MessengerUI.create($(appElement), common);
 
         UI.removeLoadingScreen();
 

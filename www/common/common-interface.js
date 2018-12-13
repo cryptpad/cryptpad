@@ -16,7 +16,6 @@ define([
     '/customize/application_config.js',
     '/bower_components/alertifyjs/dist/js/alertify.js',
     '/common/tippy/tippy.min.js',
-    '/customize/pages.js',
     '/common/hyperscript.js',
     '/customize/loading.js',
     '/common/test.js',
@@ -26,7 +25,7 @@ define([
     'css!/common/tippy/tippy.css',
     'css!/common/jquery-ui/jquery-ui.min.css'
 ], function ($, Messages, Util, Hash, Notifier, AppConfig,
-            Alertify, Tippy, Pages, h, Loading, Test) {
+            Alertify, Tippy, h, Loading, Test) {
     var UI = {};
 
     /*
@@ -36,6 +35,11 @@ define([
 
     // set notification timeout
     Alertify._$$alertify.delay = AppConfig.notificationTimeout || 5000;
+
+    var setHTML = UI.setHTML = function (e, html) {
+        e.innerHTML = html;
+        return e;
+    };
 
     var findCancelButton = UI.findCancelButton = function (root) {
         if (root) {
@@ -761,8 +765,11 @@ define([
         var $icon = $defaultIcon.clone();
 
         if (AppConfig.applicationsIcon && AppConfig.applicationsIcon[type]) {
+            var icon = AppConfig.applicationsIcon[type];
+            var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
+            if (type === 'fileupload') { type = 'file'; }
             var appClass = ' cp-icon cp-icon-color-'+type;
-            $icon = $('<span>', {'class': 'fa ' + AppConfig.applicationsIcon[type] + appClass});
+            $icon = $('<span>', {'class': font + ' ' + icon + appClass});
         }
 
         return $icon;
@@ -875,9 +882,92 @@ define([
         });
     };
 
-    UI.createCheckbox = Pages.createCheckbox;
+    UI.createCheckbox = function (id, labelTxt, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'checkbox',
+            id: id
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
 
-    UI.createRadio = Pages.createRadio;
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-checkmark-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
+            }
+        });
+
+        $(input).change(function () { $(mark).focus(); });
+
+        return h('label.cp-checkmark', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
+    };
+
+    UI.createRadio = function (name, id, labelTxt, checked, opts) {
+        opts = opts|| {};
+        // Input properties
+        var inputOpts = {
+            type: 'radio',
+            id: id,
+            name: name
+        };
+        if (checked) { inputOpts.checked = 'checked'; }
+        $.extend(inputOpts, opts.input || {});
+
+        // Label properties
+        var labelOpts = {};
+        $.extend(labelOpts, opts.label || {});
+        if (labelOpts.class) { labelOpts.class += ' cp-checkmark'; }
+
+        // Mark properties
+        var markOpts = { tabindex: 0 };
+        $.extend(markOpts, opts.mark || {});
+
+        var input = h('input', inputOpts);
+        var mark = h('span.cp-radio-mark', markOpts);
+        var label = h('span.cp-checkmark-label', labelTxt);
+
+        $(mark).keydown(function (e) {
+            if (e.which === 32) {
+                e.stopPropagation();
+                e.preventDefault();
+                $(input).prop('checked', !$(input).is(':checked'));
+                $(input).change();
+            }
+        });
+
+        $(input).change(function () { $(mark).focus(); });
+
+        var radio =  h('label', labelOpts, [
+            input,
+            mark,
+            label
+        ]);
+
+        $(radio).addClass('cp-radio');
+
+        return radio;
+    };
 
     UI.cornerPopup = function (text, actions, footer, opts) {
         opts = opts || {};
@@ -887,14 +977,14 @@ define([
         var popup = h('div.cp-corner-container', [
             minimize,
             maximize,
-            h('div.cp-corner-filler', { style: "width:130px;" }),
-            h('div.cp-corner-filler', { style: "width:90px;" }),
+            h('div.cp-corner-filler', { style: "width:110px;" }),
+            h('div.cp-corner-filler', { style: "width:80px;" }),
             h('div.cp-corner-filler', { style: "width:60px;" }),
             h('div.cp-corner-filler', { style: "width:40px;" }),
             h('div.cp-corner-filler', { style: "width:20px;" }),
-            h('div.cp-corner-text', text),
+            setHTML(h('div.cp-corner-text'), text),
             h('div.cp-corner-actions', actions),
-            Pages.setHTML(h('div.cp-corner-footer'), footer)
+            setHTML(h('div.cp-corner-footer'), footer)
         ]);
 
         $(minimize).click(function () {

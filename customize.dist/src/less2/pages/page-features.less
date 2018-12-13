@@ -19,7 +19,7 @@
             color: #fff;
         }
     }
-    #cp-features-register {
+    .cp-features-register {
         text-align: center;
         padding: 20px;
     }
@@ -39,23 +39,50 @@
         .card {
             box-shadow: 0 5px 15px rgba(69, 145, 196, 0.3);
             border: none;
+            .card-body {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                flex-flow: column;
+                h3 {
+                    margin: 0;
+                }
+            }
         }
         h3 {
             color: #fff;
         }
         .list-group {
             li {
-                &:before {
-                    content: "\f00c";
-                    font-family: "FontAwesome";
-                    font-size: 14px;
-                    color: @cryptpad_color_blue;
-                    padding-right: 10px;
-                }
+                display: flex;
+                padding-left: 0;
+                padding-right: 5px;
             }
             div {
-                display: inline;
+                &.cp-check {
+                    width: 30px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    &:before {
+                        content: "\f00c";
+                        font-family: "FontAwesome";
+                        font-size: 14px;
+                        color: @cryptpad_color_blue;
+                    }
+                }
+                &.cp-content {
+                    flex: 1;
+                    display: flex;
+                    flex-flow: column;
+                }
+                &.cp-feature {
+                    font-weight: bold;
+                }
             }
+        }
+        div.cp-note {
+            font-size: 0.8em;
         }
         a.voted {
             opacity: 0.6;
@@ -70,7 +97,9 @@
     }
     .cp-anon-user {
         .card-body {
-            background-color: @cryptpad_color_blue;
+            &:first-of-type {
+                background-color: @cryptpad_color_blue;
+            }
         }
     }
     .cp-regis-user {

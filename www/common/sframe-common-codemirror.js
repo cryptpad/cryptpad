@@ -38,7 +38,14 @@ define([
         return cursor;
     };
 
+    module.getContentExtension = function (mode) {
+        return (Modes.extensionOf(mode) || '.txt').slice(1);
+    };
+    module.fileExporter = function (content) {
+        return new Blob([ content ], { type: 'text/plain;charset=utf-8' });
+    };
     module.setValueAndCursor = function (editor, oldDoc, remoteDoc) {
+        editor._noCursorUpdate = true;
         var scroll = editor.getScrollInfo();
         //get old cursor here
         var oldCursor = {};
@@ -53,6 +60,7 @@ define([
             return TextCursor.transformCursor(oldCursor[attr], ops);
         });
 
+        editor._noCursorUpdate = false;
         if(selects[0] === selects[1]) {
             editor.setCursor(posToCursor(selects[0], remoteDoc));
         }
@@ -271,10 +279,10 @@ define([
         };
 
         exp.getContentExtension = function () {
-            return (Modes.extensionOf(exp.highlightMode) || '.txt').slice(1);
+            return module.getContentExtension(exp.highlightMode);
         };
         exp.fileExporter = function () {
-            return new Blob([ editor.getValue() ], { type: 'text/plain;charset=utf-8' });
+            return module.fileExporter(editor.getValue());
         };
         exp.fileImporter = function (content, file) {
             var $toolbarContainer = $('#cme_toolbox');
@@ -338,6 +346,108 @@ define([
                 }
             };
             framework._.sfCommon.createFileManager(fmConfig);
+        };
+
+        exp.mkIndentSettings = function (metadataMgr) {
+            var setIndentation = function (units, useTabs, fontSize) {
+                if (typeof(units) !== 'number') { return; }
+                editor.setOption('indentUnit', units);
+                editor.setOption('tabSize', units);
+                editor.setOption('indentWithTabs', useTabs);
+                $('.CodeMirror').css('font-size', fontSize+'px');
+            };
+
+            var indentKey = 'indentUnit';
+            var useTabsKey = 'indentWithTabs';
+            var fontKey = 'fontSize';
+            var updateIndentSettings = function () {
+                if (!metadataMgr) { return; }
+                var data = metadataMgr.getPrivateData().settings;
+                data = data.codemirror || {};
+                var indentUnit = data[indentKey];
+                var useTabs = data[useTabsKey];
+                var fontSize = data[fontKey];
+                setIndentation(
+                    typeof(indentUnit) === 'number'? indentUnit : 2,
+                    typeof(useTabs) === 'boolean'? useTabs : false,
+                    typeof(fontSize) === 'number' ? fontSize : 12);
+            };
+            metadataMgr.onChangeLazy(updateIndentSettings);
+            updateIndentSettings();
+        };
+
+        exp.getCursor = function () {
+            var doc = canonicalize(editor.getValue());
+            var cursor = {};
+            cursor.selectionStart = cursorToPos(editor.getCursor('from'), doc);
+            cursor.selectionEnd = cursorToPos(editor.getCursor('to'), doc);
+            return cursor;
+        };
+
+        var makeCursor = function (id) {
+            if (document.getElementById(id)) {
+                return document.getElementById(id);
+            }
+            return $('<span>', {
+                'id': id,
+                'class': 'cp-codemirror-cursor'
+            })[0];
+        };
+        var makeTippy = function (cursor) {
+            var html = '<span class="cp-cursor-avatar">';
+            if (cursor.avatar && UIElements.getAvatar(cursor.avatar)) {
+                html += UIElements.getAvatar(cursor.avatar);
+            }
+            html += cursor.name + '</span>';
+            return html;
+        };
+        var marks = {};
+        exp.setRemoteCursor = function (data) {
+            if (data.leave) {
+                $('.cp-codemirror-cursor[id^='+data.id+']').each(function (i, el) {
+                    var id = $(el).attr('id');
+                    if (marks[id]) {
+                        marks[id].clear();
+                        delete marks[id];
+                    }
+                });
+                return;
+            }
+
+            var id = data.id;
+            var cursor = data.cursor;
+            var doc = canonicalize(editor.getValue());
+
+            if (marks[id]) {
+                marks[id].clear();
+                delete marks[id];
+            }
+
+            if (!cursor.selectionStart) { return; }
+
+            if (cursor.selectionStart === cursor.selectionEnd) {
+                var cursorPosS = posToCursor(cursor.selectionStart, doc);
+                var el = makeCursor(id);
+                if (cursor.color) {
+                    $(el).css('border-color', cursor.color);
+                    $(el).css('background-color', cursor.color);
+                }
+                if (cursor.name) {
+                    $(el).attr('title', makeTippy(cursor));
+                }
+                marks[id] = editor.setBookmark(cursorPosS, { widget: el });
+            } else {
+                var pos1 = posToCursor(cursor.selectionStart, doc);
+                var pos2 = posToCursor(cursor.selectionEnd, doc);
+                var css = cursor.color
+                    ? 'background-color: rgba(' + Util.hexToRGB(cursor.color).join(',') + ',0.2)'
+                    : 'background-color: rgba(255,0,0,0.2)';
+                marks[id] = editor.markText(pos1, pos2, {
+                    css: css,
+                    title: makeTippy(cursor),
+                    className: 'cp-tippy-html'
+                });
+            }
         };
 
         return exp;

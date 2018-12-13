@@ -7,8 +7,8 @@ define([
     '/common/common-realtime.js',
     '/customize/application_config.js',
     '/bower_components/chainpad-listmap/chainpad-listmap.js',
-    '/customize/pages.js',
     '/poll/render.js',
+    '/poll/export.js',
     '/common/diffMarked.js',
     '/common/sframe-common-codemirror.js',
     '/common/common-thumbnail.js',
@@ -36,8 +36,8 @@ define([
     CommonRealtime,
     AppConfig,
     Listmap,
-    Pages,
     Renderer,
+    Exporter,
     DiffMd,
     SframeCM,
     Thumb,
@@ -69,55 +69,19 @@ define([
         return JSON.parse(JSON.stringify(obj));
     };
 
-    var getCSV = APP.getCSV = function () {
-        if (!APP.proxy) { return; }
-        var data = copyObject(APP.proxy.content);
-        var res = '';
-
-        var escapeStr = function (str) {
-            return '"' + str.replace(/"/g, '""') + '"';
-        };
-
-        [null].concat(data.rowsOrder).forEach(function (rowId, i) {
-            [null].concat(data.colsOrder).forEach(function (colId, j) {
-                // thead
-                if (i === 0) {
-                    if (j === 0) { res += ','; return; }
-                    if (!colId) { throw new Error("Invalid data"); }
-                    res += escapeStr(data.cols[colId] || Messages.anonymous) + ',';
-                    return;
-                }
-                // tbody
-                if (!rowId) { throw new Error("Invalid data"); }
-                if (j === 0) {
-                    res += escapeStr(data.rows[rowId] || Messages.poll_optionPlaceholder) + ',';
-                    return;
-                }
-                if (!colId) { throw new Error("Invalid data"); }
-                res += (data.cells[colId + '_' + rowId] || 3) + ',';
-            });
-            // last column: total
-            // thead
-            if (i === 0) {
-                res += escapeStr(Messages.poll_total) + '\n';
-                return;
-            }
-            // tbody
-            if (!rowId) { throw new Error("Invalid data"); }
-            res += APP.count[rowId] || '?';
-            res += '\n';
-        });
-
-        return res;
+    APP.getCSV = function () {
+        return Exporter.getCSV(APP.proxy.content);
     };
+
     var exportFile = function () {
-        var csv = getCSV();
-        var suggestion = Title.suggestTitle(Title.defaultTitle);
-        UI.prompt(Messages.exportPrompt,
-            Util.fixFileName(suggestion) + '.csv', function (filename) {
-            if (!(typeof(filename) === 'string' && filename)) { return; }
-            var blob = new Blob([csv], {type: "application/csv;charset=utf-8"});
-            saveAs(blob, filename);
+        Exporter.main(APP.proxy, function (blob, isJson) {
+            var suggestion = Title.suggestTitle(Title.defaultTitle);
+            var ext = isJson ? '.json' : '.csv';
+            UI.prompt(Messages.exportPrompt,
+                Util.fixFileName(suggestion) + ext, function (filename) {
+                if (!(typeof(filename) === 'string' && filename)) { return; }
+                saveAs(blob, filename);
+            });
         });
     };
 
@@ -1092,6 +1056,11 @@ define([
             Test(passIfOk);
         }
 
+        // No need for onLocal in openPadChat because in poll, we listen for metadata changes
+        // and save them everytime.
+        // See `metadataMgr.onChange(function () {`
+        common.openPadChat(function () {});
+
         UI.removeLoadingScreen();
         var privateDat = metadataMgr.getPrivateData();
         var skipTemp = Util.find(privateDat,
@@ -1160,6 +1129,7 @@ define([
 
         var configTb = {
             displayed: [
+                'chat',
                 'userlist',
                 'title',
                 'useradmin',
@@ -1251,13 +1221,63 @@ define([
         }
     };
 
+    var initialContent = function () {
+        return [
+            h('div#cp-toolbar.cp-toolbar-container'),
+            h('div#cp-app-poll-content', [
+                h('div#cp-app-poll-form', [
+                    h('div.cp-app-poll-realtime', [
+                        h('br'),
+                        h('div', [
+                            h('textarea#cp-app-poll-description', {
+                                rows: "5",
+                                cols: "50",
+                                placeholder: Messages.poll_descriptionHint,
+                                disabled: true
+                            }),
+                            h('div#cp-app-poll-description-published'),
+                            h('br')
+                        ]),
+                        h('div#cp-app-poll-table-container', [
+                            h('div#cp-app-poll-table-scroll', [h('table')]),
+                            h('button#cp-app-poll-create-user.btn.btn-secondary', {
+                                title: Messages.poll_create_user
+                            }, Messages.poll_commit),
+                            h('button#cp-app-poll-create-option.btn.btn-secondary', {
+                                title: Messages.poll_create_option
+                            }, h('span.fa.fa-plus')),
+                        ]),
+                        h('div#cp-app-poll-comments', [
+                            h('h2#cp-app-poll-comments-add-title', Messages.poll_comment_add),
+                            h('div#cp-app-poll-comments-add', [
+                                h('input.cp-app-poll-comments-add-name', {
+                                    type: 'text',
+                                    placeholder: Messages.anonymous
+                                }),
+                                h('textarea.cp-app-poll-comments-add-msg', {
+                                    placeholder: Messages.poll_comment_placeholder
+                                }),
+                                h('button.cp-app-poll-comments-add-submit.btn.btn-secondary',
+                                    Messages.poll_comment_submit),
+                                h('button.cp-app-poll-comments-add-cancel.btn.btn-secondary',
+                                    Messages.cancel)
+                            ]),
+                            h('h2#cp-app-poll-comments-list-title', Messages.poll_comment_list),
+                            h('div#cp-app-poll-comments-list')
+                        ]),
+                        h('div#cp-app-poll-nocomments', Messages.poll_comment_disabled)
+                    ])
+                ])
+            ])
+        ];
+    };
 
     var main = function () {
 
         nThen(function (waitFor) {
             $(waitFor(function () {
                 UI.addLoadingScreen();
-                var $div = $('<div>').append(Pages['/poll/']());
+                var $div = $('<div>').append(initialContent());
                 $('body').append($div.html());
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));

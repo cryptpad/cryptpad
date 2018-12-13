@@ -36,26 +36,25 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        var getSecrets = function (Cryptpad, Utils, cb) {
+        var afterSecrets = function (Cryptpad, Utils, secret, cb) {
             var hash = window.location.hash.slice(1);
-            var secret = Utils.Hash.getSecrets('drive', hash);
-            if (hash) {
+            if (hash && Utils.LocalStore.isLoggedIn()) {
                 // Add a shared folder!
-                // XXX password?
                 Cryptpad.addSharedFolder(secret, function (id) {
                     window.CryptPad_newSharedFolder = id;
-                    // Update the hash in the address bar
-                    var ohc = window.onhashchange;
-                    window.onhashchange = function () {};
-                    window.location.hash = "";
-                    window.onhashchange = ohc;
-                    ohc({reset:true});
-                    cb(null, secret);
+                    cb();
                 });
                 return;
+            } else if (hash) {
+                var id = Utils.Util.createRandomInteger();
+                window.CryptPad_newSharedFolder = id;
+                var data = {
+                    href: Utils.Hash.getRelativeHref(window.location.href),
+                    password: secret.password
+                };
+                return void Cryptpad.loadSharedFolder(id, data, cb);
             }
-            // No password for drive
-            cb(null, secret);
+            cb();
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
             sframeChan.on('EV_BURN_ANON_DRIVE', function () {
@@ -87,6 +86,15 @@ define([
                     cb(obj);
                 });
             });
+            sframeChan.on('EV_DRIVE_SET_HASH', function (hash) {
+                // Update the hash in the address bar
+                if (!Utils.LocalStore.isLoggedIn()) { return; }
+                var ohc = window.onhashchange;
+                window.onhashchange = function () {};
+                window.location.hash = hash || '';
+                window.onhashchange = ohc;
+                ohc({reset:true});
+            });
             Cryptpad.onNetworkDisconnect.reg(function () {
                 sframeChan.event('EV_NETWORK_DISCONNECT');
             });
@@ -104,7 +112,7 @@ define([
             });
         };
         SFCommonO.start({
-            getSecrets: getSecrets,
+            afterSecrets: afterSecrets,
             noHash: true,
             noRealtime: true,
             driveEvents: true,

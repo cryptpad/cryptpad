@@ -52,6 +52,7 @@
                     widthBoard: '250px',
                     responsive: '700',
                     colors: ["yellow", "green", "blue", "red", "orange"],
+                    responsivePercentage: false,
                     boards: [],
                     dragBoards: true,
                     addItemButton: false,
@@ -67,7 +68,7 @@
                     click: function (el) {},
                     boardTitleclick: function (el, boardId) {},
                     buttonClick: function (el, boardId) {},
-                    colorClick: function (el, boardId) {},
+                    colorClick: function (el, type) {},
                     addItemClick: function (el, boardId) {},
                     onChange: function () {}
                 };
@@ -85,12 +86,12 @@
                         //Init Drag Board
                         self.drakeBoard = self.dragula([self.container], {
                                 moves: function (el, source, handle, sibling) {
-                                    if (self.options.readOnly) { return false; }
+                                    if (self.options.readOnly) { return false; }
                                     if (!self.options.dragBoards) return false;
                                     return (handle.classList.contains('kanban-board-header') || handle.classList.contains('kanban-title-board'));
                                 },
                                 accepts: function (el, target, source, sibling) {
-                                    if (self.options.readOnly) { return false; }
+                                    if (self.options.readOnly) { return false; }
                                     return target.classList.contains('kanban-container');
                                 },
                                 revertOnSpill: true,
@@ -144,15 +145,18 @@
 
                         //Init Drag Item
                         self.drake = self.dragula(self.boardContainer, {
-                                moves: function (el, source, handle, sibling) {
-                                    if (self.options.readOnly) { return false; }
-                                    return handle.classList.contains('kanban-item');
-                                },
-                                accepts: function (el, target, source, sibling) {
-                                    if (self.options.readOnly) { return false; }
-                                    return true;
-                                },
-                                revertOnSpill: true
+                            moves: function (el, source, handle, sibling) {
+                                if (self.options.readOnly) { return false; }
+                                return handle.classList.contains('kanban-item');
+                            },
+                            accepts: function (el, target, source, sibling) {
+                                if (self.options.readOnly) { return false; }
+                                return true;
+                            },
+                            revertOnSpill: true
+                        })
+                            .on('cancel', function(el, container, source) {
+                                self.enableAllBoards();
                             })
                             .on('drag', function (el, source) {
                                 // we need to calculate the position before starting to drag
@@ -174,17 +178,22 @@
                             })
                             .on('dragend', function (el) {
                                 console.log("In dragend");
+                                el.classList.remove('is-moving');
                                 self.options.dragendEl(el);
                                 if (el !== null && typeof (el.dragendfn) === 'function')
                                     el.dragendfn(el);
                             })
                             .on('cancel', function (el, container, source) {
                                 console.log("In cancel");
+                                el.classList.remove('is-moving');
                                 // FIXME custom code
                                 var boardId = source.parentNode.dataset.id;
                                 self.options.dragcancelEl(el, boardId);
                             })
-                            .on('drop', function (el, target, source, sibling) {
+                            .on('drop', function(el, target, source, sibling) {
+                                self.enableAllBoards();
+                                el.classList.remove('is-moving');
+
                                 console.log("In drop");
 
                                 // TODO: update board object board order
@@ -229,7 +238,7 @@
                                 // if (board1==board2 && pos2<pos1)
                                 //   pos2 = pos2;
 
-                                // moving element to target array   
+                                // moving element to target array
                                 board1.item.splice(pos1, 1);
                                 board2.item.splice(pos2 - 1, 0, item);
 
@@ -240,9 +249,18 @@
                     }
                 };
 
+                this.enableAllBoards = function() {
+                    var allB = document.querySelectorAll('.kanban-board');
+                    if (allB.length > 0 && allB !== undefined) {
+                        for (var i = 0; i < allB.length; i++) {
+                            allB[i].classList.remove('disabled-board');
+                        }
+                    }
+                };
+
                 this.addElement = function (boardID, element) {
 
-                    // add Element to JSON        
+                    // add Element to JSON
                     var boardJSON = __findBoardJSON(boardID);
                     boardJSON.item.push({
                         title: element.title
@@ -260,6 +278,7 @@
                     nodeItem.dragendfn = element.dragend;
                     nodeItem.dropfn = element.drop;
                     __onclickHandler(nodeItem);
+                    __onColorClickHandler(nodeItem, "item");
                     board.appendChild(nodeItem);
                     // send event that board has changed
                     self.onChange();
@@ -272,8 +291,19 @@
                     return self;
                 };
 
-                this.addBoards = function (boards) {
-                    var boardWidth = self.options.widthBoard;
+
+                this.addBoards = function(boards) {
+                    if (self.options.responsivePercentage) {
+                        self.container.style.width = '100%';
+                        self.options.gutter = '1%';
+                        if (window.innerWidth > self.options.responsive) {
+                            var boardWidth = (100 - boards.length * 2) / boards.length;
+                        } else {
+                            var boardWidth = 100 - (boards.length * 2);
+                        }
+                    } else {
+                        var boardWidth = self.options.widthBoard;
+                    }
                     var addButton = self.options.addItemButton;
                     var buttonContent = self.options.buttonContent;
 
@@ -290,7 +320,11 @@
                         boardNode.dataset.id = board.id;
                         boardNode.classList.add('kanban-board');
                         //set style
-                        boardNode.style.width = boardWidth;
+                        if (self.options.responsivePercentage) {
+                            boardNode.style.width = boardWidth + '%';
+                        } else {
+                            boardNode.style.width = boardWidth;
+                        }
                         boardNode.style.marginLeft = self.options.gutter;
                         boardNode.style.marginRight = self.options.gutter;
                         // header board
@@ -303,6 +337,10 @@
                             headerBoard.classList.add(value);
                         });
                         if (board.color !== '' && board.color !== undefined) {
+                            headerBoard._jscLinkedInstance = undefined;
+                            jscolorL = new jscolor(headerBoard,{showOnClick: false, valueElement:undefined});
+                            jscolorL.fromString(board.color);
+                            headerBoard._jscLinkedInstance = undefined;
                             headerBoard.classList.add("kanban-header-" + board.color);
                         }
                         titleBoard = document.createElement('div');
@@ -311,7 +349,7 @@
                         titleBoard.clickfn = board.boardTitleClick;
                         __onboardTitleClickHandler(titleBoard);
                         headerBoard.appendChild(titleBoard);
-                        __onColorClickHandler(headerBoard);
+                        __onColorClickHandler(headerBoard, "board");
 
                         // if add button is true, add button to the board
                         if (addButton) {
@@ -332,14 +370,24 @@
                             var nodeItem = document.createElement('div');
                             nodeItem.classList.add('kanban-item');
                             nodeItem.dataset.eid = itemKanban.id;
-                            nodeItem.innerHTML = itemKanban.title;
+                            var nodeItemText = document.createElement('div');
+                            nodeItemText.classList.add('kanban-item-text');
+                            nodeItemText.dataset.eid = itemKanban.id;
+                            nodeItemText.innerHTML = itemKanban.title;
+                            nodeItem.appendChild(nodeItemText);
                             //add function
-                            nodeItem.clickfn = itemKanban.click;
-                            nodeItem.dragfn = itemKanban.drag;
-                            nodeItem.dragendfn = itemKanban.dragend;
-                            nodeItem.dropfn = itemKanban.drop;
+                            nodeItemText.clickfn = itemKanban.click;
+                            nodeItemText.dragfn = itemKanban.drag;
+                            nodeItemText.dragendfn = itemKanban.dragend;
+                            nodeItemText.dropfn = itemKanban.drop;
                             //add click handler of item
-                            __onclickHandler(nodeItem);
+                            __onclickHandler(nodeItemText);
+                            if (itemKanban.color !== '' && itemKanban.color !== undefined) {
+	                            jscolorL = new jscolor(nodeItem,{showOnClick: false, valueElement:undefined});
+	                            jscolorL.fromString(itemKanban.color);
+	                        }
+                            __onColorClickHandler(nodeItem, "item");
+
                             contentBoard.appendChild(nodeItem);
                         }
                         //footer board
@@ -472,6 +520,7 @@
                 function __onclickHandler(nodeItem, clickfn) {
                     nodeItem.addEventListener('click', function (e) {
                         e.preventDefault;
+                        e.stopPropagation();
                         self.options.click(this);
                         if (typeof (this.clickfn) === 'function')
                             this.clickfn(this);
@@ -487,12 +536,14 @@
                     });
                 }
 
-                function __onColorClickHandler(nodeItem, clickfn) {
+                function __onColorClickHandler(nodeItem, type) {
                     nodeItem.addEventListener('click', function (e) {
+                        if (Array.prototype.slice.call(nodeItem.classList).indexOf('is-moving') !== -1) {
+                            return;
+                        }
                         e.preventDefault;
-                        self.options.colorClick(this);
-                        if (typeof (this.clickfn) === 'function')
-                            this.clickfn(this);
+                        e.stopPropagation();
+                        self.options.colorClick(this, type);
                     });
                 }
 

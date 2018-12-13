@@ -27,6 +27,7 @@ body.cp-app-pad {
         height: 100%;
         border: 0;
         > .cke_inner {
+            overflow: hidden;
             flex: 1;
             position: unset;
             display: flex;
@@ -47,6 +48,20 @@ body.cp-app-pad {
         display: block;
         overflow-x: auto;
         max-height: 100vh;
+        .cke_dialog_contents {
+            #ck-mediatag-preview {
+                margin: auto;
+                resize: both;
+                max-width: 300px;
+                max-height: 300px;
+                overflow: auto;
+            }
+            media-tag {
+                display: flex;
+                border-style: solid;
+                border-color: black;
+            }
+        }
     }
 
     .cke_wysiwyg_frame {

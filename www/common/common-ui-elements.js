@@ -12,10 +12,11 @@ define([
     '/common/clipboard.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/customize/pages.js',
     '/bower_components/nthen/index.js',
     'css!/customize/fonts/cptools/style.css'
 ], function ($, Config, Util, Hash, Language, UI, Constants, Feedback, h, MediaTag, Clipboard,
-             Messages, AppConfig, NThen) {
+             Messages, AppConfig, Pages, NThen) {
     var UIElements = {};
 
     // Configure MediaTags to use our local viewer
@@ -155,7 +156,7 @@ define([
             }
 
             var parsed = Hash.parsePadUrl(data.href || data.roHref);
-            if (owned && parsed.hashData.type === 'pad') {
+            if (!data.noEditPassword && owned && parsed.hashData.type === 'pad') {
                 var sframeChan = common.getSframeChannel();
                 var changePwTitle = Messages.properties_changePassword;
                 var changePwConfirm = Messages.properties_confirmChange;
@@ -630,23 +631,25 @@ define([
                 if (!data.FM) { return; }
                 var $input = $('<input>', {
                     'type': 'file',
-                    'style': 'display: none;'
+                    'style': 'display: none;',
+                    'multiple': 'multiple'
                 }).on('change', function (e) {
-                    var file = e.target.files[0];
-                    var ev = {
-                        target: data.target
-                    };
-                    if (data.filter && !data.filter(file)) {
-                        return;
-                    }
-                    if (data.transformer) {
-                        data.transformer(file, function (newFile) {
-                            data.FM.handleFile(newFile, ev);
-                            if (callback) { callback(); }
-                        });
-                        return;
-                    }
-                    data.FM.handleFile(file, ev);
+                    var files = Util.slice(e.target.files);
+                    files.forEach(function (file) {
+                        var ev = {
+                            target: data.target
+                        };
+                        if (data.filter && !data.filter(file)) {
+                            return;
+                        }
+                        if (data.transformer) {
+                            data.transformer(file, function (newFile) {
+                                data.FM.handleFile(newFile, ev);
+                            });
+                            return;
+                        }
+                        data.FM.handleFile(file, ev);
+                    });
                     if (callback) { callback(); }
                 });
                 if (data.accept) { $input.attr('accept', data.accept); }
@@ -765,7 +768,7 @@ define([
                 break;
             case 'print':
                 button = $('<button>', {
-                    title: Messages.printButtonTitle,
+                    title: Messages.printButtonTitle2,
                     'class': "fa fa-print cp-toolbar-icon-print",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
@@ -1132,14 +1135,30 @@ define([
             common.setAttribute(['hideHelp', type], true);
         };
 
-        $(closeButton).click(function () { toggleHelp(true); });
+        var showMore = function () {
+            $(text).addClass("cp-help-small");
+            var $dot = $('<span>').text('...').appendTo($(text).find('h1'));
+            $(text).click(function () {
+                $(text).removeClass('cp-help-small');
+                $(text).off('click');
+                $dot.remove();
+            });
+        };
+
+        $(closeButton).click(function (e) {
+            e.stopPropagation();
+            toggleHelp(true);
+        });
         $toolbarButton.click(function () {
             toggleHelp();
         });
 
         common.getAttribute(['hideHelp', type], function (err, val) {
-            if ($(window).height() < 800 && $(window).width() < 800) { return void toggleHelp(true); }
-            if (val === true) { toggleHelp(true); }
+            //if ($(window).height() < 800 || $(window).width() < 800) { return void toggleHelp(true); }
+            if (val === true) { return void toggleHelp(true); }
+            if (!val && ($(window).height() < 800 || $(window).width() < 800)) {
+                return void showMore();
+            }
         });
 
         return {
@@ -1204,6 +1223,13 @@ define([
       if (!str || !str.trim()) { return '?'; }
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
+    };
+    var avatars = {};
+    UIElements.setAvatar = function (hash, data) {
+        avatars[hash] = data;
+    };
+    UIElements.getAvatar = function (hash) {
+        return avatars[hash];
     };
     UIElements.displayAvatar = function (Common, $container, href, name, cb) {
         var displayDefault = function () {
@@ -1434,6 +1460,9 @@ define([
         };
 
         var show = function () {
+            var wh = $(window).height();
+            var topPos = $container[0].getBoundingClientRect().bottom;
+            $innerblock.css('max-height', Math.floor(wh - topPos - 1)+'px');
             $innerblock.show();
             $innerblock.find('.cp-dropdown-element-active').removeClass('cp-dropdown-element-active');
             if (config.isSelect && value) {
@@ -1523,8 +1552,9 @@ define([
         var displayNameCls = config.displayNameCls || 'cp-toolbar-user-name';
         var $displayedName = $('<span>', {'class': displayNameCls});
 
-        var accountName = metadataMgr.getPrivateData().accountName;
-        var origin = metadataMgr.getPrivateData().origin;
+        var priv = metadataMgr.getPrivateData();
+        var accountName = priv.accountName;
+        var origin = priv.origin;
         var padType = metadataMgr.getMetadata().type;
 
         var $userName = $('<span>');
@@ -1548,7 +1578,7 @@ define([
                 content: $userAdminContent.html()
             });
         }
-        if (padType !== 'drive') {
+        if (padType !== 'drive' || (!accountName && priv.newSharedFolder)) {
             options.push({
                 tag: 'a',
                 attributes: {
@@ -1792,13 +1822,16 @@ define([
 
         var $container = $('<div>');
         var i = 0;
-        AppConfig.availablePadTypes.forEach(function (p) {
+        var types = AppConfig.availablePadTypes.filter(function (p) {
             if (p === 'drive') { return; }
             if (p === 'contacts') { return; }
             if (p === 'todo') { return; }
             if (p === 'file') { return; }
             if (!common.isLoggedIn() && AppConfig.registeredOnlyTypes &&
                 AppConfig.registeredOnlyTypes.indexOf(p) !== -1) { return; }
+            return true;
+        });
+        types.forEach(function (p) {
             var $element = $('<li>', {
                 'class': 'cp-icons-element',
                 'id': 'cp-newpad-icons-'+ (i++)
@@ -1822,7 +1855,7 @@ define([
 
         var selected = -1;
         var next = function () {
-            selected = ++selected % 5;
+            selected = ++selected % types.length;
             $container.find('.cp-icons-element-selected').removeClass('cp-icons-element-selected');
             $container.find('#cp-newpad-icons-'+selected).addClass('cp-icons-element-selected');
         };
@@ -1896,7 +1929,13 @@ define([
                 onSelect: function (data) {
                     if (data.type === type && first) {
                         UI.addLoadingScreen({hideTips: true});
-                        sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                        var chatChan = common.getPadChat();
+                        var cursorChan = common.getCursorChannel();
+                        sframeChan.query('Q_TEMPLATE_USE', {
+                            href: data.href,
+                            chat: chatChan,
+                            cursor: cursorChan
+                        }, function () {
                             first = false;
                             UI.removeLoadingScreen();
                             Feedback.send('TEMPLATE_USED');
@@ -2338,12 +2377,63 @@ define([
         $(password).find('.cp-password-input').focus();
     };
 
+    var crowdfundingState = false;
+    UIElements.displayCrowdfunding = function (common) {
+        if (crowdfundingState) { return; }
+        if (AppConfig.disableCrowdfundingMessages) { return; }
+        var priv = common.getMetadataMgr().getPrivateData();
+        if (priv.plan) { return; }
+
+        crowdfundingState = true;
+        setTimeout(function () {
+            common.getAttribute(['general', 'crowdfunding'], function (err, val) {
+                if (err || val === false) { return; }
+                // Display the popup
+                var text = Messages.crowdfunding_popup_text;
+                var yes = h('button.cp-corner-primary', Messages.crowdfunding_popup_yes);
+                var no = h('button.cp-corner-primary', Messages.crowdfunding_popup_no);
+                var never = h('button.cp-corner-cancel', Messages.crowdfunding_popup_never);
+                var actions = h('div', [yes, no, never]);
+
+                var modal = UI.cornerPopup(text, actions, null, {big: true});
+
+                $(yes).click(function () {
+                    modal.delete();
+                    common.openURL('https://opencollective.com/cryptpad/contribute');
+                    Feedback.send('CROWDFUNDING_YES');
+                });
+                $(modal.popup).find('a').click(function (e) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    modal.delete();
+                    common.openURL('https://opencollective.com/cryptpad/');
+                    Feedback.send('CROWDFUNDING_LINK');
+                });
+                $(no).click(function () {
+                    modal.delete();
+                    Feedback.send('CROWDFUNDING_NO');
+                });
+                $(never).click(function () {
+                    modal.delete();
+                    common.setAttribute(['general', 'crowdfunding'], false);
+                    Feedback.send('CROWDFUNDING_NEVER');
+                });
+
+            });
+        }, 5000);
+    };
+
     var storePopupState = false;
     UIElements.displayStorePadPopup = function (common, data) {
         if (storePopupState) { return; }
         storePopupState = true;
+        if (data && data.stored) { return; } // We won't display the popup for dropped files
+        var priv = common.getMetadataMgr().getPrivateData();
 
-        var text = Messages.autostore_notstored;
+        var typeMsg = priv.pathname.indexOf('/file/') !== -1 ? Messages.autostore_file :
+                        priv.pathname.indexOf('/drive/') !== -1 ? Messages.autostore_sf :
+                          Messages.autostore_pad;
+        var text = Messages._getKey('autostore_notstored', [typeMsg]);
         var footer = Messages.autostore_settings;
 
         var hide = h('button.cp-corner-cancel', Messages.autostore_hide);
@@ -2359,15 +2449,20 @@ define([
         });
 
         $(hide).click(function () {
+            UIElements.displayCrowdfunding(common);
             modal.delete();
         });
         $(store).click(function () {
-            modal.delete();
             common.getSframeChannel().query("Q_AUTOSTORE_STORE", null, function (err, obj) {
-                if (err || (obj && obj.error)) {
-                    console.error(err || obj.error);
+                var error = err || (obj && obj.error);
+                if (error) {
+                    if (error === 'E_OVER_LIMIT') {
+                        return void UI.warn(Messages.pinLimitReached);
+                    }
                     return void UI.warn(Messages.autostore_error);
                 }
+                modal.delete();
+                UIElements.displayCrowdfunding(common);
                 UI.log(Messages.autostore_saved);
             });
         });

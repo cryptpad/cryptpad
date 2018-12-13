@@ -8,7 +8,7 @@ define([
     '/common/common-hash.js',
     '/common/common-interface.js',
     '/common/common-thumbnail.js',
-    '/customize/pages.js',
+    '/common/hyperscript.js',
     '/customize/messages.js',
     '/whiteboard/colors.js',
     '/customize/application_config.js',
@@ -26,7 +26,7 @@ define([
     Hash,
     UI,
     Thumb,
-    Pages,
+    h,
     Messages,
     Colors,
     AppConfig,
@@ -277,6 +277,7 @@ define([
 
     // Start of the main loop
     var andThen2 = function (framework) {
+        APP.framework = framework;
         var canvas = APP.canvas = new Fabric.Canvas('cp-app-whiteboard-canvas', {
             containerClass: 'cp-app-whiteboard-canvas-container'
         });
@@ -467,11 +468,76 @@ define([
         framework.start();
     };
 
+    var initialContent = function () {
+        return [
+            h('div#cp-toolbar.cp-toolbar-container'),
+            h('div#cp-app-whiteboard-canvas-area',
+                h('div#cp-app-whiteboard-container',
+                    h('canvas#cp-app-whiteboard-canvas', {
+                        width: 600,
+                        height: 600
+                    })
+                )
+            ),
+            h('div#cp-app-whiteboard-controls', {
+                style: {
+                    display: 'block',
+                }
+            }, [
+                h('button#cp-app-whiteboard-clear.btn.btn-danger', Messages.canvas_clear), ' ',
+                h('button#cp-app-whiteboard-toggledraw.btn.btn-secondary', Messages.canvas_disable),
+                h('button#cp-app-whiteboard-delete.btn.btn-secondary', {
+                    style: {
+                        display: 'none',
+                    }
+                }, Messages.canvas_delete),
+                h('div.cp-app-whiteboard-range-group', [
+                    h('label', {
+                        'for': 'cp-app-whiteboard-width'
+                    }, Messages.canvas_width),
+                    h('input#cp-app-whiteboard-width', {
+                        type: 'range',
+                        min: "1",
+                        max: "100"
+                    }),
+                    h('span#cp-app-whiteboard-width-val', '5px')
+                ]),
+                h('div.cp-app-whiteboard-range-group', [
+                    h('label', {
+                        'for': 'cp-app-whiteboard-opacity',
+                    }, Messages.canvas_opacity),
+                    h('input#cp-app-whiteboard-opacity', {
+                        type: 'range',
+                        min: "0.1",
+                        max: "1",
+                        step: "0.1"
+                    }),
+                    h('span#cp-app-whiteboard-opacity-val', '100%')
+                ]),
+                h('span.cp-app-whiteboard-selected.cp-app-whiteboard-unselectable', [
+                    h('img', {
+                        title: Messages.canvas_currentBrush
+                    })
+                ])
+            ]),
+            UI.setHTML(h('div#cp-app-whiteboard-colors'), '&nbsp;'),
+            h('div#cp-app-whiteboard-cursors', {
+                style: {
+                    display: 'none',
+                    background: 'white',
+                    'text-align': 'center',
+                }
+            }),
+            h('div#cp-app-whiteboard-pickers'),
+            h('div#cp-app-whiteboard-media-hidden')
+        ];
+    };
+
     var main = function () {
         // var framework;
         nThen(function (waitFor) {
             $(waitFor(function () {
-                var $div = $('<div>').append(Pages['/whiteboard/']());
+                var $div = $('<div>').append(initialContent());
                 $('body').append($div.html());
             }));
         }).nThen(function (waitFor) {

@@ -138,11 +138,19 @@ define([], function () {
     };
 
     // given a path, asynchronously return an arraybuffer
-    Util.fetch = function (src, cb) {
+    Util.fetch = function (src, cb, progress) {
         var CB = Util.once(cb);
 
         var xhr = new XMLHttpRequest();
         xhr.open("GET", src, true);
+        if (progress) {
+            xhr.addEventListener("progress", function (evt) {
+                if (evt.lengthComputable) {
+                    var percentComplete = evt.loaded / evt.total;
+                    progress(percentComplete);
+                }
+            }, false);
+        }
         xhr.responseType = "arraybuffer";
         xhr.onerror = function (err) { CB(err); };
         xhr.onload = function () {
@@ -262,7 +270,7 @@ define([], function () {
         }
         for (var k in b) {
             if (Util.isObject(b[k])) {
-                a[k] = {};
+                a[k] = Util.isObject(a[k]) ? a[k] : {};
                 Util.extend(a[k], b[k]);
                 continue;
             }
@@ -287,6 +295,15 @@ define([], function () {
         }
         // else just say it's not checked
         return false;
+    };
+
+    Util.hexToRGB = function (hex) {
+        var h = hex.replace(/^#/, '');
+        return [
+            parseInt(h.slice(0,2), 16),
+            parseInt(h.slice(2,4), 16),
+            parseInt(h.slice(4,6), 16),
+        ];
     };
 
     return Util;

@@ -1,9 +1,9 @@
 @font-face {
   font-family: 'cptools';
   src:
-    url('fonts/cptools.ttf?dysqmo') format('truetype'),
-    url('fonts/cptools.woff?dysqmo') format('woff'),
-    url('fonts/cptools.svg?dysqmo#cptools') format('svg');
+    url('fonts/cptools.ttf?703wg5') format('truetype'),
+    url('fonts/cptools.woff?703wg5') format('woff'),
+    url('fonts/cptools.svg?703wg5#cptools') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -11,6 +11,7 @@
 .cptools {
   /* use !important to prevent issues with browser extensions that change fonts */
   font-family: 'cptools' !important;
+  display: inline-block;
   speak: none;
   font-style: normal;
   font-weight: normal;
@@ -23,6 +24,48 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.cptools-slide:before {
+  content: "\e902";
+}
+.cptools-shared-folder:before {
+  content: "\e903";
+}
+.cptools-poll:before {
+  content: "\e904";
+}
+.cptools-file-upload:before {
+  content: "\e905";
+}
+.cptools-whiteboard:before {
+  content: "\e906";
+}
+.cptools-todo:before {
+  content: "\e907";
+}
+.cptools-pad:before {
+  content: "\e908";
+}
+.cptools-folder-open:before {
+  content: "\e909";
+}
+.cptools-kanban:before {
+  content: "\e90a";
+}
+.cptools-folder:before {
+  content: "\e90b";
+}
+.cptools-shared-folder-open:before {
+  content: "\e90c";
+}
+.cptools-file:before {
+  content: "\e90d";
+}
+.cptools-contacts:before {
+  content: "\e90e";
+}
+.cptools-code:before {
+  content: "\e90f";
+}
 .cptools-template:before {
   content: "\e900";
 }

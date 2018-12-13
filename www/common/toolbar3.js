@@ -5,9 +5,12 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/common-feedback.js',
+    '/contacts/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback, Messages) {
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback,
+MessengerUI, Messages) {
     var Common;
 
     var Bar = {
@@ -147,7 +150,6 @@ define([
         };
     };
 
-    var avatars = {};
     var editingUserName = {
         state: false
     };
@@ -160,6 +162,7 @@ define([
             }
         });
     };
+    var showColors = false;
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
@@ -230,17 +233,19 @@ define([
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'cp-avatar'});
+            if (data.color && showColors) {
+                $span.css('border-color', data.color);
+            }
             var $rightCol = $('<span>', {'class': 'cp-toolbar-userlist-rightcol'});
-            var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).text(name).appendTo($rightCol);
+            var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).appendTo($rightCol);
+            var $nameValue = $('<span>', {
+                'class': 'cp-toolbar-userlist-name-value'
+            }).text(name).appendTo($nameSpan);
             var isMe = data.uid === user.uid;
             if (isMe && !priv.readOnly) {
-                $nameSpan.html('');
-                var $nameValue = $('<span>', {
-                    'class': 'cp-toolbar-userlist-name-value'
-                }).text(name).appendTo($nameSpan);
                 if (!Config.disableProfile) {
                     var $button = $('<button>', {
-                        'class': 'fa fa-pencil cp-toolbar-userlist-name-edit',
+                        'class': 'fa fa-pencil cp-toolbar-userlist-button',
                         title: Messages.user_rename
                     }).appendTo($nameSpan);
                     $button.hover(function (e) { e.preventDefault(); e.stopPropagation(); });
@@ -296,16 +301,24 @@ define([
                     $('<span>', {'class': 'cp-toolbar-userlist-friend'}).text(Messages.userlist_pending)
                         .appendTo($rightCol);
                 } else {
-                    $('<span>', {
-                        'class': 'fa fa-user-plus cp-toolbar-userlist-friend',
+                    $('<button>', {
+                        'class': 'fa fa-user-plus cp-toolbar-userlist-button',
                         'title': Messages._getKey('userlist_addAsFriendTitle', [
                             name
                         ])
-                    }).appendTo($rightCol).click(function (e) {
+                    }).appendTo($nameSpan).click(function (e) {
                         e.stopPropagation();
                         Common.sendFriendRequest(data.netfluxId);
                     });
                 }
+            } else if (Common.isLoggedIn() && data.curvePublic && friends[data.curvePublic]) {
+                $('<button>', {
+                    'class': 'fa fa-comments-o cp-toolbar-userlist-button',
+                    'title': Messages.userlist_chat
+                }).appendTo($nameSpan).click(function (e) {
+                    e.stopPropagation();
+                    Common.openURL('/contacts/');
+                });
             }
             if (data.profile) {
                 $span.addClass('cp-userlist-clickable');
@@ -313,13 +326,13 @@ define([
                     window.open(origin+'/profile/#' + data.profile);
                 });
             }
-            if (data.avatar && avatars[data.avatar]) {
-                $span.append(avatars[data.avatar]);
+            if (data.avatar && UIElements.getAvatar(data.avatar)) {
+                $span.append(UIElements.getAvatar(data.avatar));
                 $span.append($rightCol);
             } else {
                 Common.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img && $img.length) {
-                        avatars[data.avatar] = $img[0].outerHTML;
+                        UIElements.setAvatar(data.avatar, $img[0].outerHTML);
                     }
                     $span.append($rightCol);
                 });
@@ -407,6 +420,75 @@ define([
         });
 
         initUserList(toolbar, config);
+        return $container;
+    };
+
+    var initChat = function (toolbar) {
+        var $container = $('<div>', {
+            id: 'cp-app-contacts-container',
+            'class': 'cp-app-contacts-inapp'
+        }).prependTo(toolbar.chatContent);
+        MessengerUI.create($container, Common, toolbar);
+    };
+    var createChat = function (toolbar, config) {
+        if (!config.metadataMgr) {
+            throw new Error("You must provide a `metadataMgr` to display the chat");
+        }
+        if (Config.availablePadTypes.indexOf('contacts') === -1) { return; }
+        var $content = $('<div>', {'class': 'cp-toolbar-chat-drawer'});
+        $content.on('drop dragover', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        var $closeIcon = $('<span>', {"class": "fa fa-window-close cp-toolbar-chat-drawer-close"}).appendTo($content);
+        //$('<h2>').text(Messages.users).appendTo($content);
+        //$('<p>', {'class': USERLIST_CLS}).appendTo($content);
+
+        toolbar.chatContent = $content;
+
+        var $container = $('<span>', {id: 'cp-toolbar-chat-drawer-open', title: Messages.chatButton});
+
+        var $button = $('<button>', {'class': 'fa fa-comments'}).appendTo($container);
+        $('<span>',{'class': 'cp-dropdown-button-title'}).appendTo($button);
+
+        toolbar.$leftside.prepend($container);
+
+        if (config.$contentContainer) {
+            config.$contentContainer.prepend($content);
+        }
+
+        var hide = function () {
+            $content.hide();
+            $button.removeClass('cp-toolbar-button-active');
+            config.$contentContainer.removeClass('cp-chat-visible');
+        };
+        var show = function () {
+            if (Bar.isEmbed) { $content.hide(); return; }
+            $content.show();
+            $button.addClass('cp-toolbar-button-active');
+            config.$contentContainer.addClass('cp-chat-visible');
+            $button.removeClass('cp-toolbar-notification');
+        };
+        $closeIcon.click(function () {
+            Common.setAttribute(['toolbar', 'chat-drawer'], false);
+            hide();
+        });
+        $button.click(function () {
+            var visible = $content.is(':visible');
+            if (visible) { hide(); }
+            else { show(); }
+            visible = !visible;
+            Common.setAttribute(['toolbar', 'chat-drawer'], visible);
+        });
+        show();
+        Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {
+            if (val === false || ($(window).height() < 800 || $(window).width() < 800)) {
+                return void hide();
+            }
+            show();
+        });
+
+        initChat(toolbar);
         return $container;
     };
 
@@ -648,8 +730,12 @@ define([
         var privateData = config.metadataMgr.getPrivateData();
         var origin = privateData.origin;
         var pathname = privateData.pathname;
-        var href = inDrive.test(pathname) ? origin+'/index.html' : origin+'/drive/';
-        var buttonTitle = inDrive.test(pathname) ? Messages.header_homeTitle : Messages.header_logoTitle;
+
+        var isAnonSF = privateData.newSharedFolder && !privateData.accountName;
+        var toMain = inDrive.test(pathname) && !isAnonSF;
+
+        var href = toMain ? origin+'/index.html' : origin+'/drive/';
+        var buttonTitle = toMain ? Messages.header_homeTitle : Messages.header_logoTitle;
 
         var $aTag = $('<a>', {
             href: href,
@@ -776,11 +862,6 @@ define([
             },
             content: '<span class="fa fa-plus-circle"></span> ' + Messages.creation_appMenuName
         });
-        $(window).keydown(function (e) {
-            if (e.which === 69 && (e.ctrlKey || (navigator.platform === "MacIntel" && e.metaKey))) {
-                Common.createNewPadModal();
-            }
-        });
         var dropdownConfig = {
             text: '', // Button initial text
             options: pads_options, // Entries displayed in the menu
@@ -846,7 +927,7 @@ define([
     var initClickEvents = function (toolbar) {
         var removeDropdowns =  function () {
             window.setTimeout(function () {
-                toolbar.$toolbar.find('.cp-dropdown-content').hide();
+                $('body').find('.cp-dropdown-content').hide();
             });
         };
         var cancelEditTitle = function (e) {
@@ -997,6 +1078,7 @@ define([
         // Create the subelements
         var tb = {};
         tb['userlist'] = createUserList;
+        tb['chat'] = createChat;
         tb['share'] = createShare;
         tb['fileshare'] = createFileShare;
         tb['title'] = createTitle;
@@ -1010,8 +1092,8 @@ define([
         tb['useradmin'] = createUserAdmin;
         tb['unpinnedWarning'] = createUnpinnedWarning;
 
-        var addElement = toolbar.addElement = function (arr, additionnalCfg, init) {
-            if (typeof additionnalCfg === "object") { $.extend(true, config, additionnalCfg); }
+        var addElement = toolbar.addElement = function (arr, additionalCfg, init) {
+            if (typeof additionalCfg === "object") { $.extend(true, config, additionalCfg); }
             arr.forEach(function (el) {
                 if (typeof el !== "string" || !el.trim()) { return; }
                 if (typeof tb[el] === "function") {
@@ -1087,6 +1169,16 @@ define([
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }
+        };
+
+        // Show user colors in the userlist only if the app is compatible and if the user
+        // wants to see the cursors
+        toolbar.showColors = function () {
+            if (!config.metadataMgr) { return; }
+            var privateData = config.metadataMgr.getPrivateData();
+            var show = Util.find(privateData, ['settings', 'general', 'cursor', 'show']);
+            if (show === false) { return; }
+            showColors = true;
         };
 
         // On log out, remove permanently the realtime elements of the toolbar

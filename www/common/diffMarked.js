@@ -4,20 +4,41 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/media-tag.js',
+    '/common/highlight/highlight.pack.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
-],function ($, Marked, Hash, Util, MediaTag) {
+    'css!/common/highlight/styles/github.css'
+],function ($, Marked, Hash, Util, MediaTag, Highlight) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
 
+    var highlighter = function () {
+        return function(code, lang) {
+            if (lang) {
+                try {
+                    return Highlight.highlight(lang, code).value;
+                } catch (e) {
+                    return code;
+                }
+            }
+            return code;
+        };
+    };
+
     Marked.setOptions({
-        renderer: renderer
+        //sanitize: true, // Disable HTML
+        renderer: renderer,
+        highlight: highlighter(),
     });
 
-    DiffMd.render = function (md) {
-        return Marked(md);
+
+
+    DiffMd.render = function (md, sanitize) {
+        return Marked(md, {
+            sanitize: sanitize
+        });
     };
 
     var mediaMap = {};
@@ -25,9 +46,11 @@ define([
     // Tasks list
     var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
     var uncheckedTaskItemPtn = /^\s*(<p>)?\[ ?\](<\/p>)?\s*/;
+    var bogusCheckPtn = /<input( checked=""){0,1} disabled="" type="checkbox">/;
     renderer.listitem = function (text) {
         var isCheckedTaskItem = checkedTaskItemPtn.test(text);
         var isUncheckedTaskItem = uncheckedTaskItemPtn.test(text);
+        var hasBogusInput = bogusCheckPtn.test(text);
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
                 '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
@@ -35,6 +58,15 @@ define([
         if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
                 '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+        }
+        if (!isCheckedTaskItem && !isUncheckedTaskItem && hasBogusInput) {
+            if (/checked/.test(text)) {
+                text = text.replace(bogusCheckPtn, 
+                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
+            } else if (/disabled/.test(text)) {
+                text = text.replace(bogusCheckPtn, 
+                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+            }
         }
         var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
@@ -74,8 +106,9 @@ define([
         'IFRAME',
         'OBJECT',
         'APPLET',
-        //'VIDEO', // privacy implications of videos are the same as images
-        //'AUDIO', // same with audio
+        'VIDEO', // privacy implications of videos are the same as images
+        'AUDIO', // same with audio
+        'SVG'
     ];
     var unsafeTag = function (info) {
         /*if (info.node && $(info.node).parents('media-tag').length) {
@@ -90,10 +123,10 @@ define([
         }
         if (['addElement', 'replaceElement'].indexOf(info.diff.action) !== -1) {
             var msg = "Rejecting forbidden tag of type (%s)";
-            if (info.diff.element && forbiddenTags.indexOf(info.diff.element.nodeName) !== -1) {
+            if (info.diff.element && forbiddenTags.indexOf(info.diff.element.nodeName.toUpperCase()) !== -1) {
                 console.log(msg, info.diff.element.nodeName);
                 return true;
-            } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeName) !== -1) {
+            } else if (info.diff.newValue && forbiddenTags.indexOf(info.diff.newValue.nodeName.toUpperCase()) !== -1) {
                 console.log("Replacing restricted element type (%s) with PRE", info.diff.newValue.nodeName);
                 info.diff.newValue.nodeName = 'PRE';
             }
@@ -115,7 +148,7 @@ define([
 
     var removeForbiddenTags = function (root) {
         if (!root) { return; }
-        if (forbiddenTags.indexOf(root.nodeName) !== -1) { removeNode(root); }
+        if (forbiddenTags.indexOf(root.nodeName.toUpperCase()) !== -1) { removeNode(root); }
         slice(root.children).forEach(removeForbiddenTags);
     };
 

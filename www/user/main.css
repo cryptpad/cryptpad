@@ -1,5 +1,11 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
 .cp #mainBlock {
   z-index: 1;
+  height: 100%;
   width: 1000px;
   max-width: 90%;
   margin: auto;

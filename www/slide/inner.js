@@ -457,6 +457,7 @@ define([
         mkMarkdownToolbar(framework, editor);
         mkHelpMenu(framework);
 
+        CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.configureTheme(common);
 
         framework.onContentUpdate(function (newContent) {
@@ -468,6 +469,13 @@ define([
             var content = CodeMirror.getContent();
             Slide.update(content.content);
             return content;
+        });
+
+        framework.onCursorUpdate(CodeMirror.setRemoteCursor);
+        framework.setCursorGetter(CodeMirror.getCursor);
+        editor.on('cursorActivity', function () {
+            if (editor._noCursorUpdate) { return; }
+            framework.updateCursor();
         });
 
         framework.onEditableChange(function () {

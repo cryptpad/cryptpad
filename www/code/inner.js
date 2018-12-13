@@ -8,6 +8,8 @@ define([
     '/common/common-util.js',
     '/common/common-hash.js',
     '/common/modes.js',
+    '/common/visible.js',
+    '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
 
@@ -49,6 +51,8 @@ define([
     Util,
     Hash,
     Modes,
+    Visible,
+    TypingTest,
     Messages,
     CMeditor)
 {
@@ -66,6 +70,16 @@ define([
         'xml',
     ]);
 
+    var mkPrintButton = function (framework, $content, $print) {
+        var $printButton = framework._.sfCommon.createButton('print', true);
+        $printButton.click(function () {
+            $print.html($content.html());
+            window.focus();
+            window.print();
+            framework.feedback('PRINT_CODE');
+        });
+        framework._.toolbar.$drawer.append($printButton);
+    };
     var mkMarkdownTb = function (editor, framework) {
         var $codeMirrorContainer = $('#cp-app-code-container');
         var markdownTb = framework._.sfCommon.createMarkdownToolbar(editor);
@@ -222,36 +236,18 @@ define([
             }
         });
 
+        Visible.onChange(function (visible) {
+            if (visible) {
+                drawPreview();
+            }
+        });
+
         return {
             forceDraw: forceDrawPreview,
             draw: drawPreview,
             modeChange: modeChange,
             isVisible: isVisible
         };
-    };
-
-    var mkIndentSettings = function (editor, metadataMgr) {
-        var setIndentation = function (units, useTabs) {
-            if (typeof(units) !== 'number') { return; }
-            editor.setOption('indentUnit', units);
-            editor.setOption('tabSize', units);
-            editor.setOption('indentWithTabs', useTabs);
-        };
-
-        var indentKey = 'indentUnit';
-        var useTabsKey = 'indentWithTabs';
-        var updateIndentSettings = function () {
-            if (!metadataMgr) { return; }
-            var data = metadataMgr.getPrivateData().settings;
-            data = data.codemirror || {};
-            var indentUnit = data[indentKey];
-            var useTabs = data[useTabsKey];
-            setIndentation(
-                typeof(indentUnit) === 'number'? indentUnit: 2,
-                typeof(useTabs) === 'boolean'? useTabs: false);
-        };
-        metadataMgr.onChangeLazy(updateIndentSettings);
-        updateIndentSettings();
     };
 
     var mkFilePicker = function (framework, editor, evModeChange) {
@@ -279,13 +275,18 @@ define([
 
         var previewPane = mkPreviewPane(editor, CodeMirror, framework, isPresentMode);
         var markdownTb = mkMarkdownTb(editor, framework);
+
+        var $print = $('#cp-app-code-print');
+        var $content = $('#cp-app-code-preview-content');
+        mkPrintButton(framework, $content, $print);
+
         mkHelpMenu(framework);
 
         var evModeChange = Util.mkEvent();
         evModeChange.reg(previewPane.modeChange);
         evModeChange.reg(markdownTb.modeChange);
 
-        mkIndentSettings(editor, framework._.cpNfInner.metadataMgr);
+        CodeMirror.mkIndentSettings(framework._.cpNfInner.metadataMgr);
         CodeMirror.init(framework.localChange, framework._.title, framework._.toolbar);
         mkFilePicker(framework, editor, evModeChange);
 
@@ -313,6 +314,13 @@ define([
             content.highlightMode = CodeMirror.highlightMode;
             previewPane.draw();
             return content;
+        });
+
+        framework.onCursorUpdate(CodeMirror.setRemoteCursor);
+        framework.setCursorGetter(CodeMirror.getCursor);
+        editor.on('cursorActivity', function () {
+            if (editor._noCursorUpdate) { return; }
+            framework.updateCursor();
         });
 
         framework.onEditableChange(function () {
@@ -361,6 +369,12 @@ define([
         editor.on('change', framework.localChange);
 
         framework.start();
+
+
+        window.easyTest = function () {
+            var test = TypingTest.testCode(editor);
+            return test;
+        };
     };
 
     var getThumbnailContainer = function () {

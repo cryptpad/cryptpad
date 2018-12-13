@@ -320,6 +320,18 @@ define([
             return result;
         };
 
+        exp.getSFIdFromHref = function (href) {
+            var result;
+            getFiles([SHARED_FOLDERS]).some(function (id) {
+                if (files[SHARED_FOLDERS][id].href === href ||
+                    files[SHARED_FOLDERS][id].roHref === href) {
+                    result = id;
+                    return true;
+                }
+            });
+            return result;
+        };
+
         // SEARCH
         var _findFileInRoot = function (path, file) {
             if (!isPathIn(path, [ROOT, TRASH])) { return []; }

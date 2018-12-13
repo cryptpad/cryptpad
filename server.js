@@ -177,7 +177,7 @@ app.get('/api/config', function(req, res){
             httpUnsafeOrigin: config.httpUnsafeOrigin,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
-            if (config.httpSafeOrigin) { return config.httpSafeOrigin; }
+            if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
             if (config.httpSafePort) {
                 return "(function () { return window.location.origin.replace(/\:[0-9]+$/, ':" +
                     config.httpSafePort + "'); }())";

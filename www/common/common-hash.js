@@ -12,6 +12,7 @@ define([
     var hexToBase64 = Util.hexToBase64;
     var base64ToHex = Util.base64ToHex;
     Hash.encodeBase64 = Nacl.util.encodeBase64;
+    Hash.decodeBase64 = Nacl.util.decodeBase64;
 
     // This implementation must match that on the server
     // it's used for a checksum

@@ -12,6 +12,8 @@
 @import (reference) './font.less';
 @import (reference) "./app-print.less";
 @import (reference) "./app-noscroll.less";
+@import (reference) "./messenger.less";
+@import (reference) "./cursor.less";
 
 .framework_main(@bg-color, @warn-color, @color) {
     --LessLoader_require: LessLoader_currentFile();
@@ -36,6 +38,8 @@
     .tippy_main();
     .checkmark_main(20px);
     .password_main();
+    .messenger_main();
+    .cursor_main();
     .creation_main(
         @bg-color: @bg-color,
         @color: @color

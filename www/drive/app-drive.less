@@ -27,6 +27,8 @@
     @drive_content-bg: @colortheme_sidebar-right-bg;
     @drive_content-bg-ro: darken(@drive_content-bg, 10%);
 
+    @drive_selected-bg: #888;
+
 
     /* PAGE */
 
@@ -83,7 +85,7 @@
                 max-width: none;
                 margin: 8px 0;
             }
-            .fa {
+            .fa, .cptools {
                 display: block;
                 margin: auto;
                 font-size: 64px;
@@ -134,6 +136,9 @@
     .fa {
         font-family: FontAwesome;
     }
+    .cptools {
+        font-family: cptools;
+    }
 
     ul {
         list-style: none;
@@ -154,7 +159,7 @@
     }
 
     .cp-app-drive-element-selected {
-        background: #666 !important;
+        background: @drive_selected-bg !important;
         color: #eee;
         margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
@@ -169,13 +174,6 @@
         margin: -1px;
         .fa-minus-square-o, .fa-plus-square-o {
             color: @colortheme_sidebar-left-fg;
-        }
-    }
-
-    span {
-        &.fa-folder, &.fa-folder-open {
-            //color: #FEDE8B;
-            //text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
         }
     }
 
@@ -247,9 +245,8 @@
             margin: 0;
             margin-top: 15px;
             .cp-app-drive-tree-root {
-                &> .fa {
-                    min-width: 30px;
-                    cursor: pointer;
+                .fa-trash-o {
+                    padding-left: 2px;
                 }
             }
             li {
@@ -259,9 +256,6 @@
                     padding-left: 20px;
                     .leftside-menu-category_main();
                     margin: 0;
-                    .fa {
-                        width: 25px;
-                    }
                 }
             }
         }
@@ -523,7 +517,7 @@
                     position: absolute;
                     top: 3px;
                     right: 3px;
-                    .fa {
+                    .fa, .cptools {
                         margin:0;
                         font-size: 18px;
                     }
@@ -531,7 +525,7 @@
                 .cp-app-drive-element-thumbnail {
                     max-width: 100px;
                     max-height: 100px;
-                    & ~ .fa {
+                    & ~ .fa, & ~ .cptools {
                         display: inline;
                         font-size: 17px;
                         position: absolute;
@@ -555,7 +549,7 @@
                 &:hover {
                     opacity: 0.7;
                 }
-                .fa {
+                .fa, .cptools {
                     cursor: pointer;
                     font-size: 90px;
                     margin-top: 5px;
@@ -594,7 +588,7 @@
                     cursor: default;
                     color: @drive_table-header-fg;
                     span {
-                        &:not(.fa) {
+                        &:not(.fa):not(.cptools) {
                             text-align: left;
                         }
                         &.sortasc, &.sortdesc {
@@ -621,8 +615,10 @@
                     white-space: nowrap;
                     box-sizing: border-box;
                     &.cp-app-drive-element-state {
-                        .fa:not(:last-child) {
-                            margin-right: 5px;
+                        .fa, .cptools {
+                            &:not(:last-child) {
+                                margin-right: 5px;
+                            }
                         }
                     }
                     &.cp-app-drive-content-icon, &.cp-app-drive-element-state, &.cp-icon {
@@ -653,24 +649,28 @@
     #cp-app-drive-new-ghost-dialog.cp-modal-container {
         .drive_fileIcon;
 
+        border: 1px solid @colortheme_modal-fg;
         li:not(.cp-app-drive-element-selected):hover {
-            border: 1px solid white;
+            background: @colortheme_modal-fg;
+            color: @colortheme_modal-bg;
         }
         .cp-modal {
             display: flex;
             flex-flow: column;
-            li, li .fa {
+            li, li .fa, li .cptools {
                 cursor: pointer;
             }
             &> p {
-                margin: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             &> div {
                 display: flex;
                 flex-wrap: wrap;
                 justify-content: center;
                 align-content: center;
-                overflow-y: auto;
+                flex: 1;
                 .cp-app-drive-new-upload {
                     break-after: always;
                     page-break-after: always;
@@ -682,23 +682,27 @@
             white-space: nowrap;
         }
 
-        @media screen and (max-height: @browser_media-not-big) {
+        @media screen and (max-width: @browser_media-medium-screen),
+               screen and (max-height: @browser_media-medium-screen) {
             .cp-modal {
                 & > p {
                     display: none;
                 }
                 & > div {
-                    align-content: unset;
                     li {
                         height: 40px;
                         width: 90%;
                         display: flex;
                         align-items: center;
-                        .fa {
+                        align-content: unset;
+                        .fa, .cptools {
                             font-size: 32px;
+                            min-width: 50px;
                         }
                         .cp-app-drive-new-name {
                             height: auto;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
                         }
                     }
                 }
@@ -740,7 +744,7 @@
             display: inline-block;
             margin: 0;
             padding: 0;
-            .fa {
+            .fa, .cptools {
                 margin: 0;
             }
             button {
@@ -756,7 +760,7 @@
                 .drawer {
                     display: none;
                 }
-                .fa, span {
+                .fa, .cptools, span {
                     font-size: @colortheme_app-font-size;
                 }
                 &:hover {
@@ -786,14 +790,14 @@
             }
             button {
                 padding: 0 10px;
-                .fa {
+                .fa, .cptools {
                     margin-right: 5px;
                 }
                 .cp-dropdown-button-title {
                     display: inline-flex;
                     height: @variables_bar-height;
                     align-items: center;
-                    span:not(.fa) {
+                    span:not(.fa):not(.cptools) {
                         line-height: 23px;
                     }
                 }
@@ -807,6 +811,9 @@
             }
             .fa, &.fa {
                 font-family: FontAwesome;
+            }
+            .cptools, &.cptools {
+                font-family: cptools;
             }
         }
         /* The container <div> - needed to position the dropdown content */

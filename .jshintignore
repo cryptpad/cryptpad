@@ -2,6 +2,7 @@ node_modules/
 www/bower_components/
 www/common/pdfjs/
 www/common/tippy/
+www/common/highlight/
 www/common/jquery-ui/
 www/common/onlyoffice/*
 
@@ -18,6 +19,7 @@ www/pad/mediatag-plugin-dialog.js
 www/pad/disable-base64.js
 
 www/kanban/jkanban.js
+www/kanban/jscolor.js
 
 www/common/media-tag-nacl.min.js
 

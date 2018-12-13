@@ -38,6 +38,7 @@ define([
         }
     };
 
+    // Upgrade and donate URLs duplicated in pages.js
     var origin = encodeURIComponent(window.location.hostname);
     var common = window.Cryptpad = {
         Messages: Messages,
@@ -58,6 +59,19 @@ define([
         cb();
     };
 
+    common.makeNetwork = function (cb) {
+        require([
+            '/bower_components/netflux-websocket/netflux-client.js',
+            '/common/outer/network-config.js'
+        ], function (Netflux, NetConfig) {
+            var wsUrl = NetConfig.getWebsocketURL();
+            Netflux.connect(wsUrl).then(function (network) {
+                cb(null, network);
+            }, function (err) {
+                cb(err);
+            });
+        });
+    };
 
     // RESTRICTED
     // Settings only
@@ -88,6 +102,12 @@ define([
         postMessage("GET_SHARED_FOLDER", id, function (obj) {
             cb(obj);
         });
+    };
+    common.loadSharedFolder = function (id, data, cb) {
+        postMessage("LOAD_SHARED_FOLDER", {
+            id: id,
+            data: data
+        }, cb);
     };
     // Settings and ready
     common.mergeAnonDrive = function (cb) {
@@ -121,6 +141,7 @@ define([
                 href: '/drive/#' + Hash.getEditHashFromKeys(secret),
                 roHref: '/drive/#' + Hash.getViewHashFromKeys(secret),
                 channel: secret.channel,
+                password: secret.password,
                 ctime: +new Date()
             }
         }, cb);
@@ -345,6 +366,9 @@ define([
     };
     common.getPadAttribute = function (attr, cb, href) {
         href = Hash.getRelativeHref(href || window.location.href);
+        if (!href) {
+            return void cb('E404');
+        }
         postMessage("GET_PAD_ATTRIBUTE", {
             href: href,
             attr: attr,
@@ -469,9 +493,10 @@ define([
         });
     };
 
-    common.useTemplate = function (href, Crypt, cb, optsPut) {
+    common.useTemplate = function (data, Crypt, cb, optsPut) {
         // opts is used to overrides options for chainpad-netflux in cryptput
         // it allows us to add owners and expiration time if it is a new file
+        var href = data.href;
 
         var parsed = Hash.parsePadUrl(href);
         var parsed2 = Hash.parsePadUrl(window.location.href);
@@ -507,8 +532,13 @@ define([
                     }
                     if (typeof(meta) === "object") {
                         meta.defaultTitle = meta.title || meta.defaultTitle;
-                        delete meta.users;
                         meta.title = "";
+                        delete meta.users;
+                        delete meta.chat2;
+                        delete meta.chat;
+                        delete meta.cursor;
+                        if (data.chat) { meta.chat2 = data.chat; }
+                        if (data.cursor) { meta.cursor = data.cursor; }
                     }
                     val = JSON.stringify(parsed);
                 } catch (e) {
@@ -595,39 +625,18 @@ define([
 
     // Messenger
     var messenger = common.messenger = {};
-    messenger.getFriendList = function (cb) {
-        postMessage("CONTACTS_GET_FRIEND_LIST", null, cb);
+    messenger.execCommand = function (data, cb) {
+        postMessage("CHAT_COMMAND", data, cb);
     };
-    messenger.getMyInfo = function (cb) {
-        postMessage("CONTACTS_GET_MY_INFO", null, cb);
+    messenger.onEvent = Util.mkEvent();
+
+    // Cursor
+    var cursor = common.cursor = {};
+    cursor.execCommand = function (data, cb) {
+        postMessage("CURSOR_COMMAND", data, cb);
     };
-    messenger.getFriendInfo = function (curvePublic, cb) {
-        postMessage("CONTACTS_GET_FRIEND_INFO", curvePublic, cb);
-    };
-    messenger.removeFriend = function (curvePublic, cb) {
-        postMessage("CONTACTS_REMOVE_FRIEND", curvePublic, cb);
-    };
-    messenger.openFriendChannel = function (curvePublic, cb) {
-        postMessage("CONTACTS_OPEN_FRIEND_CHANNEL", curvePublic, cb);
-    };
-    messenger.getFriendStatus = function (curvePublic, cb) {
-        postMessage("CONTACTS_GET_FRIEND_STATUS", curvePublic, cb);
-    };
-    messenger.getMoreHistory = function (data, cb) {
-        postMessage("CONTACTS_GET_MORE_HISTORY", data, cb);
-    };
-    messenger.sendMessage = function (data, cb) {
-        postMessage("CONTACTS_SEND_MESSAGE", data, cb);
-    };
-    messenger.setChannelHead = function (data, cb) {
-        postMessage("CONTACTS_SET_CHANNEL_HEAD", data, cb);
-    };
-    messenger.onMessageEvent = Util.mkEvent();
-    messenger.onJoinEvent = Util.mkEvent();
-    messenger.onLeaveEvent = Util.mkEvent();
-    messenger.onUpdateEvent = Util.mkEvent();
-    messenger.onFriendEvent = Util.mkEvent();
-    messenger.onUnfriendEvent = Util.mkEvent();
+    cursor.onEvent = Util.mkEvent();
+
 
     // Pad RPC
     var pad = common.padRpc = {};
@@ -1052,13 +1061,10 @@ define([
                 common.onNetworkReconnect.fire(data);
             });
         },
-        // Messenger
-        CONTACTS_MESSAGE: common.messenger.onMessageEvent.fire,
-        CONTACTS_JOIN: common.messenger.onJoinEvent.fire,
-        CONTACTS_LEAVE: common.messenger.onLeaveEvent.fire,
-        CONTACTS_UPDATE: common.messenger.onUpdateEvent.fire,
-        CONTACTS_FRIEND: common.messenger.onFriendEvent.fire,
-        CONTACTS_UNFRIEND: common.messenger.onUnfriendEvent.fire,
+        // Chat
+        CHAT_EVENT: common.messenger.onEvent.fire,
+        // Cursor
+        CURSOR_EVENT: common.cursor.onEvent.fire,
         // Pad
         PAD_READY: common.padRpc.onReadyEvent.fire,
         PAD_MESSAGE: common.padRpc.onMessageEvent.fire,
@@ -1356,6 +1362,11 @@ define([
 
                     console.log('Posting CONNECT');
                     postMessage('CONNECT', cfg, function (data) {
+                        // FIXME data should always exist
+                        // this indicates a false condition in sharedWorker
+                        // got here via a reference error:
+                        // uncaught exception: TypeError: data is undefined
+                        if (!data) { throw new Error('FALSE_INIT'); }
                         if (data.error) { throw new Error(data.error); }
                         if (data.state === 'ALREADY_INIT') {
                             data = data.returned;
@@ -1425,7 +1436,7 @@ define([
                 postMessage("INIT_RPC", null, waitFor(function (obj) {
                     console.log('RPC handshake complete');
                     if (obj.error) { return; }
-                    localStorage.plan = obj.plan;
+                    localStorage[Constants.plan] = obj.plan;
                 }));
             } else if (PINNING_ENABLED) {
                 console.log('not logged in. pads will not be pinned');

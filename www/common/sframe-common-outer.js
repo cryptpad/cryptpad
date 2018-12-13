@@ -21,7 +21,9 @@ define([
         var FilePicker;
         var Messaging;
         var Notifier;
-        var Utils = {};
+        var Utils = {
+            nThen: nThen
+        };
         var AppConfig;
         var Test;
         var password;
@@ -93,6 +95,7 @@ define([
                 Cryptpad.loading.onDriveEvent.reg(function (data) {
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
+
                 Cryptpad.ready(waitFor(function () {
                     if (sframeChan) {
                         sframeChan.event('EV_LOADING_INFO', {
@@ -205,6 +208,10 @@ define([
                 todo();
             }
         }).nThen(function (waitFor) {
+            if (cfg.afterSecrets) {
+                cfg.afterSecrets(Cryptpad, Utils, secret, waitFor());
+            }
+        }).nThen(function (waitFor) {
             // Check if the pad exists on server
             if (!window.location.hash) { isNewFile = true; return; }
 
@@ -262,6 +269,7 @@ define([
                             donateURL: Cryptpad.donateURL,
                             upgradeURL: Cryptpad.upgradeURL
                         },
+                        plan: localStorage[Utils.Constants.plan],
                         isNewFile: isNewFile,
                         isDeleted: isNewFile && window.location.hash.length > 0,
                         forceCreationScreen: forceCreationScreen,
@@ -272,6 +280,15 @@ define([
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
                     }
+                    if (Utils.Constants.criticalApps.indexOf(parsed.type) === -1 &&
+                          AppConfig.availablePadTypes.indexOf(parsed.type) === -1) {
+                        additionalPriv.disabledApp = true;
+                    }
+                    if (!Utils.LocalStore.isLoggedIn() &&
+                        AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1) {
+                        additionalPriv.registeredOnly = true;
+                    }
+
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
@@ -370,7 +387,7 @@ define([
                     forceSave: true
                 };
                 Cryptpad.setPadTitle(data, function (err) {
-                    cb(err);
+                    cb({error: err});
                 });
             });
             sframeChan.on('Q_IS_PAD_STORED', function (data, cb) {
@@ -420,8 +437,8 @@ define([
                 Utils.LocalStore.logout(cb);
             });
 
-            sframeChan.on('EV_NOTIFY', function () {
-                Notifier.notify();
+            sframeChan.on('EV_NOTIFY', function (data) {
+                Notifier.notify(data);
             });
 
             sframeChan.on('Q_SET_LOGIN_REDIRECT', function (data, cb) {
@@ -640,8 +657,8 @@ define([
                 initFilePicker(data);
             });
 
-            sframeChan.on('Q_TEMPLATE_USE', function (href, cb) {
-                Cryptpad.useTemplate(href, Cryptget, cb);
+            sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
+                Cryptpad.useTemplate(data, Cryptget, cb);
             });
             sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
                 Cryptpad.listTemplates(type, function (err, templates) {
@@ -706,7 +723,7 @@ define([
                 Cryptpad.setLanguage(data, cb);
             });
 
-            sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
+            sframeChan.on('Q_CLEAR_OWNED_CHANNEL', function (channel, cb) {
                 Cryptpad.clearOwnedChannel(channel, cb);
             });
             sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
@@ -739,60 +756,85 @@ define([
                 Cryptpad.removeLoginBlock(data, cb);
             });
 
+            var cgNetwork;
+            var whenCGReady = function (cb) {
+                if (cgNetwork && cgNetwork !== true) { console.log(cgNetwork); return void cb(); }
+                setTimeout(function () {
+                    whenCGReady(cb);
+                }, 500);
+            };
+            var i = 0;
+            sframeChan.on('Q_CRYPTGET', function (data, cb) {
+                var todo = function () {
+                    data.opts.network = cgNetwork;
+                    Cryptget.get(data.hash, function (err, val) {
+                        cb({
+                            error: err,
+                            data: val
+                        });
+                    }, data.opts);
+                };
+                //return void todo();
+                if (i > 30) {
+                    i = 0;
+                    cgNetwork = undefined;
+                }
+                i++;
+                if (!cgNetwork) {
+                    cgNetwork = true;
+                    return void Cryptpad.makeNetwork(function (err, nw) {
+                        console.log(nw);
+                        cgNetwork = nw;
+                        todo();
+                    });
+                } else if (cgNetwork === true) {
+                    return void whenCGReady(todo);
+                }
+                todo();
+            });
+            sframeChan.on('EV_CRYPTGET_DISCONNECT', function () {
+                if (!cgNetwork) { return; }
+                cgNetwork.disconnect();
+                cgNetwork = undefined;
+            });
+
             if (cfg.addRpc) {
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
 
+            sframeChan.on('Q_CURSOR_OPENCHANNEL', function (data, cb) {
+                Cryptpad.cursor.execCommand({
+                    cmd: 'INIT_CURSOR',
+                    data: {
+                        channel: data,
+                        secret: secret
+                    }
+                }, cb);
+            });
+            Cryptpad.cursor.onEvent.reg(function (data) {
+                sframeChan.event('EV_CURSOR_EVENT', data);
+            });
+            sframeChan.on('Q_CURSOR_COMMAND', function (data, cb) {
+                Cryptpad.cursor.execCommand(data, cb);
+            });
+
             if (cfg.messaging) {
-                sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
-                    Cryptpad.messenger.getFriendList(cb);
-                });
-                sframeChan.on('Q_CONTACTS_GET_MY_INFO', function (data, cb) {
-                    Cryptpad.messenger.getMyInfo(cb);
-                });
-                sframeChan.on('Q_CONTACTS_GET_FRIEND_INFO', function (curvePublic, cb) {
-                    Cryptpad.messenger.getFriendInfo(curvePublic, cb);
-                });
-                sframeChan.on('Q_CONTACTS_REMOVE_FRIEND', function (curvePublic, cb) {
-                    Cryptpad.messenger.removeFriend(curvePublic, cb);
-                });
+                Notifier.getPermission();
 
-                sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
-                    Cryptpad.messenger.openFriendChannel(curvePublic, cb);
+                sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
+                    Cryptpad.messenger.execCommand({
+                        cmd: 'OPEN_PAD_CHAT',
+                        data: {
+                            channel: data,
+                            secret: secret
+                        }
+                    }, cb);
                 });
-
-                sframeChan.on('Q_CONTACTS_GET_STATUS', function (curvePublic, cb) {
-                    Cryptpad.messenger.getFriendStatus(curvePublic, cb);
+                sframeChan.on('Q_CHAT_COMMAND', function (data, cb) {
+                    Cryptpad.messenger.execCommand(data, cb);
                 });
-
-                sframeChan.on('Q_CONTACTS_GET_MORE_HISTORY', function (opt, cb) {
-                    Cryptpad.messenger.getMoreHistory(opt, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_SEND_MESSAGE', function (opt, cb) {
-                    Cryptpad.messenger.sendMessage(opt, cb);
-                });
-                sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
-                    Cryptpad.messenger.setChannelHead(opt, cb);
-                });
-
-                Cryptpad.messenger.onMessageEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_MESSAGE', data);
-                });
-                Cryptpad.messenger.onJoinEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_JOIN', data);
-                });
-                Cryptpad.messenger.onLeaveEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_LEAVE', data);
-                });
-                Cryptpad.messenger.onUpdateEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_UPDATE', data);
-                });
-                Cryptpad.messenger.onFriendEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_FRIEND', data);
-                });
-                Cryptpad.messenger.onUnfriendEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_UNFRIEND', data);
+                Cryptpad.messenger.onEvent.reg(function (data) {
+                    sframeChan.event('EV_CHAT_EVENT', data);
                 });
             }
 
@@ -921,7 +963,9 @@ define([
                         // we need to have the owners and expiration time in the first line on the
                         // server
                         var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
-                        Cryptpad.useTemplate(data.template, Cryptget, function () {
+                        Cryptpad.useTemplate({
+                            href: data.template
+                        }, Cryptget, function () {
                             startRealtime();
                             cb();
                         }, cryptputCfg);

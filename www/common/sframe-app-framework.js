@@ -55,6 +55,7 @@ define([
 
     var create = function (options, cb) {
         var evContentUpdate = Util.mkEvent();
+        var evCursorUpdate = Util.mkEvent();
         var evEditableStateChange = Util.mkEvent();
         var evOnReady = Util.mkEvent(true);
         var evOnDefaultContentNeeded = Util.mkEvent();
@@ -68,6 +69,7 @@ define([
         var cpNfInner;
         var readOnly;
         var title;
+        var cursor;
         var toolbar;
         var state = STATE.DISCONNECTED;
         var firstConnection = true;
@@ -90,6 +92,7 @@ define([
         var textContentGetter;
         var titleRecommender = function () { return false; };
         var contentGetter = function () { return UNINITIALIZED; };
+        var cursorGetter;
         var normalize0 = function (x) { return x; };
 
         var normalize = function (x) {
@@ -180,7 +183,7 @@ define([
             if (JSONSortify(newContent) === JSONSortify(oldContent)) { return; }
             try {
                 evContentUpdate.fire(newContent, waitFor);
-                setTimeout(function () { oldContent = newContent; });
+                oldContent = newContent;
             } catch (e) {
                 console.log(e.stack);
                 UI.errorLoadingScreen(e.message);
@@ -259,6 +262,9 @@ define([
                 if (content === UNINITIALIZED) { return; }
                 throw new Error("Content must be an object or array, type is " + typeof(content));
             }
+
+            oldContent = content;
+
             if (Array.isArray(content)) {
                 // Pad
                 content.push({ metadata: cpNfInner.metadataMgr.getMetadataLazy() });
@@ -321,6 +327,17 @@ define([
                 firstConnection = false;
                 if (!readOnly) { onLocal(); }
                 evOnReady.fire(newPad);
+
+                common.openPadChat(onLocal);
+                if (!readOnly && cursorGetter) {
+                    common.openCursorChannel(onLocal);
+                    cursor = common.createCursor();
+                    cursor.onCursorUpdate(function (data) {
+                        var newContentStr = cpNfInner.chainpad.getUserDoc();
+                        var hjson = normalize(JSON.parse(newContentStr));
+                        evCursorUpdate.fire(data, hjson);
+                    });
+                }
 
                 UI.removeLoadingScreen(emitResize);
 
@@ -559,6 +576,7 @@ define([
             }, onLocal);
             var configTb = {
                 displayed: [
+                    'chat',
                     'userlist',
                     'title',
                     'useradmin',
@@ -631,6 +649,20 @@ define([
                 // Set the content supplier, this is the function which will supply the content
                 // in the pad when requested by the framework.
                 setContentGetter: function (cg) { contentGetter = cg; },
+
+                // Set the function providing the cursor position when request by the framework.
+                setCursorGetter: function (cg) {
+                    toolbar.showColors();
+                    cursorGetter = cg;
+                },
+                onCursorUpdate: evCursorUpdate.reg,
+                updateCursor: function () {
+                    if (cursor && cursorGetter) {
+                        var newContentStr = cpNfInner.chainpad.getUserDoc();
+                        var data = normalize(JSON.parse(newContentStr));
+                        cursor.updateCursor(cursorGetter(data));
+                    }
+                },
 
                 // Set a text content supplier, this is a function which will give a text
                 // representation of the pad content if a text analyzer is configured

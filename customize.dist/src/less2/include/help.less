@@ -38,7 +38,7 @@
             color: @help-text-color;
             color: var(--help-text-color);
             margin: 0;
-            padding: 15px;
+            padding: 5px 15px;
             a {
                 color: @help-link-color;
                 color: var(--help-link-color);
@@ -52,7 +52,13 @@
             h3 {
                 font-size: 16px;
             }
-            ul, ol, p { margin: 0; }
+            ul, ol, p, h1, h2, h3 { margin: 0; }
+            &.cp-help-small {
+                ul {
+                    display: none;
+                }
+                cursor: pointer;
+            }
         }
     }
 }

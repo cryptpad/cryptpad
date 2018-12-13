@@ -10,6 +10,7 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/common-messenger.js',
+    '/common/outer/cursor.js',
     '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
@@ -20,7 +21,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             CpNfWorker, NetConfig, AppConfig,
+             Cursor, CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
     var Store = {};
 
@@ -59,6 +60,9 @@ define([
                 obj[key] = data.value;
             }
             broadcast([clientId], "UPDATE_METADATA");
+            if (Array.isArray(path) && path[0] === 'profile' && store.messenger) {
+                store.messenger.updateMyData();
+            }
             onSync(cb);
         };
 
@@ -413,6 +417,27 @@ define([
         /////////////////////// Store ////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        // Get or create the user color for the cursor position
+        var getRandomColor = function () {
+            var getColor = function () {
+                return Math.floor(Math.random() * 156) + 70;
+            };
+            return '#' + getColor().toString(16) +
+                         getColor().toString(16) +
+                         getColor().toString(16);
+        };
+        var getUserColor = function () {
+            var color = Util.find(store.proxy, ['settings', 'general', 'cursor', 'color']);
+            if (!color) {
+                color = getRandomColor();
+                Store.setAttribute(null, {
+                    attr: ['general', 'cursor', 'color'],
+                    value: color
+                }, function () {});
+            }
+            return color;
+        };
+
         // Get the metadata for sframe-common-outer
         Store.getMetadata = function (clientId, data, cb) {
             var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
@@ -423,6 +448,7 @@ define([
                     uid: store.proxy.uid,
                     avatar: Util.find(store.proxy, ['profile', 'avatar']),
                     profile: Util.find(store.proxy, ['profile', 'view']),
+                    color: getUserColor(),
                     curvePublic: store.proxy.curvePublic,
                 },
                 // "priv" is not shared with other users but is needed by the apps
@@ -462,7 +488,7 @@ define([
             if (data.password) { pad.password = data.password; }
             if (data.channel) { pad.channel = data.channel; }
             store.manager.addPad(data.path, pad, function (e) {
-                if (e) { return void cb({error: "Error while adding the pad:"+ e}); }
+                if (e) { return void cb({error: e}); }
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
@@ -597,6 +623,7 @@ define([
         Store.setDisplayName = function (clientId, value, cb) {
             store.proxy[Constants.displayNameKey] = value;
             broadcast([clientId], "UPDATE_METADATA");
+            if (store.messenger) { store.messenger.updateMyData(); }
             onSync(cb);
         };
 
@@ -796,12 +823,20 @@ define([
                         password: data.password,
                         path: data.path
                     }, cb);
+                    // Let inner know that dropped files shouldn't trigger the popup
+                    postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
+                        stored: true
+                    });
                     return;
                 }
             } else {
                 sendDriveEvent('DRIVE_CHANGE', {
                     path: ['drive', UserObject.FILES_DATA]
                 }, clientId);
+                // Let inner know that dropped files shouldn't trigger the popup
+                postMessage(clientId, "AUTOSTORE_DISPLAY_POPUP", {
+                    stored: true
+                });
             }
             onSync(cb);
         };
@@ -851,6 +886,9 @@ define([
                 },
                 pinPads: function (data, cb) { Store.pinPads(null, data, cb); },
                 friendComplete: function (data) {
+                    if (data.friend && store.messenger && store.messenger.onFriendAdded) {
+                        store.messenger.onFriendAdded(data.friend);
+                    }
                     postMessage(clientId, "EV_FRIEND_COMPLETE", data);
                 },
                 friendRequest: function (data, cb) {
@@ -883,72 +921,18 @@ define([
         };
 
         Store.messenger = {
-            getFriendList: function (clientId, data, cb) {
-                store.messenger.getFriendList(function (e, keys) {
-                    cb({
-                        error: e,
-                        data: keys,
-                    });
-                });
-            },
-            getMyInfo: function (clientId, data, cb) {
-                store.messenger.getMyInfo(function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            getFriendInfo: function (clientId, data, cb) {
-                store.messenger.getFriendInfo(data, function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            removeFriend: function (clientId, data, cb) {
-                store.messenger.removeFriend(data, function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            openFriendChannel: function (clientId, data, cb) {
-                store.messenger.openFriendChannel(data, function (e) {
-                    cb({ error: e, });
-                });
-            },
-            getFriendStatus: function (clientId, data, cb) {
-                store.messenger.getStatus(data, function (e, online) {
-                    cb({
-                        error: e,
-                        data: online,
-                    });
-                });
-            },
-            getMoreHistory: function (clientId, data, cb) {
-                store.messenger.getMoreHistory(data.curvePublic, data.sig, data.count, function (e, history) {
-                    cb({
-                        error: e,
-                        data: history,
-                    });
-                });
-            },
-            sendMessage: function (clientId, data, cb) {
-                store.messenger.sendMessage(data.curvePublic, data.content, function (e) {
-                    cb({
-                        error: e,
-                    });
-                });
-            },
-            setChannelHead: function (clientId, data, cb) {
-                store.messenger.setChannelHead(data.curvePublic, data.sig, function (e) {
-                    cb({
-                        error: e
-                    });
-                });
+            execCommand: function (clientId, data, cb) {
+                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
+                store.messenger.execCommand(data, cb);
+            }
+        };
+
+        // Cursor
+
+        Store.cursor = {
+            execCommand: function (clientId, data, cb) {
+                if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
+                store.cursor.execCommand(clientId, data, cb);
             }
         };
 
@@ -956,7 +940,7 @@ define([
         /////////////////////// PAD //////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
-        var channels = Store.channels = {};
+        var channels = Store.channels = store.channels = {};
 
         Store.joinPad = function (clientId, data) {
             var isNew = typeof channels[data.channel] === "undefined";
@@ -1011,6 +995,9 @@ define([
             var conf = {
                 onReady: function (padData) {
                     channel.data = padData || {};
+                    if (padData && padData.validateKey && store.messenger) {
+                        store.messenger.storeValidateKey(data.channel, padData.validateKey);
+                    }
                     postMessage(clientId, "PAD_READY");
                 },
                 onMessage: function (user, m, validateKey, isCp) {
@@ -1064,12 +1051,12 @@ define([
                     });
                 }
             };
-            CpNfWorker.start(conf);
+            channel.cpNf = CpNfWorker.start(conf);
         };
         Store.leavePad = function (clientId, data, cb) {
             var channel = channels[data.channel];
-            if (!channel || !channel.wc) { return void cb ({error: 'EINVAL'}); }
-            channel.wc.leave();
+            if (!channel || !channel.cpNf) { return void cb ({error: 'EINVAL'}); }
+            channel.cpNf.stop();
             delete channels[data.channel];
             cb();
         };
@@ -1197,6 +1184,7 @@ define([
                 logLevel: 1,
                 ChainPad: ChainPad,
                 classic: true,
+                network: store.network,
                 owners: owners
             };
             var rt = Listmap.create(listmapConfig);
@@ -1209,6 +1197,11 @@ define([
                 registerProxyEvents(rt.proxy, id);
             }
             return rt;
+        };
+        Store.loadSharedFolderAnon = function (clientId, data, cb) {
+            loadSharedFolder(data.id, data.data, function () {
+                cb();
+            });
         };
         Store.addSharedFolder = function (clientId, data, cb) {
             Store.userObjectCommand(clientId, {
@@ -1242,11 +1235,15 @@ define([
         var messengerEventClients = [];
 
         var dropChannel = function (chanId) {
+            store.messenger.leavePad(chanId);
+            store.cursor.leavePad(chanId);
+
             if (!Store.channels[chanId]) { return; }
 
-            if (Store.channels[chanId].wc) {
-                Store.channels[chanId].wc.leave('');
+            if (Store.channels[chanId].cpNf) {
+                Store.channels[chanId].cpNf.stop();
             }
+
             delete Store.channels[chanId];
         };
         Store._removeClient = function (clientId) {
@@ -1258,6 +1255,7 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
+            store.cursor.removeClient(clientId);
             Object.keys(Store.channels).forEach(function (chanId) {
                 var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
                 if (chanIdx !== -1) {
@@ -1309,7 +1307,6 @@ define([
             }
         };
 
-        var messengerEventInit = false;
         var sendMessengerEvent = function (q, data) {
             messengerEventClients.forEach(function (cId) {
                 postMessage(cId, q, data);
@@ -1319,43 +1316,28 @@ define([
             if (messengerEventClients.indexOf(clientId) === -1) {
                 messengerEventClients.push(clientId);
             }
-            if (!messengerEventInit) {
-                var messenger = store.messenger = Messenger.messenger(store);
-                messenger.on('message', function (message) {
-                    sendMessengerEvent('CONTACTS_MESSAGE', message);
+        };
+        var loadMessenger = function () {
+            if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
+            var messenger = store.messenger = Messenger.messenger(store);
+            messenger.on('event', function (ev, data) {
+                sendMessengerEvent('CHAT_EVENT', {
+                    ev: ev,
+                    data: data
                 });
-                messenger.on('join', function (curvePublic, channel) {
-                    sendMessengerEvent('CONTACTS_JOIN', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
-                });
-                messenger.on('leave', function (curvePublic, channel) {
-                    sendMessengerEvent('CONTACTS_LEAVE', {
-                        curvePublic: curvePublic,
-                        channel: channel,
-                    });
-                });
-                messenger.on('update', function (info, curvePublic) {
-                    sendMessengerEvent('CONTACTS_UPDATE', {
-                        curvePublic: curvePublic,
-                        info: info,
-                    });
-                });
-                messenger.on('friend', function (curvePublic) {
-                    sendMessengerEvent('CONTACTS_FRIEND', {
-                        curvePublic: curvePublic,
-                    });
-                });
-                messenger.on('unfriend', function (curvePublic) {
-                    sendMessengerEvent('CONTACTS_UNFRIEND', {
-                        curvePublic: curvePublic,
-                    });
-                });
-                messengerEventInit = true;
-            }
+            });
         };
 
+        var loadCursor = function () {
+            store.cursor = Cursor.init(store, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'CURSOR_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
 
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
@@ -1442,6 +1424,8 @@ define([
                 });
                 userObject.fixFiles();
                 loadSharedFolders(waitFor);
+                loadMessenger();
+                loadCursor();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -1512,7 +1496,7 @@ define([
             var hash = data.userHash || data.anonHash || Hash.createRandomHash('drive');
             storeHash = hash;
             if (!hash) {
-                throw new Error('[Store.init] Unable to find or create a drive hash. Aborting...');
+                return void cb({error: '[Store.init] Unable to find or create a drive hash. Aborting...'});
             }
             // No password for drive
             var secret = Hash.getSecrets('drive', hash);
@@ -1618,11 +1602,22 @@ define([
          *   - requestLogin
          */
         var initialized = false;
-        Store.init = function (clientId, data, callback) {
+
+        var whenReady = function (cb) {
+            if (store.returned) { return void cb(); }
+            setTimeout(function() {
+                whenReady(cb);
+            }, 100);
+        };
+
+        Store.init = function (clientId, data, _callback) {
+            var callback = Util.once(_callback);
             if (initialized) {
-                return void callback({
-                    state: 'ALREADY_INIT',
-                    returned: store.returned
+                return void whenReady(function () {
+                    callback({
+                        state: 'ALREADY_INIT',
+                        returned: store.returned
+                    });
                 });
             }
             initialized = true;
@@ -1638,7 +1633,11 @@ define([
                 if (Object.keys(store.proxy).length === 1) {
                     Feedback.send("FIRST_APP_USE", true);
                 }
-                store.returned = ret;
+                if (ret && ret.error) {
+                    initialized = false;
+                } else {
+                    store.returned = ret;
+                }
 
                 callback(ret);
             });

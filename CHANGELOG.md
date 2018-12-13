@@ -1,3 +1,233 @@
+# Numbat release (v2.13.0)
+
+## Goals
+
+This release features long-awaited improvements to our Rich Text Pad.
+This work was done over a short period, and we're releasing it now so that users can take advantage of the improvements as soon as possible.
+
+## Update notes
+
+* We've fixed a bug related to chat via an update to our messaging server. To install the update, run `npm update`. This server improvement is backwards compatible, so you can update your clientside or serverside dependencies in either order. Restart your server for the changes to take effect.
+* You can run `bower update` in order to take advantage of the latest clientside dependencies. Depending on when you last updated you may benefit from updates to Codemirror or some other clientside libraries.
+
+## Features
+
+* We've refactored a great deal of CryptPad's Remote Procedure Call mechanisms related to chat. This should simplify CryptPad and make potential bugs less likely to occur.
+
+## Bugfixes
+
+* The behaviour of the cursor in our rich text editor has been greatly improved. Your experience when collaboratively editing should be noticeably better.
+* Characters inserted into rich text pads were sometimes dropped due to a race condition between CKEditor and ChainPad, but this asynchronous behaviour has been resolved. As such the editor should be much more reliable.
+* Deleting chat history from the server now removes it from your chat interface and that of remote messengers, where it previously would require a reload of the interface to see the correct chat history.
+* We now correctly set owners of a shared chat channel such that either chat participant in a one-to-one room can delete the history.
+* If you request history with a `lastKnownHash` which is not in the history, the server informs you that it is not there via a direct message. Clients fall back to a classic full retreival of the history. Previously this would fail, and print a message to the server's stdout.
+* Firefox users may have noticed that when they clicked the dropdown menus for styles in the CKEditor toolbar, their scrollbar would jump to the top of the document. Their scroll position is now preserved in cases where it would previously have been disrupted.
+
+# Manatee release (v2.12.0)
+
+## Goals
+
+For this release we aimed to address usability concerns in our Rich Text Pad, since it's our most widely used application. During this time we also received an unexpected security disclusure which we treated as being top priority.
+
+## Update notes
+
+* This release addresses an XSS vulnerability in our chat interface which was discovered thanks to [cyberpunky](https://twitter.com/cyberpunkych). In older versions of CryptPad, only the /contacts/ app was affected. In newer versions which feature the embedded chat interface in pads, it is possible to leverage this vulnerability against other users in the same pad. Due to our [Sandboxed iframe technique](https://blog.cryptpad.fr/2017/08/30/CryptPad-s-new-Secure-Cross-Domain-Iframe/), this vulnerability does not permit an attacker to compromise concurrent editor's accounts, as their user keys are never accessible within the scope of the domain which was subject to exploitation. However, since the chat functionality is available to viewers as well as editors, it could be leveraged to gain access to the keys which permit modification of the document. Despite this limitation, creative attackers could leverage the front-end code to perform phishing attacks, or other forms of social engineering to trick users into handing over their credentials.  We recommend that administrators of affected CryptPad instances upgrade to this version as soon as possible. Once more, we'd like to thank _cyberpunky_ for their effort to discover the issue, and for reporting the issue to us in private so that we could fix it without putting our users at risk.
+* On a lighter note, this release features a server-side dependency update which fixes a non-critical bug in our websocket protocol. New users joining a channel which had never been vacated by all its users since its creation would receive the full history instead of only the latest state. To deploy the fix, run `npm update` and restart your server.
+
+## Bugfixes
+
+* As noted above, this release fixes an XSS vulnerability.
+* We realized that each shared-folder in your CryptDrive was using a separate websocket connection to the server instead of routing over the existing websocket connection. This has been fixed.
+* We've improved our _cursor-recovery script_ in the Rich Text Pad app to make it more resilient. In cases where the text changed in two places within one node of the document, your cursor could be displaced. It should behave more predictably now.
+* Another problem in the Rich Text Pad app could lead to conflicts between users when one reverted the change of another. Conflicts should now resolve in a predictable fashion.
+* If you were using the Rich Text Pad in its reduced-width mode (available via your /settings/ page), it was possible to scroll down beyond the white, paper-like styles of the document into an un-styled area of the page. This has been addressed.
+* We discovered that the export functionality for Rich Text Pads was not working due to a semantic difference in a conditional test in Chrome. Export within Chrome should work once more, however, there are [serious privacy risks within Chrome/Chromium](https://reddit.com/r/ProtonMail/comments/9yl94k/never_connect_to_protonmail_using_chrome/) and we recommend that you consider using a more privacy-friendly browser.
+
+## What's new
+
+* The home page now features a badge advertising the fact that CryptPad is now a winner of the NGI award for _Privacy and Trust-enhanced technologies_. You can follow the link to our blog post which contains more information.
+* It is now possible to directly download uploaded files from your CryptDrive without opening a new tab, making your content available more quickly.
+
+# Lemur release (v2.11.0)
+
+## Goals
+
+This release continued the work on better customization features for community instances. We also worked on usability improvements and UI issues.
+
+## Update notes
+
+* This is a simple release. Just download the latest commits and update your cache-busting string.
+* Customized instances may require additionnal changes in order to make customization easier to maintain in the future.
+  * The static pages content (home page, FAQ, contact, privacy, etc.) has been moved from `./customize.dist/pages.js` to a `./customize.dist/pages/` directory, containing one file per page. This new structure allows administrators to override only some pages instead of all the pages at once.
+  * To override a page, just make a copy of its .js file from `./customize.dist/pages` to a `./customize/pages` and make your changes.
+
+## Features
+
+* We've replaced our Font Awesome application icons with new custom icons. The new icons should be closer to the goals of the apps.
+* We've cancelled the Ctrl+S shortcut from the browser for saving the page. In CryptPad, the result of the browser save was not usable and the content of the pads is automatically saved.
+* As explained above, we've made it easier to customize some specific static pages instead of overriding all of them.
+* Our Markdown renderer should display tables in a nicer and cleaner way (*Code* and *Slide* applications).
+* The font size in the code and slide editors can now be changed from the *Settings* page.
+* We've added a warning text to the CryptDrive export feature from the last release.
+
+## Bugfixes
+
+* We've found an issue causing some deleted characters to be inserted back in the document. It could happen when a least one member of the session had the tab not focused in their browser.
+* We've fixed an issue with our code for detecting small (or zoomed) screens in several part of our UI. This will hide some unnecessary elements of the interface at first load and free space for the actual content of the pad.
+* The "present" mode in the Slide application will no longer display the toolbar.
+* We've fixed an issue in the *Pad* application where the font could be reset to Arial when making a new paragraph.
+* The full CryptDrive export no longer stops when trying to export a very old poll.
+
+# Koala release (v2.10.0)
+
+## Goals
+
+This release continued to improve our _shared folder_ functionality, addressed user concerns about data portability, and implemented various features for customization for different CryptPad instances.
+
+## Update notes
+
+* This release features updates to client-side dependencies. Run `bower update` to update the following:
+  * netflux-websocket
+  * chainpad-netflux
+* we've added a new field (`fileHost`) in `config.example.js`. It informs clientside code what domain they should use when fetching encrypted blobs.
+* Administrators can now do more to customize their CryptPad server, most notably via the ability to override specific translations. For example, the home page now features a short message which, by default, says that the server is a community-hosted instance of the CryptPad open-source project. On CryptPad.fr, we have replaced this text to talk about our organization. You can do the same by modifying files in `cryptpad/customize/translations/`, like so:
+
+```
+define(['/common/translations/messages.js'], function (Messages) {
+    // Replace the existing keys in your copied file here:
+    Messages.home_host = "CryptPad.fr is the official instance of the open-source CryptPad project. It is administered by XWiki SAS, the employee-owned French company which created and maintains the product.";
+
+    return Messages;
+});
+```
+
+Simply change the text assigned to `home_host` with a blurb about your own organization. We'll update the wiki soon with more info about customization.
+
+### Features
+
+* We've updated our features page to indicate what users get by purchasing a premium account. You can visit our accounts page directly from this list with the click of a button.
+* We've updated our home page to explain more about what CryptPad is.
+* As mentioned above, we've made all of our translation files overrideable.
+* We've made it easier to get your data out of CryptPad, by implementing a complete export of your CryptDrive's content as a zip file. This feature is available on the _settings page_.
+* Shared folders now support password protection.
+
+### Bugfixes
+
+* We fixed an issue which affected users of our Kanban application, which caused the color picker to pop up and get in the way at inopportune moments.
+* We found that when a CryptPad code editor tab finished loading in the background, when it was focused, the markdown preview pane would be blank. We've added a check to try to re-draw the pane in these circumstances.
+* We noticed that anonymous users who used our in-pad chat app could not be distinguished when they both chatted at once. We now add a string at the end of their name which makes it possible to distinguish them.
+* We've updated an internal library (cryptget) such that it correctly tears down realtime sessions after connecting and loading content from the server.
+  * We also added better error handling.
+* At some point in the last few releases we broke export of media-tags in rich text pads. They should be back to normal now.
+* Media-Tags also use the configurable value `fileHost` to construct absolute URLs, instead of using relative URLs to the server.
+* Tall dropdown menus no longer use scrollbars when they are displayed with enough space to display all options.
+* Chrome browser seemed to display our rich text editor correctly, except that no cursor was visible in empty documents. Users will now be able to see where their cursor is placed.
+* It was possible for disconnected users' browsers to enter a bad state after reconnecting. This resulted in that pad being inaccessible until they relaunched their browser. This bad state is now detected and mitigated.
+* Tags for documents in the CryptDrive were stopped functioning correctly as of the last few releases. This release fixes this bug.
+
+# Jerboa release (v2.9.0)
+
+## Goals
+
+Since last release introduced several big features, this release was allocated towards usability improvements largely related to those new features.
+
+## Update notes
+
+This is a simple release. Just deploy the latest source.
+
+### Features
+
+* At a user's request, we now highlight annotated code blocks according to their language's syntax
+* Shared folders can now be viewed by unregistered users (in read-only mode)
+* The authentication process that we use for handling accounts has been improved so as to tolerate very slow networks more effectively
+* The chat system embedded within pads can now optionally use the browser's system notifications API
+
+### Bugfixes
+
+* We found and fixed a race condition when initializing two tabs at once, which could leave one of the tabs in a broken state
+
+# Ibis release (v2.8.0)
+
+## Goals
+
+We've been making use of some hidden features for a while, to make sure that they were safe to deploy.
+This release, we worked on making _contextual chat_ and _shared folders_ available to everyone.
+
+## Update notes
+
+* run `bower update` to download an updated version of _marked.js_
+
+### Features
+
+* Our kanban application now features a much more consistent and flexible colorpicker, thanks to @MTRNord (https://github.com/MTRNord)
+* File upload dialogs now allow you to upload multiple files at once
+* Updated German translations thanks to [b3yond](https://github.com/b3yond/)
+* An explicit pad storage policy to better suit different privacy constraints
+  * _import local pads_ at login time is no longer default
+* An embedded chat room in every pad, so you can work alongside your fellow editors more easily
+* Promotion of our [crowdfunding campaign](https://opencollective.com/cryptpad), including a button on the home page, and a one-time dialog for users
+
+### Bug fixes
+
+* Updating our markdown library resolved an issue which incorrectly rendered links containing parentheses.
+* We discovered an issue logging in with _very old_ credentials which were initialized without a public key. We now regenerate your keyring if you do not have public keys stored in association with your account.
+* We found another bug in our login process; under certain conditions the terminating function could be called more than once.
+
+# Hedgehog release (v2.7.0)
+
+## Goals
+
+This release overlapped with the publication and presentation of a paper written about CryptPad's architecture.
+As such, we didn't plan for any very ambitious new features, and instead focused on bug fixes and some new workflows.
+
+## Update notes
+
+This is a fairly simple release. Just download the latest commits and update your cache-busting string.
+
+### Features
+
+* In order to address some privacy concerns, we've changed CryptPad such that pads are not immediately stored in your CryptDrive as soon as you open them. Instead, users are presented with a prompt in the bottom-right corner which asks them whether they'd like to store it manually. Alternatively, you can use your settings page to revert to the old automatic behaviour, or choose not to store, and to never be asked.
+* It was brought to our attention that it was possible to upload base64-encoded images in the rich text editor. These images had a negative performance impact on such pads. From now on, if these images are detected in a pad, users are prompted to run a migration to convert them to uploaded (and encrypted) files.
+* We've added a progress bar which is displayed while you are loading a pad, as we found that it was not very clear whether large pads were loading, or if they had become unresponsive due to a bug.
+* We've added an option to allow users to right-click uploaded files wherever they appear, and to store that file in their CryptDrive.
+* We've improved the dialog which is used to modify the properties of encrypted media embedded within rich text pads.
+
+### Bug fixes
+
+* Due to a particularly disastrous bug in Chrome 68 which was unfortunately beyond our power to fix, we've added a warning for anyone affected by that bug to let them know the cause.
+* We've increased the module loading timeout value used by requirejs in our sharedWorker implementation to match the value used by the rest of CryptPad.
+
+# Gibbon release (v2.6.0)
+
+## Goals
+
+For this release we focused on deploying two very large changes in CryptPad.
+For one, we'd worked on a large refactoring of the system we use to compile CSS from LESS, so as to make it more efficient.
+Secondly, we reworked the architecture we use for implementing the CryptDrive functionality, so as to integrate support for shared folders.
+
+## Update notes
+
+To test the _shared folders_ functionality, users can run the following command in their browser console:
+
+`localStorage.CryptPad_SF = "1";`
+
+Alternatively, if the instance administrator would like to enable shared folders for all users, they can do so via their `/customize/application_config.js` file, by adding the following line:
+
+`config.disableSharedFolders = true;`
+
+### Features
+
+* As mentioned in the _goals_ for this release, we've merged in the work done to drastically improve performance when compiling styles. The system features documentation for anyone interested in understanding how it works.
+* We've refactored the APIs used to interact with your CryptDrive, implementing a single interface with which applications can interact, which then manages any number of sub-objects each representing a shared folder. Shared folders are still disabled by default. See the _Update notes_ section for more information.
+* The home page now features the same footer which has been displayed on all other information pages until now.
+* We've added a slightly nicer spinner icon on loading pages.
+* We've created a custom font _cp-tools_ for our custom-designed icons
+
+### Bug fixes
+
+* We've accepted a pull request implementing serverside support for moving files across different drives, for system administrators hosting CryptPad on systems which segregate folders on different partitions.
+* We've addressed a report of an edge case in CryptPad's user password change logic which could cause users to delete their accounts.
+
 # Fossa release (v2.5.0)
 
 ## Goals

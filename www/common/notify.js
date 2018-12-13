@@ -1,6 +1,10 @@
 define(['/api/config'], function (ApiConfig) {
     var Module = {};
 
+    var DEFAULT_MAIN = '/customize/main-favicon.png?' + ApiConfig.requireConf.urlArgs;
+    var DEFAULT_ALT = '/customize/alt-favicon.png?' + ApiConfig.requireConf.urlArgs;
+
+
     var isSupported = Module.isSupported = function () {
         return typeof(window.Notification) === 'function';
     };
@@ -10,22 +14,28 @@ define(['/api/config'], function (ApiConfig) {
     };
 
     var getPermission = Module.getPermission = function (f) {
+        f = f || function () {};
         Notification.requestPermission(function (permission) {
             if (permission === "granted") { f(true); }
             else { f(false); }
         });
     };
 
-    var create = Module.create = function (msg, title) {
+    var create = Module.create = function (msg, title, icon) {
+        if (!icon) {
+            var favicon = document.getElementById('favicon');
+            icon = favicon.getAttribute('data-main-favicon') || DEFAULT_MAIN;
+        }
+
         return new Notification(title,{
-            // icon: icon,
+            icon: icon,
             body: msg,
         });
     };
 
     Module.system = function (msg, title, icon) {
         // Let's check if the browser supports notifications
-        if (!isSupported()) { console.log("Notifications are not supported"); }
+        if (!isSupported()) { return; /*console.log("Notifications are not supported");*/ }
 
         // Let's check whether notification permissions have already been granted
         else if (hasPermission()) {
@@ -40,9 +50,6 @@ define(['/api/config'], function (ApiConfig) {
             });
         }
     };
-
-    var DEFAULT_MAIN = '/customize/main-favicon.png?' + ApiConfig.requireConf.urlArgs;
-    var DEFAULT_ALT = '/customize/alt-favicon.png?' + ApiConfig.requireConf.urlArgs;
 
     var createFavicon = function () {
         console.log("creating favicon");

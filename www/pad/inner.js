@@ -25,6 +25,8 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     '/pad/links.js',
+    '/pad/export.js',
+    '/pad/cursor.js',
     '/bower_components/nthen/index.js',
     '/common/media-tag.js',
     '/api/config',
@@ -49,6 +51,8 @@ define([
     TypingTest,
     Messages,
     Links,
+    Exporter,
+    Cursors,
     nThen,
     MediaTag,
     ApiConfig,
@@ -107,8 +111,10 @@ define([
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
     };
 
+    var isCursor = Cursors.isCursor;
+
     var shouldSerialize = function (el) {
-        return isNotMagicLine(el) && !isWidget(el);
+        return isNotMagicLine(el) && !isWidget(el) && !isCursor(el);
     };
 
     // MEDIATAG: Filter attributes in the serialized elements
@@ -166,17 +172,6 @@ define([
         //'AUDIO'
     ];
 
-    var getHTML = function (inner) {
-        return ('<!DOCTYPE html>\n' + '<html>\n' +
-                '  <head><meta charset="utf-8"></head>\n  <body>' +
-            inner.innerHTML.replace(/<img[^>]*class="cke_anchor"[^>]*data-cke-realelement="([^"]*)"[^>]*>/g,
-                function(match,realElt){
-                    //console.log("returning realElt \"" + unescape(realElt)+ "\".");
-                    return decodeURIComponent(realElt); }) +
-            '  </body>\n</html>'
-        );
-    };
-
     var CKEDITOR_CHECK_INTERVAL = 100;
     var ckEditorAvailable = function (cb) {
         var intr;
@@ -226,6 +221,18 @@ define([
                     }
                 }
 
+                // Other users cursor
+                if (Cursors.preDiffApply(info)) {
+                    return true;
+                }
+
+                if (info.node && info.node.tagName === 'DIV' &&
+                    info.node.getAttribute('class') &&
+                    /cp-link-clicked/.test(info.node.getAttribute('class'))) {
+                    if (info.diff.action === 'removeElement') {
+                        return true;
+                    }
+                }
 
                 // MEDIATAG
                 // Never modify widget ids
@@ -315,6 +322,7 @@ define([
                     return true;
                 }
 
+/*
                 cursor.update();
 
                 // no use trying to recover the cursor if it doesn't exist
@@ -323,27 +331,27 @@ define([
                 /*  frame is either 0, 1, 2, or 3, depending on which
                     cursor frames were affected: none, first, last, or both
                 */
+/*
                 var frame = info.frame = cursor.inNode(info.node);
 
                 if (!frame) { return; }
 
-                if (typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
-                    var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+                if (frame && typeof info.diff.oldValue === 'string' && typeof info.diff.newValue === 'string') {
+                    //var pushes = cursor.pushDelta(info.diff.oldValue, info.diff.newValue);
+                    var ops = ChainPad.Diff.diff(info.diff.oldValue, info.diff.newValue);
 
                     if (frame & 1) {
                         // push cursor start if necessary
-                        if (pushes.commonStart < cursor.Range.start.offset) {
-                            cursor.Range.start.offset += pushes.delta;
-                        }
+                        cursor.transformRange(cursor.Range.start, ops);
                     }
                     if (frame & 2) {
                         // push cursor end if necessary
-                        if (pushes.commonStart < cursor.Range.end.offset) {
-                            cursor.Range.end.offset += pushes.delta;
-                        }
+                        cursor.transformRange(cursor.Range.end, ops);
                     }
                 }
+*/
             },
+/*
             postDiffApply: function (info) {
                 if (info.frame) {
                     if (info.node) {
@@ -357,6 +365,7 @@ define([
                     cursor.fixSelection(sel, range);
                 }
             }
+*/
         };
     };
 
@@ -435,13 +444,92 @@ define([
             el.setAttribute('class', 'non-realtime');
         });
 
+        var $iframe = $('html').find('iframe').contents();
         var ifrWindow = $html.find('iframe')[0].contentWindow;
+
+        framework._.sfCommon.addShortcuts(ifrWindow);
 
         var documentBody = ifrWindow.document.body;
 
-        var inner = window.inner = documentBody;
+        var observer = new MutationObserver(function (muts) {
+            muts.forEach(function (mut) {
+                if (mut.type === 'childList') {
+                    var $a;
+                    for (var i = 0; i < mut.addedNodes.length; i++) {
+                        $a = $(mut.addedNodes[i]);
+                        if ($a.is('p') && $a.find('> span:empty').length
+                            && $a.find('> br').length && $a.children().length === 2) {
+                            $a.find('> span').append($a.find('> br'));
+                        }
+                    }
+                }
+            });
+        });
+        observer.observe(documentBody, {
+            childList: true
+        });
 
+        var inner = window.inner = documentBody;
+        var $inner = $(inner);
+
+        var onLinkClicked = function (e) {
+            var $target = $(e.target);
+            if (!$target.is('a')) { return; }
+            var href = $target.attr('href');
+            if (!href || href[0] === '#') { return; }
+            e.preventDefault();
+            e.stopPropagation();
+
+            var rect = e.target.getBoundingClientRect();
+            var rect0 = inner.getBoundingClientRect();
+            var l = (rect.left - rect0.left)+'px';
+            var t = rect.bottom + $iframe.scrollTop() +'px';
+
+            var a = h('a', { href: href}, href);
+            var link = h('div.cp-link-clicked.non-realtime', {
+                contenteditable: false,
+                style: 'top:'+t+';left:'+l
+            }, [ a ]);
+            var $link = $(link);
+            $inner.append(link);
+
+            console.log($inner[0].getBoundingClientRect());
+            console.log(rect);
+            console.log($link.width(), $link.outerWidth());
+            console.log($inner.width());
+            console.log(l, t);
+            if (rect.left + $link.outerWidth() - rect0.left > $inner.width()) {
+                $link.css('left', 'unset');
+                $link.css('right', 0);
+            }
+
+            $(a).click(function (ee) {
+                ee.preventDefault();
+                ee.stopPropagation();
+                framework._.sfCommon.openUnsafeURL(href);
+                $link.remove();
+            });
+            $link.on('mouseleave', function () {
+                $link.remove();
+            });
+        };
+        var removeClickedLink = function () {
+            $inner.find('.cp-link-clicked').remove();
+        };
+
+        $inner.click(function (e) {
+            if (e.target.nodeName.toUpperCase() === 'A') {
+                removeClickedLink();
+                return void onLinkClicked(e);
+            }
+            removeClickedLink();
+        });
+
+        // My cursor
         var cursor = module.cursor = Cursor(inner);
+
+        // Display other users cursor
+        var cursors = Cursors.create(inner, hjsonToDom, cursor);
 
         var openLink = function (e) {
             var el = e.currentTarget;
@@ -456,9 +544,9 @@ define([
 
         framework.onEditableChange(function (unlocked) {
             if (!framework.isReadOnly()) {
-                $(inner).attr('contenteditable', '' + Boolean(unlocked));
+                $inner.attr('contenteditable', '' + Boolean(unlocked));
             }
-            $(inner).css({ background: unlocked ? '#fff' : '#eee' });
+            $inner.css({ background: unlocked ? '#fff' : '#eee' });
         });
 
         framework.setMediaTagEmbedder(function ($mt) {
@@ -473,7 +561,7 @@ define([
         framework.setTitleRecommender(function () {
             var text;
             if (['h1', 'h2', 'h3'].some(function (t) {
-                var $header = $(inner).find(t + ':first-of-type');
+                var $header = $inner.find(t + ':first-of-type');
                 if ($header.length && $header.text()) {
                     text = $header.text();
                     return true;
@@ -483,10 +571,17 @@ define([
 
         var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
+        var cursorStopped = false;
+        var updateCursor = function () {
+            if (cursorStopped) { return; }
+            framework.updateCursor();
+        };
+
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function (hjson) {
             if (!Array.isArray(hjson)) { throw new Error(Messages.typeError); }
             var userDocStateDom = hjsonToDom(hjson);
+            cursorStopped = true;
 
             userDocStateDom.setAttribute("contenteditable",
                 inner.getAttribute('contenteditable'));
@@ -497,11 +592,28 @@ define([
             userDocStateDom.normalize();
             inner.normalize();
 
+            $(userDocStateDom).find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+                $(el).remove();
+            });
+
+            // Get cursor position
+            cursor.offsetUpdate();
+            var oldText = inner.outerHTML;
+
+            // Apply the changes
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
 
+            // Restore cursor position
+            var newText = inner.outerHTML;
+            var ops = ChainPad.Diff.diff(oldText, newText);
+            cursor.restoreOffset(ops);
+
+            cursorStopped = false;
+            updateCursor();
+
             // MEDIATAG: Migrate old mediatags to the widget system
-            $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+            $inner.find('media-tag:not(.cke_widget_element)').each(function (i, el) {
                 var element = new window.CKEDITOR.dom.element(el);
                 editor.widgets.initOn( element, 'mediatag' );
             });
@@ -512,7 +624,7 @@ define([
             editor.widgets.checkWidgets();
 
             if (framework.isReadOnly()) {
-                var $links = $(inner).find('a');
+                var $links = $inner.find('a');
                 // off so that we don't end up with multiple identical handlers
                 $links.off('click', openLink).on('click', openLink);
             }
@@ -530,9 +642,19 @@ define([
             return str;
         });
         framework.setContentGetter(function () {
+            $inner.find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+                $(el).remove();
+            });
+
+            // We have to remove the cursors before getting the content because they split
+            // the text nodes and OT/ChainPad would freak out
+            cursors.removeCursors();
+
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
-            return Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
+            var hjson = Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
+
+            return hjson;
         });
 
         $bar.find('#cke_1_toolbar_collapser').hide();
@@ -559,7 +681,7 @@ define([
             }
 
             if (framework.isReadOnly()) {
-                $(inner).attr('contenteditable', 'false');
+                $inner.attr('contenteditable', 'false');
             }
 
             var fmConfig = {
@@ -585,14 +707,13 @@ define([
 
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
                 if (data) {
-                    var $iframe = $('html').find('iframe').contents();
                     $iframe.find('html').addClass('cke_body_width');
                 }
             });
 
             framework._.sfCommon.isPadStored(function (err, val) {
                 if (!val) { return; }
-                var b64images = $(inner).find('img[src^="data:image"]:not(.cke_reset)');
+                var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset)');
                 if (b64images.length && framework._.sfCommon.isLoggedIn()) {
                     var no = h('button.cp-corner-cancel', Messages.cancel);
                     var yes = h('button.cp-corner-primary', Messages.ok);
@@ -647,26 +768,8 @@ define([
             });
         }, true);
 
-        var exportMediaTags = function (inner, cb) {
-            var $clone = $(inner).clone();
-            nThen(function (waitFor) {
-                $(inner).find('media-tag').each(function (i, el) {
-                    if (!$(el).data('blob') || !el.blob) { return; }
-                    Util.blobToImage(el.blob || $(el).data('blob'), waitFor(function (imgSrc) {
-                        $clone.find('media-tag[src="' + $(el).attr('src') + '"] img')
-                            .attr('src', imgSrc);
-                        $clone.find('media-tag').parent()
-                            .find('.cke_widget_drag_handler_container').remove();
-                    }));
-                });
-            }).nThen(function () {
-                cb($clone[0]);
-            });
-        };
-        framework.setFileExporter('html', function (cb) {
-            exportMediaTags(inner, function (toExport) {
-                cb(new Blob([ getHTML(toExport) ], { type: "text/html;charset=utf-8" }));
-            });
+        framework.setFileExporter(Exporter.type, function (cb) {
+            Exporter.main(inner, cb);
         }, true);
 
         framework.setNormalizer(function (hjson) {
@@ -681,6 +784,13 @@ define([
             ];
         });
 
+        /* Display the cursor of other users and send our cursor */
+        //framework.setCursorGetter(cursors.cursorGetter);
+        //framework.onCursorUpdate(cursors.onCursorUpdate);
+        //inner.addEventListener('click', updateCursor);
+        //inner.addEventListener('keyup', updateCursor);
+
+
         /* hitting enter makes a new line, but places the cursor inside
             of the <br> instead of the <p>. This makes it such that you
             cannot type until you click, which is rather unnacceptable.
@@ -690,6 +800,18 @@ define([
             the first such keypress will not be inserted into the P. */
         inner.addEventListener('keydown', cursor.brFix);
 
+        /*
+            CkEditor emits a change event when it detects new content in the editable area.
+            Our problem is that this event is sent asynchronously and late after a keystroke.
+            The result is that between the keystroke and the change event, chainpad may
+            receive remote changes and so it can wipe the newly inserted content (because
+            chainpad work synchronously), and the merged text is missing a few characters.
+            To fix this, we have to call `framework.localChange` sooner. We can't listen for
+            the "keypress" event because it is trigger before the character is inserted.
+            The solution is the "input" event, triggered by the browser as soon as the
+            character is inserted.
+        */
+        inner.addEventListener('input', framework.localChange);
         editor.on('change', framework.localChange);
 
         // export the typing tests to the window.
@@ -697,13 +819,25 @@ define([
         // terminate the test like `test.cancel()`
         window.easyTest = function () {
             cursor.update();
-            var start = cursor.Range.start;
-            var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
+            //var start = cursor.Range.start;
+            //var test = TypingTest.testInput(inner, start.el, start.offset, framework.localChange);
+            var test = TypingTest.testPad(editor, framework.localChange);
             framework.localChange();
             return test;
         };
 
-        $bar.find('.cke_button').click(function () {
+
+        // Fix the scrollbar if it's reset when clicking on a button (firefox only?)
+        var buttonScrollTop;
+        $('.cke_toolbox_main').find('.cke_button, .cke_combo_button').mousedown(function () {
+            buttonScrollTop = $('iframe').contents().scrollTop();
+            setTimeout(function () {
+                $('iframe').contents().scrollTop(buttonScrollTop);
+            });
+        });
+
+
+        $('.cke_toolbox_main').find('.cke_button').click(function () {
             var e = this;
             var classString = e.getAttribute('class');
             var classes = classString.split(' ').filter(function (c) {
@@ -772,12 +906,12 @@ define([
                 // Used in ckeditor-config.js
                 Ckeditor.CRYPTPAD_URLARGS = ApiConfig.requireConf.urlArgs;
                 var backColor = AppConfig.appBackgroundColor;
-                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; }' +
+                var newCss = '.cke_body_width { background: '+ backColor +'; height: 100%; overflow: auto;}' +
                     '.cke_body_width body {' +
                         'max-width: 50em; padding: 20px 30px; margin: 0 auto; min-height: 100%;'+
                         'box-sizing: border-box; overflow: auto;'+
                     '}' +
-                    '.cke_body_width body > *:first-child { margin-top: 0; }' +
+                    '.cke_body_width body > *:first-child { margin-top: 0; }';
                 Ckeditor.addCss(newCss);
                 Ckeditor._mediatagTranslations = {
                     title: Messages.pad_mediatagTitle,
@@ -837,7 +971,7 @@ define([
                             test.fail("No anchors found. Please adjust document");
                         } else {
                             console.log(anchors.length + " anchors found.");
-                            var exported = getHTML(window.inner);
+                            var exported = Exporter.getHTML(window.inner);
                             console.log("Obtained exported: " + exported);
                             var allFound = true;
                             for(var i=0; i<anchors.length; i++) {
