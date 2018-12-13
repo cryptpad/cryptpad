@@ -1,3 +1,30 @@
+# Opossum release (v2.14.0)
+
+## Goals
+
+For this release we chose to focus on our in-pad chat functionality and the ability to show your cursor's position to other users in the same pad.
+
+## Update notes
+
+* We've released an updated version of a serverside dependency: `chainpad-server`
+  * this addresses a recently introduced bug which is capable of sending more history than clients require under certain circumstances
+  * to use this updated dependency, run `npm update` and restart your server
+
+## Features
+
+* Our code editor is now capable of displaying other user's cursors within your view of the document.
+  * this is enabled by default, but you can choose not to share your own cursor, and to disable the display of other users' cursors in your document
+  * your initial color is chosen randomly, but you can choose any color you like within the settings page alongside the other configuration options for cursors
+* After some consideration, we have chosen to change the permissions around the chat functionality embedded within every pad.
+  * previously we had allowed viewers to participate in chat, even though they could not change the document.
+  * we decided that this was counter-intuitive
+  * in the event of an XSS vulnerability it could be used as a vector for privilege escalation
+  * as such, we have modified our embedded chat functionality to only allow editors to participate
+  * this change is not backwards-compatible, and so the embedded chat boxes will have dropped their older history
+    * our assumption is that this will be an improvement for the majority of our users, and that it's fairly safe to drop older history given that chat is a relatively new feature
+    * if this has affected you in an adverse way, the information is still accessible, and you can contact us if you need a way to recover that information
+* Finally, it is now possible to print the rendered markdown content in our code editor, thanks to a contribution from [@joldie](https://github.com/joldie)
+
 # Numbat release (v2.13.0)
 
 ## Goals
