@@ -493,11 +493,6 @@ define([
             var $link = $(link);
             $inner.append(link);
 
-            console.log($inner[0].getBoundingClientRect());
-            console.log(rect);
-            console.log($link.width(), $link.outerWidth());
-            console.log($inner.width());
-            console.log(l, t);
             if (rect.left + $link.outerWidth() - rect0.left > $inner.width()) {
                 $link.css('left', 'unset');
                 $link.css('right', 0);
