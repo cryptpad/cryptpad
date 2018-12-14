@@ -567,9 +567,16 @@ define([
         var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
         var cursorStopped = false;
+        var cursorTo;
         var updateCursor = function () {
-            if (cursorStopped) { return; }
-            framework.updateCursor();
+            if (cursorTo) { clearTimeout(cursorTo); }
+
+            // If we're receiving content
+            if (cursorStopped) { return void setTimeout(updateCursor, 100); }
+
+            cursorTo = setTimeout(function () {
+                framework.updateCursor();
+            }, 500); // 500ms to make sure it is sent after chainpad sync
         };
 
         // apply patches, and try not to lose the cursor in the process!
@@ -604,8 +611,10 @@ define([
             var ops = ChainPad.Diff.diff(oldText, newText);
             cursor.restoreOffset(ops);
 
-            cursorStopped = false;
-            updateCursor();
+            setTimeout(function () {
+                cursorStopped = false;
+                updateCursor();
+            }, 200);
 
             // MEDIATAG: Migrate old mediatags to the widget system
             $inner.find('media-tag:not(.cke_widget_element)').each(function (i, el) {
@@ -780,10 +789,10 @@ define([
         });
 
         /* Display the cursor of other users and send our cursor */
-        //framework.setCursorGetter(cursors.cursorGetter);
-        //framework.onCursorUpdate(cursors.onCursorUpdate);
-        //inner.addEventListener('click', updateCursor);
-        //inner.addEventListener('keyup', updateCursor);
+        framework.setCursorGetter(cursors.cursorGetter);
+        framework.onCursorUpdate(cursors.onCursorUpdate);
+        inner.addEventListener('click', updateCursor);
+        inner.addEventListener('keyup', updateCursor);
 
 
         /* hitting enter makes a new line, but places the cursor inside
@@ -806,7 +815,10 @@ define([
             The solution is the "input" event, triggered by the browser as soon as the
             character is inserted.
         */
-        inner.addEventListener('input', framework.localChange);
+        inner.addEventListener('input', function () {
+            framework.localChange();
+            updateCursor();
+        });
         editor.on('change', framework.localChange);
 
         // export the typing tests to the window.

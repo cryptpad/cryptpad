@@ -158,18 +158,18 @@ a > img {
     border: 2px solid red;
     border-right-color: transparent !important;
     border-left-color: transparent !important;
-    margin-left: -2px;
-    margin-right: -2px;
+    margin-left: -3px;
+    margin-right: -3px;
 }
 .cp-cursor-position[data-type="start"] {
     border-left: none;
     border-right-width: 4px;
-    margin-right: -4px;
+    margin-right: -5px;
 }
 .cp-cursor-position[data-type="end"] {
     border-right: none;
     border-left-width: 4px;
-    margin-left: -4px;
+    margin-left: -5px;
 }
 .cp-cursor-avatar {
     display: flex;
