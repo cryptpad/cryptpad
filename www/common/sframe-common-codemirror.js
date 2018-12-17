@@ -402,6 +402,12 @@ define([
             return html;
         };
         var marks = {};
+        exp.removeCursors = function () {
+            for (var id in marks) {
+                marks[id].clear();
+                delete marks[id];
+            }
+        };
         exp.setRemoteCursor = function (data) {
             if (data.leave) {
                 $('.cp-codemirror-cursor[id^='+data.id+']').each(function (i, el) {

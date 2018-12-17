@@ -165,11 +165,13 @@ a > img {
     border-left: none;
     border-right-width: 4px;
     margin-right: -5px;
+    margin-left: -1px;
 }
 .cp-cursor-position[data-type="end"] {
     border-right: none;
     border-left-width: 4px;
     margin-left: -5px;
+    margin-right: -1px;
 }
 .cp-cursor-avatar {
     display: flex;

@@ -136,6 +136,15 @@ define([
                 end: cursorObj.selectionEnd
             }, ops);
             var cursorEl = makeCursor(id, cursorObj);
+            ['start', 'end'].forEach(function (t) {
+                // Prevent the cursor from creating a new line at the beginning
+                if (r[t].el.nodeName.toUpperCase() === 'BODY') {
+                    if (!r[t].el.childNodes.length) { r[t] = null; return; }
+                    r[t].el = r[t].el.childNodes[0];
+                    r[t].offset = 0;
+                }
+            });
+            if (!r.start || !r.end) { return; }
             if (r.start.el === r.end.el && r.start.offset === r.end.offset) {
                 // Cursor
                 addCursorAtRange(cursorEl, r, cursorObj, '');
