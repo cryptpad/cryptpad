@@ -20,6 +20,9 @@ define(function () {
     out.type.media = 'Media';
     out.type.todo = "Todo";
     out.type.contacts = 'Contacts';
+    out.type.oocell = 'OnlyOffice Cell';
+    out.type.ooslide = 'OnlyOffice Slide';
+    out.type.oodoc = 'OnlyOffice Doc';
 
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
