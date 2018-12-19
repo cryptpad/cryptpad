@@ -667,6 +667,7 @@ define(function () {
     out.settings_ownDriveHint = "Migrating your drive to the new version will give you access to new features..."; // XXX
     out.settings_ownDriveButton = "Migrate"; // XXX
     out.settings_ownDriveConfirm = "Are you sure?"; // XXX
+    out.settings_ownDrivePending = "Your account is being migrated. Please do not close or reload this page until the process has completed."; // XXX
 
     out.settings_changePasswordTitle = "Change your password";
     out.settings_changePasswordHint = "Change your account's password. Enter your current password, and confirm the new password by typing it twice.<br>" +

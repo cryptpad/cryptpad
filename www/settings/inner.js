@@ -52,6 +52,7 @@ define([
             'cp-settings-autostore',
             'cp-settings-userfeedback',
             'cp-settings-change-password',
+            'cp-settings-migrate',
             'cp-settings-backup',
             'cp-settings-delete'
         ],
@@ -473,10 +474,7 @@ define([
     };
 
     create['migrate'] = function () {
-        if (true) { return; } // STUBBED until we have a reason to deploy this
-        // TODO
-        // if (!loginBlock) { return; }
-        // if (alreadyMigrated) { return; }
+        if (privateData.isDriveOwned) { return; }
         if (!common.isLoggedIn()) { return; }
 
         var $div = $('<div>', { 'class': 'cp-settings-migrate cp-sidebarlayout-element'});
@@ -489,25 +487,49 @@ define([
         var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
         var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
 
-        var $button = $('<button>', {'id': 'cp-settings-delete', 'class': 'btn btn-primary'})
-            .text(Messages.settings_ownDriveButton).appendTo($div);
+        var form = h('div', [
+            UI.passwordInput({
+                id: 'cp-settings-migrate-password',
+                placeholder: Messages.settings_changePasswordCurrent
+            }, true),
+            h('button.btn.btn-primary', Messages.settings_ownDriveButton)
+        ]);
 
-        $button.click(function () {
+        $(form).appendTo($div);
+
+        var todo = function () {
+            var password = $(form).find('#cp-settings-migrate-password').val();
+            if (!password) { return; }
             $spinner.show();
             UI.confirm(Messages.settings_ownDriveConfirm, function (yes) {
                 if (!yes) { return; }
-                sframeChan.query("Q_OWN_USER_DRIVE", null, function (err, data) {
-                    if (err || data.error) {
-                        console.error(err || data.error);
-                        // TODO
-                        $spinner.hide();
-                        return;
-                    }
-                    // TODO: drive is migrated, autoamtic redirect from outer?
+                var data = {
+                    password: password,
+                    newPassword: password
+                };
+                UI.addLoadingScreen({
+                    hideTips: true,
+                    loadingText: Messages.settings_ownDrivePending,
+                });
+                sframeChan.query('Q_CHANGE_USER_PASSWORD', data, function (err, obj) {
+                    UI.removeLoadingScreen();
+                    if (err || obj.error) { return UI.alert(Messages.settings_changePasswordError); }
                     $ok.show();
                     $spinner.hide();
                 });
             });
+        };
+
+        $(form).find('button').click(function () {
+            todo();
+        });
+        $(form).find('input').keydown(function (e) {
+            // Save on Enter
+            if (e.which === 13) {
+                e.preventDefault();
+                e.stopPropagation();
+                todo();
+            }
         });
 
         $spinner.hide().appendTo($div);

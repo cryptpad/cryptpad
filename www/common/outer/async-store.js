@@ -456,7 +456,8 @@ define([
                     edPublic: store.proxy.edPublic,
                     friends: store.proxy.friends || {},
                     settings: store.proxy.settings,
-                    thumbnails: disableThumbnails === false
+                    thumbnails: disableThumbnails === false,
+                    isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners']))
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -1523,8 +1524,9 @@ define([
                 if (!data.userHash) {
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
-            }).on('ready', function () {
+            }).on('ready', function (info) {
                 if (store.userObject) { return; } // the store is already ready, it is a reconnection
+                store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 var drive = rt.proxy.drive;
                 // Creating a new anon drive: import anon pads from localStorage
