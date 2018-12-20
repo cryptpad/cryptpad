@@ -54,6 +54,9 @@ define(function () {
     out.deleted = "Pad supprimé de votre CryptDrive";
     out.deletedFromServer = "Pad supprimé du serveur";
 
+    out.mustLogin = "Vous devez être enregistré pour avir accès à cette page.";
+    out.disabledApp = "Cette application a été désactivée. Pour plus d'information, veuillez contacter l'administrateur de ce CryptPad.";
+
     out.realtime_unrecoverableError = "Une erreur critique est survenue. Cliquez sur OK pour recharger la page.";
 
     out.disconnected = 'Déconnecté';
@@ -547,6 +550,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Compte";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_cursor = "Curseur";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Documents texte";
     out.settings_cat_creation = "Nouveau pad";
@@ -652,6 +656,12 @@ define(function () {
 
     out.settings_templateSkip = "Passer la fenêtre de choix d'un modèle";
     out.settings_templateSkipHint = "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.";
+
+    out.settings_ownDriveTitle = "Activer les dernières fonctionnalités du compte";
+    out.settings_ownDriveHint = "Pour des raisons techniques, les comptes utilisateurs les plus anciens n'ont pas accès à toutes les fonctionnalités. Une mise à niveau gratuite permet de préparer votre CryptDrive pour les nouveautés à venir sans perturber vos activités habituelles.";
+    out.settings_ownDriveButton = "Mettre à niveau votre compte";
+    out.settings_ownDriveConfirm = "La mise à niveau peut prendre du temps. Vous devrez vous reconnecter sur tous vos appareils. Voulez-vous continuer?";
+    out.settings_ownDrivePending = "Votre compte est en train d'être mis à jour. Veuillez ne pas fermer ou recharger cette page avant que le traitement soit terminé.";
 
     out.settings_changePasswordTitle = "Changer de mot de passe";
     out.settings_changePasswordHint = "Pour modifier le mot de passe de votre compte utilisateur, entrez votre mot de passe actuel et confirmez le nouveau mot de passe en la tapant deux fois.<br>" +

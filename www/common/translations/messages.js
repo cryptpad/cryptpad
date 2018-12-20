@@ -56,7 +56,7 @@ define(function () {
     out.deletedFromServer = "Pad deleted from the server";
 
     out.mustLogin = "You must be logged in to access this page";
-    out.disabledApp = "This application has been disabled. Contact the administrator of this CryptPad to have more information.";
+    out.disabledApp = "This application has been disabled. Contact the administrator of this CryptPad for more information.";
 
     out.realtime_unrecoverableError = "An unrecoverable error has occured. Click OK to reload.";
 
@@ -377,7 +377,6 @@ define(function () {
     out.contacts_typeHere = "Type a message here...";
     out.contacts_warning = "Everything you type here is persistent and available to all the existing and future users of this pad. Be careful with sensitive information!";
     out.contacts_padTitle = "Chat";
-    out.contacts_mustLogin = "You must be logged in to add contacts";
 
     out.contacts_info1 = "These are your contacts. From here, you can:";
     out.contacts_info2 = "Click your contact's icon to chat with them";
@@ -663,11 +662,11 @@ define(function () {
     out.settings_templateSkip = "Skip the template selection modal";
     out.settings_templateSkipHint = "When you create a new empty pad, if you have stored templates for this type of pad, a modal appears to ask if you want to use a template. Here you can choose to never show this modal and so to never use a template.";
 
-    out.settings_ownDriveTitle = "Drive migration"; // XXX
-    out.settings_ownDriveHint = "Migrating your drive to the new version will give you access to new features..."; // XXX
-    out.settings_ownDriveButton = "Migrate"; // XXX
-    out.settings_ownDriveConfirm = "Are you sure?"; // XXX
-    out.settings_ownDrivePending = "Your account is being migrated. Please do not close or reload this page until the process has completed."; // XXX
+    out.settings_ownDriveTitle = "Enable latest account features";
+    out.settings_ownDriveHint = "For technical reasons, older accounts do not have access to all of our latest features. A free upgrade to a new account will prepare your CryptDrive for upcoming features without disrupting your usual activities.";
+    out.settings_ownDriveButton = "Upgrade your account";
+    out.settings_ownDriveConfirm = "Upgrading your account may take some time. You will need to log back in on all your devices. Are you sure?";
+    out.settings_ownDrivePending = "Your account is being upgraded. Please do not close or reload this page until the process has completed.";
 
     out.settings_changePasswordTitle = "Change your password";
     out.settings_changePasswordHint = "Change your account's password. Enter your current password, and confirm the new password by typing it twice.<br>" +
