@@ -316,6 +316,11 @@ define([
                     }
                 }
 
+                // Do not change the spellcheck value in view mode
+                if (readOnly && info.node && info.node.tagName === 'BODY' &&
+                    info.diff.action === 'modifyAttribute' && info.diff.name === 'spellcheck') {
+                    return true;
+                }
                 // Do not change the contenteditable value in view mode
                 if (readOnly && info.node && info.node.tagName === 'BODY' &&
                     info.diff.action === 'modifyAttribute' && info.diff.name === 'contenteditable') {
@@ -709,6 +714,12 @@ define([
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
 
+            framework._.sfCommon.getAttribute(['pad', 'spellcheck'], function (err, data) {
+                if (framework.isReadOnly()) { return; }
+                if (data) {
+                    $iframe.find('body').attr('spellcheck', true);
+                }
+            });
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
                 if (data) {
                     $iframe.find('html').addClass('cke_body_width');

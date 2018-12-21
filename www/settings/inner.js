@@ -76,6 +76,7 @@ define([
         ],
         'pad': [
             'cp-settings-pad-width',
+            'cp-settings-pad-spellcheck',
         ],
         'code': [
             'cp-settings-code-indent-unit',
@@ -1275,6 +1276,43 @@ define([
 
 
         common.getAttribute(['pad', 'width'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+        return $div;
+    };
+
+    create['pad-spellcheck'] = function () {
+        var $div = $('<div>', {
+            'class': 'cp-settings-pad-spellcheck cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_padSpellcheckTitle).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_padSpellcheckHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $cbox = $(UI.createCheckbox('cp-settings-pad-spellcheck',
+                                   Messages.settings_padSpellcheckLabel,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['pad', 'spellcheck'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['pad', 'spellcheck'], function (e, val) {
             if (e) { return void console.error(e); }
             if (val) {
                 $checkbox.attr('checked', 'checked');

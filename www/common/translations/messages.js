@@ -653,6 +653,9 @@ define(function () {
     out.settings_padWidth = "Editor's maximum width";
     out.settings_padWidthHint = "Rich text pads use by default the maximum available width on your screen and it can be difficult to read. You can reduce the editor's width here.";
     out.settings_padWidthLabel = "Reduce the editor's width";
+    out.settings_padSpellcheckTitle = "Enable spellcheck";
+    out.settings_padSpellcheckHint = "This option allows you to enable spellcheck in rich text pad. Spelling errors will be underline in red and you'll have to use Ctrl (or Meta) + right-click to see the correct options.";
+    out.settings_padSpellcheckLabel = "Enable spellcheck in rich text pads";
 
     out.settings_creationSkip = "Skip the pad creation screen";
     out.settings_creationSkipHint = "The pad creation screen offers new options to create a pad, providing you more control and security over your data. However, it may slow down your workflow by adding one additional step so, here, you have the option to skip this screen and use the default settings selected above.";
