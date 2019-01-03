@@ -648,6 +648,9 @@ define(function () {
     out.settings_padWidth = "Largeur de l'éditeur de texte";
     out.settings_padWidthHint = "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.";
     out.settings_padWidthLabel = "Réduire la largeur de l'éditeur";
+    out.settings_padSpellcheckTitle = "Vérification orthographique";
+    out.settings_padSpellcheckHint = "Cette option vous permet d'activer la vérification orthographique dans l'éditeur de Texte. Les fautes seront soulignées et des propositions correctes seront disponibles en effectuant un clic-droit avec la touche Ctrl ou Meta enfoncée.";
+    out.settings_padSpellcheckLabel = "Activer la vérification orthographique";
 
     out.settings_creationSkip = "Passer l'écran de création de pad";
     out.settings_creationSkipHint = "L'écran de création de pad offre de nouvelles options pour créer un pad, permettant d'avoir plus de contrôle et de sécurité concernant vos données. Toutefois, il peut ralentir votre travail en ajoutant une étape supplémentaire et donc, ici, vous avez la possibilité de choisir de passer cet écran et d'utiliser les paramètres par défaut choisis au-dessus.";
