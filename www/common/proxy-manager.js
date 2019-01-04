@@ -885,6 +885,7 @@ define([
             if (fPath) {
                 // This is a shared folder, we have to fix the paths in the search results
                 results.forEach(function (r) {
+                    r.inSharedFolder = true;
                     r.paths.forEach(function (p) {
                         Array.prototype.unshift.apply(p, fPath);
                     });
@@ -899,8 +900,8 @@ define([
     var getRecentPads = function (Env) {
         return Env.user.userObject.getRecentPads();
     };
-    var getOwnedPads = function (Env, edPublic) {
-        return Env.user.userObject.getOwnedPads(edPublic);
+    var getOwnedPads = function (Env) {
+        return Env.user.userObject.getOwnedPads(Env.edPublic);
     };
 
     var getSharedFolderData = function (Env, id) {
@@ -961,10 +962,27 @@ define([
         return Env.user.userObject.hasFile(el, trashRoot);
     };
 
-    var createInner = function (proxy, sframeChan, uoConfig) {
+    // Get the owned files in the main drive that are also duplicated in shared folders
+    var isDuplicateOwned = function (Env, path) {
+        if (isInSharedFolder(Env, path)) { return; }
+        var data = getFileData(Env, Env.user.userObject.find(path));
+        if (!data) { return; }
+        if (!_ownedByMe(Env, data.owners)) { return; }
+        var channel = data.channel;
+        if (!channel) { return; }
+        var foldersUO = Object.keys(Env.folders).map(function (k) {
+            return Env.folders[k].userObject;
+        });
+        return foldersUO.some(function (uo) {
+            return uo.findChannels([channel]).length;
+        });
+    };
+
+    var createInner = function (proxy, sframeChan, edPublic, uoConfig) {
         var Env = {
             cfg: uoConfig,
             sframeChan: sframeChan,
+            edPublic: edPublic,
             user: {
                 proxy: proxy,
                 userObject: UserObject.init(proxy, uoConfig)
@@ -1006,6 +1024,7 @@ define([
             getSharedFolderData: callWithEnv(getSharedFolderData),
             isInSharedFolder: callWithEnv(isInSharedFolder),
             getUserObjectPath: callWithEnv(getUserObjectPath),
+            isDuplicateOwned: callWithEnv(isDuplicateOwned),
             // Generic
             isFile: callWithEnv(isFile),
             isFolder: callWithEnv(isFolder),

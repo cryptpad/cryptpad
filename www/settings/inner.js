@@ -63,6 +63,7 @@ define([
             'cp-settings-creation-template'
         ],
         'drive': [
+            'cp-settings-drive-duplicate',
             'cp-settings-resettips',
             'cp-settings-thumbnails',
             'cp-settings-drive-backup',
@@ -776,6 +777,44 @@ define([
 
 
     // Drive settings
+
+    create['drive-duplicate'] = function () {
+        var $div = $('<div>', {
+            'class': 'cp-settings-drive-duplicate cp-sidebarlayout-element'
+        });
+        $('<label>').text(Messages.settings_driveDuplicateTitle).appendTo($div);
+        $('<span>', {'class': 'cp-sidebarlayout-description'})
+            .text(Messages.settings_driveDuplicateHint).appendTo($div);
+
+        var $ok = $('<span>', {'class': 'fa fa-check', title: Messages.saved});
+        var $spinner = $('<span>', {'class': 'fa fa-spinner fa-pulse'});
+
+        var $cbox = $(UI.createCheckbox('cp-settings-drive-duplicate',
+                                   Messages.settings_driveDuplicateLabel,
+                                   false, { label: {class: 'noTitle'} }));
+        var $checkbox = $cbox.find('input').on('change', function () {
+            $spinner.show();
+            $ok.hide();
+            var val = $checkbox.is(':checked');
+            common.setAttribute(['drive', 'hideDuplicate'], val, function () {
+                $spinner.hide();
+                $ok.show();
+            });
+        });
+        $cbox.appendTo($div);
+
+        $ok.hide().appendTo($cbox);
+        $spinner.hide().appendTo($cbox);
+
+        common.getAttribute(['drive', 'hideDuplicate'], function (e, val) {
+            if (e) { return void console.error(e); }
+            if (val) {
+                $checkbox.attr('checked', 'checked');
+            }
+        });
+        return $div;
+    };
+
 
     create['resettips'] = function () {
         var $div = $('<div>', {'class': 'cp-settings-resettips cp-sidebarlayout-element'});

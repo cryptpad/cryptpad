@@ -363,8 +363,9 @@ define([
         APP.origin = priv.origin;
         config.loggedIn = APP.loggedIn;
         config.sframeChan = sframeChan;
+        APP.hideDuplicateOwned = Util.find(priv, ['settings', 'drive', 'hideDuplicate']);
 
-        var manager = ProxyManager.createInner(files, sframeChan, config);
+        var manager = ProxyManager.createInner(files, sframeChan, edPublic, config);
 
         Object.keys(folders).forEach(function (id) {
             var f = folders[id];
@@ -2374,6 +2375,8 @@ define([
             var filesList = manager.search(value);
             filesList.forEach(function (r) {
                 r.paths.forEach(function (path) {
+                    if (!r.inSharedFolder &&
+                        APP.hideDuplicateOwned && manager.isDuplicateOwned(path)) { return; }
                     var href = r.data.href;
                     var parsed = Hash.parsePadUrl(href);
                     var $table = $('<table>');
@@ -2481,7 +2484,7 @@ define([
 
         // Owned pads category
         var displayOwned = function ($container) {
-            var list = manager.getOwnedPads(edPublic);
+            var list = manager.getOwnedPads();
             if (list.length === 0) { return; }
             var $fileHeader = getFileListHeader(false);
             $container.append($fileHeader);
@@ -2743,6 +2746,9 @@ define([
                 // display files
                 sortedFiles.forEach(function (key) {
                     if (manager.isFolder(root[key])) { return; }
+                    var p = path.slice();
+                    p.push(key);
+                    if (APP.hideDuplicateOwned && manager.isDuplicateOwned(p)) { return; }
                     var $element = createElement(path, key, root, false);
                     if (!$element) { return; }
                     $element.appendTo($list);
