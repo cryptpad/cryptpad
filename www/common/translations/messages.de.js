@@ -11,7 +11,6 @@ define(function () {
     out._languageName = 'German';
 
     out.main_title = "Cryptpad: Echtzeitzusammenarbeit ohne Preisgabe von Informationen";
-    out.main_slogan = "Einigkeit ist Stärke - Zusammenarbeit der Schlüssel";
 
     out.type = {};
     out.type.pad = 'Pad';
@@ -137,7 +136,6 @@ define(function () {
     out.saveTitle = "Bitte gib den Titel ein (Enter)";
 
     out.forgetButton = "Entfernen";
-    out.forgetButtonTitle = 'Entferne dieses Dokument von deiner Startseitenliste';
     out.forgetButtonTitle = 'Dieses Dokument zum Papierkorb verschieben';
     out.forgetPrompt = 'Mit dem Klick auf OK wird das Dokument aus deinem lokalen Speicher gelöscht. Fortfahren?';
     out.movedToTrash = 'Dieses Dokument liegt im Papierkorb.<br>Du kannst <a href="/drive/">zum CryptDrive</a> navigieren';
@@ -178,7 +176,7 @@ define(function () {
 
     out.printText = "Drucken";
     out.printButton = "Drucken (enter)";
-    out.printButtonTitle = "Deine Präsentation ausdrucken oder als PDF Dateien exportieren";
+    out.printButtonTitle2 = "Deine Präsentation ausdrucken oder als PDF Dateien exportieren";
     out.printOptions = "Druckeinstellungen";
     out.printSlideNumber = "Foliennummer anzeigen";
     out.printDate = "Datum anzeigen";
@@ -306,8 +304,8 @@ define(function () {
 
     out.poll_optionPlaceholder = "Option";
     out.poll_userPlaceholder = "Dein Name";
-      out.poll_removeOption = "Bist du sicher, dass du diese Option entfernen möchtest?";
-      out.poll_removeUser = "Bist du sicher, dass du diese(n) Nutzer*in entfernen möchtest?";
+    out.poll_removeOption = "Bist du sicher, dass du diese Option entfernen möchtest?";
+    out.poll_removeUser = "Bist du sicher, dass du diese(n) Nutzer*in entfernen möchtest?";
 
     out.poll_titleHint = "Titel";
     out.poll_descriptionHint = "Beschreibe deine Abstimmung und publiziere sie mit dem 'Veröffentlichen'-Knopf wenn du fertig bist."+
@@ -413,6 +411,7 @@ define(function () {
     out.fm_newFolder = "Neuer Ordner";
     out.fm_newFile = "Neues Dokument";
     out.fm_folder = "Ordner";
+    out.fm_sharedFolder = "Verteiler Ordner";
     out.fm_folderName = "Ordnername";
     out.fm_numberOfFolders = "# von Ordnern";
     out.fm_numberOfFiles = "# von Dateien";
@@ -448,6 +447,8 @@ define(function () {
     out.fm_info_anonymous = 'Du bist nicht eingeloggt, daher laufen die Dokumente nach 3 Monaten aus (<a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">mehr dazu lesen</a>). ' +
                             'Der Zugang zu den Dokumenten ist in deinem Browser gespeichert, daher wird das Löschen des Browserverlaufs auch die Dokumente verschwinden lassen.<br>' +
                             '<a href="/register/">Registriere dich</a> oder <a href="/login/">logge dich ein</a>, um sie dauerhaft zu machen.<br>';
+    out.fm_info_sharedFolder = 'Dieser Ordner ist verteilt. Da du aber nicht eingeloggt bist, hast du nur einen schreibgeschützen Zugang.<br>' +
+                            '<a href="/register/">Registriere</a> oder <a href="/login/">logge ich ein</a>, damit du dieses Ordner in dein CryptDrive importieren und bearbeiten kannst.';
     out.fm_info_owned = "Diese Dokumente sind deine eigenen. Das heisst, dass du sie vom Server entfernen kannst, wann Du willst. Wenn du das machst, dann wird es auch keinen Zugriff zu diesem für andere Benutzer geben.";
     out.fm_alert_backupUrl = "Backuplink für dieses CryptDrive.<br>" +
                              "Es ist <strong>hoch empfohlen</strong> diesen Link geheim zu halten.<br>" +
@@ -457,14 +458,13 @@ define(function () {
                              "Wir haben fortgeschrittene Aktionen aus dem anonymen CryptDrive entfernt, weil wir klar machen wollen, dass es kein sicherer Platz ist, Dinge zu lagern." + 
                              'Du kannst <a href="https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/" target="_blank">lesen</a>, weshalb wir das machen und weshalb du wirklich ' +
                              '<a href="/register/">registrieren</a> oder <a href="/login/">einloggen</a> solltest.';
-    out.fm_info_sharedFolder = 'Dieser Ordner ist verteilt. Da du aber nicht eingeloggt bist, hast du nur einen schreibgeschützen Zugang.<br>' +
-                               '<a href="/register/">Registriere</a> oder <a href="/login/">logge ich ein</a>, damit du dieses Ordner in dein CryptDrive importieren und bearbeiten kannst.';
     out.fm_backup_title = 'Backup link';
     out.fm_nameFile = 'Wie soll diese Datei heissen?';
     out.fm_error_cantPin = "Interner Serverfehler. Bitte lade die Seite neu und versuche es wieder.";
     out.fm_viewListButton = "Listenansicht";
     out.fm_viewGridButton = "Kachelansicht";
     out.fm_renamedPad = "Du hast einen speziellen Name für dieses Dokument gesetzt. Seine geteilter Titel ist:<br><b>{0}</b>";
+    out.fm_canBeShared = "Dieser Ordner can verteilt werden";
     out.fm_prop_tagsList = "Tags";
     out.fm_burnThisDriveButton = "Alle Informationen löschen, die CryptPad in deinem Browser hält";
     out.fm_burnThisDrive = "Bist Du sicher, dass du alles, was CryptPad in deinem Browser gespeichert hat, löschen möchtest?<br>" +
@@ -479,6 +479,7 @@ define(function () {
     
     // File - Context menu
     out.fc_newfolder = "Neuer Ordner";
+    out.fc_newsharedfolder = "Neuer verteilte Ordner";
     out.fc_rename = "Umbenennen";
     out.fc_open = "Öffnen";
     out.fc_open_ro = "Öffnen (schreibgeschützt)";
@@ -676,8 +677,18 @@ define(function () {
     out.settings_changePasswordError = "Ein Fehler ist aufgetreten. Wenn du nicht mehr einloggen oder dein Passwort ändern kannst, solltest du die Administratoren des CryptPad Servers kontaktieren.";
     out.settings_changePasswordPending = "Dein Passwort wird geändert. Bitte schliesse nicht und lade diese Seite nicht neu, bis dieser Vorgang erledigt ist.";
     out.settings_changePasswordNewPasswordSameAsOld = "Dein neues Passwort muss anders als dein aktuelles Passwort sein.";
+   
+    out.settings_cursorColorTitle = "Kursorfarbe";
+    out.settings_cursorColorHint = "Die Farber deines Kursors in kollaborative Dokumente ändern.";
+    out.settings_cursorShareTitle = "Meine Kursorposition teilen";
+    out.settings_cursorShareHint = "Du kannst entscheide, ob andere Benutzer dein Kursors in kollaborative Dokumente sehen können.";
+    out.settings_cursorShareLabel = "Die Position teilen";
+    out.settings_cursorShowTitle = "Die Position des Kursors von anderen anzeigen";
+    out.settings_cursorShowHint = "Du kannst wählen, ob du es wünscht, dass die Kursore von anderen sichtbar in kollaborative Dokumente sind.";
+    out.settings_cursorShowLabel = "Kursore zeigen";
 
     out.upload_title = "Datei hochladen";
+    out.upload_type = "Typ";
     out.upload_modal_title = "Uploadeinstellungen";
     out.upload_modal_filename = "Dateiname (die Dateierweiterung <em>{0}</em> wird automatisch hinzugefügt)";
     out.upload_modal_owner = "Eigene Datei";
@@ -698,9 +709,13 @@ define(function () {
     out.upload_size = "Grösse";
     out.upload_progress = "Fortschritt";
     out.upload_mustLogin = "Du muss eingeloggt sein, um Dateien hochzuladen";
+    out.upload_up = "Hochladen";
     out.download_button = "Entschlüsseln und runterladen";
     out.download_mt_button = "Runterladen";
     out.download_resourceNotAvailable = "Diese Ressource war nicht verfügbar..";
+    out.download_dl = "Runteraden";
+    out.download_step1 = "Laden...";
+    out.download_step2 = "Entschlüsselung...";
 
     out.todo_title = "CryptTodo";
     out.todo_newTodoNamePlaceholder = "Die Aufgabe prüfen...";
@@ -712,7 +727,8 @@ define(function () {
     // pad
     out.pad_showToolbar = "Werkzeugsleiste anzeigen";
     out.pad_hideToolbar = "Werkzeugsleiste verbergen";
-
+    out.pad_base64 = "Dieses Pad enthält Bilder die nicht ressourcenschonend gespeichert sind. Sie werden die Größe des Pads im CryptDrive belasten und wird den Ladevorgang verlangsamen. Du kannst diese Bilder zum neuen Format migrieren. Sie werden dann separat in deinem CryptDrive gespeichert. Willst du die Bilder jetzt migrieren?";
+       
     // markdown toolbar
     out.mdToolbar_button = "Die Markdown-Werkzeugsleiste anzeigen oder verbergen";
     out.mdToolbar_defaultText = "Dein Text hier";
@@ -733,6 +749,7 @@ define(function () {
     out.home_product = "CryptPad ist eine alternative zu verbreiteten Office- und Clouddienste mit eingebauten Datenschutz. Mit CryptPad, der gesamten Inhalt ist verschlüsselt, bevor es geschickt wird. Das heisst, dass keiner hat Zugang zum Inhalt, ausser du gibst den Schlüssel aus. Selbst die Softwarehersteller haben diesen Zugang nicht.";
     out.home_host = "Dieses CryptPad Server ist eine unabhängige Installation des Communitysoftwares. Das Quellcode ist <a href=\"https://github.com/xwiki-labs/cryptpad\" target=\"_blank\" rel=\"noreferrer noopener\">auf GitHub</a> verfügbar.";
     out.home_host_agpl = "CryptPad kann durch die Lizenz AGPL3 verbreitet werden";
+    out.home_ngi = "Gewinner beim NGI Award";
 
 
     //about.html
@@ -821,6 +838,7 @@ define(function () {
     out.features_feature = "Funktion";
     out.features_anon = "Anonymer Benutzer";
     out.features_registered = "Angemeldete Benutzer";
+    out.features_premium = "Premium Benutzer";
     out.features_notes = "Notizzen";
     out.features_f_apps = "Zugang zu den wichtige Anwendungen";
     out.features_f_core = "Gemeinsame Funktionen der Anwendungen";
@@ -1246,6 +1264,7 @@ define(function () {
     out.properties_addPassword = "Passwort hinzufügen";
     out.properties_changePassword = "Passwort ändern";
     out.properties_confirmNew = "Bist du sicher? Das Hinzufügen eines Passworts wird die URL dieses Pads ändern und die Chronik entfernen. Benutzer ohne Passwort werden den Zugang zu diesem Pad verlieren.";
+    out.properties_passwordSame = "Neue Passwörter müssen, anders als das aktuell sein.";
     out.properties_confirmChange = "Bist du sicher? Das Ändern des Passworts wird die Chronik entfernen. Benutzer ohne das neue Passwort werden den Zugang zu diesem Pad verlieren.";
     out.properties_passwordError = "Ein Fehler ist aufgetreten beim Versuch das Passwort zu ändern. Bitte versuche es nochmal.";
     out.properties_passwordWarning = "Das Password wurde erfolgreich geändert, aber dein CryptDrive konnte nicht aktualisiert werden. Du mußt möglicherweise die alte Version des Pads manuell entfernen.<br>Bitte klicke OK um die Seite neu zu laden und die Zugeriffsrechte zu aktualisieren.";
