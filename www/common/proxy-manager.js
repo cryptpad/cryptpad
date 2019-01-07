@@ -281,6 +281,10 @@ define([
         var resolved = _resolvePaths(Env, data.paths);
         var newResolved = _resolvePath(Env, data.newPath);
 
+        // NOTE: we can only copy when moving from one drive to another. We don't want
+        // duplicates in the same drive
+        var copy = data.copy;
+
         if (!newResolved.userObject.isFolder(newResolved.path)) { return void cb(); }
 
         nThen(function (waitFor) {
@@ -304,6 +308,8 @@ define([
                         });
                         Array.prototype.push.apply(ownedPads, _owned);
                     });
+
+                    if (copy) { return; }
 
                     if (resolved.main.length) {
                         var rootPath = resolved.main[0].slice();
@@ -337,6 +343,8 @@ define([
                         toCopy.forEach(function (obj) {
                             uoTo.copyFromOtherDrive(newResolved.path, obj.el, obj.data, obj.key);
                         });
+
+                        if (copy) { return; }
 
                         // Remove the elements from the old location (without unpinning)
                         uoFrom.delete(paths, waitFor());
@@ -791,12 +799,13 @@ define([
             }
         }, cb);
     };
-    var moveInner = function (Env, paths, newPath, cb) {
+    var moveInner = function (Env, paths, newPath, cb, copy) {
         return void Env.sframeChan.query("Q_DRIVE_USEROBJECT", {
             cmd: "move",
             data: {
                 paths: paths,
-                newPath: newPath
+                newPath: newPath,
+                copy: copy
             }
         }, cb);
     };

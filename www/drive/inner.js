@@ -1208,18 +1208,14 @@ define([
             }
             return manager.getTitle(file);
         };
-        // manager.moveElements is able to move several paths to a new location, including
-        // the Trash or the "Unsorted files" folder
-        var moveElements = function (paths, newPath, force, cb) {
+        // moveElements is able to move several paths to a new location
+        var moveElements = function (paths, newPath, copy, cb) {
             if (!APP.editable) { return; }
-            var andThenMove = function () {
-                manager.move(paths, newPath, cb);
-            };
             // Cancel drag&drop from TRASH to TRASH
             if (manager.isPathIn(newPath, [TRASH]) && paths.length && paths[0][0] === TRASH) {
                 return;
             }
-            andThenMove();
+            manager.move(paths, newPath, cb, copy);
         };
         // Delete paths from the drive and/or shared folders (without moving them to the trash)
         var deletePaths = function (paths, pathsList) {
@@ -1228,6 +1224,10 @@ define([
                 paths.forEach(function (p) { pathsList.push(p.path); });
             }
             var hasOwned = pathsList.some(function (p) {
+                // NOTE: Owned pads in shared folders won't be removed from the server
+                // so we don't have to check, we can use the default message
+                if (manager.isInSharedFolder(p)) { return false; }
+
                 var el = manager.find(p);
                 var data = manager.isSharedFolder(el) ? manager.getSharedFolderData(el)
                                         : manager.getFileData(el);
@@ -1310,7 +1310,7 @@ define([
             $('.cp-app-drive-element-droppable').removeClass('cp-app-drive-element-droppable');
             var data = ev.dataTransfer.getData("text");
 
-            // Don't the the normal drop handler for file upload
+            // Don't use the normal drop handler for file upload
             var fileDrop = ev.dataTransfer.files;
             if (fileDrop.length) { return void onFileDrop(fileDrop, ev); }
 
@@ -1333,6 +1333,7 @@ define([
                 return void deletePaths(null, movedPaths);
             }
 
+            var copy = false;
             if (manager.isPathIn(newPath, [TRASH])) {
                 // Filter the selection to remove shared folders.
                 // Shared folders can't be moved to the trash!
@@ -1347,10 +1348,12 @@ define([
                 }
 
                 movedPaths = filteredPaths;
+            } else if (ev.ctrlKey || (ev.metaKey && APP.isMac)) {
+                copy = true;
             }
 
             if (movedPaths && movedPaths.length) {
-                moveElements(movedPaths, newPath, null, refresh);
+                moveElements(movedPaths, newPath, copy, refresh);
             }
         };
 
