@@ -258,7 +258,7 @@ app.use(function (req, res, next) {
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
 /* Install sockjs websocket server */
-OOServer.install(httpServer, config.httpPort, () => {
+//OOServer.install(httpServer, config.httpPort, () => {
     httpServer.listen(config.httpPort,config.httpAddress,function(){
         var host = config.httpAddress;
         var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
@@ -268,11 +268,11 @@ OOServer.install(httpServer, config.httpPort, () => {
 
         console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
     });
-});
+//});
 if (config.httpSafePort) {
     var safeHttpServer = Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
-    OOServer.install(safeHttpServer, config.httpSafePort, () => {
-    });
+    //OOServer.install(safeHttpServer, config.httpSafePort, () => {
+    //});
 }
 
 var wsConfig = { server: httpServer };

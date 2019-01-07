@@ -3755,6 +3755,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
     var t = this;
 
     var sockjs;
+    /*
     if (window['IS_NATIVE_EDITOR']) {
         sockjs = this.sockjs = window['SockJS'];
         sockjs.open();
@@ -3763,8 +3764,11 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         //ограничиваем transports WebSocket и XHR / JSONP polling, как и engine.io https://github.com/socketio/engine.io
         //при переборе streaming transports у клиента с wirewall происходило зацикливание(не повторялось в версии sock.js 0.3.4)
         sockjs = this.sockjs = new (this._getSockJs())(this.sockjs_url, null, {transports: ['websocket', 'xdr-polling', 'xhr-polling', 'iframe-xhr-polling', 'jsonp-polling']});
-    }
+    }*/
+    sockjs = {};
+    t._state = true;
 
+    /*
     sockjs.onopen = function() {
       if (t.reconnectTimeout) {
         clearTimeout(t.reconnectTimeout);
@@ -3775,6 +3779,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
       t._state = ConnectionState.WaitAuth;
         t.onFirstConnect();
     };
+    */
     sockjs.onmessage = function(e) {
       //TODO: add checks and error handling
       //Get data type
@@ -3847,6 +3852,67 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
 			break;
       }
     };
+
+    sockjs.close = function () {
+        console.error('Close realtime');
+    };
+
+    var send = function (data) {
+        setTimeout(function () {
+            this.onmessage(JSON.stringify(data));
+        });
+    };
+    sockjs.send = function (data) {
+        try {
+            var obj = JSON.parse(data);
+        } catch (e) {
+            console.log(data);
+            console.error(e);
+            return;
+        }
+        var msg, msg2;
+        switch (obj.type) {
+            case 'auth':
+                msg = {
+                    "type":"auth",
+                    "result":1,
+                    "sessionId":"08e77705-dc5c-477d-b73a-b1a7cbca1e9b",
+                    "sessionTimeConnect":+new Date(),
+                    "participants":[]
+                };
+                msg2 = {
+                    "type":"documentOpen",
+                    "data":{"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
+                };
+                send(msg);
+                send(msg2);
+                break;
+            case 'getMessages':
+                msg = {};
+                break;
+        }
+    };
+
+    var license = {
+        type: 'license',
+        license: {
+            type: 3,
+            light: false,
+            trial: false,
+            rights: 1,
+            buildVersion: "4.3.3",
+            buildNumber: 4,
+            branding: false
+        }
+    };
+    sockjs.onmessage({
+        data: JSON.stringify(license)
+    });
+
+
+
+
+    /*
     sockjs.onclose = function(evt) {
       if (ConnectionState.SaveChanges === t._state) {
         // Мы сохраняли изменения и разорвалось соединение
@@ -3871,6 +3937,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         t._tryReconnect();
       }
     };
+    */
 
     return sockjs;
   };
@@ -3918,6 +3985,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
   window['AscCommon'] = window['AscCommon'] || {};
   window['AscCommon'].CDocsCoApi = CDocsCoApi;
 })(window);
+
 /*
  * (c) Copyright Ascensio System SIA 2010-2017
  *

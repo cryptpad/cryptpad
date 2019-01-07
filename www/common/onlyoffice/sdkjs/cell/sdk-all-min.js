@@ -3174,6 +3174,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
   DocsCoApi.prototype._send = function(data) {
     if (data !== null && typeof data === "object") {
       if (this._state > 0) {
+        console.log(data);
         this.sockjs.send(JSON.stringify(data));
       } else {
         this._msgBuffer.push(JSON.stringify(data));
@@ -3184,6 +3185,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
   DocsCoApi.prototype._sendRaw = function(data) {
     if (data !== null && typeof data === "string") {
       if (this._state > 0) {
+        console.log(data);
         this.sockjs.send(data);
       } else {
         this._msgBuffer.push(data);
@@ -3755,6 +3757,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
     var t = this;
 
     var sockjs;
+    /*
     if (window['IS_NATIVE_EDITOR']) {
         sockjs = this.sockjs = window['SockJS'];
         sockjs.open();
@@ -3763,21 +3766,27 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         //ограничиваем transports WebSocket и XHR / JSONP polling, как и engine.io https://github.com/socketio/engine.io
         //при переборе streaming transports у клиента с wirewall происходило зацикливание(не повторялось в версии sock.js 0.3.4)
         sockjs = this.sockjs = new (this._getSockJs())(this.sockjs_url, null, {transports: ['websocket', 'xdr-polling', 'xhr-polling', 'iframe-xhr-polling', 'jsonp-polling']});
-    }
+    }*/
+    sockjs = this.sockjs = {};
+    //t._state = true;
 
     sockjs.onopen = function() {
+      /*
       if (t.reconnectTimeout) {
         clearTimeout(t.reconnectTimeout);
         t.reconnectTimeout = null;
         t.attemptCount = 0;
       }
+      */
 
       t._state = ConnectionState.WaitAuth;
         t.onFirstConnect();
     };
+    sockjs.onopen();
     sockjs.onmessage = function(e) {
       //TODO: add checks and error handling
       //Get data type
+      console.log(e.data);
       var dataObject = JSON.parse(e.data);
       switch (dataObject['type']) {
         case 'auth'        :
@@ -3847,6 +3856,68 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
 			break;
       }
     };
+
+    sockjs.close = function () {
+        console.error('Close realtime');
+    };
+
+    var send = function (data) {
+        setTimeout(function () {
+            console.log(data);
+            sockjs.onmessage({
+                data: JSON.stringify(data)
+            });
+        });
+    };
+    sockjs.send = function (data) {
+        console.log(data);
+        try {
+            var obj = JSON.parse(data);
+        } catch (e) {
+            console.error(e);
+            return;
+        }
+        var msg, msg2;
+        switch (obj.type) {
+            case 'auth':
+                msg = {
+                    "type":"auth",
+                    "result":1,
+                    "sessionId":"08e77705-dc5c-477d-b73a-b1a7cbca1e9b",
+                    "sessionTimeConnect":+new Date(),
+                    "participants":[]
+                };
+                msg2 = {
+                    "type":"documentOpen",
+                    "data":{"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
+                };
+                send(msg);
+                send(msg2);
+                break;
+            case 'getMessages':
+                msg = {};
+                break;
+        }
+    };
+
+    var license = {
+        type: 'license',
+        license: {
+            type: 3,
+            light: false,
+            trial: false,
+            rights: 1,
+            buildVersion: "4.3.3",
+            buildNumber: 4,
+            branding: false
+        }
+    };
+    send(license);
+
+
+
+
+    /*
     sockjs.onclose = function(evt) {
       if (ConnectionState.SaveChanges === t._state) {
         // Мы сохраняли изменения и разорвалось соединение
@@ -3871,6 +3942,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         t._tryReconnect();
       }
     };
+    */
 
     return sockjs;
   };
@@ -3918,6 +3990,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
   window['AscCommon'] = window['AscCommon'] || {};
   window['AscCommon'].CDocsCoApi = CDocsCoApi;
 })(window);
+
 /*
  * (c) Copyright Ascensio System SIA 2010-2017
  *
@@ -9205,7 +9278,6 @@ function saveWithParts(fSendCommand, fCallback, fCallbackRequest, oAdditionalDat
 }
 
 function loadFileContent(url, callback) {
-console.error(url);
   asc_ajax({
     url: url,
     dataType: "text",
@@ -9229,89 +9301,85 @@ function getImageFromChanges (name) {
 	return null;
 }
 function openFileCommand(binUrl, changesUrl, Signature, callback) {
-    var bError = false, oResult = new OpenFileResult(), bEndLoadFile = false, bEndLoadChanges = false;
-    var onEndOpen = function() {
-        console.error("this is where we should decrypt");
-        if (bEndLoadFile && bEndLoadChanges) {
-            if (callback) {
-                callback(bError, oResult);
-            }
-        }
-    };
-    var sFileUrl = binUrl;
-    sFileUrl = sFileUrl.replace(/\\/g, "/");
-
-    if (!window['IS_NATIVE_EDITOR']) {
-        asc_ajax({
-            url: sFileUrl,
-            dataType: "text",
-            success: function(result) {
-                //получаем url к папке с файлом
-                var url;
-                var nIndex = sFileUrl.lastIndexOf("/");
-                url = (-1 !== nIndex) ? sFileUrl.substring(0, nIndex + 1) : sFileUrl;
-                if (0 < result.length) {
-                    oResult.bSerFormat = Signature === result.substring(0, Signature.length);
-                    oResult.data = result;
-                    oResult.url = url;
-                } else {
-                    bError = true;
-                }
-                bEndLoadFile = true;
-                onEndOpen();
-                console.error(oResult); // XXX
-            },
-            error: function() {
-                bEndLoadFile = true;
-                bError = true;
-                onEndOpen();
-            }
-        });
+  var bError = false, oResult = new OpenFileResult(), bEndLoadFile = false, bEndLoadChanges = false;
+  var onEndOpen = function() {
+    if (bEndLoadFile && bEndLoadChanges) {
+      if (callback) {
+        callback(bError, oResult);
+      }
     }
+  };
+  var sFileUrl = binUrl;
+  sFileUrl = sFileUrl.replace(/\\/g, "/");
 
-    if (null != changesUrl) {
-        console.error("null changesUrl"); // XXX
-        getJSZipUtils().getBinaryContent(changesUrl, function(err, data) {
-            bEndLoadChanges = true;
-            if (err) {
-                bError = true;
-                onEndOpen();
-                return;
-            }
-
-            oZipChanges = new (require('jszip'))(data);
-            oResult.changes = [];
-            for (var i in oZipChanges.files) {
-                if (i.endsWith('.json')) {
-                    // Заглушка на имя файла (стоило его начинать с цифры)
-                    oResult.changes[parseInt(i.slice('changes'.length))] =
-                        JSON.parse(oZipChanges.files[i].asText());
-                }
-            }
-            onEndOpen();
-        });
-    } else {
-        bEndLoadChanges = true;
+  if (!window['IS_NATIVE_EDITOR']) {
+    asc_ajax({
+    url: sFileUrl,
+    dataType: "text",
+    success: function(result) {
+      //получаем url к папке с файлом
+      var url;
+      var nIndex = sFileUrl.lastIndexOf("/");
+      url = (-1 !== nIndex) ? sFileUrl.substring(0, nIndex + 1) : sFileUrl;
+      if (0 < result.length) {
+        oResult.bSerFormat = Signature === result.substring(0, Signature.length);
+        oResult.data = result;
+        oResult.url = url;
+      } else {
+        bError = true;
+      }
+      bEndLoadFile = true;
+      onEndOpen();
+    },
+    error: function() {
+      bEndLoadFile = true;
+      bError = true;
+      onEndOpen();
     }
+  });
+  }
 
-    if (window['IS_NATIVE_EDITOR']) {
-        console.error("is native editor");
-        var result = window["native"]["openFileCommand"](sFileUrl, changesUrl, Signature);
-
-        var url;
-        var nIndex = sFileUrl.lastIndexOf("/");
-        url = (-1 !== nIndex) ? sFileUrl.substring(0, nIndex + 1) : sFileUrl;
-        if (0 < result.length) {
-            oResult.bSerFormat = Signature === result.substring(0, Signature.length);
-            oResult.data = result;
-            oResult.url = url;
-        } else {
-            bError = true;
-        }
-        bEndLoadFile = true;
+  if (null != changesUrl) {
+    getJSZipUtils().getBinaryContent(changesUrl, function(err, data) {
+      bEndLoadChanges = true;
+      if (err) {
+        bError = true;
         onEndOpen();
-    }
-}
+        return;
+      }
+
+      oZipChanges = new (require('jszip'))(data);
+      oResult.changes = [];
+      for (var i in oZipChanges.files) {
+        if (i.endsWith('.json')) {
+          // Заглушка на имя файла (стоило его начинать с цифры)
+          oResult.changes[parseInt(i.slice('changes'.length))] = JSON.parse(oZipChanges.files[i].asText());
+        }
+      }
+      onEndOpen();
+    });
+  } else {
+    bEndLoadChanges = true;
+  }
+
+	if (window['IS_NATIVE_EDITOR']) {
+		var result = window["native"]["openFileCommand"](sFileUrl, changesUrl, Signature);
+
+		var url;
+		var nIndex = sFileUrl.lastIndexOf("/");
+		url = (-1 !== nIndex) ? sFileUrl.substring(0, nIndex + 1) : sFileUrl;
+		if (0 < result.length) {
+			oResult.bSerFormat = Signature === result.substring(0, Signature.length);
+			oResult.data = result;
+			oResult.url = url;
+		} else {
+			bError = true;
+		}
+
+		bEndLoadFile = true;
+		onEndOpen();
+	}
+ }
  function sendCommand(editor, fCallback, rdata, dataContainer) {
   //json не должен превышать размера 2097152, иначе при его чтении будет exception
   var docConnectionId = editor.CoAuthoringApi.getDocId();
