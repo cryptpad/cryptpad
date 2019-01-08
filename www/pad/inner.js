@@ -452,6 +452,9 @@ define([
         var $iframe = $('html').find('iframe').contents();
         var ifrWindow = $html.find('iframe')[0].contentWindow;
 
+        var customCss = '/customize/ckeditor-contents.css?' + CKEDITOR.CRYPTPAD_URLARGS;
+        $iframe.find('head').append('<link href="' + customCss + '" type="text/css" rel="stylesheet" _fcktemp="true"/>')
+
         framework._.sfCommon.addShortcuts(ifrWindow);
 
         var documentBody = ifrWindow.document.body;

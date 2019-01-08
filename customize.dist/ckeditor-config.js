@@ -28,7 +28,6 @@ CKEDITOR.editorConfig = function( config ) {
 
     config.font_defaultLabel = 'Arial';
     config.fontSize_defaultLabel = '16';
-    config.contentsCss = '/customize/ckeditor-contents.css?' + CKEDITOR.CRYPTPAD_URLARGS;
 
     config.keystrokes = [
         [ CKEDITOR.ALT + 121 /*F10*/, 'toolbarFocus' ],
