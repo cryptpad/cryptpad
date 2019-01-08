@@ -779,6 +779,7 @@ define([
     // Drive settings
 
     create['drive-duplicate'] = function () {
+        if (!common.isLoggedIn()) { return; }
         var $div = $('<div>', {
             'class': 'cp-settings-drive-duplicate cp-sidebarlayout-element'
         });
