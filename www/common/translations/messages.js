@@ -647,7 +647,7 @@ define(function () {
     out.settings_logoutEverywhereConfirm = "Are you sure? You will need to log in with all your devices.";
 
     out.settings_driveDuplicateTitle = "Duplicated owned pads";
-    out.settings_driveDuplicateHint = "To make sure you always have control over your owned pads, whenever you try to move one into a shared folder, a copy is kept in your drive. You can choose here to hide these duplicated files. You will only see the version stored the shared folder until it is removed from the shared folder or the shared folder itself is removed, then the copy will reappear.";
+    out.settings_driveDuplicateHint = "When you move your owned pads to a shared folder, a copy is kept in your CryptDrive to ensure that you retain your control over it. You can hide duplicated files. Only the shared version will be visible, unless deleted, in which case the original will be displayed in its previous location.";
     out.settings_driveDuplicateLabel = "Hide duplicates";
 
     out.settings_codeIndentation = 'Code editor indentation (spaces)';
