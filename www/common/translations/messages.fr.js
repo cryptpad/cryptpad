@@ -641,6 +641,10 @@ define(function () {
     out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
+    out.settings_driveDuplicateTitle = "Doublons des pads dont vous êtes propriétaire";
+    out.settings_driveDuplicateHint = "Quand vous déplacez un pad dont vous êtes le propriétaire dans un dossier partagé, une copie  est créée dans votre CryptDrive pour s'assurer que vous puissiez garder le contrôle de ce pad. Vous pouvez choisir de cacher ces doublons. Seules les versions partagées seront affichées, jusqu'à leur suppression, dans quels cas la version dans votre CryptDrive redeviendra visible.";
+    out.settings_driveDuplicateLabel = "Cacher les doublons";
+
     out.settings_codeIndentation = "Indentation dans l'éditeur de code (nombre d'espaces)";
     out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
     out.settings_codeFontSize = "Taille de la police dans l'éditeur de code (px)";

@@ -212,6 +212,28 @@ define([
         };
     };
 
+    // Check if a given path is resolved to a shared folder or to the main drive
+    var _isInSharedFolder = function (Env, path) {
+        var resolved = _resolvePath(Env, path);
+        return typeof resolved.id === "number" ? resolved.id : false;
+    };
+
+    // Get the owned files in the main drive that are also duplicated in shared folders
+    var _isDuplicateOwned = function (Env, path, id) {
+        if (path && _isInSharedFolder(Env, path)) { return; }
+        var data = _getFileData(Env, id || Env.user.userObject.find(path));
+        if (!data) { return; }
+        if (!_ownedByMe(Env, data.owners)) { return; }
+        var channel = data.channel;
+        if (!channel) { return; }
+        var foldersUO = Object.keys(Env.folders).map(function (k) {
+            return Env.folders[k].userObject;
+        });
+        return foldersUO.some(function (uo) {
+            return uo.findChannels([channel]).length;
+        });
+    };
+
     // Get a copy of the elements located in the given paths, with their files data
     // Note: This function is only called to move files from a proxy to another
     var _getCopyFromPaths = function (Env, paths, userObject) {
@@ -450,7 +472,24 @@ define([
             // Delete paths from the main drive and get the list of pads to unpin
             // We also get the list of owned pads that were removed
             if (resolved.main.length) {
-                Env.user.userObject.delete(resolved.main, waitFor(function (err, _toUnpin, _ownedRemoved) {
+                var uo = Env.user.userObject;
+                if (Util.find(Env.settings, ['drive', 'hideDuplicates'])) {
+                    // If we hide duplicate owned pads in our drive, we have
+                    // to make sure we're not deleting a hidden own file
+                    // from inside a folder we're trying to delete
+                    resolved.main.forEach(function (p) {
+                        var el = uo.find(p);
+                        if (uo.isFile(el) || uo.isSharedFolder(el)) { return; }
+                        var arr = [];
+                        uo.getFilesRecursively(el, arr);
+                        arr.forEach(function (id) {
+                            if (_isDuplicateOwned(Env, null, id)) {
+                                Env.user.userObject.add(Number(id), [UserObject.ROOT]);
+                            }
+                        });
+                    });
+                }
+                uo.delete(resolved.main, waitFor(function (err, _toUnpin, _ownedRemoved) {
                     if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
                     ownedRemoved = _ownedRemoved;
@@ -742,13 +781,14 @@ define([
         });
     };
 
-    var create = function (proxy, edPublic, pinPads, unpinPads, loadSf, uoConfig) {
+    var create = function (proxy, data, uoConfig) {
         var Env = {
-            pinPads: pinPads,
-            unpinPads: unpinPads,
-            loadSharedFolder: loadSf,
+            pinPads: data.pin,
+            unpinPads: data.unpin,
+            loadSharedFolder: data.loadSharedFolder,
             cfg: uoConfig,
-            edPublic: edPublic,
+            edPublic: data.edPublic,
+            settings: data.settings,
             user: {
                 proxy: proxy,
                 userObject: UserObject.init(proxy, uoConfig)
@@ -922,10 +962,7 @@ define([
         return obj;
     };
 
-    var isInSharedFolder = function (Env, path) {
-        var resolved = _resolvePath(Env, path);
-        return typeof resolved.id === "number" ? resolved.id : false;
-    };
+    var isInSharedFolder = _isInSharedFolder;
 
     /* Generic: doesn't need access to a proxy */
     var isFile = function (Env, el, allowStr) {
@@ -971,21 +1008,7 @@ define([
         return Env.user.userObject.hasFile(el, trashRoot);
     };
 
-    // Get the owned files in the main drive that are also duplicated in shared folders
-    var isDuplicateOwned = function (Env, path) {
-        if (isInSharedFolder(Env, path)) { return; }
-        var data = getFileData(Env, Env.user.userObject.find(path));
-        if (!data) { return; }
-        if (!_ownedByMe(Env, data.owners)) { return; }
-        var channel = data.channel;
-        if (!channel) { return; }
-        var foldersUO = Object.keys(Env.folders).map(function (k) {
-            return Env.folders[k].userObject;
-        });
-        return foldersUO.some(function (uo) {
-            return uo.findChannels([channel]).length;
-        });
-    };
+    var isDuplicateOwned = _isDuplicateOwned;
 
     var createInner = function (proxy, sframeChan, edPublic, uoConfig) {
         var Env = {

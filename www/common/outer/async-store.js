@@ -1394,8 +1394,13 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic,
-                                            pin, unpin, loadSharedFolder, {
+            var manager = store.manager = ProxyManager.create(proxy.drive, {
+                edPublic: proxy.edPublic,
+                pin: pin,
+                unpin: unpin,
+                loadSharedFolder: loadSharedFolder,
+                settings: proxy.settings
+            }, {
                 outer: true,
                 removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel('', data, cb); },
                 edPublic: store.proxy.edPublic,
