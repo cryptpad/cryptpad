@@ -13,6 +13,7 @@ define([
     '/customize/application_config.js',
     '/api/config',
     '/settings/make-backup.js',
+    '/common/common-feedback.js',
 
     '/bower_components/file-saver/FileSaver.min.js',
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -32,7 +33,8 @@ define([
     Cred,
     AppConfig,
     ApiConfig,
-    Backup
+    Backup,
+    Feedback
     )
 {
     var saveAs = window.saveAs;
@@ -88,6 +90,7 @@ define([
             onClick: function () {
                 var urls = common.getMetadataMgr().getPrivateData().accounts;
                 window.open(urls.upgradeURL);
+                Feedback.send('SUBSCRIPTION_BUTTON');
             }
         }
     };
