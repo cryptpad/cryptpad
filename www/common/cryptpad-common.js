@@ -89,7 +89,6 @@ define([
             value: token
         }, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
-            Feedback.send('LOGOUT_EVERYWHERE');
             cb();
         });
     };
@@ -934,7 +933,12 @@ define([
             }
         }).nThen(function () {
             // We have the new drive, with the new login block
-            window.location.reload();
+            var feedbackKey = (password === newPassword)?
+                'OWNED_DRIVE_MIGRATION': 'PASSWORD_CHANGED';
+
+            Feedback.send(feedbackKey, undefined, function () {
+                window.location.reload();
+            });
         });
     };
 

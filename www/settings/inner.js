@@ -212,6 +212,7 @@ define([
                 $spinner.show();
                 $ok.hide();
 
+                Feedback.send('LOGOUT_EVERYWHERE');
                 sframeChan.query('Q_SETTINGS_LOGOUT', null, function () {
                     $spinner.hide();
                     $ok.show();
