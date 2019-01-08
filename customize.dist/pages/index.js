@@ -2,11 +2,12 @@ define([
     'jquery',
     '/api/config',
     '/common/hyperscript.js',
+    '/common/common-feedback.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/common/outer/local-store.js',
     '/customize/pages.js'
-], function ($, Config, h, Msg, AppConfig, LocalStore, Pages) {
+], function ($, Config, h, Feedback, Msg, AppConfig, LocalStore, Pages) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var isAvailableType = function (x) {
@@ -84,6 +85,7 @@ define([
 
         $(crowdFunding).click(function () {
             _link.click();
+            Feedback.send('HOME_SUPPORT_CRYPTPAD');
         });
 
         var blocks = h('div.container',[
