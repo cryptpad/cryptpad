@@ -21,15 +21,15 @@ define([
         };
         http.send();
     };
-    Feedback.send = function (action, force) {
-        if (AppConfig.disableFeedback) { return; }
-        if (!action) { return; }
+    Feedback.send = function (action, force, cb) {
+        if (AppConfig.disableFeedback) { return void cb(); }
+        if (!action) { return void cb(); }
         if (force !== true) {
-            if (!Feedback.state) { return; }
+            if (!Feedback.state) { return void cb(); }
         }
 
         var href = '/common/feedback.html?' + action + '=' + randomToken();
-        ajax(href);
+        ajax(href, cb);
     };
 
     Feedback.reportAppUsage = function () {
