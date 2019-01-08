@@ -89,6 +89,7 @@ define([
             value: token
         }, function (obj) {
             if (obj && obj.error) { return void cb(obj.error); }
+            Feedback.send('LOGOUT_EVERYWHERE');
             cb();
         });
     };
@@ -118,7 +119,14 @@ define([
     };
     // Settings
     common.deleteAccount = function (cb) {
-        postMessage("DELETE_ACCOUNT", null, cb);
+        postMessage("DELETE_ACCOUNT", null, function (obj) {
+            if (obj.state) {
+                Feedback.send('DELETE_ACCOUNT_AUTOMATIC');
+            } else {
+                Feedback.send('DELETE_ACCOUNT_MANUAL');
+            }
+            cb(obj);
+        });
     };
     // Drive
     common.userObjectCommand = function (data, cb) {
@@ -1099,6 +1107,14 @@ define([
         return doesSupport;
     };
 
+    common.isWebRTCSupported = function () {
+        return navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia ||
+            window.RTCPeerConnection;
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
@@ -1112,6 +1128,10 @@ define([
         var provideFeedback = function () {
             if (typeof(window.Proxy) === 'undefined') {
                 Feedback.send("NO_PROXIES");
+            }
+
+            if (!common.isWebRTCSupported()) {
+                Feedback.send("NO_WEBRTC");
             }
 
             var shimPattern = /CRYPTPAD_SHIM/;
