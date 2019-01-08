@@ -473,7 +473,7 @@ define([
             // We also get the list of owned pads that were removed
             if (resolved.main.length) {
                 var uo = Env.user.userObject;
-                if (Util.find(Env.settings, ['drive', 'hideDuplicates'])) {
+                if (Util.find(Env.settings, ['drive', 'hideDuplicate'])) {
                     // If we hide duplicate owned pads in our drive, we have
                     // to make sure we're not deleting a hidden own file
                     // from inside a folder we're trying to delete
