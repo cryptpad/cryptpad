@@ -54,7 +54,7 @@ define(function () {
     out.deleted = "Pad supprimé de votre CryptDrive";
     out.deletedFromServer = "Pad supprimé du serveur";
 
-    out.mustLogin = "Vous devez être enregistré pour avir accès à cette page.";
+    out.mustLogin = "Vous devez être enregistré pour avoir accès à cette page.";
     out.disabledApp = "Cette application a été désactivée. Pour plus d'information, veuillez contacter l'administrateur de ce CryptPad.";
 
     out.realtime_unrecoverableError = "Une erreur critique est survenue. Cliquez sur OK pour recharger la page.";

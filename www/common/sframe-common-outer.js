@@ -285,7 +285,8 @@ define([
                         additionalPriv.disabledApp = true;
                     }
                     if (!Utils.LocalStore.isLoggedIn() &&
-                        AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1) {
+                        AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1 &&
+                        parsed.type !== "file") {
                         additionalPriv.registeredOnly = true;
                     }
 
