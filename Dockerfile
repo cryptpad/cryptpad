@@ -1,4 +1,5 @@
-FROM node:6-stretch-slim
+# 6-stretch is the ONLY node 6 release supported by arm32v7, arm64v8 and x86-64 docker hub labels
+FROM node:6-stretch
 
 # You want USE_SSL=true if not putting cryptpad behind a proxy
 ENV USE_SSL=false
