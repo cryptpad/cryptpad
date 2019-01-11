@@ -3,7 +3,7 @@ define([
     '/bower_components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
-    '/common/sframe-channel.js',
+    '/common/outer/worker-channel.js',
     '/common/sframe-common-title.js',
     '/common/common-ui-elements.js',
     '/common/sframe-common-history.js',
@@ -481,8 +481,16 @@ define([
         window.CryptPad_sframe_common = true;
 
         nThen(function (waitFor) {
-            SFrameChannel.create(window.parent, waitFor(function (sfc) { ctx.sframeChan = sfc; }), true);
-            // CpNfInner.start() should be here....
+            var msgEv = Util.mkEvent();
+            var iframe = window.parent;
+            window.addEventListener('message', function (msg) {
+                if (msg.source !== iframe) { return; }
+                msgEv.fire(msg);
+            });
+            var postMsg = function (data) {
+                iframe.postMessage(data, '*');
+            };
+            SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
         }).nThen(function (waitFor) {
             localForage.clear();
             Language.applyTranslation();

@@ -36,7 +36,7 @@ define([
                 '/common/cryptpad-common.js',
                 '/bower_components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
-                '/common/sframe-channel.js',
+                '/common/outer/worker-channel.js',
                 '/filepicker/main.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
@@ -89,9 +89,36 @@ define([
                     }
                 });
 
-                SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
-                    sframeChan = sfc;
-                }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
+                // The inner iframe tries to get some data from us every ms (cache, store...).
+                // It will send a "READY" message and wait for our answer with the correct txid.
+                // First, we have to answer to this message, otherwise we're going to block
+                // sframe-boot.js. Then we can start the channel.
+                var msgEv = _Util.mkEvent();
+                var iframe = $('#sbox-iframe')[0].contentWindow;
+                var iframeReady = false;
+                var postMsg = function (data) {
+                    iframe.postMessage(data, '*');
+                };
+                var whenReady = waitFor(function (msg) {
+                    if (msg.source !== iframe) { return; }
+                    var data = JSON.parse(msg.data);
+                    if (!data.txid) { return; }
+                    // Remove the listener once we've received the READY message
+                    window.removeEventListener('message', whenReady);
+                    // Answer with the requested data
+                    postMsg(JSON.stringify({ txid: data.txid, cache: cache, localStore: localStore, language: Cryptpad.getLanguage() }));
+
+                    // Then start the channel
+                    window.addEventListener('message', function (msg) {
+                        if (msg.source !== iframe) { return; }
+                        msgEv.fire(msg);
+                    });
+                    SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
+                        sframeChan = sfc;
+                    }));
+                });
+                window.addEventListener('message', whenReady);
+
                 Cryptpad.loading.onDriveEvent.reg(function (data) {
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
