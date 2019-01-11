@@ -663,8 +663,33 @@ define([
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
-
         };
+
+
+        var exportFile = function() {
+          var text = getContent();
+          var suggestion = Title.suggestTitle(Title.defaultTitle);
+          UI.prompt(Messages.exportPrompt,
+              Util.fixFileName(suggestion) + '.bin', function (filename) {
+              if (!(typeof(filename) === 'string' && filename)) { return; }
+              var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
+              saveAs(blob, filename);
+          });
+        }
+
+        /*var importFile = function(content) {
+          var blob = new Blob([content], {type: 'plain/text'});
+          var file = getFileType();
+          blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+          uploadedCallback = function() {
+            UI.confirm(Messages.oo_newVersion, function (yes) {
+                reloadDisplayed = false;
+                if (!yes) { return; }
+                common.gotoURL();
+            });
+          };
+          APP.FM.handleFile(blob);
+        }*/
 
         var loadLastDocument = function () {
             var lastCp = getLastCp();
@@ -803,6 +828,12 @@ define([
                 saveToServer();
             });
             $save.appendTo($rightside);*/
+
+            var $export = common.createButton('export', true, {}, exportFile);
+            $export.appendTo($rightside);
+
+            /*var $import = common.createButton('import', true, {}, importFile);
+            $import.appendTo($rightside);*/
 
             if (common.isLoggedIn()) {
                 common.createButton('hashtag', true).appendTo($rightside);
