@@ -22,6 +22,7 @@ define([
         http.send();
     };
     Feedback.send = function (action, force, cb) {
+        if (typeof(cb) !== 'function') { cb = function () {}; }
         if (AppConfig.disableFeedback) { return void cb(); }
         if (!action) { return void cb(); }
         if (force !== true) {
