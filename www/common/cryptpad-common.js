@@ -623,6 +623,13 @@ define([
         });
     };
 
+    // Onlyoffice
+    var onlyoffice = common.onlyoffice = {};
+    onlyoffice.execCommand = function (data, cb) {
+        postMessage("OO_COMMAND", data, cb);
+    };
+    onlyoffice.onEvent = Util.mkEvent();
+
     // Messenger
     var messenger = common.messenger = {};
     messenger.execCommand = function (data, cb) {
@@ -1061,6 +1068,8 @@ define([
                 common.onNetworkReconnect.fire(data);
             });
         },
+        // OnlyOffice
+        OO_EVENT: common.onlyoffice.onEvent.fire,
         // Chat
         CHAT_EVENT: common.messenger.onEvent.fire,
         // Cursor

@@ -15,6 +15,7 @@ define([
     '/common/onlyoffice/oocell_base.js',
     '/common/onlyoffice/oodoc_base.js',
     '/common/onlyoffice/ooslide_base.js',
+    '/common/outer/worker-channel.js',
 
     '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
@@ -38,7 +39,8 @@ define([
     FileCrypto,
     EmptyCell,
     EmptyDoc,
-    EmptySlide)
+    EmptySlide,
+    Channel)
 {
     var saveAs = window.saveAs;
     var Nacl = window.nacl;
@@ -81,6 +83,35 @@ define([
                     break;
             }
             return file;
+        };
+
+        var openRtChannel = function (data) {
+            // XXX
+            var channel = Hash.createChannelId();
+            ctx.sframeChan.query('Q_OO_OPENCHANNEL', channel, function (err, obj) {
+                if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+            });
+        };
+
+        var mkChannel = function () {
+            var msgEv = Util.mkEvent();
+            var iframe = $('#cp-app-oo-container > iframe')[0].contentWindow;
+            window.addEventListener('message', function (msg) {
+                if (msg.source !== iframe) { return; }
+                msgEv.fire(msg);
+            });
+            var postMsg = function (data) {
+                iframe.postMessage(data, '*');
+            };
+            Channel.create(msgEv, postMsg, function (chan) {
+                APP.chan = chan;
+                chan.on('CMDFROMOO', function (data) {
+                    console.log('command from oo', data);
+                    setTimeout(function () {
+                        chan.event('RTMSG', 'Pewpewpew');
+                    }, 2000);
+                });
+            });
         };
 
         var startOO = function (blob, file) {
@@ -144,6 +175,7 @@ define([
                 if (ifr) { ifr.remove(); }
             };
             APP.docEditor = new DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
+            mkChannel();
         };
 
         var getContent = APP.getContent = function () {

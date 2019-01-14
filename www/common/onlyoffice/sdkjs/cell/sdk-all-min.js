@@ -3770,6 +3770,50 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
     sockjs = this.sockjs = {};
     //t._state = true;
 
+    var send = function (data) {
+        setTimeout(function () {
+            console.log(data);
+            sockjs.onmessage({
+                data: JSON.stringify(data)
+            });
+        });
+    };
+    var license = {
+        type: 'license',
+        license: {
+            type: 3,
+            light: false,
+            trial: false,
+            rights: 1,
+            buildVersion: "4.3.3",
+            buildNumber: 4,
+            branding: false
+        }
+    };
+    var channel;
+
+require([
+    '/common/outer/worker-channel.js',
+    '/common/common-util.js'
+], function (Channel, Util) {
+    var msgEv = Util.mkEvent();
+    var p = window.parent;
+    window.addEventListener('message', function (msg) {
+        if (msg.source !== p) { return; }
+        msgEv.fire(msg);
+    });
+    var postMsg = function (data) {
+        p.postMessage(data, '*');
+    };
+    Channel.create(msgEv, postMsg, function (chan) {
+        channel = chan;
+        send(license);
+        chan.on('RTMSG', function (data) {
+            console.log('receiving RTMSG', data);
+        });
+    });
+});
+
     sockjs.onopen = function() {
       /*
       if (t.reconnectTimeout) {
@@ -3861,14 +3905,6 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         console.error('Close realtime');
     };
 
-    var send = function (data) {
-        setTimeout(function () {
-            console.log(data);
-            sockjs.onmessage({
-                data: JSON.stringify(data)
-            });
-        });
-    };
     sockjs.send = function (data) {
         console.log(data);
         try {
@@ -3893,6 +3929,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
                 };
                 send(msg);
                 send(msg2);
+                channel.event('CMDFROMOO', 'Hey');
                 break;
             case 'getMessages':
                 msg = {};
@@ -3900,19 +3937,6 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         }
     };
 
-    var license = {
-        type: 'license',
-        license: {
-            type: 3,
-            light: false,
-            trial: false,
-            rights: 1,
-            buildVersion: "4.3.3",
-            buildNumber: 4,
-            branding: false
-        }
-    };
-    send(license);
 
 
 

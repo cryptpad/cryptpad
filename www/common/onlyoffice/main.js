@@ -53,6 +53,21 @@ define([
                     Cryptpad.setPadAttribute('lastVersion', data.url, cb);
                 });
             });
+            sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
+                Cryptpad.onlyoffice.execCommand({
+                    cmd: 'OPEN_CHANNEL',
+                    data: {
+                        channel: data,
+                        secret: secret
+                    }
+                }, cb);
+            });
+            sframeChan.on('Q_OO_COMMAND', function (data, cb) {
+                Cryptpad.onlyoffice.execCommand(data, cb);
+            });
+            Cryptpad.onlyoffice.onEvent.reg(function (data) {
+                sframeChan.event('EV_OO_EVENT', data);
+            });
         };
         SFCommonO.start({
             type: 'oo',

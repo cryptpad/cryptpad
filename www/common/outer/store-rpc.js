@@ -62,6 +62,8 @@ define([
             ADD_DIRECT_MESSAGE_HANDLERS: Store.addDirectMessageHandlers,
             // Chat
             CHAT_COMMAND: Store.messenger.execCommand,
+            // OnlyOffice
+            OO_COMMAND: Store.onlyoffice.execCommand,
             // Cursor
             CURSOR_COMMAND: Store.cursor.execCommand,
             // Pad

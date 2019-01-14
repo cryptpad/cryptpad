@@ -11,6 +11,7 @@ define([
     '/common/common-messaging.js',
     '/common/common-messenger.js',
     '/common/outer/cursor.js',
+    '/common/outer/onlyoffice.js',
     '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
@@ -21,7 +22,7 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             Cursor, CpNfWorker, NetConfig, AppConfig,
+             Cursor, OnlyOffice, CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
     var Store = {};
 
@@ -927,6 +928,14 @@ define([
             }
         };
 
+        // OnlyOffice
+        Store.onlyoffice = {
+            execCommand: function (clientId, data, cb) {
+                if (!store.onlyoffice) { return void cb({error: 'OnlyOffice is disabled'}); }
+                store.onlyoffice.execCommand(data, cb);
+            }
+        };
+
         // Cursor
 
         Store.cursor = {
@@ -1237,6 +1246,7 @@ define([
         var dropChannel = function (chanId) {
             store.messenger.leavePad(chanId);
             store.cursor.leavePad(chanId);
+            store.onlyoffice.leavePad(chanId);
 
             if (!Store.channels[chanId]) { return; }
 
@@ -1256,6 +1266,7 @@ define([
                 messengerEventClients.splice(messengerIdx, 1);
             }
             store.cursor.removeClient(clientId);
+            store.onlyoffice.removeClient(clientId);
             Object.keys(Store.channels).forEach(function (chanId) {
                 var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
                 if (chanIdx !== -1) {
@@ -1332,6 +1343,17 @@ define([
             store.cursor = Cursor.init(store, function (ev, data, clients) {
                 clients.forEach(function (cId) {
                     postMessage(cId, 'CURSOR_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
+
+        var loadOnlyOffice = function () {
+            store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'OO_EVENT', {
                         ev: ev,
                         data: data
                     });
@@ -1426,6 +1448,7 @@ define([
                 loadSharedFolders(waitFor);
                 loadMessenger();
                 loadCursor();
+                loadOnlyOffice();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
