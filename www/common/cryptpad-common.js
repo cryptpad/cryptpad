@@ -1112,11 +1112,11 @@ define([
     };
 
     common.isWebRTCSupported = function () {
-        return navigator.getUserMedia ||
+        return Boolean(navigator.getUserMedia ||
             navigator.webkitGetUserMedia ||
             navigator.mozGetUserMedia ||
             navigator.msGetUserMedia ||
-            window.RTCPeerConnection;
+            window.RTCPeerConnection);
     };
 
     common.ready = (function () {
