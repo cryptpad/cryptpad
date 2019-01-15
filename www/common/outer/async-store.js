@@ -932,7 +932,7 @@ define([
         Store.onlyoffice = {
             execCommand: function (clientId, data, cb) {
                 if (!store.onlyoffice) { return void cb({error: 'OnlyOffice is disabled'}); }
-                store.onlyoffice.execCommand(data, cb);
+                store.onlyoffice.execCommand(clientId, data, cb);
             }
         };
 

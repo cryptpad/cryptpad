@@ -56,10 +56,13 @@ define([
     var toolbar;
 
     var andThen = function (common) {
+        var sframeChan = common.getSframeChannel();
+        var metadataMgr = common.getMetadataMgr();
         var readOnly = false;
         var locked = false;
         var config = {};
         var hashes = [];
+        var channel;
 
         var getFileType = function () {
             var type = common.getMetadataMgr().getPrivateData().ooType;
@@ -85,17 +88,86 @@ define([
             return file;
         };
 
-        var openRtChannel = function (data) {
-            // XXX
-            var channel = Hash.createChannelId();
-            ctx.sframeChan.query('Q_OO_OPENCHANNEL', {
+        var now = function () { return +new Date(); };
+
+        var getLastCp = function () {
+            if (!hashes || !hashes.length) { return; }
+            var last = hashes.slice().pop();
+            var parsed = Hash.parsePadUrl(last);
+            var secret = Hash.getSecrets('file', parsed.hash);
+            if (!secret || !secret.channel) { return; }
+            return 'cp|' + secret.channel.slice(0,8);
+        };
+
+        var rtChannel = {
+            ready: false,
+            readyCb: undefined,
+            sendCmd: function (data, cb) {
+                sframeChan.query('Q_OO_COMMAND', data, cb);
+            },
+            sendMsg: function (msg, cp, cb) {
+                rtChannel.sendCmd({
+                    cmd: 'SEND_MESSAGE',
+                    data: {
+                        msg: msg,
+                        isCp: cp
+                    }
+                }, cb);
+            },
+        };
+
+        var ooChannel = {
+            ready: false,
+            queue: [],
+            send: function () {}
+        };
+
+        var openRtChannel = function (cb) {
+            if (rtChannel.ready) { return; }
+            var chan = channel || Hash.createChannelId();
+            if (!channel) {
+                channel = chan;
+                APP.onLocal();
+            }
+            sframeChan.query('Q_OO_OPENCHANNEL', {
                 channel: channel,
-                lastCp: data.lastCp
+                lastCp: getLastCp()
             }, function (err, obj) {
                 if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
             });
+            sframeChan.on('EV_OO_EVENT', function (data) {
+                switch (data.ev) {
+                    case 'READY':
+                        rtChannel.ready = true;
+                        break;
+                    case 'MESSAGE':
+                        if (ooChannel.ready) {
+                            ooChannel.send(data.data);
+                        } else {
+                            ooChannel.queue.push(data.data);
+                        }
+                        break;
+                }
+            });
+            cb();
         };
 
+        var parseChanges = function (changes) {
+            try {
+                changes = JSON.parse(changes);
+            } catch (e) {
+                return [];
+            }
+            return changes.map(function (change) {
+                return {
+                    docid: "fresh",
+                    change: '"' + change + '"',
+                    time: now(),
+                    user: "test", // XXX get username
+                    useridoriginal: "test" // get user id from worker?
+                };
+            });
+        };
         var mkChannel = function () {
             var msgEv = Util.mkEvent();
             var iframe = $('#cp-app-oo-container > iframe')[0].contentWindow;
@@ -108,11 +180,83 @@ define([
             };
             Channel.create(msgEv, postMsg, function (chan) {
                 APP.chan = chan;
-                chan.on('CMDFROMOO', function (data) {
-                    console.log('command from oo', data);
-                    setTimeout(function () {
-                        chan.event('RTMSG', 'Pewpewpew');
-                    }, 2000);
+
+                var send = ooChannel.send = function (obj) {
+                    chan.event('CMD', obj);
+                };
+
+                chan.on('CMD', function (obj) {
+                    var msg, msg2;
+                    switch (obj.type) {
+                        case "auth":
+                            ooChannel.ready = true;
+                            send({
+                                type: "auth",
+                                result: 1,
+                                sessionId: "08e77705-dc5c-477d-b73a-b1a7cbca1e9b",
+                                participants: [{
+                                    id: "myid1",
+                                    idOriginal: "myid",
+                                    username: "User",
+                                    indexUser: 1,
+                                    view: false
+                                }],
+                                locks: [],
+                                changes: [],
+                                changesIndex: 0,
+                                indexUser: 1,
+                                "g_cAscSpellCheckUrl": "/spellchecker"
+                            });
+                            send({
+                                type: "documentOpen",
+                                data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
+                            });
+                            setTimeout(function () {
+                                if (ooChannel.queue) {
+                                    ooChannel.queue.forEach(function (msg) {
+                                        send(msg);
+                                    });
+                                }
+                            }, 2000);
+                            break;
+                        case "isSaveLock":
+                            msg = {
+                                type: "saveLock",
+                                saveLock: false
+                            }
+                            send(msg);
+                            break;
+                        case "getLock":
+                            msg = {
+                                type: "getLock",
+                                locks: [{
+                                    time: now(),
+                                    user: "myid1",
+                                    block: obj.block && obj.block[0],
+                                    sessionId: "08e77705-dc5c-477d-b73a-b1a7cbca1e9b"
+                                }]
+                            }
+                            send(msg);
+                            break;
+                        case "getMessages":
+                            send({ type: "message" });
+                            break;
+                        case "saveChanges":
+                            // XXX lock
+                            send({
+                                type: "unSaveLock",
+                                index: -1,
+                            });
+                            rtChannel.sendMsg({
+                                type: "saveChanges",
+                                changes: parseChanges(obj.changes),
+                                changesIndex: 2,
+                                locks: [], // XXX take from userdoc?
+                                excelAdditionalInfo: null
+                            }, null, function () {
+                            });
+                            break;
+                    }
                 });
             });
         };
@@ -120,7 +264,7 @@ define([
         var startOO = function (blob, file) {
             if (APP.ooconfig) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = locked !== common.getMetadataMgr().getNetfluxId() ||
+            var lock = /*locked !== common.getMetadataMgr().getNetfluxId() ||*/
                        !common.isLoggedIn();
 
             // Config
@@ -144,20 +288,13 @@ define([
                         }
                     },
                     "user": {
-                        "id": "", //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
-                        "name": "", //"John Smith"
+                        "id": "myid", //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
+                        "name": "User", //"John Smith"
                     },
                     "mode": readOnly || lock ? "view" : "edit"
                 },
                 "events": {
-                    "onDocumentStateChange": function (evt) {
-                        if (evt.data) {
-                            console.log('in change (local)');
-                            return;
-                        }
-                        console.log("in change (remote)");
-                    },
-                    "onReady": function(/*evt*/) {
+                    "onAppReady": function(/*evt*/) {
                         var $tb = $('iframe[name="frameEditor"]').contents().find('head');
                         var css = '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#fm-btn-save { display: none !important; }' +
@@ -169,8 +306,6 @@ define([
                             });
                         }
                     },
-                    "onAppReady": function(/*evt*/) { console.log("in onAppReady"); },
-                    "onDownloadAs": function (evt) { console.log("in onDownloadAs", evt); }
                 }
             };
             window.onbeforeunload = function () {
@@ -202,8 +337,10 @@ define([
                         return void UI.alert(Messages.oo_saveError);
                     }
                     hashes.push(data.url);
-                    UI.log(Messages.saved);
                     APP.onLocal();
+                    rtChannel.sendMsg(null, getLastCp(), function () {
+                        UI.log(Messages.saved);
+                    });
                 });
             }
         };
@@ -248,7 +385,6 @@ define([
         var loadDocument = function (newPad) {
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
-            console.log(newPad);
             if (!newPad) {
                 return void loadLastDocument();
             }
@@ -274,7 +410,6 @@ define([
         var $bar = $('#cp-toolbar');
         var Title;
         var cpNfInner;
-        var metadataMgr = common.getMetadataMgr();
 
         config = {
             patchTransformer: ChainPad.NaiveJSONTransformer,
@@ -298,8 +433,9 @@ define([
         var stringifyInner = function () {
             var obj = {
                 content: {
+                    channel: channel,
                     hashes: hashes || [],
-                    locked: locked
+                    //locked: locked
                 },
                 metadata: metadataMgr.getMetadataLazy()
             };
@@ -385,7 +521,8 @@ define([
                     throw new Error(errorText);
                 }
                 hashes = hjson.content && hjson.content.hashes;
-                locked = hjson.content && hjson.content.locked;
+                //locked = hjson.content && hjson.content.locked;
+                channel = hjson.content && hjson.content.channel;
                 newDoc = !hashes || hashes.length === 0;
             } else {
                 Title.updateTitle(Title.defaultTitle);
@@ -393,7 +530,7 @@ define([
 
             if (!readOnly) {
                 // Check if the editor has left
-                var me = common.getMetadataMgr().getNetfluxId();
+                /*var me = common.getMetadataMgr().getNetfluxId();
                 var members = common.getMetadataMgr().getChannelMembers();
                 if (locked) {
                     if (members.indexOf(locked) === -1) {
@@ -409,15 +546,17 @@ define([
                     UI.alert(Messages.oo_locked + Messages.oo_locked_unregistered);
                 } else if (locked !== me) {
                     UI.alert(Messages.oo_locked + Messages.oo_locked_edited);
-                }
+                }*/
             }
 
+            openRtChannel(function () {
+                loadDocument(newDoc);
 
-            loadDocument(newDoc);
+                initializing = false;
+                setEditable(!readOnly);
+                UI.removeLoadingScreen();
+            });
 
-            initializing = false;
-            setEditable(!readOnly);
-            UI.removeLoadingScreen();
         };
 
         var reloadDisplayed = false;
@@ -428,6 +567,7 @@ define([
             if (json.metadata) {
                 metadataMgr.updateMetadata(json.metadata);
             }
+            /*
             var newHashes = (json.content && json.content.hashes) || [];
             if (newHashes.length !== hashes.length ||
                 stringify(newHashes) !== stringify(hashes)) {
@@ -440,6 +580,7 @@ define([
                     common.gotoURL();
                 });
             }
+            */
         };
 
         config.onAbort = function () {

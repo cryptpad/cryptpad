@@ -56,6 +56,7 @@ define([
                 });
             });
             sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
+                console.log(data);
                 Cryptpad.onlyoffice.execCommand({
                     cmd: 'OPEN_CHANNEL',
                     data: {
@@ -69,14 +70,22 @@ define([
                 }, cb);
             });
             sframeChan.on('Q_OO_COMMAND', function (obj, cb) {
-                if (obj.cmd === 'SEND_MESSAGE' && !obj.data.isCp) {
-                    obj.data.msg = crypto.encrypt(obj.data.msg);
+                if (obj.cmd === 'SEND_MESSAGE') {
+                    if (obj.data.isCp) {
+                        obj.data.isCp += '|' + crypto.encrypt('cp');
+                    } else {
+                        obj.data.msg = crypto.encrypt(JSON.stringify(obj.data.msg));
+                    }
                 }
                 Cryptpad.onlyoffice.execCommand(obj, cb);
             });
             Cryptpad.onlyoffice.onEvent.reg(function (obj) {
                 if (obj.ev === 'MESSAGE') {
-                    obj.data = crypto.decrypt(obj.data, Utils.secret.keys.validateKeys);
+                    try {
+                        obj.data = JSON.parse(crypto.decrypt(obj.data, Utils.secret.keys.validateKey));
+                    } catch (e) {
+                        console.error(e);
+                    }
                 }
                 sframeChan.event('EV_OO_EVENT', obj);
             });

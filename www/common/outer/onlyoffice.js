@@ -30,6 +30,9 @@ define([
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
             /// XXX send chan.history to client
+            chan.history.forEach(function (msg) {
+                ctx.emit('MESSAGE', msg, [client]);
+            });
 
             // ==> And push the new tab to the list
             chan.clients.push(client);
@@ -38,7 +41,9 @@ define([
 
         var onOpen = function (wc) {
 
-            ctx.channels[channel] = ctx.channels[channel] || {};
+            ctx.channels[channel] = ctx.channels[channel] || {
+                history: []
+            };
 
             chan = ctx.channels[channel];
 
@@ -61,15 +66,24 @@ define([
             wc.on('leave', function (peer) {
                 // XXX
             });
-            wc.on('message', function (cryptMsg) {
-                ctx.emit('MESSAGE', cryptMsg, chan.clients);
+            wc.on('message', function (msg) {
+                if (/^cp\|/.test(msg)) {
+                    chan.history = [];
+                } else {
+                    chan.history.push(msg);
+                }
+                ctx.emit('MESSAGE', msg, chan.clients);
             });
 
             chan.wc = wc;
             chan.sendMsg = function (msg, cb) {
                 cb = cb || function () {};
-                var cmsg = chan.encryptor.encrypt(msg);
-                wc.bcast(cmsg).then(function () {
+                wc.bcast(msg).then(function () {
+                    if (/^cp\|/.test(msg)) {
+                        chan.history = [];
+                    } else {
+                        chan.history.push(msg);
+                    }
                     cb();
                 }, function (err) {
                     cb({error: err});
@@ -118,7 +132,7 @@ define([
             if (parsed.validateKey && parsed.channel) { return; }
             // End of history: emit READY
             if (parsed.state && parsed.state === 1 && parsed.channel) {
-                ctx.emit('READY', '');
+                ctx.emit('READY', '', chan.clients);
                 return;
             }
             if (parsed.error && parsed.channel) { return; }
@@ -126,20 +140,24 @@ define([
             var msg = parsed[4];
 
             // Keep only the history for our channel
-            if (msg[3] !== channel) { return; }
+            if (parsed[3] !== channel) { return; }
 
             if (chan.lastCp) {
-                if (chan.lastCp === msg) {
+                if (chan.lastCp === msg.slice(0, 11)) {
                     delete chan.lastCp;
                 }
                 return;
             }
 
             var isCp = /^cp\|/.test(msg);
-            if (isCp) { return; }
+            if (isCp) {
+                chan.history = [];
+                return;
+            }
 
             chan.lastKnownHash = msg.slice(0,64);
             ctx.emit('MESSAGE', msg, chan.clients);
+            chan.history.push(msg);
         });
 
         network.join(channel).then(onOpen, function (err) {
@@ -163,6 +181,9 @@ define([
             return void chan.sendMsg(data.isCp, cb);
         }
         chan.sendMsg(data.msg, cb);
+        ctx.emit('MESSAGE', data.msg, chan.clients.filter(function (cl) {
+            return cl !== clientId;
+        }));
     };
 
     var leaveChannel = function (ctx, padChan) {
@@ -224,7 +245,7 @@ define([
             }
         };
 
-        return cursor;
+        return oo;
     };
 
     return OO;

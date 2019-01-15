@@ -4206,8 +4206,8 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
                 light: false,
                 trial: false,
                 rights: 1,
-                buildVersion: "4.3.3",
-                buildNumber: 4,
+                buildVersion: "5.2.6",
+                buildNumber: 5,
                 branding: false
             }
         };
@@ -4228,12 +4228,8 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
                 p.postMessage(data, '*');
             };
             Channel.create(msgEv, postMsg, function (chan) {
-                console.log('created', chan);
                 channel = chan;
                 send(license);
-                chan.on('RTMSG', function (data) {
-                    console.log('receiving RTMSG', data);
-                });
                 chan.on('CMD', function (obj) {
                     send(obj);
                 });
@@ -4258,32 +4254,8 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
                 console.error(e);
                 return;
             }
-            var msg, msg2;
-            switch (obj.type) {
-                case 'auth':
-                    msg = {
-                        "type":"auth",
-                        "result":1,
-                        "sessionId":"08e77705-dc5c-477d-b73a-b1a7cbca1e9b",
-                        "sessionTimeConnect":+new Date(),
-                        "participants":[]
-                    };
-                    msg2 = {
-                        "type":"documentOpen",
-                        "data":{"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
-                    };
-                    send(msg);
-                    send(msg2);
-                    if (channel) { channel.event('CMDFROMOO', 'Hey'); }
-                    break;
-                case 'getMessages':
-                    msg = {};
-                    break;
-                default:
-                    if (channel) {
-                        channel.event('CMD', obj);
-                    }
-                    break
+            if (channel) {
+                channel.event('CMD', obj);
             }
         };
 
