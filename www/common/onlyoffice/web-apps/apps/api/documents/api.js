@@ -43,6 +43,7 @@
                     print: <can print>, // default = true
                     rename: <can rename>, // default = false
                     changeHistory: <can change history>, // default = false
+                    comment: <can comment in view mode> // default = edit
                 }
             },
             editorConfig: {
@@ -115,7 +116,8 @@
                     statusBar: true,
                     autosave: true,
                     forcesave: false,
-                    commentAuthorOnly: false
+                    commentAuthorOnly: false,
+                    showReviewChanges: false
                 },
                 plugins: {
                     autoStartGuid: 'asc.{FFE1F462-1EA2-4391-990D-4CC84940B754}',
@@ -129,9 +131,11 @@
                 }
             },
             events: {
-                'onReady': <document ready callback>,
+                'onReady': <application ready callback>, // deprecated
+                'onAppReady': <application ready callback>,
                 'onBack': <back to folder callback>,
                 'onDocumentStateChange': <document state changed callback>
+                'onDocumentReady': <document ready callback>
             }
         }
 
@@ -162,9 +166,11 @@
                 }
             },
             events: {
-                'onReady': <document ready callback>,
+                'onReady': <application ready callback>, // deprecated
+                'onAppReady': <application ready callback>,
                 'onBack': <back to folder callback>,
                 'onError': <error callback>,
+                'onDocumentReady': <document ready callback>
             }
         }
     */
@@ -182,6 +188,9 @@
         _config.editorConfig.canSendEmailAddresses = _config.events && !!_config.events.onRequestEmailAddresses;
         _config.editorConfig.canRequestEditRights = _config.events && !!_config.events.onRequestEditRights;
         _config.frameEditorId = placeholderId;
+
+        _config.events && !!_config.events.onReady && console.log("Obsolete: The onReady event is deprecated. Please use onAppReady instead.");
+        _config.events && (_config.events.onAppReady = _config.events.onAppReady || _config.events.onReady);
 
         var onMouseUp = function (evt) {
             _processMouse(evt);
@@ -203,7 +212,7 @@
             }
         };
 
-        var _onReady = function() {
+        var _onAppReady = function() {
             if (_config.type === 'mobile') {
                 document.body.onfocus = function(e) {
                     setTimeout(function(){
@@ -273,11 +282,11 @@
                     } else if (msg.event === 'onInternalMessage' && msg.data && msg.data.type == 'localstorage') {
                         _callLocalStorage(msg.data.data);
                     } else {
-                        if (msg.event === 'onReady') {
-                            _onReady();
+                        if (msg.event === 'onAppReady') {
+                            _onAppReady();
                         }
 
-                        if (handler) {
+                        if (handler && typeof handler == "function") {
                             res = handler.call(_self, {target: _self, data: msg.data});
                         }
                     }
@@ -311,7 +320,7 @@
                 }
 
                 if (typeof _config.document.fileType === 'string' && _config.document.fileType != '') {
-                    var type = /^(?:(xls|xlsx|ods|csv|xlst|xlsy|gsheet)|(pps|ppsx|ppt|pptx|odp|pptt|ppty|gslides)|(doc|docx|doct|odt|gdoc|txt|rtf|pdf|mht|htm|html|epub|djvu|xps))$/
+                    var type = /^(?:(xls|xlsx|ods|csv|xlst|xlsy|gsheet|xlsm|xlt|xltm|xltx|fods|ots)|(pps|ppsx|ppt|pptx|odp|pptt|ppty|gslides|pot|potm|potx|ppsm|pptm|fodp|otp)|(doc|docx|doct|odt|gdoc|txt|rtf|pdf|mht|htm|html|epub|djvu|xps|docm|dot|dotm|dotx|fodt|ott))$/
                                     .exec(_config.document.fileType);
                     if (!type) {
                         window.alert("The \"document.fileType\" parameter for the config object is invalid. Please correct it.");
@@ -325,9 +334,7 @@
 
                 var type = /^(?:(pdf|djvu|xps))$/.exec(_config.document.fileType);
                 if (type && typeof type[1] === 'string') {
-                    if (!_config.document.permissions)
-                        _config.document.permissions = {};
-                    _config.document.permissions.edit = false;
+                    _config.editorConfig.canUseHistory = false;
                 }
 
                 if (!_config.document.title || _config.document.title=='')
@@ -409,21 +416,12 @@
             });
         };
 
-        var _showError = function(title, msg) {
-            _showMessage(title, msg, "error");
-        };
-
-        // severity could be one of: "error", "info" or "warning"
-        var _showMessage = function(title, msg, severity) {
-            if (typeof severity !== 'string') {
-                severity = "info";
-            }
+        var _showMessage = function(title, msg) {
+            msg = msg || title;
             _sendCommand({
                 command: 'showMessage',
                 data: {
-                    title: title,
-                    msg: msg,
-                    severity: severity
+                    msg: msg
                 }
             });
         };
@@ -540,7 +538,6 @@
         };
 
         return {
-            showError           : _showError,
             showMessage         : _showMessage,
             processSaveResult   : _processSaveResult,
             processRightsChange : _processRightsChange,
@@ -656,7 +653,7 @@
             app = appMap[config.documentType.toLowerCase()];
         } else
         if (!!config.document && typeof config.document.fileType === 'string') {
-            var type = /^(?:(xls|xlsx|ods|csv|xlst|xlsy|gsheet)|(pps|ppsx|ppt|pptx|odp|pptt|ppty|gslides))$/
+            var type = /^(?:(xls|xlsx|ods|csv|xlst|xlsy|gsheet|xlsm|xlt|xltm|xltx)|(pps|ppsx|ppt|pptx|odp|pptt|ppty|gslides|pot|potm|potx|ppsm|pptm))$/
                             .exec(config.document.fileType);
             if (type) {
                 if (typeof type[1] === 'string') app = appMap['spreadsheet']; else

@@ -13,19 +13,39 @@
             <h3>Insert a chart</h3>
 			<p>To insert a chart into the speadsheet,</p>
 			<ol>
-				<li>select the cell range that contain the data you wish to use for the chart,</li>
-				<li>click the <b>Insert Chart</b> <img alt="Insert Chart icon" src="../images/chart.png" /> icon at the top toolbar,</li>
-				<li>after that a window will appear where you can specify the chart settings:
-
-					<p>The <b>Type &amp Data</b> tab allows you to select the chart type as well as the data you wish to use to create a chart.</p>
+				<li>Select the cell range that contain the data you wish to use for the chart,</li>
+				<li>Click the <b>Insert Chart</b> <img alt="Insert Chart icon" src="../images/chart.png" /> icon at the top toolbar,</li>
+                <li>
+                    Select a chart <b>Type</b> you wish to insert: Column, Line, Pie, Bar, Area, XY (Scatter), or Stock.
+                    <p class="note"><b>Note</b>: for <b>Column</b>, <b>Line</b>, <b>Pie</b>, or <b>Bar</b> charts, a 3D format is also available.</p>
+                </li>
+            </ol>
+            <p>After that the chart will be added to the worksheet. </p>
+            <h3>Adjust the chart settings</h3>
+            <p>Now you can change the inserted chart settings. To change the chart type,</p>
+            <ol>
+                <li>select the chart with the mouse,</li>
+                <li>
+                    click the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart.png" /> icon at the right sidebar,
+                    <p><img alt="Chart Settings Right-Side Panel window" src="../images/chartsettings.png" /></p>
+                </li>
+                <li>open the <b>Type</b> drop-down list and select the type you need,</li>
+                <li>open the <b>Style</b> drop-down list below and select the style which suits you best.</li>
+            </ol>
+            <p>The selected chart type and style will be changed. If you need to edit the data used to create the chart,</p>
+            <ol>
+                <li>click the <b>Show advanced settings</b> link situated at the right-side panel, or choose the <b>Chart Advanced Settings</b> option from the right-click menu, or just double-click the chart,</li>
+                <li>in the opened <b>Chart - Advanced Settings</b> window make all the necessary changes,</li>
+                <li>click the <b>OK</b> button to apply the changes and close the window.</li>
+            </ol>   
+            <p>The description of the chart settings that can be edited using the <b>Chart - Advanced Settings</b> window you can find below.</p>
+					<p>The <b>Type &amp Data</b> tab allows you to change the chart type as well as the data you wish to use to create a chart.</p>
 						<ul>
-							<li>Select a chart <b>Type</b> you wish to insert: Column, Line, Pie, Bar, Area, XY (Scatter), or Stock.
-                            <p class="note"><b>Note</b>: for <b>Column</b>, <b>Line</b>, <b>Pie</b>, or <b>Bar</b> charts, a 3D format is also available.</p>
-                            </li>
+							<li>Change the chart <b>Type</b> selecting one of the available options: Column, Line, Pie, Bar, Area, XY (Scatter), or Stock.</li>
 							<li>Check the selected <b>Data Range</b> and modify it, if necessary, clicking the <b>Select Data</b> button and entering the desired data range in the following format: <em>Sheet1!A1:B4</em>.</li>
 							<li>Choose the way to arrange the data. You can either select the <b>Data series</b> to be used on the X axis: <b>in rows</b> or <b>in columns</b>.</li> 
 						</ul>
-						<p><img alt="Insert Chart window" src="../images/chartwindow.png" /></p>
+						<p><img alt="Chart - Advanced Settings" src="../images/chartwindow.png" /></p>
 
 						<p>The <b>Layout</b> tab allows you to change the layout of chart elements.</p>
 							<ul>
@@ -89,7 +109,7 @@
                                 </li>
 							</ul>
 
-							<p><img alt="Insert Chart window" src="../images/chartwindow1.png" /></p>
+							<p><img alt="Chart - Advanced Settings" src="../images/chartwindow1.png" /></p>
 
                     <p class="note"><b>Note</b>: the <b>Vertical/Horizontal Axis</b> tabs will be disabled for <b>Pie charts</b> since charts of this type have no axes.</p>
                     <p>The <b>Vertical Axis</b> tab allows you to change the parameters of the vertical axis also referred to as the values axis or y-axis which displays numeric values. Note that the vertical axis will be the category axis which displays text labels for the <b>Bar charts</b>, therefore in this case the <b>Vertical Axis</b> tab options will correspond to the ones described in the next section. For the <b>XY (Scatter) charts</b>, both axes are value axes.</p>
@@ -123,7 +143,7 @@
                             </ul>
                         </li>
                     </ul>
-							<p><img alt="Insert Chart window" src="../images/chartwindow2.png" /></p>
+							<p><img alt="Chart - Advanced Settings" src="../images/chartwindow2.png" /></p>
 						
                     <p>The <b>Horizontal Axis</b> tab allows you to change the parameters of the horizontal axis also referred to as the categories axis or x-axis which displays text labels. Note that the horizontal axis will be the value axis which displays numeric values for the <b>Bar charts</b>, therefore in this case the <b>Horizontal Axis</b> tab options will correspond to the ones described in the previous section. For the <b>XY (Scatter) charts</b>, both axes are value axes.</p>
                     <ul>
@@ -151,35 +171,20 @@
                             </ul>
                         </li>
                     </ul>
-							<p><img alt="Insert Chart window" src="../images/chartwindow3.png" /></p>
-						
-				</li>
-				<li>once the chart is added you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change its size and position</a>.</li>
-			</ol>
+					<p><img alt="Chart - Advanced Settings" src="../images/chartwindow3.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the chart.</p>
+            <p><img alt="Chart - Advanced Settings" src="../images/chartwindow4.png" /></p>
+            				
             <h3>Edit chart elements</h3>
             <p>To edit the chart <b>Title</b>, select the default text with the mouse and type in your own one instead.</p>
             <p>To change the font formatting within text elements, such as the chart title, axes titles, legend entries, data labels etc., select the necessary text element by left-clicking it. Then use icons on the top toolbar to change the font <a href="../UsageInstructions/FontTypeSizeStyle.htm" onclick="onhyperlinkclick(this)">type, style, size, or color</a>.</p>
             <p>To delete a chart element, select it by left-clicking and press the <b>Delete</b> key on the keyboard.</p>
             <p>You can also rotate 3D charts using the mouse. Left-click within the plot area and hold the mouse button until a blue dashed box appears. Drag the cursor without releasing the mouse button to change the 3D chart orientation.</p>
             <p><img alt="3D chart" src="../images/3dchart.png" /></p>
-            
-            <h3>Adjust chart settings</h3>
-			<p>To change the inserted chart type,</p>
-			<ol>
-				<li>select the chart with the mouse,</li>
-				<li>click the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart.png" /> icon at the right sidebar,
-					<p><img alt="Chart Settings Right-Side Panel window" src="../images/chartsettings.png" /></p></li>
-				<li>open the <b>Type</b> drop-down list and select the type you need,</li>
-				<li>open the <b>Style</b> drop-down list below and select the style which suits you best.</li>
-			</ol>
-			<p>The selected chart type and style will be changed. If you need to edit the data used to create the chart,</p>
-			<ol>
-				<li>click the <b>Show advanced settings</b> link situated at the right-side panel, or choose the <b>Chart Advanced Settings</b> option from the right-click menu, or just double-click the chart,</li>
-				<li>in the opened <b>Chart - Advanced Settings</b> window make all the necessary changes,</li>
-				<li>click the <b>OK</b> button to apply the changes and close the window.</li>
-			</ol>
             <p>When the chart is selected, the <b>Shape Settings</b> <img alt="Shape Settings icon" src="../images/shape_settings_icon.png" /> icon is also available on the right, since a shape is used as a background for the chart. You can click this icon to open the <a href="InsertAutoshapes.htm" onclick="onhyperlinkclick(this)">Shape Settings</a> tab at the right sidebar and adjust the shape <b>Fill</b> and <b>Stroke</b>. Note that you cannot change the shape type.</p>
-			<p>To delete the inserted chart, click it and press the <b>Delete</b> key.</p>
+            <p>If necessary, you can <a href="ManipulateObjects.htm" onclick="onhyperlinkclick(this)">change the chart size and position</a>.</p>
+            <p>To delete the inserted chart, click it and press the <b>Delete</b> key.</p>
+            
             <h3>Edit sparklines</h3>
             <p>Sparkline is a little chart that fits in one cell. Sparklines can be useful if you want to visually represent information for each row or column in large data sets. This makes it easier to show trends in multiple data series. </p>
             <p>If your spreadsheet contains existing sparklines created using some other application, you can change sparkline properties. To do that, select the cell that contains a sparkline with the mouse and click the <b>Chart Settings</b> <img alt="Chart Settings icon" src="../images/chart.png" /> icon at the right sidebar. If the selected sparkline is included into a sparkline group, the changes will be applied to all sparklines in the group.</p>

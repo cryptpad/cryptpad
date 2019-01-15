@@ -18,19 +18,33 @@
 			</ul>
 			<p>To sort your data,</p>
 			<ol>
-				<li>select a range of cells you wish to sort,</li>
-				<li>click the <b>Sort Lowest to Highest</b> <img alt="Sort Lowest to Highest icon" src="../images/sortatoz.png" /> icon situated at the top toolbar to sort your data in ascending order,
+				<li>select a range of cells you wish to sort (you can select a single cell in a range to sort the entire range),
+                </li>
+				<li>click the <b>Sort Ascending</b> <img alt="Sort Ascending icon" src="../images/sortatoz.png" /> icon situated at the top toolbar to sort your data in ascending order,
 					<br />OR<br />
-					click the <b>Sort Highest to Lowest</b> <img alt="Sort Highest to Lowest icon" src="../images/sortztoa.png" /> icon situated at the top toolbar to sort your data in descending order.
+					click the <b>Sort Descending</b> <img alt="Sort Descending icon" src="../images/sortztoa.png" /> icon situated at the top toolbar to sort your data in descending order.
 				</li>
 			</ol>
+            <p class="note"><b>Note</b>: if you select a single column/row within a cell range or a part of the column/row, you will be asked if you want to expand the selection to include adjacent cells or sort the selected data only.</p>
 			<p>You can also sort your data using the <b>contextual menu</b> options. Right-click the selected range of cells, select the <b>Sort</b> option from the menu and then select <b>Ascending</b> or <b>Descending</b> option from the submenu.</p>
+            <p>It's also possible to sort the data by a color using the contextual menu:</p>
+            <ol>
+                <li>right-click a cell containing the color you want to sort your data by,</li>
+                <li>select the <b>Sort</b> option from the menu,</li>
+                <li>
+                    select the necessary option from the submenu:
+                    <ul>
+                        <li><b>Selected Cell Color on top</b> - to display the entries with the same cell background color on the top of the column,</li>
+                        <li><b>Selected Font Color on top</b> - to display the entries with the same font color on the top of the column.</li>
+                    </ul>
+                </li>
+            </ol>            
                         
 			<h3>Filter Data</h3>
 			<p>To display only the rows that meet certain criteria and hide other ones, make use of the <b>Filter</b> option.</p>
             <b>To enable a filter,</b>
             <ol>
-                <li>Select a range of cells containing data to filter,</li>
+                <li>Select a range of cells containing data to filter (you can select a single cell in a range to filter the entire range),</li>
                 <li>
                     Click the <b>Filter</b> <img alt="Filter icon" src="../images/sortandfilter.png" /> icon situated at the top toolbar.
                     <p>The drop-down arrow <img alt="Drop-Down Arrow" src="../images/dropdownarrow.png" /> will appear in the first cell of each column of the selected cell range. It means that the filter is enabled.</p>
@@ -83,7 +97,8 @@
                             <p><img alt="Filter data by color" src="../images/filterbycolor.png" /></p>
                         </li>
                     </ul>
-                    <p>The <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button will appear in the first cell of the column. It means that the filter is applied.</p>
+                    <p>The <b>Filter</b> <img alt="Filter button" src="../images/filterbutton.png" /> button will appear in the first cell of the column. It means that the filter is applied. The number of filtered records will be displayed at the status bar (e.g. <em>25 of 80 records filtered</em>).</p>
+                    <p class="note"><b>Note</b>: when the filter is applied, the rows that are filtered out cannot be modified when autofilling, formatting, deleting the visible contents. Such actions affect the visible rows only, the rows that are hidden by the filter remain unchanged. When copying and pasting the filtered data, only visible rows can be copied and pasted. This is not equivalent to manually hidden rows which are affected by all similar actions.</p>
                 </li>
 			</ol>
             <h3>Sort filtered data</h3>
@@ -95,6 +110,11 @@
                     <li><b>Sort by font color</b> - allows to select one of the colors and display the entries with the same font color on the top of the column.</li>
                 </ul>
                 <p>The latter two options can be used if the cell range you want to sort contains some cells you have formatted changing their background or font color (manually or using predefined styles).</p>
+            <p>The sorting direction will be indicated by an arrow in the filter buttons.</p>
+            <ul>
+                <li>if the data is sorted in ascending order, the drop-down arrow in the first cell of the column looks like this: <img alt="Drop-down arrow" src="../images/lowesttohighest.png" /> and the <b>Filter</b> button looks the following way: <img alt="Filter button" src="../images/lowesttohighest1.png" />.</li>
+                <li>if the data is sorted in descending order, the drop-down arrow in the first cell of the column looks like this: <img alt="Drop-down arrow" src="../images/highesttolowest.png" /> and the <b>Filter</b> button looks the following way: <img alt="Filter button" src="../images/highesttolowest1.png" />.</li>
+            </ul>
             <p>You can also quickly sort the data by a color using the contextual menu options:</p>
             <ol>
                 <li>right-click a cell containing the color you want to sort your data by,</li>
@@ -125,7 +145,7 @@
 				<li>click the <b>OK</b> button to apply the selected template.</li>
 			</ol>
 			<p>The template will be applied to the selected range of cells and you will be able to edit the table headers and apply the filter to work with your data.</p>
-            <p class="note"><b>Note</b>: once you've created a new formatted table, a <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">default name</a> (<em>Table1</em>, <em>Table2</em> etc.) will be automatically assigned to the table. You can change this name making it more meaningful and use it for further work.</p> 
+            <p class="note"><b>Note</b>: once you create a new formatted table, a <a href="UseNamedRanges.htm" onclick="onhyperlinkclick(this)">default name</a> (<em>Table1</em>, <em>Table2</em> etc.) will be automatically assigned to the table. You can change this name making it more meaningful and use it for further work.</p> 
             <p>Some of the table settings can be altered using the <b>Table Settings</b> tab of the right sidebar that opens if you select at least one cell within the table with the mouse and click the <b>Table Settings</b> <img alt="Table Settings icon" src="../images/table_settings_icon.png" /> icon on the right.</p>
             <p><img alt="Table Settings tab" src="../images/tablesettingstab.png" /></p>
             <p>The <b>Rows</b> and <b>Columns</b> sections on the top allow you to emphasize certain rows/columns applying a specific formatting to them, or highlight different rows/columns with the different background colors to clearly distinguish them. The following options are available:</p>
@@ -152,6 +172,10 @@
                 <li><b>Delete</b> a row, column (depending on the cursor position or the selection), or the entire table.</li>
             </ul>
             <p class="note"><b>Note</b>: the options of the <b>Rows & Columns</b> section are also accessible from the <b>right-click menu</b>.</p>
+            <p>The <b>Convert to range</b> button can be used if you want to transform the table into a regular data range removing the filter but preserving the table style (i.e. cell and font colors etc.). Once you apply this option, the <b>Table Settings</b> tab at the right sidebar will be unavailable.</p>
+            <p>To change the advanced table properties, use the <b>Show advanced settings</b> link at the right sidebar. The table properties window will open:</p>
+            <p><img alt="Table - Advanced Settings" src="../images/tableadvancedsettings.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the table.</p>
             <h3>Reapply Filter</h3>
             <p>If the filtered data has been changed, you can refresh the filter to display an up-to-date result:</p>
             <ol>

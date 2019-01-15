@@ -1,0 +1,17 @@
+plus.png
+x:6 y:6
+
+plus_2x.png
+x:12 y:12
+
+plus_copy.png
+x:6 y:12
+
+plus_copy_2x.png
+x:12 y:25
+
+text_copy.png
+x:2 y:11
+
+text_copy_2x.png
+x:5 y:23
