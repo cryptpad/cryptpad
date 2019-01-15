@@ -53,7 +53,7 @@ define([
             _Constants, _Feedback, _LocalStore, _AppConfig, _Test) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
-                Crypto = _Crypto;
+                Crypto = Utils.Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 FilePicker = _FilePicker;
@@ -156,7 +156,7 @@ define([
                 var w = waitFor();
                 // No password for drive, profile and todo
                 cfg.getSecrets(Cryptpad, Utils, waitFor(function (err, s) {
-                    secret = s;
+                    secret = Utils.secret = s;
                     Cryptpad.getShareHashes(secret, function (err, h) {
                         hashes = h;
                         w();
@@ -165,7 +165,7 @@ define([
             } else {
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 var todo = function () {
-                    secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
+                    secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
                     Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
                 };
 
@@ -951,7 +951,7 @@ define([
                 // Create a new hash
                 password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
-                secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
+                secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
 
                 // Update the hash in the address bar
                 var ohc = window.onhashchange;

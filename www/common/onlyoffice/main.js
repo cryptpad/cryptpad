@@ -40,6 +40,8 @@ define([
             obj.ooType = window.location.pathname.replace(/^\//, '').replace(/\/$/, '');
         };
         var addRpc = function (sframeChan, Cryptpad, Utils) {
+            var crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
+
             sframeChan.on('Q_OO_SAVE', function (data, cb) {
                 var chanId = Utils.Hash.hrefToHexChannelId(data.url);
                 Cryptpad.getPadAttribute('lastVersion', function (err, data) {
@@ -57,16 +59,26 @@ define([
                 Cryptpad.onlyoffice.execCommand({
                     cmd: 'OPEN_CHANNEL',
                     data: {
-                        channel: data,
-                        secret: secret
+                        // XXX add owners?
+                        // owners: something...
+                        channel: data.channel,
+                        lastCp: data.lastCp,
+                        padChan: Utils.secret.channel,
+                        validateKey: Utils.secret.keys.validateKey
                     }
                 }, cb);
             });
-            sframeChan.on('Q_OO_COMMAND', function (data, cb) {
-                Cryptpad.onlyoffice.execCommand(data, cb);
+            sframeChan.on('Q_OO_COMMAND', function (obj, cb) {
+                if (obj.cmd === 'SEND_MESSAGE' && !obj.data.isCp) {
+                    obj.data.msg = crypto.encrypt(obj.data.msg);
+                }
+                Cryptpad.onlyoffice.execCommand(obj, cb);
             });
-            Cryptpad.onlyoffice.onEvent.reg(function (data) {
-                sframeChan.event('EV_OO_EVENT', data);
+            Cryptpad.onlyoffice.onEvent.reg(function (obj) {
+                if (obj.ev === 'MESSAGE') {
+                    obj.data = crypto.decrypt(obj.data, Utils.secret.keys.validateKeys);
+                }
+                sframeChan.event('EV_OO_EVENT', obj);
             });
         };
         SFCommonO.start({

@@ -1,28 +1,14 @@
 define([
     '/common/common-util.js',
-    '/common/common-constants.js',
-    '/customize/messages.js',
-    '/bower_components/chainpad-crypto/crypto.js',
-], function (Util, Constants, Messages, Crypto) {
+], function (Util) {
     var OO = {};
 
-    var convertToUint8 = function (obj) {
-        var l = Object.keys(obj).length;
-        var u = new Uint8Array(l);
-        for (var i = 0; i<l; i++) {
-            u[i] = obj[i];
-        }
-        return u;
+    var getHistory = function (ctx, data, clientId, cb) {
     };
 
     var openChannel = function (ctx, obj, client, cb) {
         var channel = obj.channel;
-        var secret = obj.secret;
-        if (secret.keys.cryptKey) {
-            secret.keys.cryptKey = convertToUint8(secret.keys.cryptKey);
-        }
-
-        var padChan = secret.channel;
+        var padChan = obj.padChan;
         var network = ctx.store.network;
         var first = true;
 
@@ -40,11 +26,10 @@ define([
         if (chan) {
             // This channel is already open in another tab
 
-            // ==> Set the ID to our client object
+            // ==> Use our netflux ID to create our client ID
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
-            // ==> Send the join message to the other members of the channel
-            // XXX bcast a "join" message to the channel?
+            /// XXX send chan.history to client
 
             // ==> And push the new tab to the list
             chan.clients.push(client);
@@ -55,20 +40,20 @@ define([
 
             ctx.channels[channel] = ctx.channels[channel] || {};
 
-            var chan = ctx.channels[channel];
+            chan = ctx.channels[channel];
+
+            // Create our client ID using the netflux ID
             if (!c.id) { c.id = wc.myID + '-' + client; }
+
+            // If this is a reconnect, we have a new netflux ID so we're going to fix
+            // all our client IDs.
             if (chan.clients) {
-                // If 2 tabs from the same worker have been opened at the same time,
-                // we have to fix both of them
                 chan.clients.forEach(function (cl) {
                     if (ctx.clients[cl] && !ctx.clients[cl].id) {
                         ctx.clients[cl].id = wc.myID + '-' + cl;
                     }
                 });
             }
-
-
-            if (!chan.encryptor) { chan.encryptor = Crypto.createEncryptor(secret.keys); }
 
             wc.on('join', function () {
                 // XXX
@@ -77,12 +62,7 @@ define([
                 // XXX
             });
             wc.on('message', function (cryptMsg) {
-                var msg = chan.encryptor.decrypt(cryptMsg, secret.keys && secret.keys.validateKey);
-                var parsed;
-                try {
-                    parsed = JSON.parse(msg);
-                    // XXX
-                } catch (e) { console.error(e); }
+                ctx.emit('MESSAGE', cryptMsg, chan.clients);
             });
 
             chan.wc = wc;
@@ -96,24 +76,94 @@ define([
                 });
             };
 
-            if (!first) { return; }
-            chan.clients = [client];
-            first = false;
-            cb();
+            if (first) {
+                chan.clients = [client];
+                chan.lastCp = obj.lastCp;
+                first = false;
+                cb();
+            }
+
+            var hk = network.historyKeeper;
+            var cfg = {
+                validateKey: obj.validateKey,
+                lastKnownHash: chan.lastKnownHash,
+                owners: obj.owners,
+            };
+            var msg = ['GET_HISTORY', wc.id, cfg];
+            // Add the validateKey if we are the channel creator and we have a validateKey
+            if (hk) {
+                network.sendto(hk, JSON.stringify(msg)).then(function () {
+                }, function (err) {
+                    console.error(err);
+                });
+            }
+
         };
+
+        network.on('message', function (msg, sender) {
+            var hk = network.historyKeeper;
+            if (sender !== hk) { return; }
+
+            // Parse the message
+            var parsed;
+            try {
+                parsed = JSON.parse(msg);
+            } catch (e) {}
+            if (!parsed) { return; }
+
+
+            // Keep only metadata messages for the current channel
+            if (parsed.channel && parsed.channel !== channel) { return; }
+            // Ignore the metadata message
+            if (parsed.validateKey && parsed.channel) { return; }
+            // End of history: emit READY
+            if (parsed.state && parsed.state === 1 && parsed.channel) {
+                ctx.emit('READY', '');
+                return;
+            }
+            if (parsed.error && parsed.channel) { return; }
+
+            var msg = parsed[4];
+
+            // Keep only the history for our channel
+            if (msg[3] !== channel) { return; }
+
+            if (chan.lastCp) {
+                if (chan.lastCp === msg) {
+                    delete chan.lastCp;
+                }
+                return;
+            }
+
+            var isCp = /^cp\|/.test(msg);
+            if (isCp) { return; }
+
+            chan.lastKnownHash = msg.slice(0,64);
+            ctx.emit('MESSAGE', msg, chan.clients);
+        });
 
         network.join(channel).then(onOpen, function (err) {
             return void cb({error: err});
         });
 
         network.on('reconnect', function () {
-            if (!ctx.channels[channel]) { console.log("cant reconnect", channel); return; }
+            if (!ctx.channels[channel]) { return; }
             network.join(channel).then(onOpen, function (err) {
                 console.error(err);
             });
         });
     };
 
+    var sendMessage = function (ctx, data, clientId, cb) {
+        var c = ctx.clients[clientId];
+        if (!c) { return void cb({ error: 'NOT_IN_CHANNEL' }); }
+        var chan = ctx.channels[c.channel];
+        if (!chan) { return void cb({ error: 'INVALID_CHANNEL' }); }
+        if (data.isCp) {
+            return void chan.sendMsg(data.isCp, cb);
+        }
+        chan.sendMsg(data.msg, cb);
+    };
 
     var leaveChannel = function (ctx, padChan) {
         // Leave channel and prevent reconnect when we leave a pad
@@ -143,19 +193,6 @@ define([
             }
         }
 
-        // Send the leave message to the channel we were in
-        if (ctx.clients[clientId]) {
-            var leaveMsg = {
-                leave: true,
-                id: ctx.clients[clientId].id
-            };
-            chan = ctx.channels[ctx.clients[clientId].channel];
-            if (chan) {
-                chan.sendMsg(JSON.stringify(leaveMsg));
-                ctx.emit('MESSAGE', leaveMsg, chan.clients);
-            }
-        }
-
         delete ctx.clients[clientId];
     };
 
@@ -179,6 +216,9 @@ define([
         oo.execCommand = function (clientId, obj, cb) {
             var cmd = obj.cmd;
             var data = obj.data;
+            if (cmd === 'SEND_MESSAGE') {
+                return void sendMessage(ctx, data, clientId, cb);
+            }
             if (cmd === 'OPEN_CHANNEL') {
                 return void openChannel(ctx, data, clientId, cb);
             }

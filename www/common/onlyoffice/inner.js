@@ -88,7 +88,10 @@ define([
         var openRtChannel = function (data) {
             // XXX
             var channel = Hash.createChannelId();
-            ctx.sframeChan.query('Q_OO_OPENCHANNEL', channel, function (err, obj) {
+            ctx.sframeChan.query('Q_OO_OPENCHANNEL', {
+                channel: channel,
+                lastCp: data.lastCp
+            }, function (err, obj) {
                 if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
             });
         };
