@@ -302,6 +302,7 @@ define([
             } else {
                 mode = mime && mime.mode || null;
             }
+            if (mode === "markdown") { mode = "gfm"; }
             if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
                 exp.setMode(mode);
                 $toolbarContainer.find('#language-mode').val(mode);
