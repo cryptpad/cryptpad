@@ -930,6 +930,7 @@ define([
         $(cancel).click(function () {
             UI.confirm(Messages.settings_exportCancel, function (yes) {
                 if (!yes) { return; }
+                Feedback.send('FULL_DRIVE_EXPORT_CANCEL');
                 _onCancel.forEach(function (h) { h(); });
             });
         }).appendTo(actions);
@@ -1078,6 +1079,7 @@ define([
 
         // Backup all the pads
         var exportDrive = function () {
+            Feedback.send('FULL_DRIVE_EXPORT_START');
             var todo = function (data, filename) {
                 var getPad = function (data, cb) {
                     sframeChan.query("Q_CRYPTGET", data, function (err, obj) {
@@ -1094,6 +1096,7 @@ define([
                     saveAs(blob, filename);
                     sframeChan.event('EV_CRYPTGET_DISCONNECT');
                     ui.complete(function () {
+                        Feedback.send('FULL_DRIVE_EXPORT_COMPLETE');
                         saveAs(blob, filename);
                     }, errors);
                 }, ui.update);

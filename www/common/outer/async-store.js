@@ -958,12 +958,20 @@ define([
                 history: [],
                 pushHistory: function (msg, isCp) {
                     if (isCp) {
+                        // the current message is a checkpoint.
+                        // push it to your worker's history, prepending it with cp|
+                        // cp| and anything else related to checkpoints has already
+                        // been stripped by chainpad-netflux-worker or within async store
+                        // when the message was outgoing.
                         channel.history.push('cp|' + msg);
+                        // since the latest message is a checkpoint, we are able to drop
+                        // some of the older history, but we can't rely on checkpoints being
+                        // correct, as they might be checkpoints from different forks
                         var i;
-                        for (i = channel.history.length - 2; i > 0; i--) {
+                        for (i = channel.history.length - 101; i > 0; i--) {
                             if (/^cp\|/.test(channel.history[i])) { break; }
                         }
-                        channel.history = channel.history.slice(i);
+                        channel.history = channel.history.slice(Math.max(i, 0));
                         return;
                     }
                     channel.history.push(msg);
