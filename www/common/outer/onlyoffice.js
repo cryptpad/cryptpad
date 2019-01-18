@@ -1,10 +1,6 @@
 define([
-    '/common/common-util.js',
-], function (Util) {
+], function () {
     var OO = {};
-
-    var getHistory = function (ctx, data, clientId, cb) {
-    };
 
     var openChannel = function (ctx, obj, client, cb) {
         var channel = obj.channel;
@@ -29,7 +25,6 @@ define([
             // ==> Use our netflux ID to create our client ID
             if (!c.id) { c.id = chan.wc.myID + '-' + client; }
 
-            /// XXX send chan.history to client
             chan.history.forEach(function (msg) {
                 ctx.emit('MESSAGE', msg, [client]);
             });
@@ -61,17 +56,11 @@ define([
             }
 
             wc.on('join', function () {
-                // XXX
             });
-            wc.on('leave', function (peer) {
-                // XXX
+            wc.on('leave', function () {
             });
             wc.on('message', function (msg) {
-                if (/^cp\|/.test(msg)) {
-                    chan.history = [];
-                } else {
-                    chan.history.push(msg);
-                }
+                chan.history.push(msg);
                 ctx.emit('MESSAGE', msg, chan.clients);
             });
 
@@ -79,11 +68,7 @@ define([
             chan.sendMsg = function (msg, cb) {
                 cb = cb || function () {};
                 wc.bcast(msg).then(function () {
-                    if (/^cp\|/.test(msg)) {
-                        chan.history = [];
-                    } else {
-                        chan.history.push(msg);
-                    }
+                    chan.history.push(msg);
                     cb();
                 }, function (err) {
                     cb({error: err});
@@ -92,7 +77,7 @@ define([
 
             if (first) {
                 chan.clients = [client];
-                chan.lastCp = obj.lastCp;
+                chan.lastCpHash = obj.lastCpHash;
                 first = false;
                 cb();
             }
@@ -100,7 +85,7 @@ define([
             var hk = network.historyKeeper;
             var cfg = {
                 validateKey: obj.validateKey,
-                lastKnownHash: chan.lastKnownHash,
+                lastKnownHash: chan.lastKnownHash || chan.lastCpHash,
                 owners: obj.owners,
             };
             var msg = ['GET_HISTORY', wc.id, cfg];
@@ -137,23 +122,10 @@ define([
             }
             if (parsed.error && parsed.channel) { return; }
 
-            var msg = parsed[4];
+            msg = parsed[4];
 
             // Keep only the history for our channel
             if (parsed[3] !== channel) { return; }
-
-            if (chan.lastCp) {
-                if (chan.lastCp === msg.slice(0, 11)) {
-                    delete chan.lastCp;
-                }
-                return;
-            }
-
-            var isCp = /^cp\|/.test(msg);
-            if (isCp) {
-                chan.history = [];
-                return;
-            }
 
             chan.lastKnownHash = msg.slice(0,64);
             ctx.emit('MESSAGE', msg, chan.clients);
@@ -170,6 +142,25 @@ define([
                 console.error(err);
             });
         });
+    };
+
+    var updateHash = function (ctx, data, clientId, cb) {
+        var c = ctx.clients[clientId];
+        if (!c) { return void cb({ error: 'NOT_IN_CHANNEL' }); }
+        var chan = ctx.channels[c.channel];
+        if (!chan) { return void cb({ error: 'INVALID_CHANNEL' }); }
+        var hash = data;
+        var index = -1;
+        chan.history.some(function (msg, idx) {
+            if (msg.slice(0,64) === hash) {
+                index = idx + 1;
+                return true;
+            }
+        });
+        if (index !== -1) {
+            chan.history = chan.history.slice(index);
+        }
+        cb();
     };
 
     var sendMessage = function (ctx, data, clientId, cb) {
@@ -214,6 +205,11 @@ define([
             }
         }
 
+        var oldChannel = ctx.clients[clientId].channel;
+        var oldChan = ctx.channels[oldChannel];
+        if (oldChan) {
+            ctx.emit('LEAVE', {id: clientId}, [oldChan.clients[0]]);
+        }
         delete ctx.clients[clientId];
     };
 
@@ -239,6 +235,9 @@ define([
             var data = obj.data;
             if (cmd === 'SEND_MESSAGE') {
                 return void sendMessage(ctx, data, clientId, cb);
+            }
+            if (cmd === 'UPDATE_HASH') {
+                return void updateHash(ctx, data, clientId, cb);
             }
             if (cmd === 'OPEN_CHANNEL') {
                 return void openChannel(ctx, data, clientId, cb);

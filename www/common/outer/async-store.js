@@ -454,6 +454,7 @@ define([
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {
+                    clientId: clientId,
                     edPublic: store.proxy.edPublic,
                     friends: store.proxy.friends || {},
                     settings: store.proxy.settings,

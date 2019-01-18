@@ -49,6 +49,8 @@ define([
         $: $
     };
 
+    var CHECKPOINT_INTERVAL = 50;
+
     var stringify = function (obj) {
         return JSONSortify(obj);
     };
@@ -58,11 +60,66 @@ define([
     var andThen = function (common) {
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
+        var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
-        var locked = false;
+        //var locked = false;
         var config = {};
-        var hashes = [];
-        var channel;
+        var content = {
+            hashes: {},
+            ids: {}
+        };
+        var myOOId;
+
+        var deleteOffline = function () {
+            var ids = content.ids;
+            var users = Object.keys(metadataMgr.getMetadata().users);
+            Object.keys(ids).forEach(function (id) {
+                var nId = id.slice(0,32);
+                if (users.indexOf(nId) === -1) {
+                    delete ids[id];
+                }
+            });
+            APP.onLocal();
+        };
+
+        var isUserOnline = function (ooid) {
+            // Remove ids for users that have left the channel
+            deleteOffline();
+            var ids = content.ids;
+            // Check if the provided id is in the ID list
+            return Object.keys(ids).some(function (id) {
+                return ooid === ids[id];
+            });
+        };
+
+        var setMyId = function (netfluxId) {
+            // Remove ids for users that have left the channel
+            deleteOffline();
+            var ids = content.ids;
+            if (!myOOId) {
+                myOOId = Util.createRandomInteger();
+                while (Object.keys(ids).some(function (id) {
+                    return ids[id] === myOOId;
+                })) {
+                    myOOId = Util.createRandomInteger();
+                }
+            }
+            var myId = (netfluxId || metadataMgr.getNetfluxId()) + '-' + privateData.clientId;
+            ids[myId] = myOOId;
+            APP.onLocal();
+        };
+
+        // Another tab from our worker has left: remove its id from the list
+        var removeClient = function (obj) {
+            var tabId = metadataMgr.getNetfluxId() + '-' + obj.id;
+            console.log(tabId);
+            if (content.ids[tabId]) {
+                console.log('delete');
+                delete content.ids[tabId];
+                APP.onLocal();
+                console.log(content.ids);
+            }
+        };
 
         var getFileType = function () {
             var type = common.getMetadataMgr().getPrivateData().ooType;
@@ -91,12 +148,12 @@ define([
         var now = function () { return +new Date(); };
 
         var getLastCp = function () {
-            if (!hashes || !hashes.length) { return; }
-            var last = hashes.slice().pop();
-            var parsed = Hash.parsePadUrl(last);
-            var secret = Hash.getSecrets('file', parsed.hash);
-            if (!secret || !secret.channel) { return; }
-            return 'cp|' + secret.channel.slice(0,8);
+            var hashes = content.hashes;
+            if (!hashes || !Object.keys(hashes).length) { return {}; }
+            var lastIndex = Math.max.apply(null, Object.keys(hashes).map(Number));
+            // TODO check if hashes[lastIndex] is undefined?
+            var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
+            return last;
         };
 
         var rtChannel = {
@@ -119,32 +176,112 @@ define([
         var ooChannel = {
             ready: false,
             queue: [],
-            send: function () {}
+            send: function () {},
+            cpIndex: 0
+        };
+
+        var getContent = APP.getContent = function () {
+            try {
+                return window.frames[0].editor.asc_nativeGetFile();
+            } catch (e) {
+                console.error(e);
+                return;
+            }
+        };
+
+        var fmConfig = {
+            noHandlers: true,
+            noStore: true,
+            body: $('body'),
+            onUploaded: function (ev, data) {
+                if (!data || !data.url) { return; }
+                sframeChan.query('Q_OO_SAVE', data, function (err) {
+                    if (err) {
+                        console.error(err);
+                        return void UI.alert(Messages.oo_saveError);
+                    }
+                    var i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
+                    // XXX check if content.hashes[i] already exists?
+                    content.hashes[i] = {
+                        file: data.url,
+                        hash: ev.hash,
+                        index: ev.index
+                    };
+                    content.saveLock = undefined;
+                    APP.onLocal();
+                    sframeChan.query('Q_OO_COMMAND', {
+                        cmd: 'UPDATE_HASH',
+                        data: ev.hash
+                    }, function (err, obj) {
+                        if (err || (obj && obj.error)) { console.error(err || obj.error); }
+                    });
+                    UI.log(Messages.saved);
+                });
+            }
+        };
+        APP.FM = common.createFileManager(fmConfig);
+
+        var saveToServer = function () {
+            var text = getContent();
+            var blob = new Blob([text], {type: 'plain/text'});
+            var file = getFileType();
+            blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+            var data = {
+                hash: ooChannel.lastHash,
+                index: ooChannel.cpIndex
+            };
+            APP.FM.handleFile(blob, data);
+        };
+        var makeCheckpoint = function (force) {
+            var locked = content.saveLock;
+            if (!locked || !isUserOnline(locked) || force) {
+                content.saveLock = myOOId;
+                APP.onLocal();
+                APP.realtime.onSettle(function () {
+                    saveToServer();
+                });
+                return;
+            }
+            // The save is locked by someone else. If no new checkpoint is created
+            // in the next 20 to 40 secondes and the lock is kept by the same user,
+            // force the lock and make a checkpoint.
+            var saved = stringify(content.hashes);
+            var to = 20000 + (Math.random() * 20000)
+            setTimeout(function () {
+                if (stringify(content.hashes) === saved && locked === content.saveLock) {
+                    makeCheckpoint(force);
+                }
+            }, to);
         };
 
         var openRtChannel = function (cb) {
-            if (rtChannel.ready) { return; }
-            var chan = channel || Hash.createChannelId();
-            if (!channel) {
-                channel = chan;
+            if (rtChannel.ready) { return void cb(); }
+            var chan = content.channel || Hash.createChannelId();
+            if (!content.channel) {
+                content.channel = chan;
                 APP.onLocal();
             }
             sframeChan.query('Q_OO_OPENCHANNEL', {
-                channel: channel,
-                lastCp: getLastCp()
+                channel: content.channel,
+                lastCpHash: getLastCp().hash
             }, function (err, obj) {
                 if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
             });
-            sframeChan.on('EV_OO_EVENT', function (data) {
-                switch (data.ev) {
+            sframeChan.on('EV_OO_EVENT', function (obj) {
+                switch (obj.ev) {
                     case 'READY':
                         rtChannel.ready = true;
                         break;
+                    case 'LEAVE':
+                        removeClient(obj.data);
+                        break;
                     case 'MESSAGE':
                         if (ooChannel.ready) {
-                            ooChannel.send(data.data);
+                            ooChannel.send(obj.data.msg);
+                            ooChannel.lastHash = obj.data.hash;
+                            ooChannel.cpIndex++;
                         } else {
-                            ooChannel.queue.push(data.data);
+                            ooChannel.queue.push(obj.data);
                         }
                         break;
                 }
@@ -168,7 +305,7 @@ define([
                 };
             });
         };
-        var mkChannel = function () {
+        var makeChannel = function () {
             var msgEv = Util.mkEvent();
             var iframe = $('#cp-app-oo-container > iframe')[0].contentWindow;
             window.addEventListener('message', function (msg) {
@@ -213,8 +350,10 @@ define([
                             });
                             setTimeout(function () {
                                 if (ooChannel.queue) {
-                                    ooChannel.queue.forEach(function (msg) {
-                                        send(msg);
+                                    ooChannel.queue.forEach(function (data) {
+                                        send(data.msg);
+                                        ooChannel.lastHash = data.hash;
+                                        ooChannel.cpIndex++;
                                     });
                                 }
                             }, 2000);
@@ -253,7 +392,12 @@ define([
                                 changesIndex: 2,
                                 locks: [], // XXX take from userdoc?
                                 excelAdditionalInfo: null
-                            }, null, function () {
+                            }, null, function (err, hash) {
+                                ooChannel.cpIndex++;
+                                ooChannel.lastHash = hash;
+                                if (ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0) {
+                                    makeCheckpoint();
+                                }
                             });
                             break;
                     }
@@ -261,11 +405,11 @@ define([
             });
         };
 
+        var ooLoaded = false;
         var startOO = function (blob, file) {
             if (APP.ooconfig) { return void console.error('already started'); }
             var url = URL.createObjectURL(blob);
-            var lock = /*locked !== common.getMetadataMgr().getNetfluxId() ||*/
-                       !common.isLoggedIn();
+            var lock = readOnly || !common.isLoggedIn();
 
             // Config
             APP.ooconfig = {
@@ -313,51 +457,15 @@ define([
                 if (ifr) { ifr.remove(); }
             };
             APP.docEditor = new DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
-            mkChannel();
-        };
-
-        var getContent = APP.getContent = function () {
-            try {
-                return window.frames[0].editor.asc_nativeGetFile();
-            } catch (e) {
-                console.error(e);
-                return;
-            }
-        };
-
-        var fmConfig = {
-            noHandlers: true,
-            noStore: true,
-            body: $('body'),
-            onUploaded: function (ev, data) {
-                if (!data || !data.url) { return; }
-                common.getSframeChannel().query('Q_OO_SAVE', data, function (err) {
-                    if (err) {
-                        console.error(err);
-                        return void UI.alert(Messages.oo_saveError);
-                    }
-                    hashes.push(data.url);
-                    APP.onLocal();
-                    rtChannel.sendMsg(null, getLastCp(), function () {
-                        UI.log(Messages.saved);
-                    });
-                });
-            }
-        };
-        APP.FM = common.createFileManager(fmConfig);
-
-        var saveToServer = function () {
-            var text = getContent();
-            var blob = new Blob([text], {type: 'plain/text'});
-            var file = getFileType();
-            blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
-            APP.FM.handleFile(blob);
+            ooLoaded = true;
+            makeChannel();
         };
 
         var loadLastDocument = function () {
-            if (!hashes || !hashes.length) { return; }
-            var last = hashes.slice().pop();
-            var parsed = Hash.parsePadUrl(last);
+            var lastCp = getLastCp();
+            if (!lastCp) { return; }
+            ooChannel.cpIndex = lastCp.index || 0;
+            var parsed = Hash.parsePadUrl(lastCp.file);
             var secret = Hash.getSecrets('file', parsed.hash);
             if (!secret || !secret.channel) { return; }
             var hexFileName = secret.channel;
@@ -383,6 +491,7 @@ define([
             xhr.send(null);
         };
         var loadDocument = function (newPad) {
+            if (ooLoaded) { return; }
             var type = common.getMetadataMgr().getPrivateData().ooType;
             var file = getFileType();
             if (!newPad) {
@@ -432,16 +541,14 @@ define([
 
         var stringifyInner = function () {
             var obj = {
-                content: {
-                    channel: channel,
-                    hashes: hashes || [],
-                    //locked: locked
-                },
+                content: content,
                 metadata: metadataMgr.getMetadataLazy()
             };
             // stringify the json and send it into chainpad
             return stringify(obj);
         };
+
+        APP.getContent = function () { return content; };
 
         APP.onLocal = config.onLocal = function () {
             if (initializing) { return; }
@@ -482,7 +589,9 @@ define([
 
             var $rightside = toolbar.$rightside;
 
-            var $save = common.createButton('save', true, {}, saveToServer);
+            var $save = common.createButton('save', true, {}, function () {
+                saveToServer();
+            });
             $save.appendTo($rightside);
 
             if (common.isLoggedIn()) {
@@ -520,10 +629,8 @@ define([
                     UI.errorLoadingScreen(errorText);
                     throw new Error(errorText);
                 }
-                hashes = hjson.content && hjson.content.hashes;
-                //locked = hjson.content && hjson.content.locked;
-                channel = hjson.content && hjson.content.channel;
-                newDoc = !hashes || hashes.length === 0;
+                content = hjson.content || content;
+                newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
             } else {
                 Title.updateTitle(Title.defaultTitle);
             }
@@ -551,15 +658,14 @@ define([
 
             openRtChannel(function () {
                 loadDocument(newDoc);
-
                 initializing = false;
+                setMyId();
                 setEditable(!readOnly);
                 UI.removeLoadingScreen();
             });
 
         };
 
-        var reloadDisplayed = false;
         config.onRemote = function () {
             if (initializing) { return; }
             var userDoc = APP.realtime.getUserDoc();
@@ -567,20 +673,7 @@ define([
             if (json.metadata) {
                 metadataMgr.updateMetadata(json.metadata);
             }
-            /*
-            var newHashes = (json.content && json.content.hashes) || [];
-            if (newHashes.length !== hashes.length ||
-                stringify(newHashes) !== stringify(hashes)) {
-                hashes = newHashes;
-                if (reloadDisplayed) { return; }
-                reloadDisplayed = true;
-                UI.confirm(Messages.oo_newVersion, function (yes) {
-                    reloadDisplayed = false;
-                    if (!yes) { return; }
-                    common.gotoURL();
-                });
-            }
-            */
+            content = json.content;
         };
 
         config.onAbort = function () {

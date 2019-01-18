@@ -95,7 +95,6 @@ define([
                 // sframe-boot.js. Then we can start the channel.
                 var msgEv = _Util.mkEvent();
                 var iframe = $('#sbox-iframe')[0].contentWindow;
-                var iframeReady = false;
                 var postMsg = function (data) {
                     iframe.postMessage(data, '*');
                 };

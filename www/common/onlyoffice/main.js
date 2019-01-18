@@ -63,7 +63,7 @@ define([
                         // XXX add owners?
                         // owners: something...
                         channel: data.channel,
-                        lastCp: data.lastCp,
+                        lastCpHash: data.lastCpHash,
                         padChan: Utils.secret.channel,
                         validateKey: Utils.secret.keys.validateKey
                     }
@@ -71,18 +71,22 @@ define([
             });
             sframeChan.on('Q_OO_COMMAND', function (obj, cb) {
                 if (obj.cmd === 'SEND_MESSAGE') {
-                    if (obj.data.isCp) {
-                        obj.data.isCp += '|' + crypto.encrypt('cp');
-                    } else {
-                        obj.data.msg = crypto.encrypt(JSON.stringify(obj.data.msg));
-                    }
+                    obj.data.msg = crypto.encrypt(JSON.stringify(obj.data.msg));
+                    var hash = obj.data.msg.slice(0,64);
+                    var _cb = cb;
+                    cb = function () {
+                        _cb(hash);
+                    };
                 }
                 Cryptpad.onlyoffice.execCommand(obj, cb);
             });
             Cryptpad.onlyoffice.onEvent.reg(function (obj) {
-                if (obj.ev === 'MESSAGE') {
+                if (obj.ev === 'MESSAGE' && !/^cp\|/.test(obj.data)) {
                     try {
-                        obj.data = JSON.parse(crypto.decrypt(obj.data, Utils.secret.keys.validateKey));
+                        obj.data = {
+                            msg: JSON.parse(crypto.decrypt(obj.data, Utils.secret.keys.validateKey)),
+                            hash: obj.data.slice(0,64)
+                        };
                     } catch (e) {
                         console.error(e);
                     }
