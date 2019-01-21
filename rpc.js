@@ -457,10 +457,40 @@ var getHash = function (Env, publicKey, cb) {
     });
 };
 
+var applyCustomLimits = function (Env, config) {
+    var isLimit = function (o) {
+        var valid = o && typeof(o) === 'object' &&
+            typeof(o.limit) === 'number' &&
+            typeof(o.plan) === 'string' &&
+            typeof(o.note) === 'string';
+        return valid;
+    };
+
+    // read custom limits from the config
+    var customLimits = (function (custom) {
+        var limits = {};
+        Object.keys(custom).forEach(function (k) {
+            k.replace(/\/([^\/]+)$/, function (all, safeKey) {
+                var id = unescapeKeyCharacters(safeKey || '');
+                limits[id] = custom[k];
+                return '';
+            });
+        });
+        return limits;
+    }(config.customLimits || {}));
+
+    Object.keys(customLimits).forEach(function (k) {
+        if (!isLimit(customLimits[k])) { return; }
+        Env.limits[k] = customLimits[k];
+    });
+};
+
 // The limits object contains storage limits for all the publicKey that have paid
 // To each key is associated an object containing the 'limit' value and a 'note' explaining that limit
 var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>void*/) {
+
     if (config.adminEmail === false) {
+        applyCustomLimits(Env, config);
         if (config.allowSubscriptions === false) { return; }
         throw new Error("allowSubscriptions must be false if adminEmail is false");
     }
@@ -490,27 +520,6 @@ var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>vo
         }
     };
 
-    // read custom limits from the config
-    var customLimits = (function (custom) {
-        var limits = {};
-        Object.keys(custom).forEach(function (k) {
-            k.replace(/\/([^\/]+)$/, function (all, safeKey) {
-                var id = unescapeKeyCharacters(safeKey || '');
-                limits[id] = custom[k];
-                return '';
-            });
-        });
-        return limits;
-    }(config.customLimits || {}));
-
-    var isLimit = function (o) {
-        var valid = o && typeof(o) === 'object' &&
-            typeof(o.limit) === 'number' &&
-            typeof(o.plan) === 'string' &&
-            typeof(o.note) === 'string';
-        return valid;
-    };
-
     var req = Https.request(options, function (response) {
         if (!('' + response.statusCode).match(/^2\d\d$/)) {
             return void cb('SERVER ERROR ' + response.statusCode);
@@ -525,10 +534,7 @@ var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>vo
             try {
                 var json = JSON.parse(str);
                 Env.limits = json;
-                Object.keys(customLimits).forEach(function (k) {
-                    if (!isLimit(customLimits[k])) { return; }
-                    Env.limits[k] = customLimits[k];
-                });
+                applyCustomLimits(Env, config);
 
                 var l;
                 if (userId) {
@@ -544,6 +550,7 @@ var updateLimits = function (Env, config, publicKey, cb /*:(?string, ?any[])=>vo
     });
 
     req.on('error', function (e) {
+        applyCustomLimits(Env, config);
         if (!config.domain) { return cb(); }
         cb(e);
     });
