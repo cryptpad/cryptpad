@@ -18,8 +18,7 @@
     "sortify": "^1.0.4",
     "stream-to-pull-stream": "^1.7.2",
     "tweetnacl": "~0.12.2",
-    "ws": "^1.0.1",
-    "sockjs": "^0.3.18"
+    "ws": "^1.0.1"
   },
   "devDependencies": {
     "flow-bin": "^0.59.0",

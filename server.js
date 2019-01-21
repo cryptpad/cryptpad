@@ -9,7 +9,6 @@ var WebSocketServer = require('ws').Server;
 var NetfluxSrv = require('./node_modules/chainpad-server/NetfluxWebsocketSrv');
 var Package = require('./package.json');
 var Path = require("path");
-var OOServer = require('./ooserver.js');
 var nThen = require("nthen");
 
 var config;
@@ -201,8 +200,8 @@ var send404 = function (res, path) {
     });
 };
 
-/* SPECIAL CODE FOR ONLYOFFICE 
-/* Font support as onlyoffice requires fonts transformed to js */  
+/* SPECIAL CODE FOR ONLYOFFICE
+/* Font support as onlyoffice requires fonts transformed to js */
 var FONT_OBFUSCATION_MAGIC = new Buffer([
     0xA0, 0x66, 0xD6, 0x20, 0x14, 0x96, 0x47, 0xfa, 0x95, 0x69, 0xB8, 0x50, 0xB0, 0x41, 0x49, 0x48
 ]);
@@ -218,7 +217,7 @@ var FONT_NAME_MAP = {};
     });
 });
 
-/* Code to automatically transform font to js */ 
+/* Code to automatically transform font to js */
 /* Currently not active, but might be necessary */
 app.use("/common/onlyoffice/fonts/odttf/:name", function (req, res) {
     var name = req.params.name.replace(/\.js$/, '').toLowerCase();
@@ -257,22 +256,17 @@ app.use(function (req, res, next) {
 
 var httpServer = httpsOpts ? Https.createServer(httpsOpts, app) : Http.createServer(app);
 
-/* Install sockjs websocket server */
-//OOServer.install(httpServer, config.httpPort, () => {
-    httpServer.listen(config.httpPort,config.httpAddress,function(){
-        var host = config.httpAddress;
-        var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
+httpServer.listen(config.httpPort,config.httpAddress,function(){
+    var host = config.httpAddress;
+    var hostName = !host.indexOf(':') ? '[' + host + ']' : host;
 
-        var port = config.httpPort;
-        var ps = port === 80? '': ':' + port;
+    var port = config.httpPort;
+    var ps = port === 80? '': ':' + port;
 
-        console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
-    });
-//});
+    console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+});
 if (config.httpSafePort) {
-    var safeHttpServer = Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
-    //OOServer.install(safeHttpServer, config.httpSafePort, () => {
-    //});
+    Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
 }
 
 var wsConfig = { server: httpServer };
