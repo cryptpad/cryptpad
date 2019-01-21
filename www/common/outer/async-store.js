@@ -24,9 +24,9 @@ define([
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
              Cursor, OnlyOffice, CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
-    var Store = {};
 
     var create = function () {
+        var Store = window.Cryptpad_Store = {};
         var postMessage = function () {};
         var broadcast = function () {};
         var sendDriveEvent = function () {};
