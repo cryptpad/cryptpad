@@ -384,12 +384,12 @@ define([
                             // XXX lock
                             send({
                                 type: "unSaveLock",
-                                index: -1,
+                                index: ooChannel.cpIndex,
                             });
                             rtChannel.sendMsg({
                                 type: "saveChanges",
                                 changes: parseChanges(obj.changes),
-                                changesIndex: 2,
+                                changesIndex: ooChannel.cpIndex || 0,
                                 locks: [], // XXX take from userdoc?
                                 excelAdditionalInfo: null
                             }, null, function (err, hash) {
