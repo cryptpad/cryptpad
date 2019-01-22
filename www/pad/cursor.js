@@ -23,6 +23,18 @@ define([
         }
     };
 
+    var removeNode = function (el) {
+        if (!el) { return; }
+        if (typeof el.remove === "function") {
+            return void el.remove();
+        }
+        if (el.parentNode) {
+            el.parentNode.removeChild(el);
+            return;
+        }
+        $(el).remove();
+    };
+
     Cursor.create = function (inner, hjsonToDom, cursorModule) {
         var exp = {};
 
@@ -40,9 +52,9 @@ define([
 
         var makeCursor = function (id, cursor) {
             if (cursors[id]) {
-                $(cursors[id].el).remove();
-                $(cursors[id].elstart).remove();
-                $(cursors[id].elend).remove();
+                removeNode(cursors[id].el);
+                removeNode(cursors[id].elstart);
+                removeNode(cursors[id].elend);
             }
             cursors[id] = {
                 el: $('<span>', {
@@ -68,9 +80,9 @@ define([
         };
         var deleteCursor = function (id) {
             if (!cursors[id]) { return; }
-            $(cursors[id].el).remove();
-            $(cursors[id].elstart).remove();
-            $(cursors[id].elend).remove();
+            removeNode(cursors[id].el);
+            removeNode(cursors[id].elstart);
+            removeNode(cursors[id].elend);
             delete cursors[id];
         };
 
