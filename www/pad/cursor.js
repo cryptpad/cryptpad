@@ -40,9 +40,9 @@ define([
 
         var makeCursor = function (id, cursor) {
             if (cursors[id]) {
-                cursors[id].el.remove();
-                cursors[id].elstart.remove();
-                cursors[id].elend.remove();
+                $(cursors[id].el).remove();
+                $(cursors[id].elstart).remove();
+                $(cursors[id].elend).remove();
             }
             cursors[id] = {
                 el: $('<span>', {
@@ -68,9 +68,9 @@ define([
         };
         var deleteCursor = function (id) {
             if (!cursors[id]) { return; }
-            cursors[id].el.remove();
-            cursors[id].elstart.remove();
-            cursors[id].elend.remove();
+            $(cursors[id].el).remove();
+            $(cursors[id].elstart).remove();
+            $(cursors[id].elend).remove();
             delete cursors[id];
         };
 

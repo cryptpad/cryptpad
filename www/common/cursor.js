@@ -81,7 +81,7 @@ define([
                         var path = [];
                         while (current !== element) {
                             path.unshift(current);
-                            current = current.parentElement;
+                            current = current.parentNode;
                         }
 
                         if (current === element) { // Should always be the case
