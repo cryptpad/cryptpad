@@ -56,7 +56,13 @@ define([
                 });
             });
             sframeChan.on('Q_OO_OPENCHANNEL', function (data, cb) {
-                console.log(data);
+                Cryptpad.getPadAttribute('rtChannel', function (err, res) {
+                    // If already stored, don't pin it again
+                    if (res && res === data.channel) { return; }
+                    Cryptpad.pinPads([data.channel], function () {
+                        Cryptpad.setPadAttribute('rtChannel', data.channel, function () {});
+                    });
+                });
                 Cryptpad.onlyoffice.execCommand({
                     cmd: 'OPEN_CHANNEL',
                     data: {

@@ -66,6 +66,7 @@ define([
             hashes: {},
             ids: {}
         };
+        var oldHashes = {};
         var oldIds = {};
         var oldLocks = {};
         var myUniqueOOId;
@@ -169,8 +170,8 @@ define([
 
         var now = function () { return +new Date(); };
 
-        var getLastCp = function () {
-            var hashes = content.hashes;
+        var getLastCp = function (old) {
+            var hashes = old ? oldHashes : content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             var lastIndex = Math.max.apply(null, Object.keys(hashes).map(Number));
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
@@ -227,6 +228,7 @@ define([
                         hash: ev.hash,
                         index: ev.index
                     };
+                    oldHashes = JSON.parse(JSON.stringify(content.hashes));
                     content.saveLock = undefined;
                     APP.onLocal();
                     sframeChan.query('Q_OO_COMMAND', {
@@ -810,6 +812,10 @@ define([
                     throw new Error(errorText);
                 }
                 content = hjson.content || content;
+                var newLatest = getLastCp();
+                sframeChan.query('Q_OO_SAVE', {
+                    url: newLatest.file
+                }, function () { });
                 newDoc = !content.hashes || Object.keys(content.hashes).length === 0;
             } else {
                 Title.updateTitle(Title.defaultTitle);
@@ -833,6 +839,15 @@ define([
                 metadataMgr.updateMetadata(json.metadata);
             }
             content = json.content;
+            if (content.hashes) {
+                var latest = getLastCp(true);
+                var newLatest = getLastCp();
+                if (newLatest.index >= latest.index) {
+                    sframeChan.query('Q_OO_SAVE', {
+                        url: newLatest.file
+                    }, function () { });
+                }
+            }
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
                 oldIds = JSON.parse(JSON.stringify(content.ids));
