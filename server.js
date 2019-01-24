@@ -215,6 +215,7 @@ var FONT_NAME_MAP = {};
 app.use("/common/onlyoffice/fonts/odttf/:name", function (req, res) {
     var name = req.params.name.replace(/\.js$/, '').toLowerCase();
     var path = Path.join('./www/common/onlyoffice/fonts/odttf/', name);
+    console.log(path);
     Fs.createReadStream(path).pipe(res).on('error', function (e) {
         console.error(e);
         res.status(404).send('No such font');
