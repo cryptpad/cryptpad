@@ -658,8 +658,8 @@ define(function () {
     out.settings_padWidthHint = "Rich-text Dokumente benutzen normalerweise die grösste verfügbare Zeilenbreite, das kann manchmal schwer lesbar sein. Du kannst die Breite des Editors hier reduzieren.";
     out.settings_padWidthLabel = "Die Breite des Editors reduzieren";
     out.settings_padSpellcheckTitle = "Rechtschreibung";
-    out.settings_padSpellcheckHint = "This option allows you to enable spellcheck in rich text pads. Spelling errors will be underlined in red and you'll have to hold your Ctrl or Meta key while right-clicking to see the correct options.";
-    out.settings_padSpellcheckLabel = "Enable spellcheck in rich text pads";
+    //out.settings_padSpellcheckHint = "This option allows you to enable spellcheck in rich text pads. Spelling errors will be underlined in red and you'll have to hold your Ctrl or Meta key while right-clicking to see the correct options.";
+    //out.settings_padSpellcheckLabel = "Enable spellcheck in rich text pads";
 
     out.settings_creationSkip = "Den Erstellungsdialg für neue Dokumente überspringen";
     out.settings_creationSkipHint = "Dieser Erstellungsdialog erlaubt Einstellungen für mehr Kontrolle und Sicherheit bei deinen Dokumenten. Aber der zusätzliche Dialog verlangsamt die Arbeit. Mit dieser Option kannst du diese Dialog überspringen und die Standard-Einstellungen wählen.";
@@ -674,7 +674,7 @@ define(function () {
     out.settings_ownDriveHint = "Wir sind dabei dein CryptDrive zur neuen Version zu migrieren, damit du Zugang zu den neuen Features hast...";
     out.settings_ownDriveButton = "Migrieren";
     out.settings_ownDriveConfirm = "Bis du sicher?";
-    out.settings_ownDrivePending = "Your account is being upgraded. Please do not close or reload this page until the process has completed.";
+    //out.settings_ownDrivePending = "Your account is being upgraded. Please do not close or reload this page until the process has completed.";
 
     out.settings_changePasswordTitle = "Ändere dein Passwort";
     out.settings_changePasswordHint = "Ändere das Passwort deines Kontos ohne deine Daten zu verlieren. Du mußt einmal das jetzige Passwort eintragen und dann das gewünschte neue Passwort zweimal.<br>" +
