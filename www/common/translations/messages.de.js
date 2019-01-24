@@ -647,7 +647,7 @@ define(function () {
     out.settings_logoutEverywhereConfirm = "Bist du sicher? Du wirst dich auf allen deinen Geräten wieder einloggen müssen.";
 
     out.settings_driveDuplicateTitle = "Duplizierte eigene Dokumente";
-    out.settings_driveDuplicateHint = "Wenn du eine deiner eigene Dokumente zu einem verteilten Ordner verschiebst, wird eine Kopie in deinem CryptDrive behalten, damit du die Kontrolle des Dokuments nicht verlierst. Du kannst duplizierte Dateien verbergen. Nur die Version in dem verteilten Ordner wird dann angezeigt, ausser sie wurde gelöscht. In diesem Fall, wird sie wieder angezeigt."
+    out.settings_driveDuplicateHint = "Wenn du eine deiner eigene Dokumente zu einem verteilten Ordner verschiebst, wird eine Kopie in deinem CryptDrive behalten, damit du die Kontrolle des Dokuments nicht verlierst. Du kannst duplizierte Dateien verbergen. Nur die Version in dem verteilten Ordner wird dann angezeigt, ausser sie wurde gelöscht. In diesem Fall, wird sie wieder angezeigt.";
     out.settings_driveDuplicateLabel = "Duplizierte Dokumente verbergen";
 
     out.settings_codeIndentation = 'Einrücken für den Code-Editor (Leerzeichen)';
