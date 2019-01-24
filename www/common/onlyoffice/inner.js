@@ -17,7 +17,6 @@ define([
     '/common/onlyoffice/ooslide_base.js',
     '/common/outer/worker-channel.js',
 
-    '/bower_components/tweetnacl/nacl-fast.min.js',
     '/bower_components/file-saver/FileSaver.min.js',
 
     'css!/bower_components/bootstrap/dist/css/bootstrap.min.css',
@@ -43,7 +42,7 @@ define([
     Channel)
 {
     var saveAs = window.saveAs;
-    var Nacl = window.nacl;
+    saveAs = saveAs; // TODO jshint...
 
     var APP = window.APP = {
         $: $
@@ -62,7 +61,6 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
-        //var locked = false;
         var config = {};
         var content = {
             hashes: {},
@@ -117,9 +115,11 @@ define([
             var ids = content.ids;
             if (!myOOId) {
                 myOOId = Util.createRandomInteger();
-                while (Object.keys(ids).some(function (id) {
+                // f: function used in .some(f) but defined outside of the while
+                var f = function (id) {
                     return ids[id] === myOOId;
-                })) {
+                };
+                while (Object.keys(ids).some(f)) {
                     myOOId = Util.createRandomInteger();
                 }
             }
@@ -173,7 +173,6 @@ define([
             var hashes = content.hashes;
             if (!hashes || !Object.keys(hashes).length) { return {}; }
             var lastIndex = Math.max.apply(null, Object.keys(hashes).map(Number));
-            // TODO check if hashes[lastIndex] is undefined?
             var last = JSON.parse(JSON.stringify(hashes[lastIndex]));
             return last;
         };
@@ -267,7 +266,7 @@ define([
             // in the next 20 to 40 secondes and the lock is kept by the same user,
             // force the lock and make a checkpoint.
             var saved = stringify(content.hashes);
-            var to = 20000 + (Math.random() * 20000)
+            var to = 20000 + (Math.random() * 20000);
             setTimeout(function () {
                 if (stringify(content.hashes) === saved && locked === content.saveLock) {
                     makeCheckpoint(force);
@@ -345,6 +344,13 @@ define([
             };
         };
 
+        // Get all existing locks
+        var getLock = function () {
+            return Object.keys(content.locks).map(function (id) {
+                return content.locks[id];
+            });
+        };
+
         // Update the userlist in onlyoffice
         var handleNewIds = function (o, n) {
             if (stringify(o) === stringify(n)) { return; }
@@ -391,6 +397,21 @@ define([
             });
         };
 
+        // Remove locks from offline users
+        var deleteOfflineLocks = function () {
+            var locks = content.locks || {};
+            var users = Object.keys(metadataMgr.getMetadata().users);
+            Object.keys(locks).forEach(function (id) {
+                var nId = id.slice(0,32);
+                if (users.indexOf(nId) === -1) {
+                    ooChannel.send({
+                        type: "releaseLock",
+                        locks: [locks[id]]
+                    });
+                    delete content.locks[id];
+                }
+            });
+        };
 
         var handleAuth = function (obj, send) {
             // OO is ready
@@ -436,29 +457,6 @@ define([
             handleNewLocks(oldLocks, content.locks || {});
         };
 
-        // Remove locks from offline users
-        var deleteOfflineLocks = function () {
-            var locks = content.locks || {};
-            var users = Object.keys(metadataMgr.getMetadata().users);
-            Object.keys(locks).forEach(function (id) {
-                var nId = id.slice(0,32);
-                if (users.indexOf(nId) === -1) {
-                    ooChannel.send({
-                        type: "releaseLock",
-                        locks: [locks[id]]
-                    });
-                    delete content.locks[id];
-                }
-            });
-        };
-
-        // Get all existing locks
-        var getLock = function () {
-            return Object.keys(content.locks).map(function (id) {
-                return content.locks[id];
-            });
-        };
-
         // Add a lock
         var handleLock = function (obj, send) {
             content.locks = content.locks || {};
@@ -467,7 +465,7 @@ define([
                 time: now(),
                 user: myUniqueOOId,
                 block: obj.block && obj.block[0],
-            }
+            };
             var myId = getId();
             content.locks[myId] = msg;
             oldLocks = JSON.parse(JSON.stringify(content.locks));
@@ -546,17 +544,15 @@ define([
                 };
 
                 chan.on('CMD', function (obj) {
-                    var msg, msg2;
                     switch (obj.type) {
                         case "auth":
                             handleAuth(obj, send);
                             break;
                         case "isSaveLock":
-                            msg = {
+                            send({
                                 type: "saveLock",
                                 saveLock: false
-                            }
-                            send(msg);
+                            });
                             break;
                         case "getLock":
                             handleLock(obj, send);
@@ -641,7 +637,7 @@ define([
                 var ifr = document.getElementsByTagName('iframe')[0];
                 if (ifr) { ifr.remove(); }
             };
-            APP.docEditor = new DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
+            APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
         };
