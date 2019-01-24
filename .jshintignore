@@ -4,7 +4,8 @@ www/common/pdfjs/
 www/common/tippy/
 www/common/highlight/
 www/common/jquery-ui/
-www/common/onlyoffice/*
+www/common/onlyoffice/sdkjs
+www/common/onlyoffice/web-apps
 
 server.js
 www/common/old-media-tag.js

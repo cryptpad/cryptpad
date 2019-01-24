@@ -4186,11 +4186,11 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
     });
   };
 
-	DocsCoApi.prototype._initSocksJs = function () {
-		var t = this;
+    DocsCoApi.prototype._initSocksJs = function () {
+        var t = this;
         var sockjs;
         sockjs = this.sockjs = {};
-    
+
         var send = function (data) {
             setTimeout(function () {
                 console.log(data);
@@ -4203,17 +4203,18 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
             type: 'license',
             license: {
                 type: 3,
-                light: false,
-                trial: false,
+                mode: 0,
+                //light: false,
+                //trial: false,
                 rights: 1,
                 buildVersion: "5.2.6",
-                buildNumber: 5,
-                branding: false
+                buildNumber: 2,
+                //branding: false
             }
         };
-    
+
         var channel;
-    
+
         require([
             '/common/outer/worker-channel.js',
             '/common/common-util.js'
@@ -4230,12 +4231,13 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
             Channel.create(msgEv, postMsg, function (chan) {
                 channel = chan;
                 send(license);
+
                 chan.on('CMD', function (obj) {
                     send(obj);
                 });
             });
         });
-    
+
         sockjs.onopen = function() {
           t._state = ConnectionState.WaitAuth;
             t.onFirstConnect();
@@ -4245,7 +4247,7 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         sockjs.close = function () {
             console.error('Close realtime');
         };
-    
+
         sockjs.send = function (data) {
             console.log(data);
             try {
@@ -4263,8 +4265,8 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
             t._onServerMessage(e.data);
         };
 
-		return sockjs;
-	};
+        return sockjs;
+    };
 
 	DocsCoApi.prototype._onServerOpen = function () {
 		if (this.reconnectTimeout) {

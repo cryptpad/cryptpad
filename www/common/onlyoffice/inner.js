@@ -68,7 +68,15 @@ define([
             hashes: {},
             ids: {}
         };
+        var oldIds = {};
+        var oldLocks = {};
+        var myUniqueOOId;
         var myOOId;
+        var sessionId = Hash.createChannelId();
+
+        var getId = function () {
+            return metadataMgr.getNetfluxId() + '-' + privateData.clientId;
+        };
 
         var deleteOffline = function () {
             var ids = content.ids;
@@ -88,11 +96,22 @@ define([
             var ids = content.ids;
             // Check if the provided id is in the ID list
             return Object.keys(ids).some(function (id) {
-                return ooid === ids[id];
+                return ooid === ids[id].ooid;
             });
         };
 
-        var setMyId = function (netfluxId) {
+        var getUserIndex = function () {
+            var i = 1;
+            var ids = content.ids || {};
+            Object.keys(ids).forEach(function (k) {
+                if (ids[k] && ids[k].index && ids[k].index >= i) {
+                    i = ids[k].index + 1;
+                }
+            });
+            return i;
+        };
+
+        var setMyId = function () {
             // Remove ids for users that have left the channel
             deleteOffline();
             var ids = content.ids;
@@ -104,8 +123,13 @@ define([
                     myOOId = Util.createRandomInteger();
                 }
             }
-            var myId = (netfluxId || metadataMgr.getNetfluxId()) + '-' + privateData.clientId;
-            ids[myId] = myOOId;
+            var myId = getId();
+            ids[myId] = {
+                ooid: myOOId,
+                index: getUserIndex(),
+                netflux: metadataMgr.getNetfluxId()
+            };
+            oldIds = JSON.parse(JSON.stringify(ids));
             APP.onLocal();
         };
 
@@ -116,6 +140,7 @@ define([
             if (content.ids[tabId]) {
                 console.log('delete');
                 delete content.ids[tabId];
+                delete content.locks[tabId];
                 APP.onLocal();
                 console.log(content.ids);
             }
@@ -289,6 +314,233 @@ define([
             cb();
         };
 
+        var getParticipants = function () {
+            var users = metadataMgr.getMetadata().users;
+            var i = 1;
+            var p = Object.keys(content.ids || {}).map(function (id) {
+                var nId = id.slice(0,32);
+                var ooId = content.ids[id].ooid;
+                var idx = content.ids[id].index;
+                if (!ooId || ooId === myOOId) { return; }
+                if (idx >= i) { i = idx + 1; }
+                return {
+                    id: String(ooId) + idx,
+                    idOriginal: String(ooId),
+                    username: (users[nId] || {}).name || Messages.anonymous,
+                    indexUser: idx,
+                    connectionId: content.ids[id].netflux || Hash.createChannelId(),
+                    isCloseCoAuthoring:false,
+                    view: false
+                };
+            });
+            if (!myUniqueOOId) { myUniqueOOId = String(myOOId) + i; }
+            p.push({
+                id: myUniqueOOId,
+                idOriginal: String(myOOId),
+                username: metadataMgr.getUserData().name || Messages.anonymous,
+                indexUser: i,
+                connectionId: metadataMgr.getNetfluxId() || Hash.createChannelId(),
+                isCloseCoAuthoring:false,
+                view: false
+            });
+            console.log(p.filter(Boolean));
+            return {
+                index: i,
+                list: p.filter(Boolean)
+            };
+        };
+
+        var handleNewIds = function (o, n) {
+            console.log('handle nw ids');
+            if (stringify(o) === stringify(n)) { return; }
+            console.log(n);
+            var p = getParticipants();
+            ooChannel.send({
+                type: "connectState",
+                participantsTimestamp: +new Date(),
+                participants: p.list,
+                waitAuth: false
+            });
+            /*
+            Object.keys(n).forEach(function (id) {
+                var nId = id.slice(0,32);
+                if (!o[id]) {
+                    console.log('new user');
+                    ooChannel.send({
+                        type: "connectState",
+                        state: true,
+                        user: {
+                            id: String(n[id].ooid) + "1",
+                            idOriginal: String(n[id].ooid),
+                            username: (users[nId] || {}).name || Messages.anonymous,
+                            indexUser: n[id].index,
+                            view: false
+                        }
+                    });
+                    return;
+                }
+            });
+            Object.keys(o).forEach(function (id) {
+                var nId = id.slice(0,32);
+                if (!n[id]) {
+                    console.log('leaving user');
+                    ooChannel.send({
+                        type: "connectState",
+                        state: false,
+                        user: {
+                            id: String(o[id].ooid) + "1",
+                            idOriginal: String(o[id].ooid),
+                            username: (users[nId] || {}).name || Messages.anonymous,
+                            indexUser: o[id].index,
+                            view: false
+                        }
+                    });
+                    return;
+                }
+            });
+            */
+        };
+        var handleNewLocks = function (o, n) {
+            Object.keys(n).forEach(function (id) {
+                if (!o[id]) {
+                    console.log('new lock');
+                    ooChannel.send({
+                        type: "getLock",
+                        locks: getLock()
+                    });
+                    return;
+                }
+                if (stringify(n[id]) !== stringify(o[id])) {
+                    console.log('changed lock');
+                    ooChannel.send({
+                        type: "releaseLock",
+                        locks: [o[id]]
+                    });
+                    ooChannel.send({
+                        type: "getLock",
+                        locks: getLock()
+                    });
+                }
+            });
+            Object.keys(o).forEach(function (id) {
+                if (!n[id]) {
+                    console.log('released lock');
+                    ooChannel.send({
+                        type: "releaseLock",
+                        locks: [o[id]]
+                    });
+                    return;
+                }
+            });
+        };
+
+
+        var handleAuth = function (obj, send) {
+            ooChannel.ready = true;
+            var changes = [];
+            ooChannel.queue.forEach(function (data) {
+                Array.prototype.push.apply(changes, data.msg.changes);
+            });
+            var p = getParticipants();
+            send({
+                type: "authChanges",
+                changes: changes
+            });
+            send({
+                type: "auth",
+                result: 1,
+                sessionId: sessionId, //"08e77705-dc5c-477d-b73a-b1a7cbca1e9b",
+                // XXX add all users from chainpad
+                participants: p.list,
+                locks: [],
+                changes: [],
+                changesIndex: 0,
+                indexUser: p.index,
+                buildVersion: "5.2.6",
+                buildNumber: 2,
+                licenseType: 3,
+                "g_cAscSpellCheckUrl": "/spellchecker",
+                "settings":{"spellcheckerUrl":"/spellchecker","reconnection":{"attempts":50,"delay":2000}}
+            });
+            send({
+                type: "documentOpen",
+                data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
+            });
+            var last = ooChannel.queue.pop();
+            ooChannel.lastHash = last.hash;
+            ooChannel.cpIndex += ooChannel.queue.length;
+            deleteOfflineLocks();
+            APP.onLocal();
+            handleNewLocks(oldLocks, content.locks || {});
+            /*setTimeout(function () {
+                if (ooChannel.queue) {
+                    ooChannel.queue.forEach(function (data) {
+                        send(data.msg);
+                        ooChannel.lastHash = data.hash;
+                        ooChannel.cpIndex++;
+                    });
+                }
+                deleteOfflineLocks();
+                APP.onLocal();
+                handleNewLocks(oldLocks, content.locks || {});
+            }, 200);*/
+        };
+
+        var deleteOfflineLocks = function () {
+            var locks = content.locks || {};
+            var users = Object.keys(metadataMgr.getMetadata().users);
+            console.log('delete offline locks');
+            console.log(users);
+            Object.keys(locks).forEach(function (id) {
+                var nId = id.slice(0,32);
+                console.log(nId);
+                if (users.indexOf(nId) === -1) {
+                    console.log('deleted');
+                    ooChannel.send({
+                        type: "releaseLock",
+                        locks: [locks[id]]
+                    });
+                    delete content.locks[id];
+                }
+            });
+        };
+
+        var getLock = function () {
+            return Object.keys(content.locks).map(function (id) {
+                return content.locks[id];
+            });
+        };
+
+        var handleLock = function (obj, send) {
+            console.log('handle lock');
+            content.locks = content.locks || {};
+            deleteOfflineLocks();
+            // XXX store in chainpad
+            var msg = {
+                time: now(),
+                user: myUniqueOOId,
+                block: obj.block && obj.block[0],
+            }
+            var myId = getId();
+            /*if (content.locks[myId]) {
+                send({
+                    type: "releaseLock",
+                    locks: [content.locks[myId]]
+                });
+            }*/
+            content.locks[myId] = msg;
+            oldLocks = JSON.parse(JSON.stringify(content.locks));
+            APP.onLocal();
+                send({
+                    type: "getLock",
+                    locks: getLock()
+                });
+            //APP.realtime.onSettle(function () {
+                console.log(getLock());
+                console.log(oldLocks);
+            //});
+        };
+
         var parseChanges = function (changes) {
             try {
                 changes = JSON.parse(changes);
@@ -300,8 +552,8 @@ define([
                     docid: "fresh",
                     change: '"' + change + '"',
                     time: now(),
-                    user: "test", // XXX get username
-                    useridoriginal: "test" // get user id from worker?
+                    user: myUniqueOOId, // XXX get username
+                    useridoriginal: String(myOOId) // get user id from worker?
                 };
             });
         };
@@ -326,37 +578,7 @@ define([
                     var msg, msg2;
                     switch (obj.type) {
                         case "auth":
-                            ooChannel.ready = true;
-                            send({
-                                type: "auth",
-                                result: 1,
-                                sessionId: "08e77705-dc5c-477d-b73a-b1a7cbca1e9b",
-                                participants: [{
-                                    id: "myid1",
-                                    idOriginal: "myid",
-                                    username: "User",
-                                    indexUser: 1,
-                                    view: false
-                                }],
-                                locks: [],
-                                changes: [],
-                                changesIndex: 0,
-                                indexUser: 1,
-                                "g_cAscSpellCheckUrl": "/spellchecker"
-                            });
-                            send({
-                                type: "documentOpen",
-                                data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
-                            });
-                            setTimeout(function () {
-                                if (ooChannel.queue) {
-                                    ooChannel.queue.forEach(function (data) {
-                                        send(data.msg);
-                                        ooChannel.lastHash = data.hash;
-                                        ooChannel.cpIndex++;
-                                    });
-                                }
-                            }, 2000);
+                            handleAuth(obj, send);
                             break;
                         case "isSaveLock":
                             msg = {
@@ -366,16 +588,7 @@ define([
                             send(msg);
                             break;
                         case "getLock":
-                            msg = {
-                                type: "getLock",
-                                locks: [{
-                                    time: now(),
-                                    user: "myid1",
-                                    block: obj.block && obj.block[0],
-                                    sessionId: "08e77705-dc5c-477d-b73a-b1a7cbca1e9b"
-                                }]
-                            }
-                            send(msg);
+                            handleLock(obj, send);
                             break;
                         case "getMessages":
                             send({ type: "message" });
@@ -385,12 +598,14 @@ define([
                             send({
                                 type: "unSaveLock",
                                 index: ooChannel.cpIndex,
+                                time: +new Date()
                             });
+                            // Send the change
                             rtChannel.sendMsg({
                                 type: "saveChanges",
                                 changes: parseChanges(obj.changes),
                                 changesIndex: ooChannel.cpIndex || 0,
-                                locks: [], // XXX take from userdoc?
+                                locks: [content.locks[getId()]], // XXX take from userdoc?
                                 excelAdditionalInfo: null
                             }, null, function (err, hash) {
                                 ooChannel.cpIndex++;
@@ -398,7 +613,28 @@ define([
                                 if (ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0) {
                                     makeCheckpoint();
                                 }
+                                // Remove my lock
+                                delete content.locks[getId()];
+                                oldLocks = JSON.parse(JSON.stringify(content.locks));
+                                APP.onLocal();
                             });
+                            break;
+                        case "unLockDocument":
+                            if (obj.releaseLocks && content.locks[getId()]) {
+                                send({
+                                    type: "releaseLock",
+                                    locks: [content.locks[getId()]]
+                                });
+                                delete content.locks[getId()];
+                                APP.onLocal();
+                            }
+                            if (obj.isSave) {
+                                send({
+                                    type: "unSaveLock",
+                                    time: -1,
+                                    index: -1
+                                });
+                            }
                             break;
                     }
                 });
@@ -421,6 +657,7 @@ define([
                     "permissions": {
                         "download": false, // FIXME: download/export is not working, so we use false
                                            // to remove the button
+                        "print": false,
                     }
                 },
                 "documentType": file.doc,
@@ -432,8 +669,8 @@ define([
                         }
                     },
                     "user": {
-                        "id": "myid", //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
-                        "name": "User", //"John Smith"
+                        "id": String(myOOId), //"c0c3bf82-20d7-4663-bf6d-7fa39c598b1d",
+                        "firstname": metadataMgr.getUserData().name || Messages.anonymous,
                     },
                     "mode": readOnly || lock ? "view" : "edit"
                 },
@@ -521,7 +758,7 @@ define([
         var cpNfInner;
 
         config = {
-            patchTransformer: ChainPad.NaiveJSONTransformer,
+            patchTransformer: ChainPad.SmartJSONTransformer,
             // cryptpad debug logging (default is 1)
             // logLevel: 0,
             validateContent: function (content) {
@@ -554,7 +791,7 @@ define([
             if (initializing) { return; }
             if (readOnly) { return; }
 
-            console.log('onLocal, data avalable');
+            console.error('onLocal, data available');
             // Update metadata
             var content = stringifyInner();
             APP.realtime.contentUpdate(content);
@@ -657,9 +894,9 @@ define([
             }
 
             openRtChannel(function () {
+                setMyId();
                 loadDocument(newDoc);
                 initializing = false;
-                setMyId();
                 setEditable(!readOnly);
                 UI.removeLoadingScreen();
             });
@@ -674,6 +911,18 @@ define([
                 metadataMgr.updateMetadata(json.metadata);
             }
             content = json.content;
+            console.log(content);
+            if (content.ids) {
+                handleNewIds(oldIds, content.ids);
+                oldIds = JSON.parse(JSON.stringify(content.ids));
+            }
+            if (content.locks) {
+                console.log(content.locks);
+                console.log(oldLocks);
+                handleNewLocks(oldLocks, content.locks);
+                // XXX send locks to oo
+                oldLocks = JSON.parse(JSON.stringify(content.locks));
+            }
         };
 
         config.onAbort = function () {
