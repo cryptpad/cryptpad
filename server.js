@@ -221,10 +221,7 @@ var FONT_NAME_MAP = {};
 /* Currently not active, but might be necessary */
 app.use("/common/onlyoffice/fonts/odttf/:name", function (req, res) {
     var name = req.params.name.replace(/\.js$/, '').toLowerCase();
-    console.log(name);
     if (!FONT_NAME_MAP[name]) {
-        console.log(name);
-        console.log(FONT_NAME_MAP[name]);
         res.status(400).send('No such font');
         return;
     }
