@@ -457,6 +457,22 @@ define([
             deleteOfflineLocks();
             APP.onLocal();
             handleNewLocks(oldLocks, content.locks || {});
+
+            var observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === "childList") {
+                        for (var i = 0; i < mutation.addedNodes.length; i++) {
+                            if (mutation.addedNodes[i].classList.contains('asc-window') &&
+                                mutation.addedNodes[i].classList.contains('alert')) {
+                                $(mutation.addedNodes[i]).find('button').not('.custom').click();
+                            }
+                        }
+                    }
+                });
+            });
+            observer.observe(window.frames[0].document.body, {
+                childList: true,
+            });
         };
 
         // Add a lock
@@ -625,6 +641,8 @@ define([
                         var $tb = $('iframe[name="frameEditor"]').contents().find('head');
                         var css = '#id-toolbar-full .toolbar-group:nth-child(2), #id-toolbar-full .separator:nth-child(3) { display: none; }' +
                                   '#fm-btn-save { display: none !important; }' +
+                                  '#panel-settings-general tr.autosave { display: none !important; }' +
+                                  '#panel-settings-general tr.coauth { display: none !important; }' +
                                   '#header { display: none !important; }';
                         $('<style>').text(css).appendTo($tb);
                         if (UI.findOKButton().length) {
@@ -642,6 +660,7 @@ define([
             APP.docEditor = new window.DocsAPI.DocEditor("cp-app-oo-placeholder", APP.ooconfig);
             ooLoaded = true;
             makeChannel();
+
         };
 
         var loadLastDocument = function () {
@@ -737,7 +756,6 @@ define([
             if (initializing) { return; }
             if (readOnly) { return; }
 
-            console.error('onLocal, data available');
             // Update metadata
             var content = stringifyInner();
             APP.realtime.contentUpdate(content);
