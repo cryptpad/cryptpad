@@ -200,13 +200,6 @@ var send404 = function (res, path) {
     });
 };
 
-/* SPECIAL CODE FOR ONLYOFFICE
-/* Font support as onlyoffice requires fonts transformed to js */
-var FONT_OBFUSCATION_MAGIC = new Buffer([
-    0xA0, 0x66, 0xD6, 0x20, 0x14, 0x96, 0x47, 0xfa, 0x95, 0x69, 0xB8, 0x50, 0xB0, 0x41, 0x49, 0x48
-]);
-
-
 var FONT_NAME_MAP = {};
 [ './www/common/onlyoffice/fonts/' ].forEach(function (path) {
     Fs.readdir(path, function (err, list) {
@@ -221,17 +214,9 @@ var FONT_NAME_MAP = {};
 /* Currently not active, but might be necessary */
 app.use("/common/onlyoffice/fonts/odttf/:name", function (req, res) {
     var name = req.params.name.replace(/\.js$/, '').toLowerCase();
-    if (!FONT_NAME_MAP[name]) {
-        res.status(400).send('No such font');
-        return;
-    }
-    Fs.readFile(FONT_NAME_MAP[name], function (err, ret) {
-        if (err) { throw err; }
-        var maxLen = Math.min(32, ret.length);
-        for (var i = 0; i < maxLen; i++) {
-            ret[i] ^= FONT_OBFUSCATION_MAGIC[i % 16];
-        }
-        res.end(ret);
+    var path = Path.join('./www/common/onlyoffice/fonts/odttf/', name);
+    Fs.createReadStream(path).pipe(res).on('error', function () {
+        res.status(404).send('No such font');
     });
 });
 
