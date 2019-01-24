@@ -118,7 +118,14 @@ define([
     };
     // Settings
     common.deleteAccount = function (cb) {
-        postMessage("DELETE_ACCOUNT", null, cb);
+        postMessage("DELETE_ACCOUNT", null, function (obj) {
+            if (obj.state) {
+                Feedback.send('DELETE_ACCOUNT_AUTOMATIC');
+            } else {
+                Feedback.send('DELETE_ACCOUNT_MANUAL');
+            }
+            cb(obj);
+        });
     };
     // Drive
     common.userObjectCommand = function (data, cb) {
@@ -933,7 +940,12 @@ define([
             }
         }).nThen(function () {
             // We have the new drive, with the new login block
-            window.location.reload();
+            var feedbackKey = (password === newPassword)?
+                'OWNED_DRIVE_MIGRATION': 'PASSWORD_CHANGED';
+
+            Feedback.send(feedbackKey, undefined, function () {
+                window.location.reload();
+            });
         });
     };
 
@@ -1108,6 +1120,14 @@ define([
         return doesSupport;
     };
 
+    common.isWebRTCSupported = function () {
+        return Boolean(navigator.getUserMedia ||
+            navigator.webkitGetUserMedia ||
+            navigator.mozGetUserMedia ||
+            navigator.msGetUserMedia ||
+            window.RTCPeerConnection);
+    };
+
     common.ready = (function () {
         var env = {};
         var initialized = false;
@@ -1121,6 +1141,10 @@ define([
         var provideFeedback = function () {
             if (typeof(window.Proxy) === 'undefined') {
                 Feedback.send("NO_PROXIES");
+            }
+
+            if (!common.isWebRTCSupported()) {
+                Feedback.send("NO_WEBRTC");
             }
 
             var shimPattern = /CRYPTPAD_SHIM/;

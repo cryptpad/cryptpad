@@ -154,10 +154,15 @@ define([
         var setMode = exp.setMode = function (mode, cb) {
             exp.highlightMode = mode;
             if (mode === 'markdown') { mode = 'gfm'; }
-            if (mode !== "text") {
-                CMeditor.autoLoadMode(editor, mode);
+            if (/text\/x/.test(mode)) {
+                CMeditor.autoLoadMode(editor, 'clike');
+                editor.setOption('mode', mode);
+            } else {
+                if (mode !== "text") {
+                    CMeditor.autoLoadMode(editor, mode);
+                }
+                editor.setOption('mode', mode);
             }
-            editor.setOption('mode', mode);
             if (exp.$language) {
                 var name = exp.$language.find('a[data-value="' + mode + '"]').text() || undefined;
                 name = name ? Messages.languageButton + ' ('+name+')' : Messages.languageButton;
@@ -297,6 +302,7 @@ define([
             } else {
                 mode = mime && mime.mode || null;
             }
+            if (mode === "markdown") { mode = "gfm"; }
             if (mode && Modes.list.some(function (o) { return o.mode === mode; })) {
                 exp.setMode(mode);
                 $toolbarContainer.find('#language-mode').val(mode);
@@ -402,6 +408,12 @@ define([
             return html;
         };
         var marks = {};
+        exp.removeCursors = function () {
+            for (var id in marks) {
+                marks[id].clear();
+                delete marks[id];
+            }
+        };
         exp.setRemoteCursor = function (data) {
             if (data.leave) {
                 $('.cp-codemirror-cursor[id^='+data.id+']').each(function (i, el) {

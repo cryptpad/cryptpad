@@ -301,7 +301,7 @@ define([
                         forceCreationScreen: forceCreationScreen,
                         password: password,
                         channel: secret.channel,
-                        enableSF: localStorage.CryptPad_SF === "1" // TODO to remove when enabled by default
+                        enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
@@ -311,7 +311,8 @@ define([
                         additionalPriv.disabledApp = true;
                     }
                     if (!Utils.LocalStore.isLoggedIn() &&
-                        AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1) {
+                        AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1 &&
+                        parsed.type !== "file") {
                         additionalPriv.registeredOnly = true;
                     }
 

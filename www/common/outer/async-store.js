@@ -458,7 +458,8 @@ define([
                     edPublic: store.proxy.edPublic,
                     friends: store.proxy.friends || {},
                     settings: store.proxy.settings,
-                    thumbnails: disableThumbnails === false
+                    thumbnails: disableThumbnails === false,
+                    isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners']))
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -967,12 +968,20 @@ define([
                 history: [],
                 pushHistory: function (msg, isCp) {
                     if (isCp) {
+                        // the current message is a checkpoint.
+                        // push it to your worker's history, prepending it with cp|
+                        // cp| and anything else related to checkpoints has already
+                        // been stripped by chainpad-netflux-worker or within async store
+                        // when the message was outgoing.
                         channel.history.push('cp|' + msg);
+                        // since the latest message is a checkpoint, we are able to drop
+                        // some of the older history, but we can't rely on checkpoints being
+                        // correct, as they might be checkpoints from different forks
                         var i;
-                        for (i = channel.history.length - 2; i > 0; i--) {
+                        for (i = channel.history.length - 101; i > 0; i--) {
                             if (/^cp\|/.test(channel.history[i])) { break; }
                         }
-                        channel.history = channel.history.slice(i);
+                        channel.history = channel.history.slice(Math.max(i, 0));
                         return;
                     }
                     channel.history.push(msg);
@@ -1416,8 +1425,13 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic,
-                                            pin, unpin, loadSharedFolder, {
+            var manager = store.manager = ProxyManager.create(proxy.drive, {
+                edPublic: proxy.edPublic,
+                pin: pin,
+                unpin: unpin,
+                loadSharedFolder: loadSharedFolder,
+                settings: proxy.settings
+            }, {
                 outer: true,
                 removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel('', data, cb); },
                 edPublic: store.proxy.edPublic,
@@ -1547,8 +1561,9 @@ define([
                 if (!data.userHash) {
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
-            }).on('ready', function () {
+            }).on('ready', function (info) {
                 if (store.userObject) { return; } // the store is already ready, it is a reconnection
+                store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 var drive = rt.proxy.drive;
                 // Creating a new anon drive: import anon pads from localStorage

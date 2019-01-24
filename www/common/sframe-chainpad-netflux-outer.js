@@ -59,7 +59,7 @@ define([], function () {
                     var id = '';
                     if (window.nacl) {
                         var hash = window.nacl.hash(window.nacl.util.decodeUTF8(msg));
-                        id = window.nacl.util.encodeBase64(hash.slice(0, 8)) + '|';
+                        id = window.nacl.util.encodeBase64(hash.subarray(0, 8)) + '|';
                     } else {
                         console.log("Checkpoint sent without an ID. Nacl is missing.");
                     }

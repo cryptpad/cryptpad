@@ -682,8 +682,20 @@ define([
                 var sf = files[SHARED_FOLDERS];
                 var rootFiles = exp.getFiles([ROOT]);
                 var root = exp.find([ROOT]);
+                var parsed, secret, el;
                 for (var id in sf) {
+                    el = sf[id];
                     id = Number(id);
+
+                    // Fix undefined hash
+                    parsed = Hash.parsePadUrl(el.href || el.roHref);
+                    secret = Hash.getSecrets('drive', parsed.hash, el.password);
+                    if (!secret.keys) {
+                        delete sf[id];
+                        continue;
+                    }
+
+                    // Fix shared folder not displayed in root
                     if (rootFiles.indexOf(id) === -1) {
                         console.log('missing' + id);
                         var newName = Hash.createChannelId();

@@ -1324,21 +1324,27 @@ define([
 
             var urls = common.getMetadataMgr().getPrivateData().accounts;
             var makeDonateButton = function () {
-                $('<a>', {
+                var $a = $('<a>', {
                     'class': 'cp-limit-upgrade btn btn-success',
                     href: urls.donateURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).text(Messages.supportCryptpad).appendTo($container);
+                $a.click(function () {
+                    Feedback.send('SUPPORT_CRYPTPAD');
+                });
             };
 
             var makeUpgradeButton = function () {
-                $('<a>', {
+                var $a = $('<a>', {
                     'class': 'cp-limit-upgrade btn btn-success',
                     href: urls.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).text(Messages.upgradeAccount).appendTo($container);
+                $a.click(function () {
+                    Feedback.send('UPGRADE_ACCOUNT');
+                });
             };
 
             if (!Config.removeDonateButton) {

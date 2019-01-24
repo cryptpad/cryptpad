@@ -38,10 +38,8 @@ define([
         var $confirm = $('#password-confirm');
 
         if (sessionStorage.login_user) {
+            delete sessionStorage.login_user;
             $uname.val(sessionStorage.login_user);
-        }
-        if (sessionStorage.login_pass) {
-            $passwd.val(sessionStorage.login_pass);
         }
 
         [ $uname, $passwd, $confirm]

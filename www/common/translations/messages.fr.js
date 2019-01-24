@@ -54,6 +54,9 @@ define(function () {
     out.deleted = "Pad supprimé de votre CryptDrive";
     out.deletedFromServer = "Pad supprimé du serveur";
 
+    out.mustLogin = "Vous devez être enregistré pour avoir accès à cette page.";
+    out.disabledApp = "Cette application a été désactivée. Pour plus d'information, veuillez contacter l'administrateur de ce CryptPad.";
+
     out.realtime_unrecoverableError = "Une erreur critique est survenue. Cliquez sur OK pour recharger la page.";
 
     out.disconnected = 'Déconnecté';
@@ -547,6 +550,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Compte";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_cursor = "Curseur";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Documents texte";
     out.settings_cat_creation = "Nouveau pad";
@@ -637,6 +641,10 @@ define(function () {
     out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
+    out.settings_driveDuplicateTitle = "Doublons des pads dont vous êtes propriétaire";
+    out.settings_driveDuplicateHint = "Quand vous déplacez un pad dont vous êtes le propriétaire dans un dossier partagé, une copie  est créée dans votre CryptDrive pour s'assurer que vous puissiez garder le contrôle de ce pad. Vous pouvez choisir de cacher ces doublons. Seules les versions partagées seront affichées, jusqu'à leur suppression, dans quels cas la version dans votre CryptDrive redeviendra visible.";
+    out.settings_driveDuplicateLabel = "Cacher les doublons";
+
     out.settings_codeIndentation = "Indentation dans l'éditeur de code (nombre d'espaces)";
     out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
     out.settings_codeFontSize = "Taille de la police dans l'éditeur de code (px)";
@@ -644,6 +652,9 @@ define(function () {
     out.settings_padWidth = "Largeur de l'éditeur de texte";
     out.settings_padWidthHint = "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.";
     out.settings_padWidthLabel = "Réduire la largeur de l'éditeur";
+    out.settings_padSpellcheckTitle = "Vérification orthographique";
+    out.settings_padSpellcheckHint = "Cette option vous permet d'activer la vérification orthographique dans l'éditeur de Texte. Les fautes seront soulignées et des propositions correctes seront disponibles en effectuant un clic-droit avec la touche Ctrl ou Meta enfoncée.";
+    out.settings_padSpellcheckLabel = "Activer la vérification orthographique";
 
     out.settings_creationSkip = "Passer l'écran de création de pad";
     out.settings_creationSkipHint = "L'écran de création de pad offre de nouvelles options pour créer un pad, permettant d'avoir plus de contrôle et de sécurité concernant vos données. Toutefois, il peut ralentir votre travail en ajoutant une étape supplémentaire et donc, ici, vous avez la possibilité de choisir de passer cet écran et d'utiliser les paramètres par défaut choisis au-dessus.";
@@ -652,6 +663,12 @@ define(function () {
 
     out.settings_templateSkip = "Passer la fenêtre de choix d'un modèle";
     out.settings_templateSkipHint = "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.";
+
+    out.settings_ownDriveTitle = "Activer les dernières fonctionnalités du compte";
+    out.settings_ownDriveHint = "Pour des raisons techniques, les comptes utilisateurs les plus anciens n'ont pas accès à toutes les fonctionnalités. Une mise à niveau gratuite permet de préparer votre CryptDrive pour les nouveautés à venir sans perturber vos activités habituelles.";
+    out.settings_ownDriveButton = "Mettre à niveau votre compte";
+    out.settings_ownDriveConfirm = "La mise à niveau peut prendre du temps. Vous devrez vous reconnecter sur tous vos appareils. Voulez-vous continuer?";
+    out.settings_ownDrivePending = "Votre compte est en train d'être mis à jour. Veuillez ne pas fermer ou recharger cette page avant que le traitement soit terminé.";
 
     out.settings_changePasswordTitle = "Changer de mot de passe";
     out.settings_changePasswordHint = "Pour modifier le mot de passe de votre compte utilisateur, entrez votre mot de passe actuel et confirmez le nouveau mot de passe en la tapant deux fois.<br>" +

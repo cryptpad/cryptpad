@@ -197,7 +197,10 @@ define([
     };
     funcs.openCursorChannel = function (saveChanges) {
         var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
-        var channel = md.cursor || Hash.createChannelId();
+        var channel = md.cursor;
+        if (typeof(channel) !== 'string' || channel.length !== Hash.ephemeralChannelLength) {
+            channel = Hash.createChannelId(true); // true indicates that it's an ephemeral channel
+        }
         if (!md.cursor) {
             md.cursor = channel;
             ctx.metadataMgr.updateMetadata(md);
