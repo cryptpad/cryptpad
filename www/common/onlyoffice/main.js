@@ -103,7 +103,8 @@ define([
         SFCommonO.start({
             type: 'oo',
             addData: addData,
-            addRpc: addRpc
+            addRpc: addRpc,
+            messaging: true
         });
     });
 });

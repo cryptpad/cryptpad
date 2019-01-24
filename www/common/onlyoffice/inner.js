@@ -750,6 +750,7 @@ define([
 
             var configTb = {
                 displayed: [
+                    'chat',
                     'userlist',
                     'title',
                     'useradmin',
@@ -827,8 +828,8 @@ define([
                 initializing = false;
                 setEditable(!readOnly);
                 UI.removeLoadingScreen();
+                common.openPadChat(APP.onLocal);
             });
-
         };
 
         config.onRemote = function () {
