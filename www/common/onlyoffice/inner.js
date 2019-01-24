@@ -136,13 +136,10 @@ define([
         // Another tab from our worker has left: remove its id from the list
         var removeClient = function (obj) {
             var tabId = metadataMgr.getNetfluxId() + '-' + obj.id;
-            console.log(tabId);
             if (content.ids[tabId]) {
-                console.log('delete');
                 delete content.ids[tabId];
                 delete content.locks[tabId];
                 APP.onLocal();
-                console.log(content.ids);
             }
         };
 
@@ -226,7 +223,6 @@ define([
                         return void UI.alert(Messages.oo_saveError);
                     }
                     var i = Math.floor(ev.index / CHECKPOINT_INTERVAL);
-                    // XXX check if content.hashes[i] already exists?
                     content.hashes[i] = {
                         file: data.url,
                         hash: ev.hash,
@@ -343,17 +339,15 @@ define([
                 isCloseCoAuthoring:false,
                 view: false
             });
-            console.log(p.filter(Boolean));
             return {
                 index: i,
                 list: p.filter(Boolean)
             };
         };
 
+        // Update the userlist in onlyoffice
         var handleNewIds = function (o, n) {
-            console.log('handle nw ids');
             if (stringify(o) === stringify(n)) { return; }
-            console.log(n);
             var p = getParticipants();
             ooChannel.send({
                 type: "connectState",
@@ -361,57 +355,20 @@ define([
                 participants: p.list,
                 waitAuth: false
             });
-            /*
-            Object.keys(n).forEach(function (id) {
-                var nId = id.slice(0,32);
-                if (!o[id]) {
-                    console.log('new user');
-                    ooChannel.send({
-                        type: "connectState",
-                        state: true,
-                        user: {
-                            id: String(n[id].ooid) + "1",
-                            idOriginal: String(n[id].ooid),
-                            username: (users[nId] || {}).name || Messages.anonymous,
-                            indexUser: n[id].index,
-                            view: false
-                        }
-                    });
-                    return;
-                }
-            });
-            Object.keys(o).forEach(function (id) {
-                var nId = id.slice(0,32);
-                if (!n[id]) {
-                    console.log('leaving user');
-                    ooChannel.send({
-                        type: "connectState",
-                        state: false,
-                        user: {
-                            id: String(o[id].ooid) + "1",
-                            idOriginal: String(o[id].ooid),
-                            username: (users[nId] || {}).name || Messages.anonymous,
-                            indexUser: o[id].index,
-                            view: false
-                        }
-                    });
-                    return;
-                }
-            });
-            */
         };
+        // Update the locks status in onlyoffice
         var handleNewLocks = function (o, n) {
             Object.keys(n).forEach(function (id) {
+                // New lock
                 if (!o[id]) {
-                    console.log('new lock');
                     ooChannel.send({
                         type: "getLock",
                         locks: getLock()
                     });
                     return;
                 }
+                // Updated lock
                 if (stringify(n[id]) !== stringify(o[id])) {
-                    console.log('changed lock');
                     ooChannel.send({
                         type: "releaseLock",
                         locks: [o[id]]
@@ -423,8 +380,8 @@ define([
                 }
             });
             Object.keys(o).forEach(function (id) {
+                // Removed lock
                 if (!n[id]) {
-                    console.log('released lock');
                     ooChannel.send({
                         type: "releaseLock",
                         locks: [o[id]]
@@ -436,21 +393,23 @@ define([
 
 
         var handleAuth = function (obj, send) {
+            // OO is ready
             ooChannel.ready = true;
+            // Get the content pushed after the latest checkpoint
             var changes = [];
             ooChannel.queue.forEach(function (data) {
                 Array.prototype.push.apply(changes, data.msg.changes);
             });
-            var p = getParticipants();
             send({
                 type: "authChanges",
                 changes: changes
             });
+            // Answer to the auth command
+            var p = getParticipants();
             send({
                 type: "auth",
                 result: 1,
-                sessionId: sessionId, //"08e77705-dc5c-477d-b73a-b1a7cbca1e9b",
-                // XXX add all users from chainpad
+                sessionId: sessionId,
                 participants: p.list,
                 locks: [],
                 changes: [],
@@ -462,40 +421,28 @@ define([
                 "g_cAscSpellCheckUrl": "/spellchecker",
                 "settings":{"spellcheckerUrl":"/spellchecker","reconnection":{"attempts":50,"delay":2000}}
             });
+            // Open the document
             send({
                 type: "documentOpen",
                 data: {"type":"open","status":"ok","data":{"Editor.bin":obj.openCmd.url}}
             });
+            // Update current index
             var last = ooChannel.queue.pop();
             ooChannel.lastHash = last.hash;
             ooChannel.cpIndex += ooChannel.queue.length;
+            // Apply existing locks
             deleteOfflineLocks();
             APP.onLocal();
             handleNewLocks(oldLocks, content.locks || {});
-            /*setTimeout(function () {
-                if (ooChannel.queue) {
-                    ooChannel.queue.forEach(function (data) {
-                        send(data.msg);
-                        ooChannel.lastHash = data.hash;
-                        ooChannel.cpIndex++;
-                    });
-                }
-                deleteOfflineLocks();
-                APP.onLocal();
-                handleNewLocks(oldLocks, content.locks || {});
-            }, 200);*/
         };
 
+        // Remove locks from offline users
         var deleteOfflineLocks = function () {
             var locks = content.locks || {};
             var users = Object.keys(metadataMgr.getMetadata().users);
-            console.log('delete offline locks');
-            console.log(users);
             Object.keys(locks).forEach(function (id) {
                 var nId = id.slice(0,32);
-                console.log(nId);
                 if (users.indexOf(nId) === -1) {
-                    console.log('deleted');
                     ooChannel.send({
                         type: "releaseLock",
                         locks: [locks[id]]
@@ -505,40 +452,34 @@ define([
             });
         };
 
+        // Get all existing locks
         var getLock = function () {
             return Object.keys(content.locks).map(function (id) {
                 return content.locks[id];
             });
         };
 
+        // Add a lock
         var handleLock = function (obj, send) {
-            console.log('handle lock');
             content.locks = content.locks || {};
-            deleteOfflineLocks();
-            // XXX store in chainpad
+            // Send the lock to other users
             var msg = {
                 time: now(),
                 user: myUniqueOOId,
                 block: obj.block && obj.block[0],
             }
             var myId = getId();
-            /*if (content.locks[myId]) {
-                send({
-                    type: "releaseLock",
-                    locks: [content.locks[myId]]
-                });
-            }*/
             content.locks[myId] = msg;
             oldLocks = JSON.parse(JSON.stringify(content.locks));
+            // Answer to our onlyoffice
+            send({
+                type: "getLock",
+                locks: getLock()
+            });
+            // Remove old locks
+            deleteOfflineLocks();
+            // Commit
             APP.onLocal();
-                send({
-                    type: "getLock",
-                    locks: getLock()
-                });
-            //APP.realtime.onSettle(function () {
-                console.log(getLock());
-                console.log(oldLocks);
-            //});
         };
 
         var parseChanges = function (changes) {
@@ -552,11 +493,41 @@ define([
                     docid: "fresh",
                     change: '"' + change + '"',
                     time: now(),
-                    user: myUniqueOOId, // XXX get username
-                    useridoriginal: String(myOOId) // get user id from worker?
+                    user: myUniqueOOId,
+                    useridoriginal: String(myOOId)
                 };
             });
         };
+        var handleChanges = function (obj, send) {
+            // Allow the changes
+            send({
+                type: "unSaveLock",
+                index: ooChannel.cpIndex,
+                time: +new Date()
+            });
+            // Send the changes
+            rtChannel.sendMsg({
+                type: "saveChanges",
+                changes: parseChanges(obj.changes),
+                changesIndex: ooChannel.cpIndex || 0,
+                locks: [content.locks[getId()]],
+                excelAdditionalInfo: null
+            }, null, function (err, hash) {
+                // Increment index and update latest hash
+                ooChannel.cpIndex++;
+                ooChannel.lastHash = hash;
+                // Check if a checkpoint is needed
+                if (ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0) {
+                    makeCheckpoint();
+                }
+                // Remove my lock
+                delete content.locks[getId()];
+                oldLocks = JSON.parse(JSON.stringify(content.locks));
+                APP.onLocal();
+            });
+        };
+
+
         var makeChannel = function () {
             var msgEv = Util.mkEvent();
             var iframe = $('#cp-app-oo-container > iframe')[0].contentWindow;
@@ -591,33 +562,11 @@ define([
                             handleLock(obj, send);
                             break;
                         case "getMessages":
+                            // OO chat messages?
                             send({ type: "message" });
                             break;
                         case "saveChanges":
-                            // XXX lock
-                            send({
-                                type: "unSaveLock",
-                                index: ooChannel.cpIndex,
-                                time: +new Date()
-                            });
-                            // Send the change
-                            rtChannel.sendMsg({
-                                type: "saveChanges",
-                                changes: parseChanges(obj.changes),
-                                changesIndex: ooChannel.cpIndex || 0,
-                                locks: [content.locks[getId()]], // XXX take from userdoc?
-                                excelAdditionalInfo: null
-                            }, null, function (err, hash) {
-                                ooChannel.cpIndex++;
-                                ooChannel.lastHash = hash;
-                                if (ooChannel.cpIndex % CHECKPOINT_INTERVAL === 0) {
-                                    makeCheckpoint();
-                                }
-                                // Remove my lock
-                                delete content.locks[getId()];
-                                oldLocks = JSON.parse(JSON.stringify(content.locks));
-                                APP.onLocal();
-                            });
+                            handleChanges(obj, send);
                             break;
                         case "unLockDocument":
                             if (obj.releaseLocks && content.locks[getId()]) {
@@ -655,8 +604,7 @@ define([
                     "title": file.title,
                     "url": url,
                     "permissions": {
-                        "download": false, // FIXME: download/export is not working, so we use false
-                                           // to remove the button
+                        "download": false,
                         "print": false,
                     }
                 },
@@ -848,7 +796,6 @@ define([
             }
 
             var userDoc = APP.realtime.getUserDoc();
-            console.log(userDoc);
             var isNew = false;
             var newDoc = true;
             if (userDoc === "" || userDoc === "{}") { isNew = true; }
@@ -872,27 +819,6 @@ define([
                 Title.updateTitle(Title.defaultTitle);
             }
 
-            if (!readOnly) {
-                // Check if the editor has left
-                /*var me = common.getMetadataMgr().getNetfluxId();
-                var members = common.getMetadataMgr().getChannelMembers();
-                if (locked) {
-                    if (members.indexOf(locked) === -1) {
-                        locked = me;
-                        APP.onLocal();
-                    }
-                } else {
-                    locked = me;
-                    APP.onLocal();
-                }
-
-                if (!common.isLoggedIn()) {
-                    UI.alert(Messages.oo_locked + Messages.oo_locked_unregistered);
-                } else if (locked !== me) {
-                    UI.alert(Messages.oo_locked + Messages.oo_locked_edited);
-                }*/
-            }
-
             openRtChannel(function () {
                 setMyId();
                 loadDocument(newDoc);
@@ -911,16 +837,12 @@ define([
                 metadataMgr.updateMetadata(json.metadata);
             }
             content = json.content;
-            console.log(content);
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
                 oldIds = JSON.parse(JSON.stringify(content.ids));
             }
             if (content.locks) {
-                console.log(content.locks);
-                console.log(oldLocks);
                 handleNewLocks(oldLocks, content.locks);
-                // XXX send locks to oo
                 oldLocks = JSON.parse(JSON.stringify(content.locks));
             }
         };
