@@ -154,7 +154,7 @@ define([
                     file.title = title + '.docx' || 'document.docx';
                     file.doc = 'text';
                     break;
-                case 'oocell':
+                case 'sheet':
                     file.type = 'xlsx';
                     file.title = title + '.xlsx' || 'spreadsheet.xlsx';
                     file.doc = 'spreadsheet';
@@ -701,7 +701,7 @@ define([
             }
             var newText;
             switch (type) {
-                case 'oocell' :
+                case 'sheet' :
                     newText = EmptyCell();
                     break;
                 case 'oodoc':
