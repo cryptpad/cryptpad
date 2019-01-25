@@ -20,6 +20,7 @@ define(function () {
     out.type.media = "Média";
     out.type.todo = "Todo";
     out.type.contacts = "Contacts";
+    out.type.sheet = 'Tableur (Beta)';
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
@@ -326,6 +327,9 @@ define(function () {
     out.poll_comment_placeholder = "Votre commentaire";
 
     out.poll_comment_disabled = "Publiez ce sondage en utilisant le bouton ✓ afin d'activer les commentaires.";
+
+    // OnlyOffice
+    out.oo_reconnect = "La connexion au serveur est rétablie. Cliquez sur OK pour recharger la page et continuer l'édition.";
 
     // Canvas
     out.canvas_clear = "Nettoyer";

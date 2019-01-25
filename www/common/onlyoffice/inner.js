@@ -61,6 +61,7 @@ define([
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
         var readOnly = false;
+        var offline = false;
         var config = {};
         var content = {
             hashes: {},
@@ -451,7 +452,7 @@ define([
             });
             // Update current index
             var last = ooChannel.queue.pop();
-            ooChannel.lastHash = last.hash;
+            if (last) { ooChannel.lastHash = last.hash; }
             ooChannel.cpIndex += ooChannel.queue.length;
             // Apply existing locks
             deleteOfflineLocks();
@@ -529,6 +530,7 @@ define([
                 locks: [content.locks[getId()]],
                 excelAdditionalInfo: null
             }, null, function (err, hash) {
+                if (err) { return void console.error(err); }
                 // Increment index and update latest hash
                 ooChannel.cpIndex++;
                 ooChannel.lastHash = hash;
@@ -567,6 +569,7 @@ define([
                             handleAuth(obj, send);
                             break;
                         case "isSaveLock":
+                            // TODO ping the server to check if we're online first?
                             send({
                                 type: "saveLock",
                                 saveLock: false
@@ -738,6 +741,11 @@ define([
         };
 
         var setEditable = function (state) {
+            if (!state) {
+                try {
+                    window.frames[0].editor.setViewModeDisconnect(true);
+                } catch (e) {}
+            }
             console.log(state);
         };
 
@@ -887,9 +895,14 @@ define([
         config.onConnectionChange = function (info) {
             setEditable(info.state);
             if (info.state) {
-                initializing = true;
                 UI.findOKButton().click();
+                UI.confirm(Messages.oo_reconnect, function (yes) {
+                    if (!yes) { return; }
+                    common.gotoURL();
+                });
             } else {
+                offline = true;
+                UI.findOKButton().click();
                 UI.alert(Messages.common_connectionLost, undefined, true);
             }
         };
@@ -897,6 +910,7 @@ define([
         cpNfInner = common.startRealtime(config);
 
         cpNfInner.onInfiniteSpinner(function () {
+            if (offline) { return; }
             setEditable(false);
             UI.confirm(Messages.realtime_unrecoverableError, function (yes) {
                 if (!yes) { return; }

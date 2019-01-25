@@ -20,9 +20,9 @@ define(function () {
     out.type.media = 'Media';
     out.type.todo = "Todo";
     out.type.contacts = 'Contacts';
-    out.type.oocell = 'OnlyOffice Cell';
-    out.type.ooslide = 'OnlyOffice Slide';
-    out.type.oodoc = 'OnlyOffice Doc';
+    out.type.sheet = 'Spreadsheet (Beta)';
+    //out.type.ooslide = 'OnlyOffice Slide';
+    //out.type.oodoc = 'OnlyOffice Doc';
 
     out.button_newpad = 'New Rich Text pad';
     out.button_newcode = 'New Code pad';
@@ -331,6 +331,9 @@ define(function () {
     out.poll_comment_placeholder = "Your comment";
 
     out.poll_comment_disabled = "Publish this poll using the ✓ button to enable the comments.";
+
+    // OnlyOffice
+    out.oo_reconnect = "The server connection is back. Click OK to reload and continue the edition.";
 
     // Canvas
     out.canvas_clear = "Clear";
@@ -1287,7 +1290,7 @@ define(function () {
     out.properties_confirmChange = "Are you sure? Changing the password will remove its history. Users without the new password will lose access to this pad";
     out.properties_passwordSame = "New passwords must differ from the current one.";
     out.properties_passwordError = "An error occured while trying to change the password. Please try again.";
-    out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your acces rights.";
+    out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your access rights.";
     out.properties_passwordSuccess = "The password was successfully changed.<br>Press OK to reload and update your access rights.";
     out.properties_changePasswordButton = "Submit";
 
