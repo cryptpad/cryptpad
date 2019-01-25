@@ -29,6 +29,7 @@ define([
                 [ 'pad', Msg.main_richTextPad],
                 [ 'code', Msg.main_codePad],
                 [ 'slide', Msg.main_slidePad],
+                [ 'sheet', Msg.main_sheetPad],
                 [ 'poll', Msg.main_pollPad],
                 [ 'kanban', Msg.main_kanbanPad],
                 [ 'whiteboard', Msg.main_whiteboardPad],

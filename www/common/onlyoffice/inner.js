@@ -799,10 +799,10 @@ define([
 
             var $rightside = toolbar.$rightside;
 
-            var $save = common.createButton('save', true, {}, function () {
+            /*var $save = common.createButton('save', true, {}, function () {
                 saveToServer();
             });
-            $save.appendTo($rightside);
+            $save.appendTo($rightside);*/
 
             if (common.isLoggedIn()) {
                 common.createButton('hashtag', true).appendTo($rightside);

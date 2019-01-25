@@ -787,6 +787,7 @@ define(function () {
 
     out.main_richTextPad = 'Rich Text Pad';
     out.main_codePad = 'Markdown/Code Pad';
+    out.main_sheetPad = 'Spreadsheets (Beta)';
     out.main_slidePad = 'Markdown Presentation';
     out.main_pollPad = 'Poll or Schedule';
     out.main_whiteboardPad = 'Whiteboard';

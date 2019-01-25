@@ -780,6 +780,7 @@ define(function () {
 
     out.main_richTextPad = 'Éditeur de texte';
     out.main_codePad = 'Éditeur de code';
+    out.main_sheetPad = 'Tableur (Beta)';
     out.main_slidePad = 'Éditeur de Présentations';
     out.main_pollPad = 'Sondage ou Planning';
     out.main_whiteboardPad = 'Tableau blanc';
