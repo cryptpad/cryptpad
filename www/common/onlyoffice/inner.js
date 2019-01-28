@@ -586,7 +586,7 @@ define([
                             handleChanges(obj, send);
                             break;
                         case "unLockDocument":
-                            if (obj.releaseLocks && content.locks[getId()]) {
+                            if (obj.releaseLocks && content.locks && content.locks[getId()]) {
                                 send({
                                     type: "releaseLock",
                                     locks: [content.locks[getId()]]
