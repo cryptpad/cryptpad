@@ -42,7 +42,6 @@ define([
     Channel)
 {
     var saveAs = window.saveAs;
-    saveAs = saveAs; // TODO jshint...
 
     var APP = window.APP = {
         $: $
@@ -57,6 +56,7 @@ define([
     var toolbar;
 
     var andThen = function (common) {
+        var Title;
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var privateData = metadataMgr.getPrivateData();
@@ -667,15 +667,15 @@ define([
 
 
         var exportFile = function() {
-          var text = getContent();
-          var suggestion = Title.suggestTitle(Title.defaultTitle);
-          UI.prompt(Messages.exportPrompt,
-              Util.fixFileName(suggestion) + '.bin', function (filename) {
-              if (!(typeof(filename) === 'string' && filename)) { return; }
-              var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
-              saveAs(blob, filename);
-          });
-        }
+            var text = getContent();
+            var suggestion = Title.suggestTitle(Title.defaultTitle);
+            UI.prompt(Messages.exportPrompt,
+                Util.fixFileName(suggestion) + '.bin', function (filename) {
+                if (!(typeof(filename) === 'string' && filename)) { return; }
+                var blob = new Blob([text], {type: "application/bin;charset=utf-8"});
+                saveAs(blob, filename);
+            });
+        };
 
         /*var importFile = function(content) {
           var blob = new Blob([content], {type: 'plain/text'});
@@ -747,7 +747,6 @@ define([
 
         var initializing = true;
         var $bar = $('#cp-toolbar');
-        var Title;
         var cpNfInner;
 
         config = {
