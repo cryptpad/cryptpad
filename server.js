@@ -211,17 +211,6 @@ var send404 = function (res, path) {
     });
 };
 
-/* All fonts file replaced by the list of fonts in ttf */
-app.use("/common/onlyoffice/sdkjs/common/AllFonts.js",
-    Express.static("./www/common/onlyoffice/AllFonts.js"));
-
-/* Replace fonts thumbnail call */
-app.use("/common/onlyoffice/sdkjs/common/Images/fonts_thumbnail@2x.png",
-    Express.static("./www/common/onlyoffice/fonts_thumbnail@2x.png"));
-app.use("/common/onlyoffice/sdkjs/common/Images/fonts_thumbnail.png",
-    Express.static("./www/common/onlyoffice/fonts_thumbnail.png"));
-
-
 app.use(function (req, res, next) {
     res.status(404);
     send404(res, custom_four04_path);
