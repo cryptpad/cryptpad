@@ -1089,8 +1089,9 @@ define(function () {
     out.help.title = "Pour bien démarrer";
     out.help.generic = {
         more: 'Apprenez-en davantage sur le fonctionnement de CryptPad en lisant notre <a href="/faq.html" target="_blank">FAQ</a>',
-        share: 'Utilisez le menu partage (<span class="fa fa-share-alt"></span>) pour générer un lien d\'accès ou d\'édition  pad',
-        stored: 'Chaque pad que vous visitez est stocké automatiquement dans votre <a href="/drive/" target="_blank">CryptDrive</a>'
+        share: 'Utilisez le menu partage (<span class="fa fa-shhare-alt"></span>) pour générer un lien d\'accès ou d\'édition  pad',
+        //stored: 'Chaque pad que vous visitez est stocké automatiquement dans votre <a href="/drive/" target="_blank">CryptDrive</a>',
+        save: "Tous les changements effectués sont enregistrés automatiquement"
     };
 
     out.help.text = {
@@ -1105,6 +1106,13 @@ define(function () {
 
     out.help.code = {
         modes: 'Utilisez le sous-menu <span class="fa fa-ellipsis-h"></span> pour changer le mode de coloration syntaxique ou le thème de couleur'
+    };
+
+    out.help.beta = {
+        warning: 'Cet éditeur est encore <strong>expérimental</strong>, vous pouvez signaler tout problème rencontré sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" target="_blank">GitHub</a>'
+    };
+    out.help.oo = {
+        access: "L'accès à cette application est restreint aux utilisateurs enregistrés",
     };
 
     out.help.slide = {

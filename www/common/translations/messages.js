@@ -1133,8 +1133,9 @@ define(function () {
     out.help.title = "Getting started";
     out.help.generic = {
         more: 'Learn more about how CryptPad can work for you by reading our <a href="/faq.html" target="_blank">FAQ</a>',
-        share: 'Use the share menu (<span class="fa fa-share-alt"></span>) to generate a link so collaborators can view or edit this pad',
-        stored: 'Every pad you visit is automatically stored in your <a href="/drive/" target="_blank">CryptDrive</a>',
+        share: 'Use the share menu (<span class="fa fa-shhare-alt"></span>) to generate a link so collaborators can view or edit this pad',
+        //stored: 'Every pad you visit is automatically stored in your <a href="/drive/" target="_blank">CryptDrive</a>',
+        save: "All your changes are synced automatically so you never need to save"
     };
 
     out.help.text = {
@@ -1151,11 +1152,11 @@ define(function () {
         modes: 'Use the dropdown menus in the <span class="fa fa-ellipsis-h"></span> submenu to change syntax highlighting modes or color themes',
     };
 
-    out.help.oo = {
-        
+    out.help.beta = {
+        warning: 'This editor is still <strong>experimental</strong>, you can report bugs on <a href="https://github.com/xwiki-labs/cryptpad/issues/" target="_blank">our issue tracker</a>'
     };
-    out.help.sheet = {
-        
+    out.help.oo = {
+        access: "Access is restricted to registered users, collaborators will need to log in",
     };
 
     out.help.slide = {
