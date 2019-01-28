@@ -1,3 +1,34 @@
+# Quokka release (v2.16.0)
+
+## Goals
+
+We set aside an additional week for this release in order to deploy _encrypted spreadsheets_, which we've been working toward for a long time.
+This feature combines our usual focus on privacy with OnlyOffice's spreadsheet editor.
+
+At least for this first release we're still considering this functionality to be **highly experimental**.
+We've done our best to make this new application fun and easy to use, however, it will still require a lot of work before it supports all the features that you can expect from our other editors.
+We welcome you to try it out and report any difficulties you encounter, though you may want to wait before you start using it for all your financial documents.
+
+## Update notes
+
+* OnlyOffice requires more lax Content Security Policy headers than the rest of the platform. Compare your configuration against `config.example.js`.
+* If you are running a customized `application_config.js`, you may need to update `availablePadTypes` and `registeredOnlyTypes`. See [the wiki](https://github.com/xwiki-labs/cryptpad/wiki/Application-config) for more details.
+* In addition to a few serverside changes for the new spreadsheet editor, this release fixes a bug that affected system administrators who had set custom limits for some users and disabled communication with our payment server. Restart your server after updating for these changes to take effect.
+
+
+## Features
+
+* We've implemented a feature we call _ephemeral channels_, which we use for displaying other users' cursors in our rich text, code, and slide editors. Ephemeral channels behave exactly like our regular server messaging infrastructure except that no history is stored.
+* We've added additional highlighting modes in our code editor for C, C++, Java, and Objective-C
+* We've imposed a limit of five items for the table which displays upload progress, in order to keep it from taking up too much space on the screen when users upload many files in one session.
+
+## Bugfixes
+
+* [@3n2pS3P5kG23S96yxRbUHAZajuH2F](https://github.com/3n2pS3P5kG23S96yxRbUHAZajuH2F) reported an issue shortly after our last release which threw an error if our feedback API was disabled. The fix was on our master branch, but now it will be properly tagged.
+* We noticed an issue in our code editor where imported .md files were interpreted as text, instead of markdown. This caused the preview pane to stop working.
+* We also discovered an issue which had broken our CryptDrive import function, but as far as we know it did not affect any users. It should be working as intended now.
+* Unfortunately, we don't do a lot of testing on Internet Explorer 11, but one of our users was kind enough to report an error. We tracked down a few uses of APIs which do not exist on IE11, and replaced them with compatible functions, so now users of IE11 will be able to enjoy CryptPad once more.
+
 # Pademelon release (v2.15.0)
 
 ## Goals
