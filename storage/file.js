@@ -162,6 +162,7 @@ const mkOffsetCounter = () => {
 
 const readMessagesBin = (env, id, start, msgHandler, cb) => {
     const stream = Fs.createReadStream(mkPath(env, id), { start: start });
+    // TODO get the channel and add the atime
     let keepReading = true;
     Pull(
         ToPull.read(stream),
