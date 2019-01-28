@@ -4193,7 +4193,6 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
 
         var send = function (data) {
             setTimeout(function () {
-                console.log(data);
                 sockjs.onmessage({
                     data: JSON.stringify(data)
                 });
@@ -4249,7 +4248,6 @@ AscBrowser.convertToRetinaValue = function(value, isScale)
         };
 
         sockjs.send = function (data) {
-            console.log(data);
             try {
                 var obj = JSON.parse(data);
             } catch (e) {
