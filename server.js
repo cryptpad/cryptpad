@@ -211,28 +211,6 @@ var send404 = function (res, path) {
     });
 };
 
-var FONT_NAME_MAP = {};
-[ './www/common/onlyoffice/fonts/' ].forEach(function (path) {
-    Fs.readdir(path, function (err, list) {
-        if (err) { throw err; }
-        list.forEach(function (fontName) {
-            FONT_NAME_MAP[fontName.toLowerCase()] = path + fontName;
-        });
-    });
-});
-
-/* Code to automatically transform font to js */
-/* Currently not active, but might be necessary */
-app.use("/common/onlyoffice/fonts/odttf/:name", function (req, res) {
-    var name = req.params.name.replace(/\.js$/, '').toLowerCase();
-    var path = Path.join('./www/common/onlyoffice/fonts/odttf/', name);
-    console.log(path);
-    Fs.createReadStream(path).pipe(res).on('error', function (e) {
-        console.error(e);
-        res.status(404).send('No such font');
-    });
-});
-
 /* All fonts file replaced by the list of fonts in ttf */
 app.use("/common/onlyoffice/sdkjs/common/AllFonts.js",
     Express.static("./www/common/onlyoffice/AllFonts.js"));
