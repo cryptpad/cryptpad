@@ -556,6 +556,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Konto";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_cursor = "Kursor";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Rich text";
     out.settings_cat_creation = "Neues Dokument";
@@ -645,12 +646,20 @@ define(function () {
     out.settings_logoutEverywhere = "Das Ausloggen in allen andere Websitzungen erzwingen";
     out.settings_logoutEverywhereConfirm = "Bist du sicher? Du wirst dich auf allen deinen Geräten wieder einloggen müssen.";
 
+    out.settings_driveDuplicateTitle = "Duplizierte eigene Dokumente";
+    out.settings_driveDuplicateHint = "Wenn du eine deiner eigene Dokumente zu einem verteilten Ordner verschiebst, wird eine Kopie in deinem CryptDrive behalten, damit du die Kontrolle des Dokuments nicht verlierst. Du kannst duplizierte Dateien verbergen. Nur die Version in dem verteilten Ordner wird dann angezeigt, ausser sie wurde gelöscht. In diesem Fall, wird sie wieder angezeigt.";
+    out.settings_driveDuplicateLabel = "Duplizierte Dokumente verbergen";
+
     out.settings_codeIndentation = 'Einrücken für den Code-Editor (Leerzeichen)';
     out.settings_codeUseTabs = "Mit Tabs einrücken (anstatt mit Leerzeichen)";
+    out.settings_codeFontSize = "Grösse des Zeichensatzes im Code-Editor";
 
     out.settings_padWidth = "Maximalgrösse des Editors";
     out.settings_padWidthHint = "Rich-text Dokumente benutzen normalerweise die grösste verfügbare Zeilenbreite, das kann manchmal schwer lesbar sein. Du kannst die Breite des Editors hier reduzieren.";
     out.settings_padWidthLabel = "Die Breite des Editors reduzieren";
+    out.settings_padSpellcheckTitle = "Rechtschreibung";
+    //out.settings_padSpellcheckHint = "This option allows you to enable spellcheck in rich text pads. Spelling errors will be underlined in red and you'll have to hold your Ctrl or Meta key while right-clicking to see the correct options.";
+    //out.settings_padSpellcheckLabel = "Enable spellcheck in rich text pads";
 
     out.settings_creationSkip = "Den Erstellungsdialg für neue Dokumente überspringen";
     out.settings_creationSkipHint = "Dieser Erstellungsdialog erlaubt Einstellungen für mehr Kontrolle und Sicherheit bei deinen Dokumenten. Aber der zusätzliche Dialog verlangsamt die Arbeit. Mit dieser Option kannst du diese Dialog überspringen und die Standard-Einstellungen wählen.";
@@ -665,6 +674,7 @@ define(function () {
     out.settings_ownDriveHint = "Wir sind dabei dein CryptDrive zur neuen Version zu migrieren, damit du Zugang zu den neuen Features hast...";
     out.settings_ownDriveButton = "Migrieren";
     out.settings_ownDriveConfirm = "Bis du sicher?";
+    //out.settings_ownDrivePending = "Your account is being upgraded. Please do not close or reload this page until the process has completed.";
 
     out.settings_changePasswordTitle = "Ändere dein Passwort";
     out.settings_changePasswordHint = "Ändere das Passwort deines Kontos ohne deine Daten zu verlieren. Du mußt einmal das jetzige Passwort eintragen und dann das gewünschte neue Passwort zweimal.<br>" +
@@ -692,9 +702,6 @@ define(function () {
     out.upload_modal_title = "Uploadeinstellungen";
     out.upload_modal_filename = "Dateiname (die Dateierweiterung <em>{0}</em> wird automatisch hinzugefügt)";
     out.upload_modal_owner = "Eigene Datei";
-    out.upload_rename = "Willst du einen neuen Name für <b>{0}</b> geben, bevor es zum Server hochgeladen wird?<br>" +
-                        "<em>Die Dateieendung ({1}) wird automatisch hinzugefügt. "+
-                        "Dieser Name bleibt für immer und wird für die andere Benutzer sichtbar.</em>";
     out.upload_serverError = "Serverfehler: Die Datei kann aktuell nicht hochgeladen werden. ";
     out.upload_uploadPending = "Ein anderes Hochlade-Vorgang läuft gerade. Willst du den abbrechen und deine neue Datei hochladen?";
     out.upload_success = "Deine Datei ({0}) wurde erfolgreich hochgeladen und in deinem CryptDrive hinzugefügt.";
@@ -910,6 +917,10 @@ define(function () {
             a: "Eine Vorlage ist ein Dokument, dass du benutzen kannst, um den Anfangsinhalt für zukünftige Dokumente zu definieren." +
             " Jedes existes existierende Dokument kann eine Vorlage werden, indem es in den <em>Vorlagen</em> Abschnitt des CryptDrives geschoben wird." +
             " Du kannst auch eine Kopie eines Dokuments erstellen, die zur Vorlage wird, indem du auf der Vorlagen-Knopf (<span class='fa fa-bookmark'></span>) der Werkzeugleiste des Editors drückst."
+        },
+        abandoned: {
+            q: "Was ist ein verlassene Dokument?",
+            a: "Ein <em>verlassene</em> Dokument ist ein Dokument, das in dem Drive von keinem registrierten Benutzer ist und nicht sein sechs Monaten bearbeitet wurde. Verlassene Dokumente werden automatisch aus demm Server gelöscht."
         },
     };
     out.faq.privacy = {
