@@ -548,7 +548,7 @@ define([
 
         var makeChannel = function () {
             var msgEv = Util.mkEvent();
-            var iframe = $('#cp-app-oo-container > iframe')[0].contentWindow;
+            var iframe = $('#cp-app-oo-editor > iframe')[0].contentWindow;
             window.addEventListener('message', function (msg) {
                 if (msg.source !== iframe) { return; }
                 msgEv.fire(msg);
@@ -813,6 +813,10 @@ define([
                 setEditable(false);
             });
             $rightside.append($forget);
+
+            var helpMenu = common.createHelpMenu(['sheet']);
+            $('#cp-app-oo-editor').prepend(helpMenu.menu);
+            toolbar.$drawer.append(helpMenu.button);
         };
 
         config.onReady = function (info) {

@@ -1151,6 +1151,13 @@ define(function () {
         modes: 'Use the dropdown menus in the <span class="fa fa-ellipsis-h"></span> submenu to change syntax highlighting modes or color themes',
     };
 
+    out.help.oo = {
+        
+    };
+    out.help.sheet = {
+        
+    };
+
     out.help.slide = {
         markdown: 'Write slides in <a href="http://www.markdowntutorial.com/">Markdown</a> and separate them with a line containing <code>---</code>',
         present: 'Start the presentation using the <span class="fa fa-play-circle"></span> button',
