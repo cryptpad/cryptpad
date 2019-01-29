@@ -53,22 +53,22 @@ define([
         var hasBogusInput = bogusCheckPtn.test(text);
         if (isCheckedTaskItem) {
             text = text.replace(checkedTaskItemPtn,
-                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
+                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
         }
         if (isUncheckedTaskItem) {
             text = text.replace(uncheckedTaskItemPtn,
-                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
         }
         if (!isCheckedTaskItem && !isUncheckedTaskItem && hasBogusInput) {
             if (/checked/.test(text)) {
                 text = text.replace(bogusCheckPtn, 
-                '<i class="fa fa-check-square" aria-hidden="true"></i>&nbsp;') + '\n';
+                '<i class="fa fa-check-square" aria-hidden="true"></i>') + '\n';
             } else if (/disabled/.test(text)) {
                 text = text.replace(bogusCheckPtn, 
-                '<i class="fa fa-square-o" aria-hidden="true"></i>&nbsp;') + '\n';
+                '<i class="fa fa-square-o" aria-hidden="true"></i>') + '\n';
             }
         }
-        var cls = (isCheckedTaskItem || isUncheckedTaskItem) ? ' class="todo-list-item"' : '';
+        var cls = (isCheckedTaskItem || isUncheckedTaskItem || hasBogusInput) ? ' class="todo-list-item"' : '';
         return '<li'+ cls + '>' + text + '</li>\n';
     };
     renderer.image = function (href, title, text) {
