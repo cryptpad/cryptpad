@@ -1048,17 +1048,22 @@ define([
         cb();
     };
 
-    /*var onPing = function (data, cb) {
+    var onPing = function (data, cb) {
         cb();
     };
 
+    var timeout = false;
     var onTimeout = function () {
-        //alert("Timeout");
-    };*/
+        // XXX
+        timeout = true;
+        common.onNetworkDisconnect.fire();
+        // FIXME: no UI in outer...
+        alert("Timeout error, please reload this tab");
+    };
 
     var queries = {
-        /*PING: onPing,
-        TIMEOUT: onTimeout,*/
+        PING: onPing,
+        TIMEOUT: onTimeout,
         REQUEST_LOGIN: requestLogin,
         UPDATE_METADATA: common.changeMetadata,
         UPDATE_TOKEN: function (data) {
@@ -1375,6 +1380,7 @@ define([
                     console.log('Outer ready');
                     Object.keys(queries).forEach(function (q) {
                         chan.on(q, function (data, cb) {
+                            if (timeout) { return; }
                             try {
                                 queries[q](data, cb);
                             } catch (e) {
@@ -1387,6 +1393,7 @@ define([
 
                     postMessage = function (cmd, data, cb, opts) {
                         cb = cb || function () {};
+                        if (timeout) { return void cb ({error: 'TIMEOUT'}); }
                         chan.query(cmd, data, function (err, data) {
                             if (err) { return void cb ({error: err}); }
                             cb(data);
