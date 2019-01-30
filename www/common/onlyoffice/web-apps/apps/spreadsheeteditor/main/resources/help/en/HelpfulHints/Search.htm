@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Search and Replace Functions</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="The description of the search and replace functions in Spreadsheet Editor" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+		<h1>Search and Replace Functions</h1>
+			<p>To search for the needed characters, words or phrases used in the current spreadsheet, click the <img alt="Search icon" src="../images/searchicon.png" /> icon situated at the left sidebar.</p>
+            <p>If you want to search for/replace values within a certain area on the current sheet only, select the necessary cell range and then click the <img alt="Search icon" src="../images/searchicon.png" /> icon.</p>
+			<p>The <b>Find and Replace</b> window will open:</p>
+			<img alt="Find and Replace Window" src="../images/search_window.png" />
+			<ol>
+			<li>Type in your inquiry into the corresponding data entry field.</li>
+			<li>Specify search options clicking the <img alt="Search Options icon" src="../images/advanced_settings_icon.png" /> icon next to the data entry field and checking the necesary options:
+			<ul>
+				<li><b>Case sensitive</b> - is used to find only the occurrences typed in the same case as your inquiry (e.g. if your inquiry is 'Editor' and this option is selected, such words as 'editor' or 'EDITOR' etc. will not be found).</li>
+                <li><b>Entire cell contents</b> - is used to find only the cells that do not contain any other characters besides the ones specified in your inquiry (e.g. if your inquiry is '56' and this option is selected, the cells containing such data as '0.56' or '156' etc. will not be found).</li>
+				<li><b>Within</b> - is used to search within the active <b>Sheet</b> only or the whole <b>Workbook</b>. If you want to perform a search within the selected area on the sheet, make sure that the <b>Sheet</b> option is selected.</li>
+				<li><b>Search</b> - is used to specify the direction that you want to search: to the right <b>by rows</b> or down <b>by columns</b>.</li>
+				<li><b>Look in</b> - is used to specify whether you want to search the <b>Value</b> of the cells or their underlying <b>Formulas</b>.</li>
+			</ul>
+			</li>
+			<li>Click one of the arrow buttons on the right. 
+			The search will be performed either towards the beginning of the worksheet (if you click the <img alt="Search Up button" src="../images/searchupbutton.png" /> button) or towards the end of the worksheet (if you click the <img alt="Search Down button" src="../images/searchdownbutton.png" /> button) from the current position.</li>
+			</ol>
+			<p>The first occurrence of the required characters in the selected direction will be highlighted. If it is not the word you are looking for, click the selected button again to find the next occurrence of the characters you entered.</p> 
+			<p><b>To replace</b> one or more occurrences of the found characters click the <b>Replace</b> link below the data entry field. The <b>Find and Replace</b> window will change:</p>
+            <img alt="Find and Replace Window" src="../images/search_replace_window.png" />
+			<ol>
+			<li>Type in the replacement text into the bottom data entry field.</li>
+			<li>Click the <b>Replace</b> button to replace the currently selected occurrence or the <b>Replace All</b> button to replace all the found occurrences.</li>
+			</ol>
+            <p>To hide the replace field, click the <b>Hide Replace</b> link.</p>
+		</div>
+	</body>
+</html>

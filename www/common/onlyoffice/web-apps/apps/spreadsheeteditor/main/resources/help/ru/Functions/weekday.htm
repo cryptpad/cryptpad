@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Функция WEEKDAY (ДЕНЬНЕД)</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Функция WEEKDAY (ДЕНЬНЕД)</h1>
+			<p>Функция <b>WEEKDAY</b> - это одна из функций даты и времени. Определяет, какой день недели соответствует заданной дате.</p>
+			<p>Синтаксис функции <b>WEEKDAY</b>:</p> 
+			<p style="text-indent: 150px;"><b><em>WEEKDAY(serial-value [,weekday-start-flag])</em></b></p> 
+			<p><em>где</em></p> 
+			<p style="text-indent: 50px;"><b><em>serial-value</em></b> (порядковый номер) - число, представляющее дату, для которой необходимо найти день недели, введенное с помощью функции <a href="Date.htm" onclick="onhyperlinkclick(this)">Date</a> или другой функции даты и времени.</p>
+			<p style="text-indent: 50px;"><b><em>weekday-start-flag</em></b> (начало недели) - числовое значение, определяющее, какой тип значения должен быть возвращен. Может иметь одно из следующих значений:</p>
+			<table style="width: 40%">
+				<tr>
+					<td><b>Числовое значение</b></td>
+					<td><b>Пояснение</b></td>
+				</tr>
+				<tr>
+					<td>1 или опущено</td>
+					<td>Возвращает число от 1 (воскресенье) до 7 (суббота)</td>
+				</tr>
+				<tr>
+					<td>2</td>
+					<td>Возвращает число от 1 (понедельник) до 7 (воскресенье).</td>
+				</tr>
+				<tr>
+					<td>3</td>
+					<td>Возвращает число от 0 (понедельник) до 6 (воскресенье).</td>
+				</tr>
+			</table>
+			<ol>
+			<li>выделите ячейку, в которой требуется отобразить результат,</li>
+			<li>щелкните по значку <b>Вставить функцию</b> <img alt="Значок Вставить функцию" src="../images/insertfunction.png" />, расположенному на верхней панели инструментов,
+				<br />или щелкните правой кнопкой мыши по выделенной ячейке и выберите в меню команду <b>Вставить функцию</b>,
+				<br />или щелкните по значку <img alt="Значок Функция" src="../images/function.png" /> перед строкой формул,
+			</li>
+			<li>выберите из списка группу функций <b>Дата и время</b>,</li>
+			<li>щелкните по функции <b>WEEKDAY</b>,</li>
+			<li>введите требуемые аргументы, разделяя их запятыми,</li>
+			<li>нажмите клавишу <b>Enter</b>.</li>
+			</ol>
+			<p>Результат будет отображен в выбранной ячейке.</p>
+			<p style="text-indent: 150px;"><img alt="Функция WEEKDAY" src="../images/weekday.png" /></p>
+		</div>
+	</body>
+</html>

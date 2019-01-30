@@ -1,0 +1,36 @@
+.cursor_main() {
+    // CodeMirror
+    .cp-codemirror-cursor {
+        cursor: default;
+        background-color: red;
+        background-clip: padding-box;
+        padding: 0 1px;
+        border: 2px solid red;
+        border-right-color: transparent !important;
+        border-left-color: transparent !important;
+        margin-left: -3px;
+        margin-right: -3px;
+    }
+    .cp-codemirror-selection {
+        background-color: rgba(255,0,0,0.3);
+    }
+
+    // Tippy
+    .cp-cursor-avatar {
+        @size: 32px;
+        display: flex;
+        align-items: center;
+        media-tag {
+            min-height: @size;
+            max-height: @size;
+            min-width: @size;
+            max-width: @size;
+            margin-right: 10px;
+            img {
+                border-radius: 4px;
+                max-height: 100%;
+                max-width: 100%;
+            }
+        }
+    }
+}

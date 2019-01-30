@@ -3,12 +3,13 @@ define([
     '/bower_components/nthen/index.js',
     '/customize/messages.js',
     '/common/sframe-chainpad-netflux-inner.js',
-    '/common/sframe-channel.js',
+    '/common/outer/worker-channel.js',
     '/common/sframe-common-title.js',
     '/common/common-ui-elements.js',
     '/common/sframe-common-history.js',
     '/common/sframe-common-file.js',
     '/common/sframe-common-codemirror.js',
+    '/common/sframe-common-cursor.js',
     '/common/metadata-manager.js',
 
     '/customize/application_config.js',
@@ -31,6 +32,7 @@ define([
     History,
     File,
     CodeMirror,
+    Cursor,
     MetadataMgr,
     AppConfig,
     CommonRealtime,
@@ -106,6 +108,9 @@ define([
     // Title module
     funcs.createTitle = callWithCommon(Title.create);
 
+    // Cursor
+    funcs.createCursor = callWithCommon(Cursor.create);
+
     // Files
     funcs.uploadFile = callWithCommon(File.uploadFile);
     funcs.createFileManager = callWithCommon(File.create);
@@ -163,19 +168,46 @@ define([
 
     // Chat
     var padChatChannel;
+    // common-ui-elements needs to be able to get the chat channel to put it in metadata when
+    // importing a template
     funcs.getPadChat = function () {
         return padChatChannel;
     };
     funcs.openPadChat = function (saveChanges) {
         var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
-        var channel = md.chat || Hash.createChannelId();
-        if (!md.chat) {
-            md.chat = channel;
+        //if (md.chat) { delete md.chat; } // Old channel without signing key
+        // NOTE: "chat2" is also used in cryptpad-common's "useTemplate"
+        var channel = md.chat2 || Hash.createChannelId();
+        if (!md.chat2) {
+            md.chat2 = channel;
             ctx.metadataMgr.updateMetadata(md);
             setTimeout(saveChanges);
         }
         padChatChannel = channel;
         ctx.sframeChan.query('Q_CHAT_OPENPADCHAT', channel, function (err, obj) {
+            if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
+        });
+    };
+
+    var cursorChannel;
+    // common-ui-elements needs to be able to get the cursor channel to put it in metadata when
+    // importing a template
+    funcs.getCursorChannel = function () {
+        return cursorChannel;
+    };
+    funcs.openCursorChannel = function (saveChanges) {
+        var md = JSON.parse(JSON.stringify(ctx.metadataMgr.getMetadata()));
+        var channel = md.cursor;
+        if (typeof(channel) !== 'string' || channel.length !== Hash.ephemeralChannelLength) {
+            channel = Hash.createChannelId(true); // true indicates that it's an ephemeral channel
+        }
+        if (!md.cursor) {
+            md.cursor = channel;
+            ctx.metadataMgr.updateMetadata(md);
+            setTimeout(saveChanges);
+        }
+        cursorChannel = channel;
+        ctx.sframeChan.query('Q_CURSOR_OPENCHANNEL', channel, function (err, obj) {
             if (err || (obj && obj.error)) { console.error(err || (obj && obj.error)); }
         });
     };
@@ -452,8 +484,16 @@ define([
         window.CryptPad_sframe_common = true;
 
         nThen(function (waitFor) {
-            SFrameChannel.create(window.parent, waitFor(function (sfc) { ctx.sframeChan = sfc; }), true);
-            // CpNfInner.start() should be here....
+            var msgEv = Util.mkEvent();
+            var iframe = window.parent;
+            window.addEventListener('message', function (msg) {
+                if (msg.source !== iframe) { return; }
+                msgEv.fire(msg);
+            });
+            var postMsg = function (data) {
+                iframe.postMessage(data, '*');
+            };
+            SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) { ctx.sframeChan = sfc; }));
         }).nThen(function (waitFor) {
             localForage.clear();
             Language.applyTranslation();
@@ -525,6 +565,27 @@ define([
                 var feedback = ctx.metadataMgr.getPrivateData().feedbackAllowed;
                 Feedback.init(feedback);
             } catch (e) { Feedback.init(false); }
+
+            try {
+                var forbidden = ctx.metadataMgr.getPrivateData().disabledApp;
+                if (forbidden) {
+                    UI.alert(Messages.disabledApp, function () {
+                        funcs.gotoURL('/drive/');
+                    }, {forefront: true});
+                    return;
+                }
+                var mustLogin = ctx.metadataMgr.getPrivateData().registeredOnly;
+                if (mustLogin) {
+                    UI.alert(Messages.mustLogin, function () {
+                        funcs.setLoginRedirect(function () {
+                            funcs.gotoURL('/login/');
+                        });
+                    }, {forefront: true});
+                    return;
+                }
+            } catch (e) {
+                console.error("Can't check permissions for the app");
+            }
 
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 if (err === 'DELETED') {

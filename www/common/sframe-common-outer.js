@@ -36,7 +36,7 @@ define([
                 '/common/cryptpad-common.js',
                 '/bower_components/chainpad-crypto/crypto.js',
                 '/common/cryptget.js',
-                '/common/sframe-channel.js',
+                '/common/outer/worker-channel.js',
                 '/filepicker/main.js',
                 '/common/common-messaging.js',
                 '/common/common-notifier.js',
@@ -53,7 +53,7 @@ define([
             _Constants, _Feedback, _LocalStore, _AppConfig, _Test) {
                 CpNfOuter = _CpNfOuter;
                 Cryptpad = _Cryptpad;
-                Crypto = _Crypto;
+                Crypto = Utils.Crypto = _Crypto;
                 Cryptget = _Cryptget;
                 SFrameChannel = _SFrameChannel;
                 FilePicker = _FilePicker;
@@ -89,12 +89,39 @@ define([
                     }
                 });
 
-                SFrameChannel.create($('#sbox-iframe')[0].contentWindow, waitFor(function (sfc) {
-                    sframeChan = sfc;
-                }), false, { cache: cache, localStore: localStore, language: Cryptpad.getLanguage() });
+                // The inner iframe tries to get some data from us every ms (cache, store...).
+                // It will send a "READY" message and wait for our answer with the correct txid.
+                // First, we have to answer to this message, otherwise we're going to block
+                // sframe-boot.js. Then we can start the channel.
+                var msgEv = _Util.mkEvent();
+                var iframe = $('#sbox-iframe')[0].contentWindow;
+                var postMsg = function (data) {
+                    iframe.postMessage(data, '*');
+                };
+                var whenReady = waitFor(function (msg) {
+                    if (msg.source !== iframe) { return; }
+                    var data = JSON.parse(msg.data);
+                    if (!data.txid) { return; }
+                    // Remove the listener once we've received the READY message
+                    window.removeEventListener('message', whenReady);
+                    // Answer with the requested data
+                    postMsg(JSON.stringify({ txid: data.txid, cache: cache, localStore: localStore, language: Cryptpad.getLanguage() }));
+
+                    // Then start the channel
+                    window.addEventListener('message', function (msg) {
+                        if (msg.source !== iframe) { return; }
+                        msgEv.fire(msg);
+                    });
+                    SFrameChannel.create(msgEv, postMsg, waitFor(function (sfc) {
+                        sframeChan = sfc;
+                    }));
+                });
+                window.addEventListener('message', whenReady);
+
                 Cryptpad.loading.onDriveEvent.reg(function (data) {
                     if (sframeChan) { sframeChan.event('EV_LOADING_INFO', data); }
                 });
+
                 Cryptpad.ready(waitFor(function () {
                     if (sframeChan) {
                         sframeChan.event('EV_LOADING_INFO', {
@@ -128,7 +155,7 @@ define([
                 var w = waitFor();
                 // No password for drive, profile and todo
                 cfg.getSecrets(Cryptpad, Utils, waitFor(function (err, s) {
-                    secret = s;
+                    secret = Utils.secret = s;
                     Cryptpad.getShareHashes(secret, function (err, h) {
                         hashes = h;
                         w();
@@ -137,7 +164,7 @@ define([
             } else {
                 var parsed = Utils.Hash.parsePadUrl(window.location.href);
                 var todo = function () {
-                    secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
+                    secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, void 0, password);
                     Cryptpad.getShareHashes(secret, waitFor(function (err, h) { hashes = h; }));
                 };
 
@@ -251,7 +278,7 @@ define([
                 }).nThen(function (/*waitFor*/) {
                     metaObj.doc = {
                         defaultTitle: defaultTitle,
-                        type: parsed.type
+                        type: cfg.type || parsed.type
                     };
                     var additionalPriv = {
                         accountName: Utils.LocalStore.getAccountName(),
@@ -274,11 +301,21 @@ define([
                         forceCreationScreen: forceCreationScreen,
                         password: password,
                         channel: secret.channel,
-                        enableSF: localStorage.CryptPad_SF === "1" // TODO to remove when enabled by default
+                        enableSF: localStorage.CryptPad_SF === "1", // TODO to remove when enabled by default
                     };
                     if (window.CryptPad_newSharedFolder) {
                         additionalPriv.newSharedFolder = window.CryptPad_newSharedFolder;
                     }
+                    if (Utils.Constants.criticalApps.indexOf(parsed.type) === -1 &&
+                          AppConfig.availablePadTypes.indexOf(parsed.type) === -1) {
+                        additionalPriv.disabledApp = true;
+                    }
+                    if (!Utils.LocalStore.isLoggedIn() &&
+                        AppConfig.registeredOnlyTypes.indexOf(parsed.type) !== -1 &&
+                        parsed.type !== "file") {
+                        additionalPriv.registeredOnly = true;
+                    }
+
                     for (var k in additionalPriv) { metaObj.priv[k] = additionalPriv[k]; }
 
                     if (cfg.addData) {
@@ -647,8 +684,8 @@ define([
                 initFilePicker(data);
             });
 
-            sframeChan.on('Q_TEMPLATE_USE', function (href, cb) {
-                Cryptpad.useTemplate(href, Cryptget, cb);
+            sframeChan.on('Q_TEMPLATE_USE', function (data, cb) {
+                Cryptpad.useTemplate(data, Cryptget, cb);
             });
             sframeChan.on('Q_TEMPLATE_EXIST', function (type, cb) {
                 Cryptpad.listTemplates(type, function (err, templates) {
@@ -713,7 +750,7 @@ define([
                 Cryptpad.setLanguage(data, cb);
             });
 
-            sframeChan.on('Q_CONTACTS_CLEAR_OWNED_CHANNEL', function (channel, cb) {
+            sframeChan.on('Q_CLEAR_OWNED_CHANNEL', function (channel, cb) {
                 Cryptpad.clearOwnedChannel(channel, cb);
             });
             sframeChan.on('Q_REMOVE_OWNED_CHANNEL', function (channel, cb) {
@@ -792,39 +829,24 @@ define([
                 cfg.addRpc(sframeChan, Cryptpad, Utils);
             }
 
+            sframeChan.on('Q_CURSOR_OPENCHANNEL', function (data, cb) {
+                Cryptpad.cursor.execCommand({
+                    cmd: 'INIT_CURSOR',
+                    data: {
+                        channel: data,
+                        secret: secret
+                    }
+                }, cb);
+            });
+            Cryptpad.cursor.onEvent.reg(function (data) {
+                sframeChan.event('EV_CURSOR_EVENT', data);
+            });
+            sframeChan.on('Q_CURSOR_COMMAND', function (data, cb) {
+                Cryptpad.cursor.execCommand(data, cb);
+            });
+
             if (cfg.messaging) {
                 Notifier.getPermission();
-                sframeChan.on('Q_CONTACTS_GET_FRIEND_LIST', function (data, cb) {
-                    Cryptpad.messenger.getFriendList(cb);
-                });
-                sframeChan.on('Q_CONTACTS_GET_MY_INFO', function (data, cb) {
-                    Cryptpad.messenger.getMyInfo(cb);
-                });
-                sframeChan.on('Q_CONTACTS_GET_FRIEND_INFO', function (curvePublic, cb) {
-                    Cryptpad.messenger.getFriendInfo(curvePublic, cb);
-                });
-                sframeChan.on('Q_CONTACTS_REMOVE_FRIEND', function (curvePublic, cb) {
-                    Cryptpad.messenger.removeFriend(curvePublic, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_OPEN_FRIEND_CHANNEL', function (curvePublic, cb) {
-                    Cryptpad.messenger.openFriendChannel(curvePublic, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_GET_STATUS', function (curvePublic, cb) {
-                    Cryptpad.messenger.getFriendStatus(curvePublic, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_GET_MORE_HISTORY', function (opt, cb) {
-                    Cryptpad.messenger.getMoreHistory(opt, cb);
-                });
-
-                sframeChan.on('Q_CONTACTS_SEND_MESSAGE', function (opt, cb) {
-                    Cryptpad.messenger.sendMessage(opt, cb);
-                });
-                sframeChan.on('Q_CONTACTS_SET_CHANNEL_HEAD', function (opt, cb) {
-                    Cryptpad.messenger.setChannelHead(opt, cb);
-                });
 
                 sframeChan.on('Q_CHAT_OPENPADCHAT', function (data, cb) {
                     Cryptpad.messenger.execCommand({
@@ -840,25 +862,6 @@ define([
                 });
                 Cryptpad.messenger.onEvent.reg(function (data) {
                     sframeChan.event('EV_CHAT_EVENT', data);
-                });
-
-                Cryptpad.messenger.onMessageEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_MESSAGE', data);
-                });
-                Cryptpad.messenger.onJoinEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_JOIN', data);
-                });
-                Cryptpad.messenger.onLeaveEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_LEAVE', data);
-                });
-                Cryptpad.messenger.onUpdateEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_UPDATE', data);
-                });
-                Cryptpad.messenger.onFriendEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_FRIEND', data);
-                });
-                Cryptpad.messenger.onUnfriendEvent.reg(function (data) {
-                    sframeChan.event('EV_CONTACTS_UNFRIEND', data);
                 });
             }
 
@@ -912,10 +915,10 @@ define([
                         // Add friends requests handlers when we have the final href
                         Cryptpad.messaging.addHandlers(href);
                         if (window.location.hash && window.location.hash !== '#') {
-                            window.location = parsed.getUrl({
+                            /*window.location = parsed.getUrl({
                                 present: parsed.hashData.present,
                                 embed: parsed.hashData.embed
-                            });
+                            });*/
                             return;
                         }
                         if (readOnly || cfg.noHash) { return; }
@@ -948,7 +951,7 @@ define([
                 // Create a new hash
                 password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
-                secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
+                secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
 
                 // Update the hash in the address bar
                 var ohc = window.onhashchange;
@@ -987,7 +990,9 @@ define([
                         // we need to have the owners and expiration time in the first line on the
                         // server
                         var cryptputCfg = $.extend(true, {}, rtConfig, {password: password});
-                        Cryptpad.useTemplate(data.template, Cryptget, function () {
+                        Cryptpad.useTemplate({
+                            href: data.template
+                        }, Cryptget, function () {
                             startRealtime();
                             cb();
                         }, cryptputCfg);

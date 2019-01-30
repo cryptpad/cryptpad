@@ -5,12 +5,12 @@ define([
     '/common/common-ui-elements.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
+    '/common/common-util.js',
     '/common/common-feedback.js',
-    '/common/sframe-messenger-inner.js',
     '/contacts/messenger-ui.js',
     '/customize/messages.js',
-], function ($, Config, ApiConfig, UIElements, UI, Hash, Feedback,
-Messenger, MessengerUI, Messages) {
+], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback,
+MessengerUI, Messages) {
     var Common;
 
     var Bar = {
@@ -150,7 +150,6 @@ Messenger, MessengerUI, Messages) {
         };
     };
 
-    var avatars = {};
     var editingUserName = {
         state: false
     };
@@ -163,6 +162,7 @@ Messenger, MessengerUI, Messages) {
             }
         });
     };
+    var showColors = false;
     var updateUserList = function (toolbar, config) {
         // Make sure the elements are displayed
         var $userButtons = toolbar.userlist;
@@ -233,6 +233,9 @@ Messenger, MessengerUI, Messages) {
         editUsersNames.forEach(function (data) {
             var name = data.name || Messages.anonymous;
             var $span = $('<span>', {'class': 'cp-avatar'});
+            if (data.color && showColors) {
+                $span.css('border-color', data.color);
+            }
             var $rightCol = $('<span>', {'class': 'cp-toolbar-userlist-rightcol'});
             var $nameSpan = $('<span>', {'class': 'cp-toolbar-userlist-name'}).appendTo($rightCol);
             var $nameValue = $('<span>', {
@@ -323,13 +326,13 @@ Messenger, MessengerUI, Messages) {
                     window.open(origin+'/profile/#' + data.profile);
                 });
             }
-            if (data.avatar && avatars[data.avatar]) {
-                $span.append(avatars[data.avatar]);
+            if (data.avatar && UIElements.getAvatar(data.avatar)) {
+                $span.append(UIElements.getAvatar(data.avatar));
                 $span.append($rightCol);
             } else {
                 Common.displayAvatar($span, data.avatar, name, function ($img) {
                     if (data.avatar && $img && $img.length) {
-                        avatars[data.avatar] = $img[0].outerHTML;
+                        UIElements.setAvatar(data.avatar, $img[0].outerHTML);
                     }
                     $span.append($rightCol);
                 });
@@ -425,9 +428,7 @@ Messenger, MessengerUI, Messages) {
             id: 'cp-app-contacts-container',
             'class': 'cp-app-contacts-inapp'
         }).prependTo(toolbar.chatContent);
-        var sframeChan = Common.getSframeChannel();
-        var messenger = Messenger.create(sframeChan);
-        MessengerUI.create(messenger, $container, Common, toolbar);
+        MessengerUI.create($container, Common, toolbar);
     };
     var createChat = function (toolbar, config) {
         if (!config.metadataMgr) {
@@ -487,7 +488,7 @@ Messenger, MessengerUI, Messages) {
             show();
         });
 
-        initChat(toolbar, config);
+        initChat(toolbar);
         return $container;
     };
 
@@ -1168,6 +1169,16 @@ Messenger, MessengerUI, Messages) {
             if (toolbar.spinner) {
                 toolbar.spinner.text(Messages.deletedFromServer);
             }
+        };
+
+        // Show user colors in the userlist only if the app is compatible and if the user
+        // wants to see the cursors
+        toolbar.showColors = function () {
+            if (!config.metadataMgr) { return; }
+            var privateData = config.metadataMgr.getPrivateData();
+            var show = Util.find(privateData, ['settings', 'general', 'cursor', 'show']);
+            if (show === false) { return; }
+            showColors = true;
         };
 
         // On log out, remove permanently the realtime elements of the toolbar

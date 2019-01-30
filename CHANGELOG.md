@@ -1,3 +1,130 @@
+# Quokka release (v2.16.0)
+
+## Goals
+
+We set aside an additional week for this release in order to deploy _encrypted spreadsheets_, which we've been working toward for a long time.
+This feature combines our usual focus on privacy with OnlyOffice's spreadsheet editor.
+
+At least for this first release we're still considering this functionality to be **highly experimental**.
+We've done our best to make this new application fun and easy to use, however, it will still require a lot of work before it supports all the features that you can expect from our other editors.
+We welcome you to try it out and report any difficulties you encounter, though you may want to wait before you start using it for all your financial documents.
+
+## Update notes
+
+* OnlyOffice requires more lax Content Security Policy headers than the rest of the platform. Compare your configuration against `config.example.js`.
+* If you are running a customized `application_config.js`, you may need to update `availablePadTypes` and `registeredOnlyTypes`. See [the wiki](https://github.com/xwiki-labs/cryptpad/wiki/Application-config) for more details.
+* In addition to a few serverside changes for the new spreadsheet editor, this release fixes a bug that affected system administrators who had set custom limits for some users and disabled communication with our payment server. Restart your server after updating for these changes to take effect.
+
+
+## Features
+
+* We've implemented a feature we call _ephemeral channels_, which we use for displaying other users' cursors in our rich text, code, and slide editors. Ephemeral channels behave exactly like our regular server messaging infrastructure except that no history is stored.
+* We've added additional highlighting modes in our code editor for C, C++, Java, and Objective-C
+* We've imposed a limit of five items for the table which displays upload progress, in order to keep it from taking up too much space on the screen when users upload many files in one session.
+
+## Bugfixes
+
+* [@3n2pS3P5kG23S96yxRbUHAZajuH2F](https://github.com/3n2pS3P5kG23S96yxRbUHAZajuH2F) reported an issue shortly after our last release which threw an error if our feedback API was disabled. The fix was on our master branch, but now it will be properly tagged.
+* We noticed an issue in our code editor where imported .md files were interpreted as text, instead of markdown. This caused the preview pane to stop working.
+* We also discovered an issue which had broken our CryptDrive import function, but as far as we know it did not affect any users. It should be working as intended now.
+* Unfortunately, we don't do a lot of testing on Internet Explorer 11, but one of our users was kind enough to report an error. We tracked down a few uses of APIs which do not exist on IE11, and replaced them with compatible functions, so now users of IE11 will be able to enjoy CryptPad once more.
+
+# Pademelon release (v2.15.0)
+
+## Goals
+
+For this release we planned to improve upon last release's introduction of the display of other users' cursors in our code and slide editors by adding the same functionality to our rich text editor.
+
+Beyond just producing software, the CryptPad team has also begun to produce peer-reviewed papers.
+We have previously published [Private Document Editing with Some Trust](https://dl.acm.org/citation.cfm?doid=3209280.3209535) as a part of the 2018 proceedings of the ACM Symposium on Document Engineering.
+We have recently been accepted for publication as a part of [HCI-CPT](http://2019.hci.international/hci-cpt): the first international conference on HCI (Human Computer Interaction) for cybersecurity, privacy and trust.
+In preparation for this publication we've begun to collect additional usage data in order to inform the wider community of our findings regarding usability of cryptography-based collaboration systems.
+
+## Update notes
+
+* Updating to version 2.15.0 from 2.14.0 should only require that update to the latest clientside code via git, and update any cache-busting parameters you've set.
+* Several of our third-party clientside dependencies have been updated, and you may optionally run `bower update` to receive their latest versions.
+* As explained above, we have added a number of new keys to our existing feedback system. The new keys are detailed below
+  * HOME_SUPPORT_CRYPTPAD informs us when users discover our opencollective campaign from the CryptPad home page
+  * UPGRADE_ACCOUNT informs us when someone clicks the upgrade account button from their CryptDrive or settings page
+  * SUPPORT_CRYPTPAD is not active on our CryptPad instance, since this key is only sent when clicking the _donate button_ which is shown when upgraded accounts are disabled
+  * DELETE_ACCOUNT_AUTOMATIC informs us when somebody deletes their account automatically from the settings page. Automatic account deletion is only available for accounts created since version 1.29.0
+  * DELETE_ACCOUNT_MANUAL informs us when a user generates the proof of their account ownership which is required for manual account deletion. This feature is available only for accounts predating version 1.29.0
+  * OWNED_DRIVE_MIGRATION informs us when a user migrates their CryptDrive from our legacy format (which does not support automatic deletion) to our newer format (which does) via the settings page
+  * PASSWORD_CHANGED informs us when a user changes their password from the settings page
+  * NO_WEBRTC informs us when a users browser does not support WebRTC at all via a crude test which never actually runs any WebRTC-based code
+  * SUBSCRIPTION_BUTTON informs us when a user navigates to our paid account administration panel from their settings page
+  * LOGOUT_EVERYWHERE informs us when a user executes the command to log out of their account on all remote devices from the settings page
+* We've implemented the ability to configure which applications are available on a particular CryptPad instance via `cryptpad/customize/application_config.js`. Two arrays (`config.availablePadTypes` and `config.registeredOnlyTypes`) define which applications are available to everyone, and which applications are available to registered users. Due to a bug which was discovered, this behaviour is incorrect for our encrypted file viewer, and as a result encrypted files cannot currently be disabled. This will be addressed in our next release.
+
+## Features
+
+* Our rich text editor now displays other users' cursors when editing with a group. Preferences for this behaviour can be defined via the settings page.
+* Links in our rich text editor can now be clicked more easily, as a small tooltip with a clickable link will be displayed above the editable link in the document.
+* Users who wish to be notified of spelling errors in their rich text pads can enable spellcheck via the settings page.
+* As noted above, various pad types can be disabled by instance administrators via `customize/application_config.js`.
+* We've enabled a feature in the settings page which will migrate users' CryptDrive from our legacy format to our latest format (which supports automatic deletion). Only users with accounts dating back to version 1.29.0 will notice any difference.
+* We've worked to improve some usability issues presented by the interaction of _owned files_ and _shared folders_. Since only the owner of an owned document can delete it the owner must keep a record of that document in their CryptDrive even if they place it in a shared folder (where someone else could delete it while they are offline). As such, owned documents were always copied to shared folders instead of being moved, and this proliferation of copies made it more difficult for users to organize their CryptDrives. Duplicated owned documents which are kept in your CryptDrive can now be hidden via the settings page. If those files are removed from a shared folder by another user, the hidden duplicate will be revealed in the root of your CryptDrive's tree.
+* Finally, we've implemented the ability to copy documents to multiple shared folders via an entry in the right-click menu for any such document.
+
+## Bugfixes
+
+* We've improved the styles for displaying other users' cursors in the code and slide editors to avoid moving your view of the text when someone else highlights it.
+* We've also changed some of the logic for how often other users' cursors are updated and displayed, so as to maximize the accuracy of their position and not show incorrect placements while you are typing.
+* We fixed a bug which caused errors while loading your CryptDrive after a shared folder had been deleted.
+
+# Opossum release (v2.14.0)
+
+## Goals
+
+For this release we chose to focus on our in-pad chat functionality and the ability to show your cursor's position to other users in the same pad.
+
+## Update notes
+
+* We've released an updated version of a serverside dependency: `chainpad-server`
+  * this addresses a recently introduced bug which is capable of sending more history than clients require under certain circumstances
+  * to use this updated dependency, run `npm update` and restart your server
+
+## Features
+
+* Our code editor is now capable of displaying other user's cursors within your view of the document.
+  * this is enabled by default, but you can choose not to share your own cursor, and to disable the display of other users' cursors in your document
+  * your initial color is chosen randomly, but you can choose any color you like within the settings page alongside the other configuration options for cursors
+* After some consideration, we have chosen to change the permissions around the chat functionality embedded within every pad.
+  * previously we had allowed viewers to participate in chat, even though they could not change the document.
+  * we decided that this was counter-intuitive
+  * in the event of an XSS vulnerability it could be used as a vector for privilege escalation
+  * as such, we have modified our embedded chat functionality to only allow editors to participate
+  * this change is not backwards-compatible, and so the embedded chat boxes will have dropped their older history
+    * our assumption is that this will be an improvement for the majority of our users, and that it's fairly safe to drop older history given that chat is a relatively new feature
+    * if this has affected you in an adverse way, the information is still accessible, and you can contact us if you need a way to recover that information
+* Finally, it is now possible to print the rendered markdown content in our code editor, thanks to a contribution from [@joldie](https://github.com/joldie)
+
+# Numbat release (v2.13.0)
+
+## Goals
+
+This release features long-awaited improvements to our Rich Text Pad.
+This work was done over a short period, and we're releasing it now so that users can take advantage of the improvements as soon as possible.
+
+## Update notes
+
+* We've fixed a bug related to chat via an update to our messaging server. To install the update, run `npm update`. This server improvement is backwards compatible, so you can update your clientside or serverside dependencies in either order. Restart your server for the changes to take effect.
+* You can run `bower update` in order to take advantage of the latest clientside dependencies. Depending on when you last updated you may benefit from updates to Codemirror or some other clientside libraries.
+
+## Features
+
+* We've refactored a great deal of CryptPad's Remote Procedure Call mechanisms related to chat. This should simplify CryptPad and make potential bugs less likely to occur.
+
+## Bugfixes
+
+* The behaviour of the cursor in our rich text editor has been greatly improved. Your experience when collaboratively editing should be noticeably better.
+* Characters inserted into rich text pads were sometimes dropped due to a race condition between CKEditor and ChainPad, but this asynchronous behaviour has been resolved. As such the editor should be much more reliable.
+* Deleting chat history from the server now removes it from your chat interface and that of remote messengers, where it previously would require a reload of the interface to see the correct chat history.
+* We now correctly set owners of a shared chat channel such that either chat participant in a one-to-one room can delete the history.
+* If you request history with a `lastKnownHash` which is not in the history, the server informs you that it is not there via a direct message. Clients fall back to a classic full retreival of the history. Previously this would fail, and print a message to the server's stdout.
+* Firefox users may have noticed that when they clicked the dropdown menus for styles in the CKEditor toolbar, their scrollbar would jump to the top of the document. Their scroll position is now preserved in cases where it would previously have been disrupted.
+
 # Manatee release (v2.12.0)
 
 ## Goals

@@ -8,22 +8,30 @@ define([
         return Math.random().toString(16).replace('0.', '') + Math.random().toString(16).replace('0.', '');
     };
 
-    var create = function (onMsg, postMsg, cb, isWorker) {
+    var create = function (onMsg, postMsg, cb) {
         var chanLoaded;
-        var waitingData;
-        if (!isWorker) {
-            chanLoaded = false;
-            waitingData = [];
-            onMsg.reg(function (data) {
-                if (chanLoaded) { return; }
-                waitingData.push(data);
-            });
-        }
+        var waitingData = [];
 
         var evReady = Util.mkEvent(true);
 
+        onMsg.reg(function (msg) {
+            if (chanLoaded) { return; }
+            var data = msg.data;
+            if (data === '_READY') {
+                postMsg('_READY');
+                chanLoaded = true;
+                evReady.fire();
+                waitingData.forEach(function (d) {
+                    onMsg.fire(d);
+                });
+                return;
+            }
+            waitingData.push(data);
+        });
+
         var handlers = {};
         var queries = {};
+        var acks = {};
 
         // list of handlers which are registered from the other side...
         var insideHandlers = [];
@@ -32,16 +40,24 @@ define([
         var chan = {};
 
         // Send a query.  channel.query('Q_SOMETHING', { args: "whatever" }, function (reply) { ... });
+        // We have a timeout for receiving an ACK, but unlimited time for receiving an answer to the query
         chan.query = function (q, content, cb, opts) {
             var txid = mkTxid();
             opts = opts || {};
             var to = opts.timeout || 30000;
             var timeout = setTimeout(function () {
                 delete queries[txid];
-                //console.log("Timeout making query " + q);
+                cb('TIMEOUT');
             }, to);
-            queries[txid] = function (data, msg) {
+            acks[txid] = function (err) {
                 clearTimeout(timeout);
+                delete acks[txid];
+                if (err) {
+                    delete queries[txid];
+                    cb('UNHANDLED');
+                }
+            };
+            queries[txid] = function (data, msg) {
                 delete queries[txid];
                 cb(undefined, data.content, msg);
             };
@@ -103,10 +119,10 @@ define([
             }
             insideHandlers.push(content);
         });
-        chan.whenReg('EV_REGISTER_HANDLER', evReady.fire);
+        //chan.whenReg('EV_REGISTER_HANDLER', evReady.fire);
 
         // Make sure both iframes are ready
-        var isReady  =false;
+        var isReady = false;
         chan.onReady = function (h) {
             if (isReady) {
                 return void h();
@@ -121,29 +137,43 @@ define([
         };
 
         onMsg.reg(function (msg) {
+            if (!chanLoaded) { return; }
+            if (!msg.data || msg.data === '_READY') { return; }
             var data = JSON.parse(msg.data);
-            if (typeof(data.q) === 'string' && handlers[data.q]) {
-                handlers[data.q].forEach(function (f) {
-                    f(data || JSON.parse(msg.data), msg);
-                    data = undefined;
-                });
+            if (typeof(data.ack) !== "undefined") {
+                if (acks[data.txid]) { acks[data.txid](!data.ack); }
+            } else if (typeof(data.q) === 'string') {
+                if (handlers[data.q]) {
+                    // If this is a "query", send an ack
+                    if (data.txid) {
+                        postMsg(JSON.stringify({
+                            txid: data.txid,
+                            ack: true
+                        }));
+                    }
+                    handlers[data.q].forEach(function (f) {
+                        f(data || JSON.parse(msg.data), msg);
+                        data = undefined;
+                    });
+                } else {
+                    if (data.txid) {
+                        postMsg(JSON.stringify({
+                            txid: data.txid,
+                            ack: false
+                        }));
+                    }
+                }
             } else if (typeof(data.q) === 'undefined' && queries[data.txid]) {
                 queries[data.txid](data, msg);
             } else {
-                console.log("DROP Unhandled message");
-                console.log(msg.data, isWorker);
-                console.log(msg);
+                /*console.log("DROP Unhandled message");
+                console.log(msg.data, window);
+                console.log(msg);*/
             }
         });
-        if (isWorker) {
-            evReady.fire();
-        } else {
-            chanLoaded = true;
-            waitingData.forEach(function (d) {
-                onMsg.fire(d);
-            });
-            waitingData = [];
-        }
+
+        postMsg('_READY');
+
         cb(chan);
     };
 

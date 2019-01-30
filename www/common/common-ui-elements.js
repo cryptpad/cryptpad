@@ -768,7 +768,7 @@ define([
                 break;
             case 'print':
                 button = $('<button>', {
-                    title: Messages.printButtonTitle,
+                    title: Messages.printButtonTitle2,
                     'class': "fa fa-print cp-toolbar-icon-print",
                 }).append($('<span>', {'class': 'cp-toolbar-drawer-element'}).text(Messages.printText));
                 break;
@@ -873,6 +873,15 @@ define([
                     });
                 });
                 break;
+            case 'save': // OnlyOffice save
+                button = $('<button>', {
+                    'class': 'fa fa-save',
+                    title: Messages.settings_save,
+                }).append($('<span>', {'class': 'cp-toolbar-drawer-element'})
+                .text(Messages.settings_save))
+                .click(common.prepareFeedback(type));
+                if (callback) { button.click(callback); }
+                break;
             default:
                 data = data || {};
                 var icon = data.icon || "fa-question";
@@ -880,6 +889,10 @@ define([
                     'class': "fa " + icon,
                 })
                 .click(common.prepareFeedback(data.name || 'DEFAULT'));
+                //.click(common.prepareFeedback(type));
+                if (callback) {
+                    button.click(callback);
+                }
                 if (data.title) { button.attr('title', data.title); }
                 if (data.style) { button.attr('style', data.style); }
                 if (data.id) { button.attr('id', data.id); }
@@ -1211,6 +1224,13 @@ define([
       var emojis = emojiStringToArray(str);
       return isEmoji(emojis[0])? emojis[0]: str[0];
     };
+    var avatars = {};
+    UIElements.setAvatar = function (hash, data) {
+        avatars[hash] = data;
+    };
+    UIElements.getAvatar = function (hash) {
+        return avatars[hash];
+    };
     UIElements.displayAvatar = function (Common, $container, href, name, cb) {
         var displayDefault = function () {
             var text = getFirstEmojiOrCharacter(name);
@@ -1304,21 +1324,27 @@ define([
 
             var urls = common.getMetadataMgr().getPrivateData().accounts;
             var makeDonateButton = function () {
-                $('<a>', {
+                var $a = $('<a>', {
                     'class': 'cp-limit-upgrade btn btn-success',
                     href: urls.donateURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).text(Messages.supportCryptpad).appendTo($container);
+                $a.click(function () {
+                    Feedback.send('SUPPORT_CRYPTPAD');
+                });
             };
 
             var makeUpgradeButton = function () {
-                $('<a>', {
+                var $a = $('<a>', {
                     'class': 'cp-limit-upgrade btn btn-success',
                     href: urls.upgradeURL,
                     rel: "noreferrer noopener",
                     target: "_blank",
                 }).text(Messages.upgradeAccount).appendTo($container);
+                $a.click(function () {
+                    Feedback.send('UPGRADE_ACCOUNT');
+                });
             };
 
             if (!Config.removeDonateButton) {
@@ -1909,7 +1935,13 @@ define([
                 onSelect: function (data) {
                     if (data.type === type && first) {
                         UI.addLoadingScreen({hideTips: true});
-                        sframeChan.query('Q_TEMPLATE_USE', data.href, function () {
+                        var chatChan = common.getPadChat();
+                        var cursorChan = common.getCursorChannel();
+                        sframeChan.query('Q_TEMPLATE_USE', {
+                            href: data.href,
+                            chat: chatChan,
+                            cursor: cursorChan
+                        }, function () {
                             first = false;
                             UI.removeLoadingScreen();
                             Feedback.send('TEMPLATE_USED');

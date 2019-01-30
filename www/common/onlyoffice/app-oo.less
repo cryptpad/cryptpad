@@ -1,0 +1,62 @@
+@import (reference) "../../customize/src/less2/include/framework.less";
+
+// body
+body.cp-app-sheet, body.cp-app-oodoc, body.cp-app-ooslide {
+    display: flex;
+    flex-flow: column;
+
+    &.cp-app-sheet {
+        .framework_main(
+            @bg-color: @colortheme_oocell-bg,
+            @warn-color: @colortheme_oocell-warn,
+            @color: @colortheme_oocell-color
+        );
+    }
+    &.cp-app-oodoc {
+        .framework_main(
+            @bg-color: @colortheme_oodoc-bg,
+            @warn-color: @colortheme_oodoc-warn,
+            @color: @colortheme_oodoc-color
+        );
+    }
+    &.cp-app-ooslide {
+        .framework_main(
+            @bg-color: @colortheme_ooslide-bg,
+            @warn-color: @colortheme_ooslide-warn,
+            @color: @colortheme_ooslide-color
+        );
+    }
+
+    #cp-fileupload {
+        display: none !important;
+    }
+
+    #cp-toolbar {
+        display: flex; // We need this to remove a 3px border at the bottom of the toolbar
+    }
+
+    .cp-cryptpad-toolbar {
+        padding: 0px;
+        display: inline-block;
+    }
+    #cp-app-oo-container {
+        flex: 1;
+        height: 100%;
+        background-color: lightgrey;
+        display: flex;
+    }
+    #cp-app-oo-editor {
+        flex: 1;
+        height: 100%;
+        background-color: lightgrey;
+        display: flex;
+        flex-flow: column;
+    }
+    #ooframe {
+        flex: 1;
+        border:none;
+        margin:0;
+        padding:0;
+    }
+}
+

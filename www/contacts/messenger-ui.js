@@ -39,10 +39,11 @@ define([
         };
     };
 
-    MessengerUI.create = function (messenger, $container, common, toolbar) {
+    MessengerUI.create = function ($container, common, toolbar) {
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
         var origin = metadataMgr.getPrivateData().origin;
+        var readOnly = metadataMgr.getPrivateData().readOnly;
 
         var isApp = typeof(toolbar) !== "undefined";
 
@@ -74,6 +75,13 @@ define([
                 h('h2.cp-app-contacts-category-title', Messages.contacts_rooms),
             ]),
         ]);
+
+        var execCommand = function (cmd, data, cb) {
+            sframeChan.query('Q_CHAT_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
+                if (err || (obj && obj.error)) { return void cb(err || (obj && obj.error)); }
+                cb(void 0, obj);
+            });
+        };
 
         var $userlist = $(friendList).appendTo($container);
         var $messages = $(messaging).appendTo($container);
@@ -202,6 +210,9 @@ define([
             }, []);
         };
 
+        var clearChannel = function (id) {
+            $(getChat(id)).find('.cp-app-contacts-messages').html('');
+        };
         markup.chatbox = function (id, data, curvePublic) {
             var moreHistory = h('span.cp-app-contacts-more-history.fa.fa-history', {
                 title: Messages.contacts_fetchHistory,
@@ -226,7 +237,11 @@ define([
 
                 fetching = true;
                 var $messagebox = $(getChat(id)).find('.cp-app-contacts-messages');
-                messenger.getMoreHistory(id, sig, 10, function (e, history) {
+                execCommand('GET_MORE_HISTORY', {
+                    id: id,
+                    sig: sig,
+                    count: 10
+                }, function (e, history) {
                     fetching = false;
                     if (e) { return void console.error(e); }
 
@@ -271,20 +286,20 @@ define([
                 UI.confirm(Messages.contacts_confirmRemoveHistory, function (yes) {
                     if (!yes) { return; }
 
-                    messenger.clearOwnedChannel(id, function (e) {
+                    sframeChan.query('Q_CLEAR_OWNED_CHANNEL', id, function (e) {
                         if (e) {
                             console.error(e);
                             UI.alert(Messages.contacts_removeHistoryServerError);
                             return;
                         }
-                        // TODO clear the UI
+                        clearChannel(id);
                     });
                 });
             });
 
             var avatar = h('div.cp-avatar');
 
-            var headerContent = [avatar, moreHistory, data.isFriendCHat ? removeHistory : undefined];
+            var headerContent = [avatar, moreHistory, data.isFriendChat ? removeHistory : undefined];
             if (isApp) {
                 headerContent = [
                     h('div.cp-app-contacts-header-title', Messages.contacts_padTitle),
@@ -338,10 +353,13 @@ define([
                 if (typeof(content) !== 'string' || !content.trim()) { return; }
                 if (sending) { return false; }
                 sending = true;
-                messenger.sendMessage(id, content, function (e) {
+                execCommand('SEND_MESSAGE', {
+                    id: id,
+                    content: content
+                }, function (e) {
                     if (e) {
                         // failed to send
-                        return void console.error('failed to send');
+                        return void console.error('failed to send', e);
                     }
                     input.value = '';
                     sending = false;
@@ -389,9 +407,9 @@ define([
                 'data-user': data.isFriendChat && curvePublic
             }, [
                 header,
-                tips,
+                readOnly ? undefined : tips,
                 messages,
-                h('div.cp-app-contacts-input', [
+                readOnly ? undefined : h('div.cp-app-contacts-input', [
                     input,
                     sendButton,
                 ]),
@@ -409,7 +427,7 @@ define([
         var updateStatus = function (id) {
             if (!state.channels[id]) { return; }
             var $status = find.inList(id).find('.cp-app-contacts-status');
-            messenger.getStatus(id, function (e, online) {
+            execCommand('GET_STATUS', id, function (e, online) {
                 // if error maybe you shouldn't display this friend...
                 if (e) {
                     find.inList(id).hide();
@@ -431,7 +449,10 @@ define([
 
             if (lastMsg) {
                 channel.HEAD = lastMsg.sig;
-                messenger.setChannelHead(chanId, channel.HEAD, function (e) {
+                execCommand('SET_CHANNEL_HEAD', {
+                    id: chanId,
+                    sig: channel.HEAD
+                }, function (e) {
                     if (e) { console.error(e); }
                 });
             }
@@ -456,7 +477,7 @@ define([
         };
 
         var removeFriend = function (curvePublic) {
-            messenger.removeFriend(curvePublic, function (e /*, removed */) {
+            execCommand('REMOVE_FRIEND', curvePublic, function (e /*, removed */) {
                 if (e) { return void console.error(e); }
             });
         };
@@ -530,7 +551,7 @@ define([
             return ($elem[0].scrollHeight - $elem.scrollTop() === $elem.outerHeight());
         };
 
-        messenger.on('message', function (message) {
+        var onMessage = function (message) {
             var chanId = message.channel;
             var channel = state.channels[chanId];
             if (!channel) { return; }
@@ -570,7 +591,10 @@ define([
 
             if (isActive(chanId)) {
                 channel.HEAD = message.sig;
-                messenger.setChannelHead(chanId, message.sig, function (e) {
+                execCommand('SET_CHANNEL_HEAD', {
+                    id: chanId,
+                    sig: message.sig
+                }, function (e) {
                     if (e) { return void console.error(e); }
                 });
                 return;
@@ -580,25 +604,30 @@ define([
                 return void notify(chanId, message);
             }
             unnotify(chanId);
-        });
+        };
 
-        messenger.on('join', function (data, channel) {
+        var onJoin = function (obj) {
+            var channel = obj.id;
+            var data = obj.info;
             if (data.curvePublic) {
                 contactsData[data.curvePublic] = data;
             }
             updateStatus(channel);
-            // TODO room refresh online userlist
-        });
-        messenger.on('leave', function (data, channel) {
+        };
+        var onLeave = function (obj) {
+            var channel = obj.id;
+            var data = obj.info;
             if (contactsData[data.curvePublic]) {
                 delete contactsData[data.curvePublic];
             }
             updateStatus(channel);
-            // TODO room refresh online userlist
-        });
+        };
 
         // change in your friend list
-        messenger.on('update', function (info, types, channel) {
+        var onUpdateData = function (data) {
+            var info = data.info;
+            var types = data.types;
+            var channel = data.channel;
             if (!info || !info.curvePublic) { return; }
             // Make sure we don't store useless data (friends data in pad chat or the other way)
             if (channel && !state.channels[channel]) { return; }
@@ -617,9 +646,6 @@ define([
                 $messages.find(userQuery(curvePublic) + ' .cp-app-contacts-header ' +
                     '.cp-app-contacts-name, div.cp-app-contacts-message'+
                     userQuery(curvePublic) + ' div.cp-app-contacts-sender').text(name);
-
-                // TODO room
-                // Update name in room userlist
             }
 
             if (types.indexOf('profile') !== -1) {
@@ -645,13 +671,6 @@ define([
                 });
 
             }
-        });
-
-        var execCommand = function (cmd, data, cb) {
-            sframeChan.query('Q_CHAT_COMMAND', {cmd: cmd, data: data}, function (err, obj) {
-                if (err || (obj && obj.error)) { return void cb(err || (obj && obj.error)); }
-                cb(void 0, obj);
-            });
         };
 
         var initializeRoom = function (room) {
@@ -707,7 +726,8 @@ define([
             });
         };
 
-        messenger.on('friend', function (curvePublic) {
+        var onFriend = function (obj) {
+            var curvePublic = obj.curvePublic;
             if (isApp) { return; }
             debug('new friend: ', curvePublic);
             execCommand('GET_ROOMS', {curvePublic: curvePublic}, function (err, rooms) {
@@ -715,9 +735,11 @@ define([
                 debug('rooms: ' + JSON.stringify(rooms));
                 rooms.forEach(initializeRoom);
             });
-        });
+        };
 
-        messenger.on('unfriend', function (curvePublic, removedByMe) {
+        var onUnfriend = function (obj) {
+            var curvePublic = obj.curvePublic;
+            var removedByMe = obj.fromMe;
             if (isApp) { return; }
             var channel = state.channels[state.active];
             $userlist.find(userQuery(curvePublic)).remove();
@@ -728,7 +750,7 @@ define([
             if (!removedByMe) {
                 // TODO UI.alert if this is triggered by the other guy
             }
-        });
+        };
 
         common.getMetadataMgr().onTitleChange(function () {
             var padChat = common.getPadChat();
@@ -751,11 +773,11 @@ define([
         });
 
         // TODO room
-        // messenger.on('joinroom', function (chanid))
-        // messenger.on('leaveroom', function (chanid))
+        // var onJoinRoom
+        // var onLeaveRoom
 
 
-        messenger.getMyInfo(function (e, info) {
+        execCommand('GET_MY_INFO', null, function (e, info) {
             contactsData[info.curvePublic] = info;
         });
 
@@ -810,20 +832,50 @@ define([
             });
         }
         sframeChan.on('EV_CHAT_EVENT', function (obj) {
-            if (obj.ev === 'READY') {
+            var cmd = obj.ev;
+            var data = obj.data;
+            if (cmd === 'READY') {
                 onMessengerReady();
                 return;
             }
-            if (obj.ev === 'PADCHAT_READY') {
-                onPadChatReady(obj.data);
+            if (cmd === 'CLEAR_CHANNEL') {
+                clearChannel(data);
                 return;
             }
-            if (obj.ev === 'DISCONNECT') {
+            if (cmd === 'PADCHAT_READY') {
+                onPadChatReady(data);
+                return;
+            }
+            if (cmd === 'DISCONNECT') {
                 onDisconnect();
                 return;
             }
-            if (obj.ev === 'RECONNECT') {
+            if (cmd === 'RECONNECT') {
                 onReconnect();
+                return;
+            }
+            if (cmd === 'UPDATE_DATA') {
+                onUpdateData(data);
+                return;
+            }
+            if (cmd === 'MESSAGE') {
+                onMessage(data);
+                return;
+            }
+            if (cmd === 'JOIN') {
+                onJoin(data);
+                return;
+            }
+            if (cmd === 'LEAVE') {
+                onLeave(data);
+                return;
+            }
+            if (cmd === 'FRIEND') {
+                onFriend(data);
+                return;
+            }
+            if (cmd === 'UNFRIEND') {
+                onUnfriend(data);
                 return;
             }
         });

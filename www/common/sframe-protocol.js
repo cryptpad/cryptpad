@@ -153,28 +153,15 @@ define({
     // Cache is wiped after each new release
     'EV_CACHE_PUT': true,
 
-    // Contacts
-    'EV_CONTACTS_MESSAGE': true,
-    'EV_CONTACTS_JOIN': true,
-    'EV_CONTACTS_LEAVE': true,
-    'EV_CONTACTS_UPDATE': true,
-    'EV_CONTACTS_FRIEND': true,
-    'EV_CONTACTS_UNFRIEND': true,
-    'Q_CONTACTS_GET_FRIEND_LIST': true,
-    'Q_CONTACTS_GET_MY_INFO': true,
-    'Q_CONTACTS_GET_FRIEND_INFO': true,
-    'Q_CONTACTS_REMOVE_FRIEND': true,
-    'Q_CONTACTS_OPEN_FRIEND_CHANNEL': true,
-    'Q_CONTACTS_GET_STATUS': true,
-    'Q_CONTACTS_GET_MORE_HISTORY': true,
-    'Q_CONTACTS_SEND_MESSAGE': true,
-    'Q_CONTACTS_SET_CHANNEL_HEAD': true,
-    'Q_CONTACTS_CLEAR_OWNED_CHANNEL': true,
-
     // Chat
     'EV_CHAT_EVENT': true,
     'Q_CHAT_COMMAND': true,
     'Q_CHAT_OPENPADCHAT': true,
+
+    // Cursor
+    'EV_CURSOR_EVENT': true,
+    'Q_CURSOR_COMMAND': true,
+    'Q_CURSOR_OPENCHANNEL': true,
 
     // Put one or more entries to the localStore which will go in localStorage.
     'EV_LOCALSTORE_PUT': true,
@@ -228,6 +215,8 @@ define({
 
     // Remove an owned pad from the server
     'Q_REMOVE_OWNED_CHANNEL': true,
+    // Clear an owned pad from the server (preserve metadata)
+    'Q_CLEAR_OWNED_CHANNEL': true,
 
     // Notifications about connection and disconnection from the network
     'EV_NETWORK_DISCONNECT': true,
@@ -243,6 +232,9 @@ define({
     // This is for sending data out of the iframe when we are in testing mode
     // The exact protocol is defined in common/test.js
     'EV_TESTDATA': true,
+
+    // OnlyOffice: save a new version
+    'Q_OO_SAVE': true,
 
     // Ask for the pad password when a pad is protected
     'EV_PAD_PASSWORD': true,

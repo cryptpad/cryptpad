@@ -26,6 +26,7 @@ define([
     '/customize/messages.js',
     '/pad/links.js',
     '/pad/export.js',
+    '/pad/cursor.js',
     '/bower_components/nthen/index.js',
     '/common/media-tag.js',
     '/api/config',
@@ -51,6 +52,7 @@ define([
     Messages,
     Links,
     Exporter,
+    Cursors,
     nThen,
     MediaTag,
     ApiConfig,
@@ -109,8 +111,10 @@ define([
             el.getAttribute('class').split(' ').indexOf('non-realtime') !== -1);
     };
 
+    var isCursor = Cursors.isCursor;
+
     var shouldSerialize = function (el) {
-        return isNotMagicLine(el) && !isWidget(el);
+        return isNotMagicLine(el) && !isWidget(el) && !isCursor(el);
     };
 
     // MEDIATAG: Filter attributes in the serialized elements
@@ -217,6 +221,18 @@ define([
                     }
                 }
 
+                // Other users cursor
+                if (Cursors.preDiffApply(info)) {
+                    return true;
+                }
+
+                if (info.node && info.node.tagName === 'DIV' &&
+                    info.node.getAttribute('class') &&
+                    /cp-link-clicked/.test(info.node.getAttribute('class'))) {
+                    if (info.diff.action === 'removeElement') {
+                        return true;
+                    }
+                }
 
                 // MEDIATAG
                 // Never modify widget ids
@@ -300,12 +316,18 @@ define([
                     }
                 }
 
+                // Do not change the spellcheck value in view mode
+                if (readOnly && info.node && info.node.tagName === 'BODY' &&
+                    info.diff.action === 'modifyAttribute' && info.diff.name === 'spellcheck') {
+                    return true;
+                }
                 // Do not change the contenteditable value in view mode
                 if (readOnly && info.node && info.node.tagName === 'BODY' &&
                     info.diff.action === 'modifyAttribute' && info.diff.name === 'contenteditable') {
                     return true;
                 }
 
+/*
                 cursor.update();
 
                 // no use trying to recover the cursor if it doesn't exist
@@ -314,6 +336,7 @@ define([
                 /*  frame is either 0, 1, 2, or 3, depending on which
                     cursor frames were affected: none, first, last, or both
                 */
+/*
                 var frame = info.frame = cursor.inNode(info.node);
 
                 if (!frame) { return; }
@@ -325,19 +348,15 @@ define([
                     if (frame & 1) {
                         // push cursor start if necessary
                         cursor.transformRange(cursor.Range.start, ops);
-                        /*if (pushes.commonStart < cursor.Range.start.offset) {
-                            cursor.Range.start.offset += pushes.delta;
-                        }*/
                     }
                     if (frame & 2) {
                         // push cursor end if necessary
                         cursor.transformRange(cursor.Range.end, ops);
-                        /*if (pushes.commonStart < cursor.Range.end.offset) {
-                            cursor.Range.end.offset += pushes.delta;
-                        }*/
                     }
                 }
+*/
             },
+/*
             postDiffApply: function (info) {
                 if (info.frame) {
                     if (info.node) {
@@ -351,6 +370,7 @@ define([
                     cursor.fixSelection(sel, range);
                 }
             }
+*/
         };
     };
 
@@ -429,7 +449,11 @@ define([
             el.setAttribute('class', 'non-realtime');
         });
 
+        var $iframe = $('html').find('iframe').contents();
         var ifrWindow = $html.find('iframe')[0].contentWindow;
+
+        var customCss = '/customize/ckeditor-contents.css?' + window.CKEDITOR.CRYPTPAD_URLARGS;
+        $iframe.find('head').append('<link href="' + customCss + '" type="text/css" rel="stylesheet" _fcktemp="true"/>');
 
         framework._.sfCommon.addShortcuts(ifrWindow);
 
@@ -454,8 +478,61 @@ define([
         });
 
         var inner = window.inner = documentBody;
+        var $inner = $(inner);
 
+        var onLinkClicked = function (e) {
+            var $target = $(e.target);
+            if (!$target.is('a')) { return; }
+            var href = $target.attr('href');
+            if (!href || href[0] === '#') { return; }
+            e.preventDefault();
+            e.stopPropagation();
+
+            var rect = e.target.getBoundingClientRect();
+            var rect0 = inner.getBoundingClientRect();
+            var l = (rect.left - rect0.left)+'px';
+            var t = rect.bottom + $iframe.scrollTop() +'px';
+
+            var a = h('a', { href: href}, href);
+            var link = h('div.cp-link-clicked.non-realtime', {
+                contenteditable: false,
+                style: 'top:'+t+';left:'+l
+            }, [ a ]);
+            var $link = $(link);
+            $inner.append(link);
+
+            if (rect.left + $link.outerWidth() - rect0.left > $inner.width()) {
+                $link.css('left', 'unset');
+                $link.css('right', 0);
+            }
+
+            $(a).click(function (ee) {
+                ee.preventDefault();
+                ee.stopPropagation();
+                framework._.sfCommon.openUnsafeURL(href);
+                $link.remove();
+            });
+            $link.on('mouseleave', function () {
+                $link.remove();
+            });
+        };
+        var removeClickedLink = function () {
+            $inner.find('.cp-link-clicked').remove();
+        };
+
+        $inner.click(function (e) {
+            if (e.target.nodeName.toUpperCase() === 'A') {
+                removeClickedLink();
+                return void onLinkClicked(e);
+            }
+            removeClickedLink();
+        });
+
+        // My cursor
         var cursor = module.cursor = Cursor(inner);
+
+        // Display other users cursor
+        var cursors = Cursors.create(inner, hjsonToDom, cursor);
 
         var openLink = function (e) {
             var el = e.currentTarget;
@@ -470,9 +547,9 @@ define([
 
         framework.onEditableChange(function (unlocked) {
             if (!framework.isReadOnly()) {
-                $(inner).attr('contenteditable', '' + Boolean(unlocked));
+                $inner.attr('contenteditable', '' + Boolean(unlocked));
             }
-            $(inner).css({ background: unlocked ? '#fff' : '#eee' });
+            $inner.css({ background: unlocked ? '#fff' : '#eee' });
         });
 
         framework.setMediaTagEmbedder(function ($mt) {
@@ -487,7 +564,7 @@ define([
         framework.setTitleRecommender(function () {
             var text;
             if (['h1', 'h2', 'h3'].some(function (t) {
-                var $header = $(inner).find(t + ':first-of-type');
+                var $header = $inner.find(t + ':first-of-type');
                 if ($header.length && $header.text()) {
                     text = $header.text();
                     return true;
@@ -497,10 +574,24 @@ define([
 
         var DD = new DiffDom(mkDiffOptions(cursor, framework.isReadOnly()));
 
+        var cursorStopped = false;
+        var cursorTo;
+        var updateCursor = function () {
+            if (cursorTo) { clearTimeout(cursorTo); }
+
+            // If we're receiving content
+            if (cursorStopped) { return void setTimeout(updateCursor, 100); }
+
+            cursorTo = setTimeout(function () {
+                framework.updateCursor();
+            }, 500); // 500ms to make sure it is sent after chainpad sync
+        };
+
         // apply patches, and try not to lose the cursor in the process!
         framework.onContentUpdate(function (hjson) {
             if (!Array.isArray(hjson)) { throw new Error(Messages.typeError); }
             var userDocStateDom = hjsonToDom(hjson);
+            cursorStopped = true;
 
             userDocStateDom.setAttribute("contenteditable",
                 inner.getAttribute('contenteditable'));
@@ -515,11 +606,26 @@ define([
                 $(el).remove();
             });
 
+            // Get cursor position
+            cursor.offsetUpdate();
+            var oldText = inner.outerHTML;
+
+            // Apply the changes
             var patch = (DD).diff(inner, userDocStateDom);
             (DD).apply(inner, patch);
 
+            // Restore cursor position
+            var newText = inner.outerHTML;
+            var ops = ChainPad.Diff.diff(oldText, newText);
+            cursor.restoreOffset(ops);
+
+            setTimeout(function () {
+                cursorStopped = false;
+                updateCursor();
+            }, 200);
+
             // MEDIATAG: Migrate old mediatags to the widget system
-            $(inner).find('media-tag:not(.cke_widget_element)').each(function (i, el) {
+            $inner.find('media-tag:not(.cke_widget_element)').each(function (i, el) {
                 var element = new window.CKEDITOR.dom.element(el);
                 editor.widgets.initOn( element, 'mediatag' );
             });
@@ -530,7 +636,7 @@ define([
             editor.widgets.checkWidgets();
 
             if (framework.isReadOnly()) {
-                var $links = $(inner).find('a');
+                var $links = $inner.find('a');
                 // off so that we don't end up with multiple identical handlers
                 $links.off('click', openLink).on('click', openLink);
             }
@@ -548,13 +654,19 @@ define([
             return str;
         });
         framework.setContentGetter(function () {
-            $(inner).find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
+            $inner.find('span[data-cke-display-name="media-tag"]:empty').each(function (i, el) {
                 $(el).remove();
             });
 
+            // We have to remove the cursors before getting the content because they split
+            // the text nodes and OT/ChainPad would freak out
+            cursors.removeCursors();
+
             displayMediaTags(framework, inner, mediaTagMap);
             inner.normalize();
-            return Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
+            var hjson = Hyperjson.fromDOM(inner, shouldSerialize, hjsonFilters);
+
+            return hjson;
         });
 
         $bar.find('#cke_1_toolbar_collapser').hide();
@@ -581,7 +693,7 @@ define([
             }
 
             if (framework.isReadOnly()) {
-                $(inner).attr('contenteditable', 'false');
+                $inner.attr('contenteditable', 'false');
             }
 
             var fmConfig = {
@@ -605,16 +717,21 @@ define([
             };
             window.APP.FM = framework._.sfCommon.createFileManager(fmConfig);
 
+            framework._.sfCommon.getAttribute(['pad', 'spellcheck'], function (err, data) {
+                if (framework.isReadOnly()) { return; }
+                if (data) {
+                    $iframe.find('body').attr('spellcheck', true);
+                }
+            });
             framework._.sfCommon.getAttribute(['pad', 'width'], function (err, data) {
                 if (data) {
-                    var $iframe = $('html').find('iframe').contents();
                     $iframe.find('html').addClass('cke_body_width');
                 }
             });
 
             framework._.sfCommon.isPadStored(function (err, val) {
                 if (!val) { return; }
-                var b64images = $(inner).find('img[src^="data:image"]:not(.cke_reset)');
+                var b64images = $inner.find('img[src^="data:image"]:not(.cke_reset)');
                 if (b64images.length && framework._.sfCommon.isLoggedIn()) {
                     var no = h('button.cp-corner-cancel', Messages.cancel);
                     var yes = h('button.cp-corner-primary', Messages.ok);
@@ -685,6 +802,12 @@ define([
             ];
         });
 
+        /* Display the cursor of other users and send our cursor */
+        framework.setCursorGetter(cursors.cursorGetter);
+        framework.onCursorUpdate(cursors.onCursorUpdate);
+        inner.addEventListener('click', updateCursor);
+        inner.addEventListener('keyup', updateCursor);
+
 
         /* hitting enter makes a new line, but places the cursor inside
             of the <br> instead of the <p>. This makes it such that you
@@ -706,7 +829,10 @@ define([
             The solution is the "input" event, triggered by the browser as soon as the
             character is inserted.
         */
-        inner.addEventListener('input', framework.localChange);
+        inner.addEventListener('input', function () {
+            framework.localChange();
+            updateCursor();
+        });
         editor.on('change', framework.localChange);
 
         // export the typing tests to the window.
@@ -724,7 +850,7 @@ define([
 
         // Fix the scrollbar if it's reset when clicking on a button (firefox only?)
         var buttonScrollTop;
-        $('.cke_toolbox_main').find('.cke_button').mousedown(function () {
+        $('.cke_toolbox_main').find('.cke_button, .cke_combo_button').mousedown(function () {
             buttonScrollTop = $('iframe').contents().scrollTop();
             setTimeout(function () {
                 $('iframe').contents().scrollTop(buttonScrollTop);

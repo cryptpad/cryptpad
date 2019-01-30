@@ -149,3 +149,59 @@ a > img {
     border: none;
     outline: 1px solid #0782C1;
 }
+
+.cp-cursor-position {
+    cursor: default;
+    background-color: red;
+    background-clip: padding-box;
+    padding: 0 1px;
+    border: 2px solid red;
+    border-right-color: transparent !important;
+    border-left-color: transparent !important;
+    margin-left: -3px;
+    margin-right: -3px;
+}
+.cp-cursor-position[data-type="start"] {
+    border-left: none;
+    border-right-width: 4px;
+    margin-right: -5px;
+    margin-left: -1px;
+}
+.cp-cursor-position[data-type="end"] {
+    border-right: none;
+    border-left-width: 4px;
+    margin-left: -5px;
+    margin-right: -1px;
+}
+.cp-cursor-avatar {
+    display: flex;
+    align-items: center;
+}
+.cp-cursor-avatar media-tag {
+    min-height: 32px;
+    max-height: 32px;
+    min-width: 32px;
+    max-width: 32px;
+    margin-right: 10px;
+}
+.cp-cursor-avatar media-tag img {
+    border-radius: 4px;
+    max-height: 100%;
+    max-width: 100%;
+}
+
+.cp-link-clicked {
+    position: absolute;
+    background: white;
+    border: 1px solid #333;
+    border-radius: 5px;
+    padding: 3px 8px;
+    display: inline-block;
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.cp-link-clicked a {
+    cursor: pointer;
+}

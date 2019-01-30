@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>AND Function</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>AND Function</h1>
+			<p>The <b>AND</b> function is one of the logical functions. It is used to check if the logical value you enter is TRUE or FALSE. The function returns TRUE if all the arguments are TRUE.</p>
+			<p>The <b>AND</b> function syntax is:</p> 
+			<p style="text-indent: 150px;"><b><em>AND(logical1, logical2, ...)</em></b></p> 
+			<p>where <b><em>logical1/2/n</em></b> is a value entered manually or included into the cell you make reference to.</p>
+			<p>To apply the <b>AND</b> function,</p>
+			<ol>
+			<li>select the cell where you wish to display the result,</li>
+			<li>click the <b>Insert Function</b> <img alt="Insert Function icon" src="../images/insertfunction.png" /> icon situated at the top toolbar,
+				<br />or right-click within a selected cell and select the <b>Insert Function</b> option from the menu,
+				<br />or click the <img alt="Function icon" src="../images/function.png" /> icon situated at the formula bar,
+			</li>
+			<li>select the <b>Logical</b> function group from the list,</li>
+			<li>click the <b>AND</b> function,</li>
+			<li>enter the required arguments separating them by commas,
+			<p class="note"><b>Note</b>: you can enter up to <b>255</b> logical values.</p>
+			</li>
+			<li>press the <b>Enter</b> button.</li>
+			</ol>
+			<p>The result will be displayed in the selected cell. The function returns FALSE if at least one of the arguments is FALSE.</p>
+			<p><em>For example:</em></p>
+			<p>There are three arguments: <em>logical1</em> = <b>A1&lt;100</b>, <em>logical2</em> = <b>34&lt;100</b>, <em>logical3</em> = <b>50&lt;100</b>, where <b>A1</b> is <b>12</b>. All these logical expressions are <b>TRUE</b>. So the function returns <b>TRUE</b>.</p>
+			<p style="text-indent: 150px;"><img alt="AND Function: TRUE" src="../images/andtrue.png" /></p>
+			<p>If we change the <b>A1</b> value from <b>12</b> to <b>112</b>, the function returns <b>FALSE</b>:</p>
+			<p style="text-indent: 150px;"><img alt="AND Function: FALSE" src="../images/andfalse.png" /></p>
+		</div>
+	</body>
+</html>

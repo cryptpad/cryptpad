@@ -88,6 +88,28 @@ module.exports = {
         "img-src * blob:",
     ].join('; '),
 
+    // OnlyOffice requires even more lax content security policy in order to function.
+    ooContentSecurity: [
+        "default-src 'none'",
+        "style-src 'unsafe-inline' 'self'" + domain,
+        // Unsafe inline, unsafe-eval are needed for ckeditor :(
+        "script-src 'self' 'unsafe-eval' 'unsafe-inline'" + domain,
+        "font-src 'self'" + domain,
+
+        /*  See above under 'contentSecurity' as to how these values should be
+         *  configured for best effect.
+         */
+        "child-src *",
+        // IE/Edge
+        "frame-src *",
+
+        // see the comment above in the 'contentSecurity' section
+         "connect-src 'self' blob: ws: wss:" + domain,
+
+        // (insecure remote) images are included by users of the wysiwyg who embed photos in their pads
+        "img-src * blob: data:",
+    ].join('; '),
+
     httpPort: 3000,
 
     // This is for allowing the cross-domain iframe to function when developing

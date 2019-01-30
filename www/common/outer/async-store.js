@@ -10,6 +10,8 @@ define([
     '/common/common-realtime.js',
     '/common/common-messaging.js',
     '/common/common-messenger.js',
+    '/common/outer/cursor.js',
+    '/common/outer/onlyoffice.js',
     '/common/outer/chainpad-netflux-worker.js',
     '/common/outer/network-config.js',
     '/customize/application_config.js',
@@ -20,11 +22,11 @@ define([
     '/bower_components/nthen/index.js',
     '/bower_components/saferphore/index.js',
 ], function (Sortify, UserObject, ProxyManager, Migrate, Hash, Util, Constants, Feedback, Realtime, Messaging, Messenger,
-             CpNfWorker, NetConfig, AppConfig,
+             Cursor, OnlyOffice, CpNfWorker, NetConfig, AppConfig,
              Crypto, ChainPad, Listmap, nThen, Saferphore) {
-    var Store = {};
 
     var create = function () {
+        var Store = window.Cryptpad_Store = {};
         var postMessage = function () {};
         var broadcast = function () {};
         var sendDriveEvent = function () {};
@@ -416,6 +418,27 @@ define([
         /////////////////////// Store ////////////////////////////////////
         //////////////////////////////////////////////////////////////////
 
+        // Get or create the user color for the cursor position
+        var getRandomColor = function () {
+            var getColor = function () {
+                return Math.floor(Math.random() * 156) + 70;
+            };
+            return '#' + getColor().toString(16) +
+                         getColor().toString(16) +
+                         getColor().toString(16);
+        };
+        var getUserColor = function () {
+            var color = Util.find(store.proxy, ['settings', 'general', 'cursor', 'color']);
+            if (!color) {
+                color = getRandomColor();
+                Store.setAttribute(null, {
+                    attr: ['general', 'cursor', 'color'],
+                    value: color
+                }, function () {});
+            }
+            return color;
+        };
+
         // Get the metadata for sframe-common-outer
         Store.getMetadata = function (clientId, data, cb) {
             var disableThumbnails = Util.find(store.proxy, ['settings', 'general', 'disableThumbnails']);
@@ -426,14 +449,17 @@ define([
                     uid: store.proxy.uid,
                     avatar: Util.find(store.proxy, ['profile', 'avatar']),
                     profile: Util.find(store.proxy, ['profile', 'view']),
+                    color: getUserColor(),
                     curvePublic: store.proxy.curvePublic,
                 },
                 // "priv" is not shared with other users but is needed by the apps
                 priv: {
+                    clientId: clientId,
                     edPublic: store.proxy.edPublic,
                     friends: store.proxy.friends || {},
                     settings: store.proxy.settings,
-                    thumbnails: disableThumbnails === false
+                    thumbnails: disableThumbnails === false,
+                    isDriveOwned: Boolean(Util.find(store, ['driveMetadata', 'owners']))
                 }
             };
             cb(JSON.parse(JSON.stringify(metadata)));
@@ -898,86 +924,26 @@ define([
         };
 
         Store.messenger = {
-            getFriendList: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getFriendList(function (e, keys) {
-                    cb({
-                        error: e,
-                        data: keys,
-                    });
-                });
-            },
-            getMyInfo: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getMyInfo(function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            getFriendInfo: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getFriendInfo(data, function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            removeFriend: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.removeFriend(data, function (e, info) {
-                    cb({
-                        error: e,
-                        data: info,
-                    });
-                });
-            },
-            openFriendChannel: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.openFriendChannel(data, function (e) {
-                    cb({ error: e, });
-                });
-            },
-            getFriendStatus: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getStatus(data, function (e, online) {
-                    cb({
-                        error: e,
-                        data: online,
-                    });
-                });
-            },
-            getMoreHistory: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.getMoreHistory(data.curvePublic, data.sig, data.count, function (e, history) {
-                    cb({
-                        error: e,
-                        data: history,
-                    });
-                });
-            },
-            sendMessage: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.sendMessage(data.curvePublic, data.content, function (e) {
-                    cb({
-                        error: e,
-                    });
-                });
-            },
-            setChannelHead: function (clientId, data, cb) {
-                if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
-                store.messenger.setChannelHead(data.curvePublic, data.sig, function (e) {
-                    cb({
-                        error: e
-                    });
-                });
-            },
-
             execCommand: function (clientId, data, cb) {
                 if (!store.messenger) { return void cb({error: 'Messenger is disabled'}); }
                 store.messenger.execCommand(data, cb);
+            }
+        };
+
+        // OnlyOffice
+        Store.onlyoffice = {
+            execCommand: function (clientId, data, cb) {
+                if (!store.onlyoffice) { return void cb({error: 'OnlyOffice is disabled'}); }
+                store.onlyoffice.execCommand(clientId, data, cb);
+            }
+        };
+
+        // Cursor
+
+        Store.cursor = {
+            execCommand: function (clientId, data, cb) {
+                if (!store.cursor) { return void cb ({error: 'Cursor channel is disabled'}); }
+                store.cursor.execCommand(clientId, data, cb);
             }
         };
 
@@ -1002,12 +968,20 @@ define([
                 history: [],
                 pushHistory: function (msg, isCp) {
                     if (isCp) {
+                        // the current message is a checkpoint.
+                        // push it to your worker's history, prepending it with cp|
+                        // cp| and anything else related to checkpoints has already
+                        // been stripped by chainpad-netflux-worker or within async store
+                        // when the message was outgoing.
                         channel.history.push('cp|' + msg);
+                        // since the latest message is a checkpoint, we are able to drop
+                        // some of the older history, but we can't rely on checkpoints being
+                        // correct, as they might be checkpoints from different forks
                         var i;
-                        for (i = channel.history.length - 2; i > 0; i--) {
+                        for (i = channel.history.length - 101; i > 0; i--) {
                             if (/^cp\|/.test(channel.history[i])) { break; }
                         }
-                        channel.history = channel.history.slice(i);
+                        channel.history = channel.history.slice(Math.max(i, 0));
                         return;
                     }
                     channel.history.push(msg);
@@ -1040,6 +1014,9 @@ define([
             var conf = {
                 onReady: function (padData) {
                     channel.data = padData || {};
+                    if (padData && padData.validateKey && store.messenger) {
+                        store.messenger.storeValidateKey(data.channel, padData.validateKey);
+                    }
                     postMessage(clientId, "PAD_READY");
                 },
                 onMessage: function (user, m, validateKey, isCp) {
@@ -1277,13 +1254,15 @@ define([
         var messengerEventClients = [];
 
         var dropChannel = function (chanId) {
+            store.messenger.leavePad(chanId);
+            store.cursor.leavePad(chanId);
+            store.onlyoffice.leavePad(chanId);
+
             if (!Store.channels[chanId]) { return; }
 
             if (Store.channels[chanId].cpNf) {
                 Store.channels[chanId].cpNf.stop();
             }
-
-            store.messenger.leavePad(chanId);
 
             delete Store.channels[chanId];
         };
@@ -1296,6 +1275,8 @@ define([
             if (messengerIdx !== -1) {
                 messengerEventClients.splice(messengerIdx, 1);
             }
+            store.cursor.removeClient(clientId);
+            store.onlyoffice.removeClient(clientId);
             Object.keys(Store.channels).forEach(function (chanId) {
                 var chanIdx = Store.channels[chanId].clients.indexOf(clientId);
                 if (chanIdx !== -1) {
@@ -1360,39 +1341,6 @@ define([
         var loadMessenger = function () {
             if (AppConfig.availablePadTypes.indexOf('contacts') === -1) { return; }
             var messenger = store.messenger = Messenger.messenger(store);
-            messenger.on('message', function (message) {
-                sendMessengerEvent('CONTACTS_MESSAGE', message);
-            });
-            messenger.on('join', function (curvePublic, channel) {
-                sendMessengerEvent('CONTACTS_JOIN', {
-                    curvePublic: curvePublic,
-                    channel: channel,
-                });
-            });
-            messenger.on('leave', function (curvePublic, channel) {
-                sendMessengerEvent('CONTACTS_LEAVE', {
-                    curvePublic: curvePublic,
-                    channel: channel,
-                });
-            });
-            messenger.on('update', function (info, types, channel) {
-                sendMessengerEvent('CONTACTS_UPDATE', {
-                    types: types,
-                    info: info,
-                    channel: channel
-                });
-            });
-            messenger.on('friend', function (curvePublic) {
-                sendMessengerEvent('CONTACTS_FRIEND', {
-                    curvePublic: curvePublic,
-                });
-            });
-            messenger.on('unfriend', function (curvePublic, removedByMe) {
-                sendMessengerEvent('CONTACTS_UNFRIEND', {
-                    curvePublic: curvePublic,
-                    removedByMe: removedByMe
-                });
-            });
             messenger.on('event', function (ev, data) {
                 sendMessengerEvent('CHAT_EVENT', {
                     ev: ev,
@@ -1401,6 +1349,27 @@ define([
             });
         };
 
+        var loadCursor = function () {
+            store.cursor = Cursor.init(store, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'CURSOR_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
+
+        var loadOnlyOffice = function () {
+            store.onlyoffice = OnlyOffice.init(store, function (ev, data, clients) {
+                clients.forEach(function (cId) {
+                    postMessage(cId, 'OO_EVENT', {
+                        ev: ev,
+                        data: data
+                    });
+                });
+            });
+        };
 
         //////////////////////////////////////////////////////////////////
         /////////////////////// Init /////////////////////////////////////
@@ -1456,8 +1425,13 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
-            var manager = store.manager = ProxyManager.create(proxy.drive, proxy.edPublic,
-                                            pin, unpin, loadSharedFolder, {
+            var manager = store.manager = ProxyManager.create(proxy.drive, {
+                edPublic: proxy.edPublic,
+                pin: pin,
+                unpin: unpin,
+                loadSharedFolder: loadSharedFolder,
+                settings: proxy.settings
+            }, {
                 outer: true,
                 removeOwnedChannel: function (data, cb) { Store.removeOwnedChannel('', data, cb); },
                 edPublic: store.proxy.edPublic,
@@ -1488,6 +1462,8 @@ define([
                 userObject.fixFiles();
                 loadSharedFolders(waitFor);
                 loadMessenger();
+                loadCursor();
+                loadOnlyOffice();
             }).nThen(function () {
                 var requestLogin = function () {
                     broadcast([], "REQUEST_LOGIN");
@@ -1585,8 +1561,9 @@ define([
                 if (!data.userHash) {
                     returned.anonHash = Hash.getEditHashFromKeys(secret);
                 }
-            }).on('ready', function () {
+            }).on('ready', function (info) {
                 if (store.userObject) { return; } // the store is already ready, it is a reconnection
+                store.driveMetadata = info.metadata;
                 if (!rt.proxy.drive || typeof(rt.proxy.drive) !== 'object') { rt.proxy.drive = {}; }
                 var drive = rt.proxy.drive;
                 // Creating a new anon drive: import anon pads from localStorage

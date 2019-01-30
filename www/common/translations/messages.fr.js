@@ -20,6 +20,7 @@ define(function () {
     out.type.media = "Média";
     out.type.todo = "Todo";
     out.type.contacts = "Contacts";
+    out.type.sheet = 'Tableur (Beta)';
 
     out.button_newpad = 'Nouveau document texte';
     out.button_newcode = 'Nouvelle page de code';
@@ -53,6 +54,9 @@ define(function () {
     out.synced = "Tout est enregistré";
     out.deleted = "Pad supprimé de votre CryptDrive";
     out.deletedFromServer = "Pad supprimé du serveur";
+
+    out.mustLogin = "Vous devez être enregistré pour avoir accès à cette page.";
+    out.disabledApp = "Cette application a été désactivée. Pour plus d'information, veuillez contacter l'administrateur de ce CryptPad.";
 
     out.realtime_unrecoverableError = "Une erreur critique est survenue. Cliquez sur OK pour recharger la page.";
 
@@ -171,7 +175,7 @@ define(function () {
 
     out.printText = "Imprimer";
     out.printButton = "Imprimer (Entrée)";
-    out.printButtonTitle = "Imprimer votre présentation ou l'enregistrer au format PDF";
+    out.printButtonTitle2 = "Imprimer votre document ou l'enregistrer au format PDF";
     out.printOptions = "Options de mise en page";
     out.printSlideNumber = "Afficher le numéro des slides";
     out.printDate = "Afficher la date";
@@ -323,6 +327,9 @@ define(function () {
     out.poll_comment_placeholder = "Votre commentaire";
 
     out.poll_comment_disabled = "Publiez ce sondage en utilisant le bouton ✓ afin d'activer les commentaires.";
+
+    // OnlyOffice
+    out.oo_reconnect = "La connexion au serveur est rétablie. Cliquez sur OK pour recharger la page et continuer l'édition.";
 
     // Canvas
     out.canvas_clear = "Nettoyer";
@@ -547,6 +554,7 @@ define(function () {
     // Settings
     out.settings_cat_account = "Compte";
     out.settings_cat_drive = "CryptDrive";
+    out.settings_cat_cursor = "Curseur";
     out.settings_cat_code = "Code";
     out.settings_cat_pad = "Documents texte";
     out.settings_cat_creation = "Nouveau pad";
@@ -637,6 +645,10 @@ define(function () {
     out.settings_logoutEverywhere = "Se déconnecter de force de toutes les autres sessions.";
     out.settings_logoutEverywhereConfirm = "Êtes-vous sûr ? Vous devrez vous reconnecter sur tous vos autres appareils.";
 
+    out.settings_driveDuplicateTitle = "Doublons des pads dont vous êtes propriétaire";
+    out.settings_driveDuplicateHint = "Quand vous déplacez un pad dont vous êtes le propriétaire dans un dossier partagé, une copie  est créée dans votre CryptDrive pour s'assurer que vous puissiez garder le contrôle de ce pad. Vous pouvez choisir de cacher ces doublons. Seules les versions partagées seront affichées, jusqu'à leur suppression, dans quels cas la version dans votre CryptDrive redeviendra visible.";
+    out.settings_driveDuplicateLabel = "Cacher les doublons";
+
     out.settings_codeIndentation = "Indentation dans l'éditeur de code (nombre d'espaces)";
     out.settings_codeUseTabs = "Utiliser des tabulations au lieu d'espaces";
     out.settings_codeFontSize = "Taille de la police dans l'éditeur de code (px)";
@@ -644,6 +656,9 @@ define(function () {
     out.settings_padWidth = "Largeur de l'éditeur de texte";
     out.settings_padWidthHint = "L'éditeur de documents texte occupe toute la largeur de l'écran disponible par défaut, ce qui peut rendre le texte difficile à lire. Vous pouvez ici réduire la largeur de l'éditeur.";
     out.settings_padWidthLabel = "Réduire la largeur de l'éditeur";
+    out.settings_padSpellcheckTitle = "Vérification orthographique";
+    out.settings_padSpellcheckHint = "Cette option vous permet d'activer la vérification orthographique dans l'éditeur de Texte. Les fautes seront soulignées et des propositions correctes seront disponibles en effectuant un clic-droit avec la touche Ctrl ou Meta enfoncée.";
+    out.settings_padSpellcheckLabel = "Activer la vérification orthographique";
 
     out.settings_creationSkip = "Passer l'écran de création de pad";
     out.settings_creationSkipHint = "L'écran de création de pad offre de nouvelles options pour créer un pad, permettant d'avoir plus de contrôle et de sécurité concernant vos données. Toutefois, il peut ralentir votre travail en ajoutant une étape supplémentaire et donc, ici, vous avez la possibilité de choisir de passer cet écran et d'utiliser les paramètres par défaut choisis au-dessus.";
@@ -652,6 +667,12 @@ define(function () {
 
     out.settings_templateSkip = "Passer la fenêtre de choix d'un modèle";
     out.settings_templateSkipHint = "Quand vous créez un nouveau pad, et si vous possédez des modèles pour ce type de pad, une fenêtre peut apparaître pour demander si vous souhaitez importer un modèle. Ici vous pouvez choisir de ne jamais montrer cette fenêtre et donc de ne jamais utiliser de modèle.";
+
+    out.settings_ownDriveTitle = "Activer les dernières fonctionnalités du compte";
+    out.settings_ownDriveHint = "Pour des raisons techniques, les comptes utilisateurs les plus anciens n'ont pas accès à toutes les fonctionnalités. Une mise à niveau gratuite permet de préparer votre CryptDrive pour les nouveautés à venir sans perturber vos activités habituelles.";
+    out.settings_ownDriveButton = "Mettre à niveau votre compte";
+    out.settings_ownDriveConfirm = "La mise à niveau peut prendre du temps. Vous devrez vous reconnecter sur tous vos appareils. Voulez-vous continuer?";
+    out.settings_ownDrivePending = "Votre compte est en train d'être mis à jour. Veuillez ne pas fermer ou recharger cette page avant que le traitement soit terminé.";
 
     out.settings_changePasswordTitle = "Changer de mot de passe";
     out.settings_changePasswordHint = "Pour modifier le mot de passe de votre compte utilisateur, entrez votre mot de passe actuel et confirmez le nouveau mot de passe en la tapant deux fois.<br>" +
@@ -664,6 +685,15 @@ define(function () {
     out.settings_changePasswordError = "Une erreur est survenue. Si vous n'êtes plus en mesure de vous connecter à votre compte utilisateur ou de changer votre mot de passe, veuillez contacter l'administrateur de votre CryptPad.";
     out.settings_changePasswordPending = "Votre mot de passe est en train d'être modifié. Veuillez ne pas fermer ou recharger cette page avant que le traitement soit terminé.";
     out.settings_changePasswordNewPasswordSameAsOld = "Votre nouveau mot de passe doit être différent de votre mot de passe actuel.";
+
+    out.settings_cursorColorTitle = "Couleur du curseur";
+    out.settings_cursorColorHint = "Changer la couleur associée à votre utilisateur dans les documents collaboratifs";
+    out.settings_cursorShareTitle = "Partager la position de mon curseur";
+    out.settings_cursorShareHint = "Vous pouvez décider si vous souhaitez que les autres puissent voir la position de votre curseur dans les documents collaboratifs ou non.";
+    out.settings_cursorShareLabel = "Partager la position";
+    out.settings_cursorShowTitle = "Afficher les curseurs des autres utilisateurs";
+    out.settings_cursorShowHint = "Vous pouvez choisir si vous souhaitez voir les curseurs des autres utilisateurs dans les documents collaboratifs ou non.";
+    out.settings_cursorShowLabel = "Montrer les curseurs";
 
     out.upload_title = "Hébergement de fichiers";
     out.upload_type = "Type";
@@ -750,6 +780,7 @@ define(function () {
 
     out.main_richTextPad = 'Éditeur de texte';
     out.main_codePad = 'Éditeur de code';
+    out.main_sheetPad = 'Tableur (Beta)';
     out.main_slidePad = 'Éditeur de Présentations';
     out.main_pollPad = 'Sondage ou Planning';
     out.main_whiteboardPad = 'Tableau blanc';
@@ -1058,8 +1089,9 @@ define(function () {
     out.help.title = "Pour bien démarrer";
     out.help.generic = {
         more: 'Apprenez-en davantage sur le fonctionnement de CryptPad en lisant notre <a href="/faq.html" target="_blank">FAQ</a>',
-        share: 'Utilisez le menu partage (<span class="fa fa-share-alt"></span>) pour générer un lien d\'accès ou d\'édition  pad',
-        stored: 'Chaque pad que vous visitez est stocké automatiquement dans votre <a href="/drive/" target="_blank">CryptDrive</a>'
+        share: 'Utilisez le menu partage (<span class="fa fa-shhare-alt"></span>) pour générer un lien d\'accès ou d\'édition  pad',
+        //stored: 'Chaque pad que vous visitez est stocké automatiquement dans votre <a href="/drive/" target="_blank">CryptDrive</a>',
+        save: "Tous les changements effectués sont enregistrés automatiquement"
     };
 
     out.help.text = {
@@ -1074,6 +1106,13 @@ define(function () {
 
     out.help.code = {
         modes: 'Utilisez le sous-menu <span class="fa fa-ellipsis-h"></span> pour changer le mode de coloration syntaxique ou le thème de couleur'
+    };
+
+    out.help.beta = {
+        warning: 'Cet éditeur est encore <strong>expérimental</strong>, vous pouvez signaler tout problème rencontré sur <a href="https://github.com/xwiki-labs/cryptpad/issues/" target="_blank">GitHub</a>'
+    };
+    out.help.oo = {
+        access: "L'accès à cette application est restreint aux utilisateurs enregistrés",
     };
 
     out.help.slide = {

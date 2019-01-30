@@ -6,7 +6,6 @@ define([
     '/common/sframe-common.js',
     '/common/hyperscript.js',
     '/contacts/messenger-ui.js',
-    '/common/sframe-messenger-inner.js',
     '/customize/messages.js',
     '/common/common-interface.js',
 
@@ -21,7 +20,6 @@ define([
     SFCommon,
     h,
     MessengerUI,
-    Messenger,
     Messages,
     UI
     )
@@ -56,9 +54,7 @@ define([
         APP.toolbar = Toolbar.create(configTb);
         APP.toolbar.$rightside.hide();
 
-        var messenger = Messenger.create(sFrameChan);
-
-        MessengerUI.create(messenger, $(appElement), common);
+        MessengerUI.create($(appElement), common);
 
         UI.removeLoadingScreen();
 

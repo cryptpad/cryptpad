@@ -6,11 +6,21 @@
 define(function() {
     var config = {};
 
-    /* Select the buttons displayed on the main page to create new collaborative sessions
-     * Existing types : pad, code, poll, slide
+    /* Select the buttons displayed on the main page to create new collaborative sessions.
+     * Removing apps from the list will prevent users from accessing them. They will instead be
+     * redirected to the drive.
+     * You should never remove the drive from this list.
      */
-    config.availablePadTypes = ['drive', 'pad', 'code', 'slide', 'poll', 'kanban', 'whiteboard', 'file', 'todo', 'contacts'];
-    config.registeredOnlyTypes = ['file', 'contacts'];
+    config.availablePadTypes = ['drive', 'pad', 'sheet', 'code', 'slide', 'poll', 'kanban', 'whiteboard',
+                                /*'oodoc', 'ooslide',*/ 'file', 'todo', 'contacts'];
+    /* The registered only types are apps restricted to registered users.
+     * You should never remove apps from this list unless you know what you're doing. The apps
+     * listed here by default can't work without a user account.
+     * You can however add apps to this list. The new apps won't be visible for unregistered
+     * users and these users will be redirected to the login page if they still try to access
+     * the app
+     */
+    config.registeredOnlyTypes = ['file', 'contacts', 'oodoc', 'ooslide', 'sheet'];
 
     /*  Cryptpad apps use a common API to display notifications to users
      *  by default, notifications are hidden after 5 seconds
@@ -83,6 +93,9 @@ define(function() {
         todo: 'cptools-todo',
         contacts: 'cptools-contacts',
         kanban: 'cptools-kanban',
+        oodoc: 'fa-file-word-o',
+        ooslide: 'fa-file-powerpoint-o',
+        sheet: 'fa-file-excel-o',
         drive: 'fa-hdd-o',
     };
 

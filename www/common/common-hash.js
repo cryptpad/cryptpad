@@ -12,6 +12,7 @@ define([
     var hexToBase64 = Util.hexToBase64;
     var base64ToHex = Util.base64ToHex;
     Hash.encodeBase64 = Nacl.util.encodeBase64;
+    Hash.decodeBase64 = Nacl.util.decodeBase64;
 
     // This implementation must match that on the server
     // it's used for a checksum
@@ -75,9 +76,10 @@ define([
         return s.replace(/\/+/g, '/');
     };
 
-    Hash.createChannelId = function () {
-        var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(16));
-        if (id.length !== 32 || /[^a-f0-9]/.test(id)) {
+    Hash.ephemeralChannelLength = 34;
+    Hash.createChannelId = function (ephemeral) {
+        var id = uint8ArrayToHex(Crypto.Nacl.randomBytes(ephemeral? 17: 16));
+        if ([32, 34].indexOf(id.length) === -1 || /[^a-f0-9]/.test(id)) {
             throw new Error('channel ids must consist of 32 hex characters');
         }
         return id;

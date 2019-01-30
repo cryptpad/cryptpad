@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<title>Insert and format tables</title>
+		<meta charset="utf-8" />
+		<meta name="description" content="Add a table to your presentation and adjust its properties" />
+		<link type="text/css" rel="stylesheet" href="../editor.css" />
+        <script type="text/javascript" src="../callback.js"></script>
+	</head>
+	<body>
+		<div class="mainpart">
+			<h1>Insert and format tables</h1>
+            <h3>Insert a table</h3>
+			<p>To insert a table onto a slide,</p>
+			<ol>
+				<li>select the slide where a table will be added,</li>
+				<li>click the <b>Insert Table</b> <img alt="Insert Table icon" src="../images/inserttable.png" /> icon at the top toolbar,</li>
+				<li>select the option to create a table:
+					<ul>
+						<li><p>either a table with predefined number of cells (10 by 8 cells maximum)</p>
+						<p>If you want to quickly add a table, just select the number of rows (8 maximum) and columns (10 maximum).</p></li>
+						<li><p>or a custom table</p>
+						<p>In case you need more than 10 by 8 cell table, select the <b>Insert Custom Table</b> option that will open the window where you can enter the necessary number of rows and columns respectively, then click the <b>OK</b> button.</p></li>
+					</ul>
+				</li>
+				<li>once the table is added you can change its properties and position.</li>
+			</ol>
+			<p>You can specify the <a href="../UsageInstructions/ManipulateObjects.htm" onclick="onhyperlinkclick(this)">table position</a> on the slide dragging it vertically or horizontally.</p>
+			<hr />
+            <h3>Adjust table settings</h3>
+			<img class="floatleft"alt="Table settings tab" src="../images/tablesettingstab.png" />
+			<p>Most of the table properties as well as its structure can be altered using the right sidebar. To activate it click the table and choose the <b>Table Settings</b> <img alt="Table Settings icon" src="../images/table_settings_icon.png" /> icon on the right.</p>
+			<p>The <b>Rows</b> and <b>Columns</b> sections on the top allow you to emphasize certain rows/columns applying a specific formatting to them, or highlight different rows/columns with the different background colors to clearly distinguish them. The following options are available:</p>
+			<ul style="margin-left: 280px;">
+				<li><b>Header</b> - emphasizes the topmost row in the table with a special formatting.</li>
+				<li><b>Total</b> - emphasizes the bottommost row in the table with a special formatting.</li>
+				<li><b>Banded</b> - enables the background color alternation for odd and even rows.</li>
+				<li><b>First</b> - emphasizes the leftmost column in the table with a special formatting.</li>
+				<li><b>Last</b> - emphasizes the rightmost column in the table with a special formatting.</li>
+				<li><b>Banded</b> - enables the background color alternation for odd and even columns.</li>
+			</ul>
+			<p>The <b>Select From Template</b> section allows you to choose one of the predefined tables styles. Each template combines certain formatting parameters, such as a background color, border style, row/column banding etc.
+			Depending on the options checked in the <b>Rows</b> and/or <b>Columns</b> sections above, the templates set will be displayed differently. For example, if you've checked the <b>Header</b> option in the <b>Rows</b> section and the <b>Banded</b> option in the <b>Columns</b> section, the displayed templates list will include only templates with the header row and banded columns enabled:</p>
+			<p><img alt="Templates list" src="../images/templateslist.png" /></p>
+			<p>The <b>Borders Style</b> section allows you to change the applied formatting that corresponds to the selected template. You can select the entire table or a certain cells range you want to change the formatting for and set all the parameters manually.</p>
+			<ul>
+				<li><b>Border</b> parameters - set the border width using the <img alt="Border Size list" src="../images/bordersize.png" /> list (or choose the <b>No borders</b> option), select its <b>Color</b> in the available palettes and determine the way it will be displayed in the cells clicking on the icons: 
+				<p><img alt="Border Type icons" src="../images/bordertype.png" /></p>
+				<p class="note"><b>Note</b>: in case you select not to show table borders choosing an appropriate template, or selecting the <b>No borders</b> option, or clicking the <img alt="No borders" src="../images/noborders.png" /> icon, they will be indicated by a dotted line on the slide.</p>
+				</li>
+				<li><b>Background color</b> - select the color for the background within the selected cells.</li>
+			</ul>
+			<p>The <b>Rows & Columns</b> <img alt="Rows & Columns" src="../images/rowsandcolumns.png" /> section allows you to perform the following operations:</p>
+			<ul>
+				<li><b>Select</b> a row, column, cell (depending on the cursor position), or the entire table.</li>
+				<li><b>Insert</b> a new row above or below the selected one as well as a new column to the left or to the right of the selected one.</li>
+				<li><b>Delete</b> a row, column (depending on the cursor position or the selection), or the entire table.</li>
+				<li><b>Merge Cells</b> - to merge previously selected cells into a single one.</li>
+				<li><b>Split Cell...</b> - to split any previously selected cell into a certain number of rows and columns. This option opens the following window:
+				<p><img alt="Split Cells window" src="../images/split_cells.png" /></p>
+				<p>Enter the <b>Number of Columns</b> and <b>Number of Rows</b> that the selected cell should be split into and press <b>OK</b>.</p>
+				</li>
+			</ul>
+			<p class="note"><b>Note</b>: the options of the <b>Rows & Columns</b> section are also accessible from the <b>right-click menu</b>.</p>
+			<hr />
+			<p>To change the advanced table settings, click the table with the right mouse button and select the <b>Table Advanced Settings</b> option from the right-click menu or click the <b>Show advanced settings</b> link at the right sidebar. The table properties window will be opened:</p>
+			<p><img alt="Table Properties" src="../images/table_properties.png" /></p>
+			<p>The <b>Margins</b> tab allows to set the space between the text within the cells and the cell border:</p>
+			<ul>
+				<li>enter necessary <b>Cell Margins</b> values manually, or</li>
+				<li>check the <b>Use default margins</b> box to apply the predefined values (if necessary, they can also be adjusted).</li>
+			</ul>
+            <p><img alt="Table Properties" src="../images/table_properties1.png" /></p>
+            <p>The <b>Alternative Text</b> tab allows to specify a <b>Title</b> and <b>Description</b> which will be read to the people with vision or cognitive impairments to help them better understand what information there is in the table.</p>
+			<hr />
+			<p>To <b>format the entered text</b> within the table cells, you can use <a href="../UsageInstructions/InsertText.htm" onclick="onhyperlinkclick(this)">icons at the top toolbar</a>. The <b>right-click menu</b> that appears when you click the table with the right mouse button includes two additional options: </p>
+			<ul>
+			    <li><b>Cell vertical alignment</b> - it allows you to set the preferred type of the text vertical alignment within the selected cells: <b>Align Top</b>, <b>Align Center</b>, or <b>Align Bottom</b>.</li>
+			    <li><b>Hyperlink</b> - it allows you to insert a hyperlink into the selected cell.</li>
+			</ul>									
+		</div>
+	</body>
+</html>

@@ -30,7 +30,8 @@ define([
                             UI.createCheckbox('import-recent', Msg.register_importRecent),
                         ]),
                         h('div.extra', [
-                            h('button.login.first.btn', Msg.login_login)
+                            h('button.login.first.btn', Msg.login_login),
+                            h('button#register.first.btn', Msg.login_register)
                         ])
                     ])
                 ]),

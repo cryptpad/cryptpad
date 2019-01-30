@@ -466,10 +466,23 @@ define([
         });
 
         framework.setContentGetter(function () {
+            CodeMirror.removeCursors();
             var content = CodeMirror.getContent();
             Slide.update(content.content);
             return content;
         });
+
+        var cursorTo;
+        var updateCursor = function () {
+            if (cursorTo) { clearTimeout(cursorTo); }
+            if (editor._noCursorUpdate) { return; }
+            cursorTo = setTimeout(function () {
+                framework.updateCursor();
+            }, 500); // 500ms to make sure it is sent after chainpad sync
+        };
+        framework.onCursorUpdate(CodeMirror.setRemoteCursor);
+        framework.setCursorGetter(CodeMirror.getCursor);
+        editor.on('cursorActivity', updateCursor);
 
         framework.onEditableChange(function () {
             editor.setOption('readOnly', framework.isLocked() || framework.isReadOnly());

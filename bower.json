@@ -36,7 +36,7 @@
     "alertifyjs": "1.0.11",
     "scrypt-async": "1.2.0",
     "require-css": "0.1.10",
-    "less": "^3.7.1",
+    "less": "3.7.1",
     "bootstrap": "^v4.0.0",
     "diff-dom": "2.1.1",
     "nthen": "^0.1.5",

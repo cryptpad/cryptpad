@@ -15,6 +15,8 @@ define(function () {
         displayPadCreationScreen: 'displayPadCreationScreen',
         deprecatedKey: 'deprecated',
         // Sub
-        plan: 'CryptPad_plan'
+        plan: 'CryptPad_plan',
+        // Apps
+        criticalApps: ['profile', 'settings', 'debug']
     };
 });
