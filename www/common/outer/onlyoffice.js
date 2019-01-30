@@ -205,12 +205,14 @@ define([
             }
         }
 
-        var oldChannel = ctx.clients[clientId].channel;
-        var oldChan = ctx.channels[oldChannel];
-        if (oldChan) {
-            ctx.emit('LEAVE', {id: clientId}, [oldChan.clients[0]]);
+        if (ctx.clients[clientId]) {
+            var oldChannel = ctx.clients[clientId].channel;
+            var oldChan = ctx.channels[oldChannel];
+            if (oldChan) {
+                ctx.emit('LEAVE', {id: clientId}, [oldChan.clients[0]]);
+            }
+            delete ctx.clients[clientId];
         }
-        delete ctx.clients[clientId];
     };
 
 
