@@ -201,7 +201,7 @@ define([
         if (typeof(channel) !== 'string' || channel.length !== Hash.ephemeralChannelLength) {
             channel = Hash.createChannelId(true); // true indicates that it's an ephemeral channel
         }
-        if (!md.cursor) {
+        if (md.cursor !== channel) {
             md.cursor = channel;
             ctx.metadataMgr.updateMetadata(md);
             setTimeout(saveChanges);
