@@ -16,13 +16,13 @@ define(function () {
     out.type.pad = 'Pad';
     out.type.code = 'Code';
     out.type.poll = 'Umfrage';
-    out.type.kanban = 'Kanban'; 
+    out.type.kanban = 'Kanban';
     out.type.slide = 'Präsentation';
     out.type.drive = 'CryptDrive';
     out.type.whiteboard = 'Whiteboard';
     out.type.file = 'Datei';
     out.type.media = 'Medien';
-    out.type.todo = 'Aufgabe';
+    out.type.todo = 'Aufgaben';
     out.type.contacts = 'Kontakte';
 
     out.button_newpad = 'Neues Pad';
@@ -30,7 +30,7 @@ define(function () {
     out.button_newpoll = 'Neue Umfrage';
     out.button_newslide = 'Neue Präsentation';
     out.button_newwhiteboard = 'Neues Whiteboard';
-    out.button_newkanban = 'Neues Kanban';  
+    out.button_newkanban = 'Neues Kanban';
 
     // NOTE: Remove updated_0_ if we need an updated_1_
     out.updated_0_common_connectionLost = "<b>Die Verbindung zum Server ist abgebrochen</b><br>Du verwendest jetzt das Dokument schreibgeschützt, bis die Verbindung wieder funktioniert.";
@@ -46,11 +46,11 @@ define(function () {
     out.deletedError = 'Dieses Dokument wurde von seinem Besitzer gelöscht und ist nicht mehr verfügbar.';
     out.inactiveError = 'Dieses Dokument ist wegen Inaktivität gelöscht worden. Drücke auf die Esc-Taste, um ein neues Dokument zu erstellen.';
     out.chainpadError = 'Ein kritischer Fehler ist beim Aktualisieren deines Dokuments aufgetreten. Dieses Dokument ist schreibgeschützt, damit du sicherstellen kannst, dass kein Inhalt verloren geht.<br>'+
-                        'Drücke auf <em>Esc</em>, um das Dokument schreibgeschützt zu lesen, oder lade es neu, um das Editierien wieder aufzunehmen.';
-    out.errorCopy = ' Du kannst noch den Inhalt woanders hin kopieren, nachdem du <em>Esc</em> gedrückt hast.<br>Wenn du die Seite verlässt, verschwindet der Inhalt für immer!';
+                        'Drücke auf <em>Esc</em>, um das Dokument schreibgeschützt zu lesen oder lade es neu, um das Editierien wieder aufzunehmen.';
+    out.errorCopy = ' Du kannst den Inhalt noch woanders hin kopieren, nachdem du <em>Esc</em> gedrückt hast.<br>Wenn du die Seite verlässt, verschwindet der Inhalt für immer!';
     out.errorRedirectToHome = 'Drücke <em>Esc</em> um zu deinem CryptDrive zurückzukehren.';
-    out.newVersionError = "Eine neue Version von CryptPad ist verfügbar.<br>" +    
-                          "<a href='#'>Lade die Seite neu</a> um die neue version zu benutzen, oder drücke Esc um im <b>Offline-Modus</b> weiterzuarbeiten.";
+    out.newVersionError = "Eine neue Version von CryptPad ist verfügbar.<br>" +
+                          "<a href='#'>Lade die Seite neu</a> um die neue Version zu benutzen oder drücke Esc um im <b>Offline-Modus</b> weiterzuarbeiten.";
 
     out.loading = "Laden...";
     out.error = "Fehler";
@@ -66,10 +66,10 @@ define(function () {
     out.reconnecting = 'Verbindung wird aufgebaut';
     out.typing = "Es wird getippt";
     out.initializing = "Starten...";
-    out.forgotten = 'Zum Papierkorb verschoben';
+    out.forgotten = 'In den Papierkorb verschoben';
     out.errorState = 'Kritischer Fehler: {0}';
     out.lag = 'Verspätung';
-    out.readonly = 'schreibgeschützt';
+    out.readonly = 'Schreibgeschützt';
     out.anonymous = "Anonym";
     out.yourself = "Du";
     out.anonymousUsers = "anonyme Nutzer*innen";
@@ -90,7 +90,7 @@ define(function () {
                      'Entdecke, was neu in dieser Version ist:<br>'+
                      '<a href="https://github.com/xwiki-labs/cryptpad/releases/tag/{0}" target="_blank">Release notes for CryptPad {0}</a>';
 
-    out.upgrade = "aufrüsten";
+    out.upgrade = "Aufrüsten";
     out.upgradeTitle = "Rüste dein Konto auf, um mehr Speicherplatz zu haben";
 
     out.upgradeAccount = "Konto aufrüsten";
@@ -104,11 +104,11 @@ define(function () {
     out.formattedGB = "{0} GB";
     out.formattedKB = "{0} KB";
 
-    out.greenLight = "Alles funktioniert bestens";
-    out.orangeLight = "Deine langsame Verbindung kann die Nutzung beeinträchtigen";
-    out.redLight = "Du wurdest von dieser Sitzung getrennt";
+    out.greenLight = "Alles funktioniert bestens!";
+    out.orangeLight = "Deine langsame Verbindung kann die Nutzung beeinträchtigen.";
+    out.redLight = "Du wurdest von dieser Sitzung getrennt.";
 
-    out.pinLimitReached = "Du hast Deine Speicherplatzgrenze erreicht";
+    out.pinLimitReached = "Du hast Deine Speicherplatzgrenze erreicht.";
     out.updated_0_pinLimitReachedAlert = "Du hast Deine Speicherplatzgrenze erreicht. Neue Dokumente werden nicht mehr in Deinem CryptDrive gespeichert.<br>" +
         'Du kannst entweder ein Dokument von deinem CryptDrive entfernen oder <a href="https://accounts.cryptpad.fr/#!on={0}" target="_blank">ein Premiumangebot anfordern</a>, damit deine Grenze erhöht wird.';
     out.pinLimitReachedAlert = out.updated_0_pinLimitReachedAlert;
@@ -116,7 +116,7 @@ define(function () {
     out.pinLimitNotPinned = "Du hast deine Speicherplatzgrenze erreicht.<br>"+
                             "Dieses Dokument ist nicht in deinem CryptDrive gespeichert.";
     out.pinLimitDrive = "Du hast deine Speicherplatzgrenze erreicht.<br>" +
-                        "Du kannst keine neue Dokumente gestalten.";
+                        "Du kannst keine neuen Dokumente anlegen.";
 
     out.moreActions = "Mehr Aktionen";
 
@@ -136,7 +136,7 @@ define(function () {
     out.saveTitle = "Bitte gib den Titel ein (Enter)";
 
     out.forgetButton = "Entfernen";
-    out.forgetButtonTitle = 'Dieses Dokument zum Papierkorb verschieben';
+    out.forgetButtonTitle = 'Dieses Dokument in den Papierkorb verschieben';
     out.forgetPrompt = 'Mit dem Klick auf OK wird das Dokument aus deinem lokalen Speicher gelöscht. Fortfahren?';
     out.movedToTrash = 'Dieses Dokument liegt im Papierkorb.<br>Du kannst <a href="/drive/">zum CryptDrive</a> navigieren';
 
@@ -144,25 +144,25 @@ define(function () {
     out.shareSuccess = 'Die URL wurde in die Zwischenablage kopiert';
 
     out.userListButton = "Benutzerliste";
-       
+
     out.chatButton = "Chat";
 
     out.userAccountButton = "Dein Konto";
 
     out.newButton = 'Neu';
-    out.newButtonTitle = 'Neues Dokument gestalten';
+    out.newButtonTitle = 'Neues Dokument anlegen';
     out.uploadButton = 'Hochladen';
     out.uploadButtonTitle = 'Eine neue Datei in den aktuelle Ordner hochladen';
 
     out.saveTemplateButton = "Als Vorlage speichern";
     out.saveTemplatePrompt = "Bitte gib einen Titel für die Vorlage ein";
     out.templateSaved = "Vorlage gespeichert!";
-    out.selectTemplate = "Bitte wähle eine Vorlage oder drucke die Esc Taste";
+    out.selectTemplate = "Bitte wähle eine Vorlage oder drücke die <em>Escape</em> Taste";
     out.useTemplate = "Mit einer Vorlage starten?"; //Would you like to "You have available templates for this type of pad. Do you want to use one?";
     out.useTemplateOK = 'Wähle eine Vorlage (Enter)';
     out.useTemplateCancel = 'Frisch starten (Esc)';
     out.template_import = "Eine Vorlage importieren";
-    out.template_empty = "Keine Vorlage verfügbar";
+    out.template_empty = "Keine Vorlagen verfügbar";
 
     out.previewButtonTitle = "Die Markdownvorschau (un)sichtbar machen";
 
@@ -175,8 +175,8 @@ define(function () {
     out.propertiesButtonTitle = 'Die Eigenschaften des Dokuments ansehen';
 
     out.printText = "Drucken";
-    out.printButton = "Drucken (enter)";
-    out.printButtonTitle2 = "Deine Präsentation ausdrucken oder als PDF Dateien exportieren";
+    out.printButton = "Drucken (Enter)";
+    out.printButtonTitle = "Deine Präsentation ausdrucken oder als PDF Dateie exportieren";
     out.printOptions = "Druckeinstellungen";
     out.printSlideNumber = "Foliennummer anzeigen";
     out.printDate = "Datum anzeigen";
@@ -190,7 +190,7 @@ define(function () {
     out.printBackgroundRemove = "Das Hintergrundbild wählen";
 
     out.filePickerButton = "Eine Datei deines CryptDrives einbetten";
-    out.filePicker_close = "Schliessen";
+    out.filePicker_close = "Schließen";
     out.filePicker_description = "Bitte wähle eine Datei aus deinem CryptDrive oder lade eine neue hoch";
     out.filePicker_filter = "Namensfilter";
     out.or = 'oder';
@@ -205,7 +205,7 @@ define(function () {
 
     out.slideOptionsText = "Einstellungen";
     out.slideOptionsTitle = "Präsentationseinstellungen";
-    out.slideOptionsButton = "Speichern (enter)";
+    out.slideOptionsButton = "Speichern (Enter)";
     out.slide_invalidLess = "Ungültiges Custom-Stil";
 
     out.languageButton = "Sprache";
@@ -226,18 +226,18 @@ define(function () {
     out.viewEmbedTitle = "Das Dokument in eine externe Webseite einbetten";
     out.viewEmbedTag = "Um dieses Dokument einzubetten, platziere dieses iframe an der gewünschten Stelle Deiner HTML-Seite. Du kannst es mit CSS oder HTML Attributen gestalten";
     out.fileEmbedTitle = "Die Datei in einer externen Seite einbetten";
-    out.fileEmbedScript = "Um diese Datei einzubetten, füge dieses Skript einmal in Deiner Webseite ein, damit das Media-Tag geladen wird:";
+    out.fileEmbedScript = "Um diese Datei einzubetten, füge dieses Skript in Deine Webseite ein, damit das Media-Tag geladen wird:";
     out.fileEmbedTag = "Dann platziere das Media-Tag an der gewünschten Stelle der Seite:";
 
-    out.notifyJoined = "{0} ist in der Mitarbeits-Sitzung ";
+    out.notifyJoined = "{0} ist in der Mitarbeits-Sitzung";
     out.notifyRenamed = "{0} ist jetzt als {1} bekannt";
     out.notifyLeft = "{0} hat die Mitarbeits-Sitzung verlassen";
 
     out.ok = 'OK';
-    out.okButton = 'OK (enter)';
+    out.okButton = 'OK (Enter)';
 
     out.cancel = "Abbrechen";
-    out.cancelButton = 'Abbrechen (esc)';
+    out.cancelButton = 'Abbrechen (Esc)';
     out.doNotAskAgain = "Nicht mehr fragen (Esc)";
 
     out.show_help_button = "Hilfe anzeigen";
@@ -246,10 +246,10 @@ define(function () {
 
     out.historyText = "Verlauf";
     out.historyButton = "Den Dokumentverlauf anzeigen";
-    out.history_next = "früher";
+    out.history_next = "Früher";
     out.history_prev = "Zur früheren Version wechseln";
     out.history_loadMore = "Weiteren Verlauf laden";
-    out.history_closeTitle = "Verlauf schliessen";
+    out.history_closeTitle = "Verlauf schließen";
     out.history_restoreTitle = "Die gewählte Version des Dokuments wiederherstellen";
     out.history_restorePrompt = "Bist du sicher, dass du die aktuelle Version mit der angezeigten ersetzen möchtest?";
     out.history_restoreDone = "Version wiederhergestellt";
@@ -274,8 +274,8 @@ define(function () {
     out.kanban_working = "In Bearbeitung";
     out.kanban_deleteBoard = "Bist du sicher, dass du dieses Bord löschen möchtest?";
     out.kanban_addBoard = "Ein Bord hinzufügen";
-    out.kanban_removeItem = "Dieses Item entfernen";
-    out.kanban_removeItemConfirm = "Bist du sicher, dass du dieses Item löschen möchtest?";   
+    out.kanban_removeItem = "Dieses Element entfernen";
+    out.kanban_removeItemConfirm = "Bist du sicher, dass du dieses Element löschen möchtest?";
 
     // Polls
     out.poll_title = "Terminplaner ohne Preisgabe von Daten";
@@ -294,8 +294,8 @@ define(function () {
     out.poll_create_option = "Neue Option hinzufügen";
     out.poll_commit = "Einchecken";
 
-    out.poll_closeWizardButton = "Assistent schließen";
-    out.poll_closeWizardButtonTitle = "Assistent schließen";
+    out.poll_closeWizardButton = "Assistenten schließen";
+    out.poll_closeWizardButtonTitle = "Assistenten schließen";
     out.poll_wizardComputeButton = "Optionen übernehmen";
     out.poll_wizardClearButton = "Tabelle leeren";
     out.poll_wizardDescription = "Erstelle die Optionen automatisch, indem du eine beliebige Anzahl von Daten und Zeiten eingibst.";
@@ -309,15 +309,15 @@ define(function () {
 
     out.poll_titleHint = "Titel";
     out.poll_descriptionHint = "Beschreibe deine Abstimmung und publiziere sie mit dem 'Veröffentlichen'-Knopf wenn du fertig bist."+
-            " Die Beschreibung kann mit Markdown Syntax geschrieben werden und Du kannst Media-Elemente von deinem CryptPad einbetten." +
-            "Jeder, der den Link kennt, kann die Beschreibung ändern, aber es ist keine gute Praxis.";
+            " Die Beschreibung kann mit Markdown Syntax geschrieben werden und Du kannst Media-Elemente aus deinem CryptPad einbetten." +
+            "Jeder, der den Link kennt, kann die Beschreibung ändern, dies ist aber nicht empfohlen.";
 
     out.poll_remove = "Entfernen";
     out.poll_edit = "Bearbeiten";
     out.poll_locked = "Gesperrt";
     out.poll_unlocked = "Editierbar";
 
-    out.poll_bookmark_col = 'Setze ein Lesezeichen auf dieser Spalte, damit sie immer gleich editierbar und links angezeigt wird.';
+    out.poll_bookmark_col = 'Setze ein Lesezeichen auf dieser Spalte, damit sie immer editierbar und links angezeigt wird.';
     out.poll_bookmarked_col = 'Dieses ist die Spalte mit Lesezeichen für dich. Sie wird immer editierbar und links angezeigt.';
     out.poll_total = 'SUMME';
 
@@ -359,7 +359,7 @@ define(function () {
 
     out.profile_inviteButton = "Sich in Verbindung setzen";
     out.profile_inviteButtonTitle ='Ein Link erstellen, damit dieser Benutzer sich mit dir in Verbindung setzt.';
-    out.profile_inviteExplanation = "Ein Klick auf  <strong>OK</strong> wird einen Link erstellen, der eine sichere Chatsession nur mit {0} erlaubt.<br></br>Dieser Link kann öffentlich gepostet werden.";
+    out.profile_inviteExplanation = "Ein Klick auf <strong>OK</strong> wird einen Link erstellen, der eine sichere Chatsession nur mit {0} erlaubt.<br></br>Dieser Link kann öffentlich gepostet werden.";
     out.profile_viewMyProfile = "Mein Profil anzeigen";
 
     // contacts/userlist
@@ -375,7 +375,7 @@ define(function () {
     out.contacts_remove = 'Diesen Kontakt entfernen';
     out.contacts_confirmRemove = 'Bist du sicher, dass du <em>{0}</em> von der Kontaktliste entfernen möchtest?';
     out.contacts_typeHere = "Gib eine Nachricht ein...";
-    out.contacts_warning = "Alles, was du hier eingibst, wird bleiben und ersichtlich zu allen aktuellen und zukünftigen Benutzern. Sei sorgfältig mit sensible Information!";
+    out.contacts_warning = "Alles, was du hier eingibst, wird gespeichert und für alle aktuellen und zukünftigen Benutzer einsehbar sein. Sei sorgfältig mit sensiblen Informationen!";
     out.contacts_padTitle = "Chat";
 
     out.contacts_info1 = "Diese ist deine Kontaktliste. Ab hier, kannst du:";
@@ -391,23 +391,23 @@ define(function () {
     out.contacts_friends = "Kontakte";
     out.contacts_rooms = "Chaträume";
     out.contacts_leaveRoom = "Dieses Chatraum verlassen";
-       
+
     out.contacts_online = "Ein anderer Benutzer dieses Raumes ist online";
 
     // File manager
     out.fm_rootName = "Dokumente";
     out.fm_trashName = "Papierkorb";
-    out.fm_unsortedName = "Dateien (ohne Ordnung)";
+    out.fm_unsortedName = "Dateien (unsortiert)";
     out.fm_filesDataName = "Alle Dateien";
     out.fm_templateName = "Vorlagen";
     out.fm_searchName = "Suchen";
     out.fm_recentPadsName = "Zuletzt geöffnete Dokumente";
     out.fm_ownedPadsName = "Eigene";
-    out.fm_tagsName = "Tags"; 
+    out.fm_tagsName = "Tags";
     out.fm_sharedFolderName = "Verteilter Ordner";
     out.fm_searchPlaceholder = "Suchen...";
     out.fm_newButton = "Neu";
-    out.fm_newButtonTitle = "Ein neues Dokument oder Ordner erstellen, oder eine Datei in den aktuellen Ordner importieren";
+    out.fm_newButtonTitle = "Ein neues Dokument oder Ordner erstellen oder eine Datei in den aktuellen Ordner importieren";
     out.fm_newFolder = "Neuer Ordner";
     out.fm_newFile = "Neues Dokument";
     out.fm_folder = "Ordner";
@@ -498,7 +498,7 @@ define(function () {
     out.fo_existingNameError = "Dieser Dokumentname existiert schon in diesem Verzeichnis. Bitte wähle einen Anderen.";
     out.fo_moveFolderToChildError = "Du kannst einen Ordner nicht in einen seiner Nachfolger verschieben";
     out.fo_unableToRestore = "Es hat nicht funktioniert, diese Datei an ihrem Herkunftort wiederherzustellen. Du kannst versuchen, sie an einen anderen Ort zu verschieben.";
-    out.fo_unavailableName = "Ein Dokument oder Ordner mit diesem Namen existiert in diesem Ordner schon. Bitte benenne sie zuerst um, und versuche es dann erneut.";
+    out.fo_unavailableName = "Ein Dokument oder Ordner mit diesem Namen existiert in diesem Ordner schon. Bitte benenne sie zuerst um und versuche es dann erneut.";
 
     out.fs_migration = "Dein CryptDrive wird gerade zu einer neueren Version aktualisiert. Daher muss die Seite neugeladen werden.<br><strong>Bitte lade die Seite neu, um sie weiter zu verwenden.</strong>";
 
@@ -760,7 +760,7 @@ define(function () {
 
 
     //about.html
-    out.about_intro = 'CryptPad wurde erstellt im Research Team von <a href="http://xwiki.com">XWiki SAS</a>, einem kleinen Unternehmen in Paris, Frankreich, und Iasi, Rumänien. Das kernteam hat 3 Mitglieder, die an CryptPad arbeiten, sowie einige Mitwirkende innerhalb von XWiki SAS und außerhalb.';
+    out.about_intro = 'CryptPad wurde erstellt im Research Team von <a href="http://xwiki.com">XWiki SAS</a>, einem kleinen Unternehmen in Paris, Frankreich und Iasi, Rumänien. Das kernteam hat 3 Mitglieder, die an CryptPad arbeiten, sowie einige Mitwirkende innerhalb von XWiki SAS und außerhalb.';
     out.about_core = 'Core Developers';
     out.about_contributors = 'Key Contributors';
 
@@ -836,7 +836,7 @@ define(function () {
     out.policy_ads_p1 = 'Wir zeigen keine Onlinewerbung, können aber zu Organisationen verlinken, die unsere Forschung finanzieren.';
     out.policy_choices = 'Deine Möglichkeiten';
     out.policy_choices_open = 'Unser Code ist frei und offengelegt, deshalb kannst du jederzeit deine eigene Cryptpad-Instanz hosten.';
-    out.policy_choices_vpn = 'Wenn du unsere gehostete Instanz nutzen möchtest ohne deine IP-Adresse zu offenbaren, bitten wir dich darum, deine IP-Adresse zu verschleiern, das geht zum Beispiel mit dem <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads vor Torproject" target="_blank" rel="noopener noreferrer">Tor browser bundle</a>, oder einem <a href="https://riseup.net/en/vpn" title="VPNs provided by Riseup" target="_blank" rel="noopener noreferrer">VPN-Zugang</a>.';
+    out.policy_choices_vpn = 'Wenn du unsere gehostete Instanz nutzen möchtest ohne deine IP-Adresse zu offenbaren, bitten wir dich darum, deine IP-Adresse zu verschleiern, das geht zum Beispiel mit dem <a href="https://www.torproject.org/projects/torbrowser.html.en" title="downloads vor Torproject" target="_blank" rel="noopener noreferrer">Tor browser bundle</a> oder einem <a href="https://riseup.net/en/vpn" title="VPNs provided by Riseup" target="_blank" rel="noopener noreferrer">VPN-Zugang</a>.';
     out.policy_choices_ads = 'Wenn du unsere Analysesoftware blockieren möchtest kannst du Block-Software wie <a href="https://www.eff.org/privacybadger" title="download privacy badger" target="_blank" rel="noopener noreferrer">Privacy Badger</a> verwenden.';
 
     // features.html
@@ -866,7 +866,7 @@ define(function () {
     out.features_f_social = "Soziale Anwendungen";
     out.features_f_social_note = "Ein Profil Gestalten, ein Profilbild verwenden, mit Konktakte chatten";
     out.features_f_file1 = "Dateien hochladen und teilen";
-    out.features_f_file1_note = "Dateien mit Freunde teilen, oder sie in Dokumenten einbetten";
+    out.features_f_file1_note = "Dateien mit Freunde teilen oder sie in Dokumenten einbetten";
     out.features_f_storage1 = "Langfristige Speicherung (50MB)";
     out.features_f_storage1_note = "Dateien in deinem CryptDrive sind nicht wegen Aktivitätsmangel gelöscht";
     out.features_f_register = "Registrieren (kostenlos)";
@@ -949,15 +949,15 @@ define(function () {
                " Mit diesem öffentlichen Schlüssel könenn wir z.B. die Menge der Daten, die du benutzt, kontrollieren, denn jeder Benutzer hat eine beschränkte Quota.<br><br>" +
 
 			   " Wir benutzen die <em>Rückmeldung</em>s-Funktion, um den Server zu informieren, dass jemand mit deiner IP ein Konto registriert hat." +
-			   " Damit können wir messen, wie viele Benutzer CryptPad Konten registrieren, und aus welchen Regionen. Somit können wir erfahren, welche Sprache besseren Support braucht.<br><br>" +
+			   " Damit können wir messen, wie viele Benutzer CryptPad Konten registrieren und aus welchen Regionen. Somit können wir erfahren, welche Sprache besseren Support braucht.<br><br>" +
 				
 			   " Wenn Du registrierst, erstellst Du einen öffentlichen Schlüssel, der benutzt wird, um den Server zu informieren, dass er Dokumente auch dann nicht löschen sollte, wenn sie nicht aktiv benutzt werden." + 
-               " Diese Information zeigt dem Server, wie Du CryptPad benutzt, und dieses System erlaubt uns, die Dokumente zu löschen, wofür sich keiner mehr interessiert."
+               " Diese Information zeigt dem Server, wie Du CryptPad benutzt und dieses System erlaubt uns, die Dokumente zu löschen, wofür sich keiner mehr interessiert."
         },
         other: {
             q: "Was können andere Benutzer über micht erfahren?",
             a: "Wenn du ein Dokument von jemand anderen bearbeitest, kommunizierst Du mit dem Server. Nur wir kennen Deine IP-Adresse. " +
-			   " Andere Benutzern sehen deinen Benutzernamen, dein Benutzerbild, das Link deines Profils (wenn du eins hast), und deinen <em>öffentlichen Schlüssel</em> (um die Nachrichten zu diesen Benutzern zu verschlüsseln)."
+			   " Andere Benutzern sehen deinen Benutzernamen, dein Benutzerbild, das Link deines Profils (wenn du eins hast) und deinen <em>öffentlichen Schlüssel</em> (um die Nachrichten zu diesen Benutzern zu verschlüsseln)."
         },
         anonymous: {
             q: "Macht mich CryptPad anonym?",
@@ -1000,7 +1000,7 @@ define(function () {
             q: "Welche Kryptografie benutzt ihr?",
             a: "CryptPad basiert auf zwei quelloffenen Kryptografiebibliotheken: " +
 			   " <a href='https://github.com/dchest/tweetnacl-js' target='_blank'>tweetnacl.js</a> und <a href='https://github.com/dchest/scrypt-async-js' target='_blank'>scrypt-async.js</a>.<br><br>" +
-			   " Scrypt ist ein <em>Passwort-basierter Schlüsselableitungsalgorithmus</em>. Wir benutzen es, um Deinen Benutzernamen und Kennwort in einem Schlüsselpaar umzuwandeln, das Deinen Zugang zum CryptDrive, und daher Deine gesamten Dokumente, sichert.<br><br>" +  
+			   " Scrypt ist ein <em>Passwort-basierter Schlüsselableitungsalgorithmus</em>. Wir benutzen es, um Deinen Benutzernamen und Kennwort in einem Schlüsselpaar umzuwandeln, das Deinen Zugang zum CryptDrive und daher Deine gesamten Dokumente, sichert.<br><br>" +  
 		
                " Wir verwenden  die Verschlüsselung <em>xsalsa20-poly1305</em> und <em>x25519-xsalsa20-poly1305</em> von tweetnacl, um Dokumente und Chat-Historie zu verschlüsseln."
         }
@@ -1049,7 +1049,7 @@ define(function () {
             " Unsere <a href='https://cryptpad.fr/contact.html' target='_blank'>Kontaktseite</a> hat eine Liste der Möglichkeiten, wie man mit uns in Kontakt treten kann.<br><br>" +
 
             "Leider können wir aber nicht garantieren, dass wir alle Funktionen entwickeln, um die Benutzer bitten." +
-            " Wenn eine Funktion kritisch für deine Organisation ist, kannst du Sponsor der Entwicklung dieser Funktion werden, und somit deren Realisierung sichern." +
+            " Wenn eine Funktion kritisch für deine Organisation ist, kannst du Sponsor der Entwicklung dieser Funktion werden und somit deren Realisierung sichern." +
             " Bitte kontaktiere <a href='mailto:sales@cryptpad.fr' target='_blank'>sales@cryptpad.fr</a> für mehr Informationen.<br><br>" +
 
             "Auch wenn du nicht die Entwicklung einer Funktion sponsoren kannst, sind wir an Rückmeldungen interessiert, damit es uns hilft CryptPad zu verbessern." +
@@ -1063,7 +1063,7 @@ define(function () {
             q: "Wieso soll ich zahlen, wenn so viele Funktionen sowieso kostenfrei sind?",
             a: "Wir geben Sponsoren zusätzlichen Speicherplatz sowie die Möglichkeit, die Speicherplatzgrenzen ihrer Freunde zu erhöhen (<a href='https://accounts.cryptpad.fr/#/faq' target='_blank'>lese mehr</a>).<br><br>" +
 
-            " Über diese diese kurzfristigen Vorteile hinaus kannst Du, wenn Du ein Premiumangebot annimmst, die aktive Weiterentwicklung von CryptPad fördern. Dieses beinhaltet Fehler zu beseitigen, neue Funktionen zu gestalten, und es erleichtern, CryptPad auf eigenen Servern zu installieren." +
+            " Über diese diese kurzfristigen Vorteile hinaus kannst Du, wenn Du ein Premiumangebot annimmst, die aktive Weiterentwicklung von CryptPad fördern. Dieses beinhaltet Fehler zu beseitigen, neue Funktionen zu gestalten und es erleichtern, CryptPad auf eigenen Servern zu installieren." +
             " Zusätzlich hilfst du, anderen Anbiertern zu beweisen, dass Leute datenschutzschonende Technologien unterstützen. Wir hoffen, dass am Ende Geschäftmodelle, die auf dem Verkauf von Benutzerdaten basieren, Vergangenheit werden.<br><br>" +
 
             " Außerdem glauben wir, dass es gut ist, die Funktionen von CryptPad kostenfrei anzubieten, weil jeder persönlichen Datenschutz braucht, nicht nur diejenige mit Extraeinkommen." +
@@ -1074,7 +1074,7 @@ define(function () {
             a: "Durch die Verbesserung von datenschutzschonenden Technologien möchten wir die Erwartungen der Benutzer an den Datenschutz auf Cloudplattformen erhöhen." + 
             "Wir hoffen, dass unsere Arbeit andere Dienstanbieter in allen Bereichen anspornt, ähnliche oder bessere Dienste anzubieten. " + 
             "Trotz unser Optimismus wissen wir, dass ein grosser Teil des Netztes durch gezielte Werbung finanziert wird. " +
-            "Es gibt viel mehr Arbeit in der Richtung, als wir jemals schaffen können, und wir freuen uns über die Förderung, Unterstützung und Beiträge aus unserer Community."
+            "Es gibt viel mehr Arbeit in der Richtung, als wir jemals schaffen können und wir freuen uns über die Förderung, Unterstützung und Beiträge aus unserer Community."
         },
         jobs: {
             q: "Sucht Ihr Mitarbeiter*innen?",
@@ -1149,7 +1149,7 @@ define(function () {
     out.help.poll = {
         decisions: 'Treffe Entscheidungen gemeinsam mit deinen Bekannten',
         options: 'Mache Vorschläge und teile deine Präferenzen mit',
-        choices: 'Klicke die Zellen in deiner Spalte, um zwischen ja (<strong>✔</strong>), viellecht (<strong>~</strong>), oder nein (<strong>✖</strong>) zu wählen',
+        choices: 'Klicke die Zellen in deiner Spalte, um zwischen ja (<strong>✔</strong>), viellecht (<strong>~</strong>) oder nein (<strong>✖</strong>) zu wählen',
         submit: 'Klicke auf <strong>Schicken</strong>, damit deine Entscheidung für andere sichtbar wird',
     };
 
@@ -1169,7 +1169,7 @@ define(function () {
         '<p>',
         'Dies ist is&nbsp;<strong>CryptPad</strong>, der Echtzeit-Kollaborativ-Editor ohne Preisgabe deiner Daten. Alles wird beim Tippen direkt gespeichert.',
         '<br>',
-        'Teile den Link zu diesem Pad, um mit Bekannten zusammen zu arbeiten, oder verwende den Knopf <span class="fa fa-share-alt"></span>, um einen <em>schreibgeschützten Link</em>&nbsp; zu teilen, der die Ansicht, aber nicht die Bearbeitung erlaubt.',
+        'Teile den Link zu diesem Pad, um mit Bekannten zusammen zu arbeiten oder verwende den Knopf <span class="fa fa-share-alt"></span>, um einen <em>schreibgeschützten Link</em>&nbsp; zu teilen, der die Ansicht, aber nicht die Bearbeitung erlaubt.',
         '</p>',
     ].join('');
 
@@ -1214,7 +1214,11 @@ define(function () {
     // Tips
     out.tips = {};
     out.tips.shortcuts = "Mit den Tastenkürzeln `ctrl+b`, `ctrl+i` and `ctrl+u` formatierst du Text fett, kursiv, oder unterstrichen.";
-    out.tips.indent = "In bezifferten oder einfachen Listen kannst du mit TAB und SHIFT-TAB den Einzug erhöhen oder reduzieren.";
+    out.tips.indent = "In nummerierten oder einfachen Listen kannst du mit TAB und SHIFT-TAB den Einzug erhöhen oder reduzieren.";
+    out.readme_cat3_l1 = "Mit dem CryptPad Codeeditor kannst du Code wie JavaScript, Markdown oder HTML bearbeiten";
+    out.readme_cat3_l2 = "Mit dem CryptPad Präsentationseditor kannst du schnell Vorträge mit Hilfe von Markdown gestalten";
+    out.readme_cat3_l3 = "Mit der CryptPad Umfrage kannst du schnell Abstimmungen durchführen, insbesondere, um Meetings zu planen, die in den Kalender von allen passen.";
+
     out.tips.store = "Jedes Mal, wenn du ein Dokument besuchst und eingeloggt bist, wird es in deinem CryptDrive gespeichert.";
     out.tips.marker = "Du kannst Text in einem Dokument mit \"Marker\" Menü in dem Stilmenü markieren.";
     out.tips.driveUpload = "Registrierte Benutzer können verschlüsselte Dateien aus ihrer Festplatte hochladen, indem sie sie einfach verschieben und in ihrem CryptDrive ablegen.";
@@ -1260,7 +1264,7 @@ define(function () {
     out.creation_passwordValue = "Passwort"; 
     out.creation_propertiesTitle = "Verfügbarkeit";
     out.creation_appMenuName = "Fortgeschrittenes Modus (Ctrl + E)";
-    out.creation_newPadModalDescription = "Klicke auf einen Padtyp, um es zu erstellen. Du kannst auch die <b>Tab</b>-Taste benutzen, um zu navigieren, und die <b>Enter</b>-Taste zum Bestätigen. ";
+    out.creation_newPadModalDescription = "Klicke auf einen Padtyp, um es zu erstellen. Du kannst auch die <b>Tab</b>-Taste benutzen, um zu navigieren und die <b>Enter</b>-Taste zum Bestätigen. ";
     out.creation_newPadModalDescriptionAdvanced = "Du kannst das Kästchen markieren (oder auf die Leertaste drücken, um den Wert zu ändern), um den Einstellungsdialog bei der Dokumenterstellung anzuzeigen (für eigene oder auslaufende Dokumente).";
     out.creation_newPadModalAdvanced = "Den Einstellungdialog bei der Dokumenterstellung anzeigen";
 
@@ -1311,7 +1315,7 @@ define(function () {
     out.sharedFolders_create_password = "Ordnerpasswort";
     out.sharedFolders_share = "Teile diese URL mit anderen registrierten Benutzern, um ihnen Zugriff auf den geteilten Ordner zu geben. Sobald sie diese URL öffnen, wird der geteilte Ordner zu ihrem CryptDrive hinzugefügt.";
 
-    out.chrome68 = "Anscheinend benutzt du Chrome oder Chromium version 68. Darin ist ein bug, der dafür sorgt, dass nach ein paar Sekunden die Seite komplett weiß ist oder nicht mehr auf Klicks reagiert. Um das Problem zu beheben, wechsle den Tab und komme wieder, oder versuche zu scrollen. Dieser Bug sollte in der nächsten Version deines Browsers gefixt sein.";
+    out.chrome68 = "Anscheinend benutzt du Chrome oder Chromium version 68. Darin ist ein bug, der dafür sorgt, dass nach ein paar Sekunden die Seite komplett weiß ist oder nicht mehr auf Klicks reagiert. Um das Problem zu beheben, wechsle den Tab und komme wieder oder versuche zu scrollen. Dieser Bug sollte in der nächsten Version deines Browsers gefixt sein.";
 
     // Manual pad storage popup
     out.autostore_file = "Diese Datei";
