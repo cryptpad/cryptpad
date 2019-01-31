@@ -1058,7 +1058,7 @@ define([
         timeout = true;
         common.onNetworkDisconnect.fire();
         // FIXME: no UI in outer...
-        alert("Timeout error, please reload this tab");
+        window.alert("Timeout error, please reload this tab");
     };
 
     var queries = {
