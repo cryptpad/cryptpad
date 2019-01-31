@@ -127,7 +127,10 @@ define([
             // Keep only the history for our channel
             if (parsed[3] !== channel) { return; }
 
-            chan.lastKnownHash = msg.slice(0,64);
+            var hash = msg.slice(0,64);
+            if (hash === chan.lastKnownHash || hash === chan.lastCpHash) { return; }
+
+            chan.lastKnownHash = hash;
             ctx.emit('MESSAGE', msg, chan.clients);
             chan.history.push(msg);
         });
