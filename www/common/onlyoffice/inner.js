@@ -49,6 +49,11 @@ define([
 
     var CHECKPOINT_INTERVAL = 50;
 
+    var debug = function (x) {
+        if (!window.CP_DEV_MODE) { return; }
+        console.log(x);
+    };
+
     var stringify = function (obj) {
         return JSONSortify(obj);
     };
@@ -203,7 +208,7 @@ define([
             cpIndex: 0
         };
 
-        var getContent = APP.getContent = function () {
+        var getContent = function () {
             try {
                 return window.frames[0].editor.asc_nativeGetFile();
             } catch (e) {
@@ -560,10 +565,12 @@ define([
                 APP.chan = chan;
 
                 var send = ooChannel.send = function (obj) {
+                    debug(obj);
                     chan.event('CMD', obj);
                 };
 
                 chan.on('CMD', function (obj) {
+                    debug(obj);
                     switch (obj.type) {
                         case "auth":
                             handleAuth(obj, send);

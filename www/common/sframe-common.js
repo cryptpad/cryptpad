@@ -587,6 +587,10 @@ define([
                 console.error("Can't check permissions for the app");
             }
 
+            try {
+                window.CP_DEV_MODE = ctx.metadataMgr.getPrivateData().devMode;
+            } catch (e) {}
+
             ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
                 if (err === 'DELETED') {
                     var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
