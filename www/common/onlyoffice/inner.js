@@ -217,6 +217,26 @@ define([
             }
         };
 
+        // Loading a checkpoint reorder the sheet starting from ID "5".
+        // We have to reorder it manually when a checkpoint is created
+        // so that the messages we send to the realtime channel are
+        // loadable by users joining after the checkpoint
+        var fixSheets = function () {
+            try {
+                var editor = window.frames[0].editor;
+                var s = editor.GetSheets();
+                if (s.length === 0) { return; }
+                var wb = s[0].worksheet.workbook;
+                s.forEach(function (obj, i) {
+                    var id = String(i + 5);
+                    obj.worksheet.Id = id;
+                    wb.aWorksheetsById[id] = obj.worksheet;
+                });
+            } catch (e) {
+                console.error(e);
+            }
+        };
+
         var fmConfig = {
             noHandlers: true,
             noStore: true,
@@ -237,6 +257,9 @@ define([
                     oldHashes = JSON.parse(JSON.stringify(content.hashes));
                     content.saveLock = undefined;
                     APP.onLocal();
+                    APP.realtime.onSettle(function () {
+                        fixSheets();
+                    });
                     sframeChan.query('Q_OO_COMMAND', {
                         cmd: 'UPDATE_HASH',
                         data: ev.hash
@@ -891,6 +914,7 @@ define([
 
             openRtChannel(function () {
                 setMyId();
+                oldHashes = JSON.parse(JSON.stringify(content.hashes));
                 loadDocument(newDoc);
                 initializing = false;
                 setEditable(!readOnly);
@@ -910,11 +934,13 @@ define([
             if (content.hashes) {
                 var latest = getLastCp(true);
                 var newLatest = getLastCp();
-                if (newLatest.index >= latest.index) {
+                if (newLatest.index > latest.index) {
+                    fixSheets();
                     sframeChan.query('Q_OO_SAVE', {
                         url: newLatest.file
                     }, function () { });
                 }
+                oldHashes = JSON.parse(JSON.stringify(content.hashes));
             }
             if (content.ids) {
                 handleNewIds(oldIds, content.ids);
