@@ -259,6 +259,10 @@ define([
                     APP.onLocal();
                     APP.realtime.onSettle(function () {
                         fixSheets();
+                        UI.log(Messages.saved);
+                        if (ev.callback) {
+                            return void ev.callback();
+                        }
                     });
                     sframeChan.query('Q_OO_COMMAND', {
                         cmd: 'UPDATE_HASH',
@@ -266,7 +270,6 @@ define([
                     }, function (err, obj) {
                         if (err || (obj && obj.error)) { console.error(err || obj.error); }
                     });
-                    UI.log(Messages.saved);
                 });
             }
         };
@@ -707,19 +710,33 @@ define([
             });
         };
 
-        /*var importFile = function(content) {
-          var blob = new Blob([content], {type: 'plain/text'});
-          var file = getFileType();
-          blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
-          uploadedCallback = function() {
-            UI.confirm(Messages.oo_newVersion, function (yes) {
-                reloadDisplayed = false;
-                if (!yes) { return; }
-                common.gotoURL();
+        var importFile = function(content) {
+            // Abort if there is another real user in the channel (history keeper excluded)
+            var m = metadataMgr.getChannelMembers().slice().filter(function (nId) {
+                return nId.length === 32;
             });
-          };
-          APP.FM.handleFile(blob);
-        }*/
+            if (m.length > 1) {
+                return void UI.alert(Messages.oo_cantUpload);
+            }
+            var blob = new Blob([content], {type: 'plain/text'});
+            var file = getFileType();
+            blob.name = (metadataMgr.getMetadataLazy().title || file.doc) + '.' + file.type;
+            var uploadedCallback = function() {
+                UI.confirm(Messages.oo_uploaded, function (yes) {
+                    try {
+                         window.frames[0].editor.setViewModeDisconnect();
+                    } catch (e) {}
+                    if (!yes) { return; }
+                    common.gotoURL();
+                });
+            };
+            var data = {
+                hash: ooChannel.lastHash,
+                index: ooChannel.cpIndex,
+                callback: uploadedCallback
+            };
+            APP.FM.handleFile(blob, data);
+        }
 
         var loadLastDocument = function () {
             var lastCp = getLastCp();
@@ -861,8 +878,8 @@ define([
             var $export = common.createButton('export', true, {}, exportFile);
             $export.appendTo($rightside);
 
-            /*var $import = common.createButton('import', true, {}, importFile);
-            $import.appendTo($rightside);*/
+            var $import = common.createButton('import', true, {}, importFile);
+            $import.appendTo($rightside);
 
             if (common.isLoggedIn()) {
                 common.createButton('hashtag', true).appendTo($rightside);
