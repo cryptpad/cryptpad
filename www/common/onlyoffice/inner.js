@@ -736,7 +736,7 @@ define([
                 callback: uploadedCallback
             };
             APP.FM.handleFile(blob, data);
-        }
+        };
 
         var loadLastDocument = function () {
             var lastCp = getLastCp();
