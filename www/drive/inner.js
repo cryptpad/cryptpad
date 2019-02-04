@@ -2772,7 +2772,12 @@ define([
                 }
             });*/
 
-            $content.scrollTop(s);
+            var $sel = $content.find('.cp-app-drive-element-selected');
+            if ($sel.length) {
+                $sel[0].scrollIntoView();
+            } else {
+                $content.scrollTop(s);
+            }
             appStatus.ready(true);
         };
         var displayDirectory = APP.displayDirectory = function (path, force) {
