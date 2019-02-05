@@ -2000,6 +2000,7 @@ define([
         }
     };
     UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
+        appCfg = appCfg || {};
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
