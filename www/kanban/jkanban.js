@@ -346,6 +346,7 @@
                         titleBoard = document.createElement('div');
                         titleBoard.classList.add('kanban-title-board');
                         titleBoard.innerHTML = board.title;
+                        titleBoard.setAttribute('title', board.title);
                         titleBoard.clickfn = board.boardTitleClick;
                         __onboardTitleClickHandler(titleBoard);
                         headerBoard.appendChild(titleBoard);
