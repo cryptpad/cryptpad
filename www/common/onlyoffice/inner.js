@@ -896,6 +896,9 @@ define([
             var helpMenu = common.createHelpMenu(['beta', 'oo']);
             $('#cp-app-oo-editor').prepend(helpMenu.menu);
             toolbar.$drawer.append(helpMenu.button);
+
+            var $properties = common.createButton('properties', true);
+            toolbar.$drawer.append($properties);
         };
 
         config.onReady = function (info) {

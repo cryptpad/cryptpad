@@ -87,6 +87,12 @@ define([
             common.getPadAttribute('channel', waitFor(function (err, val) {
                 data.channel = val;
             }));
+            common.getPadAttribute('rtChannel', waitFor(function (err, val) {
+                data.rtChannel = val;
+            }));
+            common.getPadAttribute('lastVersion', waitFor(function (err, val) {
+                data.lastVersion = val;
+            }));
             common.getPadAttribute('atime', waitFor(function (err, val) {
                 data.atime = val;
             }));
