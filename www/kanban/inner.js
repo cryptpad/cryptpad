@@ -140,7 +140,7 @@ define([
                     $(el).text(name);
                     // Save the value for the correct board
                     var board = $(el.parentNode.parentNode.parentNode).attr("data-id");
-                    var pos = kanban.findElementPosition(el);
+                    var pos = kanban.findElementPosition(el.parentNode);
                     kanban.getBoardJSON(board).item[pos].title = name;
                     kanban.onChange();
                     // Unlock edit mode
