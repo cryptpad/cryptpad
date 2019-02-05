@@ -2682,7 +2682,6 @@ define([
 
             if (APP.mobile()) {
                 var $context = $('<button>', {
-                    'class': 'cp-dropdown-container',
                     id: 'cp-app-drive-toolbar-context-mobile'
                 });
                 $context.append($('<span>', {'class': 'fa fa-caret-down'}));
