@@ -1054,11 +1054,13 @@ define([
 
     var timeout = false;
     var onTimeout = function () {
-        // XXX
+        return;
+        /*
         timeout = true;
         common.onNetworkDisconnect.fire();
         // FIXME: no UI in outer...
         window.alert("Timeout error, please reload this tab");
+        */
     };
 
     var queries = {

@@ -1593,6 +1593,7 @@ define([
                 broadcast([], 'NETWORK_RECONNECT', {myId: info.myId});
             });
 
+            /*
             // Ping clients regularly to make sure one tab was not closed without sending a removeClient()
             // command. This allow us to avoid phantom viewers in pads.
             var PING_INTERVAL = 30000;
@@ -1625,7 +1626,7 @@ define([
                     ping();
                 });
             }, PING_INTERVAL);
-
+            */
         };
 
         /**
