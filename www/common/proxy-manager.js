@@ -490,13 +490,13 @@ define([
                     });
                 }
                 uo.delete(resolved.main, waitFor(function (err, _toUnpin, _ownedRemoved) {
+                    ownedRemoved = _ownedRemoved;
                     if (!Env.unpinPads || !_toUnpin) { return; }
                     Array.prototype.push.apply(toUnpin, _toUnpin);
-                    ownedRemoved = _ownedRemoved;
                 }));
             }
         }).nThen(function (waitFor) {
-            // Check if removed owned pads are duplicated is some shared folders
+            // Check if removed owned pads are duplicated in some shared folders
             // If that's the case, we have to remove them from the shared folders too
             // We can do that by adding their paths to the list of pads to remove from shared folders
             if (ownedRemoved) {
@@ -526,8 +526,13 @@ define([
             // Deleted channels
             toUnpin = Util.deduplicateString(toUnpin);
             // Deleted channels that are still in another proxy
-            var toKeep = _findChannels(Env, toUnpin).map(function (id) {
-                return _getFileData(Env, id).channel;
+            var toKeep = [];
+            _findChannels(Env, toUnpin).forEach(function (id) {
+                var data = _getFileData(Env, id);
+                var arr = [data.channel];
+                if (data.rtChannel) { arr.push(data.rtChannel); }
+                if (data.lastVersion) { arr.push(Hash.hrefToHexChannelId(data.lastVersion)); }
+                Array.prototype.push.apply(toKeep, arr);
             });
             // Compute the unpin list and unpin
             var unpinList = [];
@@ -714,6 +719,9 @@ define([
                         if (result.indexOf(otherChan) === -1) {
                             result.push(otherChan);
                         }
+                    }
+                    if (data.rtChannel && result.indexOf(data.rtChannel) === -1) {
+                        result.push(data.rtChannel);
                     }
                     if (result.indexOf(data.channel) === -1) {
                         result.push(data.channel);

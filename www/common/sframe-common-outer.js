@@ -255,6 +255,7 @@ define([
                 secret.keys = secret.key;
                 readOnly = false;
             }
+            Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
             var parsed = Utils.Hash.parsePadUrl(window.location.href);
             if (!parsed.type) { throw new Error(); }
             var defaultTitle = Utils.Hash.getDefaultName(parsed);
@@ -953,6 +954,7 @@ define([
                 password = data.password;
                 var newHash = Utils.Hash.createRandomHash(parsed.type, password);
                 secret = Utils.secret = Utils.Hash.getSecrets(parsed.type, newHash, password);
+                Utils.crypto = Utils.Crypto.createEncryptor(Utils.secret.keys);
 
                 // Update the hash in the address bar
                 var ohc = window.onhashchange;
@@ -975,6 +977,7 @@ define([
                 if (data.expire) {
                     rtConfig.expire = data.expire;
                 }
+                Utils.rtConfig = rtConfig;
                 nThen(function(waitFor) {
                     if (data.templateId) {
                         if (data.templateId === -1) {

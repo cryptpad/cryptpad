@@ -107,8 +107,14 @@ define([
                                 Feedback.send('ERROR_DELETING_OWNED_PAD=' + channelId + '|' + obj.error, true);
                             }
                         });
+                        // Also remove the realtime channel for onlyoffice
+                        if (fd.rtChannel) {
+                            removeOwnedChannel(fd.rtChannel, function () {});
+                        }
+                        // XXX fd.lastVersion to delete the encrypted cp?
                     }
                     if (fd.lastVersion) { toClean.push(Hash.hrefToHexChannelId(fd.lastVersion)); }
+                    if (fd.rtChannel) { toClean.push(fd.rtChannel); }
                     if (channelId) { toClean.push(channelId); }
                     if (exp.isSharedFolder(id)) {
                         delete files[SHARED_FOLDERS][id];

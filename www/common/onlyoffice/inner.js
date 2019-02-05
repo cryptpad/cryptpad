@@ -870,10 +870,12 @@ define([
 
             var $rightside = toolbar.$rightside;
 
-            /*var $save = common.createButton('save', true, {}, function () {
-                saveToServer();
-            });
-            $save.appendTo($rightside);*/
+            if (window.CP_DEV_MODE) {
+                var $save = common.createButton('save', true, {}, function () {
+                    saveToServer();
+                });
+                $save.appendTo($rightside);
+            }
 
             var $export = common.createButton('export', true, {}, exportFile);
             $export.appendTo($rightside);
@@ -937,6 +939,12 @@ define([
                 setEditable(!readOnly);
                 UI.removeLoadingScreen();
                 common.openPadChat(APP.onLocal);
+            });
+        };
+
+        config.onError = function (err) {
+            common.onServerError(err, toolbar, function () {
+                setEditable(false);
             });
         };
 
@@ -1013,6 +1021,10 @@ define([
                 UI.addLoadingScreen();
             }));
             SFCommon.create(waitFor(function (c) { APP.common = common = c; }));
+        }).nThen(function (waitFor) {
+            common.handleNewFile(waitFor, {
+                noTemplates: true
+            });
         }).nThen(function (/*waitFor*/) {
             andThen(common);
         });

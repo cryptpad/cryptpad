@@ -241,7 +241,7 @@ define([
     };
 
     // Store
-    funcs.handleNewFile = function (waitFor) {
+    funcs.handleNewFile = function (waitFor, config) {
         if (window.__CRYPTPAD_TEST__) { return; }
         var priv = ctx.metadataMgr.getPrivateData();
         if (priv.isNewFile) {
@@ -262,7 +262,7 @@ define([
                 return void funcs.createPad(c, waitFor());
             }
             // If we display the pad creation screen, it will handle deleted pads directly
-            funcs.getPadCreationScreen(c, waitFor());
+            funcs.getPadCreationScreen(c, config, waitFor());
         }
     };
     funcs.createPad = function (cfg, cb) {

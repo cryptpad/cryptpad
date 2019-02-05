@@ -87,6 +87,7 @@ define([
                 validateKey: obj.validateKey,
                 lastKnownHash: chan.lastKnownHash || chan.lastCpHash,
                 owners: obj.owners,
+                expire: obj.expire
             };
             var msg = ['GET_HISTORY', wc.id, cfg];
             // Add the validateKey if we are the channel creator and we have a validateKey

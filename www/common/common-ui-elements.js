@@ -1992,7 +1992,7 @@ define([
             $expire.find('#cp-creation-expire-false').attr('checked', true);
         }
     };
-    UIElements.getPadCreationScreen = function (common, cfg, cb) {
+    UIElements.getPadCreationScreen = function (common, cfg, appCfg, cb) {
         if (!common.isLoggedIn()) { return void cb(); }
         var sframeChan = common.getSframeChannel();
         var metadataMgr = common.getMetadataMgr();
@@ -2119,12 +2119,14 @@ define([
                 }
                 return b.used - a.used;
             });
-            allData.unshift({
-                name: Messages.creation_newTemplate,
-                id: -1,
-                //icon: h('span.fa.fa-bookmark')
-                icon: h('span.cptools.cptools-new-template')
-            });
+            if (!appCfg.noTemplates) {
+                allData.unshift({
+                    name: Messages.creation_newTemplate,
+                    id: -1,
+                    //icon: h('span.fa.fa-bookmark')
+                    icon: h('span.cptools.cptools-new-template')
+                });
+            }
             allData.unshift({
                 name: Messages.creation_noTemplate,
                 id: 0,
