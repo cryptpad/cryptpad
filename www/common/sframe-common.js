@@ -557,6 +557,19 @@ define([
                 UIElements.displayStorePadPopup(funcs, data);
             });
 
+            ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
+                var msg = err;
+                if (err === 'DELETED') {
+                    msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
+                }
+                if (err === "INVALID_HASH") {
+                    msg = Messages.invalidHashError; // XXX
+                }
+                UI.errorLoadingScreen(msg, false, function () {
+                    funcs.gotoURL('/drive/');
+                });
+            });
+
             ctx.metadataMgr.onReady(waitFor());
 
             funcs.addShortcuts();
@@ -590,15 +603,6 @@ define([
             try {
                 window.CP_DEV_MODE = ctx.metadataMgr.getPrivateData().devMode;
             } catch (e) {}
-
-            ctx.sframeChan.on('EV_LOADING_ERROR', function (err) {
-                if (err === 'DELETED') {
-                    var msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
-                    UI.errorLoadingScreen(msg, false, function () {
-                        funcs.gotoURL('/drive/');
-                    });
-                }
-            });
 
             ctx.sframeChan.on('EV_LOGOUT', function () {
                 $(window).on('keyup', function (e) {

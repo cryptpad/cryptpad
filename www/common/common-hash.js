@@ -500,5 +500,27 @@ Version 1
         return name;
     };
 
+    Hash.isValidHref = function (href) {
+        // Non-empty href?
+        if (!href) { return; }
+        var parsed = Hash.parsePadUrl(href);
+        // Can be parsed?
+        if (!parsed) { return; }
+        // Link to a CryptPad app?
+        if (!parsed.type) { return; }
+        // Valid hash?
+        if (parsed.hash) {
+            if (!parsed.hashData) { return; }
+            // Version should be a number
+            if (typeof(parsed.hashData.version) === "undefined") { return; }
+            // pads and files should have a base64 (or hex) key
+            if (parsed.hashData.type === 'pad' || parsed.hashData.type === 'file') {
+                if (!parsed.hashData.key) { return; }
+                if (!/^[a-zA-Z0-9+-/]+$/.test(parsed.hashData.key)) { return; }
+            }
+        }
+        return true;
+    };
+
     return Hash;
 });
