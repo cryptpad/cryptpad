@@ -119,6 +119,7 @@ define([
     var $sharedIcon = $('<span>', {"class": "fa " + faShared});
     var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
+    var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
 
     var LS_LAST = "app-drive-lastOpened";
     var LS_OPENED = "app-drive-openedFolders";
@@ -1435,6 +1436,10 @@ define([
             if (data.filename && data.filename !== data.title) {
                 var $renamed = $renamedIcon.clone().appendTo($state);
                 $renamed.attr('title', Messages._getKey('fm_renamedPad', [data.title]));
+            }
+            if (hrefData.hashData && hrefData.hashData.password) {
+                var $password = $passwordIcon.clone().appendTo($state);
+                $password.attr('title', Messages.fm_passwordProtected || '');
             }
             _addOwnership($span, $state, data);
 
