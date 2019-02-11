@@ -1,3 +1,34 @@
+# Raccoon release (v2.17.0)
+
+## Goals
+
+For this release we planned to resolve issues discovered in our beta release of encrypted spreadsheets, work towards providing an easier experience for contributors who wish to translate CryptPad, and resolve some minor usability issues that had been bothering us.
+
+## Update notes
+
+* This release introduces a new clientside dependency. Run `bower update` to install `requirejs-plugins`.
+* We investigated using [Weblate](https://weblate.org/) for translating CryptPad, but in order to do so we have to migrate from our current translation format (Javascript files) to JSON. Administrators running recent version of CryptPad shouldn't have any trouble using the new system as long as they have not modified their translation files directly. Extensions to the translation dictionaries present in `/customize/translations/` should continue to work as expected. Anyone experiencing difficulty upgrading from older version of CryptPad to 2.17.0 can visit our chat channel for advice on how to proceed.
+
+## Features
+
+* We've received some updates from some of our German-speaking contributors to our Deutsch translation.
+* We now perform more strict validation for the secret values encoded after the hash, since one of our users discovered that CryptPad failed silently when provided with an invalid hash.
+* As requested, the CryptDrive now displays a lock icon for password protected pads.
+* When you click 'Show in folder' from the _search_ or _recent pads_ interface, the selected file will be at the top of the screen. Previously the file was selected, but we didn't scroll to its location in the resulting folder, so it could be out of view if that folder had many files.
+* We've tweaked the styles of some of the rendered Markdown in both our code and slide editors.
+* Finally, we've added the same _pad creation screen_ to our spreadsheet editor as is normally present within our other editors. This will allow users to mark a spreadsheet as _owned_ (allowing them to delete it at a later time) and as having a pre-set expiration time.
+
+## Bug fixes
+
+* Very long words and lines are now wrapped correctly in the Kanban app.
+* The rest of the bug fixes for this release were all applied to the spreadsheet editor:
+  * Spreadsheets with additional worksheets were prone to errors caused when some clients did not receive instructions to update the identifier for a worksheet. This caused those spreadsheets to fail to load entirely.
+  * We have added two buttons to the spreadsheet editor's app toolbar:
+    * a _properties_ button like those on our other editors, to provide basic information about the document
+    * an _import_ button, to process exported documents. Unlike our other import buttons, the spreadsheet editor is currently limited to importing when you are the only editor present in the session.
+  * We've resolved some errors in how the history of a spreadsheet was counted against user quotas. Similarly, we've made sure to delete some extraneous information associated with spreadsheets when they are deleted from users' CryptDrives.
+  * In the event of a server error, the spreadsheet editor will lock itself and proceed in read-only mode
+
 # Quokka release (v2.16.0)
 
 ## Goals
@@ -14,7 +45,6 @@ We welcome you to try it out and report any difficulties you encounter, though y
 * OnlyOffice requires more lax Content Security Policy headers than the rest of the platform. Compare your configuration against `config.example.js`.
 * If you are running a customized `application_config.js`, you may need to update `availablePadTypes` and `registeredOnlyTypes`. See [the wiki](https://github.com/xwiki-labs/cryptpad/wiki/Application-config) for more details.
 * In addition to a few serverside changes for the new spreadsheet editor, this release fixes a bug that affected system administrators who had set custom limits for some users and disabled communication with our payment server. Restart your server after updating for these changes to take effect.
-
 
 ## Features
 
