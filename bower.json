@@ -47,7 +47,8 @@
     "croppie": "^2.5.0",
     "sortablejs": "#^1.6.0",
     "saferphore": "^0.0.1",
-    "jszip": "Stuk/jszip#^3.1.5"
+    "jszip": "Stuk/jszip#^3.1.5",
+    "requirejs-plugins": "^1.0.3"
   },
   "resolutions": {
     "bootstrap": "^v4.0.0"
