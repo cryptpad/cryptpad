@@ -5,6 +5,9 @@ define([
         // fix up locations so that relative urls work.
         baseUrl: window.location.pathname,
         paths: { 
+            // json plugin
+            text: '/bower_components/requirejs-plugins/lib/text',
+            json: '/bower_components/requirejs-plugins/src/json',
             // jquery declares itself as literally "jquery" so it cannot be pulled by path :(
             "jquery": "/bower_components/jquery/dist/jquery.min",
             // json.sortify same

@@ -2,7 +2,7 @@ define([
     'jquery',
     '/common/common-util.js',
     '/customize/messages.js',
-    '/customize/translations/messages.js',
+    'json!/common/translations/messages.json',
 ], function ($, Util, Messages, English) {
 
     var $body = $('body');
