@@ -225,7 +225,7 @@ Version 1
         var ret = {};
 
         if (!href) { return ret; }
-        if (href.slice(-1) !== '/') { href += '/'; }
+        if (href.slice(-1) !== '/' && href.slice(-1) !== '#') { href += '/'; }
         href = href.replace(/\/\?[^#]+#/, '/#');
 
         var idx;
@@ -246,6 +246,7 @@ Version 1
         if (!/^https*:\/\//.test(href)) {
             idx = href.indexOf('/#');
             ret.type = href.slice(1, idx);
+            if (idx === -1) { return ret; }
             ret.hash = href.slice(idx + 2);
             ret.hashData = parseTypeHash(ret.type, ret.hash);
             return ret;

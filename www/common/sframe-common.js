@@ -563,7 +563,7 @@ define([
                     msg = Messages.deletedError + '<br>' + Messages.errorRedirectToHome;
                 }
                 if (err === "INVALID_HASH") {
-                    msg = Messages.invalidHashError; // XXX
+                    msg = Messages.invalidHashError;
                 }
                 UI.errorLoadingScreen(msg, false, function () {
                     funcs.gotoURL('/drive/');
