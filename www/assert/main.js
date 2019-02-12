@@ -310,6 +310,43 @@ define([
     }, 'parse a block hash');
 
     assert(function (cb) {
+        var v1 = Hash.isValidHref('https://cryptpad.fr/pad');
+        var v2 = Hash.isValidHref('https://cryptpad.fr/pad/');
+        var v3 = Hash.isValidHref('/pad');
+        var v4 = Hash.isValidHref('/pad/');
+
+        var res = v1 && v2 && v3 && v4;
+        cb(res);
+        if (!res) {
+            console.log(v1, v2, v3, v4);
+        }
+    }, 'test isValidHref no hash');
+    assert(function (cb) {
+        var v1 = !Hash.isValidHref('https://cryptpad.fr/pad#'); // Invalid
+        var v2 = Hash.isValidHref('https://cryptpad.fr/pad/#');
+        var v3 = Hash.isValidHref('/pad#'); // Invalid
+        var v4 = Hash.isValidHref('/pad/#');
+
+        var res = v1 && v2 && v3 && v4;
+        cb(res);
+        if (!res) {
+            console.log(v1, v2, v3, v4);
+        }
+    }, 'test isValidHref empty hash');
+    assert(function (cb) {
+        var v1 = Hash.isValidHref('https://cryptpad.fr/pad/#/2/pad/edit/HGu0tK2od-2BBnwAz2ZNS-t4/p/embed');
+        var v2 = Hash.isValidHref('https://cryptpad.fr/pad/#/1/edit/CmN5+YJkrHFS3NSBg-P7Sg/DNZ2wcG683GscU4fyOyqA87G/present/embed');
+        var v3 = Hash.isValidHref('https://cryptpad.fr/pad/#67b8385b07352be53e40746d2be6ccd7XAYSuJYYqa9NfmInyHci7LNy');
+        var v4 = Hash.isValidHref('/pad/#/2/pad/edit/HGu0tK2od-2BBnwAz2ZNS-t4/p/embed');
+
+        var res = v1 && v2 && v3 && v4;
+        cb(res);
+        if (!res) {
+            console.log(v1, v2, v3, v4);
+        }
+    }, 'test isValidHref hash');
+
+    assert(function (cb) {
         try {
             MediaTag(void 0).on('progress').on('decryption');
             return void cb(true);
