@@ -839,7 +839,7 @@
             },
             "revenue": {
                 "q": "How can I participate in the revenue sharing?",
-                "a": " If you are running your own instance of CryptPad, and would like to enable paid accounts and split the revenue with the developers, your server will need to be configured as a partner service.<br><br>In your CryptPad directory, <em>config.example.js</em> should contain an explanation of what you need to configure on your server. You will need to contact <a href='mailto:sales@cryptpad.fr'>sales@cryptpad.fr</a> to verify that your server is configured to use HTTPS correctly, and discuss payment methods."
+                "a": "If you are running your own instance of CryptPad, and would like to enable paid accounts and split the revenue with the developers, your server will need to be configured as a partner service.<br><br>In your CryptPad directory, <em>config.example.js</em> should contain an explanation of what you need to configure on your server. You will need to contact <a href='mailto:sales@cryptpad.fr'>sales@cryptpad.fr</a> to verify that your server is configured to use HTTPS correctly, and discuss payment methods."
             }
         }
     },
