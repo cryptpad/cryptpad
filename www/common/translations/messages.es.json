@@ -9,7 +9,8 @@
         "slide": "Presentación",
         "whiteboard": "Pizarra",
         "contacts": "Contactos",
-        "kanban": "Kanban"
+        "kanban": "Kanban",
+        "drive": "CryptDrive"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronización",
