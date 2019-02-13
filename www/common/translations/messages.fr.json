@@ -645,7 +645,7 @@
     "whatis_zeroknowledge_p3": "Quand vous partagez le lien vers un document, vous partagez la clé cryptographique permettant de déchiffrer le document, mais puisque cette clé se trouve dans l'<a href=\"https://en.wikipedia.org/wiki/Fragment_identifier\">identificateur de fragment</a>, elle n'est jamais envoyée au serveur. Venez lire notre <a href=\"https://blog.cryptpad.fr/2017/07/07/cryptpad-analytics-what-we-cant-know-what-we-must-know-what-we-want-to-know/\">article de blog sur la vie privée</a> pour en apprendre davantage sur le type de métadonnées auxquelles nous avons ou n'avons pas accès.",
     "whatis_drive": "Organisation avec CryptDrive",
     "whatis_drive_p1": "Dès que vous accédez à un pad dans CryptPad, celui-ci est automatiquement ajouté à votre CryptDrive, dans le dossier principal. Vous pouvez alors ranger ce pad dans un dossier ou le déplacer vers la corbeille. CryptDrive vous permet de rechercher parmi vos pads et de les organiser quand vous le souhaitez, comme vous le souhaitez.",
-    "whatis_drive_p2": "Avec le glisser-déposer intuitif, vous pouvez déplacer vos pads dans votre drive tout en conservant les liens vers ces pads pour que vos collaborateurs n'en perdent pas l'accès",
+    "whatis_drive_p2": "Avec le glisser-déposer intuitif, vous pouvez déplacer vos pads dans votre drive tout en conservant les liens vers ces pads pour que vos collaborateurs n'en perdent pas l'accès.",
     "whatis_drive_p3": "Vous pouvez également importer des fichiers dans votre CryptDrive et les partager avec des collègues. Les fichiers importés peuvent être rangés de la même manière que vos pads collaboratifs.",
     "whatis_business": "CryptPad for Business",
     "whatis_business_p1": "Le chiffrement Zero Knowledge de CryptPad excelle pour accroître l'efficacité des protocoles de sécurité existants en les recréant de manière cryptographique. Puisque les données sensibles ne peuvent être déchiffrées qu'en utilisant les identifiants d'un utilisateur, CryptPad empêche d'éventuels hackers ayant réussi à s'introduire dans le serveur d'avoir accès en clair à ces données. Découvrez-en plus sur la manière dont CryptPad peut aider votre entreprise en lisant le <a href=\"https://blog.cryptpad.fr/images/CryptPad-Whitepaper-v1.0.pdf\">CryptPad Whitepaper</a>.",
@@ -680,9 +680,9 @@
     "features_f_file0": "Ouvrir des fichiers",
     "features_f_file0_note": "Voir et télécharger des fichiers partagés par d'autres utilisateurs",
     "features_f_cryptdrive0": "Accès limité à CryptDrive",
-    "features_f_cryptdrive0_note": "Stockage dans votre navigateur des pads visités afin de pouvoir les retrouver plus tard.",
+    "features_f_cryptdrive0_note": "Stockage dans votre navigateur des pads visités afin de pouvoir les retrouver plus tard",
     "features_f_storage0": "Durée de stockage limitée",
-    "features_f_storage0_note": "Les pads créés risquent d'être supprimés après trois mois d'inactivité.",
+    "features_f_storage0_note": "Les pads créés risquent d'être supprimés après trois mois d'inactivité",
     "features_f_anon": "Avantages des utilisateurs anonymes",
     "features_f_anon_note": "Avec une meilleure ergonomie et plus de contrôle sur vos pads",
     "features_f_cryptdrive1": "Accès complet à CryptDrive",
@@ -694,7 +694,7 @@
     "features_f_file1": "Importer et partager des fichiers",
     "features_f_file1_note": "Partager des fichiers avec vos amis ou les intégrer dans vos pads",
     "features_f_storage1": "Stockage permanent (50Mo)",
-    "features_f_storage1_note": "Les pads stockés dans votre CryptDrive ne seront jamais supprimés pour cause d'inactivité.",
+    "features_f_storage1_note": "Les pads stockés dans votre CryptDrive ne seront jamais supprimés pour cause d'inactivité",
     "features_f_register": "S'enregistrer gratuitement",
     "features_f_register_note": "Pas d'email ou d'information personnelle requis",
     "features_f_reg": "Avantages des utilisateurs enregistrés",
@@ -734,7 +734,7 @@
                 "a": "Un <em>modèle</em> est un pad qui peut être utilisé pour définir le contenu initial d'un nouveau pad du même type quand vous le créez.<br>Les pads existant dans votre CryptDrive peuvent être transformés en tant que modèle en les déplaçant dans la catégorie <em>Modèles</em> du CryptDrive.<br>Il est également possible de créer une copie d'un pad en tant que modèle en cliquant sur le bouton <span class=\"fa fa-bookmark\"></span> (<em>Sauver en tant que modèle</em>) dans la barre d'outils des éditeurs."
             },
             "abandoned": {
-                "q": "Qu'est-ce qu'un pad abandonné?",
+                "q": "Qu'est-ce qu'un pad abandonné ?",
                 "a": "Un <em>pad abandonné</em> est un pad qui n'est stocké dans le CryptDrive d'aucun utilisateur enregistré et qui n'a pas été modifié depuis 6 mois. Les documents abandonnés sont automatiquement supprimés du serveur."
             }
         },
@@ -792,7 +792,7 @@
             },
             "share": {
                 "q": "Comment partager des pads chiffrés avec mes amis ?",
-                "a": "CryptPad stocke la clé secrète de chiffrement des pads après le symbole `#` dans l'URL. Tout ce qui se trouve après ce symbole n'est jamais envoyé au serveur, ainsi nous n'avons pas accès à vos clés de chiffrement. Partager le lien d'un pad revient donc à permettre la lecture ou la modification du contenu."
+                "a": "CryptPad stocke la clé secrète de chiffrement des pads après le symbole <em>#</em> dans l'URL. Tout ce qui se trouve après ce symbole n'est jamais envoyé au serveur, ainsi nous n'avons pas accès à vos clés de chiffrement. Partager le lien d'un pad revient donc à permettre la lecture ou la modification du contenu."
             },
             "remove": {
                 "q": "J'ai supprimé un pad ou un fichier de mon CryptDrive, mais le contenu est encore disponible. Comment le supprimer ?",
@@ -863,7 +863,7 @@
         "text": {
             "formatting": "Vous pouvez afficher ou cacher la barre d'outils de texte en cliquant sur les boutons <span class=\"fa fa-caret-down\"></span> ou <span class=\"fa fa-caret-up\"></span>",
             "embed": "Les utilisateurs enregistrés peuvent intégrer un fichier de leur CryptDrive en utilisant le bouton <span class=\"fa fa-image\"></span>",
-            "history": "Vous pouvez utiliser l'historique (<span class=\"fa fa-history\"></span>) pour voir ou restaurer les versions précédentes du pad"
+            "history": "Vous pouvez utiliser <em>l'historique</em> <span class=\"fa fa-history\"></span> pour voir ou restaurer les versions précédentes du pad"
         },
         "pad": {
             "export": "Vous pouvez exporter le contenu en tant que PDF avec le bouton <span class=\"fa fa-print\"></span> de la barre d'outils de mise en forme du texte"
@@ -887,7 +887,7 @@
             "decisions": "Prenez des décisions en privé avec des personnes de confiance",
             "options": "Proposez des options et exprimez vos préférences",
             "choices": "Cliquez sur les cellules de votre colonne pour modifier leur valeur entre oui (<strong>✔</strong>), peut-être (<strong>~</strong>) ou non (<strong>✖</strong>)",
-            "submit": "Cliquez sur <b>Ajouter</b> pour rendre vos choix visibles aux autres"
+            "submit": "Cliquez sur <strong>Ajouter</strong> pour rendre vos choix visibles aux autres"
         },
         "whiteboard": {
             "colors": "Double-cliquez sur les couleurs pour changer la palette",
@@ -917,9 +917,9 @@
     "readme_cat2_l1": "Le bouton {0} dans votre pad vous permet de donner l'accès à vos collaborateurs que ce soit pour l'{1} ou pour le {2}.",
     "readme_cat2_l2": "Vous pouvez changer le titre d'un pad en cliquant sur le crayon",
     "readme_cat3": "Découvrez les autres applications CryptPad",
-    "readme_cat3_l1": "Avec l'éditeur de code de CryptPad, vous pouvez collaborer sur du code comme Javascript ou des langages comme HTML ou Markdown.",
+    "readme_cat3_l1": "Avec l'éditeur de code de CryptPad, vous pouvez collaborer sur du code comme JavaScript ou des langages comme HTML ou Markdown",
     "readme_cat3_l2": "Avec l'éditeur de présentations de CryptPad, vous pouvez réaliser des présentations rapides en utilisant Markdown",
-    "readme_cat3_l3": "Avec CryptPoll vous pouvez créer rapidement des sondages, et en particulier plannifier des meetings qui rentrent dans l'agenda de tout ceux qui souhaitent participer.",
+    "readme_cat3_l3": "Avec CryptPoll vous pouvez créer rapidement des sondages, et en particulier plannifier des meetings qui rentrent dans l'agenda de tout ceux qui souhaitent participer",
     "tips": {
         "shortcuts": "`ctrl+b`, `ctrl+i` et `ctrl+u` sont des raccourcis rapides pour mettre en gras, en italique ou souligner.",
         "indent": "Dans les listes à puces ou numérotées, vous pouvez utiliser `Tab` ou `Maj+Tab` pour augmenter ou réduire rapidement l'indentation.",
@@ -930,11 +930,11 @@
         "drive": "Les utilisateurs enregistrés peuvent organiser leurs fichiers dans leur CryptDrive, accessible depuis l'icône CryptPad dans le coin supérieur gauche des pads.",
         "profile": "Les utilisateurs enregistrés peuvent créer un profil depuis le menu utilisateur, dans le coin supérieur droit.",
         "avatars": "Vous pouvez uploader un avatar dans votre profil. Les autres personnes le verront dans la liste d'utilisateurs des pads.",
-        "tags": "Ajoutez des mots-clés aux pads et effectuer une recherche commençant par # dans votre CryptDrive pour les retrouver."
+        "tags": "Ajoutez des mots-clés aux pads et effectuer une recherche commençant par # dans votre CryptDrive pour les retrouver"
     },
-    "feedback_about": "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous réalisez certaines actions.",
+    "feedback_about": "Si vous lisez ceci, vous vous demandez probablement pourquoi CryptPad envoie des requêtes vers des pages web quand vous réalisez certaines actions",
     "feedback_privacy": "Nous prenons au sérieux le respect de votre vie privée, et en même temps nous souhaitons rendre CryptPad très simple à utiliser. Nous utilisons cette page pour comprendre quelles fonctionnalités dans l'interface comptent le plus pour les utilisateurs, en l'appelant avec un paramètre spécifiant quelle action a été réalisée.",
-    "feedback_optout": "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience.",
+    "feedback_optout": "Si vous le souhaitez, vous pouvez désactiver ces requêtes en vous rendant dans <a href='/settings/'>votre page de préférences</a>, où vous trouverez une case à cocher pour désactiver le retour d'expérience",
     "creation_404": "Ce pad n'existe plus. Vous pouvez créer un nouveau pad en utilisant le formulaire suivant.",
     "creation_ownedTitle": "Type de pad",
     "creation_owned": "Être propriétaire de ce pad",
@@ -957,7 +957,7 @@
     "creation_create": "Créer",
     "creation_saveSettings": "Ne plus me demander",
     "creation_settings": "Voir davantage de préférences",
-    "creation_rememberHelp": "Ouvrez votre page de Préférences pour voir ce formulaire à nouveau.",
+    "creation_rememberHelp": "Ouvrez votre page de Préférences pour voir ce formulaire à nouveau",
     "creation_owners": "Propriétaires",
     "creation_ownedByOther": "Appartient à un autre utilisateur",
     "creation_noOwner": "Pas de propriétaire",
