@@ -9,6 +9,35 @@
         blockquote { margin: 0; }
     }
     // todo ul, ol
+    // TOC
+    div.cp-md-toc {
+        background: #f3f3f3;
+        padding: 20px;
+        float: right;
+        margin: 5px;
+        margin-right: 0;
+        & > p {
+            &.cp-md-toc-1 {
+                margin-left: 0;
+            }
+            &.cp-md-toc-2 {
+                margin-left: 25px;
+            }
+            &.cp-md-toc-3 {
+                margin-left: 50px;
+            }
+            &.cp-md-toc-4 {
+                margin-left: 75px;
+            }
+            &.cp-md-toc-5 {
+                margin-left: 100px;
+            }
+            &.cp-md-toc-6 {
+                margin-left: 125px;
+            }
+            margin: 0;
+        }
+    }
 }
 
 .markdown_preformatted-code (@color: #333) {

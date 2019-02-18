@@ -3,12 +3,14 @@ define([
     '/bower_components/marked/marked.min.js',
     '/common/common-hash.js',
     '/common/common-util.js',
+    '/common/hyperscript.js',
     '/common/media-tag.js',
     '/common/highlight/highlight.pack.js',
+    '/customize/messages.js',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, Marked, Hash, Util, MediaTag, Highlight) {
+],function ($, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -33,15 +35,55 @@ define([
         highlight: highlighter(),
     });
 
-
+    var toc = [];
+    var getTOC = function () {
+        var content = [h('h2', Messages.markdown_toc)];
+        toc.forEach(function (obj) {
+            // Only include level 2 headings
+            var level = obj.level - 1;
+            if (level < 1) { return; }
+            var a = h('a.cp-md-toc-link', {
+                href: '#',
+                'data-href': obj.id,
+            }, obj.title);
+            content.push(h('p.cp-md-toc-'+level, a));
+        });
+        return h('div.cp-md-toc', content).outerHTML;
+    };
 
     DiffMd.render = function (md, sanitize) {
-        return Marked(md, {
+        var r = Marked(md, {
             sanitize: sanitize
         });
+
+        // Add Table of Content
+        r = r.replace(/<div class="cp-md-toc"><\/div>/g, getTOC());
+        toc = [];
+
+        return r;
     };
 
     var mediaMap = {};
+
+    renderer.heading = function (text, level) {
+        var i = 0;
+        var safeText = text.toLowerCase().replace(/[^\w]+/g, '-');
+        var getId = function () {
+            return 'cp-md-' + i + '-' + safeText;
+        };
+        var id = getId();
+        var isAlreadyUsed = function (obj) { return obj.id === id; };
+        while (toc.some(isAlreadyUsed)) {
+            i++;
+            id = getId();
+        }
+        toc.push({
+            level: level,
+            id: id,
+            title: text
+        });
+        return "<h" + level + " id=\"" + id + "\"><a href=\"#" + id + "\" class=\"anchor\"></a>" + text + "</h" + level + ">";
+    };
 
     // Tasks list
     var checkedTaskItemPtn = /^\s*(<p>)?\[[xX]\](<\/p>)?\s*/;
@@ -97,6 +139,9 @@ define([
     };
 
     renderer.paragraph = function (p) {
+        if (p === '[TOC]') {
+            return '<p><div class="cp-md-toc"></div></p>';
+        }
         return /<media\-tag[\s\S]*>/i.test(p)? p + '\n': '<p>' + p + '</p>\n';
     };
 
@@ -248,6 +293,15 @@ define([
                     childList: true,
                     characterData: false
                 });
+            });
+            // Fix Table of contents links
+            $content.find('a.cp-md-toc-link').off('click').click(function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var $a = $(this);
+                if (!$a.attr('data-href')) { return; }
+                var target = document.getElementById($a.attr('data-href'));
+                if (target) { target.scrollIntoView(); }
             });
         }
     };
