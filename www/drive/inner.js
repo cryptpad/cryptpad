@@ -589,6 +589,7 @@ define([
         // Arrow keys to modify the selection
         $(window).keydown(function (e) {
             var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
+            if (document.activeElement && document.activeElement.nodeName === 'INPUT') { return; }
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
 
             var $elements = $content.find('.cp-app-drive-element:not(.cp-app-drive-element-header)');
