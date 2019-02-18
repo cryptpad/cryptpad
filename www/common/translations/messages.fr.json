@@ -1023,5 +1023,6 @@
     "crowdfunding_popup_text": "<h3>Aider CryptPad</h3>Pour vous assurer que CryptPad soit activement développé, nous vous invitons à supporter le projet via la <a href=\"https://opencollective.com/cryptpad\">page OpenCollective</a>, où vous pouvez trouver notre <b>Roadmap</b> et nos <b>objectifs de financement</b>.",
     "crowdfunding_popup_yes": "Voir la page",
     "crowdfunding_popup_no": "Pas maintenant",
-    "crowdfunding_popup_never": "Ne plus demander"
+    "crowdfunding_popup_never": "Ne plus demander",
+    "markdown_toc": "Sommaire"
 }
