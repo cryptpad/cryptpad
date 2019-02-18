@@ -8,7 +8,9 @@
         "poll": "Encuesta",
         "slide": "Presentación",
         "whiteboard": "Pizarra",
-        "contacts": "Contactos"
+        "contacts": "Contactos",
+        "kanban": "Kanban",
+        "drive": "CryptDrive"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronización",
