@@ -1,5 +1,4 @@
 {
-    "_languageName": "German",
     "main_title": "CryptPad: Zusammenarbeit in Echtzeit ohne Preisgabe von Informationen",
     "type": {
         "pad": "Rich Text",
@@ -21,7 +20,6 @@
     "button_newslide": "Neue Präsentation",
     "button_newwhiteboard": "Neues Whiteboard",
     "button_newkanban": "Neues Kanban",
-    "updated_0_common_connectionLost": "<b>Die Verbindung zum Server ist abgebrochen</b><br>Du verwendest jetzt das Dokument schreibgeschützt, bis die Verbindung wieder funktioniert.",
     "common_connectionLost": "<b>Die Verbindung zum Server ist abgebrochen</b><br>Du verwendest jetzt das Dokument schreibgeschützt, bis die Verbindung wieder funktioniert.",
     "websocketError": "Verbindung zum Websocket fehlgeschlagen...",
     "typeError": "Dieses Dokument ist nicht mit der ausgewählten Anwendung kompatibel",
@@ -82,7 +80,6 @@
     "orangeLight": "Deine langsame Verbindung kann die Nutzung beeinträchtigen.",
     "redLight": "Du wurdest von dieser Sitzung getrennt.",
     "pinLimitReached": "Du hast deine Speicherplatzbegrenzung erreicht",
-    "updated_0_pinLimitReachedAlert": "Du hast deine Speicherplatzbegrenzung erreicht. Neue Pads werden nicht mehr in deinem CryptDrive gespeichert.<br>Du kannst entweder ein Pad von deinem CryptDrive entfernen oder <a href=\"https://accounts.cryptpad.fr/#!on={0}\" target=\"_blank\">ein Premiumangebot anfordern</a>, damit deine Begrenzung erhöht wird.",
     "pinLimitReachedAlert": "Du hast deine Speicherplatzbegrenzung erreicht. Neue Pads werden nicht mehr in deinem CryptDrive gespeichert.<br>Du kannst entweder ein Pad von deinem CryptDrive entfernen oder <a href=\"https://accounts.cryptpad.fr/#!on={0}\" target=\"_blank\">ein Premiumangebot anfordern</a>, damit deine Begrenzung erhöht wird.",
     "pinLimitReachedAlertNoAccounts": "Du hast deine Speicherplatzbegrenzung erreicht",
     "pinLimitNotPinned": "Du hast deine Speicherplatzbegrenzung erreicht.<br>Dieses Pad ist nicht in deinem CryptDrive gespeichert.",
@@ -353,7 +350,6 @@
     "fm_info_unsorted": "Hier sind alle besuchte Dateien enthalten, die noch nicht in \"Dokumente\" einsortiert oder in den Papierkorb verschoben wurden.",
     "fm_info_template": "Hier sind alle Dokumente enthalten, die als Vorlage gespeichert wurden und die du wiederverwenden kannst, um ein neues Pad zu erstellen.",
     "fm_info_recent": "Hier werden die zuletzt geöffneten Dokumente aufgelistet.",
-    "updated_0_fm_info_trash": "Leere den Papierkorb, um mehr freien Platz in deinem CryptDrive zu erhalten.",
     "fm_info_trash": "Leere den Papierkorb, um mehr freien Platz in deinem CryptDrive zu erhalten.",
     "fm_info_allFiles": "Beinhaltet alle Dateien von \"Dokumente\", \"Unsortierte Dateien\" und \"Papierkorb\". Dateien können hier nicht verschoben oder entfernt werden.",
     "fm_info_anonymous": "Du bist nicht eingeloggt, daher laufen die Pads nach 3 Monaten aus (<a href=\"https://blog.cryptpad.fr/2017/05/17/You-gotta-log-in/\" target=\"_blank\">mehr dazu lesen</a>). Der Zugang zu den Pads ist in deinem Browser gespeichert, daher wird das Löschen des Browserverlaufs sie möglicherweise verschwinden lassen.<br><a href=\"/register/\">Registriere dich</a> oder <a href=\"/login/\">logge dich ein</a>, um sie dauerhaft zugänglich zu machen.<br>",
