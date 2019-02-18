@@ -1,7 +1,5 @@
 {
-    "_languageName": "Polish",
     "main_title": "Cryptpad: Wspólne edytowanie w czasie rzeczywistym, bez wiedzy specjalistycznej",
-    "main_slogan": "Jedność siłą - Współpraca kluczem",
     "type": {
         "pad": "Pad",
         "code": "Kod",
@@ -48,7 +46,6 @@
     "notifyJoined": "{0} dołączył do sesji współpracy",
     "notifyRenamed": "{0} jest teraz znany jako {1}",
     "notifyLeft": "{0} opuścił sesję współpracy",
-    "tryIt": "Wypróbuj!",
     "okButton": "OK (enter)",
     "cancelButton": "Anuluj (esc)",
     "poll_title": "Prosty koordynator spotkań",
@@ -71,10 +68,6 @@
     "poll_removeUser": "Jesteś pewien, że chcesz usunąć tego użytkownika?",
     "poll_titleHint": "Tytuł",
     "poll_descriptionHint": "Opis",
-    "main_p2": "Ten projekt wykorzystuje wizualny edytor <a href=\"http://ckeditor.com/\">CKEditor</a> , <a href=\"https://codemirror.net/\">CodeMirror</a>, oraz silnik czasu rzeczywistego <a href=\"https://github.com/xwiki-contrib/chainpad\">ChainPad</a>.",
-    "main_howitworks": "Jak to działa",
-    "main_howitworks_p1": "CryptPad wykorzystuje wariant algorytmu <a href=\"https://en.wikipedia.org/wiki/Operational_transformation\">Transformacji operacyjnej</a> który jest wstanie odnaleźć rozdzielony konsensus wprowadzanych danych. Używa do tego <a href=\"https://bitcoin.org/bitcoin.pdf\">Łańcuch blokowy Nakamoto</a>, twór zpopularyzowany przez <a href=\"https://en.wikipedia.org/wiki/Bitcoin\">Bitcoin</a>. W ten sposób algorytm może pominąć potrzebę centralnego serwera do rozwiązywania Konfliktów Operacji Przekształcania poprzez Edycję. Bez potrzeby rozwiązywania konfliktów, serwer może pozostać w niewiedzy o zawartości która jest edytowana w dokumencie.",
-    "main_about_p2": "Jeżeli masz jakieś pytania lub komentarze, możesz napisać na <a href=\"https://twitter.com/cryptpad\">tweeterze</a>, otworzyć problem na <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" title=\"our issue tracker\">githubie</a>, przywitać się na ircu (<a href=\"http://webchat.freenode.net?channels=%23cryptpad&uio=MT1mYWxzZSY5PXRydWUmMTE9Mjg3JjE1PXRydWUe7\" title=\"freenode webchat\">irc.freenode.net</a>), lub wysłać nam <a href=\"mailto:research@xwiki.com\">email</a>.",
     "button_newpad": "STWÓRZ PAD WYSIWYG",
     "button_newcode": "STWÓRZ PAD DO KODU",
     "button_newpoll": "STWÓRZ GŁOSOWANIE",
@@ -102,9 +95,5 @@
     "tos_e2ee": "Dokumenty Cryptpad mogą być odczytywane i modyfikowane przez każdego kto może zgadnąć lub w inny sposób uzyskać identyfikator dokumentu. Polecamy korzystania z oprogramowania szyfrującego end-to-end (e2ee) do udostępniania linków URL. Nie będziesz rościł sobie żadnych wierzytelności w wypadku gdy taki URL dostanie się w niepowołane ręce.",
     "tos_logs": "Metadane dostarczane przez twoją przeglądarkę do serwera mogą być zapisywane i przechowywane w celu utrzymywania serwisu.",
     "tos_3rdparties": "Nie dostarczamy indywidualizowanych danych do osób trzecich, poza sytuacjami dyktowanymi prawnie.",
-    "bottom_france": "<a href=\"http://www.xwiki.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Stworzone z <img class=\"bottom-bar-heart\" src=\"/customize/heart.png\" /> we <img class=\"bottom-bar-fr\" src=\"/customize/fr.png\" /></a>",
-    "bottom_support": "<a href=\"http://labs.xwiki.com/\" title=\"XWiki Labs\" target=\"_blank\" rel=\"noopener noreferrer\">Projekt <img src=\"/customize/logo-xwiki2.png\" alt=\"XWiki SAS\" class=\"bottom-bar-xwiki\"/> Labs </a> we wspolpracy z <a href=\"http://ng.open-paas.org/\" title=\"OpenPaaS::ng\" target=\"_blank\" rel=\"noopener noreferrer\"> <img src=\"/customize/openpaasng.png\" alt=\"OpenPaaS-ng\" class=\"bottom-bar-openpaas\" /></a>",
-    "header_france": "<a href=\"http://www.xwiki.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Pełne <img class=\"bottom-bar-heart\" src=\"/customize/heart.png\" /> z <img class=\"bottom-bar-fr\" src=\"/customize/fr.png\" title=\"France\" alt=\"France\"/> od <img src=\"/customize/logo-xwiki.png\" alt=\"XWiki SAS\" class=\"bottom-bar-xwiki\"/></a>",
-    "header_support": "<a href=\"http://ng.open-paas.org/\" title=\"OpenPaaS::ng\" target=\"_blank\" rel=\"noopener noreferrer\"> <img src=\"/customize/openpaasng.png\" alt=\"OpenPaaS-ng\" class=\"bottom-bar-openpaas\" /></a>",
     "header_logoTitle": "Przejdź na stronę główną"
 }
