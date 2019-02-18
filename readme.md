@@ -4,6 +4,10 @@
 
 CryptPad is the **Zero Knowledge** realtime collaborative editor.
 
+[![Backers on Open Collective](https://opencollective.com/cryptpad/backers/badge.svg)](#backers)
+
+[![Sponsors on Open Collective](https://opencollective.com/cryptpad/sponsors/badge.svg)](#sponsors) 
+
 Encryption carried out in your web browser protects the data from the server, the cloud
 and the NSA. It relies on the [ChainPad] realtime engine.
 
@@ -71,6 +75,28 @@ please read and
 [sign the Commons Management Agreement](https://www.clahub.com/agreements/cjdelisle/cryptpad).
 
 If you have any questions or comments, or if you're interested in contributing to Cryptpad, come say hi on IRC, `#cryptpad` on Freenode.
+
+## Credits
+
+### Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+
+<a href="graphs/contributors"><img src="https://opencollective.com/cryptpad/contributors.svg?width=890&button=false" /></a>
+
+### Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/XX#backer)]
+
+<a href="https://opencollective.com/cryptpad#backers" target="_blank"><img src="https://opencollective.com/cryptpad/backers.svg?width=890"></a>
+
+### Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/cryptpad#sponsor)]
+
+<a href="https://opencollective.com/cryptpad/sponsor/0/website" target="_blank"><img src="https://opencollective.com/cryptpad/sponsor/0/avatar.svg"></a>
+
+
 
 # License
 
