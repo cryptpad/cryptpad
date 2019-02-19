@@ -72,12 +72,12 @@ define([
                     'digraph {'
                 ];
                 var parseBlock = function (x) {
-                    let c = x.getChildren();
-                    let label = x.hashOf.slice(0,8) + ' (' + x.parentCount + ' - ' + x.recvOrder + ')';
+                    var c = x.getChildren();
+                    var label = x.hashOf.slice(0,8) + ' (' + x.parentCount + ' - ' + x.recvOrder + ')';
                     var p = x.getParent();
                     if (p && p.getChildren().length === 1 && c.length === 1) {
                         label = '...';
-                        let gc = c;
+                        var gc = c;
                         while (gc.length === 1) {
                             c = gc;
                             gc = c[0].getChildren();
@@ -101,7 +101,7 @@ define([
                 if (err) { return void cb(err); }
                 data.forEach(function (m) {
                     chainpad.message(m);
-                    cb(null, makeGraph())
+                    cb(null, makeGraph());
                 });
             }, {timeout: 180000});
         };
@@ -182,7 +182,8 @@ define([
                 var content = h('div', [p, code]);
                 getGraph(function (err, data) {
                     if (err) {
-                        return p.innerHTML = err;
+                        p.innerHTML = err;
+                        return;
                     }
                     p.innerHTML = Messages.debug_getGraph;
                     code.innerHTML = data;
