@@ -7,6 +7,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
+    '/common/common-hash.js',
     '/common/hyperscript.js',
     '/api/config',
     '/common/common-realtime.js',
@@ -28,6 +29,7 @@ define([
     nThen,
     SFCommon,
     UI,
+    Hash,
     h,
     ApiConfig,
     CommonRealtime,
@@ -67,9 +69,13 @@ define([
                 logLevel: 0,
                 noPrune: true
             });
+            var hashes = metadataMgr.getPrivateData().availableHashes;
+            var hash = hashes.editHash || hashes.viewHash;
+            var chan = Hash.hrefToHexChannelId('/drive/#'+hash);
+
             var makeGraph = function () {
                 var out = [
-                    'digraph {'
+                    chan + ' digraph {'
                 ];
                 var parseBlock = function (x) {
                     var c = x.getChildren();
