@@ -45,8 +45,9 @@ define([
             var a = h('a.cp-md-toc-link', {
                 href: '#',
                 'data-href': obj.id,
+                title: obj.title
             }, obj.title);
-            content.push(h('p.cp-md-toc-'+level, a));
+            content.push(h('p.cp-md-toc-'+level, ['• ',  a]));
         });
         return h('div.cp-md-toc', content).outerHTML;
     };

@@ -13,9 +13,13 @@
     div.cp-md-toc {
         background: #f3f3f3;
         padding: 20px;
-        float: right;
+        //float: right;
         margin: 5px;
         margin-right: 0;
+        max-width: 100%;
+        min-width: 200px;
+        white-space: nowrap;
+
         & > p {
             &.cp-md-toc-1 {
                 margin-left: 0;
@@ -36,6 +40,8 @@
                 margin-left: 125px;
             }
             margin: 0;
+            overflow-x: hidden;
+            text-overflow: ellipsis;
         }
     }
 }
