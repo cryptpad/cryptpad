@@ -53,6 +53,10 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
+        if (!window.location.hash) {
+            window.location.hash = localStorage[Constants.userHashKey] ||
+                                   localStorage[Constants.fileHashKey];
+        }
         SFCommonO.start();
     });
 });

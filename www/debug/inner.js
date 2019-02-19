@@ -7,10 +7,12 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/common-interface.js',
+    '/common/hyperscript.js',
     '/api/config',
     '/common/common-realtime.js',
     '/customize/messages.js',
     '/customize/application_config.js',
+    '/debug/chainpad.dist.js',
 
     '/bower_components/secure-fabric.js/dist/fabric.min.js',
 
@@ -26,10 +28,12 @@ define([
     nThen,
     SFCommon,
     UI,
+    h,
     ApiConfig,
     CommonRealtime,
     Messages,
-    AppConfig)
+    AppConfig,
+    ChainWalk)
 {
     var APP = window.APP = {
         $: $,
@@ -54,6 +58,53 @@ define([
         var cpNfInner;
         var metadataMgr;
         var readOnly = true;
+        var sframeChan = common.getSframeChannel();
+
+        var getGraph = function (cb) {
+            var chainpad = ChainWalk.create({
+                userName: 'debug',
+                initialState: '',
+                logLevel: 0,
+                noPrune: true
+            });
+            var makeGraph = function () {
+                var out = [
+                    'digraph {'
+                ];
+                var parseBlock = function (x) {
+                    let c = x.getChildren();
+                    let label = x.hashOf.slice(0,8) + ' (' + x.parentCount + ' - ' + x.recvOrder + ')';
+                    var p = x.getParent();
+                    if (p && p.getChildren().length === 1 && c.length === 1) {
+                        label = '...';
+                        let gc = c;
+                        while (gc.length === 1) {
+                            c = gc;
+                            gc = c[0].getChildren();
+                        }
+                    }
+                    var nodeInfo = ['  p' + x.hashOf + '[label="' + label + '"'];
+                    if (x.isCheckpoint && label !== '...') { nodeInfo.push(',color=red,weight=0.5'); }
+                    nodeInfo.push(']');
+                    out.push(nodeInfo.join(''));
+                    c.forEach(function (child) {
+                        out.push('  p' + x.hashOf + ' -> p' + child.hashOf);
+                        parseBlock(child);
+                    });
+                };
+                parseBlock(chainpad.getRootBlock());
+                out.push('}');
+                return out.join('\n');
+            };
+            sframeChan.query('Q_GET_FULL_HISTORY', null, function (err, data) {
+                console.log(err, data);
+                if (err) { return void cb(err); }
+                data.forEach(function (m) {
+                    chainpad.message(m);
+                    cb(null, makeGraph())
+                });
+            }, {timeout: 180000});
+        };
 
         var config = APP.config = {
             readOnly: readOnly,
@@ -114,6 +165,31 @@ define([
             var $hist = common.createButton('history', true, {histConfig: histConfig});
             $hist.addClass('cp-hidden-if-readonly');
             toolbar.$rightside.append($hist);
+
+            var $graph = common.createButton(null, true, {
+                icon: 'fa-bug',
+                title: Messages.debug_getGraph,
+                name: 'graph',
+                id: 'cp-app-debug-get-graph'
+            });
+            $graph.click(function () {
+                var p = h('p', [
+                    Messages.debug_getGraphWait,
+                    h('br'),
+                    h('span.fa-circle-o-notch.fa-spin.fa-3x.fa-fw.fa')
+                ]);
+                var code = h('code');
+                var content = h('div', [p, code]);
+                getGraph(function (err, data) {
+                    if (err) {
+                        return p.innerHTML = err;
+                    }
+                    p.innerHTML = Messages.debug_getGraph;
+                    code.innerHTML = data;
+                });
+                UI.alert(content);
+            });
+            toolbar.$rightside.append($graph);
         };
 
         config.onReady = function (info) {

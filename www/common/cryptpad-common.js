@@ -958,7 +958,7 @@ define([
     common.autoStore.onStoreRequest = Util.mkEvent();
 
     common.getFullHistory = function (data, cb) {
-        postMessage("GET_FULL_HISTORY", data, cb);
+        postMessage("GET_FULL_HISTORY", data, cb, {timeout: 180000});
     };
     common.getHistoryRange = function (data, cb) {
         postMessage("GET_HISTORY_RANGE", data, cb);
