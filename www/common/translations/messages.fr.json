@@ -1024,5 +1024,8 @@
     "crowdfunding_popup_yes": "Voir la page",
     "crowdfunding_popup_no": "Pas maintenant",
     "crowdfunding_popup_never": "Ne plus demander",
-    "markdown_toc": "Sommaire"
+    "markdown_toc": "Sommaire",
+    "debug_getGraph": "Obtenir le code permettant de générer un graphe de ce document",
+    "debug_getGraphWait": "Génération du graphe... Veuillez patienter.",
+    "debug_getGraphText": "Voici le code DOT permettant de générer un graphe de l’historique de ce document :"
 }
