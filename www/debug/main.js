@@ -54,8 +54,13 @@ define([
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
         if (!window.location.hash) {
-            window.location.hash = localStorage[Constants.userHashKey] ||
-                                   localStorage[Constants.fileHashKey];
+            var hash = localStorage[Constants.userHashKey];
+            if (!hash) {
+                sessionStorage.redirectTo = '/debug/';
+                window.location.href = '/login/';
+                return;
+            }
+            window.location.hash = hash;
         }
         SFCommonO.start();
     });
