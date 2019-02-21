@@ -61,7 +61,7 @@ define(function () {
     out.mustLogin = "You must be logged in to access this page";
     out.disabledApp = "This application has been disabled. Contact the administrator of this CryptPad for more information.";
 
-    out.realtime_unrecoverableError = "An unrecoverable error has occured. Click OK to reload.";
+    out.realtime_unrecoverableError = "An unrecoverable error has occurred. Click OK to reload.";
 
     out.disconnected = 'Disconnected';
     out.synchronizing = 'Synchronizing';
@@ -442,7 +442,7 @@ define(function () {
     out.fm_restoreDialog = "Are you sure you want to restore {0} to its previous location?";
     out.fm_unknownFolderError = "The selected or last visited directory no longer exist. Opening the parent folder...";
     out.fm_contextMenuError = "Unable to open the context menu for that element. If the problem persist, try to reload the page.";
-    out.fm_selectError = "Unable to select the targetted element. If the problem persist, try to reload the page.";
+    out.fm_selectError = "Unable to select the targeted element. If the problem persists, try to reload the page.";
     out.fm_categoryError = "Unable to open the selected category, displaying root.";
     out.fm_info_root = "Create as many nested folders here as you want to sort your files.";
     out.fm_info_unsorted = 'Contains all the files you\'ve visited that are not yet sorted in "Documents" or moved to the "Trash".'; // "My Documents" should match with the "out.fm_rootName" key, and "Trash" with "out.fm_trashName"
@@ -590,7 +590,7 @@ define(function () {
     out.settings_exportErrorDescription = "We weren't able to add the following documents into the export:";
     out.settings_exportErrorEmpty = "This document can't be exported (empty or invalid content).";
     out.settings_exportErrorMissing = "This document is missing from our servers (expired or deleted by its owner)";
-    out.settings_exportErrorOther = "An error occured while trying to export this document: {0}";
+    out.settings_exportErrorOther = "An error occurred while trying to export this document: {0}";
 
     out.settings_resetNewTitle = "Clean CryptDrive";
     out.settings_resetButton = "Remove";
@@ -621,7 +621,7 @@ define(function () {
     out.settings_autostoreTitle = "Pad storage in CryptDrive";
     out.settings_autostoreHint = "<b>Automatic</b> All the pads you visit are stored in your CryptDrive.<br>" +
                                  "<b>Manual (always ask)</b> If you have not stored a pad yet, you will be asked if you want to store them in your CryptDrive.<br>" +
-                                 "<b>Manual (never ask)</b> Pads are not stored automatically in your Cryptpad. The option to store them will be hidden.";
+                                 "<b>Manual (never ask)</b> Pads are not stored automatically in your CryptDrive. The option to store them will be hidden.";
     out.settings_autostoreYes = "Automatic";
     out.settings_autostoreNo = "Manual (never ask)";
     out.settings_autostoreMaybe = "Manual (always ask)";
@@ -1041,7 +1041,7 @@ define(function () {
         },
         change: {
             q: "What if I want to change my password?",
-            a: "It is not currently possible to change your CryptPad password, though we are planning to develop this functionality very soon."
+            a: "You can change your CryptPad password in your account settings page."
         },
         devices: {
             q: "I am logged in on two devices, and see two different CryptDrives, how is this possible?",
@@ -1052,7 +1052,7 @@ define(function () {
         },
         folder: {
             q: "Can I share entire folders from my CryptDrive?",
-            a: "We're working on adding support for <em>\"workgroups\"</em>, which would allow collaborators to share a folder structure, and all the pads contained within that structure."
+            a: "Yes, you can share folders and all the pads in them."
         },
         feature: {
             q: "Can you add a very special feature which I need?",
@@ -1212,7 +1212,7 @@ define(function () {
     // Readme
 
     out.driveReadmeTitle = "What is CryptPad?";
-    out.readme_welcome = "Welcome to CryptPad !";
+    out.readme_welcome = "Welcome to CryptPad!";
     out.readme_p1 = "Welcome to CryptPad, this is where you can take note of things alone and with friends.";
     out.readme_p2 = "This pad will give you a quick walk through of how you can use CryptPad to take notes, keep them organized and work together on them.";
     out.readme_cat1 = "Get to know your CryptDrive";
@@ -1228,7 +1228,7 @@ define(function () {
     out.readme_cat2_l1 = "The {0} button in your pad allows you to give access to collaborators to either {1} or to {2} the pad."; // 0: Share, 1: edit, 2: view
     out.readme_cat2_l2 = "Change the title of the pad by clicking on the pencil";
     out.readme_cat3 = "Discover CryptPad apps";
-    out.readme_cat3_l1 = "With CryptPad code editor, you can collaborate on code like Javascript and markdown like HTML and Markdown";
+    out.readme_cat3_l1 = "With CryptPad code editor, you can collaborate on code like JavaScript, HTML and Markdown";
     out.readme_cat3_l2 = "With CryptPad slide editor, you can make quick presentations using Markdown";
     out.readme_cat3_l3 = "With CryptPoll you can take quick votes, especially for scheduling meetings which fit with everybody's calendar";
 
@@ -1298,7 +1298,7 @@ define(function () {
     out.properties_confirmNew = "Are you sure? Adding a password will change this pad's URL and remove its history. Users without the password will lose access to this pad";
     out.properties_confirmChange = "Are you sure? Changing the password will remove its history. Users without the new password will lose access to this pad";
     out.properties_passwordSame = "New passwords must differ from the current one.";
-    out.properties_passwordError = "An error occured while trying to change the password. Please try again.";
+    out.properties_passwordError = "An error occurred while trying to change the password. Please try again.";
     out.properties_passwordWarning = "The password was successfully changed but we were unable to update your CryptDrive with the new data. You may have to remove the old version of the pad manually.<br>Press OK to reload and update your access rights.";
     out.properties_passwordSuccess = "The password was successfully changed.<br>Press OK to reload and update your access rights.";
     out.properties_changePasswordButton = "Submit";

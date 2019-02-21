@@ -347,7 +347,7 @@
   "fm_restoreDialog": "Are you sure you want to restore {0} to its previous location?",
   "fm_unknownFolderError": "The selected or last visited directory no longer exist. Opening the parent folder...",
   "fm_contextMenuError": "Unable to open the context menu for that element. If the problem persist, try to reload the page.",
-  "fm_selectError": "Unable to select the targetted element. If the problem persist, try to reload the page.",
+  "fm_selectError": "Unable to select the targeted element. If the problem persists, try to reload the page.",
   "fm_categoryError": "Unable to open the selected category, displaying root.",
   "fm_info_root": "Create as many nested folders here as you want to sort your files.",
   "fm_info_unsorted": "Contains all the files you've visited that are not yet sorted in \"Documents\" or moved to the \"Trash\".",
@@ -804,7 +804,7 @@
       },
       "change": {
         "q": "What if I want to change my password?",
-        "a": "It is not currently possible to change your CryptPad password, though we are planning to develop this functionality very soon."
+        "a": "You can change your CryptPad password in your account settings page."
       },
       "devices": {
         "q": "I am logged in on two devices, and see two different CryptDrives, how is this possible?",
@@ -900,9 +900,6 @@
       "color": "Change the colors by clicking on the colored part next to the board titles"
     }
   },
-  "initialState": "<p>This is&nbsp;<strong>CryptPad</strong>, the Zero Knowledge realtime collaborative editor. Everything is saved as you type.<br>Share the link to this pad to edit with friends or use the <span class=\"fa fa-share-alt\"></span> button to share a <em>read-only link</em>&nbsp;which allows viewing but not editing.</p>",
-  "codeInitialState": "# CryptPad's Zero Knowledge collaborative code editor\n\n* What you type here is encrypted so only people who have the link can access it.\n* You can choose the programming language to highlight and the UI color scheme in the upper right.",
-  "slideInitialState": "# CryptSlide\n1. Write your slides content using markdown syntax\n  - Learn more about markdown syntax [here](http://www.markdowntutorial.com/)\n2. Separate your slides with ---\n3. Click on the \"Play\" button to see the result  - Your slides are updated in realtime",
   "driveReadmeTitle": "What is CryptPad?",
   "readme_welcome": "Welcome to CryptPad !",
   "readme_p1": "Welcome to CryptPad, this is where you can take note of things alone and with friends.",

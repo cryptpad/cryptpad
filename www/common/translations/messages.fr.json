@@ -900,9 +900,6 @@
       "color": "Modifiez les couleurs en cliquant sur les parties colorées à côté du titre de chaque tableau"
     }
   },
-  "initialState": "<p>Voici <strong>CryptPad</strong>, l'éditeur collaboratif en temps-réel Zero Knowledge. Tout est sauvegardé dés que vous le tapez.<br>Partagez le lien vers ce pad avec des amis ou utilisez le bouton <span class=\"fa fa-share-alt\"></span> pour obtenir le <em>lien de lecture-seule</em>, qui permet la lecture mais non la modification.</p>",
-  "codeInitialState": "# Éditeur de code collaboratif et Zero Knowledge de CryptPad\n\n* Ce que vous tapez ici est chiffré de manière que seules les personnes avec le lien peuvent y accéder.\n* Vous pouvez choisir le langage de programmation pour la coloration syntaxique, ainsi que le thème de couleurs, dans le coin supérieur droit.",
-  "slideInitialState": "# CryptSlide\n1. Écrivez le contenu de votre présentation avec la syntaxe Markdown\n  - Apprenez à utiliser Markdown en cliquant [ici](http://www.markdowntutorial.com/)\n2. Séparez vos slides avec ---\n3. Cliquez sur la bouton \"lecture\" pour afficher le résultat en mode présentation  - La présentation est mise à jour en temps-réel",
   "driveReadmeTitle": "Qu'est-ce que CryptPad ?",
   "readme_welcome": "Bienvenue dans CryptPad !",
   "readme_p1": "Bienvenue dans CryptPad, le lieu où vous pouvez prendre des notes seul ou avec des amis.",
