@@ -517,7 +517,7 @@ Version 1
             // pads and files should have a base64 (or hex) key
             if (parsed.hashData.type === 'pad' || parsed.hashData.type === 'file') {
                 if (!parsed.hashData.key) { return; }
-                if (!/^[a-zA-Z0-9+-/]+$/.test(parsed.hashData.key)) { return; }
+                if (!/^[a-zA-Z0-9+-/=]+$/.test(parsed.hashData.key)) { return; }
             }
         }
         return true;
