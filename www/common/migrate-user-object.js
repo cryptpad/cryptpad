@@ -176,6 +176,16 @@ define([
             if (version < 7) {
                 addRoHref();
             }
+        }).nThen(function () {
+            // Migration 8: remove duplicate entries in proxy.FS_hashes (list of migrated anon drives)
+            var fixDuplicate = function () {
+                userObject.FS_hashes = Util.deduplicateString(userObject.FS_hashes);
+            };
+            if (version < 8) {
+                fixDuplicate();
+                Feedback.send('Migrate-8', true);
+                userObject.version = version = 8;
+            }
         /*}).nThen(function (waitFor) {
             // Test progress bar in the loading screen
             var i = 0;

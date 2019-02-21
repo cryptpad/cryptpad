@@ -65,7 +65,9 @@ define([
                     if (!proxy.FS_hashes || !Array.isArray(proxy.FS_hashes)) {
                         proxy.FS_hashes = [];
                     }
-                    proxy.FS_hashes.push(fsHash);
+                    if (proxy.FS_hashes.indexOf(fsHash) === -1) {
+                        proxy.FS_hashes.push(fsHash);
+                    }
                     if (typeof(cb) === "function") {
                         Realtime.whenRealtimeSyncs(proxyData.realtime, cb);
                     }
