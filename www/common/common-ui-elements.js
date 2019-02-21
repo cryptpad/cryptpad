@@ -997,6 +997,10 @@ define([
                     return '`' + str + '`';
                 },
                 icon: 'fa-code'
+            },
+            'toc': {
+                expr: '[TOC]',
+                icon: 'fa-newspaper-o'
             }
         };
         var onClick = function () {
