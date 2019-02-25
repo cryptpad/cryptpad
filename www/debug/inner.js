@@ -8,6 +8,7 @@ define([
     '/common/sframe-common.js',
     '/common/common-interface.js',
     '/common/common-hash.js',
+    '/common/common-constants.js',
     '/common/hyperscript.js',
     '/api/config',
     '/common/common-realtime.js',
@@ -30,6 +31,7 @@ define([
     SFCommon,
     UI,
     Hash,
+    Constants,
     h,
     ApiConfig,
     CommonRealtime,
@@ -62,13 +64,149 @@ define([
         var readOnly = true;
         var sframeChan = common.getSframeChannel();
 
-        var getGraph = function (cb) {
-            var chainpad = ChainWalk.create({
-                userName: 'debug',
-                initialState: '',
-                logLevel: 0,
-                noPrune: true
+        var getHrefsTable = function (chainpad, length, cb, progress) {
+            var priv = metadataMgr.getPrivateData();
+            var edPublic = priv.edPublic;
+
+            var pads = {};
+            var isOwned = function (data) {
+                data = data || {};
+                return data && data.owners && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1;
+            };
+            var parseBlock = function (block) {
+                var c = block.getContent().doc;
+                if (!c) { return void console.error(block); }
+                var p;
+                try {
+                    p = JSON.parse(c).drive || {};
+                } catch (e) {
+                    console.error(e);
+                    p = {};
+                }
+
+                // Get pads from the old storage key
+                var old = p[Constants.oldStorageKey];
+                var ids = p[Constants.storageKey];
+                var pad, parsed, chan, href;
+                if (old && Array.isArray(old)) {
+                    for (var i = 0; i<old.length; i++) {
+                        try {
+                            pad = old[i];
+                            href = pad.href || pad.roHref;
+                            if (href) {
+                                parsed = Hash.parsePadUrl(href);
+                                chan = (Hash.getSecrets(parsed.type, parsed.hash) || {}).channel;
+                                if (chan && (!pads[chan] || pads[chan].atime < pad.atime)) {
+                                    pads[chan] = {
+                                        atime: +new Date(pad.atime),
+                                        href: href,
+                                        title: pad.title,
+                                        owned: isOwned(pad),
+                                        expired: pad.expire && pad.expire < (+new Date())
+                                    };
+                                }
+                            }
+                        } catch (e) {}
+                    }
+                }
+                // Get pads from the new storage key
+                if (ids) {
+                    for (var id in ids) {
+                        try {
+                            pad = ids[id];
+                            chan = pad.channel;
+                            href = pad.href || pad.roHref;
+                            if (!chan) {
+                                if (href) {
+                                    parsed = Hash.parsePadUrl(href);
+                                    chan = (Hash.getSecrets(parsed.type, parsed.hash, pad.password) || {}).channel;
+                                }
+                            }
+                            if (chan && (!pads[chan] || pads[chan].atime < pad.atime)) {
+                                pads[chan] = {
+                                    atime: +new Date(pad.atime),
+                                    href: href,
+                                    title: pad.title,
+                                    owned: isOwned(pad),
+                                    expired: pad.expire && pad.expire < (+new Date())
+                                };
+                            }
+                        } catch (e) {}
+                    }
+                }
+            };
+
+            var nt = nThen;
+
+            // Safely get all the pads from all the states
+            var i = 0;
+            var next = function (block) {
+                nt = nt(function (waitFor) {
+                    i++;
+                    parseBlock(block);
+                    progress(Math.min(i/length, 1));
+                    setTimeout(waitFor(), 1);
+                }).nThen;
+                var c = block.getChildren();
+                c.forEach(next);
+            };
+
+            var root = chainpad.getRootBlock();
+            next(root);
+
+            // Make the table
+            var allChannels;
+            var deleted;
+            nt(function (waitFor) {
+                allChannels = Object.keys(pads);
+                sframeChan.query('Q_DRIVE_GETDELETED', {list:allChannels}, waitFor(function (err, data) {
+                    deleted = data;
+                }));
+            }).nThen(function () {
+                // Current status
+                try {
+                    var parsed = JSON.parse(chainpad.getUserDoc());
+                    var channels = Object.keys(parsed.drive[Constants.storageKey] || {}).map(function (id) {
+                        return parsed.drive[Constants.storageKey][id].channel;
+                    });
+                } catch (e) {
+                    console.error(e);
+                }
+
+                // Header
+                var rows = [h('tr', [ // XXX
+                    h('th', '#'),
+                    h('th', 'Title'),
+                    h('th', 'URL'),
+                    h('th', 'Last visited'),
+                    h('th', 'Owned'),
+                    h('th', 'CryptDrive status'),
+                    h('th', 'Server status'),
+                ])];
+                // Body
+                var body = allChannels;
+                body.sort(function (a, b) {
+                    return pads[a].atime - pads[b].atime;
+                });
+                body.forEach(function (id, i) {
+                    var p = pads[id];
+                    rows.push(h('tr', [
+                        h('td', String(i+1)),
+                        h('td', p.title),
+                        h('td', p.href),
+                        h('td', new Date(p.atime).toLocaleString()),
+                        h('td', p.owned ? 'Yes' : ''),
+                        h('td', p.expired ? 'Expired' : (channels.indexOf(id) !== -1 ? 'Stored' : 'Deleted')), // XXX
+                        h('td', deleted.indexOf(id) !== -1 ? 'Missing' : 'OK'), // XXX
+                    ]));
+                });
+                // Table
+                var t = h('table', rows);
+                cb(t);
             });
+        };
+
+        var getGraph = function (chainpad, cb) {
             var hashes = metadataMgr.getPrivateData().availableHashes;
             var hash = hashes.editHash || hashes.viewHash;
             var chan = Hash.hrefToHexChannelId('/drive/#'+hash);
@@ -102,15 +240,157 @@ define([
                 out.push('}');
                 return out.join('\n');
             };
-            sframeChan.query('Q_GET_FULL_HISTORY', null, function (err, data) {
-                console.log(err, data);
-                if (err) { return void cb(err); }
-                data.forEach(function (m) {
-                    chainpad.message(m);
-                    cb(null, makeGraph());
-                });
-            }, {timeout: 180000});
+
+            cb(makeGraph());
         };
+
+        var getFullChainpad = function (history, length, cb, progress) {
+            var chainpad = ChainWalk.create({
+                userName: 'debug',
+                initialState: '',
+                logLevel: 0,
+                noPrune: true
+            });
+
+            var nt = nThen;
+            history.forEach(function (msg, i) {
+                nt = nt(function (waitFor) {
+                    chainpad.message(msg);
+                    progress(Math.min(i/length, 1));
+                    setTimeout(waitFor(), 1);
+                }).nThen;
+            });
+            nt(function () {
+                cb(chainpad);
+            })
+        };
+
+        var fullHistoryCalled = false;
+        var getFullHistory = function () {
+            var priv = metadataMgr.getPrivateData();
+            if (fullHistoryCalled) { return; }
+            fullHistoryCalled = true;
+
+            // Set spinner
+            var content = h('div#cp-app-debug-loading', [
+                h('p', 'Loading history from the server...'),
+                h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw')
+            ]);
+            $('#cp-app-debug-content').html('').append(content);
+
+            // Update progress bar
+            var decrypting = false;
+            var length = 0;
+            sframeChan.on('EV_FULL_HISTORY_STATUS', function (progress) {
+                if (!decrypting) {
+                    // Add the progress bar the first time
+                    decrypting = true;
+                    var content = h('div.cp-app-debug-progress.cp-loading-progress', [
+                        h('p', 'Decrypting your history...'),
+                        h('div.cp-loading-progress-bar', [
+                            h('div.cp-loading-progress-bar-value#cp-app-debug-progress-bar'),
+                            h('span#cp-app-debug-progress-bar-text'),
+                        ])
+                    ]);
+                    $('#cp-app-debug-content').html('').append(content);
+                }
+                length++;
+                var progress = progress*100;
+                var $bar = $('#cp-app-debug-progress-bar');
+                var $barText = $('#cp-app-debug-progress-bar-text');
+                $bar.css('width', progress+'%');
+                $barText.text((Math.round(progress * 100) / 100) + '%');
+            });
+
+            // Get full history
+            sframeChan.query('Q_GET_FULL_HISTORY', null, function (err, data) {
+                // History is ready.
+                // Display the graph code, and if the doc is a drive, display the button to list all the pads
+
+                // Graph
+                var graph = h('div.cp-app-debug-content-graph');
+
+                var seeAllButton = h('button', 'Get the list');
+                var hrefs = h('div.cp-app-debug-content-hrefs', [
+                    h('h2', 'List all the pads ever stored in your CryptDrive'), // XXX
+                ]);
+
+                var parseProgress = h('span', '0%');
+                var content = h('div#cp-app-debug-loading', [
+                    h('p', 'Parsing history...'),// XXX
+                    h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw'),
+                    h('br'),
+                    parseProgress
+                ]);
+                $('#cp-app-debug-content').html('').append(content);
+
+                getFullChainpad(data, length, function (chainpad) {
+                    var content = h('div.cp-app-debug-content', [
+                        graph,
+                        priv.debugDrive ? hrefs : ''
+                    ]);
+                    $('#cp-app-debug-content').html('').append(content);
+
+                    // Table
+                    if (priv.debugDrive) {
+                        var clicked = false;
+                        $(seeAllButton).click(function () {
+                            if (clicked) { return; }
+                            clicked = true;
+                            $(seeAllButton).remove();
+                            // XXX
+                            // Make table
+                            var progress = h('span', '0%');
+                            var loading = h('div', [
+                                'Loading data...',
+                                h('br'),
+                                progress
+                            ]);
+                            hrefs.append(loading);
+                            getHrefsTable(chainpad, length, function (table) {
+                                loading.innerHTML = '';
+                                hrefs.append(table);
+                            }, function (p) {
+                                progress.innerHTML = (Math.round(p*100*100)/100) + '%'
+                            });
+                        }).appendTo(hrefs);
+                    }
+
+                    // Graph
+                    var code = h('code');
+                    getGraph(chainpad, function (graphVal) {
+                        code.innerHTML = graphVal;
+                        $(graph).append(h('h2', 'Graph')); // XXX
+                        $(graph).append(code);
+                    });
+                }, function (p) {
+                    parseProgress.innerHTML = (Math.round(p*100*100)/100) + '%'
+                });
+            }, {timeout: 2147483647}); // Max 32-bit integer
+        };
+
+        var getContent = function () {
+            if ($('#cp-app-debug-content').is(':visible')) {
+                $('#cp-app-debug-content').hide();
+                $('#cp-app-debug-history').show();
+                $('#cp-app-debug-get-content').removeClass('cp-toolbar-button-active');
+                return;
+            }
+            $('#cp-app-debug-content').css('display', 'flex');
+            $('#cp-app-debug-history').hide();
+            $('#cp-app-debug-get-content').addClass('cp-toolbar-button-active');
+        };
+        var setInitContent = function () {
+            var button = h('button.btn.btn-primary', 'Load history');
+            $(button).click(getFullHistory);
+            var content = h('p', [
+                'To get better debugging tools, we need to load the entire history of the document. This make take some time.', // XXX
+                h('br'),
+                button
+            ]);
+            $('#cp-app-debug-content').html('').append(content);
+        };
+        setInitContent();
 
         var config = APP.config = {
             readOnly: readOnly,
@@ -135,7 +415,7 @@ define([
         };
 
         var displayDoc = function (doc) {
-            $('#cp-app-debug-content').text(JSON.stringify(doc, 0, 2));
+            $('#cp-app-debug-history').text(JSON.stringify(doc, 0, 2));
             console.log(doc);
         };
 
@@ -172,31 +452,14 @@ define([
             $hist.addClass('cp-hidden-if-readonly');
             toolbar.$rightside.append($hist);
 
-            var $graph = common.createButton(null, true, {
-                icon: 'fa-bug',
-                title: Messages.debug_getGraph,
+            var $content = common.createButton(null, true, {
+                icon: 'fa-question',
+                title: 'Get debugging graph', // XXX
                 name: 'graph',
-                id: 'cp-app-debug-get-graph'
+                id: 'cp-app-debug-get-content'
             });
-            $graph.click(function () {
-                var p = h('p', [
-                    Messages.debug_getGraphWait,
-                    h('br'),
-                    h('span.fa-circle-o-notch.fa-spin.fa-3x.fa-fw.fa')
-                ]);
-                var code = h('code');
-                var content = h('div', [p, code]);
-                getGraph(function (err, data) {
-                    if (err) {
-                        p.innerHTML = err;
-                        return;
-                    }
-                    p.innerHTML = Messages.debug_getGraph;
-                    code.innerHTML = data;
-                });
-                UI.alert(content);
-            });
-            toolbar.$rightside.append($graph);
+            $content.click(getContent);
+            toolbar.$rightside.append($content);
         };
 
         config.onReady = function (info) {
@@ -216,7 +479,10 @@ define([
                 displayDoc(hjson);
             }
 
+            metadataMgr.updateTitle('');
+
             initializing = false;
+            $('#cp-app-debug-history').show();
             UI.removeLoadingScreen();
         };
 

@@ -514,11 +514,22 @@ define([
                     channel: secret.channel,
                     validateKey: secret.keys.validateKey
                 }, function (encryptedMsgs) {
-                    cb(encryptedMsgs.map(function (msg) {
-                        // The 3rd parameter "true" means we're going to skip signature validation.
-                        // We don't need it since the message is already validated serverside by hk
-                        return crypto.decrypt(msg, true, true);
-                    }));
+                    var nt = nThen;
+                    var decryptedMsgs = [];
+                    var total = encryptedMsgs.length;
+                    encryptedMsgs.forEach(function (msg, i) {
+                        nt = nt(function (waitFor) {
+                            // The 3rd parameter "true" means we're going to skip signature validation.
+                            // We don't need it since the message is already validated serverside by hk
+                            decryptedMsgs.push(crypto.decrypt(msg, true, true));
+                            setTimeout(waitFor(function () {
+                                sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
+                            }), 5);
+                        }).nThen;
+                    });
+                    nt(function () {
+                        cb(decryptedMsgs);
+                    });
                 });
             });
             sframeChan.on('Q_GET_HISTORY_RANGE', function (data, cb) {
@@ -587,6 +598,13 @@ define([
             sframeChan.on('Q_SET_ATTRIBUTE', function (data, cb) {
                 Cryptpad.setAttribute(data.key, data.value, function (e) {
                     cb({error:e});
+                });
+            });
+
+            sframeChan.on('Q_DRIVE_GETDELETED', function (data, cb) {
+                Cryptpad.getDeletedPads(data, function (err, obj) {
+                    if (err) { return void console.error(err); }
+                    cb(obj);
                 });
             });
 

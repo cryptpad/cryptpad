@@ -53,15 +53,22 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
+        var hash = localStorage[Constants.userHashKey];
+        var drive = hash && ('#'+hash === window.location.hash);
         if (!window.location.hash) {
-            var hash = localStorage[Constants.userHashKey];
             if (!hash) {
                 sessionStorage.redirectTo = '/debug/';
                 window.location.href = '/login/';
                 return;
             }
+            drive = true;
             window.location.hash = hash;
         }
-        SFCommonO.start();
+        var addData = function (meta) {
+            meta.debugDrive = drive;
+        };
+        SFCommonO.start({
+            addData:addData
+        });
     });
 });

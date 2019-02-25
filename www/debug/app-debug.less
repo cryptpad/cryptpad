@@ -15,10 +15,38 @@
         display: flex;
         min-height: 0;
     }
-    #cp-app-debug-content {
+    #cp-app-debug-content, #cp-app-debug-history {
         flex: 1;
         overflow: auto;
         white-space: pre-wrap;
+        display: none;
+    }
+    #cp-app-debug-content {
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+        .cp-app-debug-content {
+            flex: 1;
+            min-height: 0;
+        }
+        .cp-app-debug-progress {
+            width: 80%;
+        }
+        .cp-loading-progress-bar {
+            position: relative;
+            border: 1px solid #eee;
+            height: 36px;
+        }
+        #cp-app-debug-progres-bar-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            height: 100%;
+            line-height: 36px;
+        }
+        #cp-app-debug-loading {
+            text-align: center;
+        }
     }
 }
 
