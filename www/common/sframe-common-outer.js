@@ -524,7 +524,7 @@ define([
                             decryptedMsgs.push(crypto.decrypt(msg, true, true));
                             setTimeout(waitFor(function () {
                                 sframeChan.event('EV_FULL_HISTORY_STATUS', (i+1)/total);
-                            }), 5);
+                            }));
                         }).nThen;
                     });
                     nt(function () {

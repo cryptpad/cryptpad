@@ -63,6 +63,11 @@ define([
             }
             drive = true;
             window.location.hash = hash;
+        } else {
+            var p = Hash.parsePadUrl('/debug/'+window.location.hash);
+            if (p && p.hashData && p.hashData.app === 'drive') {
+                drive = true;
+            }
         }
         var addData = function (meta) {
             meta.debugDrive = drive;

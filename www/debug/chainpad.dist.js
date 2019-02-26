@@ -1759,21 +1759,23 @@ var getDepthOfState = function (content, minDepth, realtime) {
     return -1;
 };
 
-var getContentAtState = function (realtime, msg) {
+var getContentAtState = function (realtime, msg, previousDoc) {
     var patches = [ msg ];
-    while (patches[0] !== realtime.rootMessage) {
-        var parent = getParent(realtime, patches[0]);
-        if (!parent) {
-            return { error: 'not connected to root', doc: undefined };
+    var doc = previousDoc || '';
+    if (!previousDoc) {
+        while (patches[0] !== realtime.rootMessage) {
+            var parent = getParent(realtime, patches[0]);
+            if (!parent) {
+                return { error: 'not connected to root', doc: undefined };
+            }
+            patches.unshift(parent);
         }
-        patches.unshift(parent);
+        if (realtime.rootMessage.content.operations.length) {
+            Common.assert(realtime.rootMessage.content.operations.length === 1);
+            doc = realtime.rootMessage.content.operations[0].toInsert;
+        }
     }
-    var doc = '';
-    if (realtime.rootMessage.content.operations.length) {
-        Common.assert(realtime.rootMessage.content.operations.length === 1);
-        doc = realtime.rootMessage.content.operations[0].toInsert;
-    }
-    for (var i = 1; i < patches.length; i++) {
+    for (var i = previousDoc?0:1; i < patches.length; i++) {
         doc = Patch.apply(patches[i].content, doc);
     }
     return { error: undefined, doc: doc };
@@ -1795,7 +1797,7 @@ export type ChainPad_Block_t = {
     parentCount: number,
     getParent: ()=>?ChainPad_Block_t,
     getChildren: ()=>Array<ChainPad_Block_t>,
-    getContent: ()=>{
+    getContent: (?string)=>{
         error: ?string,
         doc: ?string
     },
@@ -1825,7 +1827,7 @@ var wrapMessage = function (realtime, msg) /*:ChainPad_Block_t*/ {
                 return wrapMessage(realtime, x);
             });
         },
-        getContent: function () { return getContentAtState(realtime, msg); },
+        getContent: function (previous) { return getContentAtState(realtime, msg, previous); },
         getPatch: function () { return Patch.clone(msg.content); },
         getInversePatch: function () { return Patch.clone(inversePatch(msg.content)); },
         equals: function (block, msgOpt) {

@@ -66,19 +66,24 @@ define([
 
         var getHrefsTable = function (chainpad, length, cb, progress) {
             var priv = metadataMgr.getPrivateData();
+            var origin = priv.origin;
             var edPublic = priv.edPublic;
 
             var pads = {};
+            var channelByHref = {};
             var isOwned = function (data) {
                 data = data || {};
                 return data && data.owners && Array.isArray(data.owners) && data.owners.indexOf(edPublic) !== -1;
             };
-            var parseBlock = function (block) {
-                var c = block.getContent().doc;
+            var parseBlock = function (block, doc) {
+                var c = block.getContent(doc).doc;
                 if (!c) { return void console.error(block); }
                 var p;
                 try {
-                    p = JSON.parse(c).drive || {};
+                    p = JSON.parse(c);
+                    if (!p.metadata) {
+                        p = p.drive || {};
+                    }
                 } catch (e) {
                     console.error(e);
                     p = {};
@@ -93,18 +98,20 @@ define([
                         try {
                             pad = old[i];
                             href = pad.href || pad.roHref;
-                            if (href) {
+                            chan = channelByHref[href];
+                            if (!chan && href) {
                                 parsed = Hash.parsePadUrl(href);
-                                chan = (Hash.getSecrets(parsed.type, parsed.hash) || {}).channel;
-                                if (chan && (!pads[chan] || pads[chan].atime < pad.atime)) {
-                                    pads[chan] = {
-                                        atime: +new Date(pad.atime),
-                                        href: href,
-                                        title: pad.title,
-                                        owned: isOwned(pad),
-                                        expired: pad.expire && pad.expire < (+new Date())
-                                    };
-                                }
+                                chan = parsed.hashData && Util.base64ToHex(parsed.hashData.channel || '');
+                                channelByHref[href] = chan;
+                            }
+                            if (chan && (!pads[chan] || pads[chan].atime < pad.atime)) {
+                                pads[chan] = {
+                                    atime: +new Date(pad.atime),
+                                    href: href,
+                                    title: pad.title,
+                                    owned: isOwned(pad),
+                                    expired: pad.expire && pad.expire < (+new Date())
+                                };
                             }
                         } catch (e) {}
                     }
@@ -114,12 +121,14 @@ define([
                     for (var id in ids) {
                         try {
                             pad = ids[id];
-                            chan = pad.channel;
                             href = pad.href || pad.roHref;
+                            chan = pad.channel || channelByHref[href];
                             if (!chan) {
                                 if (href) {
                                     parsed = Hash.parsePadUrl(href);
-                                    chan = (Hash.getSecrets(parsed.type, parsed.hash, pad.password) || {}).channel;
+                                    chan = (parsed.hashData && Util.base64ToHex(parsed.hashData.channel || '')) ||
+                                           (Hash.getSecrets(parsed.type, parsed.hash, pad.password) || {}).channel;
+                                    channelByHref[href] = chan;
                                 }
                             }
                             if (chan && (!pads[chan] || pads[chan].atime < pad.atime)) {
@@ -134,30 +143,33 @@ define([
                         } catch (e) {}
                     }
                 }
+                return c;
             };
 
-            var nt = nThen;
-
-            // Safely get all the pads from all the states
-            var i = 0;
-            var next = function (block) {
-                nt = nt(function (waitFor) {
-                    i++;
-                    parseBlock(block);
-                    progress(Math.min(i/length, 1));
-                    setTimeout(waitFor(), 1);
-                }).nThen;
-                var c = block.getChildren();
-                c.forEach(next);
-            };
-
-            var root = chainpad.getRootBlock();
-            next(root);
-
-            // Make the table
             var allChannels;
             var deleted;
-            nt(function (waitFor) {
+
+            nThen(function (W) {
+                var nt = nThen;
+                // Safely get all the pads from all the states
+                var i = 0;
+                var next = function (block, doc) {
+                    nt = nt(W(function (waitFor) {
+                        i++;
+                        var doc2 = parseBlock(block, doc);
+                        progress(Math.min(i/length, 1));
+                        var c = block.getChildren();
+                        setTimeout(waitFor(), 1);
+                        c.forEach(function (b) {
+                            next(b, doc2);
+                        });
+                    })).nThen;
+                };
+
+                var root = chainpad.getRootBlock();
+                next(root);
+            }).nThen(function (waitFor) {
+                // Make the table
                 allChannels = Object.keys(pads);
                 sframeChan.query('Q_DRIVE_GETDELETED', {list:allChannels}, waitFor(function (err, data) {
                     deleted = data;
@@ -166,15 +178,16 @@ define([
                 // Current status
                 try {
                     var parsed = JSON.parse(chainpad.getUserDoc());
-                    var channels = Object.keys(parsed.drive[Constants.storageKey] || {}).map(function (id) {
-                        return parsed.drive[Constants.storageKey][id].channel;
+                    var drive = parsed.metadata ? parsed : parsed.drive;
+                    var channels = Object.keys(drive[Constants.storageKey] || {}).map(function (id) {
+                        return drive[Constants.storageKey][id].channel;
                     });
                 } catch (e) {
                     console.error(e);
                 }
 
                 // Header
-                var rows = [h('tr', [ // XXX
+                var rows = [h('tr', [// TODO
                     h('th', '#'),
                     h('th', 'Title'),
                     h('th', 'URL'),
@@ -190,14 +203,23 @@ define([
                 });
                 body.forEach(function (id, i) {
                     var p = pads[id];
+                    var del = deleted.indexOf(id) !== -1;
+                    var removed = channels.indexOf(id) === -1;
                     rows.push(h('tr', [
                         h('td', String(i+1)),
-                        h('td', p.title),
-                        h('td', p.href),
+                        h('td', {
+                            title: p.title
+                        }, p.title),
+                        h('td', h('a', {
+                            href: origin+p.href,
+                            target: '_blank'
+                        }, p.href)),
                         h('td', new Date(p.atime).toLocaleString()),
-                        h('td', p.owned ? 'Yes' : ''),
-                        h('td', p.expired ? 'Expired' : (channels.indexOf(id) !== -1 ? 'Stored' : 'Deleted')), // XXX
-                        h('td', deleted.indexOf(id) !== -1 ? 'Missing' : 'OK'), // XXX
+                        h('td', p.owned ? 'Yes' : 'No'),
+                        h('td'+(p.expired || removed ?'.cp-debug-nok':'.cp-debug-ok'),
+                            p.expired ? 'Expired' :
+                                        (!removed ? 'Stored' : 'Deleted')),// TODO
+                        h('td'+(del?'.cp-debug-nok':'.cp-debug-ok'), del ? 'Missing' : 'Available'),// TODO
                     ]));
                 });
                 // Table
@@ -257,7 +279,7 @@ define([
                 nt = nt(function (waitFor) {
                     chainpad.message(msg);
                     progress(Math.min(i/length, 1));
-                    setTimeout(waitFor(), 1);
+                    setTimeout(waitFor());
                 }).nThen;
             });
             nt(function () {
@@ -273,6 +295,7 @@ define([
 
             // Set spinner
             var content = h('div#cp-app-debug-loading', [
+                h('h2', 'Step 1/3'),
                 h('p', 'Loading history from the server...'),
                 h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw')
             ]);
@@ -281,25 +304,22 @@ define([
             // Update progress bar
             var decrypting = false;
             var length = 0;
+            var decryptProgress = h('span', '0%');
             sframeChan.on('EV_FULL_HISTORY_STATUS', function (progress) {
                 if (!decrypting) {
                     // Add the progress bar the first time
                     decrypting = true;
                     var content = h('div.cp-app-debug-progress.cp-loading-progress', [
+                        h('h2', 'Step 2/3'),
                         h('p', 'Decrypting your history...'),
-                        h('div.cp-loading-progress-bar', [
-                            h('div.cp-loading-progress-bar-value#cp-app-debug-progress-bar'),
-                            h('span#cp-app-debug-progress-bar-text'),
-                        ])
+                        h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw'),
+                        h('br'),
+                        decryptProgress
                     ]);
                     $('#cp-app-debug-content').html('').append(content);
                 }
                 length++;
-                var progress = progress*100;
-                var $bar = $('#cp-app-debug-progress-bar');
-                var $barText = $('#cp-app-debug-progress-bar-text');
-                $bar.css('width', progress+'%');
-                $barText.text((Math.round(progress * 100) / 100) + '%');
+                decryptProgress.innerHTML = (progress*100).toFixed(2) + '%'
             });
 
             // Get full history
@@ -310,14 +330,15 @@ define([
                 // Graph
                 var graph = h('div.cp-app-debug-content-graph');
 
-                var seeAllButton = h('button', 'Get the list');
+                var seeAllButton = h('button.btn.btn-success', 'Get the list');
                 var hrefs = h('div.cp-app-debug-content-hrefs', [
-                    h('h2', 'List all the pads ever stored in your CryptDrive'), // XXX
+                    h('h2', 'List all the pads ever stored in your CryptDrive'), // TODO
                 ]);
 
                 var parseProgress = h('span', '0%');
                 var content = h('div#cp-app-debug-loading', [
-                    h('p', 'Parsing history...'),// XXX
+                    h('h2', 'Step 3/3'),
+                    h('p', 'Parsing history...'),// TODO
                     h('span.fa.fa-circle-o-notch.fa-spin.fa-3x.fa-fw'),
                     h('br'),
                     parseProgress
@@ -338,8 +359,7 @@ define([
                             if (clicked) { return; }
                             clicked = true;
                             $(seeAllButton).remove();
-                            // XXX
-                            // Make table
+                            // Make the table
                             var progress = h('span', '0%');
                             var loading = h('div', [
                                 'Loading data...',
@@ -351,7 +371,7 @@ define([
                                 loading.innerHTML = '';
                                 hrefs.append(table);
                             }, function (p) {
-                                progress.innerHTML = (Math.round(p*100*100)/100) + '%'
+                                progress.innerHTML = (p*100).toFixed(2) + '%'
                             });
                         }).appendTo(hrefs);
                     }
@@ -360,11 +380,11 @@ define([
                     var code = h('code');
                     getGraph(chainpad, function (graphVal) {
                         code.innerHTML = graphVal;
-                        $(graph).append(h('h2', 'Graph')); // XXX
+                        $(graph).append(h('h2', 'Graph')); // TODO
                         $(graph).append(code);
                     });
                 }, function (p) {
-                    parseProgress.innerHTML = (Math.round(p*100*100)/100) + '%'
+                    parseProgress.innerHTML = (p*100).toFixed(2) + '%'
                 });
             }, {timeout: 2147483647}); // Max 32-bit integer
         };
@@ -381,10 +401,10 @@ define([
             $('#cp-app-debug-get-content').addClass('cp-toolbar-button-active');
         };
         var setInitContent = function () {
-            var button = h('button.btn.btn-primary', 'Load history');
+            var button = h('button.btn.btn-success', 'Load history');
             $(button).click(getFullHistory);
-            var content = h('p', [
-                'To get better debugging tools, we need to load the entire history of the document. This make take some time.', // XXX
+            var content = h('p.cp-app-debug-init', [
+                'To get better debugging tools, we need to load the entire history of the document. This make take some time.', // TODO
                 h('br'),
                 button
             ]);
@@ -454,7 +474,7 @@ define([
 
             var $content = common.createButton(null, true, {
                 icon: 'fa-question',
-                title: 'Get debugging graph', // XXX
+                title: 'Get debugging graph', // TODO
                 name: 'graph',
                 id: 'cp-app-debug-get-content'
             });
