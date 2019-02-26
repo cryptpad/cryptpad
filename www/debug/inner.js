@@ -284,7 +284,7 @@ define([
             });
             nt(function () {
                 cb(chainpad);
-            })
+            });
         };
 
         var fullHistoryCalled = false;
@@ -319,7 +319,7 @@ define([
                     $('#cp-app-debug-content').html('').append(content);
                 }
                 length++;
-                decryptProgress.innerHTML = (progress*100).toFixed(2) + '%'
+                decryptProgress.innerHTML = (progress*100).toFixed(2) + '%';
             });
 
             // Get full history
@@ -371,7 +371,7 @@ define([
                                 loading.innerHTML = '';
                                 hrefs.append(table);
                             }, function (p) {
-                                progress.innerHTML = (p*100).toFixed(2) + '%'
+                                progress.innerHTML = (p*100).toFixed(2) + '%';
                             });
                         }).appendTo(hrefs);
                     }
@@ -384,7 +384,7 @@ define([
                         $(graph).append(code);
                     });
                 }, function (p) {
-                    parseProgress.innerHTML = (p*100).toFixed(2) + '%'
+                    parseProgress.innerHTML = (p*100).toFixed(2) + '%';
                 });
             }, {timeout: 2147483647}); // Max 32-bit integer
         };
