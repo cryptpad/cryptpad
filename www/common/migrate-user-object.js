@@ -179,7 +179,7 @@ define([
         }).nThen(function () {
             // Migration 8: remove duplicate entries in proxy.FS_hashes (list of migrated anon drives)
             var fixDuplicate = function () {
-                userObject.FS_hashes = Util.deduplicateString(userObject.FS_hashes);
+                userObject.FS_hashes = Util.deduplicateString(userObject.FS_hashes || []);
             };
             if (version < 8) {
                 fixDuplicate();
