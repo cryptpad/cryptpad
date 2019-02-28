@@ -360,6 +360,17 @@ define([
                 editor.setOption('indentUnit', units);
                 editor.setOption('tabSize', units);
                 editor.setOption('indentWithTabs', useTabs);
+                if (!useTabs) {
+                    editor.setOption("extraKeys", {
+                        Tab: function(cm) {
+                            editor.replaceSelection(Array(units + 1).join(" "));
+                        }
+                    });
+                } else {
+                    editor.setOption("extraKeys", {
+                        Tab: undefined,
+                    });
+                }
                 $('.CodeMirror').css('font-size', fontSize+'px');
             };
 
