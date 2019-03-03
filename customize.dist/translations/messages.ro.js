@@ -5,7 +5,7 @@
  * If you want to check all the existing translation keys, you can open the internal language file
    but you should not change it directly (/common/translations/messages.{LANG}.js)
 */
-define(['/common/translations/messages.ro.js'], function (Messages) {
+define(['/common/translations/old/messages.ro.js'], function (Messages) {
     // Replace the existing keys in your copied file here:
     // Messages.button_newpad = "New Rich Text Document";
 

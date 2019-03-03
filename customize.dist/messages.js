@@ -30,10 +30,10 @@ var language = getLanguage();
 // we use a requirejs map to redirect the old path to the new one and to use the
 // requirejs json plugin
 var reqPaths = {
-    "/common/translations/messages.js":"json!/common/translations/messages.json"
+    "/common/translations/old/messages.js":"json!/common/translations/messages.json"
 };
 Object.keys(map).forEach(function (k) {
-    reqPaths["/common/translations/messages."+k+".js"] = "json!/common/translations/messages."+k+".json";
+    reqPaths["/common/translations/old/messages."+k+".js"] = "json!/common/translations/messages."+k+".json";
 });
 require.config({
     map: {
@@ -41,8 +41,8 @@ require.config({
     }
 });
 
-var req = ['/common/common-util.js', '/customize/translations/messages.js'];
-if (language && map[language]) { req.push('/customize/translations/messages.' + language + '.js'); }
+var req = ['/common/common-util.js', '/customize/translations/old/messages.js'];
+if (language && map[language]) { req.push('/customize/translations/old/messages.' + language + '.js'); }
 
 define(req, function(Util, Default, Language) {
     map.en = 'English';
@@ -63,7 +63,7 @@ define(req, function(Util, Default, Language) {
         var reqs = [];
         Object.keys(map).forEach(function (code) {
             if (code === defaultLanguage) { return; }
-            reqs.push('/customize/translations/messages.' + code + '.js');
+            reqs.push('/customize/translations/old/messages.' + code + '.js');
         });
         require(reqs, function () {
             var langs = arguments;
@@ -110,7 +110,7 @@ define(req, function(Util, Default, Language) {
                         var nPath = path.slice();
                         nPath.push(k);
                         if (typeof ref[k] === "undefined") {
-                            missing.push([code, nPath, 0]);
+                                missing.push([code, nPath, 0]);
                         }
                     });
                 };
