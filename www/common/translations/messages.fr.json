@@ -1027,5 +1027,6 @@
     "markdown_toc": "Sommaire",
     "debug_getGraph": "Obtenir le code permettant de générer un graphe de ce document",
     "debug_getGraphWait": "Génération du graphe... Veuillez patienter.",
-    "debug_getGraphText": "Voici le code DOT permettant de générer un graphe de l’historique de ce document :"
+    "debug_getGraphText": "Voici le code DOT permettant de générer un graphe de l’historique de ce document :",
+    "mdToolbar_toc": "Table des matières"
 }
