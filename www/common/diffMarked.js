@@ -46,7 +46,8 @@ define([
                 href: '#',
                 'data-href': obj.id,
                 title: obj.title
-            }, obj.title);
+            });
+            a.innerHTML = obj.title;
             content.push(h('p.cp-md-toc-'+level, ['• ',  a]));
         });
         return h('div.cp-md-toc', content).outerHTML;
