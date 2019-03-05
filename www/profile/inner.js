@@ -260,6 +260,10 @@ define([
             'class': 'cp-app-profile-resizer'
         });
 
+        if (typeof ($croppie.croppie) !== "function") {
+            return void cb(file);
+        }
+
         var todo = function () {
             UI.confirm($croppie[0], function (yes) {
                 if (!yes) { return; }
