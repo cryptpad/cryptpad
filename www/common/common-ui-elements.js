@@ -2323,6 +2323,10 @@ define([
                 if (e) { return void console.error(e); }
             });
 
+            if (val.expire) {
+                Feedback.send('EXPIRING_PAD-'+val.expire);
+            }
+
             $creationContainer.remove();
             common.createPad(val, function () {
                 cb();
