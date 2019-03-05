@@ -362,7 +362,7 @@ define([
                 editor.setOption('indentWithTabs', useTabs);
                 if (!useTabs) {
                     editor.setOption("extraKeys", {
-                        Tab: function(cm) {
+                        Tab: function() {
                             editor.replaceSelection(Array(units + 1).join(" "));
                         }
                     });
