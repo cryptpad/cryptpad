@@ -15,10 +15,48 @@
         display: flex;
         min-height: 0;
     }
-    #cp-app-debug-content {
+    #cp-app-debug-content, #cp-app-debug-history {
         flex: 1;
         overflow: auto;
         white-space: pre-wrap;
+        display: none;
+    }
+    #cp-app-debug-content {
+        margin: 50px;
+        flex-flow: column;
+        align-items: center;
+        justify-content: center;
+        .cp-app-debug-content {
+            flex: 1;
+            min-height: 0;
+        }
+        .cp-app-debug-progress, .cp-app-debug-init {
+            text-align: center;
+        }
+        #cp-app-debug-loading {
+            text-align: center;
+        }
+        .cp-app-debug-content-hrefs {
+            td, th {
+                max-width: 300px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                padding: 0 20px;
+            }
+            td:nth-child(3) {
+                max-width: 500px;
+            }
+            .cp-debug-ok {
+                background-color: #eeffee;
+            }
+            .cp-debug-nok {
+                background-color: #ffeeee;
+            }
+            tr:not(:first-child):hover {
+                background-color: rgba(0,0,0,0.1);
+            }
+        }
     }
 }
 

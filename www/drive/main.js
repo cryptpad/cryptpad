@@ -80,12 +80,6 @@ define([
                     cb(obj);
                 });
             });
-            sframeChan.on('Q_DRIVE_GETDELETED', function (data, cb) {
-                Cryptpad.getDeletedPads(function (err, obj) {
-                    if (err) { return void console.error(err); }
-                    cb(obj);
-                });
-            });
             sframeChan.on('EV_DRIVE_SET_HASH', function (hash) {
                 // Update the hash in the address bar
                 if (!Utils.LocalStore.isLoggedIn()) { return; }

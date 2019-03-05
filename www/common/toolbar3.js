@@ -7,7 +7,7 @@ define([
     '/common/common-hash.js',
     '/common/common-util.js',
     '/common/common-feedback.js',
-    '/contacts/messenger-ui.js',
+    '/common/messenger-ui.js',
     '/customize/messages.js',
 ], function ($, Config, ApiConfig, UIElements, UI, Hash, Util, Feedback,
 MessengerUI, Messages) {

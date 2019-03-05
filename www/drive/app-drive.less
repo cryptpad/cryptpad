@@ -269,8 +269,11 @@
             text-align: center;
             padding: 0;
             position: relative;
+            display: flex;
+            background: lighten(@colortheme_drive-bg, 8%);
+            border-right: 1px solid lighten(@colortheme_drive-bg, 16%);
             input {
-                background: lighten(@colortheme_drive-bg, 8%);
+                background: transparent;
                 color: @colortheme_drive-color;
                 .tools_placeholder-color(@colortheme_drive-color);
                 outline-width: 0px;
@@ -278,16 +281,29 @@
                 width: 100%;
                 //border: 1px solid #ccc;
                 border: 0;
-                border-right: 1px solid lighten(@colortheme_drive-bg, 16%);
                 //border-right: 0;
                 height: @variables_bar-height;
                 padding: 0 5px;
                 padding-left: 45px;
+                flex: 1;
+                min-width: 0;
                 &:focus {
                     outline-width: 0px;
                 }
+                &.cp-app-drive-search-active {
+                    & ~ .cp-app-drive-tree-search-icon {
+                        display: none;
+                    }
+                    & ~ .cp-app-drive-search-cancel {
+                        display: inline-block;
+                    }
+                }
             }
-            .cp-app-drive-tree-search-con {
+            .cp-app-drive-search-cancel {
+                display: none;
+                cursor: pointer;
+            }
+            .cp-app-drive-tree-search-icon, .cp-app-drive-search-cancel {
                 color: @colortheme_drive-color;
                 position: absolute;
                 left: 20px; // TODO align with drive categories

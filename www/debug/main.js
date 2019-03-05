@@ -53,6 +53,27 @@ define([
         };
         window.addEventListener('message', onMsg);
     }).nThen(function (/*waitFor*/) {
-        SFCommonO.start();
+        var hash = localStorage[Constants.userHashKey];
+        var drive = hash && ('#'+hash === window.location.hash);
+        if (!window.location.hash) {
+            if (!hash) {
+                sessionStorage.redirectTo = '/debug/';
+                window.location.href = '/login/';
+                return;
+            }
+            drive = true;
+            window.location.hash = hash;
+        } else {
+            var p = Hash.parsePadUrl('/debug/'+window.location.hash);
+            if (p && p.hashData && p.hashData.app === 'drive') {
+                drive = true;
+            }
+        }
+        var addData = function (meta) {
+            meta.debugDrive = drive;
+        };
+        SFCommonO.start({
+            addData:addData
+        });
     });
 });

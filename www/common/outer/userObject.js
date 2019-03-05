@@ -95,6 +95,7 @@ define([
                     if (!sharedFolder && fd.owners && fd.owners.indexOf(edPublic) !== -1
                         && channelId) {
                         if (channelId) { ownedRemoved.push(channelId); }
+                        Feedback.send('REMOVE_OWNED_CHANNEL');
                         removeOwnedChannel(channelId, function (obj) {
                             if (obj && obj.error) {
                                 // If the error is that the file is already removed, nothing to

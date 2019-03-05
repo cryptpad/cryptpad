@@ -1426,6 +1426,7 @@ define([
                 if (!store.loggedIn) { return void cb(); }
                 Store.pinPads(null, data, cb);
             };
+            if (!proxy.settings) { proxy.settings = {}; }
             var manager = store.manager = ProxyManager.create(proxy.drive, {
                 edPublic: proxy.edPublic,
                 pin: pin,

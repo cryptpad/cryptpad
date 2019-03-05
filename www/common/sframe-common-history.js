@@ -48,14 +48,6 @@ define([
             });
         };
 
-        var loadFullHistory = function (config, common, cb) {
-            var realtime = createRealtime(config);
-            common.getFullHistory(realtime, function () {
-                cb(null, realtime);
-            });
-        };
-        loadFullHistory = loadFullHistory;
-
         var fillChainPad = function (realtime, messages) {
             messages.forEach(function (m) {
                 realtime.message(m);

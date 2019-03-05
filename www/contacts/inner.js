@@ -5,7 +5,7 @@ define([
     '/bower_components/nthen/index.js',
     '/common/sframe-common.js',
     '/common/hyperscript.js',
-    '/contacts/messenger-ui.js',
+    '/common/messenger-ui.js',
     '/customize/messages.js',
     '/common/common-interface.js',
 

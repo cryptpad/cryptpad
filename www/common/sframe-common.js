@@ -302,17 +302,6 @@ define([
         });
     };
 
-    funcs.getFullHistory = function (realtime, cb) {
-        ctx.sframeChan.query('Q_GET_FULL_HISTORY', null, function (err, messages) {
-            if (err) { return void console.error(err); }
-            if (!Array.isArray(messages)) { return; }
-            messages.forEach(function (m) {
-                realtime.message(m);
-            });
-            cb();
-        });
-    };
-
     // href is optional here: if not provided, we use the href of the current tab
     funcs.getPadAttribute = function (key, cb, href) {
         ctx.sframeChan.query('Q_GET_PAD_ATTRIBUTE', {

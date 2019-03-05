@@ -111,7 +111,7 @@ define([
     var $sortDescIcon = $('<span>', {"class": "fa fa-angle-down sortdesc"});
     var $closeIcon = $('<span>', {"class": "fa fa-window-close"});
     //var $backupIcon = $('<span>', {"class": "fa fa-life-ring"});
-    var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-con"});
+    var $searchIcon = $('<span>', {"class": "fa fa-search cp-app-drive-tree-search-icon"});
     var $addIcon = $('<span>', {"class": "fa fa-plus"});
     var $renamedIcon = $('<span>', {"class": "fa fa-flag"});
     var $readonlyIcon = $('<span>', {"class": "fa " + faReadOnly});
@@ -589,6 +589,7 @@ define([
         // Arrow keys to modify the selection
         $(window).keydown(function (e) {
             var $searchBar = $tree.find('#cp-app-drive-tree-search-input');
+            if (document.activeElement && document.activeElement.nodeName === 'INPUT') { return; }
             if ($searchBar.is(':focus') && $searchBar.val()) { return; }
 
             var $elements = $content.find('.cp-app-drive-element:not(.cp-app-drive-element-header)');
@@ -2970,6 +2971,13 @@ define([
                     else { displayDirectory([ROOT]); }
                     return;
                 }
+                if ($input.val()) {
+                    if (!$input.hasClass('cp-app-drive-search-active')) {
+                        $input.addClass('cp-app-drive-search-active');
+                    }
+                } else {
+                    $input.removeClass('cp-app-drive-search-active');
+                }
                 if (APP.mobile()) { return; }
                 search.to = window.setTimeout(function () {
                     if (!isInSearchTmp) { search.oldLocation = currentPath.slice(); }
@@ -2978,8 +2986,18 @@ define([
                     if (!manager.comparePath(newLocation, currentPath.slice())) { displayDirectory(newLocation); }
                 }, 500);
             }).appendTo($div);
+            var cancel = h('span.fa.fa-times.cp-app-drive-search-cancel', {title:Messages.cancel});
+            cancel.addEventListener('click', function () {
+                $input.val('');
+                setSearchCursor(0);
+                if (search.oldLocation && search.oldLocation.length) { displayDirectory(search.oldLocation); }
+            });
+            $div.append(cancel);
             $searchIcon.clone().appendTo($div);
-            if (isInSearch) { $input.val(currentPath[1] || ''); }
+            if (isInSearch) {
+                $input.val(currentPath[1] || '');
+                if ($input.val()) { $input.addClass('cp-app-drive-search-active'); }
+            }
             $container.append($div);
         };
 

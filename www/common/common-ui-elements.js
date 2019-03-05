@@ -997,6 +997,10 @@ define([
                     return '`' + str + '`';
                 },
                 icon: 'fa-code'
+            },
+            'toc': {
+                expr: '[TOC]',
+                icon: 'fa-newspaper-o'
             }
         };
         var onClick = function () {
@@ -2318,6 +2322,10 @@ define([
             common.setAttribute(['general', 'creation', 'expire'], val.expire, function (e) {
                 if (e) { return void console.error(e); }
             });
+
+            if (val.expire) {
+                Feedback.send('EXPIRING_PAD-'+val.expire);
+            }
 
             $creationContainer.remove();
             common.createPad(val, function () {
