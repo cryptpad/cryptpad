@@ -8,7 +8,8 @@
         "whiteboard": "Pizarra",
         "contacts": "Contactos",
         "kanban": "Kanban",
-        "drive": "CryptDrive"
+        "drive": "CryptDrive",
+        "todo": ""
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronización",
