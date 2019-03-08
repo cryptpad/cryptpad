@@ -61,7 +61,13 @@ define([
             }
 
             // grab an unused slice of the entropy
-            var A = bytes.slice(entropy.used, entropy.used + n);
+            // Note: Internet Explorer doesn't support .slice on Uint8Array
+            var A;
+            if (bytes.slice) {
+                A = bytes.slice(entropy.used, entropy.used + n);
+            } else {
+                A = bytes.subarray(entropy.used, entropy.used + n);
+            }
 
             // account for the bytes you used so you don't reuse bytes
             entropy.used += n;
