@@ -113,7 +113,8 @@ define([
     };
 
     var isProxyEmpty = function (proxy) {
-        return Object.keys(proxy).length === 0;
+        var l = Object.keys(proxy).length;
+        return l === 0 || (l === 2 && proxy._events && proxy.on);
     };
 
     var setMergeAnonDrive = function () {
