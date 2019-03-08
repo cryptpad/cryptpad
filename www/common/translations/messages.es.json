@@ -9,7 +9,8 @@
         "contacts": "Contactos",
         "kanban": "Kanban",
         "drive": "CryptDrive",
-        "todo": "Lista de tareas"
+        "todo": "Lista de tareas",
+        "file": "Archivo"
     },
     "disconnected": "Desconectado",
     "synchronizing": "Sincronización",
