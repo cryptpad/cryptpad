@@ -1,14 +1,15 @@
 (function () {
 // add your module to this map so it gets used
 var map = {
-    'fr': 'Français',
-    'es': 'Español',
-    'pl': 'Polski',
     'de': 'Deutsch',
+    'es': 'Español',
+    'el': 'Ελληνικά',
+    'fr': 'Français',
+    'pl': 'Polski',
     'pt-br': 'Português do Brasil',
     'ro': 'Română',
+    'ru': 'Русский',
     'zh': '繁體中文',
-    'el': 'Ελληνικά',
 };
 
 var messages = {};
