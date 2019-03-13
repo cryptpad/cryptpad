@@ -307,9 +307,9 @@
     "contacts_rooms": "Rooms",
     "contacts_leaveRoom": "Leave this room",
     "contacts_online": "Another user from this room is online",
-    "debug_getGraph":"Get the code to generate a graph of this document",
-    "debug_getGraphWait":"Generating the graph... Please Wait.",
-    "debug_getGraphText":"This is the DOT code to generate a graph of this document's history:",
+    "debug_getGraph": "Get the code to generate a graph of this document",
+    "debug_getGraphWait": "Generating the graph... Please Wait.",
+    "debug_getGraphText": "This is the DOT code to generate a graph of this document's history:",
     "fm_rootName": "Documents",
     "fm_trashName": "Trash",
     "fm_unsortedName": "Unsorted files",
@@ -816,7 +816,7 @@
             },
             "folder": {
                 "q": "Can I share entire folders from my CryptDrive?",
-                "a": "We're working on adding support for <em>\"workgroups\"</em>, which would allow collaborators to share a folder structure, and all the pads contained within that structure."
+                "a": "Yes, you can create a <em>shared folder</em> from your CryptDrive and share all the pads it contains at once."
             },
             "feature": {
                 "q": "Can you add a very special feature which I need?",
