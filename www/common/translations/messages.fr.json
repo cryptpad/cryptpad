@@ -812,7 +812,7 @@
             },
             "folder": {
                 "q": "Puis-je partager des dossiers complets de mon CryptDrive ?",
-                "a": "Nous travaillons sur l'ajout d'une fonctionnalité <em>workgroups</em> (ou groupes de travail), qui permettrait aux collaborateurs de partager une structure de type dossier, avec tous les pads contenus dans cette structure."
+                "a": "Oui, vous pouvez créer un <em>dossier partagé</em> à partir de votre CryptDrive et partager tous les pads qu'il contient."
             },
             "feature": {
                 "q": "Pouvez-vous ajouter une fonctionnalité particulière dont j'ai besoin ?",
