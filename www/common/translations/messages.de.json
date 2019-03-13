@@ -835,7 +835,7 @@
             },
             "revenue": {
                 "q": "Wie kann ich meine Einnahmen mit den Entwicklern teilen?",
-                "a": " Wenn du deine eigene Installation von CrytPad betreibst und die Einnahmen für deine bezahlten Konten mit Entwicklern teilen möchtest, muss dein Server als Partnerservice konfiguriert werden.<br><br>In deinem CryptPad-Verzeichnis befindet sich <em>config.example.js</em>. Darin wird erklärt, wie du deinen Server dafür konfigurieren musst. Danach solltest du  <a href='mailto:sales@cryptpad.fr'>sales@cryptpad.fr</a> kontaktieren, damit geprüft wird, dass dein Server richtig mit HTTPS konfiguriert ist, und die Zahlungsmethoden abgesprochen werden können. "
+                "a": "Wenn du deine eigene Installation von CrytPad betreibst und die Einnahmen für deine bezahlten Konten mit den Entwicklern teilen möchtest, muss dein Server als Partnerservice konfiguriert werden.<br><br>In deinem CryptPad-Verzeichnis befindet sich <em>config.example.js</em>. Darin wird erklärt, wie du deinen Server dafür konfigurieren musst. Danach solltest du  <a href='mailto:sales@cryptpad.fr'>sales@cryptpad.fr</a> kontaktieren, damit geprüft wird, dass dein Server richtig für HTTPS konfiguriert ist, und die Zahlungsmethoden abgesprochen werden können."
             }
         }
     },
@@ -1019,5 +1019,14 @@
     "crowdfunding_popup_text": "<h3>Wir brauchen deine Hilfe!</h3>Um sicherzustellen, dass CryptPad weiter aktiv entwickelt wird, unterstütze bitte das Projekt über die <a href=\"https://opencollective.com/cryptpad\">OpenCollective Seite</a>, wo du unsere <b>Roadmap</b> und <b>Funding-Ziele</b> lesen kannst.",
     "crowdfunding_popup_yes": "OpenCollective besuchen",
     "crowdfunding_popup_no": "Nicht jetzt",
-    "crowdfunding_popup_never": "Nicht mehr darum bitten."
+    "crowdfunding_popup_never": "Nicht mehr darum bitten.",
+    "invalidHashError": "Das angeforderte Dokument hat eine ungültige URL.",
+    "oo_cantUpload": "Das Hochladen von Dateien ist nicht erlaubt, während andere Nutzer anwesend sind.",
+    "oo_uploaded": "Das Hochladen wurde abgeschlossen. Klicke auf OK zum Neuladen der Seite oder auf Abbrechen zum Fortfahren im schreibgeschützten Modus.",
+    "debug_getGraph": "Code für die Generierung eines Graphen dieses Dokuments anzeigen",
+    "debug_getGraphWait": "Der Graph wird generiert... Bitte warten.",
+    "debug_getGraphText": "Dies ist der DOT-Code für die Generierung eines Graphen des Dokumentverlaufs:",
+    "fm_passwordProtected": "Dieses Dokument ist mit einem Passwort geschützt",
+    "mdToolbar_toc": "Inhaltsverzeichnis",
+    "markdown_toc": "Inhalt"
 }
