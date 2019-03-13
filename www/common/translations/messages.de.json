@@ -77,8 +77,8 @@
     "formattedGB": "{0} GB",
     "formattedKB": "{0} KB",
     "greenLight": "Alles funktioniert bestens!",
-    "orangeLight": "Deine langsame Verbindung kann die Nutzung beeinträchtigen.",
-    "redLight": "Du wurdest von dieser Sitzung getrennt.",
+    "orangeLight": "Deine langsame Verbindung kann die Nutzung beeinträchtigen",
+    "redLight": "Du wurdest von dieser Sitzung getrennt",
     "pinLimitReached": "Du hast deine Speicherplatzbegrenzung erreicht",
     "pinLimitReachedAlert": "Du hast deine Speicherplatzbegrenzung erreicht. Neue Pads werden nicht mehr in deinem CryptDrive gespeichert.<br>Du kannst entweder ein Pad von deinem CryptDrive entfernen oder <a href=\"https://accounts.cryptpad.fr/#!on={0}\" target=\"_blank\">ein Premiumangebot anfordern</a>, damit deine Begrenzung erhöht wird.",
     "pinLimitReachedAlertNoAccounts": "Du hast deine Speicherplatzbegrenzung erreicht",
@@ -99,7 +99,7 @@
     "forgetButton": "Entfernen",
     "forgetButtonTitle": "Dieses Pad in den Papierkorb verschieben",
     "forgetPrompt": "Mit dem Klick auf OK wird das Pad in den Papierkorb verschoben. Bist du sicher?",
-    "movedToTrash": "Dieses Dokument liegt im Papierkorb.<br>Du kannst <a href=\"/drive/\">zum CryptDrive</a> navigieren.",
+    "movedToTrash": "Dieses Dokument liegt im Papierkorb.<br>Du kannst <a href=\"/drive/\">zum CryptDrive</a> navigieren",
     "shareButton": "Teilen",
     "shareSuccess": "Die URL wurde in die Zwischenablage kopiert",
     "userListButton": "Benutzerliste",
@@ -172,7 +172,7 @@
     "fileEmbedTitle": "Die Datei in einer externen Seite einbetten",
     "fileEmbedScript": "Um diese Datei einzubetten, füge dieses Skript einmal in deiner Webseite ein, damit das Media-Tag geladen wird:",
     "fileEmbedTag": "Dann platziere das Media-Tag an der gewünschten Stelle der Seite:",
-    "notifyJoined": "{0} ist in der Mitarbeitssitzung ",
+    "notifyJoined": "{0} ist in der Mitarbeitssitzung",
     "notifyRenamed": "{0} ist jetzt als {1} bekannt",
     "notifyLeft": "{0} hat die Mitarbeitssitzung verlassen",
     "ok": "OK",
@@ -215,8 +215,8 @@
     "poll_subtitle": "Planung <em>in Echtzeit</em> ohne Preisgabe von Daten",
     "poll_p_save": "Deine Einstellungen werden sofort aktualisiert. Du musst sie also nicht speichern.",
     "poll_p_encryption": "Alle Eingaben sind verschlüsselt, deshalb können nur Leute darauf zugreifen, die den Link kennen. Selbst der Server sieht nicht, was du änderst.",
-    "wizardLog": "Klicke auf die Schaltfläche links oben, um zu deiner Umfrage zurückzukehren.",
-    "wizardTitle": "Nutze den Assistenten, um deine Umfrage zu erstellen.",
+    "wizardLog": "Klicke auf die Schaltfläche links oben, um zu deiner Umfrage zurückzukehren",
+    "wizardTitle": "Nutze den Assistenten, um deine Umfrage zu erstellen",
     "wizardConfirm": "Bist du wirklich bereit, die angegebenen Optionen zu deiner Umfrage hinzuzufügen?",
     "poll_publish_button": "Veröffentlichen",
     "poll_admin_button": "Admin",
@@ -227,7 +227,7 @@
     "poll_closeWizardButtonTitle": "Assistenten schließen",
     "poll_wizardComputeButton": "Optionen übernehmen",
     "poll_wizardClearButton": "Tabelle leeren",
-    "poll_wizardDescription": "Erstelle die Optionen automatisch, indem du eine beliebige Anzahl von Daten und Zeiten eingibst.",
+    "poll_wizardDescription": "Erstelle die Optionen automatisch, indem du eine beliebige Anzahl von Daten und Zeiten eingibst",
     "poll_wizardAddDateButton": "+ Daten",
     "poll_wizardAddTimeButton": "+ Zeiten",
     "poll_optionPlaceholder": "Option",
@@ -240,7 +240,7 @@
     "poll_edit": "Bearbeiten",
     "poll_locked": "Gesperrt",
     "poll_unlocked": "Editierbar",
-    "poll_bookmark_col": "Setze ein Lesezeichen auf diese Spalte, damit sie immer editierbar und ganz links angezeigt wird.",
+    "poll_bookmark_col": "Setze ein Lesezeichen auf diese Spalte, damit sie immer editierbar und ganz links angezeigt wird",
     "poll_bookmarked_col": "Dies ist die Spalte mit deinem Lesezeichen. Sie wird immer editierbar und ganz links angezeigt.",
     "poll_total": "SUMME",
     "poll_comment_list": "Kommentare",
@@ -297,7 +297,7 @@
     "contacts_info3": "Auf den Avatar doppelklicken, um das entsprechende Profil anzuzeigen",
     "contacts_info4": "Jeder Teilnehmer kann den Chatverlauf endgültig löschen",
     "contacts_removeHistoryTitle": "Den Chatverlauf löschen",
-    "contacts_confirmRemoveHistory": "Bist du sicher, dass du den Chatverlauf endgültig löschen willst? Die Daten sind dann weg.",
+    "contacts_confirmRemoveHistory": "Bist du sicher, dass du den Chatverlauf endgültig löschen willst? Die Daten sind dann weg",
     "contacts_removeHistoryServerError": "Es gab einen Fehler bei dem Löschen des Chatverlaufs. Versuche es später noch einmal",
     "contacts_fetchHistory": "Den früheren Verlauf laden",
     "contacts_friends": "Kontakte",
@@ -422,7 +422,7 @@
     "register_whyRegister": "Wieso solltest du dich registrieren?",
     "register_header": "Willkommen zu CryptPad",
     "register_explanation": "<h3>Lass uns ein paar Punkte überprüfen:</h3><ul class='list-unstyled'><li><i class='fa fa-info-circle'> </i> Dein Passwort ist dein Geheimnis, um alle deine Dokumente zu verschlüsseln. Wenn du es verlierst, können deine Daten nicht wiederhergestellt werden.</li><li><i class='fa fa-info-circle'> </i> Du kannst die Pads, die du zuletzt angesehen hast, importieren. Sie sind dann in deinem CryptDrive.</li><li><i class='fa fa-info-circle'> </i> Wenn du den Rechner mit anderen teilst, musst du dich ausloggen, wenn du fertig bist. Es ist nicht ausreichend, das Browserfenster oder den Browser zu schließen.</li></ul>",
-    "register_writtenPassword": "Ich habe meinen Benutzername und mein Passwort notiert. Weiter geht's.",
+    "register_writtenPassword": "Ich habe meinen Benutzername und mein Passwort notiert. Weiter geht's",
     "register_cancel": "Zurück",
     "register_warning": "\"Ohne Preisgabe von Daten\" bedeutet, dass niemand deine Daten wiederherstellen kann, wenn du dein Passwort verlierst.",
     "register_alreadyRegistered": "Dieser Benutzer existiert bereits, möchtest du dich einloggen?",
@@ -441,7 +441,7 @@
     "settings_restore": "Wiederherstellen",
     "settings_backupHint2": "Lade den Inhalt aller Pads herunter. Die Pads werden in einem lesbaren Format heruntergeladen, wenn dies möglich ist.",
     "settings_backup2": "Mein CryptDrive herunterladen",
-    "settings_backup2Confirm": "Dies wird alle Pads und Dateien von deinem CryptDrive herunterladen. Wenn du fortfahren möchtest, wähle einen Namen und klicke auf OK.",
+    "settings_backup2Confirm": "Dies wird alle Pads und Dateien von deinem CryptDrive herunterladen. Wenn du fortfahren möchtest, wähle einen Namen und klicke auf OK",
     "settings_exportTitle": "Dein CryptDrive exportieren",
     "settings_exportDescription": "Bitte warte, während wir deine Dokumente herunterladen und entschlüsseln. Dies kann ein paar Minuten dauern. Wenn das Browserfenster geschlossen wird, wird der Vorgang unterbrochen.",
     "settings_exportFailed": "Wenn der Download eines Pads länger als 1 Minute dauert, wird dieses Pad nicht im Export enthalten sein. Für jedes nicht exportierte Pad wird der entsprechende Link angezeigt.",
@@ -477,12 +477,12 @@
     "settings_importConfirm": "Bist du sicher, dass du die kürzlich besuchten Pads in das CryptDrive deines Kontos importieren möchtest??",
     "settings_importDone": "Import abgeschlossen",
     "settings_autostoreTitle": "Speichern von Pads im CryptDrive",
-    "settings_autostoreHint": "<b>Automatisch:</b> Alle Pads werden in deinem CryptDrive gespeichert.<br><b>Manuell (immer nachfragen):</b> Wenn du ein Pad noch nicht gespeichert hast, wirst du gefragt, ob du es im CryptDrive speichern willst.<br><b>Manuell (nie nachfragen):</b> Pads werden nicht automatisch im CryptDrive gespeichert. Die Option zum Speichern wird versteckt.<br>",
+    "settings_autostoreHint": "<b>Automatisch:</b> Alle Pads werden in deinem CryptDrive gespeichert.<br><b>Manuell (immer nachfragen):</b> Wenn du ein Pad noch nicht gespeichert hast, wirst du gefragt, ob du es im CryptDrive speichern willst.<br><b>Manuell (nie nachfragen):</b> Pads werden nicht automatisch im CryptDrive gespeichert. Die Option zum Speichern wird versteckt.",
     "settings_autostoreYes": "Automatisch",
     "settings_autostoreNo": "Manuell (nie nachfragen)",
     "settings_autostoreMaybe": "Manuell (immer nachfragen)",
     "settings_userFeedbackTitle": "Rückmeldung",
-    "settings_userFeedbackHint1": "CryptPad sendet grundlegende Rückmeldungen zum Server, um die Benutzererfahrung verbessern zu können.",
+    "settings_userFeedbackHint1": "CryptPad sendet grundlegende Rückmeldungen zum Server, um die Benutzererfahrung verbessern zu können. ",
     "settings_userFeedbackHint2": "Der Inhalt deiner Pads wird nie mit dem Server geteilt.",
     "settings_userFeedback": "Rückmeldungen aktivieren",
     "settings_deleteTitle": "Löschung des Kontos",
@@ -796,7 +796,7 @@
             },
             "forget": {
                 "q": "Was passiert, wenn ich mein Passwort vergesse?",
-                "a": " Wenn wir dein Passwort zurücksetzen könnten, könnten wir auch auf deine Daten zugreifen. Wenn du dein Passwort nicht aufgeschrieben hast und dich auch nicht daran erinnern kannst, kannst du vielleicht deine Pads aus deinem Browserverlauf zurückgewinnen."
+                "a": "Wenn wir dein Passwort zurücksetzen könnten, könnten wir auch auf deine Daten zugreifen. Wenn du dein Passwort nicht aufgeschrieben hast und dich auch nicht daran erinnern kannst, kannst du vielleicht deine Pads aus deinem Browserverlauf zurückgewinnen."
             },
             "change": {
                 "q": "Was ist, wenn ich mein Passwort ändern möchte?",
@@ -852,20 +852,20 @@
     "help": {
         "title": "Mit CryptPad anfangen",
         "generic": {
-            "more": "Erfahre mehr über die Nutzung von CryptPad, indem du unsere <a href=\"/faq.html\" target=\"_blank\">FAQ</a> liest.",
-            "share": "Benutze das Teilen-Menü (<span class=\"fa fa-share-alt\"></span>), um Links zu generieren, die Mitarbeiter zum Lesen oder Bearbeiten einladen.",
-            "save": "Alle Änderungen werden automatisch synchronisiert. Du misst sie also nicht speichern."
+            "more": "Erfahre mehr über die Nutzung von CryptPad, indem du unsere <a href=\"/faq.html\" target=\"_blank\">FAQ</a> liest",
+            "share": "Benutze das Teilen-Menü (<span class=\"fa fa-share-alt\"></span>), um Links zu generieren, die Mitarbeiter zum Lesen oder Bearbeiten einladen",
+            "save": "Alle Änderungen werden automatisch synchronisiert. Du misst sie also nicht speichern"
         },
         "text": {
-            "formatting": "Du kannst die Werkzeugleiste anzeigen oder verbergen, indem du auf <span class=\"fa fa-caret-down\"></span> oder <span class=\"fa fa-caret-up\"></span> klickst.",
-            "embed": "Registrierte Benutzer können mit <span class=\"fa fa-image\"></span> Bilder oder Dateien einbetten, die in ihrem CryptDrive gespeichert sind.",
-            "history": "Du kannst das Menü <em>Verlauf</em> <span class=\"fa fa-history\"></span> benutzen, um frühere Versionen anzusehen oder wiederherzustellen."
+            "formatting": "Du kannst die Werkzeugleiste anzeigen oder verbergen, indem du auf <span class=\"fa fa-caret-down\"></span> oder <span class=\"fa fa-caret-up\"></span> klickst",
+            "embed": "Registrierte Benutzer können mit <span class=\"fa fa-image\"></span> Bilder oder Dateien einbetten, die in ihrem CryptDrive gespeichert sind",
+            "history": "Du kannst das Menü <em>Verlauf</em> <span class=\"fa fa-history\"></span> benutzen, um frühere Versionen anzusehen oder wiederherzustellen"
         },
         "pad": {
-            "export": "Du kannst Pads als PDF exportieren, indem du auf die Schaltfläche <span class=\"fa fa-print\"></span> in der Werkzeugleiste klickst."
+            "export": "Du kannst Pads als PDF exportieren, indem du auf die Schaltfläche <span class=\"fa fa-print\"></span> in der Werkzeugleiste klickst"
         },
         "code": {
-            "modes": "Benutze das Dropdown-Menü im Untermenü <span class=\"fa fa-ellipsis-h\"></span>, um die Syntaxhervorhebung oder das Farbschema zu ändern."
+            "modes": "Benutze das Dropdown-Menü im Untermenü <span class=\"fa fa-ellipsis-h\"></span>, um die Syntaxhervorhebung oder das Farbschema zu ändern"
         },
         "beta": {
             "warning": "Dieser Editor ist noch <strong>experimentell</strong>, du kannst Fehler <a href=\"https://github.com/xwiki-labs/cryptpad/issues/\" target=\"_blank\">hier</a> melden"
@@ -874,26 +874,26 @@
             "access": "Zugriff ist auf registrierte Nutzer beschränkt, Mitarbeiter werden sich einloggen müssen"
         },
         "slide": {
-            "markdown": "Schreibe Folien in <a href=\"http://www.markdowntutorial.com/\">Markdown</a> and trenne sie mit <code>---</code> in einer Zeile.",
-            "present": "Starte die Präsentation mit der Schaltfläche <span class=\"fa fa-play-circle\"></span>.",
-            "settings": "Ändere die Einstellungen der Präsentation (Hintergrund, Übergang, Anzeige der Foliennummer etc.) über die Schaltfläche <span class=\"fa fa-cog\"></span> im Untermenü <span class=\"fa fa-ellipsis-h\"></span>.",
-            "colors": "Ändere Text- und Hintergrundfarbe mit den Schaltflächen <span class=\"fa fa-i-cursor\"></span> und <span class=\"fa fa-square\"></span>."
+            "markdown": "Schreibe Folien in <a href=\"http://www.markdowntutorial.com/\">Markdown</a> and trenne sie mit <code>---</code> in einer Zeile",
+            "present": "Starte die Präsentation mit der Schaltfläche <span class=\"fa fa-play-circle\"></span>",
+            "settings": "Ändere die Einstellungen der Präsentation (Hintergrund, Übergang, Anzeige der Foliennummer etc.) über die Schaltfläche <span class=\"fa fa-cog\"></span> im Untermenü <span class=\"fa fa-ellipsis-h\"></span>",
+            "colors": "Ändere Text- und Hintergrundfarbe mit den Schaltflächen <span class=\"fa fa-i-cursor\"></span> und <span class=\"fa fa-square\"></span>"
         },
         "poll": {
             "decisions": "Treffe Entscheidungen gemeinsam mit deinen Bekannten",
             "options": "Mache Vorschläge und teile deine Präferenzen mit",
-            "choices": "Klicke in die Zellen in deiner Spalte, um zwischen ja (<strong>✔</strong>), viellecht (<strong>~</strong>), oder nein (<strong>✖</strong>) zu wählen.",
-            "submit": "Klicke auf <strong>Senden</strong>, damit deine Auswahl für andere sichtbar wird."
+            "choices": "Klicke in die Zellen in deiner Spalte, um zwischen ja (<strong>✔</strong>), viellecht (<strong>~</strong>), oder nein (<strong>✖</strong>) zu wählen",
+            "submit": "Klicke auf <strong>Senden</strong>, damit deine Auswahl für andere sichtbar wird"
         },
         "whiteboard": {
-            "colors": "Ein Doppelklick auf Farben erlaubt, die Palette zu verändern.",
-            "mode": "Deaktiviere den Zeichenmodus, um die vorhandenen Striche zu verschieben und zu verlängern.",
-            "embed": "Bette Bilder von deiner Festplatte <span class=\"fa fa-file-image-o\"></span> oder von deinem CryptDrive <span class=\"fa fa-image\"></span> ein und exportiere sie als PNG zu deiner Festplatte <span class=\"fa fa-download\"></span> oder zu deinem CryptDrive <span class=\"fa fa-cloud-upload\"></span>."
+            "colors": "Ein Doppelklick auf Farben erlaubt, die Palette zu verändern",
+            "mode": "Deaktiviere den Zeichenmodus, um die vorhandenen Striche zu verschieben und zu verlängern",
+            "embed": "Bette Bilder von deiner Festplatte <span class=\"fa fa-file-image-o\"></span> oder von deinem CryptDrive <span class=\"fa fa-image\"></span> ein und exportiere sie als PNG zu deiner Festplatte <span class=\"fa fa-download\"></span> oder zu deinem CryptDrive <span class=\"fa fa-cloud-upload\"></span>"
         },
         "kanban": {
-            "add": "Füge ein neues Board hinzu mit der Schaltfläche <span class=\"fa fa-plus\"></span> in der rechten oberen Ecke.",
-            "task": "Verschiebe Einträge von einem Board zum anderen per Drag & Drop.",
-            "color": "Ändere die Farben durch Klicken auf den farbigen Teil neben den Boardtiteln."
+            "add": "Füge ein neues Board hinzu mit der Schaltfläche <span class=\"fa fa-plus\"></span> in der rechten oberen Ecke",
+            "task": "Verschiebe Einträge von einem Board zum anderen per Drag & Drop",
+            "color": "Ändere die Farben durch Klicken auf den farbigen Teil neben den Boardtiteln"
         }
     },
     "driveReadmeTitle": "Was ist CryptPad?",
@@ -911,11 +911,11 @@
     "edit": "Bearbeiten",
     "view": "Ansehen",
     "readme_cat2_l1": "Die Schaltfläche {0} in deinem Pad erlaubt dir, anderen einen Zugang für die Mitarbeit zu geben (entweder zum {1} oder zum {2}).",
-    "readme_cat2_l2": "Der Titel eines Pads kann mit einem Klick auf den Stift geändert werden.",
+    "readme_cat2_l2": "Der Titel eines Pads kann mit einem Klick auf den Stift geändert werden",
     "readme_cat3": "Entdecke CryptPad-Anwendungen",
     "readme_cat3_l1": "Mit dem CryptPad Codeeditor kannst du Code wie JavaScript, Markdown oder HTML bearbeiten",
     "readme_cat3_l2": "Mit dem CryptPad Präsentationseditor kannst du schnell Vorträge mit Hilfe von Markdown gestalten",
-    "readme_cat3_l3": "Mit der CryptPad Umfrage kannst du schnell Abstimmungen durchführen, insbesondere, um Meetings zu planen, die in den Kalender von allen passen.",
+    "readme_cat3_l3": "Mit der CryptPad Umfrage kannst du schnell Abstimmungen durchführen, insbesondere, um Meetings zu planen, die in den Kalender von allen passen",
     "tips": {
         "store": "Jedes Mal, wenn du ein Pad besuchst und eingeloggt bist, wird es in deinem CryptDrive gespeichert.",
         "marker": "Du kannst Text in einem Pad markieren, in dem du den Eintrag \"Marker\" aus dem Stil-Menü auswählst.",
@@ -924,13 +924,13 @@
         "drive": "Eingeloggte Benutzer können ihre Dateien in ihrem CryptDrive organisieren. Das CryptDrive ist in allen Pads mit einem Klick auf das CryptPad-Symbol oben links erreichbar.",
         "profile": "Registrierte Benutzer können ihr Profil über das Benutzer-Menü oben rechts bearbeiten.",
         "avatars": "Du kannst ein Profilbild hochladen. Andere Nutzer sehen es, wenn sie mit dir in einem Pad zusammenarbeiten.",
-        "tags": "Füge Tags zu deinen Pads hinzu und starte in deinem CryptDrive eine Suche mit dem Zeichen #, um sie zu finden.",
+        "tags": "Füge Tags zu deinen Pads hinzu und starte in deinem CryptDrive eine Suche mit dem Zeichen #, um sie zu finden",
         "shortcuts": "Mit den Tastenkürzeln `Strg+b`, `Strg+i` und `Strg+u` formatierst du Text fett, kursiv oder unterstrichen.",
         "indent": "In nummerierten Listen oder Aufzählungen kannst du mit Tab und Umschalt+Tab den Einzug erhöhen oder reduzieren."
     },
-    "feedback_about": "Wenn du das liest, fragst du dich wahrscheinlich, weshalb dein Browser bei der der Ausführung mancher Aktionen Anfragen an Webseiten sendet.",
+    "feedback_about": "Wenn du das liest, fragst du dich wahrscheinlich, weshalb dein Browser bei der der Ausführung mancher Aktionen Anfragen an Webseiten sendet",
     "feedback_privacy": "Wir respektieren deine Datenschutz, aber gleichzeitig wollen wir, dass die Benutzung von CryptPad sehr leicht ist. Deshalb wollen wir erfahren, welche Funktion am wichtigsten für unsere Benutzer ist, indem wir diese mit einer genauen Parameterbeschreibung anfordern.",
-    "feedback_optout": "Wenn du das nicht möchtest, kannst du es in <a href='/settings/'>deinen Einstellungen</a> deaktivieren.",
+    "feedback_optout": "Wenn du das nicht möchtest, kannst du es in <a href='/settings/'>deinen Einstellungen</a> deaktivieren",
     "creation_404": "Dieses Pad existiert nicht mehr. Benutze das folgende Formular, um ein neues Pad zu gestalten.",
     "creation_ownedTitle": "Pad-Typ",
     "creation_owned": "Eigenes Pad",
@@ -971,8 +971,8 @@
     "password_show": "Anzeigen",
     "properties_addPassword": "Passwort hinzufügen",
     "properties_changePassword": "Passwort ändern",
-    "properties_confirmNew": "Bist du sicher? Das Hinzufügen eines Passworts wird die URL dieses Pads ändern und den Verlauf löschen. Benutzer ohne das Passwort werden den Zugang zu diesem Pad verlieren.",
-    "properties_confirmChange": "Bist du sicher? Das Ändern des Passworts wird den Verlauf löschen. Benutzer ohne das neue Passwort werden den Zugang zu diesem Pad verlieren.",
+    "properties_confirmNew": "Bist du sicher? Das Hinzufügen eines Passworts wird die URL dieses Pads ändern und den Verlauf löschen. Benutzer ohne das Passwort werden den Zugang zu diesem Pad verlieren",
+    "properties_confirmChange": "Bist du sicher? Das Ändern des Passworts wird den Verlauf löschen. Benutzer ohne das neue Passwort werden den Zugang zu diesem Pad verlieren",
     "properties_passwordSame": "Das neue Passwort muss sich von dem alten Passwort unterscheiden.",
     "properties_passwordError": "Beim Versuch das Passwort zu ändern ist ein Fehler aufgetreten. Bitte versuche es nochmal.",
     "properties_passwordWarning": "Das Passwort wurde erfolgreich geändert, aber dein CryptDrive konnte nicht aktualisiert werden. Du musst möglicherweise die alte Version des Pads manuell entfernen.<br>Klicke auf OK, um die Seite neu zu laden und die Zugriffsrechte zu aktualisieren.",
@@ -1019,7 +1019,7 @@
     "crowdfunding_popup_text": "<h3>Wir brauchen deine Hilfe!</h3>Um sicherzustellen, dass CryptPad weiter aktiv entwickelt wird, unterstütze bitte das Projekt über die <a href=\"https://opencollective.com/cryptpad\">OpenCollective Seite</a>, wo du unsere <b>Roadmap</b> und <b>Funding-Ziele</b> lesen kannst.",
     "crowdfunding_popup_yes": "OpenCollective besuchen",
     "crowdfunding_popup_no": "Nicht jetzt",
-    "crowdfunding_popup_never": "Nicht mehr darum bitten.",
+    "crowdfunding_popup_never": "Nicht mehr darum bitten",
     "invalidHashError": "Das angeforderte Dokument hat eine ungültige URL.",
     "oo_cantUpload": "Das Hochladen von Dateien ist nicht erlaubt, während andere Nutzer anwesend sind.",
     "oo_uploaded": "Das Hochladen wurde abgeschlossen. Klicke auf OK zum Neuladen der Seite oder auf Abbrechen zum Fortfahren im schreibgeschützten Modus.",
