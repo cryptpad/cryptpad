@@ -13,6 +13,8 @@ VOLUME /cryptpad/blobstage
 VOLUME /cryptpad/pins
 VOLUME /cryptpad/tasks
 VOLUME /cryptpad/block
+VOLUME /cryptpad/blob
+VOLUME /cryptpad/blobstage
 
 # Required packages
 #   jq is a build only dependency, removed in cleanup stage
