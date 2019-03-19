@@ -1,3 +1,25 @@
+# Sloth release (v2.18.0)
+
+## Goals
+
+This release was developed during a busy period, so it contains fewer features than normal.
+In particular we aimed to improve some aspects of our infrastructure, including finishing our deployment of _weblate_ for translations.
+
+## Features
+
+* Inserting `[TOC]` into the code editor while in markdown mode will render a table of contents in the preview pane.
+* The code and slide editors also features some usability improvements pertaining to how tabs are handled, as it was possible to mix tabs and spaces unintentionally.
+* The search bar in users drives now displays an _x_ while displaying search results, allowing users to easily return to the default view of their drive with a click.
+* We've updated our translation guide to describe our new policies and procedures for translating CryptPad.
+* We've added some additional features to our debugging application to help some users that reported difficulty finding documents in the history of their CryptDrives.
+
+## Bug fixes
+
+* We discovered that some additional validation we'd applied to document hashes had falsely identified some old URLs as invalid, and updated the validation to correctly account for those edge cases.
+* We noticed that it was not possible to use arrow keys to navigate within some inputs in the drive, and fixed the issue.
+* We also realized that some values were not correctly initialized for new accounts, and restored the intended behaviour.
+* We've added a clientside migration to users' accounts to remove some duplicated values, making drives take up slightly less space over time.
+
 # Raccoon release (v2.17.0)
 
 ## Goals
