@@ -3,7 +3,7 @@
 # Creating customize folder
 mkdir -p customize
 [ -z "$(ls -A customize)" ] && echo "Creating customize folder" \
-  && cp -R customize.dist/* customize/ \
+  && mkdir customize/ \
   && cp config.example.js customize/config.js
 
 # Linking config.js
