@@ -1,3 +1,28 @@
+# Tapir release (v2.19.0)
+
+## Goals
+
+As we're very busy wrapping up the project which has funded CryptPad's development so far, this release is very small.
+We've requested assistance improving the state of our translations, and received some very helpful contributions.
+
+## Update notes
+
+* We discovered that `container-start.sh` erroneously made a full copy of the `customize.dist` directory. This caused issues when updating to newer versions of CryptPad, where the customize directory was out of date with the rest of the instance.
+  * if you have installed using docker, and have not customized your instance, you can safely remove everything in the `customize` directory **after having backed up your config.js file**. Your instance should fall back to using the default versions of those files instead of the outdated copies.
+  * if you have customized your instance, you'll need to be more careful about cleaning up. Remove the files which you haven't modified, and compare your modified files against the latest versions of the default files. Merge your changes into the updated versions, and you should have an easier time updating in the future.
+
+## Features
+
+* We've rearranged the example server configuration file to make it easier to read and understand
+* CryptPad now features a Russian translation which is 10% complete
+* Our German translation has received a few fixes
+* One of our Romanian colleagues has begun updating the Romanian translation, which is currently 39% complete
+* **NOTE**: we're still learning our way around using weblate. We haven't given credit to these contributions because we're unsure if their authors want to be named. Going forward we'll figure out a system for giving proper credit where it is desired.
+
+## Bug fixes
+
+* As noted above, we've made some small changes to `container-start.sh` so that new docker images are correctly initialized
+
 # Sloth release (v2.18.0)
 
 ## Goals
