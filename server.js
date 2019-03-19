@@ -75,20 +75,15 @@ var setHeaders = (function () {
     if (config.padContentSecurity) {
         padHeaders['Content-Security-Policy'] = clone(config.padContentSecurity);
     }
-    const ooHeaders = clone(headers);
-    if (config.ooContentSecurity) {
-        ooHeaders['Content-Security-Policy'] = clone(config.ooContentSecurity);
-    }
     if (Object.keys(headers).length) {
         return function (req, res) {
-            const h = [/^\/pad(2)?\/inner\.html.*/].some((regex) => {
-                    return regex.test(req.url)
-                }) ? padHeaders : ([
+            const h = [
+                    /^\/pad(2)?\/inner\.html.*/,
                     /^\/sheet\/inner\.html.*/,
                     /^\/common\/onlyoffice\/.*\/index\.html.*/
                 ].some((regex) => {
-                return regex.test(req.url)
-            }) ? ooHeaders : headers);
+                    return regex.test(req.url)
+                }) ? padHeaders : headers;
             for (let header in h) { res.setHeader(header, h[header]); }
         };
     }
