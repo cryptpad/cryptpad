@@ -1028,5 +1028,6 @@
     "crowdfunding_popup_yes": "Go to OpenCollective",
     "crowdfunding_popup_no": "Not now",
     "crowdfunding_popup_never": "Don't ask me again",
-    "markdown_toc": "Contents"
+    "markdown_toc": "Contents",
+    "fm_expirablePad": "This pad will expire on {0}"
 }
