@@ -251,7 +251,19 @@ define([
             if (!bool && update) { onRemote(); }
         };
 
-        onLocal = function () {
+        var hasChanged = function (content) {
+            try {
+                var oldValue = JSON.parse(cpNfInner.chainpad.getUserDoc());
+                if (Array.isArray(content)) {
+                    return JSONSortify(content) !== JSONSortify(normalize(oldValue));
+                } else if (content.content) {
+                    return content.content !== oldValue.content;
+                }
+            } catch (e) {}
+            return false;
+        };
+
+        onLocal = function (padChange) {
             if (state !== STATE.READY) { return; }
             if (readOnly) { return; }
 
@@ -263,6 +275,9 @@ define([
                 throw new Error("Content must be an object or array, type is " + typeof(content));
             }
 
+            if (padChange && hasChanged(content)) {
+                cpNfInner.metadataMgr.addAuthor();
+            }
             oldContent = content;
 
             if (Array.isArray(content)) {
@@ -669,7 +684,7 @@ define([
                 setTextContentGetter: function (tcg) { textContentGetter = tcg; },
 
                 // Inform the framework that the content of the pad has been changed locally.
-                localChange: onLocal,
+                localChange: function () { onLocal(true); },
 
                 // Register to be informed if the state (whether the document is editable) changes.
                 onEditableChange: evEditableStateChange.reg,
