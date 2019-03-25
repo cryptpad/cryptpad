@@ -20,7 +20,6 @@ var domain = ' ' + _domain;
 var baseCSP = [
     "default-src 'none'",
     "style-src 'unsafe-inline' 'self' " + domain,
-    "script-src 'self'" + domain,
     "font-src 'self' data:" + domain,
 
     /*  child-src is used to restrict iframes to a set of allowed domains.
@@ -45,6 +44,7 @@ var baseCSP = [
 
     // for accounts.cryptpad.fr authentication and cross-domain iframe sandbox
     "frame-ancestors *",
+    ""
 ];
 
 
