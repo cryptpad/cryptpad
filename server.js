@@ -176,7 +176,7 @@ app.get('/api/config', function(req, res){
         admins = (config.adminKeys || []).map(function (k) {
             k = k.replace(/\/+$/, '');
             var s = k.split('/');
-            return s[s.length-1];
+            return s[s.length-1].replace(/-/g, '/');
         });
     } catch (e) { console.error("Can't parse admin keys"); }
     res.setHeader('Content-Type', 'text/javascript');
