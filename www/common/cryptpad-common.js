@@ -1140,31 +1140,6 @@ define([
             window.RTCPeerConnection);
     };
 
-    common.isBrave = function () { // Courtesy of https://www.ctrl.blog/entry/brave-user-agent-detection
-        try {
-            // initial assertions
-            if (!window.google_onload_fired && navigator.userAgent && !navigator.userAgent.includes('Chrome')) {
-                return false;
-            }
-
-            // set up test
-            var test = document.createElement('iframe');
-            test.style.display = 'none';
-            document.body.appendChild(test);
-
-            // empty frames only have this attribute set in Brave Shield
-            var is_brave = (test.contentWindow.google_onload_fired === true);
-
-            // teardown test
-            test.parentNode.removeChild(test);
-
-            return is_brave;
-        } catch (e) { // just in case...
-            console.error(e);
-            return false;
-        }
-    };
-
     common.ready = (function () {
         var env = {};
         var initialized = false;
@@ -1210,10 +1185,6 @@ define([
             }
             if (!common.hasCSSVariables()) {
                 Feedback.send('NO_CSS_VARIABLES');
-            }
-
-            if (common.isBrave()) {
-                Feedback.send('BRAVE_BROWSER');
             }
 
             Feedback.reportScreenDimensions();
