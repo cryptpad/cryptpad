@@ -15,6 +15,7 @@ const Package = require('./package.json');
 const Pinned = require('./pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
+const getFolderSize = require("get-folder-size");
 
 var RPC = module.exports;
 
@@ -1484,6 +1485,101 @@ var isNewChannel = function (Env, channel, cb) {
     });
 };
 
+var getDiskUsage = function (Env, cb) {
+    var data = {};
+    nThen(function (waitFor) {
+        getFolderSize('./', waitFor(function(err, info) {
+            data.total = info;
+        }));
+        getFolderSize(Env.paths.pin, waitFor(function(err, info) {
+            data.pin = info;
+        }));
+        getFolderSize(Env.paths.blob, waitFor(function(err, info) {
+            data.blob = info;
+        }));
+        getFolderSize(Env.paths.staging, waitFor(function(err, info) {
+            data.blobstage = info;
+        }));
+        getFolderSize(Env.paths.block, waitFor(function(err, info) {
+            data.block = info;
+        }));
+        getFolderSize(Env.paths.data, waitFor(function(err, info) {
+            data.datastore = info;
+        }));
+    }).nThen(function () {
+        cb (void 0, data);
+    });
+};
+var getRegisteredUsers = function (Env, cb) {
+    var dir = Env.paths.pin;
+    var folders;
+    var users = 0;
+    nThen(function (waitFor) {
+        Fs.readdir(dir, waitFor(function (err, list) {
+            if (err) {
+                waitFor.abort();
+                return void cb(err);
+            }
+            folders = list;
+        }));
+    }).nThen(function (waitFor) {
+        folders.forEach(function (f) {
+            var dir = Env.paths.pin + '/' + f;
+            Fs.readdir(dir, waitFor(function (err, list) {
+                if (err) { return; }
+                users += list.length;
+            }));
+        });
+    }).nThen(function () {
+        cb(void 0, users);
+    });
+};
+var getActiveSessions = function (Env, ctx, cb) {
+    var total = ctx.users ? Object.keys(ctx.users).length : '?';
+
+    var ips = [];
+    Object.keys(ctx.users).forEach(function (u) {
+        var user = ctx.users[u];
+        var socket = user.socket;
+        var conn = socket.upgradeReq.connection;
+        if (ips.indexOf(conn.remoteAddress) === -1) {
+            ips.push(conn.remoteAddress);
+        }
+    });
+
+    cb (void 0, [total, ips.length]);
+};
+
+var adminCommand = function (Env, ctx, publicKey, config, data, cb) {
+    var admins = [];
+    try {
+        admins = (config.adminKeys || []).map(function (k) {
+            k = k.replace(/\/+$/, '');
+            var s = k.split('/');
+            return s[s.length-1];
+        });
+    } catch (e) { console.error("Can't parse admin keys. Please update or fix your config.js file!"); }
+    if (admins.indexOf(publicKey) === -1) {
+        return void cb("FORBIDDEN");
+    }
+    // Handle commands here
+    switch (data[0]) {
+        case 'ACTIVE_SESSIONS':
+            return getActiveSessions(Env, ctx, cb);
+        case 'ACTIVE_PADS':
+            return cb(void 0, ctx.channels ? Object.keys(ctx.channels).length : '?');
+        case 'REGISTERED_USERS':
+            return getRegisteredUsers(Env, cb);
+        case 'DISK_USAGE':
+            return getDiskUsage(Env, cb);
+        case 'FLUSH_CACHE':
+            config.flushCache();
+            return cb(void 0, true);
+        default:
+            return cb('UNHANDLED_ADMIN_COMMAND');
+    }
+};
+
 var isUnauthenticatedCall = function (call) {
     return [
         'GET_FILE_SIZE',
@@ -1516,6 +1612,7 @@ var isAuthenticatedCall = function (call) {
         'REMOVE_PINS',
         'WRITE_LOGIN_BLOCK',
         'REMOVE_LOGIN_BLOCK',
+        'ADMIN',
     ].indexOf(call) !== -1;
 };
 
@@ -1587,6 +1684,7 @@ RPC.create = function (
     var blobPath = paths.blob = keyOrDefaultString('blobPath', './blob');
     var blobStagingPath = paths.staging = keyOrDefaultString('blobStagingPath', './blobstage');
     paths.block = keyOrDefaultString('blockPath', './block');
+    paths.data = keyOrDefaultString('filePath', './datastore');
 
     var isUnauthenticateMessage = function (msg) {
         return msg && msg.length === 2 && isUnauthenticatedCall(msg[0]);
@@ -1871,6 +1969,14 @@ RPC.create = function (
                         return void Respond(e);
                     }
                     Respond(e);
+                });
+            case 'ADMIN':
+                return void adminCommand(Env, ctx, safeKey, config, msg[1], function (e, result) {
+                    if (e) {
+                        WARN(e, result);
+                        return void Respond(e);
+                    }
+                    Respond(void 0, result);
                 });
             default:
                 return void Respond('UNSUPPORTED_RPC_CALL', msg);

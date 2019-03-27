@@ -54,6 +54,10 @@ if (FRESH_MODE) {
     console.log("FRESH MODE ENABLED");
     FRESH_KEY = +new Date();
 }
+config.flushCache = function () {
+    FRESH_KEY = +new Date();
+};
+
 
 const clone = (x) => (JSON.parse(JSON.stringify(x)));
 
@@ -167,6 +171,14 @@ if (config.privKeyAndCertFiles) {
 
 app.get('/api/config', function(req, res){
     var host = req.headers.host.replace(/\:[0-9]+/, '');
+    var admins = [];
+    try {
+        admins = (config.adminKeys || []).map(function (k) {
+            k = k.replace(/\/+$/, '');
+            var s = k.split('/');
+            return s[s.length-1];
+        });
+    } catch (e) { console.error("Can't parse admin keys"); }
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(function(){\n' + [
         'var obj = ' + JSON.stringify({
@@ -180,6 +192,7 @@ app.get('/api/config', function(req, res){
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
             httpUnsafeOrigin: config.httpUnsafeOrigin,
+            adminKeys: admins,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
             if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }

@@ -77,6 +77,8 @@ define([
             DRIVE_USEROBJECT: Store.userObjectCommand,
             // Settings,
             DELETE_ACCOUNT: Store.deleteAccount,
+            // Admin
+            ADMIN_RPC: Store.adminRpc,
         };
 
         Rpc.query = function (cmd, data, cb) {
