@@ -615,6 +615,11 @@ define([
         });
     };
 
+    // Admin
+    common.adminRpc = function (data, cb) {
+        postMessage("ADMIN_RPC", data, cb);
+    };
+
     // Network
     common.onNetworkDisconnect = Util.mkEvent();
     common.onNetworkReconnect = Util.mkEvent();

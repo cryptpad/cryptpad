@@ -1511,6 +1511,7 @@ define([
                     return;
                 }
                 active = key;
+                common.setHash(key);
                 $categories.find('.cp-leftside-active').removeClass('cp-leftside-active');
                 $category.addClass('cp-leftside-active');
                 showCategories(categories[key]);

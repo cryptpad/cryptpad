@@ -58,6 +58,18 @@ define([
                 rpc.send('UNPIN', channels, cb);
             };
 
+            // Get data for the admin panel
+            exp.adminRpc = function (obj, cb) {
+                if (!obj.cmd) {
+                    setTimeout(function () {
+                        cb('[TypeError] admin rpc expects a command');
+                    });
+                    return;
+                }
+                var params = [obj.cmd, obj.data];
+                rpc.send('ADMIN', params, cb);
+            };
+
             // ask the server what it thinks your hash is
             exp.getServerHash = function (cb) {
                 rpc.send('GET_HASH', edPublic, function (e, hash) {
