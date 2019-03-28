@@ -4,7 +4,7 @@
 mkdir -p customize
 
 # Copying default config
-[ ! -h customize/config.js ] && echo "Creating config.js" && cp config.example.js customize/config.js
+[ ! -f customize/config.js ] && echo "Creating config.js" && cp config.example.js customize/config.js
 
 # Linking config.js
 [ ! -h config.js ] && echo "Linking config.js" && ln -s customize/config.js config.js
