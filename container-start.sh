@@ -13,13 +13,13 @@ sedeasy() {
 
 # Configure
 [ -n "$USE_SSL" ] && echo "Using secure websockets: $USE_SSL" \
-  && sedeasy "useSecureWebsockets: [^,]*," "useSecureWebsockets: ${USE_SSL}," customize/config.js
+  && sedeasy "useSecureWebsockets: [^,]*," "useSecureWebsockets: ${USE_SSL}," config/config.js
 
 [ -n "$STORAGE" ] && echo "Using storage adapter: $STORAGE" \
-  && sedeasy "storage: [^,]*," "storage: ${STORAGE}," customize/config.js
+  && sedeasy "storage: [^,]*," "storage: ${STORAGE}," config/config.js
 
 [ -n "$LOG_TO_STDOUT" ] && echo "Logging to stdout: $LOG_TO_STDOUT" \
-  && sedeasy "logToStdout: [^,]*," "logToStdout: ${LOG_TO_STDOUT}," customize/config.js
+  && sedeasy "logToStdout: [^,]*," "logToStdout: ${LOG_TO_STDOUT}," config/config.js
 
 export FRESH=1
 exec node ./server.js
