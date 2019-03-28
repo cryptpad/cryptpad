@@ -2,6 +2,7 @@ node_modules/
 www/bower_components/
 www/common/pdfjs/
 www/common/tippy/
+www/common/textFit.min.js
 www/common/highlight/
 www/common/jquery-ui/
 www/common/onlyoffice/sdkjs

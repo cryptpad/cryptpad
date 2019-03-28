@@ -25,8 +25,6 @@ define([
     };
 
     return function () {
-        var showingMore = false;
-
         var icons = [
                 [ 'pad', Msg.type.pad],
                 [ 'code', Msg.type.code],
@@ -39,7 +37,7 @@ define([
             ].filter(function (x) {
                 return isAvailableType(x[0]);
             })
-            .map(function (x, i) {
+            .map(function (x) {
                 var s = 'div.bs-callout.cp-callout-' + x[0];
                 var isEnabled = checkRegisteredType(x[0]);
                 //if (i > 2) { s += '.cp-more.cp-hidden'; }
