@@ -169,16 +169,18 @@ if (config.privKeyAndCertFiles) {
     };
 }
 
+var admins = [];
+try {
+    admins = (config.adminKeys || []).map(function (k) {
+        k = k.replace(/\/+$/, '');
+        var s = k.split('/');
+        return s[s.length-1].replace(/-/g, '/');
+    });
+} catch (e) { console.error("Can't parse admin keys"); }
+
 app.get('/api/config', function(req, res){
+    // TODO precompute any data that isn't dynamic to save some CPU time
     var host = req.headers.host.replace(/\:[0-9]+/, '');
-    var admins = [];
-    try {
-        admins = (config.adminKeys || []).map(function (k) {
-            k = k.replace(/\/+$/, '');
-            var s = k.split('/');
-            return s[s.length-1].replace(/-/g, '/');
-        });
-    } catch (e) { console.error("Can't parse admin keys"); }
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(function(){\n' + [
         'var obj = ' + JSON.stringify({
@@ -192,6 +194,7 @@ app.get('/api/config', function(req, res){
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
             httpUnsafeOrigin: config.httpUnsafeOrigin,
+            adminEmail: config.adminEmail,
             adminKeys: admins,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
