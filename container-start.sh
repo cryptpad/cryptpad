@@ -4,10 +4,7 @@
 mkdir -p customize
 
 # Copying default config
-[ ! -h customize/config.js ] && echo "Creating config.js" && cp config.example.js customize/config.js
-
-# Linking config.js
-[ ! -h config.js ] && echo "Linking config.js" && ln -s customize/config.js config.js
+[ ! -f config/config.js ] && echo "Creating config.js" && cp config/config.example.js config/config.js
 
 # Thanks to http://stackoverflow.com/a/10467453
 sedeasy() {
