@@ -1173,7 +1173,9 @@ define([
         common.getAttribute(['hideHelp', type], function (err, val) {
             //if ($(window).height() < 800 || $(window).width() < 800) { return void toggleHelp(true); }
             if (val === true) { return void toggleHelp(true); }
-            if (!val && ($(window).height() < 800 || $(window).width() < 800)) {
+            // Note: Help is always hidden by default now, to avoid displaying to many things in the UI
+            // This is why we have (true || ...)
+            if (!val && (true || $(window).height() < 800 || $(window).width() < 800)) {
                 return void showMore();
             }
         });
