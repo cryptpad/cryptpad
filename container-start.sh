@@ -4,6 +4,7 @@
 mkdir -p customize
 
 # Copying default config
+mkdir -p config
 [ ! -f config/config.js ] && echo "Creating config.js" && cp config/config.example.js config/config.js
 
 # Thanks to http://stackoverflow.com/a/10467453
