@@ -194,6 +194,7 @@ app.get('/api/config', function(req, res){
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
             httpUnsafeOrigin: config.httpUnsafeOrigin,
+            adminEmail: config.adminEmail,
             adminKeys: admins,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
