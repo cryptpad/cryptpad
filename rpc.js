@@ -794,13 +794,6 @@ var isPrivilegedUser = function (publicKey, cb) { // FIXME deprecate
         cb(list.indexOf(publicKey) !== -1);
     });
 };
-var safeMkdir = function (path, cb) { // FIXME replace with mkdirp
-    // flow wants the mkdir call w/ 3 args, 0o777 is default for a directory.
-    Fs.mkdir(path, 0o777, function (e) {
-        if (!e || e.code === 'EEXIST') { return void cb(); }
-        cb(e);
-    });
-};
 
 var makeFileStream = function (root, id, cb) {
     var stub = id.slice(0, 2);
@@ -809,7 +802,7 @@ var makeFileStream = function (root, id, cb) {
         WARN('makeFileStream', 'invalid id ' + id);
         return void cb('BAD_ID');
     }
-    safeMkdir(Path.join(root, stub), function (e) { // FIXME mkdirp
+    Fse.mkdirp(Path.join(root, stub), function (e) {
         if (e || !full) { // !full for pleasing flow, it's already checked
             WARN('makeFileStream', e);
             return void cb(e ? e.message : 'INTERNAL_ERROR');
@@ -1027,7 +1020,7 @@ var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
 
     var oldPath = makeFilePath(paths.staging, publicKey);
     if (!oldPath) {
-        WARN('safeMkdir', "oldPath is null");
+        WARN('safeMkdir', "oldPath is null"); // FIXME logging
         return void cb('RENAME_ERR');
     }
 
@@ -1035,13 +1028,13 @@ var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
         var prefix = id.slice(0, 2);
         var newPath = makeFilePath(paths.blob, id);
         if (typeof(newPath) !== 'string') {
-            WARN('safeMkdir', "newPath is null");
+            WARN('safeMkdir', "newPath is null"); // FIXME logging
             return void cb('RENAME_ERR');
         }
 
-        safeMkdir(Path.join(paths.blob, prefix), function (e) { // FIXME mkdirp
+        Fse.mkdirp(Path.join(paths.blob, prefix), function (e) {
             if (e || !newPath) {
-                WARN('safeMkdir', e);
+                WARN('safeMkdir', e); // FIXME logging
                 return void cb('RENAME_ERR');
             }
             isFile(newPath, function (e, yes) {
@@ -2042,9 +2035,9 @@ RPC.create = function (
     }, function (s) {
         Env.pinStore = s;
 
-        safeMkdir(blobPath, function (e) { // FIXME mkdirp
+        Fse.mkdirp(blobPath, function (e) {
             if (e) { throw e; }
-            safeMkdir(blobStagingPath, function (e) { // FIXME mkdirp
+            Fse.mkdirp(blobStagingPath, function (e) {
                 if (e) { throw e; }
                 cb(void 0, rpc);
                 // expire old sessions once per minute
