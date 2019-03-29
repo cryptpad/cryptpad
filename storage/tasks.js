@@ -1,9 +1,4 @@
-var Fs = require("fs");
-var Path = require("path");
-var nacl = require("tweetnacl");
-var nThen = require("nthen");
-
-var Tasks = module.exports;
+var Fs = require("fs
 
 var encode = function (time, command, args) {
     if (typeof(time) !== 'number') { return null; }
@@ -58,8 +53,8 @@ var write = function (env, task, cb) {
         var dir = id.slice(0, 2);
         var dirpath = Path.join(env.root, dir);
 
-        Fs.mkdir(dirpath, 0x1ff, w(function (err) {
-            if (err && err.code !== 'EEXIST') {
+        Fse.mkdirp(dirpath, 0x1ff, w(function (err) {
+            if (err) {
                 return void cb(err);
             }
         }));
@@ -78,7 +73,7 @@ Tasks.create = function (config, cb) {
     };
 
     // make sure the path exists...
-    Fs.mkdir(env.root, 0x1ff, function (err) {
+    Fse.mkdirp(env.root, 0x1ff, function (err) {
         if (err && err.code !== 'EEXIST') {
             throw err;
         }
@@ -90,5 +85,4 @@ Tasks.create = function (config, cb) {
         });
     });
 };
-
 

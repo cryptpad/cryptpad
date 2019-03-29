@@ -2,6 +2,7 @@
 /* jshint esversion: 6 */
 /* global Buffer */
 var Fs = require("fs");
+var Fse = require("fs-extra");
 var Path = require("path");
 var nThen = require("nthen");
 const ToPull = require('stream-to-pull-stream');
@@ -189,7 +190,7 @@ var checkPath = function (path, callback) {
             return;
         }
         // 511 -> octal 777
-        Fs.mkdir(Path.dirname(path), 511, function (err) {
+        Fse.mkdirp(Path.dirname(path), 511, function (err) {
             if (err && err.code !== 'EEXIST') {
                 callback(err);
                 return;
@@ -420,7 +421,7 @@ module.exports.create = function (
     };
     // 0x1ff -> 777
     var it;
-    Fs.mkdir(env.root, 0x1ff, function (err) {
+    Fse.mkdirp(env.root, 0x1ff, function (err) {
         if (err && err.code !== 'EEXIST') {
             // TODO: somehow return a nice error
             throw err;
