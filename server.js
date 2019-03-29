@@ -245,13 +245,20 @@ if (config.httpSafePort) {
 var wsConfig = { server: httpServer };
 
 var rpc;
+var historyKeeper;
 
+// Initialize tasks, then rpc, then store, then history keeper and then start the server
 var nt = nThen(function (w) {
     if (!config.enableTaskScheduling) { return; }
     var Tasks = require("./storage/tasks");
     console.log("loading task scheduler");
     Tasks.create(config, w(function (e, tasks) {
         config.tasks = tasks;
+    }));
+}).nThen(function (w) {
+    if (config.useExternalWebsocket) { return; }
+    Storage.create(config, w(function (_store) {
+        config.store = _store;
     }));
 }).nThen(function (w) {
     config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
@@ -266,15 +273,22 @@ var nt = nThen(function (w) {
         rpc = _rpc;
     }));
 }).nThen(function () {
-    if(config.useExternalWebsocket) { return; }
+    if (config.useExternalWebsocket) { return; }
+    var HK = require('./historyKeeper.js');
+    var hkConfig = {
+        tasks: config.tasks,
+        rpc: rpc,
+        store: config.store
+    };
+    historyKeeper = HK.create(hkConfig);
+}).nThen(function () {
+    if (config.useExternalWebsocket) { return; }
     if (websocketPort !== config.httpPort) {
         console.log("setting up a new websocket server");
         wsConfig = { port: websocketPort};
     }
     var wsSrv = new WebSocketServer(wsConfig);
-    Storage.create(config, function (store) {
-        NetfluxSrv.run(store, wsSrv, config, rpc);
-    });
+    NetfluxSrv.run(wsSrv, config, historyKeeper);
 });
 
 if (config.debugReplName) {

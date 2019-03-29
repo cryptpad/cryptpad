@@ -1669,7 +1669,7 @@ RPC.create = function (
         maxUploadSize: config.maxUploadSize || (20 * 1024 * 1024),
         Sessions: {},
         paths: {},
-        msgStore: (undefined /*:any*/),
+        msgStore: config.store,
         pinStore: (undefined /*:any*/),
         pinnedPads: {},
         evPinnedPadsReady: mkEvent(true),
