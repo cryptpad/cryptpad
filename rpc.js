@@ -17,6 +17,8 @@ const Saferphore = require("saferphore");
 const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
 
+
+
 var RPC = module.exports;
 
 var Store = require("./storage/file");
@@ -197,7 +199,7 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     try {
         signedBuffer = Nacl.util.decodeUTF8(signedMsg);
     } catch (e) {
-        console.log('invalid signedBuffer');
+        console.log('invalid signedBuffer'); // FIXME logging
         console.log(signedMsg);
         return null;
     }
@@ -215,7 +217,7 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     }
 
     if (pubBuffer.length !== 32) {
-        console.log('public key length: ' + pubBuffer.length);
+        console.log('public key length: ' + pubBuffer.length); // FIXME logging
         console.log(publicKey);
         return false;
     }
@@ -267,10 +269,10 @@ var loadUserPins = function (Env, publicKey, cb) {
                     }
                     break;
                 default:
-                    WARN('invalid message read from store', msg);
+                    WARN('invalid message read from store', msg); // FIXME logging
             }
         } catch (e) {
-            WARN('invalid message read from store', e);
+            WARN('invalid message read from store', e); // FIXME logging
         }
     }, function () {
         // no more messages
@@ -769,7 +771,7 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
     });
 };
 
-var getPrivilegedUserList = function (cb) {
+var getPrivilegedUserList = function (cb) { // FIXME deprecate?
     Fs.readFile('./privileged.conf', 'utf8', function (e, body) {
         if (e) {
             if (e.code === 'ENOENT') {
@@ -786,13 +788,13 @@ var getPrivilegedUserList = function (cb) {
     });
 };
 
-var isPrivilegedUser = function (publicKey, cb) {
+var isPrivilegedUser = function (publicKey, cb) { // FIXME deprecate
     getPrivilegedUserList(function (e, list) {
         if (e) { return void cb(false); }
         cb(list.indexOf(publicKey) !== -1);
     });
 };
-var safeMkdir = function (path, cb) {
+var safeMkdir = function (path, cb) { // FIXME replace with mkdirp
     // flow wants the mkdir call w/ 3 args, 0o777 is default for a directory.
     Fs.mkdir(path, 0o777, function (e) {
         if (!e || e.code === 'EEXIST') { return void cb(); }
@@ -807,7 +809,7 @@ var makeFileStream = function (root, id, cb) {
         WARN('makeFileStream', 'invalid id ' + id);
         return void cb('BAD_ID');
     }
-    safeMkdir(Path.join(root, stub), function (e) {
+    safeMkdir(Path.join(root, stub), function (e) { // FIXME mkdirp
         if (e || !full) { // !full for pleasing flow, it's already checked
             WARN('makeFileStream', e);
             return void cb(e ? e.message : 'INTERNAL_ERROR');
@@ -865,7 +867,7 @@ var clearOwnedChannel = function (Env, channelId, unsafeKey, cb) {
     });
 };
 
-var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
+var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) { // FIXME deletion
     var safeKey = escapeKeyCharacters(unsafeKey);
     var safeKeyPrefix = safeKey.slice(0,3);
     var blobPrefix = blobId.slice(0,2);
@@ -902,7 +904,7 @@ var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
     }).nThen(function (w) {
         // Delete the blob
         /*:: if (typeof(blobPath) !== 'string') { throw new Error('should never happen'); } */
-        Fs.unlink(blobPath, w(function (e) {
+        Fs.unlink(blobPath, w(function (e) { // TODO move to cold storage
             if (e) {
                 w.abort();
                 return void cb(e.code);
@@ -916,7 +918,7 @@ var removeOwnedBlob = function (Env, blobId, unsafeKey, cb) {
     });
 };
 
-var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
+var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) { // FIXME deletion
     if (typeof(channelId) !== 'string' || !isValidId(channelId)) {
         return cb('INVALID_ARGUMENTS');
     }
@@ -943,7 +945,7 @@ var removeOwnedChannel = function (Env, channelId, unsafeKey, cb) {
 
 /*  Users should be able to clear their own pin log with an authenticated RPC
 */
-var removePins = function (Env, safeKey, cb) {
+var removePins = function (Env, safeKey, cb) { // FIXME deletion
     if (typeof(Env.pinStore.removeChannel) !== 'function') {
         return void cb("E_NOT_IMPLEMENTED");
     }
@@ -998,7 +1000,7 @@ var upload_cancel = function (Env, publicKey, fileSize, cb) {
 
     var path = makeFilePath(paths.staging, publicKey);
     if (!path) {
-        console.log(paths.staging, publicKey);
+        console.log(paths.staging, publicKey); // FIXME logging
         console.log(path);
         return void cb('NO_FILE');
     }
@@ -1009,7 +1011,7 @@ var upload_cancel = function (Env, publicKey, fileSize, cb) {
     });
 };
 
-var upload_complete = function (Env, publicKey, id, cb) {
+var upload_complete = function (Env, publicKey, id, cb) { // FIXME logging
     var paths = Env.paths;
     var session = getSession(Env.Sessions, publicKey);
 
@@ -1037,7 +1039,7 @@ var upload_complete = function (Env, publicKey, id, cb) {
             return void cb('RENAME_ERR');
         }
 
-        safeMkdir(Path.join(paths.blob, prefix), function (e) {
+        safeMkdir(Path.join(paths.blob, prefix), function (e) { // FIXME mkdirp
             if (e || !newPath) {
                 WARN('safeMkdir', e);
                 return void cb('RENAME_ERR');
@@ -1170,7 +1172,7 @@ var owned_upload_complete = function (Env, safeKey, cb) {
 };
 */
 
-var owned_upload_complete = function (Env, safeKey, id, cb) {
+var owned_upload_complete = function (Env, safeKey, id, cb) { // FIXME logging
     var session = getSession(Env.Sessions, safeKey);
 
     // the file has already been uploaded to the staging area
@@ -1342,7 +1344,7 @@ var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
     try {
         u8_signature = Nacl.util.decodeBase64(signature);
     } catch (e) {
-        console.error(e);
+        console.error(e); // FIXME logging
         return void cb('E_INVALID_SIGNATURE');
     }
 
@@ -1413,7 +1415,7 @@ var writeLoginBlock = function (Env, msg, cb) {
                     cb(e);
                 }
             }));
-        }).nThen(function () {
+        }).nThen(function () { // FIXME logging
             // actually write the block
 
             // flow is dumb and I need to guard against this which will never happen
@@ -1442,6 +1444,8 @@ var removeLoginBlock = function (Env, msg, cb) {
     var signature = msg[1];
     var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
 
+    // FIXME deletion
+    // FIXME logging
     validateLoginBlock(Env, publicKey, signature, block, function (e /*::, validatedBlock */) {
         if (e) { return void cb(e); }
         // derive the filepath
@@ -1558,7 +1562,9 @@ var adminCommand = function (Env, ctx, publicKey, config, data, cb) {
             var s = k.split('/');
             return s[s.length-1];
         });
-    } catch (e) { console.error("Can't parse admin keys. Please update or fix your config.js file!"); }
+    } catch (e) {
+        console.error("Can't parse admin keys. Please update or fix your config.js file!"); // FIXME logging
+    }
     if (admins.indexOf(publicKey) === -1) {
         return void cb("FORBIDDEN");
     }
@@ -1657,7 +1663,7 @@ RPC.create = function (
     cb /*:(?Error, ?Function)=>void*/
 ) {
     // load pin-store...
-    console.log('loading rpc module...');
+    console.log('loading rpc module...'); // FIXME logging
 
     if (config.suppressRPCErrors) { SUPPRESS_RPC_ERRORS = true; }
 
@@ -1743,7 +1749,7 @@ RPC.create = function (
                     respond(e, [null, isNew, null]);
                 });
             default:
-                console.error("unsupported!");
+                console.error("unsupported!"); // FIXME logging
                 return respond('UNSUPPORTED_RPC_CALL', msg);
         }
     };
@@ -1752,13 +1758,13 @@ RPC.create = function (
         if (!Env.msgStore) { Env.msgStore = ctx.store; }
 
         if (!Array.isArray(data)) {
-            return void respond('INVALID_ARG_FORMAT');
+            return void respond('INVALID_ARG_FORMAT'); // FIXME logging
         }
 
         if (!data.length) {
             return void respond("INSUFFICIENT_ARGS");
         } else if (data.length !== 1) {
-            console.log('[UNEXPECTED_ARGUMENTS_LENGTH] %s', data.length);
+            console.log('[UNEXPECTED_ARGUMENTS_LENGTH] %s', data.length); // FIXME logging
         }
 
         var msg = data[0].slice(0);
@@ -1778,7 +1784,7 @@ RPC.create = function (
         if (publicKey) {
             getSession(Sessions, publicKey);
         } else {
-            console.log("No public key");
+            console.log("No public key"); // FIXME logging
         }
 
         var cookie = msg[0];
@@ -1800,7 +1806,7 @@ RPC.create = function (
                 return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
             }
         } else if (msg[1] !== 'UPLOAD') {
-            console.error("INVALID_RPC CALL:", msg[1]);
+            console.error("INVALID_RPC CALL:", msg[1]); // FIXME logging
             return void respond("INVALID_RPC_CALL");
         }
 
@@ -2036,9 +2042,9 @@ RPC.create = function (
     }, function (s) {
         Env.pinStore = s;
 
-        safeMkdir(blobPath, function (e) {
+        safeMkdir(blobPath, function (e) { // FIXME mkdirp
             if (e) { throw e; }
-            safeMkdir(blobStagingPath, function (e) {
+            safeMkdir(blobStagingPath, function (e) { // FIXME mkdirp
                 if (e) { throw e; }
                 cb(void 0, rpc);
                 // expire old sessions once per minute
