@@ -60,7 +60,7 @@ var handleTask = function (str, path, cb) {
         }
     }).nThen(function () {
         // remove the task file...
-        Fs.unlink(path, function (err) {
+        Fs.unlink(path, function (err) { // FIXME deletion
             if (err) { console.error(err); }
             cb();
         });

@@ -1,4 +1,5 @@
 var Fs = require("fs");
+var Fse = require("fs-extra");
 var Path = require("path");
 var nacl = require("tweetnacl");
 var nThen = require("nthen");
@@ -58,8 +59,8 @@ var write = function (env, task, cb) {
         var dir = id.slice(0, 2);
         var dirpath = Path.join(env.root, dir);
 
-        Fs.mkdir(dirpath, 0x1ff, w(function (err) {
-            if (err && err.code !== 'EEXIST') {
+        Fse.mkdirp(dirpath, 0x1ff, w(function (err) {
+            if (err) {
                 return void cb(err);
             }
         }));
@@ -72,13 +73,17 @@ var write = function (env, task, cb) {
     });
 };
 
+// TODO implement a standard API for removing tasks
+// currently they are deleted manually in 'expire-channels.js'
+// var remove = function (env, id, cb) { };
+
 Tasks.create = function (config, cb) {
     var env = {
         root: config.taskPath || './tasks',
     };
 
     // make sure the path exists...
-    Fs.mkdir(env.root, 0x1ff, function (err) {
+    Fse.mkdirp(env.root, 0x1ff, function (err) {
         if (err && err.code !== 'EEXIST') {
             throw err;
         }
@@ -90,5 +95,4 @@ Tasks.create = function (config, cb) {
         });
     });
 };
-
 
