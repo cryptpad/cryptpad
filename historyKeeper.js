@@ -1,4 +1,5 @@
 /* jshint esversion: 6 */
+/* global Buffer, process */
 ;(function () { 'use strict';
 
 const nThen = require('nthen');
@@ -40,7 +41,6 @@ module.exports.create = function (cfg) {
     const tasks = cfg.tasks;
     const store = cfg.store;
 
-    var Env = {};
     const historyKeeperKeys = {};
     const HISTORY_KEEPER_ID = Crypto.randomBytes(8).toString('hex');
 
@@ -258,7 +258,7 @@ module.exports.create = function (cfg) {
             }, waitFor(function (err) {
                 if (err) { waitFor.abort(); return void cb(err); }
             }));
-        }).nThen((waitFor) => {
+        }).nThen(() => {
             cb(null, offset);
         });
     };
@@ -370,6 +370,7 @@ module.exports.create = function (cfg) {
     const onDirectMessage = function (ctx, seq, user, json) {
         let parsed;
         let channelName;
+        let obj = HISTORY_KEEPER_ID;
         try {
             parsed = JSON.parse(json[2]);
         } catch (err) {
@@ -600,7 +601,7 @@ module.exports.create = function (cfg) {
                     }));
                 }).nThen;
             });
-            nt((waitFor) => { cciLock = false; });
+            nt(() => { cciLock = false; });
         }
     };
 
