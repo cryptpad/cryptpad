@@ -1,4 +1,10 @@
-var Fs = require("fs
+var Fs = require("fs");
+var Fse = require("fs-extra");
+var Path = require("path");
+var nacl = require("tweetnacl");
+var nThen = require("nthen");
+
+var Tasks = module.exports;
 
 var encode = function (time, command, args) {
     if (typeof(time) !== 'number') { return null; }
