@@ -26,4 +26,4 @@ services:
       - ./data/blobstage:/cryptpad/blobstage:rw
       - ./data/tasks:/cryptpad/tasks:rw
       - ./data/block:/cryptpad/block:rw
-      - ./data/config:/cryptpad/config:rw
+      - ./data/config:/cryptpad/cfg:rw
