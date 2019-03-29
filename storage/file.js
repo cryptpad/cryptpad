@@ -68,7 +68,7 @@ var closeChannel = function (env, channelName, cb) {
     }
 };
 
-var clearChannel = function (env, channelId, cb) {
+var clearChannel = function (env, channelId, cb) { // FIXME deletion
     var path = mkPath(env, channelId);
     getMetadataAtPath(env, path, function (e, metadata) {
         if (e) { return cb(new Error(e)); }
@@ -200,7 +200,7 @@ var checkPath = function (path, callback) {
     });
 };
 
-var removeChannel = function (env, channelName, cb) {
+var removeChannel = function (env, channelName, cb) { // FIXME deletion
     var filename = mkPath(env, channelName);
     Fs.unlink(filename, cb);
 };

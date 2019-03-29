@@ -67,6 +67,10 @@ var write = function (env, task, cb) {
     });
 };
 
+// TODO implement a standard API for removing tasks
+// currently they are deleted manually in 'expire-channels.js'
+// var remove = function (env, id, cb) { };
+
 Tasks.create = function (config, cb) {
     var env = {
         root: config.taskPath || './tasks',
