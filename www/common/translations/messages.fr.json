@@ -1015,5 +1015,6 @@
     "debug_getGraphWait": "Génération du graphe... Veuillez patienter.",
     "debug_getGraphText": "Voici le code DOT permettant de générer un graphe de l’historique de ce document :",
     "mdToolbar_toc": "Table des matières",
-    "fm_expirablePad": "Ce pad expirera le {0}"
+    "fm_expirablePad": "Ce pad expirera le {0}",
+    "button_newsheet": "Nouveau tableur"
 }
