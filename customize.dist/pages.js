@@ -78,10 +78,10 @@ define([
                         footLink('/whiteboard/', null, Msg.type.whiteboard)
                     ]),*/
                     footerCol('footer_product', [
+                        footLink('https://cryptpad.fr/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
                         footLink('/faq.html', 'faq_link'),
                         footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
                         footLink('https://opencollective.com/cryptpad/contribute/', null, 'Donate'),
-                        footLink('https://github.com/xwiki-labs/cryptpad', 'footer_install'),
                     ]),
                     footerCol('footer_aboutUs', [
                         /*footLink('https://blog.cryptpad.fr', 'blog'),
