@@ -1803,10 +1803,6 @@ RPC.create = function (
             return void Respond('INVALID_MSG');
         }
 
-        var deny = function () {
-            Respond('E_ACCESS_DENIED');
-        };
-
         var handleMessage = function () {
             if (config.logRPC) { console.log(msg[0]); }
         switch (msg[0]) {
