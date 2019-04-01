@@ -203,11 +203,6 @@
     "settings_resetTipsButton": "Restaurar consejos",
     "settings_resetTipsDone": "Todos los consejos ahora están visibles",
     "main_info": "<h1>Colabora con Confianza</h1><br>Cultiva ideas juntos con documentos compartidos con tecnología <strong>Zero Knowledge</strong> que protege tu privacidad.",
-    "main_richText": "Editor de Texto Enriquecido",
-    "main_code": "Editor de código",
-    "main_slide": "Editor de presentación",
-    "main_poll": "Encuestas",
-    "main_drive": "CryptDrive",
     "footer_applications": "Aplicaciones",
     "footer_contact": "Contacto",
     "footer_aboutUs": "Acerca de nosotros",
@@ -440,12 +435,5 @@
     "settings_codeUseTabs": "Utilizar tabulaciones en vez de espacios",
     "pad_showToolbar": "Mostrar la barra de herramientas",
     "pad_hideToolbar": "Esconder la barra de herramientas",
-    "main_catch_phrase": "El Cloud Zero Knowledge",
-    "main_richTextPad": "Pad de Texto Enriquecido",
-    "main_codePad": "Pad de Código",
-    "main_slidePad": "Presentación Markdown",
-    "main_pollPad": "Encuesta",
-    "main_whiteboardPad": "Pizarra",
-    "main_localPads": "Pad Locales",
-    "main_yourCryptDrive": "Tu CryptDrive"
+    "main_catch_phrase": "El Cloud Zero Knowledge"
 }
