@@ -28,3 +28,5 @@ www/common/media-tag-nacl.min.js
 customize/
 
 www/debug/chainpad.dist.js
+
+www/pad/mathjax/
