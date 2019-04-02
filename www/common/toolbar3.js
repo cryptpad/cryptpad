@@ -413,7 +413,7 @@ MessengerUI, Messages) {
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || Util.isSmallScreen())  {
+            if (val === false || window.innerWidth < 800)  {
                 return void hide();
             }
             show();
