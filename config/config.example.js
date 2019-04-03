@@ -105,11 +105,11 @@ module.exports = {
     },
 
     contentSecurity: baseCSP.join('; ') +
-        "script-src 'self'" + domain,
+        "; script-src 'self'" + domain,
 
     // CKEditor and OnlyOffice require significantly more lax content security policy in order to function.
     padContentSecurity: baseCSP.join('; ') +
-        "script-src 'self' 'unsafe-eval' 'unsafe-inline'" + domain,
+        "; script-src 'self' 'unsafe-eval' 'unsafe-inline'" + domain,
 
     /* it is recommended that you serve CryptPad over https
      * the filepaths below are used to configure your certificates
