@@ -771,30 +771,6 @@ var resetUserPins = function (Env, publicKey, channelList, cb) {
     });
 };
 
-var getPrivilegedUserList = function (cb) { // FIXME deprecate?
-    Fs.readFile('./privileged.conf', 'utf8', function (e, body) {
-        if (e) {
-            if (e.code === 'ENOENT') {
-                return void cb(void 0, []);
-            }
-            return void (e.code);
-        }
-        var list = body.split(/\n/)
-            .map(function (line) {
-                return line.replace(/#.*$/, '').trim();
-            })
-            .filter(function (x) { return x; });
-        cb(void 0, list);
-    });
-};
-
-var isPrivilegedUser = function (publicKey, cb) { // FIXME deprecate
-    getPrivilegedUserList(function (e, list) {
-        if (e) { return void cb(false); }
-        cb(list.indexOf(publicKey) !== -1);
-    });
-};
-
 var makeFileStream = function (root, id, cb) {
     var stub = id.slice(0, 2);
     var full = makeFilePath(root, id);
@@ -1827,11 +1803,7 @@ RPC.create = function (
             return void Respond('INVALID_MSG');
         }
 
-        var deny = function () {
-            Respond('E_ACCESS_DENIED');
-        };
-
-        var handleMessage = function (privileged) {
+        var handleMessage = function () {
             if (config.logRPC) { console.log(msg[0]); }
         switch (msg[0]) {
             case 'COOKIE': return void Respond(void 0);
@@ -1913,15 +1885,12 @@ RPC.create = function (
                     if (e) { return void Respond(e); }
                     Respond(void 0, "OK");
                 });
-            // restricted to privileged users...
             case 'UPLOAD':
-                if (!privileged) { return deny(); }
                 return void upload(Env, safeKey, msg[1], function (e, len) {
                     WARN(e, len);
                     Respond(e, len);
                 });
             case 'UPLOAD_STATUS':
-                if (!privileged) { return deny(); }
                 var filesize = msg[1];
                 return void upload_status(Env, safeKey, msg[1], function (e, yes) {
                     if (!e && !yes) {
@@ -1933,19 +1902,16 @@ RPC.create = function (
                     Respond(e, yes);
                 });
             case 'UPLOAD_COMPLETE':
-                if (!privileged) { return deny(); }
                 return void upload_complete(Env, safeKey, msg[1], function (e, hash) {
                     WARN(e, hash);
                     Respond(e, hash);
                 });
             case 'OWNED_UPLOAD_COMPLETE':
-                if (!privileged) { return deny(); }
                 return void owned_upload_complete(Env, safeKey, msg[1], function (e, blobId) {
                     WARN(e, blobId);
                     Respond(e, blobId);
                 });
             case 'UPLOAD_CANCEL':
-                if (!privileged) { return deny(); }
                 // msg[1] is fileSize
                 // if we pass it here, we can start an upload right away without calling
                 // UPLOAD_STATUS again
@@ -1982,27 +1948,7 @@ RPC.create = function (
         }
         };
 
-        // reject uploads unless explicitly enabled
-        if (config.enableUploads !== true) {
-            return void handleMessage(false);
-        }
-
-        // allow unrestricted uploads unless restrictUploads is true
-        if (config.restrictUploads !== true) {
-            return void handleMessage(true);
-        }
-
-        // if session has not been authenticated, do so
-        var session = getSession(Sessions, safeKey);
-        if (typeof(session.privilege) !== 'boolean') {
-            return void isPrivilegedUser(publicKey, function (yes) {
-                session.privilege = yes;
-                handleMessage(yes);
-            });
-        }
-
-        // if authenticated, proceed
-        handleMessage(session.privilege);
+        handleMessage(true);
     };
 
     var rpc = function (

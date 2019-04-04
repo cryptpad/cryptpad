@@ -218,30 +218,6 @@ module.exports = {
      */
     inactiveTime: 90, // days
 
-    /*  some features may require that the server be able to schedule tasks
-        far into the future, such as:
-            > "three months from now, this channel should expire"
-        To disable these features, set 'enableTaskScheduling' to false
-    */
-    enableTaskScheduling: true,
-
-    /*  Setting this value to anything other than true will cause file upload
-     *  attempts to be rejected outright.
-     */
-    enableUploads: true,
-
-    /*  If you have enabled file upload, you have the option of restricting it
-     *  to a list of users identified by their public keys. If this value is set
-     *  to true, your server will query a file (cryptpad/privileged.conf) when
-     *  users connect via RPC. Only users whose public keys can be found within
-     *  the file will be allowed to upload.
-     *
-     *  privileged.conf uses '#' for line comments, and splits keys by newline.
-     *  This is a temporary measure until a better quota system is in place.
-     *  registered users' public keys can be found on the settings page.
-     */
-    restrictUploads: false,
-
     /*  Max Upload Size (bytes)
      *  this sets the maximum size of any one file uploaded to the server.
      *  anything larger than this size will be rejected

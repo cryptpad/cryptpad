@@ -254,7 +254,6 @@ var historyKeeper;
 
 // Initialize tasks, then rpc, then store, then history keeper and then start the server
 var nt = nThen(function (w) {
-    if (!config.enableTaskScheduling) { return; }
     var Tasks = require("./storage/tasks");
     console.log("loading task scheduler");
     Tasks.create(config, w(function (e, tasks) {
