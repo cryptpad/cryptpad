@@ -275,15 +275,13 @@ define([
 
         var Dom = domFromHTML($('<div>').append($div).html());
         $content[0].normalize();
+        $content.find('pre.mermaid[data-processed="true"]').remove();
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {
             throw new Error(patch);
         } else {
             DD.apply($content[0], patch);
-            try {
-                Mermaid.init();
-            } catch (e) { console.error(e); }
             var $mts = $content.find('media-tag:not(:has(*))');
             $mts.each(function (i, el) {
                 $(el).contextmenu(function (e) {
@@ -318,6 +316,9 @@ define([
                 var target = document.getElementById($a.attr('data-href'));
                 if (target) { target.scrollIntoView(); }
             });
+            try {
+                Mermaid.init();
+            } catch (e) { console.error(e); }
         }
     };
 
