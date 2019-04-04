@@ -70,7 +70,7 @@ define([
     var mediaMap = {};
 
     renderer.code = function (code, language) {
-        if(language == 'mermaid' && (code.match(/^sequenceDiagram/) || code.match(/^graph/))) {
+        if (language === 'mermaid' && (code.match(/^sequenceDiagram/) || code.match(/^graph/))) {
             return '<pre class="mermaid">'+code+'</pre>';
         } else {
             return '<pre><code>'+code+'</code></pre>';
