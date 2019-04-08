@@ -5,13 +5,13 @@ var nThen = require("nthen");
 
 var config;
 try {
-    config = require('./config');
+    config = require('../config/config');
 } catch (e) {
-    config = require('./config.example');
+    config = require('../config/config.example');
 }
 
-var FileStorage = require(config.storage || './storage/file');
-var root = Path.resolve(config.taskPath || './tasks');
+var FileStorage = require('../' + config.storage || './storage/file');
+var root = Path.resolve('../' + config.taskPath || './tasks');
 
 var dirs;
 var nt;

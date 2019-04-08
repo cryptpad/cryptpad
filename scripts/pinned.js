@@ -35,7 +35,7 @@ const hashesFromPinFile = (pinFile, fileName) => {
 
 module.exports.load = function (cb, config) {
     nThen((waitFor) => {
-        Fs.readdir('./pins', waitFor((err, list) => {
+        Fs.readdir('../pins', waitFor((err, list) => {
             if (err) {
                 if (err.code === 'ENOENT') {
                     dirList = [];
@@ -48,11 +48,11 @@ module.exports.load = function (cb, config) {
     }).nThen((waitFor) => {
         dirList.forEach((f) => {
             sema.take((returnAfter) => {
-                Fs.readdir('./pins/' + f, waitFor(returnAfter((err, list2) => {
+                Fs.readdir('../pins/' + f, waitFor(returnAfter((err, list2) => {
                     if (err) { throw err; }
                     list2.forEach((ff) => {
                         if (config && config.exclude && config.exclude.indexOf(ff) > -1) { return; }
-                        fileList.push('./pins/' + f + '/' + ff);
+                        fileList.push('../pins/' + f + '/' + ff);
                     });
                 })));
             });
