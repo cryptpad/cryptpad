@@ -1,7 +1,7 @@
 /* globals Buffer */
 var Https = require('https');
-var Config = require("./config.js");
-var Package = require("./package.json");
+var Config = require("../config/config.js");
+var Package = require("../package.json");
 
 var body = JSON.stringify({
     domain: Config.myDomain,

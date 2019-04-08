@@ -54,7 +54,7 @@ let data = [];
 let pinned = [];
 
 nThen((waitFor) => {
-    let f = './pins/' + edPublic.slice(0, 2) + '/' + edPublic + '.ndjson';
+    let f = '../pins/' + edPublic.slice(0, 2) + '/' + edPublic + '.ndjson';
     Fs.readFile(f, waitFor((err, content) => {
         if (err) { throw err; }
         pinned = hashesFromPinFile(content.toString('utf8'), f);

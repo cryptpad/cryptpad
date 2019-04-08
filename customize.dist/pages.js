@@ -81,7 +81,7 @@ define([
                         footLink('https://cryptpad.fr/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
                         footLink('/faq.html', 'faq_link'),
                         footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
-                        footLink('https://opencollective.com/cryptpad/contribute/', null, 'Donate'),
+                        footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
                     footerCol('footer_aboutUs', [
                         /*footLink('https://blog.cryptpad.fr', 'blog'),

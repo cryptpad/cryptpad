@@ -5,9 +5,9 @@ const Saferphore = require("saferphore");
 const PinnedData = require('./pinneddata');
 let config;
 try {
-    config = require('./config');
+    config = require('../config/config');
 } catch (e) {
-    config = require('./config.example');
+    config = require('../config/config.example');
 }
 
 if (!config.inactiveTime || typeof(config.inactiveTime) !== "number") { return; }
