@@ -1015,5 +1015,6 @@
     "fm_passwordProtected": "Dieses Dokument ist mit einem Passwort geschützt",
     "mdToolbar_toc": "Inhaltsverzeichnis",
     "markdown_toc": "Inhalt",
-    "fm_expirablePad": "Dieses Pad läuft am {0} aus"
+    "fm_expirablePad": "Dieses Pad läuft am {0} aus",
+    "button_newsheet": "Neue Tabelle"
 }
