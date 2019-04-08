@@ -1034,5 +1034,12 @@
     "footer_team": "The team",
     "footer_donate": "Donate",
     "footer_legal": "Legal",
-    "footer_tos": "Terms"
+    "footer_tos": "Terms",
+    "contact_admin": "Contact the administrators",
+    "contact_adminHint": "For any issues related to your account, storage limit, or availability of their service.",
+    "contact_dev": "Contact the developers",
+    "contact_devHint": "For feature requests, usability improvements, or to say thank you",
+    "contact_bug": "Bug report",
+    "contact_chat": "Chat",
+    "contact_email": "Email"
 }
