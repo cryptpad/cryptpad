@@ -305,11 +305,6 @@ module.exports = {
      */
     logFeedback: false,
 
-    /*  If you wish to see which remote procedure calls clients request,
-     *  set this to true
-     */
-    logRPC: false,
-
     /* You can get a repl for debugging the server if you want it.
      * to enable this, specify the debugReplName and then you can
      * connect to it with `nc -U /tmp/repl/<your name>.sock`
