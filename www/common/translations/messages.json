@@ -1026,7 +1026,7 @@
     "admin_updateLimitHint": "Forcing an update of user storage limits can be done any time, but is only necessary in the event of an error",
     "admin_updateLimitButton": "Update quotas",
     "admin_updateLimitDone": "Update completed successfully",
-    "admin_flushCacheTitle": "Flush HTTP Cache",
+    "admin_flushCacheTitle": "Flush HTTP cache",
     "admin_flushCacheHint": "Force users to download the latest clientside assets (only if your server is in fresh mode)",
     "admin_flushCacheButton": "Flush cache",
     "admin_flushCacheDone": "Cache flushed successfully",
@@ -1038,7 +1038,7 @@
     "contact_admin": "Contact the administrators",
     "contact_adminHint": "For any issues related to your account, storage limit, or availability of their service.",
     "contact_dev": "Contact the developers",
-    "contact_devHint": "For feature requests, usability improvements, or to say thank you",
+    "contact_devHint": "For feature requests, usability improvements, or to say thank you.",
     "contact_bug": "Bug report",
     "contact_chat": "Chat",
     "contact_email": "Email"
