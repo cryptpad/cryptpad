@@ -183,6 +183,7 @@ try {
     });
 } catch (e) { console.error("Can't parse admin keys"); }
 
+// TODO, cache this /api/config responses instead of re-computing it each time
 app.get('/api/config', function(req, res){
     // TODO precompute any data that isn't dynamic to save some CPU time
     var host = req.headers.host.replace(/\:[0-9]+/, '');
@@ -196,6 +197,7 @@ app.get('/api/config', function(req, res){
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
             websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
+            // FIXME don't send websocketURL if websocketPath is provided. deprecated.
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
             httpUnsafeOrigin: config.httpUnsafeOrigin,
