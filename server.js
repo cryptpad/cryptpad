@@ -104,7 +104,7 @@ if (!config.logFeedback) { return; }
 
 const logFeedback = function (url) {
     url.replace(/\?(.*?)=/, function (all, fb) {
-        console.log('[FEEDBACK] %s', fb);
+        config.log.feedback(fb, '');
     });
 };
 
@@ -254,6 +254,13 @@ var historyKeeper;
 
 // Initialize tasks, then rpc, then store, then history keeper and then start the server
 var nt = nThen(function (w) {
+    // set up logger
+    var Logger = require("./lib/log");
+    console.log("Loading logging module");
+    Logger.create(config, w(function (_log) {
+        config.log = _log;
+    }));
+}).nThen(function (w) {
     var Tasks = require("./storage/tasks");
     console.log("loading task scheduler");
     Tasks.create(config, w(function (e, tasks) {

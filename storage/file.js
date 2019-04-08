@@ -468,6 +468,9 @@ module.exports.create = function (
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 clearChannel(env, channelName, cb);
             },
+            log: function (channelName, content, cb) {
+                message(env, channelName, content, cb);
+            },
             shutdown: function () {
                 clearInterval(it);
             }
