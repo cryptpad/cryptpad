@@ -5,6 +5,7 @@ var Package = require("../package.json");
 
 var body = JSON.stringify({
     domain: Config.myDomain,
+    subdomain: Config.mySubdomain || null,
     adminEmail: Config.adminEmail,
     version: Package.version,
 });
