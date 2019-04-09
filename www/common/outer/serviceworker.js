@@ -18,6 +18,9 @@ var debug = function (msg) { console.log(msg); };
 
 var init = function (client, cb) {
     debug('SW INIT');
+    require.config({
+        waitSeconds: 600
+    });
 
     require(['/api/config?cb=' + (+new Date()).toString(16)], function (ApiConfig) {
         if (ApiConfig.requireConf) { require.config(ApiConfig.requireConf); }
@@ -105,6 +108,7 @@ var init = function (client, cb) {
                                 Rpc._subscribeToMessenger(clientId);
                             }
                             if (data && data.state === "ALREADY_INIT") {
+                                self.store = data.returned;
                                 return void cb(data.returned);
                             }
                             self.store = data;
