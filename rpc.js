@@ -12,7 +12,7 @@ var Fse = require("fs-extra");
 var Path = require("path");
 var Https = require("https");
 const Package = require('./package.json');
-const Pinned = require('./pinned');
+const Pinned = require('./scripts/pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
@@ -25,15 +25,16 @@ var Store = require("./storage/file");
 
 var DEFAULT_LIMIT = 50 * 1024 * 1024;
 var SESSION_EXPIRATION_TIME = 60 * 1000;
-var SUPPRESS_RPC_ERRORS = false;
 
 var Log;
 
 var WARN = function (e, output) {
-    if (!SUPPRESS_RPC_ERRORS && e && output) {
-        console.error(new Date().toISOString() + ' [' + String(e) + ']', output);
-        console.error(new Error(e).stack);
-        console.error();
+    if (e && output) {
+        Log.warn(e, {
+            output: output,
+            message: String(e),
+            stack: new Error(e).stack,
+        });
     }
 };
 
@@ -1628,8 +1629,6 @@ RPC.create = function (
 
     // load pin-store...
     Log.silly('LOADING RPC MODULE');
-
-    if (config.suppressRPCErrors) { SUPPRESS_RPC_ERRORS = true; }
 
     var keyOrDefaultString = function (key, def) {
         return typeof(config[key]) === 'string'? config[key]: def;

@@ -291,11 +291,6 @@ module.exports = {
      */
     verbose: false,
 
-    /*  RPC errors are shown by default, but if you really don't care,
-     *  you can suppress them
-     */
-    suppressRPCErrors: false,
-
     /*  clients can use the /settings/ app to opt out of usage feedback
      *  which informs the server of things like how much each app is being
      *  used, and whether certain clientside features are supported by

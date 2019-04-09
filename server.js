@@ -243,7 +243,7 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
     var port = config.httpPort;
     var ps = port === 80? '': ':' + port;
 
-    console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+    console.log('[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
 });
 if (config.httpSafePort) {
     Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
@@ -254,17 +254,19 @@ var wsConfig = { server: httpServer };
 var rpc;
 var historyKeeper;
 
+var log;
+
 // Initialize tasks, then rpc, then store, then history keeper and then start the server
 var nt = nThen(function (w) {
     // set up logger
     var Logger = require("./lib/log");
-    console.log("Loading logging module");
+    //console.log("Loading logging module");
     Logger.create(config, w(function (_log) {
-        config.log = _log;
+        log = config.log = _log;
     }));
 }).nThen(function (w) {
     var Tasks = require("./storage/tasks");
-    console.log("loading task scheduler");
+    //log.debug('loading task scheduler');
     Tasks.create(config, w(function (e, tasks) {
         config.tasks = tasks;
     }));
@@ -297,7 +299,7 @@ var nt = nThen(function (w) {
 }).nThen(function () {
     if (config.useExternalWebsocket) { return; }
     if (websocketPort !== config.httpPort) {
-        console.log("setting up a new websocket server");
+        log.debug("setting up a new websocket server");
         wsConfig = { port: websocketPort};
     }
     var wsSrv = new WebSocketServer(wsConfig);
