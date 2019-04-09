@@ -277,6 +277,11 @@ module.exports = {
      */
     blobStagingPath: './blobstage',
 
+    /* CryptPad supports logging events directly to the disk in a 'logs' directory
+     * Set its location here, or set it to false if you'd rather not log
+     */
+    logPath: './data/logs',
+
     /* =====================
      *       Debugging
      * ===================== */
@@ -286,10 +291,18 @@ module.exports = {
      */
     logToStdout: false,
 
-    /*  CryptPad supports verbose logging
-     *  (false by default)
+    /* CryptPad can be configured to log more or less
+     * the various settings are listed below by order of importance
+     *
+     * silly, debug, verbose, feedback, info, warn, error
+     *
+     * Choose the least important level of logging you wish to see.
+     * For example, a 'silly' logLevel will display everything,
+     * while 'info' will display 'info', 'warn', and 'error' logs
+     *
+     * This will affect both logging to the console and the disk.
      */
-    verbose: false,
+    logLevel: 'info',
 
     /*  clients can use the /settings/ app to opt out of usage feedback
      *  which informs the server of things like how much each app is being
@@ -297,6 +310,9 @@ module.exports = {
      *  the client's browser. The intent is to provide feedback to the admin
      *  such that the service can be improved. Enable this with `true`
      *  and ignore feedback with `false` or by commenting the attribute
+     *
+     *  You will need to set your logLevel to include 'feedback'. Set this
+     *  to false if you'd like to exclude feedback from your logs.
      */
     logFeedback: false,
 
@@ -336,4 +352,8 @@ module.exports = {
      */
     rpc: './rpc.js',
 
+    /*  CryptPad supports verbose logging
+     *  (false by default)
+     */
+    verbose: false,
 };
