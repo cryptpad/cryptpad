@@ -38,7 +38,8 @@ define([
                         h('a.card', {href : "https://twitter.com/cryptpad"}, 
                             h('div.card-body',
                                 h('p', [
-                                    h('img', {src: '/customize/images/twitter.svg'}),
+                                    // this is not a typo. adblock plus blocks images with src *twitter* apparently
+                                    h('img', {src: '/customize/images/twiitter.svg'}),
                                     'Twitter'
                                 ])
                             )
