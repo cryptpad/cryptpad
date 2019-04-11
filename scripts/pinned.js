@@ -29,7 +29,13 @@ const checkPinStatus = (pinFile, fileName) => {
                 l[1].forEach((x) => { delete pins[x]; });
                 break;
             }
-            default: throw new Error(JSON.stringify(l) + '  ' + fileName);
+            default:
+                // TODO write to the error log
+                /* Log.error('CORRUPTED_PIN_LOG', {
+                    line: JSON.stringify(l),
+                    fileName: fileName,
+                }); */
+                console.error(new Error (JSON.stringify(l) + '  ' + fileName));
         }
     });
     return Object.keys(pins);
