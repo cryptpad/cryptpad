@@ -245,6 +245,7 @@ var loadUserPins = function (Env, publicKey, cb) {
     };
 
     var unpin = function (channel) {
+        // TODO delete?
         pins[channel] = false;
     };
 
@@ -263,6 +264,7 @@ var loadUserPins = function (Env, publicKey, cb) {
                     parsed[1].forEach(unpin);
                     break;
                 case 'RESET':
+                    // TODO just wipe out the object?
                     Object.keys(pins).forEach(unpin);
 
                     if (parsed[1] && parsed[1].length) {
@@ -600,9 +602,21 @@ var sumChannelSizes = function (sizes) {
 
 // inform that the
 var loadChannelPins = function (Env) {
-    Pinned.load(function (data) {
+    Pinned.load(function (err, data) {
+        if (err) {
+            Log.error("LOAD_CHANNEL_PINS", err);
+
+            // FIXME not sure what should be done here instead
+            Env.pinnedPads = {};
+            Env.evPinnedPadsReady.fire();
+            return;
+        }
+
+
         Env.pinnedPads = data;
         Env.evPinnedPadsReady.fire();
+    }, {
+        pinPath: Env.paths.pin,
     });
 };
 var addPinned = function (
