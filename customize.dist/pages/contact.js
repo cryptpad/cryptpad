@@ -13,7 +13,7 @@ define([
                 )
             ]),
             h('div.container.cp-container', [
-                Config.adminEmail !== 'i.did.not.read.my.config@cryptpad.fr' ? h('div.row.cp-iconCont.align-items-center', [
+                Config.adminEmail && Config.adminEmail !== 'i.did.not.read.my.config@cryptpad.fr' ? h('div.row.cp-iconCont.align-items-center', [
                     h('div.col-12',
                         Pages.setHTML(h('h4.text-center'), Msg.contact_admin),
                         h('p', Msg.contact_adminHint)
