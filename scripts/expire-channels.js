@@ -3,12 +3,7 @@ var Path = require("path");
 
 var nThen = require("nthen");
 
-var config;
-try {
-    config = require('../config/config');
-} catch (e) {
-    config = require('../config/config.example');
-}
+var config = require("./load-config");
 
 var FileStorage = require('../' + config.storage || './storage/file');
 var root = Path.resolve('../' + config.taskPath || './tasks');
@@ -52,10 +47,12 @@ var handleTask = function (str, path, cb) {
     nThen(function (waitFor) {
         switch (command) {
             case 'EXPIRE':
+                // FIXME noisy!
                 console.log("expiring: %s", args[0]);
                 store.removeChannel(args[0], waitFor());
                 break;
             default:
+                // FIXME noisy
                 console.log("unknown command", command);
         }
     }).nThen(function () {
@@ -83,6 +80,7 @@ nt = nThen(function (w) {
 }).nThen(function () {
     dirs.forEach(function (dir, dIdx) {
         queue(function (w) {
+            // FIXME noisy!
             console.log('recursing into %s', dir);
             Fs.readdir(Path.join(root, dir), w(function (e, list) {
                 list.forEach(function (fn) {
@@ -90,6 +88,7 @@ nt = nThen(function (w) {
                         var filePath = Path.join(root, dir, fn);
                         var cb = w();
 
+                        // FIXME noisy!
                         console.log("processing file at %s", filePath);
                         Fs.readFile(filePath, 'utf8', function (e, str) {
                             if (e) {

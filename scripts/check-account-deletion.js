@@ -3,6 +3,8 @@ const Fs = require('fs');
 const nThen = require('nthen');
 const Pinned = require('./pinned');
 const Nacl = require('tweetnacl');
+const Path = require('path');
+const Config = require('./load-config');
 
 const hashesFromPinFile = (pinFile, fileName) => {
     var pins = {};
@@ -54,7 +56,9 @@ let data = [];
 let pinned = [];
 
 nThen((waitFor) => {
-    let f = '../pins/' + edPublic.slice(0, 2) + '/' + edPublic + '.ndjson';
+    var pinPath = Config.pinPath || './pins';
+
+    let f = Path.join(pinPath, edPublic.slice(0, 2), edPublic + '.ndjson');
     Fs.readFile(f, waitFor((err, content) => {
         if (err) { throw err; }
         pinned = hashesFromPinFile(content.toString('utf8'), f);

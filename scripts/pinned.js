@@ -11,6 +11,8 @@ let dirList;
 const fileList = [];
 const pinned = {};
 
+// FIXME this seems to be duplicated in a few places.
+// make it a library and put it in ./lib/
 const checkPinStatus = (pinFile, fileName) => {
     var pins = {};
     pinFile.split('\n').filter((x)=>(x)).map((l) => JSON.parse(l)).forEach((l) => {

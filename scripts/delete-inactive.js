@@ -5,9 +5,9 @@ const Saferphore = require("saferphore");
 const PinnedData = require('./pinneddata');
 let config;
 try {
-    config = require('../config/config');
+    config = require('./config/config');
 } catch (e) {
-    config = require('../config/config.example');
+    config = require('./config/config.example');
 }
 
 if (!config.inactiveTime || typeof(config.inactiveTime) !== "number") { return; }
@@ -16,7 +16,11 @@ let inactiveTime = +new Date() - (config.inactiveTime * 24 * 3600 * 1000);
 let inactiveConfig = {
     unpinned: true,
     olderthan: inactiveTime,
-    blobsolderthan: inactiveTime
+    blobsolderthan: inactiveTime,
+
+    filePath: config.filePath,
+    blobPath: config.blobPath,
+    pinPath: config.pinPath,
 };
 let toDelete;
 nThen(function (waitFor) {
