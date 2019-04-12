@@ -104,7 +104,7 @@ if (!config.logFeedback) { return; }
 
 const logFeedback = function (url) {
     url.replace(/\?(.*?)=/, function (all, fb) {
-        console.log('[FEEDBACK] %s', fb);
+        config.log.feedback(fb, '');
     });
 };
 
@@ -183,6 +183,7 @@ try {
     });
 } catch (e) { console.error("Can't parse admin keys"); }
 
+// TODO, cache this /api/config responses instead of re-computing it each time
 app.get('/api/config', function(req, res){
     // TODO precompute any data that isn't dynamic to save some CPU time
     var host = req.headers.host.replace(/\:[0-9]+/, '');
@@ -196,6 +197,7 @@ app.get('/api/config', function(req, res){
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
             websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
+            // FIXME don't send websocketURL if websocketPath is provided. deprecated.
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
             httpUnsafeOrigin: config.httpUnsafeOrigin,
@@ -241,7 +243,7 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
     var port = config.httpPort;
     var ps = port === 80? '': ':' + port;
 
-    console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+    console.log('[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
 });
 if (config.httpSafePort) {
     Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
@@ -252,10 +254,19 @@ var wsConfig = { server: httpServer };
 var rpc;
 var historyKeeper;
 
+var log;
+
 // Initialize tasks, then rpc, then store, then history keeper and then start the server
 var nt = nThen(function (w) {
+    // set up logger
+    var Logger = require("./lib/log");
+    //console.log("Loading logging module");
+    Logger.create(config, w(function (_log) {
+        log = config.log = _log;
+    }));
+}).nThen(function (w) {
     var Tasks = require("./storage/tasks");
-    console.log("loading task scheduler");
+    //log.debug('loading task scheduler');
     Tasks.create(config, w(function (e, tasks) {
         config.tasks = tasks;
     }));
@@ -288,7 +299,7 @@ var nt = nThen(function (w) {
 }).nThen(function () {
     if (config.useExternalWebsocket) { return; }
     if (websocketPort !== config.httpPort) {
-        console.log("setting up a new websocket server");
+        log.debug("setting up a new websocket server");
         wsConfig = { port: websocketPort};
     }
     var wsSrv = new WebSocketServer(wsConfig);

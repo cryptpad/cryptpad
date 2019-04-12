@@ -7,10 +7,12 @@ define([
     '/common/media-tag.js',
     '/common/highlight/highlight.pack.js',
     '/customize/messages.js',
+    '/code/mermaid.js',
+    'css!/code/mermaid.css',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
+],function ($, Marked, Hash, Util, h, MediaTag, Highlight, Messages, Mermaid) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
@@ -66,6 +68,14 @@ define([
     };
 
     var mediaMap = {};
+
+    renderer.code = function (code, language) {
+        if (language === 'mermaid' && (code.match(/^sequenceDiagram/) || code.match(/^graph/))) {
+            return '<pre class="mermaid">'+code+'</pre>';
+        } else {
+            return '<pre><code>'+code+'</code></pre>';
+        }
+    };
 
     renderer.heading = function (text, level) {
         var i = 0;
@@ -265,6 +275,7 @@ define([
 
         var Dom = domFromHTML($('<div>').append($div).html());
         $content[0].normalize();
+        $content.find('pre.mermaid[data-processed="true"]').remove();
         var oldDom = domFromHTML($content[0].outerHTML);
         var patch = makeDiff(oldDom, Dom, id);
         if (typeof(patch) === 'string') {
@@ -305,6 +316,9 @@ define([
                 var target = document.getElementById($a.attr('data-href'));
                 if (target) { target.scrollIntoView(); }
             });
+            try {
+                Mermaid.init();
+            } catch (e) { console.error(e); }
         }
     };
 

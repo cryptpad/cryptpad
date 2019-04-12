@@ -413,7 +413,7 @@ MessengerUI, Messages) {
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || Util.isSmallScreen())  {
+            if (val === false || window.innerWidth < 800)  {
                 return void hide();
             }
             show();
@@ -823,7 +823,7 @@ MessengerUI, Messages) {
             'title': Messages.pinLimitReached
         }).append($limitIcon).hide();
         var todo = function (e, overLimit) {
-            if (e) { return void console.error("Unable to get the pinned usage"); }
+            if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 var key = 'pinLimitReachedAlert';
                 if (ApiConfig.noSubscriptionButton === true) {

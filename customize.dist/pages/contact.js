@@ -15,7 +15,8 @@ define([
             h('div.container.cp-container', [
                 Config.adminEmail !== 'i.did.not.read.my.config@cryptpad.fr' ? h('div.row.cp-iconCont.align-items-center', [
                     h('div.col-12',
-                        Pages.setHTML(h('h4.text-center'), Msg.contact_admin)
+                        Pages.setHTML(h('h4.text-center'), Msg.contact_admin),
+                        h('p', Msg.contact_adminHint)
                     ),
                     h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "mailto:"+Config.adminEmail},
@@ -30,14 +31,16 @@ define([
                 ]) : undefined,
                 h('div.row.cp-iconCont.align-items-center', [
                     h('div.col-12',
-                        Pages.setHTML(h('h4.text-center'), Msg.contact_dev)
+                        Pages.setHTML(h('h4.text-center'), Msg.contact_dev),
+                        h('p', Msg.contact_devHint)
                     ),
                     h('div.col-12.col-sm-6.col-md-3.col-lg-3',
                         h('a.card', {href : "https://twitter.com/cryptpad"}, 
                             h('div.card-body',
                                 h('p', [
-                                    h('img', {src: '/customize/images/twitter.svg'}),
-                                    Msg.contact_devTwitter || 'Twitter'
+                                    // this is not a typo. adblock plus blocks images with src *twitter* apparently
+                                    h('img', {src: '/customize/images/twiitter.svg'}),
+                                    'Twitter'
                                 ])
                             )
                         )
@@ -47,7 +50,7 @@ define([
                             h('div.card-body',
                                 h('p', [
                                     h('img', {src: '/customize/images/mastodon.svg'}),
-                                    Msg.contact_devMastodon || 'Mastodon'
+                                    'Mastodon'
                                 ])
                             )
                         )
@@ -57,7 +60,7 @@ define([
                             h('div.card-body',
                                 h('p', [
                                     h('img', {src: '/customize/images/issue.svg'}),
-                                    Msg.contact_devBug || 'Bug report'
+                                    Msg.contact_bug || 'Bug report'
                                 ])
                             )
                         )
@@ -67,7 +70,7 @@ define([
                             h('div.card-body',
                                 h('p', [
                                     h('img', {src: '/customize/images/sayhi.svg'}),
-                                    Msg.contact_devChat || 'Chat'
+                                    Msg.contact_chat || 'Chat'
                                 ])
                             )
                         )

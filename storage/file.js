@@ -343,7 +343,7 @@ const messageBin = (env, chanName, msgBin, cb) => {
             chan.onError.splice(chan.onError.indexOf(complete), 1);
             if (!cb) { return; }
             //chan.messages.push(msg);
-            chan.atime = +new Date();
+            chan.atime = +new Date(); // FIXME seems like odd behaviour that not passing a callback would result in not updating atime...
             complete();
         });
     });
@@ -467,6 +467,9 @@ module.exports.create = function (
             clearChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 clearChannel(env, channelName, cb);
+            },
+            log: function (channelName, content, cb) {
+                message(env, channelName, content, cb);
             },
             shutdown: function () {
                 clearInterval(it);

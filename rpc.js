@@ -12,7 +12,7 @@ var Fse = require("fs-extra");
 var Path = require("path");
 var Https = require("https");
 const Package = require('./package.json');
-const Pinned = require('./pinned');
+const Pinned = require('./scripts/pinned');
 const Saferphore = require("saferphore");
 const nThen = require("nthen");
 const getFolderSize = require("get-folder-size");
@@ -25,13 +25,16 @@ var Store = require("./storage/file");
 
 var DEFAULT_LIMIT = 50 * 1024 * 1024;
 var SESSION_EXPIRATION_TIME = 60 * 1000;
-var SUPPRESS_RPC_ERRORS = false;
+
+var Log;
 
 var WARN = function (e, output) {
-    if (!SUPPRESS_RPC_ERRORS && e && output) {
-        console.error(new Date().toISOString() + ' [' + String(e) + ']', output);
-        console.error(new Error(e).stack);
-        console.error();
+    if (e && output) {
+        Log.warn(e, {
+            output: output,
+            message: String(e),
+            stack: new Error(e).stack,
+        });
     }
 };
 
@@ -199,8 +202,7 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     try {
         signedBuffer = Nacl.util.decodeUTF8(signedMsg);
     } catch (e) {
-        console.log('invalid signedBuffer'); // FIXME logging
-        console.log(signedMsg);
+        Log.error('INVALID_SIGNED_BUFFER', signedMsg);
         return null;
     }
 
@@ -217,8 +219,7 @@ var checkSignature = function (signedMsg, signature, publicKey) {
     }
 
     if (pubBuffer.length !== 32) {
-        console.log('public key length: ' + pubBuffer.length); // FIXME logging
-        console.log(publicKey);
+        Log.error('PUBLIC_KEY_LENGTH', publicKey);
         return false;
     }
 
@@ -269,10 +270,10 @@ var loadUserPins = function (Env, publicKey, cb) {
                     }
                     break;
                 default:
-                    WARN('invalid message read from store', msg); // FIXME logging
+                    Log.warn('INVALID_STORED_MESSAGE', msg);
             }
         } catch (e) {
-            WARN('invalid message read from store', e); // FIXME logging
+            Log.warn('STORED_PARSE_ERROR', e);
         }
     }, function () {
         // no more messages
@@ -969,8 +970,11 @@ var upload_cancel = function (Env, publicKey, fileSize, cb) {
 
     var path = makeFilePath(paths.staging, publicKey);
     if (!path) {
-        console.log(paths.staging, publicKey); // FIXME logging
-        console.log(path);
+        Log.error('UPLOAD_CANCEL_INVALID_PATH', {
+            staging: paths.staging,
+            key: publicKey,
+            path: path,
+        });
         return void cb('NO_FILE');
     }
 
@@ -1313,7 +1317,7 @@ var validateLoginBlock = function (Env, publicKey, signature, block, cb) {
     try {
         u8_signature = Nacl.util.decodeBase64(signature);
     } catch (e) {
-        console.error(e); // FIXME logging
+        Log.error('INVALID_BLOCK_SIGNATURE', e);
         return void cb('E_INVALID_SIGNATURE');
     }
 
@@ -1414,7 +1418,6 @@ var removeLoginBlock = function (Env, msg, cb) {
     var block = Nacl.util.decodeUTF8('DELETE_BLOCK'); // clients and the server will have to agree on this constant
 
     // FIXME deletion
-    // FIXME logging
     validateLoginBlock(Env, publicKey, signature, block, function (e /*::, validatedBlock */) {
         if (e) { return void cb(e); }
         // derive the filepath
@@ -1524,16 +1527,7 @@ var getActiveSessions = function (Env, ctx, cb) {
 };
 
 var adminCommand = function (Env, ctx, publicKey, config, data, cb) {
-    var admins = [];
-    try {
-        admins = (config.adminKeys || []).map(function (k) {
-            k = k.replace(/\/+$/, '');
-            var s = k.split('/');
-            return s[s.length-1];
-        });
-    } catch (e) {
-        console.error("Can't parse admin keys. Please update or fix your config.js file!"); // FIXME logging
-    }
+    var admins = Env.admins;
     if (admins.indexOf(publicKey) === -1) {
         return void cb("FORBIDDEN");
     }
@@ -1631,10 +1625,10 @@ RPC.create = function (
     debuggable /*:<T>(string, T)=>T*/,
     cb /*:(?Error, ?Function)=>void*/
 ) {
-    // load pin-store...
-    console.log('loading rpc module...'); // FIXME logging
+    Log = config.log;
 
-    if (config.suppressRPCErrors) { SUPPRESS_RPC_ERRORS = true; }
+    // load pin-store...
+    Log.silly('LOADING RPC MODULE');
 
     var keyOrDefaultString = function (key, def) {
         return typeof(config[key]) === 'string'? config[key]: def;
@@ -1649,8 +1643,20 @@ RPC.create = function (
         pinStore: (undefined /*:any*/),
         pinnedPads: {},
         evPinnedPadsReady: mkEvent(true),
-        limits: {}
+        limits: {},
+        admins: [],
     };
+
+    try {
+        Env.admins = (config.adminKeys || []).map(function (k) {
+            k = k.replace(/\/+$/, '');
+            var s = k.split('/');
+            return s[s.length-1];
+        });
+    } catch (e) {
+        console.error("Can't parse admin keys. Please update or fix your config.js file!");
+    }
+
     debuggable('rpc_env', Env);
 
     var Sessions = Env.Sessions;
@@ -1718,7 +1724,7 @@ RPC.create = function (
                     respond(e, [null, isNew, null]);
                 });
             default:
-                console.error("unsupported!"); // FIXME logging
+                Log.warn("UNSUPPORTED_RPC_CALL", msg);
                 return respond('UNSUPPORTED_RPC_CALL', msg);
         }
     };
@@ -1727,13 +1733,14 @@ RPC.create = function (
         if (!Env.msgStore) { Env.msgStore = ctx.store; }
 
         if (!Array.isArray(data)) {
-            return void respond('INVALID_ARG_FORMAT'); // FIXME logging
+            Log.debug('INVALID_ARG_FORMET', data);
+            return void respond('INVALID_ARG_FORMAT');
         }
 
         if (!data.length) {
             return void respond("INSUFFICIENT_ARGS");
         } else if (data.length !== 1) {
-            console.log('[UNEXPECTED_ARGUMENTS_LENGTH] %s', data.length); // FIXME logging
+            Log.debug('UNEXPECTED_ARGUMENTS_LENGTH', data);
         }
 
         var msg = data[0].slice(0);
@@ -1753,7 +1760,7 @@ RPC.create = function (
         if (publicKey) {
             getSession(Sessions, publicKey);
         } else {
-            console.log("No public key"); // FIXME logging
+            Log.debug("NO_PUBLIC_KEY_PROVIDED", publicKey);
         }
 
         var cookie = msg[0];
@@ -1775,7 +1782,7 @@ RPC.create = function (
                 return void respond("INVALID_SIGNATURE_OR_PUBLIC_KEY");
             }
         } else if (msg[1] !== 'UPLOAD') {
-            console.error("INVALID_RPC CALL:", msg[1]); // FIXME logging
+            Log.warn('INVALID_RPC_CALL', msg[1]);
             return void respond("INVALID_RPC_CALL");
         }
 
@@ -1804,7 +1811,7 @@ RPC.create = function (
         }
 
         var handleMessage = function () {
-            if (config.logRPC) { console.log(msg[0]); }
+            Log.silly('LOG_RPC', msg[0]);
         switch (msg[0]) {
             case 'COOKIE': return void Respond(void 0);
             case 'RESET':
