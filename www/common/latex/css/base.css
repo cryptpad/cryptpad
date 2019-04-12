@@ -1,0 +1,814 @@
+@import url("../fonts/cmu.css");
+
+/*******************/
+/* default lengths */
+/*******************/
+
+:root, :host {
+    --size: 10pt;
+    --line-height: 1.2;
+
+    /* --linewidth makes no sense here; it is the width of the line in the current environment */
+
+    --paperwidth: 100%;         /* paper is the browser window */
+
+    /* TeX's even/oddsidemargin are not available in CSS, the HtmlGenerator translates the relevant lengths
+     * to marginleftwidth, marginrightwidth, and textwidth, as well as marginparwidth - all relative to the paper.
+     * So if a fixed width page is desired, simply set --paperwidth to an absolute value.
+     */
+
+    --parindent: 1.5em;
+    --parskip: 0px;             /* needs to be a length, otherwise calc(2px + var(--parskip)) will return 0 */
+
+    --smallskipamount: 0.3rem;
+    --medskipamount: 0.6rem;
+    --bigskipamount: 1.2rem;
+
+    --listparindent: 0px;
+    --itemindent: 0px;
+
+    --leftmargini: 2.5em;
+    --leftmarginii: 2.2em;
+    --leftmarginiii: 1.87em;
+    --leftmarginiv: 1.7em;
+    --leftmarginv: 1em;
+    --leftmarginvi: 1em;
+
+    --leftmargin: var(--leftmargini);
+
+    --labelsep: 0.5rem;
+
+    --fboxrule: 0.4pt;
+    --fboxsep: 3pt;
+
+    /* multicols */
+    --columnwidth: ;
+
+    --columnsep: 35pt;
+    --columnseprule: 0pt;
+    --columnseprulecolor: black;
+
+    --multicolsep: 12pt;
+}
+
+
+.twocolumn {
+    --parindent: 1em;
+
+    --marginparsep: 1rem;
+
+    --leftmargini: 2em;
+    --leftmarginv: 0.5em;
+    --leftmarginvi: 0.5em;
+}
+
+
+.list {
+    --topsep: 0.8rem;
+    --parsep: 0.4rem;
+    --itemsep: 0.4rem;
+    --leftmargin: var(--leftmargini);
+}
+
+.list .list {
+    --topsep: 0.4rem;
+    --parsep: 0.2rem;
+    --itemsep: var(--parsep);
+    --leftmargin: var(--leftmarginii);
+}
+
+.list .list .list {
+    --topsep: 0.2rem;
+    --parsep: 0;
+    --itemsep: var(--topsep);
+    --leftmargin: var(--leftmarginiii);
+}
+
+.list .list .list .list {
+    --topsep: 0;
+    --leftmargin: var(--leftmarginiv);
+}
+
+.list .list .list .list .list {
+    --leftmargin: var(--leftmarginv);
+}
+
+.list .list .list .list .list .list {
+    --leftmargin: var(--leftmarginvi);
+}
+
+
+
+/***************/
+/* page layout */
+/***************/
+
+/* .page is the element when used as a web component */
+body, .page {
+    display: grid;
+
+    grid-template-columns: [margin-left] var(--marginleftwidth) [body] var(--textwidth) [margin-right] var(--marginrightwidth);
+    grid-template-rows: auto;
+
+    margin: 0;
+    padding: 0;
+
+    max-width: var(--paperwidth);   /* elements wider than this overflow, but don't increase bodywidth */
+    min-width: var(--paperwidth);
+}
+
+
+/* LaTeX page body */
+.body {
+    grid-column: body;
+    grid-row: 1;
+}
+
+/* LaTeX page margins */
+.margin-left {
+    grid-column: margin-left;
+    grid-row: 1;
+    justify-self: end;
+
+    display: flex;
+}
+
+.margin-right {
+    grid-column: margin-right;
+    grid-row: 1;
+    justify-self: start;
+
+    display: flex;
+}
+
+.marginpar {
+    width: var(--marginparwidth);           /* ideally in percent relative to margin */
+    min-width: var(--marginparwidth);       /* min-width if in grid/flex container, to force this width */
+
+    margin-left: var(--marginparsep);
+    margin-right: var(--marginparsep);
+}
+
+.marginpar > * {
+    padding-bottom: var(--marginparpush);   /* use padding, which is included in offsetHeight, margin is not */
+}
+
+
+/* columns */
+.onecolumn {
+    column-count: 1;
+}
+
+.twocolumn {
+    column-count: 2;
+}
+
+.multicols {
+    margin-top: var(--multicolsep);
+    margin-bottom: var(--multicolsep);
+
+    column-gap: var(--columnsep);
+    column-rule: var(--columnseprule) solid var(--columnseprulecolor);
+    column-fill: balance;
+}
+
+.span-cols {
+    column-span: all;
+}
+
+
+/*********/
+/* fonts */
+/*********/
+
+html, .page {
+    font-family: "Computer Modern Serif", serif;
+    font-size: var(--size);
+
+    text-align: justify;
+    line-height: var(--line-height);
+    hyphens: manual;
+}
+
+.katex {
+    font-size: 1em !important;
+}
+
+.katex,
+.katex .mainrm,
+.katex .mathit,
+.katex .mathbf {
+    font-family: "Computer Modern Serif" !important;  /* for KaTeX_Main */
+}
+
+.katex .mathdefault,
+.katex .boldsymbol {
+    font-family: "Computer Modern Serif" !important;  /* for KaTeX_Math */
+}
+
+.katex .mathsf,
+.katex .textsf,
+.katex .mathboldsf,
+.katex .textboldsf,
+.katex .mathitsf,
+.katex .textitsf {
+    font-family: "Computer Modern Sans" !important;  /* for KaTeX_SansSerif */
+}
+
+
+
+/* family */
+.rm {
+    font-family: "Computer Modern Serif", serif;
+    font-variant-ligatures: normal;
+}
+.sf {
+    font-family: "Computer Modern Sans", sans-serif;
+    font-variant-ligatures: normal;
+}
+.tt {
+    font-family: "Computer Modern Typewriter", monospace;
+    font-variant-ligatures: none;
+}
+
+/* weight */
+.md {
+    font-weight: normal;
+}
+
+.bf {
+    font-weight: bold;
+}
+
+/* shape - LaTeX doesn't support slanted small-caps by default */
+.up {
+    font-family: "Computer Modern Serif", serif;
+    font-style: normal;
+    font-variant-caps: normal;
+}
+
+.it {
+    font-style: italic;
+    font-variant-caps: normal;
+}
+
+.sl {
+    font-family: "Computer Modern Serif Slanted";
+    font-style: oblique;
+    font-variant-caps: normal;
+}
+
+.sf.sl {
+    font-family: "Computer Modern Sans", sans-serif;
+    font-style: oblique;
+    font-variant-caps: normal;
+}
+
+.tt.sl {
+    font-family: "Computer Modern Typewriter Slanted", monospace;
+    font-style: oblique;
+    font-variant-caps: normal;
+}
+
+.sc {
+    font-family: "Computer Modern Serif", serif;
+    font-style: normal;
+    font-variant-caps: small-caps;
+}
+
+
+
+
+/* size */
+
+.tiny {
+    font-size: .5rem;
+}
+
+.scriptsize {
+    font-size: .7rem;
+}
+
+.footnotesize {
+    font-size: .82rem;
+}
+
+.small {
+    font-size: .91rem;
+}
+
+.normalsize {
+    font-size: 1rem;
+}
+
+.large {
+    font-size: 1.2rem;
+}
+
+.Large {
+    font-size: 1.4rem;
+}
+
+.LARGE {
+    font-size: 1.7rem;
+}
+
+.huge {
+    font-size: 2rem;
+}
+
+.Huge {
+    font-size: 2.5rem;
+}
+
+
+
+
+/**************/
+/* sectioning */
+/**************/
+
+h1, h2, h3, h4 {
+    /* \normalfont */
+    font-family: "Computer Modern Serif", serif;
+    font-style: normal;
+    font-variant-caps: normal;
+
+    text-align: left;
+}
+
+
+.titlepage {
+    height: 100vh;
+    min-height: 20rem;
+}
+
+.title {
+    font-size: 1.7rem;  /* LARGE */
+}
+
+.author, .date {
+    font-size: 1.2rem;  /* large */
+}
+
+
+
+/*************/
+/* alignment */
+/*************/
+
+.centering, .list.center {
+    text-indent: 0;
+    text-align: center;
+}
+
+.raggedright, .list.flushleft {
+    text-indent: 0;
+    text-align: left;
+}
+
+.raggedleft, .list.flushright {
+    text-indent: 0;
+    text-align: right;
+}
+
+
+/* alignment environments are lists (trivlist), so margin has to be removed */
+
+.list.center, .list.flushleft, .list.flushright {
+    margin-left: 0 !important;
+}
+
+/* a list on its own justifies */
+.list {
+    text-align: justify;
+}
+
+
+
+/*********/
+/* boxes */
+/*********/
+
+
+.hbox {
+    display: inline-block;
+    white-space: nowrap;
+    text-indent: 0;
+}
+
+.phantom {
+    visibility: hidden;
+}
+
+
+.llap {
+    display: inline-flex;
+    flex-direction: column;
+    width: 0;
+    align-items: flex-end;
+}
+
+.clap {
+    display: inline-flex;
+    flex-direction: column;
+    width: 0;
+    align-items: center;
+}
+
+.rlap {
+    display: inline-block;
+    width: 0;
+}
+
+
+.stretch {
+    display: inline-flex;
+    flex-direction: row;
+
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+.smash {
+    display: inline-flex;
+    flex-direction: row;
+    height: 0px;
+    align-items: flex-end;
+}
+
+
+/* a class to align text to the baseline, and a class to locate the baseline */
+
+.align-baseline {
+    line-height: 0;
+}
+
+.align-baseline::after {
+    content: '';
+    display: inline-block;
+}
+
+.mpbaseline {
+    line-height: 0;
+    width: 0;
+    height: 0;
+    display: inline-block;
+}
+
+/* parbox/minipage */
+
+.parbox {
+    display: inline-block;
+    text-indent: 0;
+}
+
+/* pos: t (top) */
+.p-t {
+    display: inline-flex;
+}
+
+/* pos: c (center) */
+.p-c {
+    vertical-align: middle;
+}
+
+/* pos: b (bottom) */
+.p-b {
+    /* default */
+    vertical-align: baseline;       /* TODO: what if llap inside?? */
+}
+
+
+
+/* if we want a fixed height *and* bottom alignment */
+.pbh.p-b {
+    vertical-align: text-bottom;
+}
+
+
+/* the following are only possible if height was given, too */
+
+.p-t.p-ct {
+    vertical-align: baseline;
+}
+
+.p-t.p-cc {
+    vertical-align: text-top;
+    align-items: center;
+}
+
+/* pos: top, inner-pos: bottom */
+.p-t.p-cb {
+    vertical-align: text-top;
+    display: inline-flex;
+    align-items: flex-end;
+}
+
+/* pos and inner-pos: center */
+.p-c.p-cc {
+    display: inline-flex;
+    align-items: center;
+}
+
+.p-c.p-cb {
+    display: inline-flex;
+    align-items: flex-end;
+}
+
+
+.p-b.p-ct {
+    display: inline-flex;
+    align-items: flex-start;
+}
+
+.p-b.p-cc {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* pos: bottom, inner-pos: bottom */
+.p-b.p-cb {
+    vertical-align: baseline;
+    display: inline-flex;
+    align-items: flex-end;
+}
+
+.p-b.p-cb::before {
+    /* move the baseline to the bottom of a flex item */
+    content: "x";
+    display: inline-block;
+    width: 0;
+    visibility: hidden;
+}
+
+
+
+
+.underline {
+    border-bottom: 0.4pt solid;
+    line-height: 1;
+}
+
+
+.frame {
+    padding: var(--fboxsep);
+    border: var(--fboxrule) solid;
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+
+
+/****************/
+/* environments */
+/****************/
+
+.pframe {
+    border-style: solid;
+}
+
+.picture {
+    display: inline-block;  /* so that it can be given a fixed size */
+    position: relative;
+    vertical-align: bottom; /* needed for \put */
+}
+
+/* the coordinate system of the picture */
+.picture-canvas {
+    display: flex;
+    align-items: flex-end;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+
+/* cannot do this, it pushes the whole picture up by the depth of the font :(
+.picture-canvas > .hbox::after {
+    content: "";
+    display: inline;
+}
+*/
+
+
+/* objects in a picture */
+.put-obj {
+    display: block;
+    position: relative;
+    line-height: 0;
+    /* width: 0; */         /* picture objects only have a height, but we cannot set the
+                               width to 0 directly because it breaks vertical baseline alignment of text */
+}
+
+/* make text align on the baseline in \put - needs line-height: 0 in .put-obj! */
+.put-obj:after {
+    content: '';
+    display: inline-block;
+}
+
+
+.strut {
+    display: block;
+}
+
+.picture-object {
+    position: absolute;
+    display: flex;          /* to align text and boxes at the bottom */
+                            /* line-height: 0px; works for boxes, but breaks text */
+}
+
+
+/**********/
+/* macros */
+/**********/
+
+code {
+    white-space: pre;
+}
+
+
+/**********/
+/* spaces */
+/**********/
+
+/* reset */
+p, ul, ol, dl, div {
+    margin: 0;
+    padding: 0;
+}
+
+p {
+    margin-top: var(--parskip);
+    text-indent: var(--parindent);
+}
+
+
+h1 + p, h1 + * p:first-child,
+h2 + p, h2 + * p:first-child,
+h3 + p, h3 + * p:first-child,
+h4 + p, h4 + * p:first-child,
+.noindent,
+.continue {
+    text-indent: 0;
+}
+
+
+
+
+/* predefined horizontal spaces */
+.negthinspace {
+    margin-left: -0.16666667em;
+}
+
+
+/* vertical space - insert the actual space (negative or positive) with margin-bottom */
+.vspace {
+    display: block;
+}
+
+/* vertical space that forces a linebreak */
+.breakspace {
+    display: table;
+}
+
+/* inline vertical space - this cannot be negative */
+.vspace-inline {
+    display: inline-block;
+    height: calc(1em * var(--line-height));     /* full maximum height, including the leading: line-height * font-size */
+    vertical-align: top;                        /* if bottom is used, space could be inserted above this line of text */
+}
+
+
+/* predefined vertical spaces */
+.smallskip {
+    margin-bottom: var(--smallskipamount);
+}
+
+.medskip {
+    margin-bottom: var(--medskipamount);
+}
+
+.bigskip {
+    margin-bottom: var(--bigskipamount);
+}
+
+
+/****************/
+/* environments */
+/****************/
+
+
+/* lists */
+
+.list {
+    margin: calc(var(--topsep) + var(--parskip)) 0;
+    margin-left: var(--leftmargin);
+}
+
+.list p:first-of-type {
+    text-indent: var(--itemindent);
+}
+
+.list p + p {
+    margin-top: var(--parsep);
+    text-indent: var(--listparindent);
+}
+
+.list li + li,
+.list dd + dt {
+    margin-top: calc(var(--itemsep) + var(--parsep));
+}
+
+
+/* labels */
+
+li {
+    list-style: none;
+}
+
+/* label should be next to the item, so the first element after the label needs to be inline */
+.itemlabel + * {
+    display: inline;
+}
+
+.itemlabel > * {
+    position: relative;
+    right: var(--labelsep);
+}
+
+
+
+
+/* description */
+
+dd, dd > p:first-child {
+    display: inline;
+}
+
+/* start a new line after dd and before dt */
+dd::after {
+    content: "";
+    display: block;
+}
+
+
+dt {
+    display: inline-block;
+    font-weight: bold;
+}
+
+.list dt {
+    margin-left: calc(-1 * var(--leftmargin));
+}
+
+dd {
+    margin-left: var(--labelsep);
+}
+
+
+
+/* quote, quotation, verse */
+
+.quote, .quotation, .verse {
+    margin-left: var(--leftmargin);
+    margin-right: var(--leftmargin);
+}
+
+.quotation {
+    --parsep: 0px;
+    --itemindent: 1.5em;
+    --listparindent: var(--itemindent);
+}
+
+.verse {
+    text-align: left;
+
+    margin-left: calc(1.5em + var(--leftmargin));
+    --itemindent: -1.5em;
+    --listparindent: var(--itemindent);
+}
+
+
+
+
+
+/* the TeX and LaTeX logos */
+
+span.tex,
+span.latex {
+    text-transform: uppercase;
+}
+
+span.latex > .a {
+    font-size: 0.8em;
+    vertical-align: 0.2em;
+    margin-left:  -0.45em;
+    margin-right: -0.15em;
+}
+
+span.tex > .e,
+span.latex > .e {
+    margin-left: -0.2em;
+    margin-right: -0.2em;
+    position: relative;
+    top: 0.45ex;
+}

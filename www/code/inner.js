@@ -12,7 +12,6 @@ define([
     '/common/TypingTests.js',
     '/customize/messages.js',
     'cm/lib/codemirror',
-
     'css!cm/lib/codemirror.css',
     'css!cm/addon/dialog/dialog.css',
     'css!cm/addon/fold/foldgutter.css',
@@ -39,7 +38,10 @@ define([
     'cm/addon/fold/comment-fold',
     'cm/addon/display/placeholder',
 
-    'less!/code/app-code.less'
+    'less!/code/app-code.less',
+    '/common/latex/latex.js',
+    'css!/common/latex/css/katex.css',
+    'css!/common/latex/css/article.css',
 
 ], function (
     $,
@@ -54,9 +56,11 @@ define([
     Visible,
     TypingTest,
     Messages,
-    CMeditor)
+    CMeditor
+    )
 {
     window.CodeMirror = CMeditor;
+    var latexjs = window.latexjs;
 
     var MEDIA_TAG_MODES = Object.freeze([
         'markdown',
@@ -88,7 +92,7 @@ define([
         framework._.toolbar.$rightside.append(markdownTb.button);
 
         var modeChange = function (mode) {
-            if (['markdown', 'gfm'].indexOf(mode) !== -1) { return void markdownTb.setState(true); }
+            if (['markdown', 'gfm', 'stex'].indexOf(mode) !== -1) { return void markdownTb.setState(true); }
             markdownTb.setState(false);
         };
 
@@ -119,16 +123,44 @@ define([
         var $previewButton = framework._.sfCommon.createButton('preview', true);
         var forceDrawPreview = function () {
             try {
+                console.log("IN DrawPreview " + CodeMirror.highlightMode);
                 if (editor.getValue() === '') {
                     $previewContainer.addClass('cp-app-code-preview-isempty');
                     return;
                 }
                 $previewContainer.removeClass('cp-app-code-preview-isempty');
-                DiffMd.apply(DiffMd.render(editor.getValue()), $preview, framework._.sfCommon);
+                if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) !== -1) {
+                    console.log("IN Markdown");
+                    DiffMd.apply(DiffMd.render(editor.getValue()), $preview, framework._.sfCommon);
+                } else if (['stex'].indexOf(CodeMirror.highlightMode) !== 1) {
+                    console.log("IN STEX");
+                    console.log("Latex JS: " + latexjs);
+		    var latexHtmlGenerator = new latexjs.HtmlGenerator({ hyphenate: false })
+                    console.log("Latex Generator: " + latexHtmlGenerator);
+                    console.log("Latex value: " + editor.getValue());
+                    var latexGenerator;
+                    try {
+                     latexGenerator = latexjs.parse(editor.getValue(), { generator: latexHtmlGenerator });
+                     console.log("Latex Generator: " + latexGenerator);
+                    } catch(e) {
+                     console.log("Latex error: " + e);
+                    }
+                    var output;
+                    try {
+                     var outputDoc = latexGenerator.htmlDocument("http://localhost:3000/common/latex/");
+                     console.log("Output doc: " + outputDoc);
+                     output = outputDoc.documentElement.outerHTML;
+                     console.log("Output: " + output);
+                    } catch(e) {
+                     console.log("Latex error: " + e);
+                     output = "Latex error: " + e;
+                    }
+                    DiffMd.apply(output, $preview, framework._.sfCommon);
+                };
             } catch (e) { console.error(e); }
         };
         var drawPreview = Util.throttle(function () {
-            if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) { return; }
+            if (['markdown', 'gfm', 'stex'].indexOf(CodeMirror.highlightMode) === -1) { return; }
             if (!$previewButton.is('.cp-toolbar-button-active')) { return; }
             forceDrawPreview();
         }, 150);
@@ -140,7 +172,7 @@ define([
             previewTo = setTimeout(function () {
                 $codeMirror.removeClass('transition');
             }, 500);
-            if (['markdown', 'gfm'].indexOf(CodeMirror.highlightMode) === -1) {
+            if (['markdown', 'gfm', 'stex'].indexOf(CodeMirror.highlightMode) === -1) {
                 $previewContainer.show();
             }
             $previewContainer.toggle();
@@ -174,7 +206,7 @@ define([
         });
 
         var modeChange = function (mode) {
-            if (['markdown', 'gfm'].indexOf(mode) !== -1) {
+            if (['markdown', 'gfm', 'stex'].indexOf(mode) !== -1) {
                 $previewButton.show();
                 framework._.sfCommon.getPadAttribute('previewMode', function (e, data) {
                     if (e) { return void console.error(e); }

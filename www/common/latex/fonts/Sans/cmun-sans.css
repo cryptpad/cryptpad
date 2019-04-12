@@ -1,0 +1,31 @@
+@font-face {
+	font-family: 'Computer Modern Sans';
+	src: url('cmunss.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: 'Computer Modern Sans';
+	src: url('cmunsx.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: 'Computer Modern Sans';
+	src: url('cmunsi.woff') format('woff');
+	font-weight: normal;
+	font-style: italic;
+}
+
+
+@font-face {
+	font-family: 'Computer Modern Sans';
+	src: url('cmunso.woff') format('woff');
+	font-weight: bold;
+	font-style: oblique;
+}
+

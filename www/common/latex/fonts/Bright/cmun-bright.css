@@ -1,0 +1,29 @@
+@font-face {
+	font-family: 'Computer Modern Bright';
+	src: url('cmunbmr.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Computer Modern Bright';
+	src: url('cmunbbx.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Computer Modern Bright';
+	src: url('cmunbmo.woff') format('woff');
+	font-weight: normal;
+	font-style: italic;
+}
+
+@font-face {
+	font-family: 'Computer Modern Bright';
+	src: url('cmunbxo.woff') format('woff');
+	font-weight: bold;
+	font-style: italic;
+}
+
+

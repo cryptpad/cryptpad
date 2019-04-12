@@ -1,0 +1,30 @@
+@font-face {
+	font-family: 'Computer Modern Concrete';
+	src: url('cmunorm.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: 'Computer Modern Concrete';
+	src: url('cmunobx.woff') format('woff');
+	font-weight: bold;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: 'Computer Modern Concrete';
+	src: url('cmunoti.woff') format('woff');
+	font-weight: normal;
+	font-style: italic;
+}
+
+
+@font-face {
+	font-family: 'Computer Modern Concrete';
+	src: url('cmunobi.woff') format('woff');
+	font-weight: bold;
+	font-style: italic;
+}

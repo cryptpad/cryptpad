@@ -1,0 +1,15 @@
+@font-face {
+	font-family: 'Computer Modern Typewriter Light';
+	src: url('cmunbtl.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+
+@font-face {
+	font-family: 'Computer Modern Typewriter Light';
+	src: url('cmunbto.woff') format('woff');
+	font-weight: normal;
+	font-style: italic;
+}
+

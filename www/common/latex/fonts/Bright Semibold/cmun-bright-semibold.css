@@ -1,0 +1,14 @@
+@font-face {
+	font-family: 'Computer Modern Bright Semibold';
+	src: url('cmunbsr.woff') format('woff');
+	font-weight: normal;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'Computer Modern Bright Semibold';
+	src: url('cmunbso.woff') format('woff');
+	font-weight: normal;
+	font-style: italic;
+}
+
