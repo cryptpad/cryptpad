@@ -278,7 +278,7 @@ module.exports = {
     blobStagingPath: './blobstage',
 
     /* CryptPad supports logging events directly to the disk in a 'logs' directory
-     * Set its location here, or set it to false if you'd rather not log
+     * Set its location here, or set it to false (or nothing) if you'd rather not log
      */
     logPath: './data/logs',
 
@@ -294,7 +294,7 @@ module.exports = {
     /* CryptPad can be configured to log more or less
      * the various settings are listed below by order of importance
      *
-     * silly, debug, verbose, feedback, info, warn, error
+     * silly, verbose, debug, feedback, info, warn, error
      *
      * Choose the least important level of logging you wish to see.
      * For example, a 'silly' logLevel will display everything,
