@@ -7,16 +7,22 @@ define([
     '/common/media-tag.js',
     '/common/highlight/highlight.pack.js',
     '/customize/messages.js',
-    '/code/mermaid.js',
-    'css!/code/mermaid.css',
     '/bower_components/diff-dom/diffDOM.js',
     '/bower_components/tweetnacl/nacl-fast.min.js',
     'css!/common/highlight/styles/github.css'
-],function ($, Marked, Hash, Util, h, MediaTag, Highlight, Messages, Mermaid) {
+],function ($, Marked, Hash, Util, h, MediaTag, Highlight, Messages) {
     var DiffMd = {};
 
     var DiffDOM = window.diffDOM;
     var renderer = new Marked.Renderer();
+
+    var Mermaid = {
+        init: function () {}
+    };
+
+    require(['/code/mermaid.js'], function (_Mermaid) {
+        Mermaid = _Mermaid;
+    });
 
     var highlighter = function () {
         return function(code, lang) {

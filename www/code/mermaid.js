@@ -58139,8 +58139,15 @@ function format(level) {
 }
 
 function Log(level) {
+    level = 5;
     this.level = level;
-
+    this.trace = function () {};
+    this.debug = function () {};
+    this.info = function () {};
+    this.warn = function () {};
+    this.error = function () {};
+    this.log = function () {};
+    return;
     this.log = function () {
         var args = Array.prototype.slice.call(arguments);
         var level = args.shift();
