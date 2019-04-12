@@ -1295,7 +1295,7 @@ define([
                 if (!noWorker && !noSharedWorker && typeof(SharedWorker) !== "undefined") {
                     worker = new SharedWorker('/common/outer/sharedworker.js?' + urlArgs);
                     worker.onerror = function (e) {
-                        console.error(e.message);
+                        console.error(e.message); // FIXME seeing lots of errors here as of 2.20.0
                     };
                     worker.port.onmessage = function (ev) {
                         if (ev.data === "SW_READY") {
