@@ -41,7 +41,7 @@ This release makes a number of serverside changes. Read the following notes care
 
 ## Bug fixes
 
-* fixed the corner dialog's z-index for the slide app
+* The dialog to store a pad in your drive was hidden behind the preview panel in the slide editor. It's now back on top where it belongs.
 
 # Tapir release (v2.19.0)
 
