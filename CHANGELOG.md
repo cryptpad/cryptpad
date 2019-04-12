@@ -1,3 +1,48 @@
+# Upupa release (v2.20.0)
+
+## Goals
+
+After all the features we've added over time, the root of the CryptPad repository had gotten to be something of a mess. We decided to spend a lot of this release period cleaning things up. We also prioritized some other features which make it easier to manage a CryptPad instance.
+
+## Update notes
+
+This release makes a number of serverside changes. Read the following notes carefully before updating from an earlier version of CryptPad!
+
+* We realized that docker images persisted `config.js` by copying it into the `customize` volume. Since customize is exposed by the webserver, this meant that potentially private information in the configuration file would be accessible over the web. We've moved `config.js` to a `cryptpad/config/`, along with `config.example.js` and modified the docker setup so that nothing in this folder will be exposed to the web.
+  * Consequently, you'll need to move your own `config.js` to the new location in order for your server to read it when you restart.
+* We also noticed that the configuration values for alternate paths to various were not universally supported, and that they couldn't be deeper than one directory, in any case. We've reviewed the server's source and introduced support for arbitrary filepaths to each of the directories.
+  * In the near future we plan to simplify server maintenance by moving all user data into a new `data` directory. This will make docker setups easier to maintain, as well as simplifying the task of migrating or backing up your database.
+* CryptPad now features a rudimentary administration panel, accessible at the /admin/ URL. Server operators can add their **Public signing key** (found on their settings page) to their config file in the `adminKeys` array. See config.example.js for more info.
+* We've also moved all our scripts out of the repository root and into a dedicated `scripts` directory. We recommend reviewing any crontabs or other scripts that might be calling them.
+* After receiving a number of support requests for third-party instances due to our email being displayed on the contact page, we've decided to display the `adminEmail` from `config.js` to users.
+  * If you leave the default `i.did.not.read.my.config@cryptpad.fr`, nothing will be displayed. We'd appreciate it if you did leave your own contact information, as time we spend trying to help users on your instance is time we spend _not developing new features_.
+* We've introduced a basic logging API which standardizes how various messages are printed, as well as logging them to the disk.
+  * If you do not specify `logPath` in your config file, it will not log to the disk.
+  * Unless `logToStdout` is true, it will not print to the console either.
+  * You can configure the degree of logging by setting `logLevel` to one of the supported settings. If no level is set, it will use the default `info` setting, which includes _warnings_ and _errors_. See the example config for more information.
+* We've dropped support for number of configuration points:
+  * `enableUploads` no longer has any effect, as the clientside code assumed the server supported uploads. This value was added when file uploads were still considered experimental, but they have been a core part of the platform for some time.
+  * `restrictUploads` no longer has any effect either, for the same reason.
+* We've made some small updates to `example.nginx.conf` to expose `/datastore/` over the web, as there are some scripts which depend on expect the log files to be exposed.
+* Depending on when you last updated, you may need to update your clientside dependencies. Run `bower update` to get the latest code.
+* Finally, we've introduced a server-side dependency (get-folder-size) and updated one of our own libraries (chainpad-server). Run `npm install` to get the updated versions. The server won't work without them.
+
+## Features
+
+* Our rich text editor is now configured to support the insertion of LaTeX equations via CKEditor's  _mathjax_ plugin.
+* The contact page now lists our Mastodon account, which is quickly catching up to our twitter account's number of followers.
+  * If configured correctly, instances will also display the contact email for the instance administrator.
+* We've reorganized the home page a little bit, making more of our applications visible at a glance. It also features changes to the header and footer.
+* The chat box and help text are no longer shown by default, making the interface much cleaner for new users.
+* Pads which were created with an expiration date are now displayed with a clock icon in users' Drives.
+* The settings page now remembers which tab you'd selected, in the event of a page reload.
+* We received contributions to our [German](https://weblate.cryptpad.fr/projects/cryptpad/app/de/#history) and [Russian](https://weblate.cryptpad.fr/projects/cryptpad/app/ru/#history) translations.
+* Our code and slide editors now features a first version of support for rendering [Mermaid rendering](https://mermaidjs.github.io/).
+
+## Bug fixes
+
+* fixed the corner dialog's z-index for the slide app
+
 # Tapir release (v2.19.0)
 
 ## Goals

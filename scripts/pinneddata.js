@@ -2,6 +2,7 @@
 const Fs = require('fs');
 const Semaphore = require('saferphore');
 const nThen = require('nthen');
+const Path = require('path');
 
 /*
     takes contents of a pinFile (UTF8 string)
@@ -63,9 +64,14 @@ const pinned = {}; // map of pinned files
 // define a function: 'load' which takes a config
 // and a callback
 module.exports.load = function (config, cb) {
+    var filePath = config.filePath || './datastore';
+    var blobPath = config.blobPath || './blob';
+    var pinPath = config.pinPath || './pins';
+
+
     nThen((waitFor) => {
         // read the subdirectories in the datastore
-        Fs.readdir('../datastore', waitFor((err, list) => {
+        Fs.readdir(filePath, waitFor((err, list) => {
             if (err) { throw err; }
             dirList = list;
         }));
@@ -76,15 +82,15 @@ module.exports.load = function (config, cb) {
             sema.take((returnAfter) => {
                 // get the list of files in every subdirectory
                 // and push them to 'fileList'
-                Fs.readdir('../datastore/' + f, waitFor(returnAfter((err, list2) => {
+                Fs.readdir(Path.join(filePath, f), waitFor(returnAfter((err, list2) => {
                     if (err) { throw err; }
-                    list2.forEach((ff) => { fileList.push('../datastore/' + f + '/' + ff); });
+                    list2.forEach((ff) => { fileList.push(Path.join(filePath, f, ff)); });
                 })));
             });
         });
     }).nThen((waitFor) => {
         // read the subdirectories in 'blob'
-        Fs.readdir('../blob', waitFor((err, list) => {
+        Fs.readdir(blobPath, waitFor((err, list) => {
             if (err) { throw err; }
             // overwrite dirList
             dirList = list;
@@ -96,9 +102,9 @@ module.exports.load = function (config, cb) {
             sema.take((returnAfter) => {
                 // get the list of files in every subdirectory
                 // and push them to 'fileList'
-                Fs.readdir('../blob/' + f, waitFor(returnAfter((err, list2) => {
+                Fs.readdir(Path.join(blobPath, f), waitFor(returnAfter((err, list2) => {
                     if (err) { throw err; }
-                    list2.forEach((ff) => { fileList.push('../blob/' + f + '/' + ff); });
+                    list2.forEach((ff) => { fileList.push(Path.join(blobPath, f, ff)); });
                 })));
             });
         });
@@ -118,7 +124,7 @@ module.exports.load = function (config, cb) {
         });
     }).nThen((waitFor) => {
         // read the subdirectories in the pinstore
-        Fs.readdir('../pins', waitFor((err, list) => {
+        Fs.readdir(pinPath, waitFor((err, list) => {
             if (err) { throw err; }
             dirList = list;
         }));
@@ -131,9 +137,9 @@ module.exports.load = function (config, cb) {
             sema.take((returnAfter) => {
                 // get the list of files in every subdirectory
                 // and push them to 'fileList' (which is empty because we keep reusing it)
-                Fs.readdir('../pins/' + f, waitFor(returnAfter((err, list2) => {
+                Fs.readdir(Path.join(pinPath, f), waitFor(returnAfter((err, list2) => {
                     if (err) { throw err; }
-                    list2.forEach((ff) => { fileList.push('../pins/' + f + '/' + ff); });
+                    list2.forEach((ff) => { fileList.push(Path.join(pinPath, f, ff)); });
                 })));
             });
         });
