@@ -10,7 +10,7 @@ CKEDITOR.editorConfig = function( config ) {
     // document itself and causes problems when it's sent across the wire and reflected back
     config.removePlugins= 'resize,elementspath';
     config.resize_enabled= false; //bottom-bar
-    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64';
+    config.extraPlugins= 'autolink,colorbutton,colordialog,font,indentblock,justify,mediatag,print,blockbase64,mathjax';
     config.toolbarGroups= [
         // {"name":"clipboard","groups":["clipboard","undo"]},
         //{"name":"editing","groups":["find","selection"]},
@@ -26,6 +26,7 @@ CKEDITOR.editorConfig = function( config ) {
         {"name":"colors"},
         {"name":"print"}];
 
+    config.mathJaxLib = '/pad/mathjax/MathJax.js?config=TeX-AMS_HTML';
     config.font_defaultLabel = 'Arial';
     config.fontSize_defaultLabel = '16';
 

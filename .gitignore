@@ -17,4 +17,7 @@ blob/
 block/
 blobstage/
 block/
+logs/
 privileged.conf
+config/config.js
+

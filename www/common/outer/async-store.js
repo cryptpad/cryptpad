@@ -947,6 +947,14 @@ define([
             }
         };
 
+        // Admin
+        Store.adminRpc = function (clientId, data, cb) {
+            store.rpc.adminRpc(data, function (err, res) {
+                if (err) { return void cb({error: err}); }
+                cb(res);
+            });
+        };
+
         //////////////////////////////////////////////////////////////////
         /////////////////////// PAD //////////////////////////////////////
         //////////////////////////////////////////////////////////////////

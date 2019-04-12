@@ -13,11 +13,16 @@ var nThen = require("nthen");
 
 var config;
 try {
-    config = require('./config');
+    config = require('./config/config');
 } catch (e) {
-    console.log("You can customize the configuration by copying config.example.js to config.js");
-    config = require('./config.example');
+    console.log("You can customize the configuration by copying config/config.example.js to config/config.js");
+    config = require('./config/config.example');
 }
+
+if (config.adminEmail === 'i.did.not.read.my.config@cryptpad.fr') {
+    console.log("You can configure the administrator email (adminEmail) in your config/config.js file");
+}
+
 var websocketPort = config.websocketPort || config.httpPort;
 var useSecureWebsockets = config.useSecureWebsockets || false;
 
@@ -54,6 +59,10 @@ if (FRESH_MODE) {
     console.log("FRESH MODE ENABLED");
     FRESH_KEY = +new Date();
 }
+config.flushCache = function () {
+    FRESH_KEY = +new Date();
+};
+
 
 const clone = (x) => (JSON.parse(JSON.stringify(x)));
 
@@ -95,7 +104,7 @@ if (!config.logFeedback) { return; }
 
 const logFeedback = function (url) {
     url.replace(/\?(.*?)=/, function (all, fb) {
-        console.log('[FEEDBACK] %s', fb);
+        config.log.feedback(fb, '');
     });
 };
 
@@ -165,7 +174,18 @@ if (config.privKeyAndCertFiles) {
     };
 }
 
+var admins = [];
+try {
+    admins = (config.adminKeys || []).map(function (k) {
+        k = k.replace(/\/+$/, '');
+        var s = k.split('/');
+        return s[s.length-1].replace(/-/g, '/');
+    });
+} catch (e) { console.error("Can't parse admin keys"); }
+
+// TODO, cache this /api/config responses instead of re-computing it each time
 app.get('/api/config', function(req, res){
+    // TODO precompute any data that isn't dynamic to save some CPU time
     var host = req.headers.host.replace(/\:[0-9]+/, '');
     res.setHeader('Content-Type', 'text/javascript');
     res.send('define(function(){\n' + [
@@ -177,9 +197,12 @@ app.get('/api/config', function(req, res){
             removeDonateButton: (config.removeDonateButton === true),
             allowSubscriptions: (config.allowSubscriptions === true),
             websocketPath: config.useExternalWebsocket ? undefined : config.websocketPath,
+            // FIXME don't send websocketURL if websocketPath is provided. deprecated.
             websocketURL:'ws' + ((useSecureWebsockets) ? 's' : '') + '://' + host + ':' +
                 websocketPort + '/cryptpad_websocket',
             httpUnsafeOrigin: config.httpUnsafeOrigin,
+            adminEmail: config.adminEmail,
+            adminKeys: admins,
         }, null, '\t'),
         'obj.httpSafeOrigin = ' + (function () {
             if (config.httpSafeOrigin) { return '"' + config.httpSafeOrigin + '"'; }
@@ -220,7 +243,7 @@ httpServer.listen(config.httpPort,config.httpAddress,function(){
     var port = config.httpPort;
     var ps = port === 80? '': ':' + port;
 
-    console.log('\n[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
+    console.log('[%s] server available http://%s%s', new Date().toISOString(), hostName, ps);
 });
 if (config.httpSafePort) {
     Http.createServer(app).listen(config.httpSafePort, config.httpAddress);
@@ -229,13 +252,28 @@ if (config.httpSafePort) {
 var wsConfig = { server: httpServer };
 
 var rpc;
+var historyKeeper;
 
+var log;
+
+// Initialize tasks, then rpc, then store, then history keeper and then start the server
 var nt = nThen(function (w) {
-    if (!config.enableTaskScheduling) { return; }
+    // set up logger
+    var Logger = require("./lib/log");
+    //console.log("Loading logging module");
+    Logger.create(config, w(function (_log) {
+        log = config.log = _log;
+    }));
+}).nThen(function (w) {
     var Tasks = require("./storage/tasks");
-    console.log("loading task scheduler");
+    //log.debug('loading task scheduler');
     Tasks.create(config, w(function (e, tasks) {
         config.tasks = tasks;
+    }));
+}).nThen(function (w) {
+    if (config.useExternalWebsocket) { return; }
+    Storage.create(config, w(function (_store) {
+        config.store = _store;
     }));
 }).nThen(function (w) {
     config.rpc = typeof(config.rpc) === 'undefined'? './rpc.js' : config.rpc;
@@ -250,15 +288,22 @@ var nt = nThen(function (w) {
         rpc = _rpc;
     }));
 }).nThen(function () {
-    if(config.useExternalWebsocket) { return; }
+    if (config.useExternalWebsocket) { return; }
+    var HK = require('./historyKeeper.js');
+    var hkConfig = {
+        tasks: config.tasks,
+        rpc: rpc,
+        store: config.store
+    };
+    historyKeeper = HK.create(hkConfig);
+}).nThen(function () {
+    if (config.useExternalWebsocket) { return; }
     if (websocketPort !== config.httpPort) {
-        console.log("setting up a new websocket server");
+        log.debug("setting up a new websocket server");
         wsConfig = { port: websocketPort};
     }
     var wsSrv = new WebSocketServer(wsConfig);
-    Storage.create(config, function (store) {
-        NetfluxSrv.run(store, wsSrv, config, rpc);
-    });
+    NetfluxSrv.run(wsSrv, config, historyKeeper);
 });
 
 if (config.debugReplName) {

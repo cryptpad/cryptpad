@@ -3,11 +3,13 @@ define([
     '/api/config',
     '/common/hyperscript.js',
     '/common/common-feedback.js',
+    '/common/common-interface.js',
+    '/common/textFit.min.js',
     '/customize/messages.js',
     '/customize/application_config.js',
     '/common/outer/local-store.js',
     '/customize/pages.js'
-], function ($, Config, h, Feedback, Msg, AppConfig, LocalStore, Pages) {
+], function ($, Config, h, Feedback, UI, TextFit, Msg, AppConfig, LocalStore, Pages) {
     var urlArgs = Config.requireConf.urlArgs;
 
     var isAvailableType = function (x) {
@@ -23,34 +25,54 @@ define([
     };
 
     return function () {
-        var showingMore = false;
-
         var icons = [
-                [ 'pad', Msg.main_richTextPad],
-                [ 'code', Msg.main_codePad],
-                [ 'slide', Msg.main_slidePad],
-                [ 'sheet', Msg.main_sheetPad],
-                [ 'poll', Msg.main_pollPad],
-                [ 'kanban', Msg.main_kanbanPad],
-                [ 'whiteboard', Msg.main_whiteboardPad],
-                [ 'drive', LocalStore.isLoggedIn() ? Msg.main_yourCryptDrive : Msg.main_localPads]
+                [ 'pad', Msg.type.pad],
+                [ 'code', Msg.type.code],
+                [ 'slide', Msg.type.slide],
+                [ 'sheet', Msg.type.sheet],
+                [ 'poll', Msg.type.poll],
+                [ 'kanban', Msg.type.kanban],
+                [ 'whiteboard', Msg.type.whiteboard],
+                [ 'drive', Msg.type.drive]
             ].filter(function (x) {
-                return isAvailableType(x[0]) && checkRegisteredType(x[0]);
+                return isAvailableType(x[0]);
             })
-            .map(function (x, i) {
+            .map(function (x) {
                 var s = 'div.bs-callout.cp-callout-' + x[0];
-                if (i > 2) { s += '.cp-more.cp-hidden'; }
+                var isEnabled = checkRegisteredType(x[0]);
+                //if (i > 2) { s += '.cp-more.cp-hidden'; }
                 var icon = AppConfig.applicationsIcon[x[0]];
                 var font = icon.indexOf('cptools') === 0 ? 'cptools' : 'fa';
+                var href = '/'+ x[0] +'/';
+                var attr = isEnabled ? { href: href } : {
+                    onclick: function () {
+                         sessionStorage.redirectTo = href;
+                         window.location.href = '/login/';
+                    }
+                };
+                if (!isEnabled) {
+                    s += '.cp-app-disabled';
+                    attr.title = Msg.mustLogin;
+                }
                 return h('a', [
-                    { href: '/'+ x[0] +'/' },
+                    attr,
                     h(s, [
                         h('i.' + font + '.' + icon),
-                        h('div.pad-button-text', [ h('h4', x[1]) ])
+                        h('div.pad-button-text', {
+                            style: 'width:120px;height:30px;'
+                        }, [ x[1] ])
                     ])
                 ]);
             });
 
+        icons.forEach(function (a) {
+            setTimeout(function () {
+                TextFit($(a).find('.pad-button-text')[0], {minFontSize: 13, maxFontSize: 18});
+            });
+        });
+        UI.addTooltips();
+
+        /*
         var more = icons.length < 4? undefined: h('div.bs-callout.cp-callout-more', [
                 h('div.cp-callout-more-lessmsg.cp-hidden', [
                     "see less ",
@@ -72,7 +94,7 @@ define([
                         showingMore = !showingMore;
                     }
                 }
-            ]);
+            ]);*/
 
         var _link = h('a', {
             href: "https://opencollective.com/cryptpad/contribute",
@@ -131,9 +153,9 @@ define([
                             h('h1', 'CryptPad'),
                             h('p', Msg.main_catch_phrase)
                         ]),
-                        h('div.col-12.col-sm-6', [
+                        h('div.col-12.col-sm-6.cp-app-grid', [
                             icons,
-                            more
+                            //more
                         ])
                     ]),
                     blocks,

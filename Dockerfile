@@ -7,6 +7,7 @@ ENV STORAGE=\'./storage/file\'
 ENV LOG_TO_STDOUT=true
 
 # Persistent storage needs
+VOLUME /cryptpad/cfg
 VOLUME /cryptpad/datastore
 VOLUME /cryptpad/customize
 VOLUME /cryptpad/blobstage

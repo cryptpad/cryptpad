@@ -68,7 +68,7 @@ define([
                             languageSelector()
                         ])
                     ], ''),
-                    footerCol('footer_applications', [
+                    /*footerCol('footer_applications', [
                         footLink('/drive/', 'main_drive'),
                         footLink('/pad/', 'main_richText'),
                         footLink('/code/', 'main_code'),
@@ -76,22 +76,34 @@ define([
                         footLink('/poll/', 'main_poll'),
                         footLink('/kanban/', 'main_kanban'),
                         footLink('/whiteboard/', null, Msg.type.whiteboard)
+                    ]),*/
+                    footerCol('footer_product', [
+                        footLink('https://cryptpad.fr/what-is-cryptpad.html', 'topbar_whatIsCryptpad'),
+                        footLink('/faq.html', 'faq_link'),
+                        footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
+                        footLink('https://opencollective.com/cryptpad/contribute/', 'footer_donate'),
                     ]),
                     footerCol('footer_aboutUs', [
-                        footLink('https://blog.cryptpad.fr', 'blog'),
-                        footLink('https://labs.xwiki.com', null, 'XWiki Labs'),
+                        /*footLink('https://blog.cryptpad.fr', 'blog'),
+                        footLink('https://labs.xwiki.com', null, 'XWiki Labs'),*/
                         footLink('http://www.xwiki.com', null, 'XWiki SAS'),
-                        footLink('https://www.open-paas.org', null, 'OpenPaaS')
+                        footLink('https://www.open-paas.org', null, 'OpenPaaS'),
+                        footLink('/about.html', 'footer_team'),
+                        footLink('/contact.html', 'contact'),
                     ]),
-                    footerCol('footer_contact', [
+                    footerCol('footer_legal', [
+                        footLink('/terms.html', 'footer_tos'),
+                        footLink('/privacy.html', 'privacy'),
+                    ]),
+                    /*footerCol('footer_contact', [
                         footLink('https://riot.im/app/#/room/#cryptpad:matrix.org', null, 'Chat'),
                         footLink('https://twitter.com/cryptpad', null, 'Twitter'),
                         footLink('https://github.com/xwiki-labs/cryptpad', null, 'GitHub'),
                         footLink('/contact.html', null, 'Email')
-                    ])
+                    ])*/
                 ])
             ]),
-            h('div.cp-version-footer', "CryptPad v2.19.0 (Tapir)")
+            h('div.cp-version-footer', "CryptPad v2.20.0 (Upupa)")
         ]);
     };
 
@@ -132,12 +144,12 @@ define([
             button,
             h('div.collapse.navbar-collapse.justify-content-end#menuCollapse', [
                 //h('a.nav-item.nav-link', { href: '/what-is-cryptpad.html'}, Msg.topbar_whatIsCryptpad), // Moved the FAQ
-                h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
+                //h('a.nav-item.nav-link', { href: '/faq.html'}, Msg.faq_link),
                 h('a.nav-item.nav-link', { href: 'https://blog.cryptpad.fr/'}, Msg.blog),
                 h('a.nav-item.nav-link', { href: '/features.html'}, Msg.features),
                 h('a.nav-item.nav-link', { href: '/privacy.html'}, Msg.privacy),
-                h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
-                h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
+                //h('a.nav-item.nav-link', { href: '/contact.html'}, Msg.contact),
+                //h('a.nav-item.nav-link', { href: '/about.html'}, Msg.about),
             ].concat(rightLinks))
         );
     };

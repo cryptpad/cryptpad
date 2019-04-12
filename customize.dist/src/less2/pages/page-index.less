@@ -103,16 +103,28 @@
     a:hover {
         text-decoration: none;
     }
+
+    .cp-app-grid {
+        display: flex;
+        flex-wrap: wrap;
+        & > a {
+            margin: 20px;
+        }
+    }
+    @icons-size: 120px;
+    @icons-text-size: 30px;
     .bs-callout {
         display: flex;
         align-items: stretch;
-        margin: 25px 0;
+        margin: 0;
         background: rgba(255,255,255,0.6);
         color: black;
         transition: all .1s ease-in-out;
         box-sizing: border-box;
-        height: 5em;
         position: relative;
+        flex-flow: column;
+        height: @icons-size;
+        width: @icons-size;
         a {
             color: black;
             &:hover { text-decoration-line: none; }
@@ -122,20 +134,37 @@
                 font-size: 1.3em;
             }
         }
+        div {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 16px;
+        }
+        .fa, .cptools {
+            display: flex;
+            align-items: center;
+            font-size: @icons-size - 60px;
+            justify-content: center;
+            width: @icons-size;
+            height: @icons-size - @icons-text-size;
+            transition: width 0.1s;
+            color: #fff;
+        }
+        &.cp-app-disabled {
+            cursor: not-allowed !important;
+            opacity: 0.5;
+        }
     }
     h4 {
         margin: 0;
     }
     .cp-callout-more-moremsg,.cp-callout-more-lessmsg {
         transform: none !important;
-    }
-    .bs-callout div {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100%;
-        position: absolute;
-        left: 5em;
     }
     .bs-callout+.bs-callout {
         margin-top: -5px;
@@ -147,18 +176,7 @@
         cursor: pointer;
     }
     .bs-callout:hover.cp-callout-more {
-            transform: none !important;
-    }
-    .bs-callout {
-        .fa, .cptools {
-            display: flex;
-            align-items: center;
-            font-size: 2.5em;
-            justify-content: center;
-            width: 1.3em;
-            transition: width 0.1s;
-            color: #fff;
-        }
+        transform: none !important;
     }
     .cp-callout-pad .cptools { background-color: @colortheme_pad-bg; }
     .cp-callout-code .cptools { background-color: @colortheme_code-bg; }

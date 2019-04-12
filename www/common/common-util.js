@@ -306,6 +306,10 @@ define([], function () {
         ];
     };
 
+    Util.isSmallScreen = function () {
+        return window.innerHeight < 800 || window.innerWidth < 800;
+    };
+
     return Util;
 });
 }(self));

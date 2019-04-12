@@ -228,6 +228,10 @@ define([
         ctx.sframeChan.event('EV_SET_TAB_TITLE', newTitle);
     };
 
+    funcs.setHash = function (hash) {
+        ctx.sframeChan.event('EV_SET_HASH', hash);
+    };
+
     funcs.setLoginRedirect = function (cb) {
         cb = cb || $.noop;
         ctx.sframeChan.query('Q_SET_LOGIN_REDIRECT', null, cb);

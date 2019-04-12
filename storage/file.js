@@ -2,6 +2,7 @@
 /* jshint esversion: 6 */
 /* global Buffer */
 var Fs = require("fs");
+var Fse = require("fs-extra");
 var Path = require("path");
 var nThen = require("nthen");
 const ToPull = require('stream-to-pull-stream');
@@ -67,7 +68,7 @@ var closeChannel = function (env, channelName, cb) {
     }
 };
 
-var clearChannel = function (env, channelId, cb) {
+var clearChannel = function (env, channelId, cb) { // FIXME deletion
     var path = mkPath(env, channelId);
     getMetadataAtPath(env, path, function (e, metadata) {
         if (e) { return cb(new Error(e)); }
@@ -189,7 +190,7 @@ var checkPath = function (path, callback) {
             return;
         }
         // 511 -> octal 777
-        Fs.mkdir(Path.dirname(path), 511, function (err) {
+        Fse.mkdirp(Path.dirname(path), 511, function (err) {
             if (err && err.code !== 'EEXIST') {
                 callback(err);
                 return;
@@ -199,7 +200,7 @@ var checkPath = function (path, callback) {
     });
 };
 
-var removeChannel = function (env, channelName, cb) {
+var removeChannel = function (env, channelName, cb) { // FIXME deletion
     var filename = mkPath(env, channelName);
     Fs.unlink(filename, cb);
 };
@@ -342,7 +343,7 @@ const messageBin = (env, chanName, msgBin, cb) => {
             chan.onError.splice(chan.onError.indexOf(complete), 1);
             if (!cb) { return; }
             //chan.messages.push(msg);
-            chan.atime = +new Date();
+            chan.atime = +new Date(); // FIXME seems like odd behaviour that not passing a callback would result in not updating atime...
             complete();
         });
     });
@@ -420,7 +421,7 @@ module.exports.create = function (
     };
     // 0x1ff -> 777
     var it;
-    Fs.mkdir(env.root, 0x1ff, function (err) {
+    Fse.mkdirp(env.root, 0x1ff, function (err) {
         if (err && err.code !== 'EEXIST') {
             // TODO: somehow return a nice error
             throw err;
@@ -466,6 +467,9 @@ module.exports.create = function (
             clearChannel: function (channelName, cb) {
                 if (!isValidChannelId(channelName)) { return void cb(new Error('EINVAL')); }
                 clearChannel(env, channelName, cb);
+            },
+            log: function (channelName, content, cb) {
+                message(env, channelName, content, cb);
             },
             shutdown: function () {
                 clearInterval(it);

@@ -1173,7 +1173,9 @@ define([
         common.getAttribute(['hideHelp', type], function (err, val) {
             //if ($(window).height() < 800 || $(window).width() < 800) { return void toggleHelp(true); }
             if (val === true) { return void toggleHelp(true); }
-            if (!val && ($(window).height() < 800 || $(window).width() < 800)) {
+            // Note: Help is always hidden by default now, to avoid displaying to many things in the UI
+            // This is why we have (true || ...)
+            if (!val && (true || $(window).height() < 800 || $(window).width() < 800)) {
                 return void showMore();
             }
         });
@@ -1634,6 +1636,14 @@ define([
                 content: h('span', Messages.settingsButton)
             });
         }
+        // Add administration panel link if the user is an admin
+        if (priv.edPublic && Array.isArray(Config.adminKeys) && Config.adminKeys.indexOf(priv.edPublic) !== -1) {
+            options.push({
+                tag: 'a',
+                attributes: {'class': 'cp-toolbar-menu-admin fa fa-cogs'},
+                content: h('span', Messages.adminPage || 'Admin')
+            });
+        }
         // Add login or logout button depending on the current status
         if (accountName) {
             options.push({
@@ -1727,6 +1737,13 @@ define([
                 window.open(origin+'/settings/');
             } else {
                 window.parent.location = origin+'/settings/';
+            }
+        });
+        $userAdmin.find('a.cp-toolbar-menu-admin').click(function () {
+            if (padType) {
+                window.open(origin+'/admin/');
+            } else {
+                window.parent.location = origin+'/admin/';
             }
         });
         $userAdmin.find('a.cp-toolbar-menu-profile').click(function () {

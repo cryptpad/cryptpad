@@ -409,6 +409,10 @@ define([
                 setDocumentTitle();
             });
 
+            sframeChan.on('EV_SET_HASH', function (hash) {
+                window.location.hash = hash;
+            });
+
             Cryptpad.autoStore.onStoreRequest.reg(function (data) {
                 sframeChan.event("EV_AUTOSTORE_DISPLAY_POPUP", data);
             });

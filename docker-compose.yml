@@ -17,6 +17,10 @@ services:
       - STORAGE=${STORAGE}
       - LOG_TO_STDOUT=${LOG_TO_STDOUT}
 
+    ports:
+      - "3000:3000"
+      - "3001:3001"
+
     restart: always
     volumes:
       - ./data/files:/cryptpad/datastore:rw
@@ -26,3 +30,4 @@ services:
       - ./data/blobstage:/cryptpad/blobstage:rw
       - ./data/tasks:/cryptpad/tasks:rw
       - ./data/block:/cryptpad/block:rw
+      - ./data/config:/cryptpad/cfg:rw

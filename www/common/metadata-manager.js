@@ -28,7 +28,8 @@ define(['json.sortify'], function (Sortify) {
                     defaultTitle: meta.doc.defaultTitle,
                     //title: meta.doc.defaultTitle,
                     type: meta.doc.type,
-                    users: {}
+                    users: {},
+                    authors: {}
                 };
                 metadataLazyObj = JSON.parse(JSON.stringify(metadataObj));
             }
@@ -76,6 +77,24 @@ define(['json.sortify'], function (Sortify) {
             setTimeout(function () {
                 checkUpdate(lazy);
             });
+        };
+        var addAuthor = function () {
+            if (!meta.user || !meta.user.netfluxId || !priv || !priv.edPublic) { return; }
+            var authors = metadataObj.authors || {};
+            if (!authors[priv.edPublic]) {
+                authors[priv.edPublic] = {
+                    nId: [meta.user.netfluxId],
+                    name: meta.user.name
+                };
+            } else {
+                authors[priv.edPublic].name = meta.user.name;
+                if (authors[priv.edPublic].nId.indexOf(meta.user.netfluxId) === -1) {
+                    authors[priv.edPublic].nId.push(meta.user.netfluxId);
+                }
+            }
+            metadataObj.authors = authors;
+            metadataLazyObj.authors = JSON.parse(JSON.stringify(authors));
+            change();
         };
 
         var netfluxId;
@@ -173,7 +192,8 @@ define(['json.sortify'], function (Sortify) {
             onReady: function (f) {
                 if (isReady) { return void f(); }
                 readyHandlers.push(f);
-            }
+            },
+            addAuthor: addAuthor,
         });
     };
     return Object.freeze({ create: create });

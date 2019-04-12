@@ -413,7 +413,7 @@ MessengerUI, Messages) {
         });
         show();
         Common.getAttribute(['toolbar', 'userlist-drawer'], function (err, val) {
-            if (val === false || ($(window).height() < 800 && $(window).width() < 800)) {
+            if (val === false || window.innerWidth < 800)  {
                 return void hide();
             }
             show();
@@ -457,7 +457,11 @@ MessengerUI, Messages) {
             config.$contentContainer.prepend($content);
         }
 
-        var hide = function () {
+        var hide = function (closed) {
+            if (!closed) {
+                // It means it's the initial state so we're going to make the icon blink
+                $button.addClass('cp-toolbar-notification');
+            }
             $content.hide();
             $button.removeClass('cp-toolbar-button-active');
             config.$contentContainer.removeClass('cp-chat-visible');
@@ -482,8 +486,8 @@ MessengerUI, Messages) {
         });
         show();
         Common.getAttribute(['toolbar', 'chat-drawer'], function (err, val) {
-            if (val === false || ($(window).height() < 800 || $(window).width() < 800)) {
-                return void hide();
+            if (!val || Util.isSmallScreen()) {
+                return void hide(val === false);
             }
             show();
         });
@@ -819,7 +823,7 @@ MessengerUI, Messages) {
             'title': Messages.pinLimitReached
         }).append($limitIcon).hide();
         var todo = function (e, overLimit) {
-            if (e) { return void console.error("Unable to get the pinned usage"); }
+            if (e) { return void console.error("Unable to get the pinned usage", e); }
             if (overLimit) {
                 var key = 'pinLimitReachedAlert';
                 if (ApiConfig.noSubscriptionButton === true) {

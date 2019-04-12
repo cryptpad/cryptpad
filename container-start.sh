@@ -4,10 +4,12 @@
 mkdir -p customize
 
 # Copying default config
-[ ! -f customize/config.js ] && echo "Creating config.js" && cp config.example.js customize/config.js
+mkdir -p cfg
+[ ! -f cfg/config.js ] && echo "Creating config.js" && cp config/config.example.js cfg/config.js
 
 # Linking config.js
-[ ! -h config.js ] && echo "Linking config.js" && ln -s customize/config.js config.js
+[ ! -L config/config.js ] && echo "Linking config.js" && ln -s ../cfg/config.js config/config.js
+
 
 # Thanks to http://stackoverflow.com/a/10467453
 sedeasy() {
@@ -16,13 +18,13 @@ sedeasy() {
 
 # Configure
 [ -n "$USE_SSL" ] && echo "Using secure websockets: $USE_SSL" \
-  && sedeasy "useSecureWebsockets: [^,]*," "useSecureWebsockets: ${USE_SSL}," customize/config.js
+  && sedeasy "useSecureWebsockets: [^,]*," "useSecureWebsockets: ${USE_SSL}," cfg/config.js
 
 [ -n "$STORAGE" ] && echo "Using storage adapter: $STORAGE" \
-  && sedeasy "storage: [^,]*," "storage: ${STORAGE}," customize/config.js
+  && sedeasy "storage: [^,]*," "storage: ${STORAGE}," cfg/config.js
 
 [ -n "$LOG_TO_STDOUT" ] && echo "Logging to stdout: $LOG_TO_STDOUT" \
-  && sedeasy "logToStdout: [^,]*," "logToStdout: ${LOG_TO_STDOUT}," customize/config.js
+  && sedeasy "logToStdout: [^,]*," "logToStdout: ${LOG_TO_STDOUT}," cfg/config.js
 
 export FRESH=1
 exec node ./server.js

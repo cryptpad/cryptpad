@@ -19,10 +19,8 @@
             }
             div {
                 .card {
-                    padding: 4em 1em 0.5em 1em;
                     box-shadow: 0 5px 15px rgba(69,145,196, 0.3);
                     border-color: #fff;
-                    text-align: center;
                     margin-bottom: 1em;
                     &:hover, &:focus {
                         text-decoration: none;
@@ -40,37 +38,17 @@
                     @media (max-width: 335px) {
                         min-height: 162px;
                     }
-                }
-                &:nth-child(2) {
-                    .card {
-                        background-image: url(/customize/images/twitter.svg);
-                        background-repeat: no-repeat;
-                        background-position: 50% 10%;
-                        background-size: 3rem;
+                    img {
+                        max-width: 50px;
+                        margin-bottom: 10px;
                     }
-                }
-                &:nth-child(3) {
-                    .card {
-                        background-image: url(/customize/images/issue.svg);
-                        background-repeat: no-repeat;
-                        background-position: 50% 10%;
-                        background-size: 3rem;
-                    }
-                }
-                &:nth-child(4) {
-                    .card {
-                        background-image: url(/customize/images/sayhi.svg);
-                        background-repeat: no-repeat;
-                        background-position: 50% 10%;
-                        background-size: 3rem;
-                    }
-                }
-                &:nth-child(5) {
-                    .card {
-                        background-image: url(/customize/images/email.svg);
-                        background-repeat: no-repeat;
-                        background-position: 50% 10%;
-                        background-size: 3rem;
+                    p {
+                        display: flex;
+                        flex-flow: column;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0;
+                        height: 100%;
                     }
                 }
             }

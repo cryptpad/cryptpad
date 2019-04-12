@@ -120,6 +120,7 @@ define([
     var $ownerIcon = $('<span>', {"class": "fa fa-id-card"});
     var $tagsIcon = $('<span>', {"class": "fa " + faTags});
     var $passwordIcon = $('<span>', {"class": "fa fa-lock"});
+    var $expirableIcon = $('<span>', {"class": "fa fa-clock-o"});
 
     var LS_LAST = "app-drive-lastOpened";
     var LS_OPENED = "app-drive-openedFolders";
@@ -1441,6 +1442,10 @@ define([
             if (hrefData.hashData && hrefData.hashData.password) {
                 var $password = $passwordIcon.clone().appendTo($state);
                 $password.attr('title', Messages.fm_passwordProtected || '');
+            }
+            if (data.expire) {
+                var $expire = $expirableIcon.clone().appendTo($state);
+                $expire.attr('title', Messages._getKey('fm_expirablePad', [new Date(data.expire).toLocaleString()]));
             }
             _addOwnership($span, $state, data);
 
